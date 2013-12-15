@@ -6,8 +6,17 @@ import (
 	"strings"
 )
 
+var rst2html string
+
+func init() {
+	rst2html = os.Getenv("RST2HTML")
+	if rst2html == "" {
+		rst2html = "rst2html"
+	}
+}
+
 func ReStructuredTextToHTML(txt string) (string, error) {
-	cmd := exec.Command("rst2html", "--quiet")
+	cmd := exec.Command(rst2html, "--quiet")
 	cmd.Stderr = os.Stderr
 	in, err := cmd.StdinPipe()
 	in.Write([]byte(txt))
