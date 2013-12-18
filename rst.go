@@ -11,7 +11,7 @@ var rst2html string
 func init() {
 	rst2html = os.Getenv("RST2HTML")
 	if rst2html == "" {
-		rst2html = "rst2html"
+		rst2html = "rst2html.py"
 	}
 }
 
