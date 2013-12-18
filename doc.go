@@ -3,6 +3,7 @@ package doc
 import (
 	"errors"
 	"github.com/russross/blackfriday"
+	"html"
 	"strings"
 )
 
@@ -16,20 +17,20 @@ const (
 
 // ToHTML converts a source document in format to an HTML string. If conversion
 // fails, it returns a failsafe plaintext-to-HTML conversion and a non-nil error.
-func ToHTML(format Format, source string) (html string, err error) {
+func ToHTML(format Format, source string) (htmlSource string, err error) {
 	switch format {
 	case Markdown:
 		var out []byte
 		out = blackfriday.MarkdownCommon([]byte(source))
-		html = string(out)
+		htmlSource = string(out)
 	case ReStructuredText:
-		html, err = ReStructuredTextToHTML(source)
+		htmlSource, err = ReStructuredTextToHTML(source)
 	case Text:
 	default:
 		err = ErrUnhandledFormat
 	}
-	if err != nil || html == "" {
-		html = "<pre>" + strings.TrimSpace(source) + "</pre>"
+	if err != nil || htmlSource == "" {
+		htmlSource = "<pre>" + strings.TrimSpace(html.EscapeString(source)) + "</pre>"
 	}
 	return
 }
