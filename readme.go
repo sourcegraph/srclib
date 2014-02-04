@@ -3,8 +3,9 @@ package doc
 import (
 	"errors"
 	"github.com/sqs/gorp"
+	"net/url"
 	"sourcegraph.com/sourcegraph/repo"
-	"sourcegraph.com/sourcegraph/util"
+	"sourcegraph.com/sourcegraph/vcsfs"
 )
 
 var ErrNoReadme = errors.New("no readme found in repository")
@@ -13,8 +14,11 @@ var ErrNoReadme = errors.New("no readme found in repository")
 // and ErrNoReadme if the repository has no README.
 func GetFormattedReadme(dbh gorp.SqlExecutor, repo *repo.Repository) (formattedReadme string, err error) {
 	for _, rd := range readmeNames {
-		url := repo.MirroredFileURL(repo.RevSpecOrDefault(), rd.name)
-		src, err := util.HTTPGet(url)
+		cloneURL, err := url.Parse(repo.CloneURL)
+		if err != nil {
+			return "", err
+		}
+		src, err := vcsfs.GetFile(repo.VCS, cloneURL, repo.RevSpecOrDefault(), rd.name)
 		if err == nil {
 			return ToHTML(rd.fmt, string(src))
 		}
