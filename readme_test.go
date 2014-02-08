@@ -73,9 +73,10 @@ func testGetFormattedReadme(t *testing.T, tx gorp.SqlExecutor, label string, tes
 	mux := http.NewServeMux()
 	path := vcsserver.ClonePath(string(test.repo.VCS), u)
 	handled := false
-	handlerPath := path + "/v/" + test.repo.RevSpecOrDefault() + "/" + test.remoteReadmeFilename
+	handlerPath := path + "/v-batch/" + test.repo.RevSpecOrDefault()
 	mux.HandleFunc(handlerPath, func(w http.ResponseWriter, _ *http.Request) {
 		handled = true
+		w.Header().Set("x-batch-file", test.remoteReadmeFilename)
 		io.WriteString(w, test.remoteReadmeContents)
 	})
 	server := httptest.NewServer(mux)

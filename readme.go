@@ -54,6 +54,8 @@ var readmeFormats = map[string]Format{
 	".mdown":    Markdown,
 	".rdoc":     Markdown, // TODO(sqs): actually implement RDoc
 	".txt":      Text,
+	".text":     Text,
+	"":          Text,
 	".ascii":    Text,
 	".rst":      ReStructuredText,
 }
