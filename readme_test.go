@@ -6,8 +6,10 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"sourcegraph.com/sourcegraph/db"
 	"sourcegraph.com/sourcegraph/repo"
+	"sourcegraph.com/sourcegraph/vcsfs"
 	"testing"
 )
 
@@ -63,8 +65,13 @@ func TestGetFormattedReadme(t *testing.T) {
 }
 
 func testGetFormattedReadme(t *testing.T, tx gorp.SqlExecutor, label string, test getFormattedReadmeTest) {
+	u, err := url.Parse(test.repo.CloneURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	mux := http.NewServeMux()
-	path := vcsserver.ClonePath(string(test.repo.VCS), test.repo.ParsedCloneURL())
+	path := vcsserver.ClonePath(string(test.repo.VCS), u)
 	handled := false
 	handlerPath := path + "/v/" + test.repo.RevSpecOrDefault() + "/" + test.remoteReadmeFilename
 	mux.HandleFunc(handlerPath, func(w http.ResponseWriter, _ *http.Request) {
@@ -74,10 +81,10 @@ func testGetFormattedReadme(t *testing.T, tx gorp.SqlExecutor, label string, tes
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	origVCSMirrorURL := repo.VCSMirrorURL
-	repo.VCSMirrorURL = server.URL
+	origVCSMirrorURL := vcsfs.VCSMirrorURL
+	vcsfs.VCSMirrorURL = server.URL
 	defer func() {
-		repo.VCSMirrorURL = origVCSMirrorURL
+		vcsfs.VCSMirrorURL = origVCSMirrorURL
 	}()
 
 	readme, err := GetFormattedReadme(tx, test.repo)
