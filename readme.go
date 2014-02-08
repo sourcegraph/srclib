@@ -4,8 +4,10 @@ import (
 	"errors"
 	"github.com/sqs/gorp"
 	"net/url"
+	"path/filepath"
 	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/vcsfs"
+	"strings"
 )
 
 var ErrNoReadme = errors.New("no readme found in repository")
@@ -13,40 +15,45 @@ var ErrNoReadme = errors.New("no readme found in repository")
 // GetFormattedReadme returns repo's HTML-formatted readme, or an empty string
 // and ErrNoReadme if the repository has no README.
 func GetFormattedReadme(dbh gorp.SqlExecutor, repo *repo.Repository) (formattedReadme string, err error) {
-	for _, rd := range readmeNames {
-		cloneURL, err := url.Parse(repo.CloneURL)
-		if err != nil {
-			return "", err
-		}
-		src, err := vcsfs.GetFile(repo.VCS, cloneURL, repo.RevSpecOrDefault(), rd.name)
-		if err == nil {
-			return ToHTML(rd.fmt, string(src))
-		}
+	cloneURL, err := url.Parse(repo.CloneURL)
+	if err != nil {
+		return "", err
 	}
-	return "", ErrNoReadme
+	src, path, err := vcsfs.GetFirstExistingFile(repo.VCS, cloneURL, repo.RevSpecOrDefault(), readmeNames)
+	if err != nil {
+		return "", ErrNoReadme
+	}
+	return ToHTML(readmeFormats[strings.ToLower(filepath.Ext(path))], string(src))
 }
 
-var readmeNames = []struct {
-	name string
-	fmt  Format
-}{
-	{"README.md", Markdown},
-	{"ReadMe.md", Markdown},
-	{"Readme.md", Markdown},
-	{"readme.md", Markdown},
-	{"README.markdown", Markdown},
-	{"ReadMe.markdown", Markdown},
-	{"readme.markdown", Markdown},
-	{"README", Text},
-	{"ReadMe", Text},
-	{"Readme", Text},
-	{"readme", Text},
-	{"README.rdoc", Text},
-	{"README.txt", Text},
-	{"ReadMe.txt", Text},
-	{"readme.txt", Text},
-	{"README.rst", ReStructuredText},
-	{"ReadMe.rst", ReStructuredText},
-	{"Readme.rst", ReStructuredText},
-	{"readme.rst", ReStructuredText},
+var readmeNames = []string{
+	"README.md",
+	"ReadMe.md",
+	"Readme.md",
+	"readme.md",
+	"README.markdown",
+	"ReadMe.markdown",
+	"readme.markdown",
+	"README",
+	"ReadMe",
+	"Readme",
+	"readme",
+	"README.rdoc",
+	"README.txt",
+	"ReadMe.txt",
+	"readme.txt",
+	"README.rst",
+	"ReadMe.rst",
+	"Readme.rst",
+	"readme.rst",
+}
+
+var readmeFormats = map[string]Format{
+	".md":       Markdown,
+	".markdown": Markdown,
+	".mdown":    Markdown,
+	".rdoc":     Markdown, // TODO(sqs): actually implement RDoc
+	".txt":      Text,
+	".ascii":    Text,
+	".rst":      ReStructuredText,
 }
