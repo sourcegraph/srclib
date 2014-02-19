@@ -28,6 +28,7 @@ func GetFormattedReadme(dbh gorp.SqlExecutor, repo *repo.Repository) (formattedR
 
 var readmeNames = []string{
 	"README.md",
+	"README.rst",
 	"ReadMe.md",
 	"Readme.md",
 	"readme.md",
@@ -42,7 +43,6 @@ var readmeNames = []string{
 	"README.txt",
 	"ReadMe.txt",
 	"readme.txt",
-	"README.rst",
 	"ReadMe.rst",
 	"Readme.rst",
 	"readme.rst",
