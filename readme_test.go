@@ -1,16 +1,17 @@
 package doc
 
 import (
-	"github.com/sourcegraph/vcsserver"
-	"github.com/sqs/gorp"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"testing"
+
+	"github.com/sourcegraph/vcsserver"
+	"github.com/sqs/gorp"
+	"sourcegraph.com/sourcegraph/config"
 	"sourcegraph.com/sourcegraph/db"
 	"sourcegraph.com/sourcegraph/repo"
-	"sourcegraph.com/sourcegraph/vcsfs"
-	"testing"
 )
 
 type getFormattedReadmeTest struct {
@@ -71,9 +72,8 @@ func testGetFormattedReadme(t *testing.T, tx gorp.SqlExecutor, label string, tes
 	}
 
 	mux := http.NewServeMux()
-	path := vcsserver.ClonePath(string(test.repo.VCS), u)
 	handled := false
-	handlerPath := path + "/v-batch/" + test.repo.RevSpecOrDefault()
+	handlerPath := vcsserver.BatchFilesURI(string(test.repo.VCS), u, test.repo.RevSpecOrDefault(), []string{}).Path
 	mux.HandleFunc(handlerPath, func(w http.ResponseWriter, _ *http.Request) {
 		handled = true
 		w.Header().Set("x-batch-file", test.remoteReadmeFilename)
@@ -82,10 +82,10 @@ func testGetFormattedReadme(t *testing.T, tx gorp.SqlExecutor, label string, tes
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	origVCSMirrorURL := vcsfs.VCSMirrorURL
-	vcsfs.VCSMirrorURL = server.URL
+	origVCSMirrorURL := config.VCSMirrorURL
+	config.VCSMirrorURL, _ = url.Parse(server.URL)
 	defer func() {
-		vcsfs.VCSMirrorURL = origVCSMirrorURL
+		config.VCSMirrorURL = origVCSMirrorURL
 	}()
 
 	readme, err := GetFormattedReadme(tx, test.repo)
