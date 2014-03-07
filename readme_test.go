@@ -9,7 +9,7 @@ import (
 
 	"github.com/sourcegraph/vcsserver"
 	"github.com/sqs/gorp"
-	"sourcegraph.com/sourcegraph/config"
+	"sourcegraph.com/sourcegraph/config2"
 	"sourcegraph.com/sourcegraph/db"
 	"sourcegraph.com/sourcegraph/repo"
 )
@@ -82,10 +82,10 @@ func testGetFormattedReadme(t *testing.T, tx gorp.SqlExecutor, label string, tes
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	origVCSMirrorURL := config.VCSMirrorURL
-	config.VCSMirrorURL, _ = url.Parse(server.URL)
+	origVCSMirrorURL := config2.VCSMirrorURL
+	config2.VCSMirrorURL, _ = url.Parse(server.URL)
 	defer func() {
-		config.VCSMirrorURL = origVCSMirrorURL
+		config2.VCSMirrorURL = origVCSMirrorURL
 	}()
 
 	readme, err := GetFormattedReadme(tx, test.repo)
