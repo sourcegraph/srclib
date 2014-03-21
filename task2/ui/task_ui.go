@@ -42,3 +42,10 @@ func Start(bufferedUI bool, tasks []task2.Task, x *task2.Context) {
 		}
 	}()
 }
+
+func List(tasks []task2.Task) {
+	fmt.Println("======= TASKS =======")
+	for _, t := range tasks {
+		fmt.Println(t.Name())
+	}
+}

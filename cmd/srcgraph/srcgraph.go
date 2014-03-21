@@ -13,7 +13,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"sync"
+
 	"github.com/sourcegraph/go-vcs"
 	"sourcegraph.com/sourcegraph/config2"
 	"sourcegraph.com/sourcegraph/repo"
@@ -132,29 +132,12 @@ The options are:
 	}
 
 	if *dryRun {
-		fmt.Println("======= TASKS =======")
-		for _, t := range tasks {
-			fmt.Println(t.Name())
-		}
+		task_ui.List(tasks)
 		return
 	}
 
-	var w sync.WaitGroup
-	for _, t_ := range tasks {
-		t := t_
-		w.Add(1)
-		t.Start()
-		go func() {
-			defer w.Done()
-			err := t.Wait()
-			if err != nil {
-				log.Printf("Task %q failed: %s.", t.Name(), err)
-			}
-		}()
-	}
-
+	w := task2.Run(tasks)
 	task_ui.Start(*ui, tasks, x)
-
 	w.Wait()
 	task2.FlushAll()
 
