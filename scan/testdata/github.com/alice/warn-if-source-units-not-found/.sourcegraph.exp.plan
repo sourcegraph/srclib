@@ -1,0 +1,4 @@
+
+[env]
+  [env.go]
+    base_import_path = "github.com/alice/warn-if-source-units-not-found"

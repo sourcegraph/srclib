@@ -1,0 +1,6 @@
+[
+  {
+    "TargetType": "go-import-path",
+    "Target": "mypkg"
+  }
+]

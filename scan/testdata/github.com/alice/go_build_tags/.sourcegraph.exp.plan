@@ -1,0 +1,33 @@
+[[go_package]]
+  Dir = "testdata/github.com/alice/go_build_tags"
+  Name = "go_build_tags"
+  Doc = ""
+  ImportPath = "github.com/alice/go_build_tags"
+  Root = ""
+  SrcRoot = ""
+  PkgRoot = ""
+  BinDir = ""
+  Goroot = false
+  PkgObj = ""
+  AllTags = ["foo"]
+  ConflictDir = ""
+  GoFiles = ["foo.go"]
+  IgnoredGoFiles = ["not_foo.go"]
+  Imports = []
+  TestImports = []
+  XTestImports = []
+
+  [go_package.ImportPos]
+
+
+  [go_package.TestImportPos]
+
+
+  [go_package.XTestImportPos]
+
+
+[env]
+
+  [env.go]
+    base_import_path = "github.com/alice/go_build_tags"
+    build_tags = ["foo"]

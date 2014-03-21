@@ -1,0 +1,30 @@
+[[go_package]]
+  Dir = "testdata/github.com/alice/qux"
+  Name = "qux"
+  Doc = ""
+  ImportPath = "github.com/alice/qux"
+  Root = ""
+  SrcRoot = ""
+  PkgRoot = ""
+  BinDir = ""
+  Goroot = false
+  PkgObj = ""
+  ConflictDir = ""
+  GoFiles = ["qux.go"]
+  Imports = []
+  TestImports = []
+  XTestImports = []
+
+  [go_package.ImportPos]
+
+
+  [go_package.TestImportPos]
+
+
+  [go_package.XTestImportPos]
+
+
+[env]
+
+  [env.go]
+    base_import_path = "github.com/alice/qux"
