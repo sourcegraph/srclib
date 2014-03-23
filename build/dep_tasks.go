@@ -78,8 +78,8 @@ func (t *resolveDepsTask) Start() {
 			var resolvedDep *dep2.ResolvedTarget
 
 			// look up in cache
-			for rd, rt := range t.resolveCache {
-				if rawDep.TargetType == rd.TargetType && rawDep.Target == rd.Target {
+			for bd, rt := range t.resolveCache {
+				if rawDep.TargetType == bd.TargetType && rawDep.Target == bd.Target {
 					resolvedDep = rt
 					break
 				}

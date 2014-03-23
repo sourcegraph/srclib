@@ -11,13 +11,13 @@ type repositoryPlanner struct {
 	x        *task2.Context
 	c        *config.Repository
 
-	rd *RepositoryData
+	bd *BuildData
 }
 
-func (p *repositoryPlanner) planTasks() ([]task2.Task, *RepositoryData, error) {
+func (p *repositoryPlanner) planTasks() ([]task2.Task, *BuildData, error) {
 	var tasks []task2.Task
 
-	p.rd = &RepositoryData{
+	p.bd = &BuildData{
 		Config:   p.c,
 		CommitID: p.commitID,
 	}
@@ -26,5 +26,5 @@ func (p *repositoryPlanner) planTasks() ([]task2.Task, *RepositoryData, error) {
 	tasks = append(tasks, p.planDepTasks()...)
 	tasks = append(tasks, p.planGraphTasks()...)
 
-	return tasks, p.rd, nil
+	return tasks, p.bd, nil
 }

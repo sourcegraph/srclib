@@ -14,7 +14,7 @@ func (p *repositoryPlanner) planGraphTasks() []task2.Task {
 	var tasks []task2.Task
 
 	outputs := make(map[string]*grapher2.Output)
-	p.rd.Graph = outputs
+	p.bd.Graph = outputs
 	var outputsMu sync.Mutex
 	var w sync.WaitGroup
 

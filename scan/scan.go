@@ -4,8 +4,8 @@ import (
 	"code.google.com/p/rog-go/parallel"
 	"runtime"
 
-	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/repo"
+	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 	"sync"

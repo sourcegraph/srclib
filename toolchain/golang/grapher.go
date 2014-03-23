@@ -6,11 +6,11 @@ import (
 	"os"
 	"path/filepath"
 
+	"sourcegraph.com/sourcegraph/graph"
+	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
-	"sourcegraph.com/sourcegraph/graph"
 	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
-	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/toolchain/golang/gog"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"

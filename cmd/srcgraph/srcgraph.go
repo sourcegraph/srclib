@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -15,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/sourcegraph/go-vcs"
+	"sourcegraph.com/sourcegraph/client"
 	"sourcegraph.com/sourcegraph/config2"
 	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/build"
@@ -29,6 +29,8 @@ import (
 var verbose = flag.Bool("v", false, "show verbose output")
 var dir = flag.String("dir", ".", "directory to work in")
 var tmpDir = flag.String("tmpdir", filepath.Join(os.TempDir(), "sg"), "temporary directory to use")
+
+var apiclient = client.NewClient(nil)
 
 func main() {
 	flag.Usage = func() {
@@ -126,7 +128,7 @@ The options are:
 
 	x := task2.NewRecordedContext()
 
-	tasks, rd, err := build.Repository(repo.rootDir, repo.commitID, repo.cloneURL, vcsType, x)
+	tasks, bd, err := build.Repository(repo.rootDir, repo.commitID, repo.cloneURL, vcsType, x)
 	if err != nil {
 		log.Fatalf("build failed: %s", err)
 	}
@@ -147,7 +149,7 @@ The options are:
 	}
 	defer f.Close()
 
-	err = json.NewEncoder(f).Encode(rd)
+	err = json.NewEncoder(f).Encode(bd)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -181,43 +183,28 @@ The options are:
 	}
 	defer f.Close()
 
-	var rd build.RepositoryData
-	err = json.NewDecoder(f).Decode(&rd)
+	var bd build.BuildData
+	err = json.NewDecoder(f).Decode(&bd)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	graphData, err := json.Marshal(rd.Graph)
+	graphData, err := json.Marshal(bd.Graph)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	url := config2.BaseAPIURL.ResolveReference(&url.URL{
-		Path: fmt.Sprintf("repositories/%s/commits/%s/data/graph", rd.Config.URI, rd.CommitID),
-	})
-	req, err := http.NewRequest("PUT", url.String(), bytes.NewReader(graphData))
-	if err != nil {
-		log.Fatal(err)
-	}
 	kb := float64(len(graphData)) / 1024
 	if *verbose {
-		log.Printf("Uploading graph data (%.1fkb) to %s", kb, url)
+		log.Printf("Uploading graph data (%.1fkb)", kb)
 	}
 
-	resp, err := http.DefaultClient.Do(req)
+	_, err = apiclient.BuildData.Upload(client.BuildDatumSpec{RepositorySpec: client.RepositorySpec{URI: string(bd.Config.URI)}, CommitID: bd.CommitID, Name: "graph"}, graphData)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Fatalf("Upload failed: HTTP %s (%s).", resp.Status, string(body))
-	}
 
-	log.Printf("Uploaded graph data (%.1fkb) to %s", kb, url)
+	log.Printf("Uploaded graph data (%.1fkb)", kb)
 }
 
 func push(args []string) {

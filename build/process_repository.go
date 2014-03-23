@@ -26,7 +26,7 @@ func init() {
 	}
 }
 
-type RepositoryData struct {
+type BuildData struct {
 	Config *config.Repository
 
 	CommitID string
@@ -38,7 +38,7 @@ type RepositoryData struct {
 
 // Repository creates a plan to fully process a specific revision of a
 // repository.
-func Repository(dir string, commitID string, cloneURL string, vcsType vcs.VCS, x *task2.Context) ([]task2.Task, *RepositoryData, error) {
+func Repository(dir string, commitID string, cloneURL string, vcsType vcs.VCS, x *task2.Context) ([]task2.Task, *BuildData, error) {
 	repoURI := repo.MakeURI(cloneURL)
 	c, err := scan.ReadDirConfigAndScan(dir, repoURI, x)
 	if err != nil {
