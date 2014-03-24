@@ -162,7 +162,7 @@ The options are:
 
 func upload(args []string) {
 	fs := flag.NewFlagSet("upload", flag.ExitOnError)
-	r := detectRepository(*dir)
+	r := addRepositoryFlags(fs)
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: srcgraph upload [options]
 
@@ -389,8 +389,11 @@ The options are:
 
 func data(args []string) {
 	fs := flag.NewFlagSet("data", flag.ExitOnError)
+	r := detectRepository(*dir)
+	repoURI := fs.String("repo", string(repo.MakeURI(r.cloneURL)), "repository URI (ex: github.com/alice/foo)")
+	commitID := fs.String("commit", r.commitID, "commit ID (optional)")
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: srcgraph data [options] repositoryURI [commitID]
+		fmt.Fprintln(os.Stderr, `usage: srcgraph data [options]
 
 Lists available repository data.
 
@@ -401,21 +404,15 @@ The options are:
 	}
 	fs.Parse(args)
 
-	if fs.NArg() == 0 || fs.NArg() > 2 {
+	if fs.NArg() != 0 {
 		fs.Usage()
 	}
 
-	repoURI := repo.URI(fs.Arg(0))
-	var commitID string
-	if fs.NArg() == 2 {
-		commitID = fs.Arg(1)
-	}
-
 	var opt *client.BuildDataListOptions
-	if commitID != "" {
-		opt = &client.BuildDataListOptions{CommitID: commitID}
+	if *commitID != "" {
+		opt = &client.BuildDataListOptions{CommitID: *commitID}
 	}
-	data, _, err := apiclient.BuildData.List(client.RepositorySpec{URI: string(repoURI)}, opt)
+	data, _, err := apiclient.BuildData.List(client.RepositorySpec{URI: *repoURI}, opt)
 	if err != nil {
 		log.Fatal(err)
 	}
