@@ -15,6 +15,7 @@ import (
 func make_(args []string) {
 	fs := flag.NewFlagSet("make", flag.ExitOnError)
 	repo := AddRepositoryFlags(fs)
+	showMakefileAndExit := fs.Bool("mf", false, "print generated Makefile and exit")
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` make [options] [-- makeoptions] [target...]
 
@@ -56,12 +57,15 @@ See the man page for "make" for all makeoptions.
 		log.Fatalf("error creating Makefile: %s", err)
 	}
 
-	if *verbose {
+	if *verbose || *showMakefileAndExit {
 		mf, err := makefile.Makefile(rules)
 		if err != nil {
 			log.Fatal(err)
 		}
 		log.Printf("# Makefile\n%s", mf)
+		if *showMakefileAndExit {
+			return
+		}
 	}
 
 	err = makefile.MakeRules(repo.rootDir, rules, fs.Args())
