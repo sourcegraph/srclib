@@ -15,7 +15,7 @@ func init() {
 	RegisterRuleMaker("graph", makeGraphRules)
 }
 
-func makeGraphRules(c *config.Repository, commitID string) ([]makefile.Rule, error) {
+func makeGraphRules(c *config.Repository, commitID string, existing []makefile.Rule) ([]makefile.Rule, error) {
 	var rules []makefile.Rule
 	for _, u := range c.SourceUnits {
 		us := SourceUnitSpec{

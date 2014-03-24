@@ -12,7 +12,7 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/util2/makefile"
 )
 
-type RuleMaker func(c *config.Repository, commitID string) ([]makefile.Rule, error)
+type RuleMaker func(c *config.Repository, commitID string, existing []makefile.Rule) ([]makefile.Rule, error)
 
 var RuleMakers = make(map[string]RuleMaker)
 
@@ -38,7 +38,7 @@ func CreateMakefile(dir, cloneURL, commitID string, x *task2.Context) ([]makefil
 
 	var allRules []makefile.Rule
 	for name, r := range RuleMakers {
-		rules, err := r(c, commitID)
+		rules, err := r(c, commitID, allRules)
 		if err != nil {
 			return nil, fmt.Errorf("rule maker %s: %s", name, err)
 		}

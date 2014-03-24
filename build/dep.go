@@ -13,7 +13,7 @@ func init() {
 	RegisterRuleMaker("dep", makeDepRules)
 }
 
-func makeDepRules(c *config.Repository, commitID string) ([]makefile.Rule, error) {
+func makeDepRules(c *config.Repository, commitID string, existing []makefile.Rule) ([]makefile.Rule, error) {
 	if len(c.SourceUnits) == 0 {
 		return nil, nil
 	}
