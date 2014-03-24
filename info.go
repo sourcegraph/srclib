@@ -1,7 +1,10 @@
 package srcgraph
 
 import (
+	"flag"
+	"fmt"
 	"log"
+	"os"
 
 	"github.com/kr/text"
 	"sourcegraph.com/sourcegraph/srcgraph/build"
@@ -14,6 +17,24 @@ import (
 )
 
 func info(args []string) {
+	fs := flag.NewFlagSet("help", flag.ExitOnError)
+	fs.Usage = func() {
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` info
+
+Shows information about enabled capabilities in this tool as well as system
+information.
+
+The options are:
+`)
+		fs.PrintDefaults()
+		os.Exit(1)
+	}
+	fs.Parse(args)
+
+	if fs.NArg() != 0 {
+		fs.Usage()
+	}
+
 	log.Printf("Toolchains (%d)", len(toolchain.Toolchains))
 	for tcName, _ := range toolchain.Toolchains {
 		log.Printf(" - %s", tcName)

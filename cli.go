@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+
 	"sourcegraph.com/sourcegraph/client"
 	"sourcegraph.com/sourcegraph/srcgraph/build"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
@@ -55,10 +56,15 @@ func Main() {
 	defer task2.FlushAll()
 
 	subcmd := flag.Arg(0)
-	for _, c := range Subcommands {
-		if c.Name == subcmd {
-			c.Run(flag.Args()[1:])
-			return
+	extraArgs := flag.Args()[1:]
+	if subcmd == "help" {
+		help(extraArgs)
+	} else {
+		for _, c := range Subcommands {
+			if c.Name == subcmd {
+				c.Run(extraArgs)
+				return
+			}
 		}
 	}
 
@@ -84,4 +90,32 @@ var Subcommands = []Subcommand{
 	{"resolve-deps", "resolve a repository's raw dependencies", resolveDeps},
 	{"graph", "analyze a repository's source code for definitions and references", graph_},
 	{"info", "show info about enabled capabilities", info},
+	{"help", "show help about a command", nil},
+}
+
+func help(args []string) {
+	fs := flag.NewFlagSet("help", flag.ExitOnError)
+	fs.Usage = func() {
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` help command
+
+Shows information about a `+Name+` command.
+
+The options are:
+`)
+		fs.PrintDefaults()
+		os.Exit(1)
+	}
+	fs.Parse(args)
+
+	if fs.NArg() != 1 {
+		fs.Usage()
+	}
+
+	subcmd := fs.Arg(0)
+	for _, c := range Subcommands {
+		if c.Name == subcmd {
+			c.Run([]string{"-h"})
+			return
+		}
+	}
 }
