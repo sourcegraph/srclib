@@ -15,7 +15,11 @@ import (
 
 type RuleMaker func(c *config.Repository, existing []makefile.Rule) ([]makefile.Rule, error)
 
-var RuleMakers = make(map[string]RuleMaker)
+var (
+	RuleMakers        = make(map[string]RuleMaker)
+	ruleMakerNames    []string
+	orderedRuleMakers []RuleMaker
+)
 
 // RegisterRuleMaker adds a function that creates a list of build rules for a
 // repository. If RegisterRuleMaker is called twice with the same target or
@@ -28,6 +32,8 @@ func RegisterRuleMaker(name string, r RuleMaker) {
 		panic("build: Register target is nil")
 	}
 	RuleMakers[name] = r
+	ruleMakerNames = append(ruleMakerNames, name)
+	orderedRuleMakers = append(orderedRuleMakers, r)
 }
 
 func CreateMakefile(dir, cloneURL, commitID string, x *task2.Context) ([]makefile.Rule, []string, error) {
@@ -38,7 +44,8 @@ func CreateMakefile(dir, cloneURL, commitID string, x *task2.Context) ([]makefil
 	}
 
 	var allRules []makefile.Rule
-	for name, r := range RuleMakers {
+	for i, r := range orderedRuleMakers {
+		name := ruleMakerNames[i]
 		rules, err := r(c, allRules)
 		if err != nil {
 			return nil, nil, fmt.Errorf("rule maker %s: %s", name, err)
