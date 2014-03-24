@@ -45,8 +45,8 @@ Usage:
 
 The commands are:
 `)
-		for _, c := range subcommands {
-			fmt.Fprintf(os.Stderr, "    %-10s %s\n", c.name, c.description)
+		for _, c := range Subcommands {
+			fmt.Fprintf(os.Stderr, "    %-10s %s\n", c.Name, c.Description)
 		}
 		fmt.Fprintln(os.Stderr, `
 Use "`+Name+` command -h" for more information about a command.
@@ -75,9 +75,9 @@ func Main() {
 	defer task2.FlushAll()
 
 	subcmd := flag.Arg(0)
-	for _, c := range subcommands {
-		if c.name == subcmd {
-			c.run(flag.Args()[1:])
+	for _, c := range Subcommands {
+		if c.Name == subcmd {
+			c.Run(flag.Args()[1:])
 			return
 		}
 	}
@@ -87,13 +87,13 @@ func Main() {
 	os.Exit(1)
 }
 
-type subcommand struct {
-	name        string
-	description string
-	run         func(args []string)
+type Subcommand struct {
+	Name        string
+	Description string
+	Run         func(args []string)
 }
 
-var subcommands = []subcommand{
+var Subcommands = []Subcommand{
 	{"build", "build a repository", build_},
 	{"data", "list repository data", data},
 	{"upload", "upload a previously generated build", upload},
@@ -108,11 +108,11 @@ var subcommands = []subcommand{
 
 func build_(args []string) {
 	fs := flag.NewFlagSet("build", flag.ExitOnError)
-	repo := addRepositoryFlags(fs)
+	repo := AddRepositoryFlags(fs)
 	dryRun := fs.Bool("n", false, "dry run (scans the repository and just prints out what analysis tasks would be performed)")
 	outputFile := fs.String("o", "", "write output to file")
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: srcgraph build [options]
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` build [options]
 
 Builds a graph of definitions, references, and dependencies in a repository's
 code at a specific revision.
@@ -137,12 +137,12 @@ The options are:
 
 	vcsType := vcs.VCSByName[repo.vcsTypeName]
 	if vcsType == nil {
-		log.Fatalf("srcgraph: unknown VCS type %q", repo.vcsTypeName)
+		log.Fatalf("%s: unknown VCS type %q", Name, repo.vcsTypeName)
 	}
 
 	x := task2.NewRecordedContext()
 
-	rules, err := build.CreateMakefile(repo.rootDir, repo.cloneURL, repo.commitID, x)
+	rules, err := build.CreateMakefile(repo.rootDir, repo.CloneURL, repo.commitID, x)
 	if err != nil {
 		log.Fatalf("error creating Makefile: %s", err)
 	}
@@ -175,9 +175,9 @@ The options are:
 
 func upload(args []string) {
 	fs := flag.NewFlagSet("upload", flag.ExitOnError)
-	r := addRepositoryFlags(fs)
+	r := AddRepositoryFlags(fs)
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: srcgraph upload [options]
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` upload [options]
 
 Uploads build data for a repository to Sourcegraph.
 
@@ -193,9 +193,9 @@ The options are:
 	}
 
 	x := task2.NewRecordedContext()
-	repoURI := repo.MakeURI(r.cloneURL)
+	repoURI := repo.MakeURI(r.CloneURL)
 
-	rules, err := build.CreateMakefile(r.rootDir, r.cloneURL, r.commitID, x)
+	rules, err := build.CreateMakefile(r.rootDir, r.CloneURL, r.commitID, x)
 	if err != nil {
 		log.Fatalf("error creating Makefile: %s", err)
 	}
@@ -237,12 +237,12 @@ func uploadFile(target makefile.Target, repoURI repo.URI, commitID string) {
 
 func push(args []string) {
 	fs := flag.NewFlagSet("push", flag.ExitOnError)
-	r := addRepositoryFlags(fs)
+	r := AddRepositoryFlags(fs)
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: srcgraph push [options]
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` push [options]
 
 Updates a repository and related information on Sourcegraph. Graph data for this
-repository and commit that was previously uploaded using the "srcgraph" tool
+repository and commit that was previously uploaded using the "`+Name+`" tool
 will be used; if none exists, Sourcegraph will build the repository remotely.
 
 The options are:
@@ -253,7 +253,7 @@ The options are:
 	fs.Parse(args)
 
 	url := config2.BaseAPIURL.ResolveReference(&url.URL{
-		Path: fmt.Sprintf("repositories/%s/commits/%s/build", repo.MakeURI(r.cloneURL), r.commitID),
+		Path: fmt.Sprintf("repositories/%s/commits/%s/build", repo.MakeURI(r.CloneURL), r.commitID),
 	})
 	req, err := http.NewRequest("PUT", url.String(), nil)
 	if err != nil {
@@ -278,9 +278,9 @@ The options are:
 
 func scan_(args []string) {
 	fs := flag.NewFlagSet("scan", flag.ExitOnError)
-	r := addRepositoryFlags(fs)
+	r := AddRepositoryFlags(fs)
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: srcgraph scan [options]
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` scan [options]
 
 Scans a repository for source units.
 
@@ -293,7 +293,7 @@ The options are:
 
 	x := task2.DefaultContext
 
-	c, err := scan.ReadDirConfigAndScan(r.rootDir, repo.MakeURI(r.cloneURL), x)
+	c, err := scan.ReadDirConfigAndScan(r.rootDir, repo.MakeURI(r.CloneURL), x)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -315,10 +315,10 @@ The options are:
 
 func config_(args []string) {
 	fs := flag.NewFlagSet("config", flag.ExitOnError)
-	r := addRepositoryFlags(fs)
+	r := AddRepositoryFlags(fs)
 	final := fs.Bool("final", true, "add scanned source units and finalize config before printing")
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: srcgraph config [options]
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` config [options]
 
 Validates and prints a repository's configuration.
 
@@ -329,7 +329,7 @@ The options are:
 	}
 	fs.Parse(args)
 
-	repoURI := repo.MakeURI(r.cloneURL)
+	repoURI := repo.MakeURI(r.CloneURL)
 
 	x := task2.DefaultContext
 
@@ -347,16 +347,16 @@ The options are:
 		}
 	}
 
-	printJSON(c, "")
+	PrintJSON(c, "")
 }
 
 func listDeps(args []string) {
 	fs := flag.NewFlagSet("list-deps", flag.ExitOnError)
 	resolve := fs.Bool("resolve", false, "resolve deps and print resolutions")
 	jsonOutput := fs.Bool("json", false, "show JSON output")
-	r := addRepositoryFlags(fs)
+	r := AddRepositoryFlags(fs)
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: srcgraph list-deps [options] [unit...]
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` list-deps [options] [unit...]
 
 Lists a repository's raw (unresolved) dependencies. If unit(s) are specified,
 only source units with matching IDs will have their dependencies listed.
@@ -368,7 +368,7 @@ The options are:
 	}
 	fs.Parse(args)
 	sourceUnitSpecs := fs.Args()
-	repoURI := repo.MakeURI(r.cloneURL)
+	repoURI := repo.MakeURI(r.CloneURL)
 
 	x := task2.DefaultContext
 	c, err := scan.ReadDirConfigAndScan(r.rootDir, repoURI, x)
@@ -410,16 +410,38 @@ The options are:
 	}
 
 	if *jsonOutput {
-		printJSON(allRawDeps, "")
+		PrintJSON(allRawDeps, "")
+	}
+}
+
+func OpenInputFiles(extraArgs []string) map[string]io.ReadCloser {
+	inputs := make(map[string]io.ReadCloser)
+	if len(extraArgs) == 0 {
+		inputs["<stdin>"] = os.Stdin
+	} else {
+		for _, name := range extraArgs {
+			f, err := os.Open(name)
+			if err != nil {
+				log.Fatal(err)
+			}
+			inputs[name] = f
+		}
+	}
+	return inputs
+}
+
+func CloseAll(files map[string]io.ReadCloser) {
+	for _, rc := range files {
+		rc.Close()
 	}
 }
 
 func resolveDeps(args []string) {
 	fs := flag.NewFlagSet("resolve-deps", flag.ExitOnError)
-	r := addRepositoryFlags(fs)
+	r := AddRepositoryFlags(fs)
 	jsonOutput := fs.Bool("json", false, "show JSON output")
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: srcgraph resolve-deps [options] [raw_dep_file.json...]
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` resolve-deps [options] [raw_dep_file.json...]
 
 Resolves a repository's raw dependencies. If no files are specified, input is
 read from stdin.
@@ -430,20 +452,10 @@ The options are:
 		os.Exit(1)
 	}
 	fs.Parse(args)
-	repoURI := repo.MakeURI(r.cloneURL)
-	inputs := make(map[string]io.Reader)
-	if fs.NArg() == 0 {
-		inputs["<stdin>"] = os.Stdin
-	} else {
-		for _, name := range fs.Args() {
-			f, err := os.Open(name)
-			if err != nil {
-				log.Fatal(err)
-			}
-			defer f.Close()
-			inputs[name] = f
-		}
-	}
+	repoURI := repo.MakeURI(r.CloneURL)
+
+	inputs := OpenInputFiles(fs.Args())
+	defer CloseAll(inputs)
 
 	x := task2.DefaultContext
 	c, err := scan.ReadDirConfigAndScan(r.rootDir, repoURI, x)
@@ -471,17 +483,17 @@ The options are:
 	}
 
 	if *jsonOutput {
-		printJSON(resolvedDeps, "")
+		PrintJSON(resolvedDeps, "")
 	}
 }
 
 func data(args []string) {
 	fs := flag.NewFlagSet("data", flag.ExitOnError)
 	r := detectRepository(*dir)
-	repoURI := fs.String("repo", string(repo.MakeURI(r.cloneURL)), "repository URI (ex: github.com/alice/foo)")
+	repoURI := fs.String("repo", string(repo.MakeURI(r.CloneURL)), "repository URI (ex: github.com/alice/foo)")
 	commitID := fs.String("commit", r.commitID, "commit ID (optional)")
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: srcgraph data [options]
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` data [options]
 
 Lists available repository data.
 
@@ -505,16 +517,16 @@ The options are:
 		log.Fatal(err)
 	}
 
-	printJSON(data, "")
+	PrintJSON(data, "")
 }
 
 func graph_(args []string) {
 	fs := flag.NewFlagSet("graph", flag.ExitOnError)
-	r := addRepositoryFlags(fs)
+	r := AddRepositoryFlags(fs)
 	jsonOutput := fs.Bool("json", false, "show JSON output")
 	summary := fs.Bool("summary", true, "summarize output data")
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: srcgraph graph [options] [unit...]
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` graph [options] [unit...]
 
 Analyze a repository's source code for definitions and references. If unit(s)
 are specified, only source units with matching IDs will be graphed.
@@ -526,7 +538,7 @@ The options are:
 	}
 	fs.Parse(args)
 	sourceUnitSpecs := fs.Args()
-	repoURI := repo.MakeURI(r.cloneURL)
+	repoURI := repo.MakeURI(r.CloneURL)
 
 	x := task2.DefaultContext
 	c, err := scan.ReadDirConfigAndScan(r.rootDir, repoURI, x)
@@ -554,7 +566,7 @@ The options are:
 		}
 
 		if *jsonOutput {
-			printJSON(output, "")
+			PrintJSON(output, "")
 		}
 
 		fmt.Println()
@@ -636,7 +648,7 @@ func cmdOutput(c ...string) string {
 }
 
 type repository struct {
-	cloneURL    string
+	CloneURL    string
 	commitID    string
 	vcsTypeName string
 	rootDir     string
@@ -704,19 +716,19 @@ func detectRepository(dir string) (dr repository) {
 	if err != nil {
 		return
 	}
-	dr.cloneURL = strings.TrimSpace(string(cloneURL))
+	dr.CloneURL = strings.TrimSpace(string(cloneURL))
 
 	if dr.vcsTypeName == "git" {
-		dr.cloneURL = strings.Replace(dr.cloneURL, "git@github.com:", "git://github.com/", 1)
+		dr.CloneURL = strings.Replace(dr.CloneURL, "git@github.com:", "git://github.com/", 1)
 	}
 
 	return
 }
 
-func addRepositoryFlags(fs *flag.FlagSet) repository {
+func AddRepositoryFlags(fs *flag.FlagSet) repository {
 	dr := detectRepository(*dir)
 	var r repository
-	fs.StringVar(&r.cloneURL, "cloneurl", dr.cloneURL, "clone URL of repository")
+	fs.StringVar(&r.CloneURL, "cloneurl", dr.CloneURL, "clone URL of repository")
 	fs.StringVar(&r.commitID, "commit", dr.commitID, "commit ID of current working tree")
 	fs.StringVar(&r.vcsTypeName, "vcs", dr.vcsTypeName, `VCS type ("git" or "hg")`)
 	fs.StringVar(&r.rootDir, "root", dr.rootDir, `root directory of repository`)
@@ -762,7 +774,7 @@ func sourceUnitMatchesArgs(specified []string, u unit.SourceUnit) bool {
 	return match
 }
 
-func printJSON(v interface{}, prefix string) {
+func PrintJSON(v interface{}, prefix string) {
 	data, err := json.MarshalIndent(v, prefix, "  ")
 	if err != nil {
 		log.Fatal(err)
