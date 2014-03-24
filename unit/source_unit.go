@@ -73,17 +73,19 @@ func Type(u SourceUnit) string {
 	return TypeNames[reflect.TypeOf(u)]
 }
 
+var idSeparator = "::"
+
 func MakeID(u SourceUnit) ID {
-	return ID(fmt.Sprintf("%s@%s", u.Name(), Type(u)))
+	return ID(fmt.Sprintf("%s%s%s", u.Name(), idSeparator, Type(u)))
 }
 
 func ParseID(unitID string) (name, typ string, err error) {
-	at := strings.Index(unitID, "@")
+	at := strings.Index(unitID, idSeparator)
 	if at == -1 {
-		return "", "", fmt.Errorf("no '@' in source unit ID")
+		return "", "", fmt.Errorf("no %q in source unit ID", idSeparator)
 	}
 	name = unitID[:at]
-	typ = unitID[at+1:]
+	typ = unitID[at+len(idSeparator):]
 	return
 }
 
