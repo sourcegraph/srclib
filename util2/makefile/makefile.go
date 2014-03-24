@@ -73,15 +73,15 @@ func Makefile(rules []Rule) ([]byte, error) {
 	return mf.Bytes(), nil
 }
 
-func MakeRules(dir string, rules []Rule) error {
+func MakeRules(dir string, rules []Rule, args []string) error {
 	mf, err := Makefile(rules)
 	if err != nil {
 		return err
 	}
-	return Make(dir, mf)
+	return Make(dir, mf, args)
 }
 
-func Make(dir string, makefile []byte) error {
+func Make(dir string, makefile []byte, args []string) error {
 	tmpFile, err := ioutil.TempFile("", "sg-makefile")
 	if err != nil {
 		return err
@@ -93,7 +93,8 @@ func Make(dir string, makefile []byte) error {
 		return err
 	}
 
-	mk := exec.Command("make", "-f", tmpFile.Name(), "-C", dir, "all")
+	args = append(args, "-f", tmpFile.Name(), "-C", dir)
+	mk := exec.Command("make", args...)
 	mk.Stdout = os.Stderr
 	mk.Stderr = os.Stderr
 	return mk.Run()

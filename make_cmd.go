@@ -12,34 +12,37 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/util2/makefile"
 )
 
-func build_(args []string) {
-	fs := flag.NewFlagSet("build", flag.ExitOnError)
+func make_(args []string) {
+	fs := flag.NewFlagSet("make", flag.ExitOnError)
 	repo := AddRepositoryFlags(fs)
-	dryRun := fs.Bool("n", false, "dry run (scans the repository and just prints out what analysis tasks would be performed)")
-	outputFile := fs.String("o", "", "write output to file")
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: `+Name+` build [options]
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` make [options] [-- makeoptions] [target...]
 
-Builds a graph of definitions, references, and dependencies in a repository's
-code at a specific revision.
+Generates a Makefile that processes a repository, creating graph of definitions,
+references, and dependencies in a repository's code at a specific revision.
+
+Targets and extra options (after "--") are passed directly to the "make"
+program, which executes the generated Makefile. If no targets are specified,
+"all" is built.
 
 The options are:
 `)
 		fs.PrintDefaults()
+		fmt.Fprintln(os.Stderr, `
+The most useful makeoptions are:
+
+    -n, --dry-run       don't actually run any commands (just print them)
+    -k, --keep-going    keep going when some targets can't be made
+    -j N, --jobs N      allow N parallel jobs
+
+See the man page for "make" for all makeoptions.
+`)
 		os.Exit(1)
 	}
 	fs.Parse(args)
 
-	if *outputFile == "" {
-		*outputFile = repo.outputFile()
-	}
-
 	build.WorkDir = *tmpDir
 	mkTmpDir()
-
-	if fs.NArg() != 0 {
-		fs.Usage()
-	}
 
 	vcsType := vcs.VCSByName[repo.vcsTypeName]
 	if vcsType == nil {
@@ -53,18 +56,15 @@ The options are:
 		log.Fatalf("error creating Makefile: %s", err)
 	}
 
-	if *verbose || *dryRun {
+	if *verbose {
 		mf, err := makefile.Makefile(rules)
 		if err != nil {
 			log.Fatal(err)
 		}
 		log.Printf("# Makefile\n%s", mf)
 	}
-	if *dryRun {
-		return
-	}
 
-	err = makefile.MakeRules(repo.rootDir, rules)
+	err = makefile.MakeRules(repo.rootDir, rules, fs.Args())
 	if err != nil {
 		log.Fatalf("make failed: %s", err)
 	}

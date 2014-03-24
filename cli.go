@@ -80,7 +80,7 @@ type Subcommand struct {
 }
 
 var Subcommands = []Subcommand{
-	{"build", "build a repository", build_},
+	{"make", "make a repository", make_},
 	{"data", "list repository data", data},
 	{"upload", "upload a previously generated build", upload},
 	{"push", "update a repository and related information on Sourcegraph", push},
