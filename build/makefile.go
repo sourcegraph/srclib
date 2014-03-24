@@ -45,3 +45,8 @@ func CreateMakefile(dir, cloneURL, commitID string, x *task2.Context) ([]makefil
 
 	return allRules, nil
 }
+
+type Target interface {
+	makefile.Target
+	RelName() string
+}

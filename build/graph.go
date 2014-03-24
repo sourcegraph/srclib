@@ -63,5 +63,5 @@ func (f *GraphOutputFile) Name() string {
 }
 
 func (f *GraphOutputFile) RelName() string {
-	return filepath.Join(f.Unit.RootDir(), f.Unit.ID()+"_graph.json")
+	return filepath.Join(f.Unit.ID() + "_graph.json")
 }

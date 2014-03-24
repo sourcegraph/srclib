@@ -84,6 +84,7 @@ type subcommand struct {
 
 var subcommands = []subcommand{
 	{"build", "build a repository", build_},
+	{"data", "list repository data", data},
 	{"upload", "upload a previously generated build", upload},
 	{"push", "update a repository and related information on Sourcegraph", push},
 	{"scan", "scan a repository for source units", scan_},
@@ -187,38 +188,37 @@ The options are:
 	}
 
 	for _, rule := range rules {
-		targetFile := rule.Target().Name()
-		uploadFile(targetFile, repoURI, r.commitID)
+		uploadFile(rule.Target(), repoURI, r.commitID)
 	}
 }
 
-func uploadFile(targetFile string, repoURI repo.URI, commitID string) {
-	fi, err := os.Stat(targetFile)
+func uploadFile(target makefile.Target, repoURI repo.URI, commitID string) {
+	fi, err := os.Stat(target.Name())
 	if err != nil || !fi.Mode().IsRegular() {
 		if *verbose {
-			log.Printf("upload: skipping nonexistent file %s", targetFile)
+			log.Printf("upload: skipping nonexistent file %s", target.Name())
 		}
 		return
 	}
 
 	kb := float64(fi.Size()) / 1024
 	if *verbose {
-		log.Printf("Uploading %s (%.1fkb)", targetFile, kb)
+		log.Printf("Uploading %s (%.1fkb)", target.Name(), kb)
 	}
 
-	f, err := os.Open(targetFile)
+	f, err := os.Open(target.Name())
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer f.Close()
 
-	_, err = apiclient.BuildData.Upload(client.BuildDatumSpec{RepositorySpec: client.RepositorySpec{URI: string(repoURI)}, CommitID: commitID, Name: filepath.Base(targetFile)}, f)
+	_, err = apiclient.BuildData.Upload(client.BuildDatumSpec{RepositorySpec: client.RepositorySpec{URI: string(repoURI)}, CommitID: commitID, Name: target.(build.Target).RelName()}, f)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if *verbose {
-		log.Printf("Uploaded %s (%.1fkb)", targetFile, kb)
+		log.Printf("Uploaded %s (%.1fkb)", target.Name(), kb)
 	}
 }
 
@@ -385,6 +385,42 @@ The options are:
 
 		fmt.Println()
 	}
+}
+
+func data(args []string) {
+	fs := flag.NewFlagSet("data", flag.ExitOnError)
+	fs.Usage = func() {
+		fmt.Fprintln(os.Stderr, `usage: srcgraph data [options] repositoryURI [commitID]
+
+Lists available repository data.
+
+The options are:
+`)
+		fs.PrintDefaults()
+		os.Exit(1)
+	}
+	fs.Parse(args)
+
+	if fs.NArg() == 0 || fs.NArg() > 2 {
+		fs.Usage()
+	}
+
+	repoURI := repo.URI(fs.Arg(0))
+	var commitID string
+	if fs.NArg() == 2 {
+		commitID = fs.Arg(1)
+	}
+
+	var opt *client.BuildDataListOptions
+	if commitID != "" {
+		opt = &client.BuildDataListOptions{CommitID: commitID}
+	}
+	data, _, err := apiclient.BuildData.List(client.RepositorySpec{URI: string(repoURI)}, opt)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	printJSON(data, "")
 }
 
 func graph_(args []string) {

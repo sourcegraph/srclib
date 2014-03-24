@@ -43,7 +43,7 @@ func Makefile(rules []Rule) ([]byte, error) {
 	var all, phonies []string
 
 	for _, rule := range rules {
-		ruleName := rule.Target().Name()
+		ruleName := escape(rule.Target().Name())
 		all = append(all, ruleName)
 		if isPhony(rule) {
 			phonies = append(phonies, ruleName)
@@ -59,7 +59,7 @@ func Makefile(rules []Rule) ([]byte, error) {
 	for _, rule := range rules {
 		fmt.Fprintln(&mf)
 
-		ruleName := rule.Target().Name()
+		ruleName := escape(rule.Target().Name())
 		fmt.Fprintf(&mf, "%s:", ruleName)
 		for _, prereq := range rule.Prereqs() {
 			fmt.Fprintf(&mf, " %s", prereq)
@@ -97,4 +97,8 @@ func Make(dir string, makefile []byte) error {
 	mk.Stdout = os.Stderr
 	mk.Stderr = os.Stderr
 	return mk.Run()
+}
+
+func escape(s string) string {
+	return strings.Replace(s, "@", `\@`, -1)
 }
