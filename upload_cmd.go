@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/sqs/go-makefile/makefile"
 	"sourcegraph.com/sourcegraph/client"
 	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/build"
@@ -35,42 +34,44 @@ The options are:
 	x := task2.NewRecordedContext()
 	repoURI := repo.MakeURI(r.CloneURL)
 
-	rules, err := build.CreateMakefile(r.rootDir, r.CloneURL, r.commitID, x)
+	rules, vars, err := build.CreateMakefile(r.rootDir, r.CloneURL, r.commitID, x)
 	if err != nil {
 		log.Fatalf("error creating Makefile: %s", err)
 	}
 
 	for _, rule := range rules {
-		uploadFile(rule.Target(), repoURI, r.commitID)
+		target := rule.Target()
+		absName := build.SubstituteVars(target.Name(), vars)
+		uploadFile(absName, target.(build.Target).RelName(), repoURI, r.commitID)
 	}
 }
 
-func uploadFile(target makefile.Target, repoURI repo.URI, commitID string) {
-	fi, err := os.Stat(target.Name())
+func uploadFile(absName, relName string, repoURI repo.URI, commitID string) {
+	fi, err := os.Stat(absName)
 	if err != nil || !fi.Mode().IsRegular() {
 		if *verbose {
-			log.Printf("upload: skipping nonexistent file %s", target.Name())
+			log.Printf("upload: skipping nonexistent file %s", absName)
 		}
 		return
 	}
 
 	kb := float64(fi.Size()) / 1024
 	if *verbose {
-		log.Printf("Uploading %s (%.1fkb)", target.Name(), kb)
+		log.Printf("Uploading %s (%.1fkb)", absName, kb)
 	}
 
-	f, err := os.Open(target.Name())
+	f, err := os.Open(absName)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer f.Close()
 
-	_, err = apiclient.BuildData.Upload(client.BuildDatumSpec{RepositorySpec: client.RepositorySpec{URI: string(repoURI)}, CommitID: commitID, Name: target.(build.Target).RelName()}, f)
+	_, err = apiclient.BuildData.Upload(client.BuildDatumSpec{RepositorySpec: client.RepositorySpec{URI: string(repoURI)}, CommitID: commitID, Name: relName}, f)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if *verbose {
-		log.Printf("Uploaded %s (%.1fkb)", target.Name(), kb)
+		log.Printf("Uploaded %s (%.1fkb)", absName, kb)
 	}
 }

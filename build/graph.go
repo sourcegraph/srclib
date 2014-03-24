@@ -1,8 +1,6 @@
 package build
 
 import (
-	"path/filepath"
-
 	"strconv"
 
 	"sourcegraph.com/sourcegraph/srcgraph/config"
@@ -15,32 +13,26 @@ func init() {
 	RegisterRuleMaker("graph", makeGraphRules)
 }
 
-func makeGraphRules(c *config.Repository, commitID string, existing []makefile.Rule) ([]makefile.Rule, error) {
+func makeGraphRules(c *config.Repository, existing []makefile.Rule) ([]makefile.Rule, error) {
 	var rules []makefile.Rule
 	for _, u := range c.SourceUnits {
-		us := SourceUnitSpec{
-			RepositoryURI: c.URI,
-			CommitID:      commitID,
-			Unit:          u,
-		}
-		rules = append(rules, &GraphSourceUnitRule{us})
+		rules = append(rules, &GraphSourceUnitRule{u})
 	}
 	return rules, nil
 }
 
 type GraphSourceUnitRule struct {
-	SourceUnitSpec
+	Unit unit.SourceUnit
 }
 
 func (r *GraphSourceUnitRule) Target() makefile.Target {
-	return &SourceUnitOutputFile{r.SourceUnitSpec, "graph"}
+	return &SourceUnitOutputFile{r.Unit, "graph"}
 }
 
 func (r *GraphSourceUnitRule) Prereqs() []string { return r.Unit.Paths() }
 
 func (r *GraphSourceUnitRule) Recipes() []makefile.Recipe {
 	return []makefile.Recipe{
-		makefile.CommandRecipe{"mkdir", "-p", strconv.Quote(filepath.Dir(r.Target().Name()))},
 		makefile.CommandRecipe{"srcgraph", "-v", "graph", "-json", strconv.Quote(string(unit.MakeID(r.Unit))), "1> $@"},
 	}
 }

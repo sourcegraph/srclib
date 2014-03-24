@@ -3,6 +3,7 @@ package build
 import (
 	"fmt"
 	"path/filepath"
+	"strings"
 
 	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
@@ -12,7 +13,7 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/util2/makefile"
 )
 
-type RuleMaker func(c *config.Repository, commitID string, existing []makefile.Rule) ([]makefile.Rule, error)
+type RuleMaker func(c *config.Repository, existing []makefile.Rule) ([]makefile.Rule, error)
 
 var RuleMakers = make(map[string]RuleMaker)
 
@@ -29,23 +30,37 @@ func RegisterRuleMaker(name string, r RuleMaker) {
 	RuleMakers[name] = r
 }
 
-func CreateMakefile(dir, cloneURL, commitID string, x *task2.Context) ([]makefile.Rule, error) {
+func CreateMakefile(dir, cloneURL, commitID string, x *task2.Context) ([]makefile.Rule, []string, error) {
 	repoURI := repo.MakeURI(cloneURL)
 	c, err := scan.ReadDirConfigAndScan(dir, repoURI, x)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	var allRules []makefile.Rule
 	for name, r := range RuleMakers {
-		rules, err := r(c, commitID, allRules)
+		rules, err := r(c, allRules)
 		if err != nil {
-			return nil, fmt.Errorf("rule maker %s: %s", name, err)
+			return nil, nil, fmt.Errorf("rule maker %s: %s", name, err)
 		}
 		allRules = append(allRules, rules...)
 	}
 
-	return allRules, nil
+	vars := []string{
+		fmt.Sprintf("outdir = %s", makefile.Quote(filepath.Join(WorkDir, string(repoURI), commitID))),
+		"_ = $(shell mkdir -p ${outdir})",
+	}
+
+	return allRules, vars, nil
+}
+
+func SubstituteVars(s string, vars []string) string {
+	for _, v := range vars {
+		p := strings.SplitN(v, "=", 2)
+		name, val := strings.TrimSuffix(p[0], " "), strings.TrimPrefix(p[1], " ")
+		s = strings.Replace(s, "${"+name+"}", val, -1)
+	}
+	return s
 }
 
 type Target interface {
@@ -58,12 +73,11 @@ type RepositoryCommitSpec struct {
 }
 
 type RepositoryCommitOutputFile struct {
-	RepositoryCommitSpec
 	Suffix string
 }
 
 func (f *RepositoryCommitOutputFile) Name() string {
-	return filepath.Join(WorkDir, string(f.RepositoryURI), f.CommitID, f.RelName())
+	return filepath.Join("${outdir}", f.RelName())
 }
 
 func (f *RepositoryCommitOutputFile) RelName() string {
@@ -71,18 +85,16 @@ func (f *RepositoryCommitOutputFile) RelName() string {
 }
 
 type SourceUnitSpec struct {
-	RepositoryURI repo.URI
-	CommitID      string
-	Unit          unit.SourceUnit
+	Unit unit.SourceUnit
 }
 
 type SourceUnitOutputFile struct {
-	SourceUnitSpec
+	Unit   unit.SourceUnit
 	Suffix string
 }
 
 func (f *SourceUnitOutputFile) Name() string {
-	return filepath.Join(WorkDir, string(f.RepositoryURI), f.CommitID, f.RelName())
+	return filepath.Join("${outdir}", f.RelName())
 }
 
 func (f *SourceUnitOutputFile) RelName() string {

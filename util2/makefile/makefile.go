@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -38,12 +40,20 @@ func isPhony(r Rule) bool {
 	return false
 }
 
-func Makefile(rules []Rule) ([]byte, error) {
+func Makefile(rules []Rule, vars []string) ([]byte, error) {
 	var mf bytes.Buffer
+
+	for _, v := range vars {
+		fmt.Fprintln(&mf, v)
+	}
+	if len(vars) > 0 {
+		fmt.Fprintln(&mf)
+	}
+
 	var all, phonies []string
 
 	for _, rule := range rules {
-		ruleName := escape(rule.Target().Name())
+		ruleName := rule.Target().Name()
 		all = append(all, ruleName)
 		if isPhony(rule) {
 			phonies = append(phonies, ruleName)
@@ -59,10 +69,10 @@ func Makefile(rules []Rule) ([]byte, error) {
 	for _, rule := range rules {
 		fmt.Fprintln(&mf)
 
-		ruleName := escape(rule.Target().Name())
+		ruleName := rule.Target().Name()
 		fmt.Fprintf(&mf, "%s:", ruleName)
 		for _, prereq := range rule.Prereqs() {
-			fmt.Fprintf(&mf, " %s", escape(prereq))
+			fmt.Fprintf(&mf, " %s", prereq)
 		}
 		fmt.Fprintln(&mf)
 		for _, recipe := range rule.Recipes() {
@@ -73,8 +83,8 @@ func Makefile(rules []Rule) ([]byte, error) {
 	return mf.Bytes(), nil
 }
 
-func MakeRules(dir string, rules []Rule, args []string) error {
-	mf, err := Makefile(rules)
+func MakeRules(dir string, rules []Rule, vars []string, args []string) error {
+	mf, err := Makefile(rules, vars)
 	if err != nil {
 		return err
 	}
@@ -100,6 +110,12 @@ func Make(dir string, makefile []byte, args []string) error {
 	return mk.Run()
 }
 
-func escape(s string) string {
-	return strings.Replace(s, "@", `\@`, -1)
+var cleanRE = regexp.MustCompile(`^[\w\d_/.-]+$`)
+
+func Quote(s string) string {
+	if cleanRE.MatchString(s) {
+		return s
+	}
+	q := strconv.Quote(s)
+	return "'" + strings.Replace(q[1:len(q)-1], "'", "", -1) + "'"
 }
