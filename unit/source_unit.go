@@ -73,7 +73,7 @@ func Type(u SourceUnit) string {
 	return TypeNames[reflect.TypeOf(u)]
 }
 
-var idSeparator = "::"
+var idSeparator = "@"
 
 func MakeID(u SourceUnit) ID {
 	return ID(fmt.Sprintf("%s%s%s", u.Name(), idSeparator, Type(u)))
