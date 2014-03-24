@@ -77,7 +77,7 @@ func (_ dockerRunner) Run(c *Command) ([]byte, error) {
 	}
 	buildCmd := exec.Command("docker", "build", "--rm=false", "-t", image, ".")
 	buildCmd.Dir = tmpDir
-	buildCmd.Stdout, buildCmd.Stderr = c.Stdout, c.Stderr
+	buildCmd.Stdout, buildCmd.Stderr = c.Stderr, c.Stderr
 	err = buildCmd.Run()
 	if err != nil {
 		return nil, err

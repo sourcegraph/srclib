@@ -15,7 +15,7 @@ type Package struct {
 	ImportPath string `toml:"import_path"`
 }
 
-func (p Package) ID() string      { return "go:" + p.ImportPath }
+func (p Package) ID() string      { return filepath.Join(p.Dir, "@go_package") }
 func (p Package) Name() string    { return filepath.Base(p.Dir) }
 func (p Package) RootDir() string { return p.Dir }
-func (p Package) Paths() []string { return []string{p.Dir} }
+func (p Package) Paths() []string { return []string{filepath.Join(p.Dir, "*.go")} }

@@ -23,12 +23,12 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
 	"sourcegraph.com/sourcegraph/srcgraph/scan"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
-	task_ui "sourcegraph.com/sourcegraph/srcgraph/task2/ui"
+	"sourcegraph.com/sourcegraph/srcgraph/util2/makefile"
 )
 
 var verbose = flag.Bool("v", false, "show verbose output")
 var dir = flag.String("dir", ".", "directory to work in")
-var tmpDir = flag.String("tmpdir", filepath.Join(os.TempDir(), "sg"), "temporary directory to use")
+var tmpDir = flag.String("tmpdir", build.WorkDir, "temporary directory to use")
 
 var apiclient = client.NewClient(nil)
 
@@ -61,6 +61,7 @@ The options are:
 	}
 	log.SetFlags(0)
 	log.SetPrefix("")
+	defer task2.FlushAll()
 
 	subcmd := flag.Arg(0)
 	for _, c := range subcommands {
@@ -95,7 +96,6 @@ func build_(args []string) {
 	fs := flag.NewFlagSet("build", flag.ExitOnError)
 	repo := addRepositoryFlags(fs)
 	dryRun := fs.Bool("n", false, "dry run (scans the repository and just prints out what analysis tasks would be performed)")
-	ui := fs.Bool("ui", true, "use terminal UI to display job statuses")
 	outputFile := fs.String("o", "", "write output to file")
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: srcgraph build [options]
@@ -128,43 +128,44 @@ The options are:
 
 	x := task2.NewRecordedContext()
 
-	tasks, bd, err := build.Repository(repo.rootDir, repo.commitID, repo.cloneURL, vcsType, x)
+	rules, err := build.CreateMakefile(repo.rootDir, repo.cloneURL, repo.commitID, x)
 	if err != nil {
-		log.Fatalf("build failed: %s", err)
+		log.Fatalf("error creating Makefile: %s", err)
 	}
 
+	if *verbose || *dryRun {
+		mf, err := makefile.Makefile(rules)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("# Makefile\n%s", mf)
+	}
 	if *dryRun {
-		task_ui.List(tasks)
 		return
 	}
 
-	w := task2.Run(tasks)
-	task_ui.Start(*ui, tasks, x)
-	w.Wait()
-	task2.FlushAll()
-
-	f, err := os.Create(*outputFile)
+	err = makefile.MakeRules(repo.rootDir, rules)
 	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-
-	err = json.NewEncoder(f).Encode(bd)
-	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("make failed: %s", err)
 	}
 
-	log.Printf("Wrote graph output to %s.", *outputFile)
+	if *verbose {
+		if len(rules) > 0 {
+			log.Printf("%d output files:", len(rules))
+			for _, r := range rules {
+				log.Printf(" - %s", r.Target().Name())
+			}
+		}
+	}
 }
 
 func upload(args []string) {
 	fs := flag.NewFlagSet("upload", flag.ExitOnError)
-	repo := detectRepository(*dir)
-	outputFile := fs.String("f", repo.outputFile(), "graph output file to upload")
+	r := detectRepository(*dir)
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: srcgraph upload [options]
 
-Uploads a previously generated graph to Sourcegraph.
+Uploads build data for a repository to Sourcegraph.
 
 The options are:
 `)
@@ -177,34 +178,48 @@ The options are:
 		fs.Usage()
 	}
 
-	f, err := os.Open(*outputFile)
+	x := task2.NewRecordedContext()
+	repoURI := repo.MakeURI(r.cloneURL)
+
+	rules, err := build.CreateMakefile(r.rootDir, r.cloneURL, r.commitID, x)
+	if err != nil {
+		log.Fatalf("error creating Makefile: %s", err)
+	}
+
+	for _, rule := range rules {
+		targetFile := rule.Target().Name()
+		uploadFile(targetFile, repoURI, r.commitID)
+	}
+}
+
+func uploadFile(targetFile string, repoURI repo.URI, commitID string) {
+	fi, err := os.Stat(targetFile)
+	if err != nil || !fi.Mode().IsRegular() {
+		if *verbose {
+			log.Printf("upload: skipping nonexistent file %s", targetFile)
+		}
+		return
+	}
+
+	kb := float64(fi.Size()) / 1024
+	if *verbose {
+		log.Printf("Uploading %s (%.1fkb)", targetFile, kb)
+	}
+
+	f, err := os.Open(targetFile)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer f.Close()
 
-	var bd build.BuildData
-	err = json.NewDecoder(f).Decode(&bd)
+	_, err = apiclient.BuildData.Upload(client.BuildDatumSpec{RepositorySpec: client.RepositorySpec{URI: string(repoURI)}, CommitID: commitID, Name: filepath.Base(targetFile)}, f)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	graphData, err := json.Marshal(bd.Graph)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	kb := float64(len(graphData)) / 1024
 	if *verbose {
-		log.Printf("Uploading graph data (%.1fkb)", kb)
+		log.Printf("Uploaded %s (%.1fkb)", targetFile, kb)
 	}
-
-	_, err = apiclient.BuildData.Upload(client.BuildDatumSpec{RepositorySpec: client.RepositorySpec{URI: string(bd.Config.URI)}, CommitID: bd.CommitID, Name: "graph"}, graphData)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Printf("Uploaded graph data (%.1fkb)", kb)
 }
 
 func push(args []string) {
@@ -390,7 +405,7 @@ The options are:
 	}
 	fs.Parse(args)
 
-	sourceUnitIDs := fs.Args()
+	sourceUnitSpecs := fs.Args()
 
 	repoURI := repo.MakeURI(r.cloneURL)
 
@@ -403,11 +418,11 @@ The options are:
 
 	for _, u := range c.SourceUnits {
 		var match bool
-		if len(sourceUnitIDs) == 0 {
+		if len(sourceUnitSpecs) == 0 {
 			match = true
 		} else {
-			for _, unitID := range sourceUnitIDs {
-				if u.ID() == unitID {
+			for _, unitSpec := range sourceUnitSpecs {
+				if u.ID() == unitSpec || u.RootDir() == unitSpec {
 					match = true
 					break
 				}
@@ -530,6 +545,11 @@ func addRepositoryFlags(fs *flag.FlagSet) repository {
 func isDir(dir string) bool {
 	di, err := os.Stat(dir)
 	return err == nil && di.IsDir()
+}
+
+func isFile(file string) bool {
+	fi, err := os.Stat(file)
+	return err == nil && fi.Mode().IsRegular()
 }
 
 func mkTmpDir() {
