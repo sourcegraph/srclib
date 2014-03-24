@@ -63,6 +63,11 @@ func main() {
 	for _, gr := range g.Output.Refs {
 		gr.File = relPath(gr.File)
 	}
+	for _, gd := range g.Output.Docs {
+		if gd.File != "" {
+			gd.File = relPath(gd.File)
+		}
+	}
 
 	err = json.NewEncoder(os.Stdout).Encode(g.Output)
 	if err != nil {

@@ -14,9 +14,12 @@ import (
 type Output struct {
 	Symbols []*Symbol
 	Refs    []*Ref
+	Docs    []*Doc
 }
 
 type Grapher struct {
+	SkipDocs bool
+
 	program *loader.Program
 
 	// imported is the set of imported packages' import paths (that we should emit symbols
@@ -234,6 +237,13 @@ func (g *Grapher) Graph(pkgInfo *loader.PackageInfo) error {
 			return err
 		}
 		g.addRef(ref)
+	}
+
+	if !g.SkipDocs {
+		err = g.emitDocs(pkgInfo)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

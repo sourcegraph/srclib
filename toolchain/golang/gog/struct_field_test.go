@@ -77,6 +77,7 @@ func TestResolveStructFields(t *testing.T) {
 		prog := createPkg(t, "foo", []string{src}, nil)
 
 		g := New(prog)
+		g.SkipDocs = true
 		err := g.Graph(prog.Created[0])
 		if err != nil {
 			t.Fatal(label, err)

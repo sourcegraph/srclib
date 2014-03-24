@@ -51,8 +51,8 @@
       "callable": false,
       "file": "bar.go",
       "CommitID": "",
-      "defStart": 15,
-      "defEnd": 30,
+      "defStart": 38,
+      "defEnd": 53,
       "exported": true,
       "typeExpr": "mypkg.Qux",
       "xrefs": null,
@@ -71,8 +71,8 @@
       "callable": true,
       "file": "bar.go",
       "CommitID": "",
-      "defStart": 32,
-      "defEnd": 54,
+      "defStart": 55,
+      "defEnd": 77,
       "exported": false,
       "typeExpr": "func()",
       "xrefs": null,
@@ -112,8 +112,8 @@
       "Unit": "",
       "UnitType": "",
       "file": "bar.go",
-      "start": 47,
-      "end": 50
+      "start": 70,
+      "end": 73
     },
     {
       "RefID": 0,
@@ -140,8 +140,8 @@
       "Unit": "",
       "UnitType": "",
       "file": "bar.go",
-      "start": 20,
-      "end": 23
+      "start": 43,
+      "end": 46
     },
     {
       "RefID": 0,
@@ -196,8 +196,8 @@
       "Unit": "",
       "UnitType": "",
       "file": "bar.go",
-      "start": 37,
-      "end": 41
+      "start": 60,
+      "end": 64
     },
     {
       "RefID": 0,
@@ -224,8 +224,32 @@
       "Unit": "",
       "UnitType": "",
       "file": "bar.go",
-      "start": 24,
-      "end": 30
+      "start": 47,
+      "end": 53
+    }
+  ],
+  "Docs": [
+    {
+      "repo": "example.com/golang/cases/mypkg",
+      "UnitType": "go",
+      "Unit": "mypkg",
+      "path": "Qux",
+      "Format": "text/html",
+      "Data": "\u003cp\u003e\nQux is a cool type.\n\u003c/p\u003e\n",
+      "file": "",
+      "start": 0,
+      "end": 0
+    },
+    {
+      "repo": "example.com/golang/cases/mypkg",
+      "UnitType": "go",
+      "Unit": "mypkg",
+      "path": "Qux",
+      "Format": "text/plain",
+      "Data": "Qux is a cool type.\n",
+      "file": "",
+      "start": 0,
+      "end": 0
     }
   ]
 }
