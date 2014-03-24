@@ -37,6 +37,9 @@ func ptrTo(v interface{}) reflect.Type {
 
 // RawDependency represents a declaration of a dependency.
 type RawDependency struct {
+	// DefUnitID is the source unit ID in which this dependency is declared.
+	DefUnitID unit.ID
+
 	// DefFile is the file in which the dependency is declared. If empty, it is
 	// assumed that the declaration can't be traced to a specific file (or that
 	// such tracing has not been implemented yet).
@@ -101,19 +104,23 @@ func (l DockerLister) List(dir string, unit unit.SourceUnit, c *config.Repositor
 
 // List lists all dependencies of the source unit (whose repository is cloned to
 // dir), using all registered Listers.
-func List(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) ([]*RawDependency, error) {
+func List(dir string, u unit.SourceUnit, c *config.Repository, x *task2.Context) ([]*RawDependency, error) {
 	var deps struct {
 		list []*RawDependency
 		sync.Mutex
 	}
 	deps.list = make([]*RawDependency, 0)
 	run := parallel.NewRun(runtime.GOMAXPROCS(0))
-	for _, l_ := range Listers[ptrTo(unit)] {
+	for _, l_ := range Listers[ptrTo(u)] {
 		l := l_
 		run.Do(func() error {
-			deps2, err := l.List(dir, unit, c, x)
+			deps2, err := l.List(dir, u, c, x)
 			if err != nil {
 				return err
+			}
+
+			for _, d := range deps2 {
+				d.DefUnitID = unit.MakeID(u)
 			}
 
 			deps.Lock()

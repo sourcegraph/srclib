@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"strings"
+
 	"github.com/golang/gddo/gosrc"
 	"sourcegraph.com/sourcegraph"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
@@ -12,7 +14,6 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/dep2"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
-	"strings"
 )
 
 func init() {
@@ -83,10 +84,15 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository) 
 	// Check if this importPath is in this repository.
 	goConfig := v.goConfig(c)
 	if strings.HasPrefix(importPath, goConfig.BaseImportPath) {
+		dir, err := filepath.Rel(goConfig.BaseImportPath, importPath)
+		if err != nil {
+			return nil, err
+		}
+		toUnit := Package{Dir: dir, ImportPath: importPath}
 		return &dep2.ResolvedTarget{
 			// TODO(sqs): this is a URI not a clone URL
 			ToRepoCloneURL: string(c.URI),
-			ToUnitID:       Package{ImportPath: importPath}.ID(),
+			ToUnitID:       unit.MakeID(toUnit),
 		}, nil
 	}
 
@@ -106,7 +112,12 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository) 
 
 	resolvedTarget = &dep2.ResolvedTarget{
 		ToRepoCloneURL: dir.ProjectURL,
-		ToUnitID:       toUnit.ID(),
+		ToUnitID:       unit.MakeID(toUnit),
+	}
+
+	if gosrc.IsGoRepoPath(dir.ImportPath) {
+		resolvedTarget.ToVersionString = v.VersionString
+		resolvedTarget.ToRevSpec = v.VCSRevision
 	}
 
 	// Save in cache.

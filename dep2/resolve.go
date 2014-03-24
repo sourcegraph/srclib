@@ -5,6 +5,7 @@ import (
 
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
+	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
 // Resolvers maps RawDependency.TargetType strings to their registered
@@ -38,8 +39,8 @@ type ResolvedTarget struct {
 	// the repository (because it doesn't specify the VCS type, scheme, etc.).
 	ToRepoCloneURL string
 
-	// ToUnit is the ID of the source unit in ToRepo that is depended on.
-	ToUnitID string
+	// ToUnitID is the ID of the source unit in ToRepo that is depended on.
+	ToUnitID unit.ID
 
 	// ToVersion is the version of the dependent repository (if known),
 	// according to whatever version string specifier is used by FromRepo's
@@ -60,4 +61,21 @@ func Resolve(dep *RawDependency, c *config.Repository, x *task2.Context) (*Resol
 	}
 
 	return r.Resolve(dep, c, x)
+}
+
+func ResolveAll(rawDeps []*RawDependency, c *config.Repository, x *task2.Context) ([]*ResolvedDep, error) {
+	var resolved []*ResolvedDep
+	for _, rawDep := range rawDeps {
+		rt, err := Resolve(rawDep, c, x)
+		if err != nil {
+			return nil, err
+		}
+		rd := &ResolvedDep{
+			FromRepo:       c.URI,
+			FromUnitID:     rawDep.DefUnitID,
+			ResolvedTarget: rt,
+		}
+		resolved = append(resolved, rd)
+	}
+	return resolved, nil
 }

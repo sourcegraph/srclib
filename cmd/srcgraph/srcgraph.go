@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -23,6 +24,7 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
 	"sourcegraph.com/sourcegraph/srcgraph/scan"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
+	"sourcegraph.com/sourcegraph/srcgraph/unit"
 	"sourcegraph.com/sourcegraph/srcgraph/util2/makefile"
 )
 
@@ -89,7 +91,8 @@ var subcommands = []subcommand{
 	{"push", "update a repository and related information on Sourcegraph", push},
 	{"scan", "scan a repository for source units", scan_},
 	{"config", "validate and print a repository's configuration", config_},
-	{"dep", "list and resolve a repository's dependencies", dep_},
+	{"list-deps", "list a repository's raw (unresolved) dependencies", listDeps},
+	{"resolve-deps", "resolve a repository's raw dependencies", resolveDeps},
 	{"graph", "analyze a repository's source code for definitions and references", graph_},
 }
 
@@ -286,7 +289,7 @@ The options are:
 	}
 
 	for _, u := range c.SourceUnits {
-		fmt.Printf("## %s\n", u.ID())
+		fmt.Printf("## %s\n", unit.MakeID(u))
 		for _, p := range u.Paths() {
 			fmt.Printf("  %s\n", p)
 		}
@@ -337,14 +340,16 @@ The options are:
 	printJSON(c, "")
 }
 
-func dep_(args []string) {
-	fs := flag.NewFlagSet("dep", flag.ExitOnError)
+func listDeps(args []string) {
+	fs := flag.NewFlagSet("list-deps", flag.ExitOnError)
+	resolve := fs.Bool("resolve", false, "resolve deps and print resolutions")
+	jsonOutput := fs.Bool("json", false, "show JSON output")
 	r := addRepositoryFlags(fs)
-	resolve := fs.Bool("resolve", true, "resolve dependencies")
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: srcgraph dep [options]
+		fmt.Fprintln(os.Stderr, `usage: srcgraph list-deps [options] [unit...]
 
-Lists and resolves a repository's dependencies.
+Lists a repository's raw (unresolved) dependencies. If unit(s) are specified,
+only source units with matching IDs will have their dependencies listed.
 
 The options are:
 `)
@@ -352,38 +357,111 @@ The options are:
 		os.Exit(1)
 	}
 	fs.Parse(args)
-
+	sourceUnitSpecs := fs.Args()
 	repoURI := repo.MakeURI(r.cloneURL)
 
 	x := task2.DefaultContext
-
 	c, err := scan.ReadDirConfigAndScan(r.rootDir, repoURI, x)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	allRawDeps := []*dep2.RawDependency{}
 	for _, u := range c.SourceUnits {
+		if !sourceUnitMatchesArgs(sourceUnitSpecs, u) {
+			continue
+		}
+
 		rawDeps, err := dep2.List(r.rootDir, u, c, x)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Println("## ", u.ID())
+		if *verbose {
+			log.Printf("## %s", unit.MakeID(u))
+		}
+
+		allRawDeps = append(allRawDeps, rawDeps...)
 
 		for _, rawDep := range rawDeps {
-			printJSON(rawDep, "")
+			if *verbose {
+				log.Printf("%+v", rawDep)
+			}
 
 			if *resolve {
-				fmt.Println("# resolves to:")
+				log.Printf("# resolves to:")
 				resolvedDep, err := dep2.Resolve(rawDep, c, x)
 				if err != nil {
 					log.Fatal(err)
 				}
-				printJSON(resolvedDep, "  ")
+				log.Printf("%+v", resolvedDep)
 			}
 		}
+	}
 
-		fmt.Println()
+	if *jsonOutput {
+		printJSON(allRawDeps, "")
+	}
+}
+
+func resolveDeps(args []string) {
+	fs := flag.NewFlagSet("resolve-deps", flag.ExitOnError)
+	r := addRepositoryFlags(fs)
+	jsonOutput := fs.Bool("json", false, "show JSON output")
+	fs.Usage = func() {
+		fmt.Fprintln(os.Stderr, `usage: srcgraph resolve-deps [options] [raw_dep_file.json...]
+
+Resolves a repository's raw dependencies. If no files are specified, input is
+read from stdin.
+
+The options are:
+`)
+		fs.PrintDefaults()
+		os.Exit(1)
+	}
+	fs.Parse(args)
+	repoURI := repo.MakeURI(r.cloneURL)
+	inputs := make(map[string]io.Reader)
+	if fs.NArg() == 0 {
+		inputs["<stdin>"] = os.Stdin
+	} else {
+		for _, name := range fs.Args() {
+			f, err := os.Open(name)
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer f.Close()
+			inputs[name] = f
+		}
+	}
+
+	x := task2.DefaultContext
+	c, err := scan.ReadDirConfigAndScan(r.rootDir, repoURI, x)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var allRawDeps []*dep2.RawDependency
+	for name, input := range inputs {
+		var rawDeps []*dep2.RawDependency
+		err := json.NewDecoder(input).Decode(&rawDeps)
+		if err != nil {
+			log.Fatalf("%s: %s", name, err)
+		}
+
+		allRawDeps = append(allRawDeps, rawDeps...)
+	}
+
+	resolvedDeps, err := dep2.ResolveAll(allRawDeps, c, x)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if resolvedDeps == nil {
+		resolvedDeps = []*dep2.ResolvedDep{}
+	}
+
+	if *jsonOutput {
+		printJSON(resolvedDeps, "")
 	}
 }
 
@@ -437,39 +515,21 @@ The options are:
 		os.Exit(1)
 	}
 	fs.Parse(args)
-
 	sourceUnitSpecs := fs.Args()
-
 	repoURI := repo.MakeURI(r.cloneURL)
 
 	x := task2.DefaultContext
-
 	c, err := scan.ReadDirConfigAndScan(r.rootDir, repoURI, x)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for _, u := range c.SourceUnits {
-		var match bool
-		if len(sourceUnitSpecs) == 0 {
-			match = true
-		} else {
-			for _, unitSpec := range sourceUnitSpecs {
-				if u.ID() == unitSpec || u.RootDir() == unitSpec {
-					match = true
-					break
-				}
-			}
-		}
-
-		if !match {
-			if *verbose {
-				log.Printf("Skipping source unit %s", u.ID())
-			}
+		if !sourceUnitMatchesArgs(sourceUnitSpecs, u) {
 			continue
 		}
 
-		log.Printf("## %s", u.ID())
+		log.Printf("## %s", unit.MakeID(u))
 
 		output, err := grapher2.Graph(r.rootDir, u, c, task2.DefaultContext)
 		if err != nil {
@@ -477,7 +537,7 @@ The options are:
 		}
 
 		if *summary || *verbose {
-			log.Printf("## %s output summary:", u.ID())
+			log.Printf("## %s output summary:", unit.MakeID(u))
 			log.Printf(" - %d symbols", len(output.Symbols))
 			log.Printf(" - %d refs", len(output.Refs))
 			log.Printf(" - %d docs", len(output.Docs))
@@ -507,6 +567,10 @@ func (r *repository) outputFile() string {
 }
 
 func detectRepository(dir string) (dr repository) {
+	if !isDir(dir) {
+		log.Fatal("dir does not exist: ", dir)
+	}
+
 	rootDirCmds := map[string]*exec.Cmd{
 		"git": exec.Command("git", "rev-parse", "--show-toplevel"),
 		"hg":  exec.Command("hg", "root"),
@@ -590,6 +654,28 @@ func mkTmpDir() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func sourceUnitMatchesArgs(specified []string, u unit.SourceUnit) bool {
+	var match bool
+	if len(specified) == 0 {
+		match = true
+	} else {
+		for _, unitSpec := range specified {
+			if string(unit.MakeID(u)) == unitSpec || u.Name() == unitSpec {
+				match = true
+				break
+			}
+		}
+	}
+
+	if !match {
+		if *verbose {
+			log.Printf("Skipping source unit %s", unit.MakeID(u))
+		}
+	}
+
+	return match
 }
 
 func printJSON(v interface{}, prefix string) {

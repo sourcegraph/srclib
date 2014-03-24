@@ -62,7 +62,7 @@ func Makefile(rules []Rule) ([]byte, error) {
 		ruleName := escape(rule.Target().Name())
 		fmt.Fprintf(&mf, "%s:", ruleName)
 		for _, prereq := range rule.Prereqs() {
-			fmt.Fprintf(&mf, " %s", prereq)
+			fmt.Fprintf(&mf, " %s", escape(prereq))
 		}
 		fmt.Fprintln(&mf)
 		for _, recipe := range rule.Recipes() {

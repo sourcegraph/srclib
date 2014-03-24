@@ -5,7 +5,6 @@ import (
 
 	"strconv"
 
-	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	_ "sourcegraph.com/sourcegraph/srcgraph/toolchain/all_toolchains"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
@@ -29,39 +28,19 @@ func makeGraphRules(c *config.Repository, commitID string) ([]makefile.Rule, err
 	return rules, nil
 }
 
-type SourceUnitSpec struct {
-	RepositoryURI repo.URI
-	CommitID      string
-	Unit          unit.SourceUnit
-}
-
 type GraphSourceUnitRule struct {
 	SourceUnitSpec
 }
 
 func (r *GraphSourceUnitRule) Target() makefile.Target {
-	return &GraphOutputFile{r.SourceUnitSpec}
+	return &SourceUnitOutputFile{r.SourceUnitSpec, "graph"}
 }
 
-func (r *GraphSourceUnitRule) Prereqs() []string {
-	return r.Unit.Paths()
-}
+func (r *GraphSourceUnitRule) Prereqs() []string { return r.Unit.Paths() }
 
 func (r *GraphSourceUnitRule) Recipes() []makefile.Recipe {
 	return []makefile.Recipe{
 		makefile.CommandRecipe{"mkdir", "-p", strconv.Quote(filepath.Dir(r.Target().Name()))},
-		makefile.CommandRecipe{"srcgraph", "-v", "graph", "-json", strconv.Quote(r.Unit.ID()), "1> $@"},
+		makefile.CommandRecipe{"srcgraph", "-v", "graph", "-json", strconv.Quote(string(unit.MakeID(r.Unit))), "1> $@"},
 	}
-}
-
-type GraphOutputFile struct {
-	SourceUnitSpec
-}
-
-func (f *GraphOutputFile) Name() string {
-	return filepath.Join(WorkDir, string(f.RepositoryURI), f.CommitID, f.RelName())
-}
-
-func (f *GraphOutputFile) RelName() string {
-	return filepath.Join(f.Unit.ID() + "_graph.json")
 }

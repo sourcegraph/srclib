@@ -1,5 +1,6 @@
 [
   {
+    "DefUnitID": "subpkg@GoPackage",
     "TargetType": "go-import-path",
     "Target": "mypkg"
   }

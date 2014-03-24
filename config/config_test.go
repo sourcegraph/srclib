@@ -3,9 +3,10 @@ package config
 import (
 	"encoding/json"
 	"reflect"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
 	"strings"
 	"testing"
+
+	"sourcegraph.com/sourcegraph/srcgraph/unit"
 
 	"github.com/kr/pretty"
 )
@@ -45,8 +46,7 @@ type FooSourceUnit struct {
 	Bar string
 }
 
-func (u FooSourceUnit) ID() string      { return "foo:" + u.Bar }
-func (_ FooSourceUnit) Name() string    { return "foo" }
+func (u FooSourceUnit) Name() string    { return u.Bar }
 func (_ FooSourceUnit) RootDir() string { return "foo" }
 func (_ FooSourceUnit) Paths() []string { return nil }
 
@@ -98,12 +98,12 @@ func TestSourceUnits_AddIfNotExists(t *testing.T) {
 	// Add duplicate.
 	units.AddIfNotExists(FooSourceUnit{Bar: ""})
 	if len(units) != 2 {
-		t.Errorf("got len %d, want 2")
+		t.Errorf("got len %d, want 2", len(units))
 	}
 
 	// Add new.
 	units.AddIfNotExists(FooSourceUnit{Bar: "new"})
 	if len(units) != 3 {
-		t.Errorf("got len %d, want 3")
+		t.Errorf("got len %d, want 3", len(units))
 	}
 }

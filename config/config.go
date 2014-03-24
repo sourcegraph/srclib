@@ -93,15 +93,15 @@ func (c *Repository) finish(repoURI repo.URI) (*Repository, error) {
 }
 
 // AddIfNotExists adds unit to the list of source units. If a source unit
-// already exists with the same ID as unit, nothing is done.
-func (us *SourceUnits) AddIfNotExists(unit unit.SourceUnit) {
-	unitID := unit.ID()
-	for _, u := range *us {
-		if u.ID() == unitID {
+// already exists with the same ID as u, nothing is done.
+func (us *SourceUnits) AddIfNotExists(u unit.SourceUnit) {
+	unitID := unit.MakeID(u)
+	for _, u2 := range *us {
+		if unit.MakeID(u2) == unitID {
 			return
 		}
 	}
-	*us = append(*us, unit)
+	*us = append(*us, u)
 }
 
 // MarshalJSON implements encoding/json.Marshaler to marshal to a JSON array

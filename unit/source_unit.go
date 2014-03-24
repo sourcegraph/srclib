@@ -1,6 +1,8 @@
 package unit
 
 import (
+	"database/sql/driver"
+	"fmt"
 	"reflect"
 )
 
@@ -33,8 +35,16 @@ func Register(name string, emptyInstance SourceUnit) {
 }
 
 type SourceUnit interface {
-	ID() string
+	// Name is an identifier for this source unit that MUST be unique among all
+	// other source units of the same type in the same repository.
+	//
+	// Two source units of different types in a repository may have the same name.
+	// To obtain an identifier for a source unit that is guaranteed to be unique
+	// repository-wide, use the MakeID function.
 	Name() string
+
+	// RootDir is the deepest directory that contains all files in this source
+	// unit.
 	RootDir() string
 
 	// Paths returns all of the file or directory paths that this source unit
@@ -42,6 +52,24 @@ type SourceUnit interface {
 	Paths() []string
 }
 
-func SourceUnitType(u SourceUnit) string {
-	return reflect.TypeOf(u).Elem().Name()
+func Type(u SourceUnit) string {
+	return TypeNames[reflect.TypeOf(u)]
+}
+
+func MakeID(u SourceUnit) ID {
+	return ID(fmt.Sprintf("%s@%s", u.Name(), Type(u)))
+}
+
+type ID string
+
+func (x ID) Value() (driver.Value, error) {
+	return string(x), nil
+}
+
+func (x *ID) Scan(v interface{}) error {
+	if data, ok := v.([]byte); ok {
+		*x = ID(data)
+		return nil
+	}
+	return fmt.Errorf("%T.Scan failed: %v", x, v)
 }
