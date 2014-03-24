@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"reflect"
+	"strings"
 )
 
 var Types = make(map[string]SourceUnit)
@@ -74,6 +75,16 @@ func Type(u SourceUnit) string {
 
 func MakeID(u SourceUnit) ID {
 	return ID(fmt.Sprintf("%s@%s", u.Name(), Type(u)))
+}
+
+func ParseID(unitID string) (name, typ string, err error) {
+	at := strings.Index(unitID, "@")
+	if at == -1 {
+		return "", "", fmt.Errorf("no '@' in source unit ID")
+	}
+	name = unitID[:at]
+	typ = unitID[at+1:]
+	return
 }
 
 type ID string
