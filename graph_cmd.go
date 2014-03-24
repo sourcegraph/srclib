@@ -34,19 +34,19 @@ The options are:
 	repoURI := repo.MakeURI(r.CloneURL)
 
 	x := task2.DefaultContext
-	c, err := scan.ReadDirConfigAndScan(r.rootDir, repoURI, x)
+	c, err := scan.ReadDirConfigAndScan(r.RootDir, repoURI, x)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for _, u := range c.SourceUnits {
-		if !sourceUnitMatchesArgs(sourceUnitSpecs, u) {
+		if !SourceUnitMatchesArgs(sourceUnitSpecs, u) {
 			continue
 		}
 
 		log.Printf("## %s", unit.MakeID(u))
 
-		output, err := grapher2.Graph(r.rootDir, u, c, task2.DefaultContext)
+		output, err := grapher2.Graph(r.RootDir, u, c, task2.DefaultContext)
 		if err != nil {
 			log.Fatal(err)
 		}

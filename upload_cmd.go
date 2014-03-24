@@ -34,7 +34,7 @@ The options are:
 	x := task2.NewRecordedContext()
 	repoURI := repo.MakeURI(r.CloneURL)
 
-	rules, vars, err := build.CreateMakefile(r.rootDir, r.CloneURL, r.commitID, x)
+	rules, vars, err := build.CreateMakefile(r.RootDir, r.CloneURL, r.CommitID, x)
 	if err != nil {
 		log.Fatalf("error creating Makefile: %s", err)
 	}
@@ -42,7 +42,7 @@ The options are:
 	for _, rule := range rules {
 		target := rule.Target()
 		absName := build.SubstituteVars(target.Name(), vars)
-		uploadFile(absName, target.(build.Target).RelName(), repoURI, r.commitID)
+		uploadFile(absName, target.(build.Target).RelName(), repoURI, r.CommitID)
 	}
 }
 

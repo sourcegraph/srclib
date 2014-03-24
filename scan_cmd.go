@@ -30,7 +30,7 @@ The options are:
 
 	x := task2.DefaultContext
 
-	c, err := scan.ReadDirConfigAndScan(r.rootDir, repo.MakeURI(r.CloneURL), x)
+	c, err := scan.ReadDirConfigAndScan(r.RootDir, repo.MakeURI(r.CloneURL), x)
 	if err != nil {
 		log.Fatal(err)
 	}

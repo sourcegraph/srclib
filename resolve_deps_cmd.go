@@ -35,7 +35,7 @@ The options are:
 	defer CloseAll(inputs)
 
 	x := task2.DefaultContext
-	c, err := scan.ReadDirConfigAndScan(r.rootDir, repoURI, x)
+	c, err := scan.ReadDirConfigAndScan(r.RootDir, repoURI, x)
 	if err != nil {
 		log.Fatal(err)
 	}

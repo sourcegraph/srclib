@@ -35,12 +35,12 @@ The options are:
 	var c *config.Repository
 	var err error
 	if *final {
-		c, err = scan.ReadDirConfigAndScan(r.rootDir, repoURI, x)
+		c, err = scan.ReadDirConfigAndScan(r.RootDir, repoURI, x)
 		if err != nil {
 			log.Fatal(err)
 		}
 	} else {
-		c, err = config.ReadDir(r.rootDir, repoURI)
+		c, err = config.ReadDir(r.RootDir, repoURI)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -31,7 +31,7 @@ The options are:
 	fs.Parse(args)
 
 	url := config2.BaseAPIURL.ResolveReference(&url.URL{
-		Path: fmt.Sprintf("repositories/%s/commits/%s/build", repo.MakeURI(r.CloneURL), r.commitID),
+		Path: fmt.Sprintf("repositories/%s/commits/%s/build", repo.MakeURI(r.CloneURL), r.CommitID),
 	})
 	req, err := http.NewRequest("PUT", url.String(), nil)
 	if err != nil {

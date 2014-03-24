@@ -3,6 +3,7 @@ package unit
 import (
 	"database/sql/driver"
 	"fmt"
+	"path/filepath"
 	"reflect"
 )
 
@@ -50,6 +51,21 @@ type SourceUnit interface {
 	// Paths returns all of the file or directory paths that this source unit
 	// refers to.
 	Paths() []string
+}
+
+// ExpandPaths interprets paths, which contains paths (optionally with
+// filepath.Glob-compatible globs) that are relative to base. A list of actual
+// files that are referenced is returned.
+func ExpandPaths(base string, paths []string) ([]string, error) {
+	var expanded []string
+	for _, path := range paths {
+		hits, err := filepath.Glob(filepath.Join(base, path))
+		if err != nil {
+			return nil, err
+		}
+		expanded = append(expanded, hits...)
+	}
+	return expanded, nil
 }
 
 func Type(u SourceUnit) string {

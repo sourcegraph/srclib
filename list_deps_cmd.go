@@ -34,18 +34,18 @@ The options are:
 	repoURI := repo.MakeURI(r.CloneURL)
 
 	x := task2.DefaultContext
-	c, err := scan.ReadDirConfigAndScan(r.rootDir, repoURI, x)
+	c, err := scan.ReadDirConfigAndScan(r.RootDir, repoURI, x)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	allRawDeps := []*dep2.RawDependency{}
 	for _, u := range c.SourceUnits {
-		if !sourceUnitMatchesArgs(sourceUnitSpecs, u) {
+		if !SourceUnitMatchesArgs(sourceUnitSpecs, u) {
 			continue
 		}
 
-		rawDeps, err := dep2.List(r.rootDir, u, c, x)
+		rawDeps, err := dep2.List(r.RootDir, u, c, x)
 		if err != nil {
 			log.Fatal(err)
 		}

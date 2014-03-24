@@ -52,7 +52,7 @@ See the man page for "make" for all makeoptions.
 
 	x := task2.NewRecordedContext()
 
-	rules, vars, err := build.CreateMakefile(repo.rootDir, repo.CloneURL, repo.commitID, x)
+	rules, vars, err := build.CreateMakefile(repo.RootDir, repo.CloneURL, repo.CommitID, x)
 	if err != nil {
 		log.Fatalf("error creating Makefile: %s", err)
 	}
@@ -68,7 +68,7 @@ See the man page for "make" for all makeoptions.
 		}
 	}
 
-	err = makefile.MakeRules(repo.rootDir, rules, vars, fs.Args())
+	err = makefile.MakeRules(repo.RootDir, rules, vars, fs.Args())
 	if err != nil {
 		log.Fatalf("make failed: %s", err)
 	}

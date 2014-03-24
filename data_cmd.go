@@ -14,7 +14,7 @@ func data(args []string) {
 	fs := flag.NewFlagSet("data", flag.ExitOnError)
 	r := detectRepository(*dir)
 	repoURI := fs.String("repo", string(repo.MakeURI(r.CloneURL)), "repository URI (ex: github.com/alice/foo)")
-	commitID := fs.String("commit", r.commitID, "commit ID (optional)")
+	commitID := fs.String("commit", r.CommitID, "commit ID (optional)")
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` data [options]
 
