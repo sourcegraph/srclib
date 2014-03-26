@@ -15,18 +15,14 @@ type Target interface {
 	Name() string
 }
 
-type Recipe interface {
-	Command() []string
+type Prereq interface {
+	Name() string
 }
-
-type CommandRecipe []string
-
-func (r CommandRecipe) Command() []string { return r }
 
 type Rule interface {
 	Target() Target
-	Prereqs() []string
-	Recipes() []Recipe
+	Prereqs() []Prereq
+	Recipes() []string
 }
 
 type Phonier interface {
@@ -72,11 +68,11 @@ func Makefile(rules []Rule, vars []string) ([]byte, error) {
 		ruleName := rule.Target().Name()
 		fmt.Fprintf(&mf, "%s:", ruleName)
 		for _, prereq := range rule.Prereqs() {
-			fmt.Fprintf(&mf, " %s", prereq)
+			fmt.Fprintf(&mf, " %s", prereq.Name())
 		}
 		fmt.Fprintln(&mf)
 		for _, recipe := range rule.Recipes() {
-			fmt.Fprintf(&mf, "\t%s\n", strings.Join(recipe.Command(), " "))
+			fmt.Fprintf(&mf, "\t%s\n", recipe)
 		}
 	}
 
@@ -118,4 +114,16 @@ func Quote(s string) string {
 	}
 	q := strconv.Quote(s)
 	return "'" + strings.Replace(q[1:len(q)-1], "'", "", -1) + "'"
+}
+
+type filePrereq string
+
+func (f filePrereq) Name() string { return string(f) }
+
+func FilePrereqs(files []string) []Prereq {
+	p := make([]Prereq, len(files))
+	for i, f := range files {
+		p[i] = filePrereq(f)
+	}
+	return p
 }

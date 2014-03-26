@@ -77,6 +77,12 @@ The options are:
 	}
 	log.Println()
 
+	log.Printf("Build data types (%d)", len(build.DataTypes))
+	for name, _ := range build.DataTypes {
+		log.Printf(" - %s", name)
+	}
+	log.Println()
+
 	log.Printf("Build rule makers (%d)", len(build.RuleMakers))
 	for name, _ := range build.RuleMakers {
 		log.Printf(" - %s", name)

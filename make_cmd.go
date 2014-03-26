@@ -74,7 +74,7 @@ See the man page for "make" for all makeoptions.
 		if len(rules) > 0 {
 			log.Printf("%d output files:", len(rules))
 			for _, r := range rules {
-				log.Printf(" - %s", build.SubstituteVars(r.Target().Name(), vars))
+				log.Printf(" - %s", r.Target().Name())
 			}
 		}
 	}

@@ -5,16 +5,19 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	"sourcegraph.com/sourcegraph/client"
 	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/build"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
+	"sourcegraph.com/sourcegraph/srcgraph/build/buildstore"
 )
 
 func upload(args []string) {
 	fs := flag.NewFlagSet("upload", flag.ExitOnError)
-	r := AddRepositoryFlags(fs)
+	r := detectRepository(*dir)
+	repoURI := fs.String("repo", string(repo.MakeURI(r.CloneURL)), "repository URI (ex: github.com/alice/foo)")
+	commitID := fs.String("commit", r.CommitID, "commit ID (optional)")
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` upload [options]
 
@@ -31,23 +34,23 @@ The options are:
 		fs.Usage()
 	}
 
-	x := task2.NewRecordedContext()
-	repoURI := repo.MakeURI(r.CloneURL)
-
-	rules, vars, err := build.CreateMakefile(r.RootDir, r.CloneURL, r.CommitID, x)
+	// TODO!(sqs): this filepath.Join is hacky
+	localFiles, err := buildstore.ListDataFiles(build.Storage, repo.URI(*repoURI), filepath.Join(*repoURI, *commitID))
 	if err != nil {
-		log.Fatalf("error creating Makefile: %s", err)
+		log.Fatal(err)
 	}
 
-	for _, rule := range rules {
-		target := rule.Target()
-		absName := build.SubstituteVars(target.Name(), vars)
-		uploadFile(absName, target.(build.Target).RelName(), repoURI, r.CommitID)
+	for _, file := range localFiles {
+		uploadFile(file.FullPath, client.BuildDataFileSpec{
+			RepositorySpec: client.RepositorySpec{*repoURI},
+			CommitID:       file.CommitID,
+			Path:           file.Path,
+		})
 	}
 }
 
-func uploadFile(absName, relName string, repoURI repo.URI, commitID string) {
-	fi, err := os.Stat(absName)
+func uploadFile(absName string, file client.BuildDataFileSpec) {
+	fi, err := build.Storage.Stat(absName)
 	if err != nil || !fi.Mode().IsRegular() {
 		if *verbose {
 			log.Printf("upload: skipping nonexistent file %s", absName)
@@ -60,13 +63,13 @@ func uploadFile(absName, relName string, repoURI repo.URI, commitID string) {
 		log.Printf("Uploading %s (%.1fkb)", absName, kb)
 	}
 
-	f, err := os.Open(absName)
+	f, err := build.Storage.Open(absName)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer f.Close()
 
-	_, err = apiclient.BuildData.Upload(client.BuildDatumSpec{RepositorySpec: client.RepositorySpec{URI: string(repoURI)}, CommitID: commitID, Name: relName}, f)
+	_, err = apiclient.BuildData.Upload(file, f)
 	if err != nil {
 		log.Fatal(err)
 	}
