@@ -74,6 +74,7 @@ type Target interface {
 	makefile.Target
 	RelName() string
 }
+
 type RepositoryCommitSpec struct {
 	RepositoryURI repo.URI
 	CommitID      string
