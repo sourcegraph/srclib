@@ -42,9 +42,6 @@ See the man page for "make" for all makeoptions.
 	}
 	fs.Parse(args)
 
-	build.WorkDir = *tmpDir
-	mkTmpDir()
-
 	vcsType := vcs.VCSByName[repo.vcsTypeName]
 	if vcsType == nil {
 		log.Fatalf("%s: unknown VCS type %q", Name, repo.vcsTypeName)

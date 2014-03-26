@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"sourcegraph.com/sourcegraph/client"
-	"sourcegraph.com/sourcegraph/srcgraph/build"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
@@ -41,7 +40,6 @@ The options are:
 
 var verbose = flag.Bool("v", false, "show verbose output")
 var dir = flag.String("dir", ".", "directory to work in")
-var tmpDir = flag.String("tmpdir", build.WorkDir, "temporary directory to use")
 
 var apiclient = client.NewClient(nil)
 
