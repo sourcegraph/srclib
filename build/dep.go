@@ -1,68 +1,66 @@
 package build
 
 import (
-	"strconv"
+	"fmt"
+	"reflect"
 
 	"sourcegraph.com/sourcegraph/srcgraph/config"
+	"sourcegraph.com/sourcegraph/srcgraph/dep2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 	"sourcegraph.com/sourcegraph/srcgraph/util2/makefile"
 )
 
 func init() {
 	RegisterRuleMaker("dep", makeDepRules)
+	RegisterDataType("raw_deps.v0", []*dep2.RawDependency{})
+	RegisterDataType("resolved_deps.v0", []*dep2.ResolvedDep{})
 }
 
-func makeDepRules(c *config.Repository, existing []makefile.Rule) ([]makefile.Rule, error) {
+func makeDepRules(c *config.Repository, commitID string, existing []makefile.Rule) ([]makefile.Rule, error) {
 	if len(c.SourceUnits) == 0 {
 		return nil, nil
 	}
 
-	resolveRule := &ResolveDepsRule{}
+	resolveRule := &ResolveDepsRule{DataFileInfo{c.URI, commitID, reflect.TypeOf([]*dep2.ResolvedDep{})}, nil}
 
 	rules := []makefile.Rule{resolveRule}
 	for _, u := range c.SourceUnits {
-		rule := &ListSourceUnitDepsRule{u}
+		rule := &ListSourceUnitDepsRule{DataFileInfo{c.URI, commitID, reflect.TypeOf([]*dep2.RawDependency{})}, u}
 		rules = append(rules, rule)
-		resolveRule.RawDepLists = append(resolveRule.RawDepLists, rule.Target())
+		resolveRule.rawDepLists = append(resolveRule.rawDepLists, rule.Target())
 	}
 
 	return rules, nil
 }
 
 type ResolveDepsRule struct {
-	RawDepLists []makefile.Target
+	targetInfo  DataFileInfo
+	rawDepLists []makefile.Prereq
 }
 
 func (r *ResolveDepsRule) Target() makefile.Target {
-	return &RepositoryCommitOutputFile{"resolved_deps"}
+	return &RepositoryCommitDataFile{r.targetInfo}
 }
 
-func (r *ResolveDepsRule) Prereqs() []string {
-	var files []string
-	for _, rawDepListFile := range r.RawDepLists {
-		files = append(files, rawDepListFile.Name())
-	}
-	return files
-}
+func (r *ResolveDepsRule) Prereqs() []makefile.Prereq { return r.rawDepLists }
 
-func (r *ResolveDepsRule) Recipes() []makefile.Recipe {
-	return []makefile.Recipe{
-		makefile.CommandRecipe{"srcgraph", "-v", "resolve-deps", "-json", "$^", "1> $@"},
-	}
+func (r *ResolveDepsRule) Recipes() []string {
+	return []string{"srcgraph -v resolve-deps -json $^ 1> $@"}
 }
 
 type ListSourceUnitDepsRule struct {
-	Unit unit.SourceUnit
+	targetInfo DataFileInfo
+	unit       unit.SourceUnit
 }
 
 func (r *ListSourceUnitDepsRule) Target() makefile.Target {
-	return &SourceUnitOutputFile{r.Unit, "raw_deps"}
+	return &SourceUnitDataFile{r.targetInfo, r.unit}
 }
 
-func (r *ListSourceUnitDepsRule) Prereqs() []string { return r.Unit.Paths() }
+func (r *ListSourceUnitDepsRule) Prereqs() []makefile.Prereq {
+	return makefile.FilePrereqs(r.unit.Paths())
+}
 
-func (r *ListSourceUnitDepsRule) Recipes() []makefile.Recipe {
-	return []makefile.Recipe{
-		makefile.CommandRecipe{"srcgraph", "-v", "list-deps", "-json", strconv.Quote(string(unit.MakeID(r.Unit))), "1> $@"},
-	}
+func (r *ListSourceUnitDepsRule) Recipes() []string {
+	return []string{fmt.Sprintf("srcgraph -v list-deps -json %q 1> $@", unit.MakeID(r.unit))}
 }

@@ -81,6 +81,7 @@ var Subcommands = []Subcommand{
 	{"make", "make a repository", make_},
 	{"data", "list repository data", data},
 	{"upload", "upload a previously generated build", upload},
+	{"fetch", "downloads build data files from the server", fetch},
 	{"push", "update a repository and related information on Sourcegraph", push},
 	{"scan", "scan a repository for source units", scan_},
 	{"config", "validate and print a repository's configuration", config_},

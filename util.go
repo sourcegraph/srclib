@@ -8,7 +8,6 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 
 	"github.com/sourcegraph/go-vcs"
@@ -20,14 +19,6 @@ type repository struct {
 	CommitID    string
 	vcsTypeName string
 	RootDir     string
-}
-
-func (r *repository) outputFile() string {
-	absRootDir, err := filepath.Abs(r.RootDir)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return filepath.Join(*tmpDir, fmt.Sprintf("%s-%s.json", filepath.Base(absRootDir), r.CommitID))
 }
 
 func detectRepository(dir string) (dr repository) {
@@ -111,13 +102,6 @@ func isDir(dir string) bool {
 func isFile(file string) bool {
 	fi, err := os.Stat(file)
 	return err == nil && fi.Mode().IsRegular()
-}
-
-func mkTmpDir() {
-	err := os.MkdirAll(*tmpDir, 0700)
-	if err != nil {
-		log.Fatal(err)
-	}
 }
 
 func firstLine(s string) string {

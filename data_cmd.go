@@ -5,9 +5,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	"sourcegraph.com/sourcegraph/client"
 	"sourcegraph.com/sourcegraph/repo"
+	"sourcegraph.com/sourcegraph/srcgraph/build"
+	"sourcegraph.com/sourcegraph/srcgraph/build/buildstore"
 )
 
 func data(args []string) {
@@ -15,6 +18,8 @@ func data(args []string) {
 	r := detectRepository(*dir)
 	repoURI := fs.String("repo", string(repo.MakeURI(r.CloneURL)), "repository URI (ex: github.com/alice/foo)")
 	commitID := fs.String("commit", r.CommitID, "commit ID (optional)")
+	remote := fs.Bool("remote", true, "show remote data")
+	local := fs.Bool("local", true, "show local data")
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` data [options]
 
@@ -35,10 +40,25 @@ The options are:
 	if *commitID != "" {
 		opt = &client.BuildDataListOptions{CommitID: *commitID}
 	}
-	data, _, err := apiclient.BuildData.List(client.RepositorySpec{URI: *repoURI}, opt)
+	remoteData, _, err := apiclient.BuildData.List(client.RepositorySpec{URI: *repoURI}, opt)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	PrintJSON(data, "")
+	if *remote {
+		log.Println("===================== REMOTE")
+		PrintJSON(remoteData, "")
+		log.Println("============================")
+	}
+
+	// TODO!(sqs): this filepath.Join is hacky
+	localData, err := buildstore.ListDataFiles(build.Storage, repo.URI(*repoURI), filepath.Join(*repoURI, *commitID))
+	if err != nil {
+		log.Fatal(err)
+	}
+	if *local {
+		log.Println("===================== LOCAL")
+		PrintJSON(localData, "")
+		log.Println("============================")
+	}
 }

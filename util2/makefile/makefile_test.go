@@ -13,21 +13,13 @@ func (f *file) Name() string { return f.name }
 
 type dummyRule struct {
 	target  *file
-	prereqs []string
-	recipes []CommandRecipe
+	prereqs []Prereq
+	recipes []string
 }
 
 func (r *dummyRule) Target() Target    { return r.target }
-func (r *dummyRule) Prereqs() []string { return r.prereqs }
-func (r *dummyRule) Recipes() []Recipe { return toRecipes(r.recipes) }
-
-func toRecipes(crs []CommandRecipe) []Recipe {
-	rs := make([]Recipe, len(crs))
-	for i, f := range crs {
-		rs[i] = f
-	}
-	return rs
-}
+func (r *dummyRule) Prereqs() []Prereq { return r.prereqs }
+func (r *dummyRule) Recipes() []string { return r.recipes }
 
 func TestMakefile(t *testing.T) {
 	tests := []struct {
@@ -38,8 +30,8 @@ func TestMakefile(t *testing.T) {
 			rules: []Rule{
 				&dummyRule{
 					&file{"myTarget"},
-					[]string{"myPrereq0", "myPrereq1"},
-					[]CommandRecipe{{"foo", "bar"}},
+					[]Prereq{&file{"myPrereq0"}, &file{"myPrereq1"}},
+					[]string{"foo bar"},
 				},
 			},
 			makefile: `
@@ -51,7 +43,7 @@ myTarget: myPrereq0 myPrereq1
 		},
 	}
 	for _, test := range tests {
-		makefile, err := Makefile(test.rules)
+		makefile, err := Makefile(test.rules, nil)
 		if err != nil {
 			t.Error(err)
 			continue
