@@ -8,12 +8,12 @@ import (
 	"reflect"
 
 	"github.com/sourcegraph/rwvfs"
-	"github.com/sqs/go-makefile/makefile"
 
 	"sourcegraph.com/sourcegraph/client"
 	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/build/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"sourcegraph.com/sourcegraph/srcgraph/util2/makefile"
 )
 
 var DataTypes = make(map[string]interface{})
