@@ -52,6 +52,11 @@ func CreateMakefile(dir, cloneURL, commitID string, x *task2.Context) ([]makefil
 
 	vars := []string{
 		fmt.Sprintf("_ = $(shell mkdir -p %s)", makefile.Quote(localDataDir(repoURI, commitID))),
+
+		// DELETE_ON_ERROR makes it so that the targets for failed recipes are
+		// deleted. This lets us do "1> $@" to write to the target file without
+		// erroneously satisfying the target if the recipe fails.
+		".DELETE_ON_ERROR:",
 	}
 
 	return allRules, vars, nil
