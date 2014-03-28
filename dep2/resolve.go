@@ -3,9 +3,9 @@ package dep2
 import (
 	"fmt"
 
+	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
 // Resolvers maps RawDependency.TargetType strings to their registered
@@ -39,8 +39,11 @@ type ResolvedTarget struct {
 	// the repository (because it doesn't specify the VCS type, scheme, etc.).
 	ToRepoCloneURL string
 
-	// ToUnitID is the ID of the source unit in ToRepo that is depended on.
-	ToUnitID unit.ID
+	// ToUnit is the name of the source unit that is depended on.
+	ToUnit string
+
+	// ToUnitType is the type of the source unit that is depended on.
+	ToUnitType string
 
 	// ToVersion is the version of the dependent repository (if known),
 	// according to whatever version string specifier is used by FromRepo's
@@ -70,10 +73,16 @@ func ResolveAll(rawDeps []*RawDependency, c *config.Repository, x *task2.Context
 		if err != nil {
 			return nil, err
 		}
+		// TODO!(sqs): return repo clone URLs as well, so we can add new repositories
 		rd := &ResolvedDep{
-			FromRepo:       c.URI,
-			FromUnitID:     rawDep.DefUnitID,
-			ResolvedTarget: rt,
+			FromRepo:        c.URI,
+			FromUnit:        rawDep.FromUnit,
+			FromUnitType:    rawDep.FromUnitType,
+			ToRepo:          repo.MakeURI(rt.ToRepoCloneURL),
+			ToUnit:          rt.ToUnit,
+			ToUnitType:      rt.ToUnitType,
+			ToVersionString: rt.ToVersionString,
+			ToRevSpec:       rt.ToRevSpec,
 		}
 		resolved = append(resolved, rd)
 	}

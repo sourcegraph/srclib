@@ -3,7 +3,6 @@ package build
 import (
 	"fmt"
 	"path/filepath"
-	"reflect"
 
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
@@ -23,11 +22,11 @@ func makeDepRules(c *config.Repository, dataDir string, existing []makefile.Rule
 		return nil, nil
 	}
 
-	resolveRule := &ResolveDepsRule{reflect.TypeOf([]*dep2.ResolvedDep{}), dataDir, nil}
+	resolveRule := &ResolveDepsRule{dataDir, nil}
 
 	rules := []makefile.Rule{resolveRule}
 	for _, u := range c.SourceUnits {
-		rule := &ListSourceUnitDepsRule{reflect.TypeOf([]*dep2.RawDependency{}), dataDir, u}
+		rule := &ListSourceUnitDepsRule{dataDir, u}
 		rules = append(rules, rule)
 		resolveRule.rawDepLists = append(resolveRule.rawDepLists, rule.Target())
 	}
@@ -36,13 +35,12 @@ func makeDepRules(c *config.Repository, dataDir string, existing []makefile.Rule
 }
 
 type ResolveDepsRule struct {
-	targetDataType reflect.Type
-	dataDir        string
-	rawDepLists    []string
+	dataDir     string
+	rawDepLists []string
 }
 
 func (r *ResolveDepsRule) Target() string {
-	return filepath.Join(r.dataDir, RepositoryCommitDataFilename(r.targetDataType))
+	return filepath.Join(r.dataDir, RepositoryCommitDataFilename([]*dep2.ResolvedDep{}))
 }
 
 func (r *ResolveDepsRule) Prereqs() []string { return r.rawDepLists }
@@ -52,13 +50,12 @@ func (r *ResolveDepsRule) Recipes() []string {
 }
 
 type ListSourceUnitDepsRule struct {
-	targetDataType reflect.Type
-	dataDir        string
-	unit           unit.SourceUnit
+	dataDir string
+	unit    unit.SourceUnit
 }
 
 func (r *ListSourceUnitDepsRule) Target() string {
-	return filepath.Join(r.dataDir, SourceUnitDataFilename(r.targetDataType, r.unit))
+	return filepath.Join(r.dataDir, SourceUnitDataFilename([]*dep2.RawDependency{}, r.unit))
 }
 
 func (r *ListSourceUnitDepsRule) Prereqs() []string {

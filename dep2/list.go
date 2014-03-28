@@ -37,25 +37,28 @@ func ptrTo(v interface{}) reflect.Type {
 
 // RawDependency represents a declaration of a dependency.
 type RawDependency struct {
-	// DefUnitID is the source unit ID in which this dependency is declared.
-	DefUnitID unit.ID
+	// FromUnit is the source unit name in which this dependency is declared.
+	FromUnit string
 
-	// DefFile is the file in which the dependency is declared. If empty, it is
+	// FromUnitType is the source unit type in which this dependency is declared.
+	FromUnitType string
+
+	// FromFile is the file in which the dependency is declared. If empty, it is
 	// assumed that the declaration can't be traced to a specific file (or that
 	// such tracing has not been implemented yet).
 	//
-	// For example, DefFile is typically a "package.json" file for NPM packages,
+	// For example, FromFile is typically a "package.json" file for NPM packages,
 	// because that's where dependencies are declared.
-	DefFile string `json:",omitempty"`
+	FromFile string `json:",omitempty"`
 
-	// DefStart is the character offset in DefFile where the
+	// FromStart is the character offset in FromFile where the
 	// dependency declaration begins, or 0 if the position is not known.
-	DefStart int `json:",omitempty"`
+	FromStart int `json:",omitempty"`
 
-	// DefEnd is the character offset in DefFile where the dependency
-	// declaration ends. If both DefStart and DefEnd are 0, then it is assumed
+	// FromEnd is the character offset in FromFile where the dependency
+	// declaration ends. If both FromStart and FromEnd are 0, then it is assumed
 	// that no character range information is known.
-	DefEnd int `json:",omitempty"`
+	FromEnd int `json:",omitempty"`
 
 	// TargetType is a string describing what kind of dependency this is. This
 	// string corresponds to the target type passed to RegisterResolver.
@@ -120,7 +123,7 @@ func List(dir string, u unit.SourceUnit, c *config.Repository, x *task2.Context)
 			}
 
 			for _, d := range deps2 {
-				d.DefUnitID = unit.MakeID(u)
+				d.FromUnit, d.FromUnitType = u.Name(), unit.Type(u)
 			}
 
 			deps.Lock()

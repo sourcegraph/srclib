@@ -21,8 +21,9 @@ var DataTypeNames = make(map[reflect.Type]string)
 // more easily; for example, name could be "graph.v0" (and a subsequent version
 // could be registered as "graph.v1" with a different struct).
 //
-// The emptyInstance should be an empty instance of the type (usually a struct)
-// that holds the build data; it is used to instantiate instances dynamically.
+// The emptyInstance should be an zero value of the type (usually a nil pointer
+// to a struct, or a nil slice or map) that holds the build data; it is used to
+// instantiate instances dynamically.
 //
 // If RegisterDataType is called twice with the same type or type name, if name
 // is empty, or if emptyInstance is nil, it panics
@@ -43,10 +44,10 @@ func RegisterDataType(name string, emptyInstance interface{}) {
 		panic("build: RegisterDataType name is nil")
 	}
 	DataTypeNames[typ] = name
-	DataTypeNames[reflect.PtrTo(typ)] = name
 }
 
-func DataTypeSuffix(typ reflect.Type) string {
+func DataTypeSuffix(data interface{}) string {
+	typ := reflect.TypeOf(data)
 	name, registered := DataTypeNames[typ]
 	if !registered {
 		panic("buildstore: data type not registered: " + typ.String())
@@ -63,7 +64,7 @@ func DataTypeSuffix(typ reflect.Type) string {
 // "qux_foo.v0.json" would return "foo.v0" and the registered type.
 func DataType(filename string) (string, interface{}) {
 	for name, emptyInstance := range DataTypes {
-		if strings.HasSuffix(filename, DataTypeSuffix(reflect.TypeOf(emptyInstance))) {
+		if strings.HasSuffix(filename, DataTypeSuffix(emptyInstance)) {
 			return name, emptyInstance
 		}
 	}
