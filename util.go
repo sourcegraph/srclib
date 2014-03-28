@@ -38,10 +38,6 @@ func detectRepository(dir string) (dr repository) {
 	for tn, cmd := range rootDirCmds {
 		cmd.Dir = dir
 		out, err := cmd.Output()
-		if err != nil && *Verbose {
-			log.Printf("warning: failed to find %s repository root dir in %s: %s", tn, dir, err)
-			continue
-		}
 		if err == nil {
 			dr.RootDir = strings.TrimSpace(string(out))
 			dr.vcsTypeName = tn
@@ -51,7 +47,7 @@ func detectRepository(dir string) (dr repository) {
 
 	if dr.RootDir == "" {
 		if *Verbose {
-			log.Printf("warning: failed to detect repository root dir")
+			log.Printf("warning: failed to detect repository root dir for %q", dir)
 		}
 		return
 	}
@@ -139,12 +135,6 @@ func SourceUnitMatchesArgs(specified []string, u unit.SourceUnit) bool {
 				match = true
 				break
 			}
-		}
-	}
-
-	if !match {
-		if *Verbose {
-			log.Printf("Skipping source unit %s", unit.MakeID(u))
 		}
 	}
 
