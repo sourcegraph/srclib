@@ -34,21 +34,18 @@ func (v *goVersion) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Rep
 	dockerfile = append(dockerfile, []byte("RUN apt-get -yq install git mercurial bzr subversion\n")...)
 
 	pkg := unit.(*Package)
-	var preCmd []byte
-	preCmd = append(preCmd, []byte(fmt.Sprintf("\nRUN go get -v -t %s\nRUN go get -d -v -t %s\n", pkg.ImportPath, pkg.ImportPath))...)
 
 	goConfig := v.goConfig(c)
 	containerDir := filepath.Join(containerGOPATH, "src", goConfig.BaseImportPath)
 	cmd := container.Command{
 		Container: container.Container{
-			Dockerfile:       dockerfile,
-			AddDirs:          [][2]string{{dir, containerDir}},
-			AddFiles:         [][2]string{{gogBinPath, "/usr/local/bin/gog"}},
-			PreCmdDockerfile: preCmd,
-			Cmd:              []string{"gog", pkg.ImportPath},
-			Dir:              containerDir,
-			Stderr:           x.Stderr,
-			Stdout:           x.Stdout,
+			Dockerfile: dockerfile,
+			RunOptions: []string{"-v", dir + ":" + containerDir},
+			AddFiles:   [][2]string{{gogBinPath, "/usr/local/bin/gog"}},
+			Cmd:        []string{"bash", "-c", fmt.Sprintf("go get -v -t %s; gog %s", pkg.ImportPath, pkg.ImportPath)},
+			Dir:        containerDir,
+			Stderr:     x.Stderr,
+			Stdout:     x.Stdout,
 		},
 		Transform: func(in []byte) ([]byte, error) {
 			var o gog.Output

@@ -36,7 +36,7 @@ func (v *goVersion) BuildLister(dir string, unit unit.SourceUnit, c *config.Repo
 			Dockerfile: dockerfile,
 			RunOptions: []string{"-v", dir + ":" + containerDir},
 			// TODO(sqs): include TestImports and XTestImports
-			Cmd: []string{"go", "list", "-f", `[{{if .Imports}}"{{join .Imports "\",\""}}"{{end}}]`, pkg.ImportPath},
+			Cmd: []string{"go", "list", "-e", "-f", `[{{if .Imports}}"{{join .Imports "\",\""}}"{{end}}]`, pkg.ImportPath},
 		},
 		Transform: func(orig []byte) ([]byte, error) {
 			var importPaths []string
