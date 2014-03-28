@@ -11,13 +11,9 @@ import (
 	"strings"
 )
 
-type File interface {
-	Name() string
-}
-
 type Rule interface {
-	Target() File
-	Prereqs() []File
+	Target() string
+	Prereqs() []string
 	Recipes() []string
 }
 
@@ -32,11 +28,7 @@ func isPhony(r Rule) bool {
 	return false
 }
 
-func Makefile(rules []Rule, header []string, filePath func(f File) string) ([]byte, error) {
-	if filePath == nil {
-		filePath = func(f File) string { return f.Name() }
-	}
-
+func Makefile(rules []Rule, header []string) ([]byte, error) {
 	var mf bytes.Buffer
 
 	for _, v := range header {
@@ -49,7 +41,7 @@ func Makefile(rules []Rule, header []string, filePath func(f File) string) ([]by
 	var all, phonies []string
 
 	for _, rule := range rules {
-		ruleName := filePath(rule.Target())
+		ruleName := rule.Target()
 		all = append(all, ruleName)
 		if isPhony(rule) {
 			phonies = append(phonies, ruleName)
@@ -65,10 +57,10 @@ func Makefile(rules []Rule, header []string, filePath func(f File) string) ([]by
 	for _, rule := range rules {
 		fmt.Fprintln(&mf)
 
-		ruleName := filePath(rule.Target())
+		ruleName := rule.Target()
 		fmt.Fprintf(&mf, "%s:", ruleName)
 		for _, prereq := range rule.Prereqs() {
-			fmt.Fprintf(&mf, " %s", filePath(prereq))
+			fmt.Fprintf(&mf, " %s", prereq)
 		}
 		fmt.Fprintln(&mf)
 		for _, recipe := range rule.Recipes() {
@@ -106,16 +98,4 @@ func Quote(s string) string {
 	}
 	q := strconv.Quote(s)
 	return "'" + strings.Replace(q[1:len(q)-1], "'", "", -1) + "'"
-}
-
-type Filename string
-
-func (f Filename) Name() string { return string(f) }
-
-func Files(files []string) []File {
-	p := make([]File, len(files))
-	for i, f := range files {
-		p[i] = Filename(f)
-	}
-	return p
 }

@@ -2,6 +2,7 @@ package build
 
 import (
 	"fmt"
+	"path/filepath"
 	"reflect"
 
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
@@ -17,16 +18,16 @@ func init() {
 	buildstore.RegisterDataType("resolved_deps.v0", []*dep2.ResolvedDep{})
 }
 
-func makeDepRules(c *config.Repository, commitID string, existing []makefile.Rule) ([]makefile.Rule, error) {
+func makeDepRules(c *config.Repository, dataDir string, existing []makefile.Rule) ([]makefile.Rule, error) {
 	if len(c.SourceUnits) == 0 {
 		return nil, nil
 	}
 
-	resolveRule := &ResolveDepsRule{reflect.TypeOf([]*dep2.ResolvedDep{}), nil}
+	resolveRule := &ResolveDepsRule{reflect.TypeOf([]*dep2.ResolvedDep{}), dataDir, nil}
 
 	rules := []makefile.Rule{resolveRule}
 	for _, u := range c.SourceUnits {
-		rule := &ListSourceUnitDepsRule{reflect.TypeOf([]*dep2.RawDependency{}), u}
+		rule := &ListSourceUnitDepsRule{reflect.TypeOf([]*dep2.RawDependency{}), dataDir, u}
 		rules = append(rules, rule)
 		resolveRule.rawDepLists = append(resolveRule.rawDepLists, rule.Target())
 	}
@@ -36,14 +37,15 @@ func makeDepRules(c *config.Repository, commitID string, existing []makefile.Rul
 
 type ResolveDepsRule struct {
 	targetDataType reflect.Type
-	rawDepLists    []makefile.File
+	dataDir        string
+	rawDepLists    []string
 }
 
-func (r *ResolveDepsRule) Target() makefile.File {
-	return &RepositoryCommitDataFile{r.targetDataType}
+func (r *ResolveDepsRule) Target() string {
+	return filepath.Join(r.dataDir, RepositoryCommitDataFilename(r.targetDataType))
 }
 
-func (r *ResolveDepsRule) Prereqs() []makefile.File { return r.rawDepLists }
+func (r *ResolveDepsRule) Prereqs() []string { return r.rawDepLists }
 
 func (r *ResolveDepsRule) Recipes() []string {
 	return []string{"srcgraph -v resolve-deps -json $^ 1> $@"}
@@ -51,15 +53,16 @@ func (r *ResolveDepsRule) Recipes() []string {
 
 type ListSourceUnitDepsRule struct {
 	targetDataType reflect.Type
+	dataDir        string
 	unit           unit.SourceUnit
 }
 
-func (r *ListSourceUnitDepsRule) Target() makefile.File {
-	return &SourceUnitDataFile{r.targetDataType, r.unit}
+func (r *ListSourceUnitDepsRule) Target() string {
+	return filepath.Join(r.dataDir, SourceUnitDataFilename(r.targetDataType, r.unit))
 }
 
-func (r *ListSourceUnitDepsRule) Prereqs() []makefile.File {
-	return makefile.Files(r.unit.Paths())
+func (r *ListSourceUnitDepsRule) Prereqs() []string {
+	return r.unit.Paths()
 }
 
 func (r *ListSourceUnitDepsRule) Recipes() []string {
