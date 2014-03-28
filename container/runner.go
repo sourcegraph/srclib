@@ -20,7 +20,10 @@ type Runner interface {
 
 var DefaultRunner Runner = dockerRunner{}
 
-var RunRetries = 3
+var (
+	RunRetries   = 3
+	BuildRetries = 3
+)
 
 type dockerRunner struct{}
 
@@ -81,9 +84,19 @@ func (_ dockerRunner) Run(c *Command) ([]byte, error) {
 	buildCmd := exec.Command("docker", "build", "--rm=false", "-t", image, ".")
 	buildCmd.Dir = tmpDir
 	buildCmd.Stdout, buildCmd.Stderr = c.Stderr, c.Stderr
-	err = buildCmd.Run()
-	if err != nil {
-		return nil, err
+
+	for i := 0; i < BuildRetries; i++ {
+		remainingAttempts := RunRetries - i - 1
+		err = buildCmd.Run()
+		if err != nil {
+			if remainingAttempts == 0 {
+				return nil, err
+			} else {
+				log.Printf("Command failed: %v: %s (retrying %d more times)", buildCmd.Args, err, remainingAttempts)
+				continue
+			}
+		}
+		break
 	}
 
 	for i := 0; i < RunRetries; i++ {
@@ -103,7 +116,7 @@ func (_ dockerRunner) Run(c *Command) ([]byte, error) {
 			if remainingAttempts == 0 {
 				return nil, err
 			} else {
-				log.Printf("Command failed: docker %v: %s (retrying %d more times)", args, err, remainingAttempts)
+				log.Printf("Command failed: %v: %s (retrying %d more times)", runCmd.Args, err, remainingAttempts)
 				continue
 			}
 		}
