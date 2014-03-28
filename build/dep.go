@@ -22,28 +22,27 @@ func makeDepRules(c *config.Repository, dataDir string, existing []makefile.Rule
 		return nil, nil
 	}
 
-	resolveRule := &ResolveDepsRule{dataDir, nil}
-
-	rules := []makefile.Rule{resolveRule}
+	var rules []makefile.Rule
 	for _, u := range c.SourceUnits {
-		rule := &ListSourceUnitDepsRule{dataDir, u}
-		rules = append(rules, rule)
-		resolveRule.rawDepLists = append(resolveRule.rawDepLists, rule.Target())
+		rawDepRule := &ListSourceUnitDepsRule{dataDir, u}
+		rules = append(rules, rawDepRule)
+		rules = append(rules, &ResolveDepsRule{dataDir, u, rawDepRule.Target()})
 	}
 
 	return rules, nil
 }
 
 type ResolveDepsRule struct {
-	dataDir     string
-	rawDepLists []string
+	dataDir       string
+	unit          unit.SourceUnit
+	RawDepsOutput string
 }
 
 func (r *ResolveDepsRule) Target() string {
-	return filepath.Join(r.dataDir, RepositoryCommitDataFilename([]*dep2.ResolvedDep{}))
+	return filepath.Join(r.dataDir, SourceUnitDataFilename([]*dep2.ResolvedDep{}, r.unit))
 }
 
-func (r *ResolveDepsRule) Prereqs() []string { return r.rawDepLists }
+func (r *ResolveDepsRule) Prereqs() []string { return []string{r.RawDepsOutput} }
 
 func (r *ResolveDepsRule) Recipes() []string {
 	return []string{"srcgraph -v resolve-deps -json $^ 1> $@"}
