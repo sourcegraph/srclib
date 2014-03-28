@@ -28,7 +28,7 @@ func (v *goVersion) BuildScanner(dir string, c *config.Repository, x *task2.Cont
 	cont := container.Container{
 		Dockerfile: dockerfile,
 		RunOptions: []string{"-v", dir + ":" + containerDir},
-		Cmd:        []string{"go", "list", goConfig.BaseImportPath + "/..."},
+		Cmd:        []string{"go", "list", "-e", goConfig.BaseImportPath + "/..."},
 		Stderr:     x.Stderr,
 		Stdout:     x.Stdout,
 	}
