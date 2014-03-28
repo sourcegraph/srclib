@@ -38,7 +38,7 @@ The options are:
 	}
 }
 
-var verbose = flag.Bool("v", false, "show verbose output")
+var Verbose = flag.Bool("v", false, "show verbose output")
 var dir = flag.String("dir", ".", "directory to work in")
 
 var apiclient = client.NewClient(nil)

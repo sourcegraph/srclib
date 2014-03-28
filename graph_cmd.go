@@ -51,7 +51,7 @@ The options are:
 			log.Fatal(err)
 		}
 
-		if *summary || *verbose {
+		if *summary || *Verbose {
 			log.Printf("## %s output summary:", unit.MakeID(u))
 			log.Printf(" - %d symbols", len(output.Symbols))
 			log.Printf(" - %d refs", len(output.Refs))
