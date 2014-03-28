@@ -40,7 +40,7 @@ The options are:
 		for _, p := range u.Paths() {
 			fmt.Printf("  %s\n", p)
 		}
-		if *verbose {
+		if *Verbose {
 			jsonStr, err := json.MarshalIndent(u, "\t", "  ")
 			if err != nil {
 				log.Fatal(err)

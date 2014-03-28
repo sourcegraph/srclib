@@ -57,14 +57,14 @@ func uploadFile(repoStore *buildstore.RepositoryStore, file *buildstore.BuildDat
 
 	fi, err := repoStore.Stat(path)
 	if err != nil || !fi.Mode().IsRegular() {
-		if *verbose {
+		if *Verbose {
 			log.Printf("upload: skipping nonexistent file %s", path)
 		}
 		return
 	}
 
 	kb := float64(fi.Size()) / 1024
-	if *verbose {
+	if *Verbose {
 		log.Printf("Uploading %s (%.1fkb)", path, kb)
 	}
 
@@ -79,7 +79,7 @@ func uploadFile(repoStore *buildstore.RepositoryStore, file *buildstore.BuildDat
 		log.Fatal(err)
 	}
 
-	if *verbose {
+	if *Verbose {
 		log.Printf("Uploaded %s (%.1fkb)", path, kb)
 	}
 }

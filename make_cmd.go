@@ -54,7 +54,7 @@ See the man page for "make" for all makeoptions.
 		log.Fatalf("error creating Makefile: %s", err)
 	}
 
-	if *verbose || *showMakefileAndExit {
+	if *Verbose || *showMakefileAndExit {
 		log.Printf("# Makefile\n%s", mf)
 		if *showMakefileAndExit {
 			return

@@ -50,14 +50,14 @@ The options are:
 			log.Fatal(err)
 		}
 
-		if *verbose {
+		if *Verbose {
 			log.Printf("## %s", unit.MakeID(u))
 		}
 
 		allRawDeps = append(allRawDeps, rawDeps...)
 
 		for _, rawDep := range rawDeps {
-			if *verbose {
+			if *Verbose {
 				log.Printf("%+v", rawDep)
 			}
 

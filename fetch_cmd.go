@@ -64,7 +64,7 @@ func fetchFile(repoStore *buildstore.RepositoryStore, repoURI string, fi *builds
 	}
 
 	kb := float64(fi.Size) / 1024
-	if *verbose {
+	if *Verbose {
 		log.Printf("Fetching %s (%.1fkb)", path, kb)
 	}
 
@@ -73,7 +73,7 @@ func fetchFile(repoStore *buildstore.RepositoryStore, repoURI string, fi *builds
 		log.Fatal(err)
 	}
 
-	if *verbose {
+	if *Verbose {
 		log.Printf("Fetched %s (%.1fkb)", path, kb)
 	}
 
@@ -93,7 +93,7 @@ func fetchFile(repoStore *buildstore.RepositoryStore, repoURI string, fi *builds
 		log.Fatal(err)
 	}
 
-	if *verbose {
+	if *Verbose {
 		log.Printf("Saved %s", path)
 	}
 }
