@@ -1,6 +1,9 @@
 package buildstore
 
-import "reflect"
+import (
+	"reflect"
+	"strings"
+)
 
 var DataTypes = make(map[string]interface{})
 var DataTypeNames = make(map[reflect.Type]string)
@@ -41,4 +44,28 @@ func RegisterDataType(name string, emptyInstance interface{}) {
 	}
 	DataTypeNames[typ] = name
 	DataTypeNames[reflect.PtrTo(typ)] = name
+}
+
+func DataTypeSuffix(typ reflect.Type) string {
+	name, registered := DataTypeNames[typ]
+	if !registered {
+		panic("buildstore: data type not registered: " + typ.String())
+	}
+
+	return name + ".json"
+}
+
+// DataType returns the data type name and empty instance (previously registered
+// with RegisterDataType) to use for a build data file named filename. If no
+// registered data type is found for filename, "" and nil are returned.
+//
+// For example, if a data type "foo.v0" was registered, a filename of
+// "qux_foo.v0.json" would return "foo.v0" and the registered type.
+func DataType(filename string) (string, interface{}) {
+	for name, emptyInstance := range DataTypes {
+		if strings.HasSuffix(filename, DataTypeSuffix(reflect.TypeOf(emptyInstance))) {
+			return name, emptyInstance
+		}
+	}
+	return "", nil
 }

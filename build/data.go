@@ -14,7 +14,7 @@ type RepositoryCommitDataFile struct {
 	DataType reflect.Type
 }
 
-func (f *RepositoryCommitDataFile) Name() string { return dataTypeSuffix(f.DataType) }
+func (f *RepositoryCommitDataFile) Name() string { return buildstore.DataTypeSuffix(f.DataType) }
 
 type SourceUnitDataFile struct {
 	DataType reflect.Type
@@ -22,16 +22,7 @@ type SourceUnitDataFile struct {
 }
 
 func (f *SourceUnitDataFile) Name() string {
-	return filepath.Clean(fmt.Sprintf("%s_%s", unit.MakeID(f.Unit), dataTypeSuffix(f.DataType)))
-}
-
-func dataTypeSuffix(typ reflect.Type) string {
-	name, registered := buildstore.DataTypeNames[typ]
-	if !registered {
-		panic("build: data type not registered: " + typ.String())
-	}
-
-	return name + ".json"
+	return filepath.Clean(fmt.Sprintf("%s_%s", unit.MakeID(f.Unit), buildstore.DataTypeSuffix(f.DataType)))
 }
 
 // isDataFile returns true iff the makefile.File is one of the build data file
