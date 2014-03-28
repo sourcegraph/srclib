@@ -58,6 +58,9 @@ func main() {
 	}
 
 	for _, gs := range g.Output.Symbols {
+		if gs.File == "" {
+			log.Printf("no file %+v", gs)
+		}
 		gs.File = relPath(gs.File)
 	}
 	for _, gr := range g.Output.Refs {
@@ -88,7 +91,7 @@ func init() {
 func relPath(path string) string {
 	rp, err := filepath.Rel(cwd, path)
 	if err != nil {
-		log.Fatal("Failed to make path %q relative to %q: %s", path, cwd, err)
+		log.Fatalf("Failed to make path %q relative to %q: %s", path, cwd, err)
 	}
 	return rp
 }

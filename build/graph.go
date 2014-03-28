@@ -37,5 +37,8 @@ func (r *GraphSourceUnitRule) Target() string {
 func (r *GraphSourceUnitRule) Prereqs() []string { return r.Unit.Paths() }
 
 func (r *GraphSourceUnitRule) Recipes() []string {
-	return []string{fmt.Sprintf("srcgraph -v graph -json %q 1> $@", unit.MakeID(r.Unit))}
+	return []string{
+		"mkdir -p `dirname \"$@\"`",
+		fmt.Sprintf("srcgraph -v graph -json %q 1> $@", unit.MakeID(r.Unit)),
+	}
 }

@@ -39,6 +39,7 @@ var (
 type Repository struct {
 	URI         repo.URI    `json:",omitempty"`
 	SourceUnits SourceUnits `json:",omitempty"`
+	ScanIgnore  []string    `json:",omitempty"`
 	Global      Global      `json:",omitempty"`
 }
 
@@ -50,7 +51,9 @@ type Global map[string]interface{}
 // repository.
 func ReadDir(dir string, repoURI repo.URI) (*Repository, error) {
 	var c *Repository
-	if f, err := os.Open(filepath.Join(dir, Filename)); err == nil {
+	if oc, overridden := repoOverrides[repoURI]; overridden {
+		c = oc
+	} else if f, err := os.Open(filepath.Join(dir, Filename)); err == nil {
 		defer f.Close()
 		err = json.NewDecoder(f).Decode(&c)
 		if err != nil {

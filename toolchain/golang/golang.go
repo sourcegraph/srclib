@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"text/template"
 
+	"sync"
+
 	"github.com/sourcegraph/go-vcsurl"
 	"sourcegraph.com/sourcegraph/srcgraph/dep2"
 	"sourcegraph.com/sourcegraph/srcgraph/toolchain"
-	"sync"
 )
 
 func init() {
@@ -37,7 +38,7 @@ var goVersions = map[string]*goVersion{
 		VersionString:      "go1.2.1",
 		RepositoryCloneURL: "https://code.google.com/p/go",
 		RepositoryVCS:      vcsurl.Mercurial,
-		VCSRevision:        "release-branch.go1.2.1",
+		VCSRevision:        "go1.2.1",
 		SourceUnitPrefix:   "src/pkg",
 	},
 }

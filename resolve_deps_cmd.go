@@ -40,8 +40,15 @@ The options are:
 		log.Fatal(err)
 	}
 
+	if *Verbose {
+		log.Printf("Finished scanning")
+	}
+
 	var allRawDeps []*dep2.RawDependency
 	for name, input := range inputs {
+		if *Verbose {
+			log.Printf("Reading raw deps from %q", name)
+		}
 		var rawDeps []*dep2.RawDependency
 		err := json.NewDecoder(input).Decode(&rawDeps)
 		if err != nil {

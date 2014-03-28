@@ -59,20 +59,21 @@ func (v *goVersion) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Rep
 				Refs:    make([]*graph.Ref, len(o.Refs)),
 				Docs:    make([]*graph.Doc, len(o.Docs)),
 			}
+
 			for i, gs := range o.Symbols {
-				o2.Symbols[i], err = v.convertGoSymbol(gs, c)
+				o2.Symbols[i], err = v.convertGoSymbol(gs, c, x)
 				if err != nil {
 					return nil, err
 				}
 			}
 			for i, gr := range o.Refs {
-				o2.Refs[i], err = v.convertGoRef(gr, c)
+				o2.Refs[i], err = v.convertGoRef(gr, c, x)
 				if err != nil {
 					return nil, err
 				}
 			}
 			for i, gd := range o.Docs {
-				o2.Docs[i], err = v.convertGoDoc(gd, c)
+				o2.Docs[i], err = v.convertGoDoc(gd, c, x)
 				if err != nil {
 					return nil, err
 				}
@@ -85,17 +86,17 @@ func (v *goVersion) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Rep
 	return &cmd, nil
 }
 
-func (v *goVersion) convertGoSymbol(gs *gog.Symbol, c *config.Repository) (*graph.Symbol, error) {
-	resolvedTarget, err := v.resolveGoImportDep(gs.SymbolKey.PackageImportPath, c)
+func (v *goVersion) convertGoSymbol(gs *gog.Symbol, c *config.Repository, x *task2.Context) (*graph.Symbol, error) {
+	resolvedTarget, err := v.resolveGoImportDep(gs.SymbolKey.PackageImportPath, c, x)
 	if err != nil {
 		return nil, err
 	}
 
 	sym := &graph.Symbol{
 		SymbolKey: graph.SymbolKey{
-			Unit:     gs.PackageImportPath,
 			Repo:     repo.MakeURI(resolvedTarget.ToRepoCloneURL),
-			UnitType: "go",
+			Unit:     resolvedTarget.ToUnit,
+			UnitType: resolvedTarget.ToUnitType,
 			Path:     graph.SymbolPath(strings.Join(gs.Path, "/")),
 		},
 
@@ -119,16 +120,19 @@ func (v *goVersion) convertGoSymbol(gs *gog.Symbol, c *config.Repository) (*grap
 	return sym, nil
 }
 
-func (v *goVersion) convertGoRef(gr *gog.Ref, c *config.Repository) (*graph.Ref, error) {
-	resolvedTarget, err := v.resolveGoImportDep(gr.Symbol.PackageImportPath, c)
+func (v *goVersion) convertGoRef(gr *gog.Ref, c *config.Repository, x *task2.Context) (*graph.Ref, error) {
+	resolvedTarget, err := v.resolveGoImportDep(gr.Symbol.PackageImportPath, c, x)
 	if err != nil {
 		return nil, err
+	}
+	if resolvedTarget == nil {
+		return nil, nil
 	}
 	return &graph.Ref{
 		SymbolRepo:     repo.MakeURI(resolvedTarget.ToRepoCloneURL),
 		SymbolPath:     graph.SymbolPath(strings.Join(gr.Symbol.Path, "/")),
-		SymbolUnit:     gr.Symbol.PackageImportPath,
-		SymbolUnitType: "go",
+		SymbolUnit:     resolvedTarget.ToUnit,
+		SymbolUnitType: resolvedTarget.ToUnitType,
 		Def:            gr.Def,
 		File:           gr.File,
 		Start:          gr.Span[0],
@@ -136,8 +140,8 @@ func (v *goVersion) convertGoRef(gr *gog.Ref, c *config.Repository) (*graph.Ref,
 	}, nil
 }
 
-func (v *goVersion) convertGoDoc(gd *gog.Doc, c *config.Repository) (*graph.Doc, error) {
-	resolvedTarget, err := v.resolveGoImportDep(gd.PackageImportPath, c)
+func (v *goVersion) convertGoDoc(gd *gog.Doc, c *config.Repository, x *task2.Context) (*graph.Doc, error) {
+	resolvedTarget, err := v.resolveGoImportDep(gd.PackageImportPath, c, x)
 	if err != nil {
 		return nil, err
 	}
@@ -145,8 +149,8 @@ func (v *goVersion) convertGoDoc(gd *gog.Doc, c *config.Repository) (*graph.Doc,
 		SymbolKey: graph.SymbolKey{
 			Repo:     repo.MakeURI(resolvedTarget.ToRepoCloneURL),
 			Path:     graph.SymbolPath(strings.Join(gd.Path, "/")),
-			Unit:     gd.PackageImportPath,
-			UnitType: "go",
+			Unit:     resolvedTarget.ToUnit,
+			UnitType: resolvedTarget.ToUnitType,
 		},
 		Format: gd.Format,
 		Data:   gd.Data,

@@ -63,5 +63,8 @@ func (r *ListSourceUnitDepsRule) Prereqs() []string {
 }
 
 func (r *ListSourceUnitDepsRule) Recipes() []string {
-	return []string{fmt.Sprintf("srcgraph -v list-deps -json %q 1> $@", unit.MakeID(r.unit))}
+	return []string{
+		"mkdir -p `dirname \"$@\"`",
+		fmt.Sprintf("srcgraph -v list-deps -json %q 1> $@", unit.MakeID(r.unit)),
+	}
 }
