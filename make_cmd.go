@@ -49,33 +49,20 @@ See the man page for "make" for all makeoptions.
 
 	x := task2.NewRecordedContext()
 
-	rules, vars, err := build.CreateMakefile(repo.RootDir, repo.CloneURL, repo.CommitID, x)
+	mf, err := build.CreateMakefile(repo.RootDir, repo.CloneURL, repo.CommitID, x)
 	if err != nil {
 		log.Fatalf("error creating Makefile: %s", err)
 	}
 
 	if *verbose || *showMakefileAndExit {
-		mf, err := makefile.Makefile(rules, vars)
-		if err != nil {
-			log.Fatal(err)
-		}
 		log.Printf("# Makefile\n%s", mf)
 		if *showMakefileAndExit {
 			return
 		}
 	}
 
-	err = makefile.MakeRules(repo.RootDir, rules, vars, fs.Args())
+	err = makefile.Make(repo.RootDir, mf, fs.Args())
 	if err != nil {
 		log.Fatalf("make failed: %s", err)
-	}
-
-	if *verbose {
-		if len(rules) > 0 {
-			log.Printf("%d output files:", len(rules))
-			for _, r := range rules {
-				log.Printf(" - %s", r.Target().Name())
-			}
-		}
 	}
 }

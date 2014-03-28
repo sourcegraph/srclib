@@ -5,20 +5,14 @@ import (
 	"testing"
 )
 
-type file struct {
-	name string
-}
-
-func (f *file) Name() string { return f.name }
-
 type dummyRule struct {
-	target  *file
-	prereqs []Prereq
+	target  File
+	prereqs []File
 	recipes []string
 }
 
-func (r *dummyRule) Target() Target    { return r.target }
-func (r *dummyRule) Prereqs() []Prereq { return r.prereqs }
+func (r *dummyRule) Target() File      { return r.target }
+func (r *dummyRule) Prereqs() []File   { return r.prereqs }
 func (r *dummyRule) Recipes() []string { return r.recipes }
 
 func TestMakefile(t *testing.T) {
@@ -29,8 +23,8 @@ func TestMakefile(t *testing.T) {
 		{
 			rules: []Rule{
 				&dummyRule{
-					&file{"myTarget"},
-					[]Prereq{&file{"myPrereq0"}, &file{"myPrereq1"}},
+					Filename("myTarget"),
+					[]File{Filename("myPrereq0"), Filename("myPrereq1")},
 					[]string{"foo bar"},
 				},
 			},
@@ -43,7 +37,7 @@ myTarget: myPrereq0 myPrereq1
 		},
 	}
 	for _, test := range tests {
-		makefile, err := Makefile(test.rules, nil)
+		makefile, err := Makefile(test.rules, nil, nil)
 		if err != nil {
 			t.Error(err)
 			continue

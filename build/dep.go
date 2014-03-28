@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/dep2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
@@ -12,8 +13,8 @@ import (
 
 func init() {
 	RegisterRuleMaker("dep", makeDepRules)
-	RegisterDataType("raw_deps.v0", []*dep2.RawDependency{})
-	RegisterDataType("resolved_deps.v0", []*dep2.ResolvedDep{})
+	buildstore.RegisterDataType("raw_deps.v0", []*dep2.RawDependency{})
+	buildstore.RegisterDataType("resolved_deps.v0", []*dep2.ResolvedDep{})
 }
 
 func makeDepRules(c *config.Repository, commitID string, existing []makefile.Rule) ([]makefile.Rule, error) {
@@ -21,11 +22,11 @@ func makeDepRules(c *config.Repository, commitID string, existing []makefile.Rul
 		return nil, nil
 	}
 
-	resolveRule := &ResolveDepsRule{DataFileInfo{c.URI, commitID, reflect.TypeOf([]*dep2.ResolvedDep{})}, nil}
+	resolveRule := &ResolveDepsRule{reflect.TypeOf([]*dep2.ResolvedDep{}), nil}
 
 	rules := []makefile.Rule{resolveRule}
 	for _, u := range c.SourceUnits {
-		rule := &ListSourceUnitDepsRule{DataFileInfo{c.URI, commitID, reflect.TypeOf([]*dep2.RawDependency{})}, u}
+		rule := &ListSourceUnitDepsRule{reflect.TypeOf([]*dep2.RawDependency{}), u}
 		rules = append(rules, rule)
 		resolveRule.rawDepLists = append(resolveRule.rawDepLists, rule.Target())
 	}
@@ -34,31 +35,31 @@ func makeDepRules(c *config.Repository, commitID string, existing []makefile.Rul
 }
 
 type ResolveDepsRule struct {
-	targetInfo  DataFileInfo
-	rawDepLists []makefile.Prereq
+	targetDataType reflect.Type
+	rawDepLists    []makefile.File
 }
 
-func (r *ResolveDepsRule) Target() makefile.Target {
-	return &RepositoryCommitDataFile{r.targetInfo}
+func (r *ResolveDepsRule) Target() makefile.File {
+	return &RepositoryCommitDataFile{r.targetDataType}
 }
 
-func (r *ResolveDepsRule) Prereqs() []makefile.Prereq { return r.rawDepLists }
+func (r *ResolveDepsRule) Prereqs() []makefile.File { return r.rawDepLists }
 
 func (r *ResolveDepsRule) Recipes() []string {
 	return []string{"srcgraph -v resolve-deps -json $^ 1> $@"}
 }
 
 type ListSourceUnitDepsRule struct {
-	targetInfo DataFileInfo
-	unit       unit.SourceUnit
+	targetDataType reflect.Type
+	unit           unit.SourceUnit
 }
 
-func (r *ListSourceUnitDepsRule) Target() makefile.Target {
-	return &SourceUnitDataFile{r.targetInfo, r.unit}
+func (r *ListSourceUnitDepsRule) Target() makefile.File {
+	return &SourceUnitDataFile{r.targetDataType, r.unit}
 }
 
-func (r *ListSourceUnitDepsRule) Prereqs() []makefile.Prereq {
-	return makefile.FilePrereqs(r.unit.Paths())
+func (r *ListSourceUnitDepsRule) Prereqs() []makefile.File {
+	return makefile.Files(r.unit.Paths())
 }
 
 func (r *ListSourceUnitDepsRule) Recipes() []string {

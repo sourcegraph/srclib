@@ -11,8 +11,7 @@ import (
 
 	"sourcegraph.com/sourcegraph/client"
 	"sourcegraph.com/sourcegraph/repo"
-	"sourcegraph.com/sourcegraph/srcgraph/build"
-	"sourcegraph.com/sourcegraph/srcgraph/build/buildstore"
+	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 )
 
 func fetch(args []string) {
@@ -36,7 +35,6 @@ The options are:
 		fs.Usage()
 	}
 
-	// TODO!(sqs): this filepath.Join is hacky
 	var opt *client.BuildDataListOptions
 	if *commitID != "" {
 		opt = &client.BuildDataListOptions{CommitID: *commitID}
@@ -46,26 +44,28 @@ The options are:
 		log.Fatal(err)
 	}
 
+	repoStore, err := buildstore.NewRepositoryStore(r.RootDir)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	for _, file := range localFiles {
-		fetchFile(file.FullPath, *repoURI, file)
+		fetchFile(repoStore, *repoURI, file)
 	}
 }
 
-func fetchFile(absName string, repoURI string, fi *buildstore.BuildDataFileInfo) {
+func fetchFile(repoStore *buildstore.RepositoryStore, repoURI string, fi *buildstore.BuildDataFileInfo) {
+	path := repoStore.FilePath(fi.CommitID, fi.Path)
+
 	fileSpec := client.BuildDataFileSpec{
 		RepositorySpec: client.RepositorySpec{repoURI},
 		CommitID:       fi.CommitID,
 		Path:           fi.Path,
 	}
 
-	err := rwvfs.MkdirAll(build.Storage, filepath.Dir(absName))
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	kb := float64(fi.Size) / 1024
 	if *verbose {
-		log.Printf("Fetching %s (%.1fkb)", absName, kb)
+		log.Printf("Fetching %s (%.1fkb)", path, kb)
 	}
 
 	data, _, err := apiclient.BuildData.Get(fileSpec)
@@ -74,20 +74,26 @@ func fetchFile(absName string, repoURI string, fi *buildstore.BuildDataFileInfo)
 	}
 
 	if *verbose {
-		log.Printf("Fetched %s (%.1fkb)", absName, kb)
+		log.Printf("Fetched %s (%.1fkb)", path, kb)
 	}
 
-	f, err := build.Storage.Create(absName)
-	defer f.Close()
+	err = rwvfs.MkdirAll(repoStore, filepath.Dir(path))
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	f, err := repoStore.Create(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+
 	_, err = f.Write(data)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if *verbose {
-		log.Printf("Saved %s", absName)
+		log.Printf("Saved %s", path)
 	}
 }

@@ -5,19 +5,16 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 
 	"sourcegraph.com/sourcegraph/client"
 	"sourcegraph.com/sourcegraph/repo"
-	"sourcegraph.com/sourcegraph/srcgraph/build"
-	"sourcegraph.com/sourcegraph/srcgraph/build/buildstore"
+	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 )
 
 func upload(args []string) {
 	fs := flag.NewFlagSet("upload", flag.ExitOnError)
 	r := detectRepository(*dir)
 	repoURI := fs.String("repo", string(repo.MakeURI(r.CloneURL)), "repository URI (ex: github.com/alice/foo)")
-	commitID := fs.String("commit", r.CommitID, "commit ID (optional)")
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` upload [options]
 
@@ -34,47 +31,55 @@ The options are:
 		fs.Usage()
 	}
 
-	// TODO!(sqs): this filepath.Join is hacky
-	localFiles, err := buildstore.ListDataFiles(build.Storage, repo.URI(*repoURI), filepath.Join(*repoURI, *commitID))
+	repoStore, err := buildstore.NewRepositoryStore(r.RootDir)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	localFiles, err := repoStore.AllDataFiles()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for _, file := range localFiles {
-		uploadFile(file.FullPath, client.BuildDataFileSpec{
-			RepositorySpec: client.RepositorySpec{*repoURI},
-			CommitID:       file.CommitID,
-			Path:           file.Path,
-		})
+		uploadFile(repoStore, file, *repoURI)
 	}
 }
 
-func uploadFile(absName string, file client.BuildDataFileSpec) {
-	fi, err := build.Storage.Stat(absName)
+func uploadFile(repoStore *buildstore.RepositoryStore, file *buildstore.BuildDataFileInfo, repoURI string) {
+	path := repoStore.FilePath(file.CommitID, file.Path)
+
+	fileSpec := client.BuildDataFileSpec{
+		RepositorySpec: client.RepositorySpec{repoURI},
+		CommitID:       file.CommitID,
+		Path:           file.Path,
+	}
+
+	fi, err := repoStore.Stat(path)
 	if err != nil || !fi.Mode().IsRegular() {
 		if *verbose {
-			log.Printf("upload: skipping nonexistent file %s", absName)
+			log.Printf("upload: skipping nonexistent file %s", path)
 		}
 		return
 	}
 
 	kb := float64(fi.Size()) / 1024
 	if *verbose {
-		log.Printf("Uploading %s (%.1fkb)", absName, kb)
+		log.Printf("Uploading %s (%.1fkb)", path, kb)
 	}
 
-	f, err := build.Storage.Open(absName)
+	f, err := repoStore.Open(path)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer f.Close()
 
-	_, err = apiclient.BuildData.Upload(file, f)
+	_, err = apiclient.BuildData.Upload(fileSpec, f)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if *verbose {
-		log.Printf("Uploaded %s (%.1fkb)", absName, kb)
+		log.Printf("Uploaded %s (%.1fkb)", path, kb)
 	}
 }

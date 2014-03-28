@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
 	_ "sourcegraph.com/sourcegraph/srcgraph/toolchain/all_toolchains"
@@ -13,27 +14,27 @@ import (
 
 func init() {
 	RegisterRuleMaker("graph", makeGraphRules)
-	RegisterDataType("graph.v0", grapher2.Output{})
+	buildstore.RegisterDataType("graph.v0", grapher2.Output{})
 }
 
 func makeGraphRules(c *config.Repository, commitID string, existing []makefile.Rule) ([]makefile.Rule, error) {
 	var rules []makefile.Rule
 	for _, u := range c.SourceUnits {
-		rules = append(rules, &GraphSourceUnitRule{DataFileInfo{c.URI, commitID, reflect.TypeOf(grapher2.Output{})}, u})
+		rules = append(rules, &GraphSourceUnitRule{reflect.TypeOf(grapher2.Output{}), u})
 	}
 	return rules, nil
 }
 
 type GraphSourceUnitRule struct {
-	targetInfo DataFileInfo
-	Unit       unit.SourceUnit
+	targetDataType reflect.Type
+	Unit           unit.SourceUnit
 }
 
-func (r *GraphSourceUnitRule) Target() makefile.Target {
-	return &SourceUnitDataFile{r.targetInfo, r.Unit}
+func (r *GraphSourceUnitRule) Target() makefile.File {
+	return &SourceUnitDataFile{r.targetDataType, r.Unit}
 }
 
-func (r *GraphSourceUnitRule) Prereqs() []makefile.Prereq { return makefile.FilePrereqs(r.Unit.Paths()) }
+func (r *GraphSourceUnitRule) Prereqs() []makefile.File { return makefile.Files(r.Unit.Paths()) }
 
 func (r *GraphSourceUnitRule) Recipes() []string {
 	return []string{fmt.Sprintf("srcgraph -v graph -json %q 1> $@", unit.MakeID(r.Unit))}

@@ -11,17 +11,13 @@ import (
 	"strings"
 )
 
-type Target interface {
-	Name() string
-}
-
-type Prereq interface {
+type File interface {
 	Name() string
 }
 
 type Rule interface {
-	Target() Target
-	Prereqs() []Prereq
+	Target() File
+	Prereqs() []File
 	Recipes() []string
 }
 
@@ -36,20 +32,24 @@ func isPhony(r Rule) bool {
 	return false
 }
 
-func Makefile(rules []Rule, vars []string) ([]byte, error) {
+func Makefile(rules []Rule, header []string, filePath func(f File) string) ([]byte, error) {
+	if filePath == nil {
+		filePath = func(f File) string { return f.Name() }
+	}
+
 	var mf bytes.Buffer
 
-	for _, v := range vars {
+	for _, v := range header {
 		fmt.Fprintln(&mf, v)
 	}
-	if len(vars) > 0 {
+	if len(header) > 0 {
 		fmt.Fprintln(&mf)
 	}
 
 	var all, phonies []string
 
 	for _, rule := range rules {
-		ruleName := rule.Target().Name()
+		ruleName := filePath(rule.Target())
 		all = append(all, ruleName)
 		if isPhony(rule) {
 			phonies = append(phonies, ruleName)
@@ -65,10 +65,10 @@ func Makefile(rules []Rule, vars []string) ([]byte, error) {
 	for _, rule := range rules {
 		fmt.Fprintln(&mf)
 
-		ruleName := rule.Target().Name()
+		ruleName := filePath(rule.Target())
 		fmt.Fprintf(&mf, "%s:", ruleName)
 		for _, prereq := range rule.Prereqs() {
-			fmt.Fprintf(&mf, " %s", prereq.Name())
+			fmt.Fprintf(&mf, " %s", filePath(prereq))
 		}
 		fmt.Fprintln(&mf)
 		for _, recipe := range rule.Recipes() {
@@ -77,14 +77,6 @@ func Makefile(rules []Rule, vars []string) ([]byte, error) {
 	}
 
 	return mf.Bytes(), nil
-}
-
-func MakeRules(dir string, rules []Rule, vars []string, args []string) error {
-	mf, err := Makefile(rules, vars)
-	if err != nil {
-		return err
-	}
-	return Make(dir, mf, args)
 }
 
 func Make(dir string, makefile []byte, args []string) error {
@@ -116,14 +108,14 @@ func Quote(s string) string {
 	return "'" + strings.Replace(q[1:len(q)-1], "'", "", -1) + "'"
 }
 
-type filePrereq string
+type Filename string
 
-func (f filePrereq) Name() string { return string(f) }
+func (f Filename) Name() string { return string(f) }
 
-func FilePrereqs(files []string) []Prereq {
-	p := make([]Prereq, len(files))
+func Files(files []string) []File {
+	p := make([]File, len(files))
 	for i, f := range files {
-		p[i] = filePrereq(f)
+		p[i] = Filename(f)
 	}
 	return p
 }
