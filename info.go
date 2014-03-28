@@ -8,6 +8,7 @@ import (
 
 	"github.com/kr/text"
 	"sourcegraph.com/sourcegraph/srcgraph/build"
+	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/dep2"
 	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
@@ -77,8 +78,8 @@ The options are:
 	}
 	log.Println()
 
-	log.Printf("Build data types (%d)", len(build.DataTypes))
-	for name, _ := range build.DataTypes {
+	log.Printf("Build data types (%d)", len(buildstore.DataTypes))
+	for name, _ := range buildstore.DataTypes {
 		log.Printf(" - %s", name)
 	}
 	log.Println()

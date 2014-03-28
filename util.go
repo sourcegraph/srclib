@@ -1,16 +1,21 @@
 package srcgraph
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
+	"os/user"
+	"path/filepath"
 	"strings"
 
 	"github.com/sourcegraph/go-vcs"
+	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
@@ -50,6 +55,8 @@ func detectRepository(dir string) (dr repository) {
 		}
 		return
 	}
+
+	updateVCSIgnore("." + dr.vcsTypeName + "ignore")
 
 	cloneURLCmd := map[string]*exec.Cmd{
 		"git": exec.Command("git", "config", "remote.origin.url"),
@@ -171,5 +178,31 @@ func OpenInputFiles(extraArgs []string) map[string]io.ReadCloser {
 func CloseAll(files map[string]io.ReadCloser) {
 	for _, rc := range files {
 		rc.Close()
+	}
+}
+
+// updateVCSIgnore adds .sourcegraph-data/ to the user's .${VCS}ignore file in
+// their home directory.
+func updateVCSIgnore(name string) {
+	u, err := user.Current()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	entry := buildstore.BuildDataDirName + "/"
+
+	path := filepath.Join(u.HomeDir, name)
+	data, err := ioutil.ReadFile(path)
+	if os.IsNotExist(err) {
+		err = nil
+	} else if bytes.Contains(data, []byte("\n"+entry+"\n")) {
+		// already has entry
+		return
+	}
+
+	data = append(data, []byte("\n\n# Sourcegraph build data\n"+entry+"\n")...)
+	err = ioutil.WriteFile(path, data, 0700)
+	if err != nil {
+		log.Fatal(err)
 	}
 }

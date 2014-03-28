@@ -5,19 +5,16 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 
 	"sourcegraph.com/sourcegraph/client"
 	"sourcegraph.com/sourcegraph/repo"
-	"sourcegraph.com/sourcegraph/srcgraph/build"
-	"sourcegraph.com/sourcegraph/srcgraph/build/buildstore"
+	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 )
 
 func data(args []string) {
 	fs := flag.NewFlagSet("data", flag.ExitOnError)
-	r := detectRepository(*dir)
+	r := AddRepositoryFlags(fs)
 	repoURI := fs.String("repo", string(repo.MakeURI(r.CloneURL)), "repository URI (ex: github.com/alice/foo)")
-	commitID := fs.String("commit", r.CommitID, "commit ID (optional)")
 	remote := fs.Bool("remote", true, "show remote data")
 	local := fs.Bool("local", true, "show local data")
 	fs.Usage = func() {
@@ -37,28 +34,33 @@ The options are:
 	}
 
 	var opt *client.BuildDataListOptions
-	if *commitID != "" {
-		opt = &client.BuildDataListOptions{CommitID: *commitID}
+	if r.CommitID != "" {
+		opt = &client.BuildDataListOptions{CommitID: r.CommitID}
 	}
-	remoteData, _, err := apiclient.BuildData.List(client.RepositorySpec{URI: *repoURI}, opt)
+	remoteFiles, _, err := apiclient.BuildData.List(client.RepositorySpec{URI: *repoURI}, opt)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if *remote {
 		log.Println("===================== REMOTE")
-		PrintJSON(remoteData, "")
+		PrintJSON(remoteFiles, "")
 		log.Println("============================")
 	}
 
-	// TODO!(sqs): this filepath.Join is hacky
-	localData, err := buildstore.ListDataFiles(build.Storage, repo.URI(*repoURI), filepath.Join(*repoURI, *commitID))
+	repoStore, err := buildstore.NewRepositoryStore(r.RootDir)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	localFiles, err := repoStore.AllDataFiles()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	if *local {
 		log.Println("===================== LOCAL")
-		PrintJSON(localData, "")
+		PrintJSON(localFiles, "")
 		log.Println("============================")
 	}
 }
