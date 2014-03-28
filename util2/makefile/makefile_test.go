@@ -6,13 +6,13 @@ import (
 )
 
 type dummyRule struct {
-	target  File
-	prereqs []File
+	target  string
+	prereqs []string
 	recipes []string
 }
 
-func (r *dummyRule) Target() File      { return r.target }
-func (r *dummyRule) Prereqs() []File   { return r.prereqs }
+func (r *dummyRule) Target() string    { return r.target }
+func (r *dummyRule) Prereqs() []string { return r.prereqs }
 func (r *dummyRule) Recipes() []string { return r.recipes }
 
 func TestMakefile(t *testing.T) {
@@ -23,8 +23,8 @@ func TestMakefile(t *testing.T) {
 		{
 			rules: []Rule{
 				&dummyRule{
-					Filename("myTarget"),
-					[]File{Filename("myPrereq0"), Filename("myPrereq1")},
+					"myTarget",
+					[]string{"myPrereq0", "myPrereq1"},
 					[]string{"foo bar"},
 				},
 			},
@@ -37,7 +37,7 @@ myTarget: myPrereq0 myPrereq1
 		},
 	}
 	for _, test := range tests {
-		makefile, err := Makefile(test.rules, nil, nil)
+		makefile, err := Makefile(test.rules, nil)
 		if err != nil {
 			t.Error(err)
 			continue

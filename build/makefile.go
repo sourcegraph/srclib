@@ -12,7 +12,7 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/util2/makefile"
 )
 
-type RuleMaker func(c *config.Repository, commitID string, existing []makefile.Rule) ([]makefile.Rule, error)
+type RuleMaker func(c *config.Repository, dataDir string, existing []makefile.Rule) ([]makefile.Rule, error)
 
 var (
 	RuleMakers        = make(map[string]RuleMaker)
@@ -42,16 +42,6 @@ func CreateMakefile(dir, cloneURL, commitID string, x *task2.Context) ([]byte, e
 		return nil, err
 	}
 
-	var allRules []makefile.Rule
-	for i, r := range orderedRuleMakers {
-		name := ruleMakerNames[i]
-		rules, err := r(c, commitID, allRules)
-		if err != nil {
-			return nil, fmt.Errorf("rule maker %s: %s", name, err)
-		}
-		allRules = append(allRules, rules...)
-	}
-
 	repoStore, err := buildstore.NewRepositoryStore(dir)
 	if err != nil {
 		return nil, err
@@ -66,12 +56,14 @@ func CreateMakefile(dir, cloneURL, commitID string, x *task2.Context) ([]byte, e
 		return nil, err
 	}
 
-	// update build data file paths to be in the build store.
-	filePath := func(f makefile.File) string {
-		if isDataFile(f) {
-			return filepath.Join(dataDir, f.Name())
+	var allRules []makefile.Rule
+	for i, r := range orderedRuleMakers {
+		name := ruleMakerNames[i]
+		rules, err := r(c, dataDir, allRules)
+		if err != nil {
+			return nil, fmt.Errorf("rule maker %s: %s", name, err)
 		}
-		return f.Name()
+		allRules = append(allRules, rules...)
 	}
 
 	header := []string{
@@ -83,7 +75,7 @@ func CreateMakefile(dir, cloneURL, commitID string, x *task2.Context) ([]byte, e
 		".DELETE_ON_ERROR:",
 	}
 
-	mf, err := makefile.Makefile(allRules, header, filePath)
+	mf, err := makefile.Makefile(allRules, header)
 	if err != nil {
 		return nil, err
 	}

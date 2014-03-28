@@ -2,6 +2,7 @@ package build
 
 import (
 	"fmt"
+	"path/filepath"
 	"reflect"
 
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
@@ -17,24 +18,25 @@ func init() {
 	buildstore.RegisterDataType("graph.v0", grapher2.Output{})
 }
 
-func makeGraphRules(c *config.Repository, commitID string, existing []makefile.Rule) ([]makefile.Rule, error) {
+func makeGraphRules(c *config.Repository, dataDir string, existing []makefile.Rule) ([]makefile.Rule, error) {
 	var rules []makefile.Rule
 	for _, u := range c.SourceUnits {
-		rules = append(rules, &GraphSourceUnitRule{reflect.TypeOf(grapher2.Output{}), u})
+		rules = append(rules, &GraphSourceUnitRule{reflect.TypeOf(grapher2.Output{}), dataDir, u})
 	}
 	return rules, nil
 }
 
 type GraphSourceUnitRule struct {
 	targetDataType reflect.Type
+	dataDir        string
 	Unit           unit.SourceUnit
 }
 
-func (r *GraphSourceUnitRule) Target() makefile.File {
-	return &SourceUnitDataFile{r.targetDataType, r.Unit}
+func (r *GraphSourceUnitRule) Target() string {
+	return filepath.Join(r.dataDir, SourceUnitDataFilename(r.targetDataType, r.Unit))
 }
 
-func (r *GraphSourceUnitRule) Prereqs() []makefile.File { return makefile.Files(r.Unit.Paths()) }
+func (r *GraphSourceUnitRule) Prereqs() []string { return r.Unit.Paths() }
 
 func (r *GraphSourceUnitRule) Recipes() []string {
 	return []string{fmt.Sprintf("srcgraph -v graph -json %q 1> $@", unit.MakeID(r.Unit))}
