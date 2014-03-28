@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -18,6 +19,8 @@ type Runner interface {
 }
 
 var DefaultRunner Runner = dockerRunner{}
+
+var RunRetries = 3
 
 type dockerRunner struct{}
 
@@ -83,30 +86,40 @@ func (_ dockerRunner) Run(c *Command) ([]byte, error) {
 		return nil, err
 	}
 
-	runOptions := append([]string{}, c.RunOptions...)
-	if c.Dir != "" {
-		runOptions = append(runOptions, "--workdir="+c.Dir)
-	}
-	args := append([]string{"run"}, runOptions...)
-	args = append(args, image)
-	runCmd := exec.Command("docker", args...)
-	runCmd.Stderr = os.Stderr
-
-	// Get original output.
-	data, err := runCmd.Output()
-	if err != nil {
-		return nil, err
-	}
-
-	// Transform.
-	if c.Transform != nil {
-		data, err = c.Transform(data)
-		if err != nil {
-			return nil, err
+	for i := 0; i < RunRetries; i++ {
+		remainingAttempts := RunRetries - i - 1
+		runOptions := append([]string{}, c.RunOptions...)
+		if c.Dir != "" {
+			runOptions = append(runOptions, "--workdir="+c.Dir)
 		}
+		args := append([]string{"run"}, runOptions...)
+		args = append(args, image)
+		runCmd := exec.Command("docker", args...)
+		runCmd.Stderr = os.Stderr
+
+		// Get original output.
+		data, err := runCmd.Output()
+		if err != nil {
+			if remainingAttempts == 0 {
+				return nil, err
+			} else {
+				log.Printf("Command failed: docker %v: %s (retrying %d more times)", args, err, remainingAttempts)
+				continue
+			}
+		}
+
+		// Transform.
+		if c.Transform != nil {
+			data, err = c.Transform(data)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		return data, nil
 	}
 
-	return data, nil
+	panic("unreachable")
 }
 
 type MockRunner struct {
