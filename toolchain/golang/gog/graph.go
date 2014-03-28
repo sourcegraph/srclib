@@ -2,6 +2,7 @@ package gog
 
 import (
 	"go/ast"
+	"log"
 	"sort"
 	"sync"
 
@@ -126,6 +127,11 @@ func (g *Grapher) GraphAll() error {
 }
 
 func (g *Grapher) Graph(pkgInfo *loader.PackageInfo) error {
+	if len(pkgInfo.Files) == 0 {
+		log.Printf("warning: attempted to graph package %+v with no files", pkgInfo)
+		return nil
+	}
+
 	seen := make(map[ast.Node]struct{})
 	skipResolveObjs := make(map[types.Object]struct{})
 

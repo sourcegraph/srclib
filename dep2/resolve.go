@@ -73,6 +73,9 @@ func ResolveAll(rawDeps []*RawDependency, c *config.Repository, x *task2.Context
 		if err != nil {
 			return nil, err
 		}
+		if rt == nil {
+			continue
+		}
 		// TODO!(sqs): return repo clone URLs as well, so we can add new repositories
 		rd := &ResolvedDep{
 			FromRepo:        c.URI,

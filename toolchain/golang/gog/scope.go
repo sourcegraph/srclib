@@ -3,6 +3,7 @@ package gog
 import (
 	"fmt"
 	"go/ast"
+	"go/token"
 	"log"
 	"path/filepath"
 	"strings"
@@ -44,10 +45,15 @@ func (g *Grapher) path(obj types.Object) (path []string) {
 		panic("no scope path for scope " + scope.String())
 	}
 	path = append([]string{}, prefix...)
-	path = append(path, fmt.Sprintf("%s$%d", obj.Name(), g.program.Fset.Position(obj.Pos()).Offset))
+	p := g.program.Fset.Position(obj.Pos())
+	path = append(path, obj.Name()+uniqID(p))
 	return path
 
 	panic("no scope node for object " + obj.String())
+}
+
+func uniqID(p token.Position) string {
+	return fmt.Sprintf("$%s%d", strippedFilename(p.Filename), p.Offset)
 }
 
 func (g *Grapher) scopePath(prefix []string, s *types.Scope) []string {
@@ -97,15 +103,20 @@ func (g *Grapher) scopeLabel(s *types.Scope) (path []string) {
 	if fs, ok := g.scopeNodes[p].(*ast.File); ok {
 		// avoid file scope collisions by using file index as well
 		filename := g.program.Fset.Position(fs.Name.Pos()).Filename
-		prefix = []string{fmt.Sprintf("$%s", strings.TrimSuffix(filepath.Base(filename), ".go"))}
+		prefix = []string{fmt.Sprintf("$%s", strippedFilename(filename))}
 	}
 	for i := 0; i < p.NumChildren(); i++ {
 		if p.Child(i) == s {
-			return append(prefix, fmt.Sprintf("$%d", i))
+			filename := g.program.Fset.Position(node.Pos()).Filename
+			return append(prefix, fmt.Sprintf("$%s%d", strippedFilename(filename), i))
 		}
 	}
 
 	panic("unreachable")
+}
+
+func strippedFilename(filename string) string {
+	return strings.TrimSuffix(filepath.Base(filename), ".go")
 }
 
 func (g *Grapher) assignPathsInPackage(pkgInfo *loader.PackageInfo) {

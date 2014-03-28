@@ -1,14 +1,16 @@
 package scan
 
 import (
-	"code.google.com/p/rog-go/parallel"
+	"path/filepath"
 	"runtime"
+	"strings"
+	"sync"
 
+	"code.google.com/p/rog-go/parallel"
 	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
-	"sync"
 )
 
 // Scanner implementations scan for source units in a repository.
@@ -77,8 +79,25 @@ func ReadDirConfigAndScan(dir string, repoURI repo.URI, x *task2.Context) (*conf
 		return nil, err
 	}
 	for _, u := range units {
+		if dirsContains(c.ScanIgnore, u.RootDir()) {
+			continue
+		}
 		c.SourceUnits.AddIfNotExists(u)
 	}
 
 	return c, nil
+}
+
+func dirsContains(dirs []string, maybeChildDir string) bool {
+	for _, dir := range dirs {
+		if dirContains(dir, maybeChildDir) {
+			return true
+		}
+	}
+	return false
+}
+
+func dirContains(dir, maybeChildDir string) bool {
+	dir, maybeChildDir = filepath.Clean(dir), filepath.Clean(maybeChildDir)
+	return dir == maybeChildDir || strings.HasPrefix(maybeChildDir, dir+string(filepath.Separator))
 }

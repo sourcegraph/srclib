@@ -67,10 +67,10 @@ const goImportPathTargetType = "go-import-path"
 
 func (v *goVersion) Resolve(dep *dep2.RawDependency, c *config.Repository, x *task2.Context) (*dep2.ResolvedTarget, error) {
 	importPath := dep.Target.(string)
-	return v.resolveGoImportDep(importPath, c)
+	return v.resolveGoImportDep(importPath, c, x)
 }
 
-func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository) (*dep2.ResolvedTarget, error) {
+func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository, x *task2.Context) (*dep2.ResolvedTarget, error) {
 	// Look up in cache.
 	resolvedTarget := func() *dep2.ResolvedTarget {
 		v.resolveCacheMu.Lock()
@@ -96,6 +96,24 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository) 
 			ToUnitType:     unit.Type(toUnit),
 		}, nil
 	}
+
+	// Special-case the cgo package "C".
+	if importPath == "C" {
+		return nil, nil
+	}
+
+	if gosrc.IsGoRepoPath(importPath) {
+		toUnit := Package{ImportPath: importPath, Dir: "src/pkg/" + importPath}
+		return &dep2.ResolvedTarget{
+			ToRepoCloneURL:  v.RepositoryCloneURL,
+			ToVersionString: v.VersionString,
+			ToRevSpec:       v.VCSRevision,
+			ToUnit:          toUnit.Name(),
+			ToUnitType:      unit.Type(toUnit),
+		}, nil
+	}
+
+	x.Log.Printf("Resolving Go dep: %s", importPath)
 
 	dir, err := gosrc.Get(sourcegraph.AuthenticatingAsNeededHTTPClient, string(importPath), "")
 	if err != nil {

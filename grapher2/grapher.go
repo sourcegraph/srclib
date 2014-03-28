@@ -46,6 +46,15 @@ func (g DockerGrapher) Graph(dir string, unit unit.SourceUnit, c *config.Reposit
 		return nil, err
 	}
 
+	// Basic uniqueness checks.
+	seenSymbolPaths := make(map[graph.SymbolPath]*graph.Symbol, len(output.Symbols))
+	for _, s := range output.Symbols {
+		if s0, seen := seenSymbolPaths[s.Path]; seen {
+			return nil, fmt.Errorf("duplicate path in symbols output: %q\nsymbol 1: %+v\nsymbol 2: %+v", s.Path, s0, s)
+		}
+		seenSymbolPaths[s.Path] = s
+	}
+
 	return output, nil
 }
 
