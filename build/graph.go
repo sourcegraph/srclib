@@ -3,7 +3,6 @@ package build
 import (
 	"fmt"
 	"path/filepath"
-	"reflect"
 
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
@@ -15,25 +14,24 @@ import (
 
 func init() {
 	RegisterRuleMaker("graph", makeGraphRules)
-	buildstore.RegisterDataType("graph.v0", grapher2.Output{})
+	buildstore.RegisterDataType("graph.v0", &grapher2.Output{})
 }
 
 func makeGraphRules(c *config.Repository, dataDir string, existing []makefile.Rule) ([]makefile.Rule, error) {
 	var rules []makefile.Rule
 	for _, u := range c.SourceUnits {
-		rules = append(rules, &GraphSourceUnitRule{reflect.TypeOf(grapher2.Output{}), dataDir, u})
+		rules = append(rules, &GraphSourceUnitRule{dataDir, u})
 	}
 	return rules, nil
 }
 
 type GraphSourceUnitRule struct {
-	targetDataType reflect.Type
-	dataDir        string
-	Unit           unit.SourceUnit
+	dataDir string
+	Unit    unit.SourceUnit
 }
 
 func (r *GraphSourceUnitRule) Target() string {
-	return filepath.Join(r.dataDir, SourceUnitDataFilename(r.targetDataType, r.Unit))
+	return filepath.Join(r.dataDir, SourceUnitDataFilename(&grapher2.Output{}, r.Unit))
 }
 
 func (r *GraphSourceUnitRule) Prereqs() []string { return r.Unit.Paths() }

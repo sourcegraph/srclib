@@ -92,7 +92,8 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository) 
 		return &dep2.ResolvedTarget{
 			// TODO(sqs): this is a URI not a clone URL
 			ToRepoCloneURL: string(c.URI),
-			ToUnitID:       unit.MakeID(toUnit),
+			ToUnit:         toUnit.Name(),
+			ToUnitType:     unit.Type(toUnit),
 		}, nil
 	}
 
@@ -112,12 +113,14 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository) 
 
 	resolvedTarget = &dep2.ResolvedTarget{
 		ToRepoCloneURL: dir.ProjectURL,
-		ToUnitID:       unit.MakeID(toUnit),
+		ToUnit:         toUnit.Name(),
+		ToUnitType:     unit.Type(toUnit),
 	}
 
 	if gosrc.IsGoRepoPath(dir.ImportPath) {
 		resolvedTarget.ToVersionString = v.VersionString
 		resolvedTarget.ToRevSpec = v.VCSRevision
+		resolvedTarget.ToUnit = "src/pkg/" + resolvedTarget.ToUnit
 	}
 
 	// Save in cache.
