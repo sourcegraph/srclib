@@ -83,6 +83,7 @@ type BuildDataFileInfo struct {
 	Path     string
 	Size     int64
 	ModTime  time.Time
+	DataType string
 }
 
 func (s *RepositoryStore) CommitPath(commitID string) string { return commitID }
@@ -125,11 +126,14 @@ func (s *RepositoryStore) DataFiles(path string) ([]*BuildDataFileInfo, error) {
 		}
 		commitID, path := parts[0], parts[1]
 
+		dataTypeName, _ := DataType(path)
+
 		files = append(files, &BuildDataFileInfo{
 			CommitID: commitID,
 			Path:     path,
 			Size:     fi.Size(),
 			ModTime:  fi.ModTime(),
+			DataType: dataTypeName,
 		})
 	}
 	return files, nil
