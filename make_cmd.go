@@ -7,37 +7,38 @@ import (
 	"os"
 
 	"github.com/sourcegraph/go-vcs"
+	"github.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srcgraph/build"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
-	"sourcegraph.com/sourcegraph/srcgraph/util2/makefile"
 )
+
+func makefile(args []string) {
+	make_(append(args, "-mf"))
+}
 
 func make_(args []string) {
 	fs := flag.NewFlagSet("make", flag.ExitOnError)
 	repo := AddRepositoryFlags(fs)
 	showMakefileAndExit := fs.Bool("mf", false, "print generated Makefile and exit")
+	conf := &makex.Default
+	makex.Flags(fs, conf, "")
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: `+Name+` make [options] [-- makeoptions] [target...]
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` make [options] [target...]
 
-Generates a Makefile that processes a repository, creating graph of definitions,
-references, and dependencies in a repository's code at a specific revision.
+Generates and executes a Makefile that processes a repository, creating graph of
+definitions, references, and dependencies in a repository's code at a specific
+revision.
 
-Targets and extra options (after "--") are passed directly to the "make"
-program, which executes the generated Makefile. If no targets are specified,
-"all" is built.
+Run "`+Name+` makefile" to print the generated Makefile and exit.
+
+This command uses makex to execute the Makefile, but the Makefile is also
+compatible with GNU make. You can use the "`+Name+` makefile" command to
+generate a Makefile to use with GNU make, if you'd like.
 
 The options are:
 `)
 		fs.PrintDefaults()
-		fmt.Fprintln(os.Stderr, `
-The most useful makeoptions are:
-
-    -n, --dry-run       don't actually run any commands (just print them)
-    -k, --keep-going    keep going when some targets can't be made
-    -j N, --jobs N      allow N parallel jobs
-
-See the man page for "make" for all makeoptions.
-`)
+		fmt.Fprintln(os.Stderr)
 		os.Exit(1)
 	}
 	fs.Parse(args)
@@ -49,20 +50,48 @@ See the man page for "make" for all makeoptions.
 
 	x := task2.NewRecordedContext()
 
-	mf, err := build.CreateMakefile(repo.RootDir, repo.CloneURL, repo.CommitID, x)
+	mf, err := build.CreateMakefile(repo.RootDir, repo.CloneURL, repo.CommitID, conf, x)
 	if err != nil {
 		log.Fatalf("error creating Makefile: %s", err)
 	}
 
 	if *Verbose || *showMakefileAndExit {
-		log.Printf("# Makefile\n%s", mf)
+		data, err := makex.Marshal(mf)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(string(data))
 		if *showMakefileAndExit {
 			return
 		}
 	}
 
-	err = makefile.Make(repo.RootDir, mf, fs.Args())
+	for _, rule := range mf.Rules {
+		log.Printf("RULE %s", rule.Target())
+	}
+
+	goals := fs.Args()
+	if len(goals) == 0 {
+		if defaultRule := mf.DefaultRule(); defaultRule != nil {
+			goals = []string{defaultRule.Target()}
+		} else {
+			log.Println("No rules in Makefile.")
+			return
+		}
+	}
+
+	mk := conf.NewMaker(mf, goals...)
+
+	if conf.DryRun {
+		err := mk.DryRun(os.Stdout)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
+
+	err = mk.Run()
 	if err != nil {
-		log.Fatalf("make failed: %s", err)
+		log.Fatal(err)
 	}
 }

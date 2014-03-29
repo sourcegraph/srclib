@@ -4,15 +4,16 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/sourcegraph/makex"
+
 	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/scan"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
-	"sourcegraph.com/sourcegraph/srcgraph/util2/makefile"
 )
 
-type RuleMaker func(c *config.Repository, dataDir string, existing []makefile.Rule) ([]makefile.Rule, error)
+type RuleMaker func(c *config.Repository, dataDir string, existing []makex.Rule) ([]makex.Rule, error)
 
 var (
 	RuleMakers        = make(map[string]RuleMaker)
@@ -35,7 +36,7 @@ func RegisterRuleMaker(name string, r RuleMaker) {
 	orderedRuleMakers = append(orderedRuleMakers, r)
 }
 
-func CreateMakefile(dir, cloneURL, commitID string, x *task2.Context) ([]byte, error) {
+func CreateMakefile(dir, cloneURL, commitID string, conf *makex.Config, x *task2.Context) (*makex.Makefile, error) {
 	repoURI := repo.MakeURI(cloneURL)
 	c, err := scan.ReadDirConfigAndScan(dir, repoURI, x)
 	if err != nil {
@@ -56,7 +57,7 @@ func CreateMakefile(dir, cloneURL, commitID string, x *task2.Context) ([]byte, e
 		return nil, err
 	}
 
-	var allRules []makefile.Rule
+	var allRules []makex.Rule
 	for i, r := range orderedRuleMakers {
 		name := ruleMakerNames[i]
 		rules, err := r(c, dataDir, allRules)
@@ -66,18 +67,25 @@ func CreateMakefile(dir, cloneURL, commitID string, x *task2.Context) ([]byte, e
 		allRules = append(allRules, rules...)
 	}
 
-	header := []string{
-		fmt.Sprintf("_ = $(shell mkdir -p %s)", makefile.Quote(dataDir)),
-
-		// DELETE_ON_ERROR makes it so that the targets for failed recipes are
-		// deleted. This lets us do "1> $@" to write to the target file without
-		// erroneously satisfying the target if the recipe fails.
-		".DELETE_ON_ERROR:",
+	// Add an "all" rule at the very beginning.
+	allTargets := make([]string, len(allRules))
+	for i, rule := range allRules {
+		allTargets[i] = rule.Target()
 	}
+	allRule := &makex.BasicRule{TargetFile: "all", PrereqFiles: allTargets}
+	allRules = append([]makex.Rule{allRule}, allRules...)
 
-	mf, err := makefile.Makefile(allRules, header)
+	// DELETE_ON_ERROR makes it so that the targets for failed recipes are
+	// deleted. This lets us do "1> $@" to write to the target file without
+	// erroneously satisfying the target if the recipe fails. makex has this
+	// behavior by default and does not heed .DELETE_ON_ERROR.
+	allRules = append(allRules, &makex.BasicRule{TargetFile: ".DELETE_ON_ERROR"})
+
+	mf := &makex.Makefile{allRules}
+	mf, err = conf.Expand(mf)
 	if err != nil {
 		return nil, err
 	}
+
 	return mf, nil
 }

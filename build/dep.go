@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/dep2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
-	"sourcegraph.com/sourcegraph/srcgraph/util2/makefile"
 )
 
 func init() {
@@ -17,12 +17,12 @@ func init() {
 	buildstore.RegisterDataType("resolved_deps.v0", []*dep2.ResolvedDep{})
 }
 
-func makeDepRules(c *config.Repository, dataDir string, existing []makefile.Rule) ([]makefile.Rule, error) {
+func makeDepRules(c *config.Repository, dataDir string, existing []makex.Rule) ([]makex.Rule, error) {
 	if len(c.SourceUnits) == 0 {
 		return nil, nil
 	}
 
-	var rules []makefile.Rule
+	var rules []makex.Rule
 	for _, u := range c.SourceUnits {
 		rawDepRule := &ListSourceUnitDepsRule{dataDir, u}
 		rules = append(rules, rawDepRule)
@@ -63,7 +63,7 @@ func (r *ListSourceUnitDepsRule) Prereqs() []string {
 
 func (r *ListSourceUnitDepsRule) Recipes() []string {
 	return []string{
-		"mkdir -p `dirname \"$@\"`",
+		"mkdir -p `dirname $@`",
 		fmt.Sprintf("srcgraph -v list-deps -json %q 1> $@", unit.MakeID(r.unit)),
 	}
 }
