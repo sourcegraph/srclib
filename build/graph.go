@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
 	_ "sourcegraph.com/sourcegraph/srcgraph/toolchain/all_toolchains"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
-	"sourcegraph.com/sourcegraph/srcgraph/util2/makefile"
 )
 
 func init() {
@@ -17,8 +17,8 @@ func init() {
 	buildstore.RegisterDataType("graph.v0", &grapher2.Output{})
 }
 
-func makeGraphRules(c *config.Repository, dataDir string, existing []makefile.Rule) ([]makefile.Rule, error) {
-	var rules []makefile.Rule
+func makeGraphRules(c *config.Repository, dataDir string, existing []makex.Rule) ([]makex.Rule, error) {
+	var rules []makex.Rule
 	for _, u := range c.SourceUnits {
 		rules = append(rules, &GraphSourceUnitRule{dataDir, u})
 	}
@@ -38,7 +38,7 @@ func (r *GraphSourceUnitRule) Prereqs() []string { return r.Unit.Paths() }
 
 func (r *GraphSourceUnitRule) Recipes() []string {
 	return []string{
-		"mkdir -p `dirname \"$@\"`",
+		"mkdir -p `dirname $@`",
 		fmt.Sprintf("srcgraph -v graph -json %q 1> $@", unit.MakeID(r.Unit)),
 	}
 }
