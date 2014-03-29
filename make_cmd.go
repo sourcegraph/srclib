@@ -66,10 +66,6 @@ The options are:
 		}
 	}
 
-	for _, rule := range mf.Rules {
-		log.Printf("RULE %s", rule.Target())
-	}
-
 	goals := fs.Args()
 	if len(goals) == 0 {
 		if defaultRule := mf.DefaultRule(); defaultRule != nil {
