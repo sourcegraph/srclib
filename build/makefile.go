@@ -2,10 +2,8 @@ package build
 
 import (
 	"fmt"
-	"path/filepath"
 
 	"github.com/sourcegraph/makex"
-	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
@@ -33,25 +31,11 @@ func RegisterRuleMaker(name string, r RuleMaker) {
 	orderedRuleMakers = append(orderedRuleMakers, r)
 }
 
-func CreateMakefile(dir, commitID string, c *config.Repository, conf *makex.Config, x *task2.Context) (*makex.Makefile, error) {
-	repoStore, err := buildstore.NewRepositoryStore(dir)
-	if err != nil {
-		return nil, err
-	}
-
-	rootDataDir, err := buildstore.RootDir(repoStore)
-	if err != nil {
-		return nil, err
-	}
-	dataDir, err := filepath.Rel(dir, filepath.Join(rootDataDir, repoStore.CommitPath(commitID)))
-	if err != nil {
-		return nil, err
-	}
-
+func CreateMakefile(repoDir, commitID, buildDataDir string, c *config.Repository, conf *makex.Config, x *task2.Context) (*makex.Makefile, error) {
 	var allRules []makex.Rule
 	for i, r := range orderedRuleMakers {
 		name := ruleMakerNames[i]
-		rules, err := r(c, dataDir, allRules)
+		rules, err := r(c, buildDataDir, allRules)
 		if err != nil {
 			return nil, fmt.Errorf("rule maker %s: %s", name, err)
 		}
@@ -73,10 +57,6 @@ func CreateMakefile(dir, commitID string, c *config.Repository, conf *makex.Conf
 	allRules = append(allRules, &makex.BasicRule{TargetFile: ".DELETE_ON_ERROR"})
 
 	mf := &makex.Makefile{allRules}
-	mf, err = conf.Expand(mf)
-	if err != nil {
-		return nil, err
-	}
 
 	return mf, nil
 }
