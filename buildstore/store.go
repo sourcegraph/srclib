@@ -107,7 +107,7 @@ func (s *RepositoryStore) ListCommits() ([]string, error) {
 	return commits, nil
 }
 
-const CachedRepositoryConfigFilename = "cached-config.json"
+const CachedRepositoryConfigFilename = "config.json"
 
 var dataFilesIgnoreBasenames = map[string]struct{}{
 	CachedRepositoryConfigFilename: struct{}{},
