@@ -6,9 +6,7 @@ import (
 	"log"
 	"os"
 
-	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
-	"sourcegraph.com/sourcegraph/srcgraph/scan"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
@@ -16,6 +14,7 @@ import (
 func graph_(args []string) {
 	fs := flag.NewFlagSet("graph", flag.ExitOnError)
 	r := AddRepositoryFlags(fs)
+	rc := AddRepositoryConfigFlags(fs, r)
 	jsonOutput := fs.Bool("json", false, "show JSON output")
 	summary := fs.Bool("summary", true, "summarize output data")
 	fs.Usage = func() {
@@ -31,13 +30,8 @@ The options are:
 	}
 	fs.Parse(args)
 	sourceUnitSpecs := fs.Args()
-	repoURI := repo.MakeURI(r.CloneURL)
 
-	x := task2.DefaultContext
-	c, err := scan.ReadDirConfigAndScan(r.RootDir, repoURI, x)
-	if err != nil {
-		log.Fatal(err)
-	}
+	c := rc.GetRepositoryConfig(task2.DefaultContext)
 
 	for _, u := range c.SourceUnits {
 		if !SourceUnitMatchesArgs(sourceUnitSpecs, u) {

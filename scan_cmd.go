@@ -6,9 +6,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-
-	"sourcegraph.com/sourcegraph/repo"
-	"sourcegraph.com/sourcegraph/srcgraph/scan"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
@@ -16,6 +13,7 @@ import (
 func scan_(args []string) {
 	fs := flag.NewFlagSet("scan", flag.ExitOnError)
 	r := AddRepositoryFlags(fs)
+	rc := AddRepositoryConfigFlags(fs, r)
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` scan [options]
 
@@ -28,12 +26,7 @@ The options are:
 	}
 	fs.Parse(args)
 
-	x := task2.DefaultContext
-
-	c, err := scan.ReadDirConfigAndScan(r.RootDir, repo.MakeURI(r.CloneURL), x)
-	if err != nil {
-		log.Fatal(err)
-	}
+	c := rc.GetRepositoryConfig(task2.DefaultContext)
 
 	for _, u := range c.SourceUnits {
 		fmt.Printf("## %s\n", unit.MakeID(u))

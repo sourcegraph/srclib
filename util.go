@@ -3,7 +3,6 @@ package srcgraph
 import (
 	"bytes"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -13,89 +12,9 @@ import (
 	"os/user"
 	"path/filepath"
 	"strings"
-
-	"github.com/sourcegraph/go-vcs"
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
-
-type repository struct {
-	CloneURL    string
-	CommitID    string
-	vcsTypeName string
-	RootDir     string
-}
-
-func detectRepository(dir string) (dr repository) {
-	if !isDir(dir) {
-		log.Fatal("dir does not exist: ", dir)
-	}
-
-	rootDirCmds := map[string]*exec.Cmd{
-		"git": exec.Command("git", "rev-parse", "--show-toplevel"),
-		"hg":  exec.Command("hg", "root"),
-	}
-	for tn, cmd := range rootDirCmds {
-		cmd.Dir = dir
-		out, err := cmd.Output()
-		if err == nil {
-			dr.RootDir = strings.TrimSpace(string(out))
-			dr.vcsTypeName = tn
-			break
-		}
-	}
-
-	if dr.RootDir == "" {
-		if *Verbose {
-			log.Printf("warning: failed to detect repository root dir for %q", dir)
-		}
-		return
-	}
-
-	updateVCSIgnore("." + dr.vcsTypeName + "ignore")
-
-	cloneURLCmd := map[string]*exec.Cmd{
-		"git": exec.Command("git", "config", "remote.origin.url"),
-		"hg":  exec.Command("hg", "paths", "default"),
-	}[dr.vcsTypeName]
-
-	vcsType := vcs.VCSByName[dr.vcsTypeName]
-	repo, err := vcs.Open(vcsType, dr.RootDir)
-	if err != nil {
-		if *Verbose {
-			log.Printf("warning: failed to open repository at %s: %s", dr.RootDir, err)
-		}
-		return
-	}
-
-	dr.CommitID, err = repo.CurrentCommitID()
-	if err != nil {
-		return
-	}
-
-	cloneURLCmd.Dir = dir
-	cloneURL, err := cloneURLCmd.Output()
-	if err != nil {
-		return
-	}
-	dr.CloneURL = strings.TrimSpace(string(cloneURL))
-
-	if dr.vcsTypeName == "git" {
-		dr.CloneURL = strings.Replace(dr.CloneURL, "git@github.com:", "git://github.com/", 1)
-	}
-
-	return
-}
-
-func AddRepositoryFlags(fs *flag.FlagSet) repository {
-	dr := detectRepository(*dir)
-	var r repository
-	fs.StringVar(&r.CloneURL, "cloneurl", dr.CloneURL, "clone URL of repository")
-	fs.StringVar(&r.CommitID, "commit", dr.CommitID, "commit ID of current working tree")
-	fs.StringVar(&r.vcsTypeName, "vcs", dr.vcsTypeName, `VCS type ("git" or "hg")`)
-	fs.StringVar(&r.RootDir, "root", dr.RootDir, `root directory of repository`)
-	return r
-}
 
 func isDir(dir string) bool {
 	di, err := os.Stat(dir)

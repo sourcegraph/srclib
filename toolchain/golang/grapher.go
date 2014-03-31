@@ -19,7 +19,7 @@ import (
 )
 
 func init() {
-	grapher2.Register(Package{}, grapher2.DockerGrapher{defaultGoVersion})
+	grapher2.Register(&Package{}, grapher2.DockerGrapher{defaultGoVersion})
 }
 
 func (v *goVersion) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error) {
