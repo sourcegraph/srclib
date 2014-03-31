@@ -127,7 +127,7 @@ func findCachedRepoConfigFile(r *repository) (string, error) {
 		return "", err
 	}
 
-	return filepath.Join(rootDataDir, repoStore.CommitPath(r.CommitID), "cached-config.json"), nil
+	return filepath.Join(rootDataDir, repoStore.CommitPath(r.CommitID), buildstore.CachedRepositoryConfigFilename), nil
 }
 
 type repositoryConfigurator struct {
