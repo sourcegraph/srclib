@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	unit.Register("GoPackage", Package{})
+	unit.Register("GoPackage", &Package{})
 }
 
 type Package struct {

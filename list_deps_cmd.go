@@ -6,9 +6,7 @@ import (
 	"log"
 	"os"
 
-	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/dep2"
-	"sourcegraph.com/sourcegraph/srcgraph/scan"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
@@ -18,6 +16,7 @@ func listDeps(args []string) {
 	resolve := fs.Bool("resolve", false, "resolve deps and print resolutions")
 	jsonOutput := fs.Bool("json", false, "show JSON output")
 	r := AddRepositoryFlags(fs)
+	rc := AddRepositoryConfigFlags(fs, r)
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` list-deps [options] [unit...]
 
@@ -31,13 +30,8 @@ The options are:
 	}
 	fs.Parse(args)
 	sourceUnitSpecs := fs.Args()
-	repoURI := repo.MakeURI(r.CloneURL)
 
-	x := task2.DefaultContext
-	c, err := scan.ReadDirConfigAndScan(r.RootDir, repoURI, x)
-	if err != nil {
-		log.Fatal(err)
-	}
+	c := rc.GetRepositoryConfig(task2.DefaultContext)
 
 	allRawDeps := []*dep2.RawDependency{}
 	for _, u := range c.SourceUnits {
@@ -45,7 +39,7 @@ The options are:
 			continue
 		}
 
-		rawDeps, err := dep2.List(r.RootDir, u, c, x)
+		rawDeps, err := dep2.List(r.RootDir, u, c, task2.DefaultContext)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -63,7 +57,7 @@ The options are:
 
 			if *resolve {
 				log.Printf("# resolves to:")
-				resolvedDep, err := dep2.Resolve(rawDep, c, x)
+				resolvedDep, err := dep2.Resolve(rawDep, c, task2.DefaultContext)
 				if err != nil {
 					log.Fatal(err)
 				}

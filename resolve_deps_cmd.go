@@ -7,15 +7,14 @@ import (
 	"log"
 	"os"
 
-	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/dep2"
-	"sourcegraph.com/sourcegraph/srcgraph/scan"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
 func resolveDeps(args []string) {
 	fs := flag.NewFlagSet("resolve-deps", flag.ExitOnError)
 	r := AddRepositoryFlags(fs)
+	rc := AddRepositoryConfigFlags(fs, r)
 	jsonOutput := fs.Bool("json", false, "show JSON output")
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` resolve-deps [options] [raw_dep_file.json...]
@@ -29,20 +28,11 @@ The options are:
 		os.Exit(1)
 	}
 	fs.Parse(args)
-	repoURI := repo.MakeURI(r.CloneURL)
 
 	inputs := OpenInputFiles(fs.Args())
 	defer CloseAll(inputs)
 
-	x := task2.DefaultContext
-	c, err := scan.ReadDirConfigAndScan(r.RootDir, repoURI, x)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if *Verbose {
-		log.Printf("Finished scanning")
-	}
+	c := rc.GetRepositoryConfig(task2.DefaultContext)
 
 	var allRawDeps []*dep2.RawDependency
 	for name, input := range inputs {
@@ -58,7 +48,7 @@ The options are:
 		allRawDeps = append(allRawDeps, rawDeps...)
 	}
 
-	resolvedDeps, err := dep2.ResolveAll(allRawDeps, c, x)
+	resolvedDeps, err := dep2.ResolveAll(allRawDeps, c, task2.DefaultContext)
 	if err != nil {
 		log.Fatal(err)
 	}

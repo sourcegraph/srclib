@@ -18,7 +18,8 @@ func makefile(args []string) {
 
 func make_(args []string) {
 	fs := flag.NewFlagSet("make", flag.ExitOnError)
-	repo := AddRepositoryFlags(fs)
+	r := AddRepositoryFlags(fs)
+	rc := AddRepositoryConfigFlags(fs, r)
 	showMakefileAndExit := fs.Bool("mf", false, "print generated Makefile and exit")
 	conf := &makex.Default
 	makex.Flags(fs, conf, "")
@@ -43,14 +44,14 @@ The options are:
 	}
 	fs.Parse(args)
 
-	vcsType := vcs.VCSByName[repo.vcsTypeName]
+	vcsType := vcs.VCSByName[r.vcsTypeName]
 	if vcsType == nil {
-		log.Fatalf("%s: unknown VCS type %q", Name, repo.vcsTypeName)
+		log.Fatalf("%s: unknown VCS type %q", Name, r.vcsTypeName)
 	}
 
-	x := task2.NewRecordedContext()
+	c := rc.GetRepositoryConfig(task2.DefaultContext)
 
-	mf, err := build.CreateMakefile(repo.RootDir, repo.CloneURL, repo.CommitID, conf, x)
+	mf, err := build.CreateMakefile(r.RootDir, r.CommitID, c, conf, task2.DefaultContext)
 	if err != nil {
 		log.Fatalf("error creating Makefile: %s", err)
 	}

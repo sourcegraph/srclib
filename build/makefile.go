@@ -5,11 +5,8 @@ import (
 	"path/filepath"
 
 	"github.com/sourcegraph/makex"
-
-	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
-	"sourcegraph.com/sourcegraph/srcgraph/scan"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
@@ -36,13 +33,7 @@ func RegisterRuleMaker(name string, r RuleMaker) {
 	orderedRuleMakers = append(orderedRuleMakers, r)
 }
 
-func CreateMakefile(dir, cloneURL, commitID string, conf *makex.Config, x *task2.Context) (*makex.Makefile, error) {
-	repoURI := repo.MakeURI(cloneURL)
-	c, err := scan.ReadDirConfigAndScan(dir, repoURI, x)
-	if err != nil {
-		return nil, err
-	}
-
+func CreateMakefile(dir, commitID string, c *config.Repository, conf *makex.Config, x *task2.Context) (*makex.Makefile, error) {
 	repoStore, err := buildstore.NewRepositoryStore(dir)
 	if err != nil {
 		return nil, err
