@@ -149,12 +149,12 @@ func (u *SourceUnits) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf(`source unit at index %d is missing "Type"`, i)
 		}
 		if emptyInstance, registered := unit.Types[typeName]; registered {
-			typed := reflect.New(reflect.TypeOf(emptyInstance)).Interface()
+			typed := reflect.New(reflect.TypeOf(emptyInstance).Elem()).Interface()
 			err = unmarshalAsTyped(e, typed)
 			if err != nil {
 				return err
 			}
-			*u = append(*u, reflect.ValueOf(typed).Elem().Interface().(unit.SourceUnit))
+			*u = append(*u, reflect.ValueOf(typed).Interface().(unit.SourceUnit))
 		} else {
 			return fmt.Errorf("unrecognized source unit type %q", typeName)
 		}
@@ -175,12 +175,12 @@ func (g *Global) UnmarshalJSON(data []byte) error {
 	// Unmarshal all registered global config sections into typed structs.
 	for name, v := range m {
 		if emptyInstance, registered := Globals[name]; registered {
-			typed := reflect.New(reflect.TypeOf(emptyInstance)).Interface()
+			typed := reflect.New(reflect.TypeOf(emptyInstance).Elem()).Interface()
 			err = unmarshalAsTyped(v, typed)
 			if err != nil {
 				return err
 			}
-			m[name] = reflect.ValueOf(typed).Elem().Interface()
+			m[name] = reflect.ValueOf(typed).Interface()
 		}
 	}
 

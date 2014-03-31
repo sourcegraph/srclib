@@ -19,12 +19,12 @@ func TestRead_Global(t *testing.T) {
 	type Foo struct {
 		Bar string
 	}
-	Register("foo", Foo{})
+	Register("foo", &Foo{})
 	defer unregister("foo")
 
 	data := []byte(`{"Global": {"foo": {"bar": "qux"}}}`)
 	wantConfig := &Repository{
-		Global: map[string]interface{}{"foo": Foo{Bar: "qux"}},
+		Global: map[string]interface{}{"foo": &Foo{Bar: "qux"}},
 	}
 	c, err := Read(data, "")
 	if err != nil {
@@ -38,7 +38,6 @@ func TestRead_Global(t *testing.T) {
 
 func unregisterSourceUnitType(name string) {
 	delete(unit.TypeNames, reflect.TypeOf(unit.Types[name]))
-	delete(unit.TypeNames, reflect.PtrTo(reflect.TypeOf(unit.Types[name])))
 	delete(unit.Types, name)
 }
 
@@ -51,13 +50,13 @@ func (_ FooSourceUnit) RootDir() string { return "foo" }
 func (_ FooSourceUnit) Paths() []string { return nil }
 
 func TestSourceUnits_Unmarshal(t *testing.T) {
-	unit.Register("Foo", FooSourceUnit{})
+	unit.Register("Foo", &FooSourceUnit{})
 	defer unregisterSourceUnitType("Foo")
 
 	data := []byte(`[{"Type": "Foo", "Bar": ""}, {"Type": "Foo", "Bar": "qux"}]`)
 	wantUnits := SourceUnits{
-		FooSourceUnit{Bar: ""},
-		FooSourceUnit{Bar: "qux"},
+		&FooSourceUnit{Bar: ""},
+		&FooSourceUnit{Bar: "qux"},
 	}
 	var u SourceUnits
 	err := json.Unmarshal(data, &u)
@@ -71,12 +70,12 @@ func TestSourceUnits_Unmarshal(t *testing.T) {
 }
 
 func TestSourceUnits_Marshal(t *testing.T) {
-	unit.Register("Foo", FooSourceUnit{})
+	unit.Register("Foo", &FooSourceUnit{})
 	defer unregisterSourceUnitType("Foo")
 
 	units := SourceUnits{
-		FooSourceUnit{Bar: ""},
-		FooSourceUnit{Bar: "qux"},
+		&FooSourceUnit{Bar: ""},
+		&FooSourceUnit{Bar: "qux"},
 	}
 	wantData := []byte(`[{"Bar":"","Type":"Foo"},{"Bar":"qux","Type":"Foo"}]`)
 	data, err := json.Marshal(units)
@@ -91,18 +90,18 @@ func TestSourceUnits_Marshal(t *testing.T) {
 
 func TestSourceUnits_AddIfNotExists(t *testing.T) {
 	units := SourceUnits{
-		FooSourceUnit{Bar: ""},
-		FooSourceUnit{Bar: "qux"},
+		&FooSourceUnit{Bar: ""},
+		&FooSourceUnit{Bar: "qux"},
 	}
 
 	// Add duplicate.
-	units.AddIfNotExists(FooSourceUnit{Bar: ""})
+	units.AddIfNotExists(&FooSourceUnit{Bar: ""})
 	if len(units) != 2 {
 		t.Errorf("got len %d, want 2", len(units))
 	}
 
 	// Add new.
-	units.AddIfNotExists(FooSourceUnit{Bar: "new"})
+	units.AddIfNotExists(&FooSourceUnit{Bar: "new"})
 	if len(units) != 3 {
 		t.Errorf("got len %d, want 3", len(units))
 	}

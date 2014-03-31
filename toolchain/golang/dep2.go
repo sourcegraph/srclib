@@ -17,7 +17,7 @@ import (
 )
 
 func init() {
-	dep2.RegisterLister(Package{}, dep2.DockerLister{defaultGoVersion})
+	dep2.RegisterLister(&Package{}, dep2.DockerLister{defaultGoVersion})
 	dep2.RegisterResolver(goImportPathTargetType, defaultGoVersion)
 }
 
@@ -88,7 +88,7 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository, 
 		if err != nil {
 			return nil, err
 		}
-		toUnit := Package{Dir: dir, ImportPath: importPath}
+		toUnit := &Package{Dir: dir, ImportPath: importPath}
 		return &dep2.ResolvedTarget{
 			// TODO(sqs): this is a URI not a clone URL
 			ToRepoCloneURL: string(c.URI),
@@ -103,7 +103,7 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository, 
 	}
 
 	if gosrc.IsGoRepoPath(importPath) {
-		toUnit := Package{ImportPath: importPath, Dir: "src/pkg/" + importPath}
+		toUnit := &Package{ImportPath: importPath, Dir: "src/pkg/" + importPath}
 		return &dep2.ResolvedTarget{
 			ToRepoCloneURL:  v.RepositoryCloneURL,
 			ToVersionString: v.VersionString,
@@ -123,7 +123,7 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository, 
 	// gosrc returns code.google.com URLs ending in a slash. Remove it.
 	dir.ProjectURL = strings.TrimSuffix(dir.ProjectURL, "/")
 
-	toUnit := Package{ImportPath: dir.ImportPath}
+	toUnit := &Package{ImportPath: dir.ImportPath}
 	toUnit.Dir, err = filepath.Rel(dir.ProjectRoot, dir.ImportPath)
 	if err != nil {
 		return nil, err
