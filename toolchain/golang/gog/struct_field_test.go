@@ -56,7 +56,7 @@ func TestResolveStructFields(t *testing.T) {
 
 		"anonymous struct field ref": {
 			ref:      `(struct{x int}{}).x`,
-			wantRefs: []*SymbolKey{{PackageImportPath: "foo", Path: []string{"x$47"}}},
+			wantRefs: []*SymbolKey{{PackageImportPath: "foo", Path: []string{"x$sources[0]47"}}},
 		},
 
 		"stdlib struct field ref": {
