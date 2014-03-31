@@ -13,6 +13,7 @@ func init() {
 type Package struct {
 	Dir        string `toml:"dir"`
 	ImportPath string `toml:"import_path"`
+	Files      []string
 }
 
 func (p Package) Name() string    { return p.Dir }

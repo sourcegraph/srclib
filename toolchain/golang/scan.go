@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"path/filepath"
 
+	"strings"
+
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
 	"sourcegraph.com/sourcegraph/srcgraph/scan"
@@ -28,7 +30,7 @@ func (v *goVersion) BuildScanner(dir string, c *config.Repository, x *task2.Cont
 	cont := container.Container{
 		Dockerfile: dockerfile,
 		RunOptions: []string{"-v", dir + ":" + containerDir},
-		Cmd:        []string{"go", "list", "-e", goConfig.BaseImportPath + "/..."},
+		Cmd:        []string{"go", "list", "-e", "-json", goConfig.BaseImportPath + "/..."},
 		Stderr:     x.Stderr,
 		Stdout:     x.Stdout,
 	}
@@ -39,17 +41,37 @@ func (v *goVersion) BuildScanner(dir string, c *config.Repository, x *task2.Cont
 				return nil, nil
 			}
 
-			lines := bytes.Split(bytes.TrimSpace(orig), []byte("\n"))
-			units := make([]unit.SourceUnit, len(lines))
-			for i, line := range lines {
-				importPath := string(line)
+			pkgs := bytes.SplitAfter(bytes.TrimSpace(orig), []byte("\n}\n"))
+			units := make([]unit.SourceUnit, len(pkgs))
+			for i, pkgJSON := range pkgs {
+				var pkg map[string]interface{}
+				err := json.Unmarshal(pkgJSON, &pkg)
+				if err != nil {
+					return nil, err
+				}
+
+				importPath := pkg["ImportPath"].(string)
 				dir, err := filepath.Rel(goConfig.BaseImportPath, importPath)
 				if err != nil {
 					return nil, err
 				}
+
+				// collect all filenames
+				var files []string
+				for k, v := range pkg {
+					if strings.HasSuffix(k, "Files") {
+						if list, ok := v.([]interface{}); ok {
+							for _, file := range list {
+								files = append(files, file.(string))
+							}
+						}
+					}
+				}
+
 				units[i] = &Package{
 					Dir:        dir,
 					ImportPath: importPath,
+					Files:      files,
 				}
 			}
 			return json.Marshal(units)

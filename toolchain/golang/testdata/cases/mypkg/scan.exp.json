@@ -3,11 +3,18 @@
   "SourceUnits": [
     {
       "Dir": ".",
+      "Files": [
+        "bar.go",
+        "foo.go"
+      ],
       "ImportPath": "mypkg",
       "Type": "GoPackage"
     },
     {
       "Dir": "subpkg",
+      "Files": [
+        "subfoo.go"
+      ],
       "ImportPath": "mypkg/subpkg",
       "Type": "GoPackage"
     }
