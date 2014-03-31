@@ -18,4 +18,10 @@ type Package struct {
 
 func (p Package) Name() string    { return p.Dir }
 func (p Package) RootDir() string { return p.Dir }
-func (p Package) Paths() []string { return []string{filepath.Join(p.Dir, "*.go")} }
+func (p Package) Paths() []string {
+	paths := make([]string, len(p.Files))
+	for i, f := range p.Files {
+		paths[i] = filepath.Join(p.Dir, f)
+	}
+	return paths
+}
