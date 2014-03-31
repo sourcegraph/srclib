@@ -47,7 +47,7 @@ func (v *goVersion) BuildScanner(dir string, c *config.Repository, x *task2.Cont
 				if err != nil {
 					return nil, err
 				}
-				units[i] = Package{
+				units[i] = &Package{
 					Dir:        dir,
 					ImportPath: importPath,
 				}

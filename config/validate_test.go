@@ -2,8 +2,9 @@ package config
 
 import (
 	"encoding/json"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
 	"testing"
+
+	"sourcegraph.com/sourcegraph/srcgraph/unit"
 
 	"github.com/kr/pretty"
 )
@@ -18,7 +19,7 @@ func (_ DummyPackage) RootDir() string { return "dummy" }
 func (p DummyPackage) Paths() []string { return []string{p.Dir} }
 
 func TestUnmarshal_RejectInvalidFilePaths(t *testing.T) {
-	unit.Register("Dummy", DummyPackage{})
+	unit.Register("Dummy", &DummyPackage{})
 	defer unregisterSourceUnitType("Dummy")
 
 	tests := map[string][]byte{

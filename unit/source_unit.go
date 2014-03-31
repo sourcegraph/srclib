@@ -33,7 +33,6 @@ func Register(name string, emptyInstance SourceUnit) {
 		panic("unit: Register name is nil")
 	}
 	TypeNames[typ] = name
-	TypeNames[reflect.PtrTo(typ)] = name
 }
 
 type SourceUnit interface {
