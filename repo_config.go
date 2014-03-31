@@ -172,7 +172,6 @@ func (rc *repositoryConfigurator) GetRepositoryConfig(x *task2.Context) *config.
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Printf("CACHED CONFIG %s", configFile)
 	}
 
 	return c
