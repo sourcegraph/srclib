@@ -31,7 +31,7 @@
       "callable": false,
       "file": "subpkg/subfoo.go",
       "CommitID": "",
-      "defStart": 32,
+      "defStart": 37,
       "defEnd": 53,
       "exported": true,
       "typeExpr": "mypkg/subpkg.Subqux",
