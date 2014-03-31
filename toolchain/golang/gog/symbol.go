@@ -36,11 +36,12 @@ func (g *Grapher) NewSymbol(obj types.Object, declIdent *ast.Ident) (*Symbol, er
 	_, astPath, _ := g.program.PathEnclosingInterval(declIdent.Pos(), declIdent.End())
 	for _, node := range astPath {
 		switch node.(type) {
-		case *ast.FuncDecl, *ast.GenDecl, *ast.ValueSpec, *ast.TypeSpec, *ast.DeclStmt, *ast.AssignStmt:
+		case *ast.FuncDecl, *ast.GenDecl, *ast.ValueSpec, *ast.TypeSpec, *ast.Field, *ast.DeclStmt, *ast.AssignStmt:
 			declNode = node
-			break
+			goto found
 		}
 	}
+found:
 	if declNode == nil {
 		return nil, fmt.Errorf("On ident %s at %s: no DeclNode found (using PathEnclosingInterval)", declIdent.Name, g.program.Fset.Position(declIdent.Pos()))
 	}
