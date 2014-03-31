@@ -34,12 +34,12 @@ func makeDepRules(c *config.Repository, dataDir string, existing []makex.Rule) (
 
 type ResolveDepsRule struct {
 	dataDir       string
-	unit          unit.SourceUnit
+	Unit          unit.SourceUnit
 	RawDepsOutput string
 }
 
 func (r *ResolveDepsRule) Target() string {
-	return filepath.Join(r.dataDir, SourceUnitDataFilename([]*dep2.ResolvedDep{}, r.unit))
+	return filepath.Join(r.dataDir, SourceUnitDataFilename([]*dep2.ResolvedDep{}, r.Unit))
 }
 
 func (r *ResolveDepsRule) Prereqs() []string { return []string{r.RawDepsOutput} }

@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/sourcegraph/go-vcs"
 	"github.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srcgraph/build"
+	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
@@ -51,7 +53,21 @@ The options are:
 
 	c := rc.GetRepositoryConfig(task2.DefaultContext)
 
-	mf, err := build.CreateMakefile(r.RootDir, r.CommitID, c, conf, task2.DefaultContext)
+	// Get build data dir (${REPO}/.sourcegraph-data).
+	repoStore, err := buildstore.NewRepositoryStore(r.RootDir)
+	if err != nil {
+		log.Fatal(err)
+	}
+	rootDataDir, err := buildstore.RootDir(repoStore)
+	if err != nil {
+		log.Fatal(err)
+	}
+	buildDataDir, err := filepath.Rel(r.RootDir, filepath.Join(rootDataDir, repoStore.CommitPath(r.CommitID)))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	mf, err := build.CreateMakefile(r.RootDir, r.CommitID, buildDataDir, c, conf, task2.DefaultContext)
 	if err != nil {
 		log.Fatalf("error creating Makefile: %s", err)
 	}
