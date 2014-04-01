@@ -48,8 +48,11 @@ type SourceUnit interface {
 	// unit.
 	RootDir() string
 
-	// Paths returns all of the file or directory paths that this source unit
-	// refers to.
+	// Paths returns all of the file paths that this source unit refers to.
+	//
+	// It is used to construct Makefile rules that run whenever any of the files
+	// in a source unit change. If you don't care about efficient make rules,
+	// you can just return an empty list.
 	Paths() []string
 }
 

@@ -15,6 +15,8 @@ import (
 
 // Scanner implementations scan for source units in a repository.
 type Scanner interface {
+	// Scan returns a list of source units that exist in dir and its
+	// subdirectories. Paths in the source units should be relative to dir.
 	Scan(dir string, c *config.Repository, x *task2.Context) ([]unit.SourceUnit, error)
 }
 
