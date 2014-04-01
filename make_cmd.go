@@ -103,6 +103,11 @@ The options are:
 		return
 	}
 
+	err = os.Chdir(r.RootDir)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	err = mk.Run()
 	if err != nil {
 		log.Fatal(err)
