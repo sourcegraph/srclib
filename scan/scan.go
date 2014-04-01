@@ -90,6 +90,8 @@ func ReadDirConfigAndScan(dir string, repoURI repo.URI, x *task2.Context) (*conf
 	return c, nil
 }
 
+// dirsContains returns true if maybeChildDir is equal to any of dirs or their
+// recursive subdirectories, by purely lexical processing.
 func dirsContains(dirs []string, maybeChildDir string) bool {
 	for _, dir := range dirs {
 		if dirContains(dir, maybeChildDir) {
@@ -99,6 +101,8 @@ func dirsContains(dirs []string, maybeChildDir string) bool {
 	return false
 }
 
+// dirContains returns true if maybeChildDir is dir or one of dir's recursive
+// subdirectories, by purely lexical processing.
 func dirContains(dir, maybeChildDir string) bool {
 	dir, maybeChildDir = filepath.Clean(dir), filepath.Clean(maybeChildDir)
 	return dir == maybeChildDir || strings.HasPrefix(maybeChildDir, dir+string(filepath.Separator))
