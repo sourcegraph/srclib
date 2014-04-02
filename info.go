@@ -93,6 +93,5 @@ The options are:
 	log.Printf("------------------")
 	log.Println()
 	log.Printf("System information:")
-	log.Printf(" - make version: %s", firstLine(cmdOutput("make", "--version")))
 	log.Printf(" - docker version:\n%s", text.Indent(cmdOutput("docker", "version"), "         "))
 }
