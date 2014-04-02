@@ -1,0 +1,32 @@
+[
+  {
+    "FromUnit": "mypkg",
+    "FromUnitType": "python",
+    "TargetType": "python-requirement",
+    "Target": {
+      "Constraint": "==",
+      "Name": "Werkzeug",
+      "Version": "0.7"
+    }
+  },
+  {
+    "FromUnit": "mypkg",
+    "FromUnitType": "python",
+    "TargetType": "python-requirement",
+    "Target": {
+      "Constraint": "==",
+      "Name": "Jinja2",
+      "Version": "2.4"
+    }
+  },
+  {
+    "FromUnit": "mypkg",
+    "FromUnitType": "python",
+    "TargetType": "python-requirement",
+    "Target": {
+      "Constraint": "==",
+      "Name": "itsdangerous",
+      "Version": "0.21"
+    }
+  }
+]
