@@ -1,6 +1,6 @@
 [
   {
-    "FromUnit": "mypkg",
+    "FromUnit": "python-faux-package",
     "FromUnitType": "python",
     "TargetType": "python-requirement",
     "Target": {
@@ -10,7 +10,7 @@
     }
   },
   {
-    "FromUnit": "mypkg",
+    "FromUnit": "python-faux-package",
     "FromUnitType": "python",
     "TargetType": "python-requirement",
     "Target": {
@@ -20,7 +20,7 @@
     }
   },
   {
-    "FromUnit": "mypkg",
+    "FromUnit": "python-faux-package",
     "FromUnitType": "python",
     "TargetType": "python-requirement",
     "Target": {

@@ -18,7 +18,7 @@ func init() {
 type fauxPackage struct{}
 
 func (p *fauxPackage) Name() string {
-	return "python"
+	return "python-faux-package"
 }
 
 func (p *fauxPackage) RootDir() string {
