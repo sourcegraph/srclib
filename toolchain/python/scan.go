@@ -11,29 +11,27 @@ import (
 )
 
 func init() {
-	scan.Register("python", &pythonScanner{})
-	unit.Register("python", &pythonPackage{})
+	scan.Register("python", &fauxScanner{})
+	unit.Register("python", &fauxPackage{})
 }
 
-type pythonPackage struct {
-	name string
+type fauxPackage struct{}
+
+func (p *fauxPackage) Name() string {
+	return "python"
 }
 
-func (p *pythonPackage) Name() string {
-	return p.name
-}
-
-func (p *pythonPackage) RootDir() string {
+func (p *fauxPackage) RootDir() string {
 	return "."
 }
 
-func (p *pythonPackage) Paths() []string {
+func (p *fauxPackage) Paths() []string {
 	return nil
 }
 
-type pythonScanner struct{}
+type fauxScanner struct{}
 
-func (p *pythonScanner) Scan(dir string, c *config.Repository, x *task2.Context) ([]unit.SourceUnit, error) {
+func (p *fauxScanner) Scan(dir string, c *config.Repository, x *task2.Context) ([]unit.SourceUnit, error) {
 	isPython := false
 	walker := fs.Walk(dir)
 	for walker.Step() {
@@ -44,7 +42,7 @@ func (p *pythonScanner) Scan(dir string, c *config.Repository, x *task2.Context)
 	}
 
 	if isPython {
-		return []unit.SourceUnit{&pythonPackage{filepath.Base(dir)}}, nil
+		return []unit.SourceUnit{&fauxPackage{}}, nil
 	} else {
 		return nil, nil
 	}
