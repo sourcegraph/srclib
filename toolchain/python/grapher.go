@@ -15,7 +15,7 @@ import (
 )
 
 func init() {
-	grapher2.Register(&pythonPackage{}, grapher2.DockerGrapher{&pythonGrapherBuilder{}})
+	grapher2.Register(&fauxPackage{}, grapher2.DockerGrapher{&pythonGrapherBuilder{}})
 }
 
 type pythonGrapherBuilder struct{}

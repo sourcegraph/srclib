@@ -15,7 +15,7 @@ import (
 )
 
 func init() {
-	dep2.RegisterLister(&pythonPackage{}, dep2.DockerLister{&pythonDependencyHandler{}})
+	dep2.RegisterLister(&fauxPackage{}, dep2.DockerLister{&pythonDependencyHandler{}})
 	dep2.RegisterResolver(pythonRequirementTargetType, &pythonDependencyHandler{})
 }
 
@@ -58,7 +58,7 @@ func (p *pythonDependencyHandler) Resolve(dep *dep2.RawDependency, c *config.Rep
 		if err != nil {
 			return nil, err
 		}
-		toUnit := &pythonPackage{name: pythonRequirement.Name}
+		toUnit := &fauxPackage{}
 		return &dep2.ResolvedTarget{
 			ToRepoCloneURL: repoURL,
 			ToUnit:         toUnit.Name(),
