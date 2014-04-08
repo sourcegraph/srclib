@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"text/template"
-	"github.com/beyang/cheerio"
 
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
@@ -15,52 +14,58 @@ import (
 )
 
 func init() {
-	dep2.RegisterLister(&fauxPackage{}, dep2.DockerLister{&pythonDependencyHandler{}})
-	dep2.RegisterResolver(pythonRequirementTargetType, &pythonDependencyHandler{})
+	dep2.RegisterLister(&fauxPackage{}, dep2.DockerLister{defaultPythonEnv})
+	dep2.RegisterResolver(pythonRequirementTargetType, defaultPythonEnv)
 }
 
-type pythonDependencyHandler struct{}
-
-func (p *pythonDependencyHandler) BuildLister(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error) {
+func (p *pythonEnv) BuildLister(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error) {
 	dockerfile, err := p.dockerfile()
 	if err != nil {
 		return nil, err
 	}
 
-	containerSrcDir := "/src"
+	srcDir := "/src"
 	return &container.Command{
 		Container: container.Container{
 			Dockerfile: dockerfile,
-			RunOptions: []string{"-v", dir + ":" + containerSrcDir},
-			Cmd:        []string{"cheerio", "reqsdir", containerSrcDir},
+			RunOptions: []string{"-v", dir + ":" + srcDir},
+			Cmd:        []string{"pydep-run.py", srcDir},
 		},
 		Transform: func(orig []byte) ([]byte, error) {
-			var cheerioReqs []cheerioReq
-			json.NewDecoder(bytes.NewReader(orig)).Decode(&cheerioReqs)
-
-			deps := make([]*dep2.RawDependency, len(cheerioReqs))
-			for i, chreq := range cheerioReqs {
+			var reqs []requirement
+			err := json.NewDecoder(bytes.NewReader(orig)).Decode(&reqs)
+			if err != nil {
+				return nil, err
+			}
+			deps := make([]*dep2.RawDependency, len(reqs))
+			for i, req := range reqs {
 				deps[i] = &dep2.RawDependency{
 					TargetType: pythonRequirementTargetType,
-					Target:     pythonRequirement{Name: chreq.Name, Version: chreq.Version, Constraint: versionConstraint(chreq.Constraint)},
+					Target:     req,
 				}
 			}
+
 			return json.Marshal(deps)
 		},
 	}, nil
 }
 
-func (p *pythonDependencyHandler) Resolve(dep *dep2.RawDependency, c *config.Repository, x *task2.Context) (*dep2.ResolvedTarget, error) {
+type requirement struct {
+	ProjectName string      `json:"project_name"`
+	UnsafeName  string      `json:"unsafe_name"`
+	Key         string      `json:"key"`
+	Specs       [][2]string `json:"specs"`
+	Extras      []string    `json:"extras"`
+	RepoURL     string      `json:"repo_url"`
+}
+
+func (p *pythonEnv) Resolve(dep *dep2.RawDependency, c *config.Repository, x *task2.Context) (*dep2.ResolvedTarget, error) {
 	switch dep.TargetType {
 	case pythonRequirementTargetType:
-		pythonRequirement := dep.Target.(pythonRequirement)
-		repoURL, err := cheerio.DefaultPyPI.FetchSourceRepoURL(pythonRequirement.Name)
-		if err != nil {
-			return nil, err
-		}
+		req := dep.Target.(requirement)
 		toUnit := &fauxPackage{}
 		return &dep2.ResolvedTarget{
-			ToRepoCloneURL: repoURL,
+			ToRepoCloneURL: req.RepoURL,
 			ToUnit:         toUnit.Name(),
 			ToUnitType:     unit.Type(toUnit),
 		}, nil
@@ -69,59 +74,24 @@ func (p *pythonDependencyHandler) Resolve(dep *dep2.RawDependency, c *config.Rep
 	}
 }
 
-type cheerioReq struct {
-	Name       string
-	Constraint string
-	Version    string
-}
-
-func (l *pythonDependencyHandler) dockerfile() ([]byte, error) {
-	// TODO: change once cheerio is ported to python
+func (l *pythonEnv) dockerfile() ([]byte, error) {
 	var buf bytes.Buffer
 	template.Must(template.New("").Parse(baseDockerfile)).Execute(&buf, struct {
-		GoVersionString string
-		GOPATH          string
+		Python string
 	}{
-		GoVersionString: "go1.2.1",
-		GOPATH:          containerGOPATH,
+		Python: l.PythonVersion,
 	})
 	return buf.Bytes(), nil
 }
 
-// pythonRequirement represents a Python dependency such as those declared in requirements.txt
-type pythonRequirement struct {
-	Name       string
-	Version    string
-	Constraint versionConstraint
-}
-
-type versionConstraint string
-
-const (
-	PyReq_LessThan         versionConstraint = "<"
-	PyReq_LessThanEqual                      = "<="
-	PyReq_NotEqual                           = "!="
-	PyReq_Equal                              = "=="
-	PyReq_GreaterThanEqual                   = ">="
-	PyReq_GreaterThan                        = ">"
-)
-
 const pythonRequirementTargetType = "python-requirement"
-const containerGOPATH = "/tmp/sg/gopath"
 const baseDockerfile = `FROM ubuntu:13.10
 RUN apt-get update
 RUN apt-get install -qy curl
 RUN apt-get install -qy git
-
-# Install Go {{.GoVersionString}}.
-RUN curl -o /tmp/golang.tgz https://go.googlecode.com/files/{{.GoVersionString}}.linux-amd64.tar.gz
-RUN tar -xzf /tmp/golang.tgz -C /usr/local
-ENV GOROOT /usr/local/go
-ENV GOPATH {{.GOPATH}}
-
-# Add "go" to the PATH.
-ENV PATH {{.GOPATH}}/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
-RUN go get github.com/beyang/cheerio/...
-RUN go install github.com/beyang/cheerio/cmd/cheerio # TODO: versioning
+RUN apt-get install -qy {{.Python}}
+RUN ln -s $(which {{.Python}}) /usr/bin/python
+RUN curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py > get-pip.py
+RUN python get-pip.py
+RUN pip install git+git://github.com/sourcegraph/pydep@0.0
 `

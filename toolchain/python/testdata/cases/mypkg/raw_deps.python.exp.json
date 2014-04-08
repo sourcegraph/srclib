@@ -4,9 +4,17 @@
     "FromUnitType": "python",
     "TargetType": "python-requirement",
     "Target": {
-      "Constraint": "==",
-      "Name": "Werkzeug",
-      "Version": "0.7"
+      "extras": [],
+      "key": "werkzeug",
+      "project_name": "Werkzeug",
+      "repo_url": "git://github.com/mitsuhiko/werkzeug",
+      "specs": [
+        [
+          "==",
+          "0.7"
+        ]
+      ],
+      "unsafe_name": "Werkzeug"
     }
   },
   {
@@ -14,9 +22,17 @@
     "FromUnitType": "python",
     "TargetType": "python-requirement",
     "Target": {
-      "Constraint": "==",
-      "Name": "Jinja2",
-      "Version": "2.4"
+      "extras": [],
+      "key": "itsdangerous",
+      "project_name": "itsdangerous",
+      "repo_url": "http://github.com/mitsuhiko/itsdangerous",
+      "specs": [
+        [
+          "==",
+          "0.21"
+        ]
+      ],
+      "unsafe_name": "itsdangerous"
     }
   },
   {
@@ -24,9 +40,17 @@
     "FromUnitType": "python",
     "TargetType": "python-requirement",
     "Target": {
-      "Constraint": "==",
-      "Name": "itsdangerous",
-      "Version": "0.21"
+      "extras": [],
+      "key": "jinja2",
+      "project_name": "Jinja2",
+      "repo_url": "git://github.com/mitsuhiko/jinja2",
+      "specs": [
+        [
+          "==",
+          "2.4"
+        ]
+      ],
+      "unsafe_name": "Jinja2"
     }
   }
 ]
