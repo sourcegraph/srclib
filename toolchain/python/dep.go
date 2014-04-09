@@ -19,7 +19,7 @@ func init() {
 }
 
 func (p *pythonEnv) BuildLister(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error) {
-	dockerfile, err := p.dockerfile()
+	dockerfile, err := p.depDockerfile()
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,6 @@ func (p *pythonEnv) BuildLister(dir string, unit unit.SourceUnit, c *config.Repo
 					Target:     req,
 				}
 			}
-
 			return json.Marshal(deps)
 		},
 	}, nil
@@ -74,9 +73,9 @@ func (p *pythonEnv) Resolve(dep *dep2.RawDependency, c *config.Repository, x *ta
 	}
 }
 
-func (l *pythonEnv) dockerfile() ([]byte, error) {
+func (l *pythonEnv) depDockerfile() ([]byte, error) {
 	var buf bytes.Buffer
-	template.Must(template.New("").Parse(baseDockerfile)).Execute(&buf, struct {
+	template.Must(template.New("").Parse(depDockerfile)).Execute(&buf, struct {
 		Python string
 	}{
 		Python: l.PythonVersion,
@@ -85,7 +84,7 @@ func (l *pythonEnv) dockerfile() ([]byte, error) {
 }
 
 const pythonRequirementTargetType = "python-requirement"
-const baseDockerfile = `FROM ubuntu:13.10
+const depDockerfile = `FROM ubuntu:13.10
 RUN apt-get update
 RUN apt-get install -qy curl
 RUN apt-get install -qy git
@@ -93,5 +92,6 @@ RUN apt-get install -qy {{.Python}}
 RUN ln -s $(which {{.Python}}) /usr/bin/python
 RUN curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py > get-pip.py
 RUN python get-pip.py
+
 RUN pip install git+git://github.com/sourcegraph/pydep@0.0
 `

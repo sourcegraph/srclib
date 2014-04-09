@@ -1,10 +1,13 @@
 package python
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
+	"text/template"
 
 	"sourcegraph.com/sourcegraph/graph"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
@@ -15,30 +18,80 @@ import (
 )
 
 func init() {
-	grapher2.Register(&fauxPackage{}, grapher2.DockerGrapher{&pythonGrapherBuilder{}})
+	grapher2.Register(&fauxPackage{}, grapher2.DockerGrapher{defaultPythonEnv})
 }
 
-type pythonGrapherBuilder struct{}
+const srcRoot = "/src"
 
-const java = "java"
+var grapherDockerfileTemplate = template.Must(template.New("").Parse(`FROM dockerfile/java
+RUN apt-get update
+RUN apt-get install -qy curl
+RUN apt-get install -qy git
+RUN apt-get install -qy {{.Python}}
+RUN ln -s $(which {{.Python}}) /usr/bin/python
+RUN curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py > get-pip.py
+RUN python get-pip.py
+RUN pip install virtualenv
 
-func (p *pythonGrapherBuilder) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error) {
-	containerSrcDir := "/src"
+# Pysonar
+RUN apt-get install -qy maven
+RUN git clone --depth 1 --branch v0.0 https://github.com/sourcegraph/pysonar2.git /pysonar2
+WORKDIR pysonar2
+RUN mvn clean package
+WORKDIR /
 
-	inclpaths := []string{} // TODO
-	srcpath := containerSrcDir
+# Set up virtualenv (will contain dependencies)
+RUN virtualenv /venv
+`))
 
-	cmd := []string{java}
-	if launcherOpts := os.Getenv("PYGRAPH_JAVA_OPTS"); launcherOpts != "" {
-		cmd = append(cmd, strings.Split(launcherOpts, " ")...)
-	}
-	cmd = append(cmd, "-classpath", "target/pysonar-2.0-SNAPSHOT.jar", "org.yinwang.pysonar.JSONDump", srcpath, strings.Join(inclpaths, ":"), "")
+var grapherDockerCmdTemplate = template.Must(template.New("").Parse(`
+/venv/bin/pip install -e {{.SrcDir}} 1>&2 || /venv/bin/pip install -r {{.SrcDir}}/requirements.txt 1>&2;
+java {{.JavaOpts}} -classpath /pysonar2/target/pysonar-2.0-SNAPSHOT.jar org.yinwang.pysonar.JSONDump {{.SrcDir}} '{{.IncludePaths}}' '';
+`))
 
+func (p *pythonEnv) grapherDockerfile() []byte {
+	var buf bytes.Buffer
+	grapherDockerfileTemplate.Execute(&buf, struct {
+		Python string
+		SrcDir string
+	}{
+		Python: p.PythonVersion,
+		SrcDir: srcRoot,
+	})
+	return buf.Bytes()
+}
+
+func (p *pythonEnv) stdLibDir() string {
+	return fmt.Sprintf("/usr/lib/%s", p.PythonVersion)
+}
+
+func (p *pythonEnv) sitePackagesDir(virtualenvRoot string) string {
+	return filepath.Join(virtualenvRoot, "lib", p.PythonVersion, "site-packages")
+}
+
+func (p *pythonEnv) grapherCmd() []string {
+	javaOpts := os.Getenv("PYGRAPH_JAVA_OPTS")
+	inclpaths := []string{srcRoot, p.stdLibDir(), p.sitePackagesDir("/venv")}
+
+	var buf bytes.Buffer
+	grapherDockerCmdTemplate.Execute(&buf, struct {
+		JavaOpts     string
+		SrcDir       string
+		IncludePaths string
+	}{
+		JavaOpts:     javaOpts,
+		SrcDir:       srcRoot,
+		IncludePaths: strings.Join(inclpaths, ":"),
+	})
+	return []string{"/bin/bash", "-c", buf.String()}
+}
+
+func (p *pythonEnv) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error) {
 	return &container.Command{
 		Container: container.Container{
-			Dockerfile: []byte(pysonarDockerfile),
-			RunOptions: []string{"-v", dir + ":" + containerSrcDir},
-			Cmd:        cmd,
+			RunOptions: []string{"-v", dir + ":" + srcRoot},
+			Dockerfile: p.grapherDockerfile(),
+			Cmd:        p.grapherCmd(),
 		},
 		Transform: func(orig []byte) ([]byte, error) {
 			var o pysonarData
@@ -54,7 +107,7 @@ func (p *pythonGrapherBuilder) BuildGrapher(dir string, unit unit.SourceUnit, c 
 
 			selfRefs := make(map[graph.Ref]struct{})
 			for _, psym := range o.Syms {
-				sym := convertSym(psym, containerSrcDir)
+				sym := convertSym(psym, srcRoot)
 				if sym.Path != "" {
 					o2.Symbols = append(o2.Symbols, sym)
 				}
@@ -66,13 +119,13 @@ func (p *pythonGrapherBuilder) BuildGrapher(dir string, unit unit.SourceUnit, c 
 				}
 			}
 			for _, pref := range o.Refs {
-				ref := convertRef(pref, containerSrcDir, c)
+				ref := convertRef(pref, srcRoot, c)
 				if _, exists := selfRefs[*ref]; !exists {
 					o2.Refs = append(o2.Refs, ref)
 				}
 			}
 			for _, pdoc := range o.Docs {
-				o2.Docs = append(o2.Docs, convertDoc(pdoc, containerSrcDir))
+				o2.Docs = append(o2.Docs, convertDoc(pdoc, srcRoot))
 			}
 
 			return json.Marshal(o2)
@@ -204,12 +257,3 @@ type pyDoc struct {
 	Start int    `json:"start"`
 	End   int    `json:"end"`
 }
-
-const pysonarDockerfile = `FROM dockerfile/java
-RUN apt-get update
-RUN apt-get install -qy maven
-
-RUN git clone --depth 1 --branch v0.0 https://github.com/sourcegraph/pysonar2.git /pysonar2
-WORKDIR pysonar2
-RUN mvn clean package
-`
