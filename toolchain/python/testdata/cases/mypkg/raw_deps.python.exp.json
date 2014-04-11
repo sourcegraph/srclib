@@ -6,6 +6,8 @@
     "Target": {
       "extras": [],
       "key": "werkzeug",
+      "modules": null,
+      "packages": null,
       "project_name": "Werkzeug",
       "repo_url": "git://github.com/mitsuhiko/werkzeug",
       "specs": [
@@ -24,6 +26,8 @@
     "Target": {
       "extras": [],
       "key": "itsdangerous",
+      "modules": null,
+      "packages": null,
       "project_name": "itsdangerous",
       "repo_url": "http://github.com/mitsuhiko/itsdangerous",
       "specs": [
@@ -42,6 +46,8 @@
     "Target": {
       "extras": [],
       "key": "jinja2",
+      "modules": null,
+      "packages": null,
       "project_name": "Jinja2",
       "repo_url": "git://github.com/mitsuhiko/jinja2",
       "specs": [

@@ -24,12 +24,13 @@ func (p *pythonEnv) BuildLister(dir string, unit unit.SourceUnit, c *config.Repo
 		return nil, err
 	}
 
-	srcDir := "/src"
 	return &container.Command{
 		Container: container.Container{
 			Dockerfile: dockerfile,
-			RunOptions: []string{"-v", dir + ":" + srcDir},
-			Cmd:        []string{"pydep-run.py", srcDir},
+			RunOptions: []string{"-v", dir + ":" + srcRoot},
+			Cmd:        []string{"pydep-run.py", srcRoot},
+			Stderr:     x.Stderr,
+			Stdout:     x.Stdout,
 		},
 		Transform: func(orig []byte) ([]byte, error) {
 			var reqs []requirement
@@ -56,6 +57,8 @@ type requirement struct {
 	Specs       [][2]string `json:"specs"`
 	Extras      []string    `json:"extras"`
 	RepoURL     string      `json:"repo_url"`
+	Packages    []string    `json:"packages"`
+	Modules     []string    `json:"modules"`
 }
 
 func (p *pythonEnv) Resolve(dep *dep2.RawDependency, c *config.Repository, x *task2.Context) (*dep2.ResolvedTarget, error) {
