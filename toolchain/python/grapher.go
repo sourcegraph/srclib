@@ -159,17 +159,17 @@ func (p *pythonEnv) convertSym(pySym *pySym, c *config.Repository, reqs []requir
 	}
 
 	sym = &graph.Symbol{
-		SymbolKey:  *symKey,
-		Name:       pySym.Name,
-		File:       pySym.File,
-		IdentStart: pySym.IdentStart,
-		IdentEnd:   pySym.IdentEnd,
-		DefStart:   pySym.DefStart,
-		DefEnd:     pySym.DefEnd,
-		Exported:   pySym.Exported,
-		Callable:   callablePythonSymbolKinds[pySym.Kind],
-		// Kind:         py2sgSymKindMap[sym.SpecificKind],
-		// SpecificKind: py2SpecificSymKindMap[sym.SpecificKind],
+		SymbolKey:    *symKey,
+		Name:         pySym.Name,
+		File:         pySym.File,
+		IdentStart:   pySym.IdentStart,
+		IdentEnd:     pySym.IdentEnd,
+		DefStart:     pySym.DefStart,
+		DefEnd:       pySym.DefEnd,
+		Exported:     pySym.Exported,
+		Callable:     callableSymbolKinds[pySym.Kind],
+		Kind:         symbolKinds[pySym.Kind],
+		SpecificKind: symbolSpecificKinds[pySym.Kind],
 	}
 	if pySym.Exported {
 		components := strings.Split(string(sym.Path), "/")
@@ -185,14 +185,9 @@ func (p *pythonEnv) convertSym(pySym *pySym, c *config.Repository, reqs []requir
 	if pySym.FuncData != nil {
 		sym.TypeExpr = pySym.FuncData.Signature
 	}
-	if pySym.Kind != "MODULE" {
-		sym.SpecificKind = strings.ToLower(pySym.Kind)
-	} else {
-		if strings.HasSuffix(pySym.File, "__init__.py") {
-			sym.SpecificKind = Package
-		} else {
-			sym.SpecificKind = Module
-		}
+	if pySym.Kind == "MODULE" && strings.HasSuffix(pySym.File, "__init__.py") {
+		sym.SpecificKind = Package
+		sym.Kind = graph.Package
 	}
 
 	if sym.File != "" && sym.IdentStart != sym.IdentEnd {

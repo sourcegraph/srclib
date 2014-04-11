@@ -11,34 +11,34 @@ const (
 	// etc.
 )
 
-var callablePythonSymbolKinds = map[string]bool{
+var callableSymbolKinds = map[string]bool{
 	"CONSTRUCTOR": true,
 	"FUNCTION":    true,
 	"METHOD":      true,
 }
 
-var py2sgSymKindMap = map[string]graph.SymbolKind{
-	"attribute":   graph.Field,
-	"class":       graph.Type,
-	"constructor": graph.Func,
-	"function":    graph.Func,
-	"method":      graph.Func,
-	"module":      graph.Module,
-	"package":     graph.Package,
-	"parameter":   graph.Var,
-	"scope":       graph.Var,
-	"variable":    graph.Var,
+var symbolKinds = map[string]graph.SymbolKind{
+	"ATTRIBUTE":   graph.Field,
+	"CLASS":       graph.Type,
+	"CONSTRUCTOR": graph.Func,
+	"FUNCTION":    graph.Func,
+	"METHOD":      graph.Func,
+	"MODULE":      graph.Module,
+	"PACKAGE":     graph.Package,
+	"PARAMETER":   graph.Var,
+	"SCOPE":       graph.Var,
+	"VARIABLE":    graph.Var,
 }
 
-var py2SpecificSymKindMap = map[string]string{
-	"attribute":   "attr",
-	"class":       "class",
-	"constructor": "constructor",
-	"function":    "func",
-	"method":      "method",
-	"module":      "module",
-	"package":     "package",
-	"parameter":   "param",
-	"scope":       "var",
-	"variable":    "var",
+var symbolSpecificKinds = map[string]string{
+	"ATTRIBUTE":   "attr",
+	"CLASS":       "class",
+	"CONSTRUCTOR": "constructor",
+	"FUNCTION":    "func",
+	"METHOD":      "method",
+	"MODULE":      "module",
+	"PACKAGE":     "package",
+	"PARAMETER":   "param",
+	"SCOPE":       "var",
+	"VARIABLE":    "var",
 }
