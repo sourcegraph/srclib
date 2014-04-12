@@ -50,9 +50,16 @@ RUN virtualenv /venv
 `))
 
 var grapherDockerCmdTemplate = template.Must(template.New("").Parse(`
-/venv/bin/pip install -e {{.SrcDir}} 1>&2 || /venv/bin/pip install -r {{.SrcDir}}/requirements.txt 1>&2;
+/venv/bin/pip install {{.SrcDir}} 1>&2 || /venv/bin/pip install -r {{.SrcDir}}/requirements.txt 1>&2;
+
+# Compute requirements
 REQDATA=$(pydep-run.py {{.SrcDir}});
-GRAPHDATA=$(java {{.JavaOpts}} -classpath /pysonar2/target/pysonar-2.0-SNAPSHOT.jar org.yinwang.pysonar.JSONDump {{.SrcDir}} '{{.IncludePaths}}' '');
+
+# Compute graph
+mkfifo /tmp/pysonar.err;
+cat -v /tmp/pysonar.err &> /dev/null &  # bug: container hangs if we print this output
+GRAPHDATA=$(java {{.JavaOpts}} -classpath /pysonar2/target/pysonar-2.0-SNAPSHOT.jar org.yinwang.pysonar.JSONDump {{.SrcDir}} '{{.IncludePaths}}' '' 2>/tmp/pysonar.err);
+
 echo "{ \"graph\": $GRAPHDATA, \"reqs\": $REQDATA }";
 `))
 
