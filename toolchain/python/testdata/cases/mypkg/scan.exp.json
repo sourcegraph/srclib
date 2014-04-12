@@ -1,8 +1,0 @@
-{
-  "URI": "example.com/python/cases/mypkg",
-  "SourceUnits": [
-    {
-      "Type": "python"
-    }
-  ]
-}
