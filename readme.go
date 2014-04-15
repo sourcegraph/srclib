@@ -2,19 +2,29 @@ package doc
 
 import (
 	"errors"
-	"github.com/sqs/gorp"
 	"net/url"
 	"path/filepath"
+	"strings"
+
 	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/vcsfs"
-	"strings"
 )
+
+type Service interface {
+	GetFormattedReadme(repo *repo.Repository) (string, error)
+}
+
+// vcsfsService is an implementation of Service that uses the global vcsfs to
+// fetch files.
+type vcsfsService struct{}
+
+var Default Service = &vcsfsService{}
 
 var ErrNoReadme = errors.New("no readme found in repository")
 
 // GetFormattedReadme returns repo's HTML-formatted readme, or an empty string
 // and ErrNoReadme if the repository has no README.
-func GetFormattedReadme(dbh gorp.SqlExecutor, repo *repo.Repository) (formattedReadme string, err error) {
+func (_ *vcsfsService) GetFormattedReadme(repo *repo.Repository) (formattedReadme string, err error) {
 	cloneURL, err := url.Parse(repo.CloneURL)
 	if err != nil {
 		return "", err
@@ -24,6 +34,19 @@ func GetFormattedReadme(dbh gorp.SqlExecutor, repo *repo.Repository) (formattedR
 		return "", ErrNoReadme
 	}
 	return ToHTML(readmeFormats[strings.ToLower(filepath.Ext(path))], string(src))
+}
+
+type MockService struct {
+	GetFormattedReadme_ func(repo *repo.Repository) (string, error)
+}
+
+var _ Service = MockService{}
+
+func (s MockService) GetFormattedReadme(repo *repo.Repository) (string, error) {
+	if s.GetFormattedReadme_ == nil {
+		return "", nil
+	}
+	return s.GetFormattedReadme_(repo)
 }
 
 var readmeNames = []string{

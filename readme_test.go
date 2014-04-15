@@ -8,9 +8,7 @@ import (
 	"testing"
 
 	"github.com/sourcegraph/vcsserver"
-	"github.com/sqs/gorp"
 	"sourcegraph.com/sourcegraph/config2"
-	"sourcegraph.com/sourcegraph/db"
 	"sourcegraph.com/sourcegraph/repo"
 )
 
@@ -53,19 +51,12 @@ func TestGetFormattedReadme(t *testing.T) {
 		},
 	}
 
-	db.Connect()
-	repo.MapDB(&db.DB)
 	for label, test := range tests {
-		func() {
-			tx, _ := db.DB.DbMap.Begin()
-			defer tx.Rollback()
-			tx.Insert(test.repo)
-			testGetFormattedReadme(t, tx, label, test)
-		}()
+		testGetFormattedReadme(t, label, test)
 	}
 }
 
-func testGetFormattedReadme(t *testing.T, tx gorp.SqlExecutor, label string, test getFormattedReadmeTest) {
+func testGetFormattedReadme(t *testing.T, label string, test getFormattedReadmeTest) {
 	u, err := url.Parse(test.repo.CloneURL)
 	if err != nil {
 		t.Fatal(err)
@@ -88,7 +79,7 @@ func testGetFormattedReadme(t *testing.T, tx gorp.SqlExecutor, label string, tes
 		config2.VCSMirrorURL = origVCSMirrorURL
 	}()
 
-	readme, err := GetFormattedReadme(tx, test.repo)
+	readme, err := Default.GetFormattedReadme(test.repo)
 	if err != test.wantErr {
 		t.Errorf("%s: GetFormattedReadme: want err == %v, got %v", label, test.wantErr, err)
 		return
