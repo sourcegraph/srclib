@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -24,6 +25,8 @@ func init() {
 
 const srcRoot = "/src"
 const stdLibRepo = repo.URI("hg.python.org/cpython")
+
+var builtinPrefixes = map[string]string{"sys": "sys", "os": "os", "path": "os/path"}
 
 var grapherDockerfileTemplate = template.Must(template.New("").Parse(`FROM dockerfile/java
 RUN apt-get update
@@ -140,12 +143,12 @@ func (p *pythonEnv) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Rep
 				}
 			}
 			for _, pref := range o.Graph.Refs {
-				ref, err := p.convertRef(pref, c, o.Reqs)
-				if err != nil {
-					return nil, err
-				}
-				if _, exists := selfrefs[*ref]; !exists {
-					o2.Refs = append(o2.Refs, ref)
+				if ref, err := p.convertRef(pref, c, o.Reqs); err == nil {
+					if _, exists := selfrefs[*ref]; !exists {
+						o2.Refs = append(o2.Refs, ref)
+					}
+				} else {
+					log.Printf("  (warn) unable to convert reference %+v", pref)
 				}
 			}
 			for _, pdoc := range o.Graph.Docs {
@@ -363,6 +366,16 @@ func (p *pythonEnv) pysonarSymPathToSymKey(pth string, c *config.Repository, req
 			Path:     graph.SymbolPath(relpath),
 		}, nil
 	} else {
+		for prefix, newPrefix := range builtinPrefixes {
+			if strings.HasPrefix(pth, prefix) {
+				return &graph.SymbolKey{
+					Repo:     stdLibRepo,
+					UnitType: unit.Type(fauxUnit),
+					Unit:     fauxUnit.Name(),
+					Path:     graph.SymbolPath(strings.Replace(pth, prefix, newPrefix, 1)),
+				}, nil
+			}
+		}
 		return nil, fmt.Errorf("Could not find requirement matching path %s", pth)
 	}
 }
