@@ -35,11 +35,7 @@ The options are:
 		fs.Usage()
 	}
 
-	var opt *client.BuildDataListOptions
-	if *commitID != "" {
-		opt = &client.BuildDataListOptions{CommitID: *commitID}
-	}
-	localFiles, _, err := apiclient.BuildData.List(client.RepositorySpec{URI: *repoURI}, opt)
+	localFiles, _, err := apiclient.BuildData.List(client.RepositorySpec{URI: *repoURI}, *commitID, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,9 +54,9 @@ func fetchFile(repoStore *buildstore.RepositoryStore, repoURI string, fi *builds
 	path := repoStore.FilePath(fi.CommitID, fi.Path)
 
 	fileSpec := client.BuildDataFileSpec{
-		RepositorySpec: client.RepositorySpec{repoURI},
-		CommitID:       fi.CommitID,
-		Path:           fi.Path,
+		Repo:     client.RepositorySpec{repoURI},
+		CommitID: fi.CommitID,
+		Path:     fi.Path,
 	}
 
 	kb := float64(fi.Size) / 1024
