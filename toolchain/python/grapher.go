@@ -169,11 +169,15 @@ func (p *pythonEnv) convertSym(pySym *pySym, c *config.Repository, reqs []requir
 	if err != nil {
 		return
 	}
+	file, err := p.pysonarFilePathToFile(pySym.File)
+	if err != nil {
+		return
+	}
 
 	sym = &graph.Symbol{
 		SymbolKey:    *symKey,
 		Name:         pySym.Name,
-		File:         pySym.File,
+		File:         file,
 		IdentStart:   pySym.IdentStart,
 		IdentEnd:     pySym.IdentEnd,
 		DefStart:     pySym.DefStart,
