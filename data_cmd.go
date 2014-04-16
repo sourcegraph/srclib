@@ -33,11 +33,7 @@ The options are:
 		fs.Usage()
 	}
 
-	var opt *client.BuildDataListOptions
-	if r.CommitID != "" {
-		opt = &client.BuildDataListOptions{CommitID: r.CommitID}
-	}
-	remoteFiles, _, err := apiclient.BuildData.List(client.RepositorySpec{URI: *repoURI}, opt)
+	remoteFiles, _, err := apiclient.BuildData.List(client.RepositorySpec{URI: *repoURI}, r.CommitID, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
