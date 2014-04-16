@@ -64,7 +64,10 @@ type requirement struct {
 func (p *pythonEnv) Resolve(dep *dep2.RawDependency, c *config.Repository, x *task2.Context) (*dep2.ResolvedTarget, error) {
 	switch dep.TargetType {
 	case pythonRequirementTargetType:
-		req := dep.Target.(requirement)
+		var req requirement
+		reqJson, _ := json.Marshal(dep.Target)
+		json.Unmarshal(reqJson, &req)
+
 		toUnit := &fauxPackage{}
 		return &dep2.ResolvedTarget{
 			ToRepoCloneURL: req.RepoURL,
