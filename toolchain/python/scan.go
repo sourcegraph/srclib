@@ -15,34 +15,20 @@ func init() {
 	unit.Register("python", &fauxPackage{})
 }
 
-type fauxPackage struct{}
-
-func (p *fauxPackage) Name() string {
-	return "python-faux-package"
-}
-
-func (p *fauxPackage) RootDir() string {
-	return "."
-}
-
-func (p *fauxPackage) Paths() []string {
-	return nil
-}
-
 type fauxScanner struct{}
 
 func (p *fauxScanner) Scan(dir string, c *config.Repository, x *task2.Context) ([]unit.SourceUnit, error) {
-	isPython := false
+	var files []string
 	walker := fs.Walk(dir)
 	for walker.Step() {
-		if !walker.Stat().IsDir() && filepath.Ext(walker.Path()) == ".py" {
-			isPython = true
-			break
+		if err := walker.Err(); err == nil && !walker.Stat().IsDir() && filepath.Ext(walker.Path()) == ".py" {
+			file, _ := filepath.Rel(dir, walker.Path())
+			files = append(files, file)
 		}
 	}
 
-	if isPython {
-		return []unit.SourceUnit{&fauxPackage{}}, nil
+	if len(files) > 0 {
+		return []unit.SourceUnit{&fauxPackage{Files: files}}, nil
 	} else {
 		return nil, nil
 	}
