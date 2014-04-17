@@ -27,7 +27,7 @@ func (s *OnlineReadmeFormatter) GetFormattedReadme(repo *repo.Repository) (forma
 	if err != nil {
 		return "", err
 	}
-	src, path, err := s.VCSFS.GetFirstExistingFile(repo.VCS, cloneURL, repo.RevSpecOrDefault(), readmeNames)
+	src, path, err := s.VCSFS.GetFirstExistingFile(string(repo.VCS), cloneURL, repo.DefaultBranch, readmeNames)
 	if err != nil {
 		return "", ErrNoReadme
 	}
