@@ -178,8 +178,6 @@ func (p *pythonEnv) convertSym(pySym *pySym, c *config.Repository, reqs []requir
 		SymbolKey:    *symKey,
 		Name:         pySym.Name,
 		File:         file,
-		IdentStart:   pySym.IdentStart,
-		IdentEnd:     pySym.IdentEnd,
 		DefStart:     pySym.DefStart,
 		DefEnd:       pySym.DefEnd,
 		Exported:     pySym.Exported,
@@ -206,7 +204,7 @@ func (p *pythonEnv) convertSym(pySym *pySym, c *config.Repository, reqs []requir
 		sym.Kind = graph.Package
 	}
 
-	if sym.File != "" && sym.IdentStart != sym.IdentEnd {
+	if sym.File != "" && pySym.IdentStart != pySym.IdentEnd {
 		var symFile string
 		symFile, err = p.pysonarFilePathToFile(pySym.File)
 		if err != nil {
@@ -224,8 +222,8 @@ func (p *pythonEnv) convertSym(pySym *pySym, c *config.Repository, reqs []requir
 			Unit:     symKey.Unit,
 
 			File:  symFile,
-			Start: sym.IdentStart,
-			End:   sym.IdentEnd,
+			Start: pySym.IdentStart,
+			End:   pySym.IdentEnd,
 		}
 	}
 
