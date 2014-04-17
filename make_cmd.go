@@ -9,6 +9,7 @@ import (
 	"os/exec"
 
 	"strings"
+
 	"github.com/aybabtme/color/brush"
 	"github.com/sourcegraph/go-vcs"
 	"github.com/sourcegraph/makex"
@@ -129,17 +130,17 @@ func mustParseMakeParams(args []string) *makeParams {
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` make [options] [target...]
 
-	   Generates and executes a Makefile that processes a repository, creating graph of
-	   definitions, references, and dependencies in a repository's code at a specific
-	   revision.
+Generates and executes a Makefile that processes a repository, creating graph of
+definitions, references, and dependencies in a repository's code at a specific
+revision.
 
-	   Run "`+Name+` makefile" to print the generated Makefile and exit.
+Run "`+Name+` makefile" to print the generated Makefile and exit.
 
-	   This command uses makex to execute the Makefile, but the Makefile is also
-	   compatible with GNU make. You can use the "`+Name+` makefile" command to
-	   generate a Makefile to use with GNU make, if you'd like.
+This command uses makex to execute the Makefile, but the Makefile is also
+compatible with GNU make. You can use the "`+Name+` makefile" command to
+generate a Makefile to use with GNU make, if you'd like.
 
-	   The options are:
+The options are:
 	   `)
 		fs.PrintDefaults()
 		fmt.Fprintln(os.Stderr)
