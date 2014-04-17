@@ -5,7 +5,6 @@ import (
 
 	"github.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
 type RuleMaker func(c *config.Repository, dataDir string, existing []makex.Rule) ([]makex.Rule, error)
@@ -31,7 +30,7 @@ func RegisterRuleMaker(name string, r RuleMaker) {
 	orderedRuleMakers = append(orderedRuleMakers, r)
 }
 
-func CreateMakefile(repoDir, commitID, buildDataDir string, c *config.Repository, conf *makex.Config, x *task2.Context) (*makex.Makefile, error) {
+func CreateMakefile(buildDataDir string, c *config.Repository) (*makex.Makefile, error) {
 	var allRules []makex.Rule
 	for i, r := range orderedRuleMakers {
 		name := ruleMakerNames[i]

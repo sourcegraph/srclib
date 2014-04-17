@@ -78,6 +78,14 @@ func RootDir(s *RepositoryStore) (string, error) {
 	return "", fmt.Errorf("store VFS is not an OS filesystem VFS")
 }
 
+func BuildDir(s *RepositoryStore, commitID string) (string, error) {
+	rootDataDir, err := RootDir(s)
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(rootDataDir, s.CommitPath(commitID)), nil
+}
+
 type BuildDataFileInfo struct {
 	CommitID string
 	Path     string
