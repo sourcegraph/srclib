@@ -9,6 +9,7 @@ import (
 	"os/exec"
 
 	"strings"
+	"github.com/aybabtme/color/brush"
 	"github.com/sourcegraph/go-vcs"
 	"github.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srcgraph/build"
@@ -93,12 +94,12 @@ func make_(args []string) {
 			diffStr := string(diffOut)
 			diffStr = strings.Replace(diffStr, buildDir, "<test-build>", -1)
 			log.Printf(diffStr)
-			log.Printf("** FAIL **")
+			log.Printf(brush.Red("** FAIL **").String())
 		} else if err != nil {
 			log.Fatal(err)
-			log.Printf("** ERROR **")
+			log.Printf(brush.Red("** ERROR **").String())
 		} else if err == nil {
-			log.Printf("** PASS **")
+			log.Printf(brush.Green("** PASS **").String())
 		}
 	}
 }
