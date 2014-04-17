@@ -3,7 +3,6 @@ package gog
 import (
 	"fmt"
 	"go/ast"
-	"go/parser"
 	"io/ioutil"
 	"testing"
 
@@ -44,7 +43,7 @@ func createPkg(t *testing.T, path string, sources []string, names []string) *loa
 		} else {
 			name = fmt.Sprintf("sources[%d]", i)
 		}
-		f, err := conf.ParseFile(name, src, parser.DeclarationErrors)
+		f, err := conf.ParseFile(name, src)
 		if err != nil {
 			t.Fatal(err)
 		}
