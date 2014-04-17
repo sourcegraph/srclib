@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 
 	"strings"
 
@@ -50,6 +51,15 @@ func make_(args []string) {
 		}
 	} else {
 		buildDir, err = buildstore.BuildDir(repoStore, params.Repository.CommitID)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Use a relative base path for the Makefile so that we aren't tied to
+		// absolute paths. This makes the Makefile more portable between hosts. (And
+		// makex uses vfs, which restricts it to accessing only files under a
+		// certain path.)
+		buildDir, err = filepath.Rel(params.Repository.RootDir, buildDir)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -178,6 +188,11 @@ func (p *makeParams) runMakefile(mf *makex.Makefile) error {
 		}
 	}
 
+	err := os.Chdir(p.Repository.RootDir)
+	if err != nil {
+		return err
+	}
+
 	mk := p.Makex.NewMaker(mf, goals...)
 
 	if p.Makex.DryRun {
@@ -186,11 +201,6 @@ func (p *makeParams) runMakefile(mf *makex.Makefile) error {
 			return err
 		}
 		return nil
-	}
-
-	err := os.Chdir(p.Repository.RootDir)
-	if err != nil {
-		return err
 	}
 
 	err = mk.Run()
