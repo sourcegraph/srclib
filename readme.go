@@ -10,39 +10,37 @@ import (
 	"sourcegraph.com/sourcegraph/vcsfs"
 )
 
-type Service interface {
+type ReadmeFormatter interface {
 	GetFormattedReadme(repo *repo.Repository) (string, error)
 }
 
-// vcsfsService is an implementation of Service that uses the global vcsfs to
-// fetch files.
-type vcsfsService struct{}
-
-var Default Service = &vcsfsService{}
+type OnlineReadmeFormatter struct {
+	VCSFS vcsfs.Service
+}
 
 var ErrNoReadme = errors.New("no readme found in repository")
 
 // GetFormattedReadme returns repo's HTML-formatted readme, or an empty string
 // and ErrNoReadme if the repository has no README.
-func (_ *vcsfsService) GetFormattedReadme(repo *repo.Repository) (formattedReadme string, err error) {
+func (s *OnlineReadmeFormatter) GetFormattedReadme(repo *repo.Repository) (formattedReadme string, err error) {
 	cloneURL, err := url.Parse(repo.CloneURL)
 	if err != nil {
 		return "", err
 	}
-	src, path, err := vcsfs.GetFirstExistingFile(repo.VCS, cloneURL, repo.RevSpecOrDefault(), readmeNames)
+	src, path, err := s.VCSFS.GetFirstExistingFile(repo.VCS, cloneURL, repo.RevSpecOrDefault(), readmeNames)
 	if err != nil {
 		return "", ErrNoReadme
 	}
 	return ToHTML(readmeFormats[strings.ToLower(filepath.Ext(path))], string(src))
 }
 
-type MockService struct {
+type MockReadmeFormatter struct {
 	GetFormattedReadme_ func(repo *repo.Repository) (string, error)
 }
 
-var _ Service = MockService{}
+var _ ReadmeFormatter = MockReadmeFormatter{}
 
-func (s MockService) GetFormattedReadme(repo *repo.Repository) (string, error) {
+func (s MockReadmeFormatter) GetFormattedReadme(repo *repo.Repository) (string, error) {
 	if s.GetFormattedReadme_ == nil {
 		return "", nil
 	}
