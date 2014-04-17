@@ -14,10 +14,7 @@
       "CommitID": "",
       "defStart": 0,
       "defEnd": 0,
-      "exported": true,
-      "xrefs": null,
-      "irefs": 0,
-      "XRefsRecursive": null
+      "exported": true
     },
     {
       "repo": "example.com/golang/cases/mypkg",
@@ -34,10 +31,7 @@
       "defStart": 15,
       "defEnd": 28,
       "exported": true,
-      "typeExpr": "func()",
-      "xrefs": null,
-      "irefs": 0,
-      "XRefsRecursive": null
+      "typeExpr": "func()"
     },
     {
       "repo": "example.com/golang/cases/mypkg",
@@ -54,10 +48,7 @@
       "defStart": 43,
       "defEnd": 53,
       "exported": true,
-      "typeExpr": "mypkg.Qux",
-      "xrefs": null,
-      "irefs": 0,
-      "XRefsRecursive": null
+      "typeExpr": "mypkg.Qux"
     },
     {
       "repo": "example.com/golang/cases/mypkg",
@@ -74,10 +65,7 @@
       "defStart": 55,
       "defEnd": 77,
       "exported": false,
-      "typeExpr": "func()",
-      "xrefs": null,
-      "irefs": 0,
-      "XRefsRecursive": null
+      "typeExpr": "func()"
     },
     {
       "repo": "example.com/golang/cases/mypkg",
@@ -94,135 +82,123 @@
       "defStart": 34,
       "defEnd": 47,
       "exported": false,
-      "typeExpr": "mypkg.Qux",
-      "xrefs": null,
-      "irefs": 0,
-      "XRefsRecursive": null
+      "typeExpr": "mypkg.Qux"
     }
   ],
   "Refs": [
     {
-      "RefID": 0,
       "SymbolRepo": "example.com/golang/cases/mypkg",
       "SymbolUnitType": "GoPackage",
       "SymbolUnit": ".",
       "SymbolPath": "Foo",
       "Def": false,
       "repo": "",
-      "Unit": "",
       "UnitType": "",
+      "Unit": "",
       "file": "bar.go",
       "start": 70,
       "end": 73
     },
     {
-      "RefID": 0,
       "SymbolRepo": "example.com/golang/cases/mypkg",
       "SymbolUnitType": "GoPackage",
       "SymbolUnit": ".",
       "SymbolPath": "Foo",
       "Def": true,
       "repo": "",
-      "Unit": "",
       "UnitType": "",
+      "Unit": "",
       "file": "foo.go",
       "start": 20,
       "end": 23
     },
     {
-      "RefID": 0,
       "SymbolRepo": "example.com/golang/cases/mypkg",
       "SymbolUnitType": "GoPackage",
       "SymbolUnit": ".",
       "SymbolPath": "Qux",
       "Def": true,
       "repo": "",
-      "Unit": "",
       "UnitType": "",
+      "Unit": "",
       "file": "bar.go",
       "start": 43,
       "end": 46
     },
     {
-      "RefID": 0,
       "SymbolRepo": "example.com/golang/cases/mypkg",
       "SymbolUnitType": "GoPackage",
       "SymbolUnit": ".",
       "SymbolPath": "Qux",
       "Def": false,
       "repo": "",
-      "Unit": "",
       "UnitType": "",
+      "Unit": "",
       "file": "foo.go",
       "start": 44,
       "end": 47
     },
     {
-      "RefID": 0,
       "SymbolRepo": "example.com/golang/cases/mypkg",
       "SymbolUnitType": "GoPackage",
       "SymbolUnit": ".",
       "SymbolPath": "",
       "Def": false,
       "repo": "",
-      "Unit": "",
       "UnitType": "",
+      "Unit": "",
       "file": "bar.go",
       "start": 8,
       "end": 13
     },
     {
-      "RefID": 0,
       "SymbolRepo": "example.com/golang/cases/mypkg",
       "SymbolUnitType": "GoPackage",
       "SymbolUnit": ".",
       "SymbolPath": "",
       "Def": false,
       "repo": "",
-      "Unit": "",
       "UnitType": "",
+      "Unit": "",
       "file": "foo.go",
       "start": 8,
       "end": 13
     },
     {
-      "RefID": 0,
       "SymbolRepo": "example.com/golang/cases/mypkg",
       "SymbolUnitType": "GoPackage",
       "SymbolUnit": ".",
       "SymbolPath": "main",
       "Def": true,
       "repo": "",
-      "Unit": "",
       "UnitType": "",
+      "Unit": "",
       "file": "bar.go",
       "start": 60,
       "end": 64
     },
     {
-      "RefID": 0,
       "SymbolRepo": "example.com/golang/cases/mypkg",
       "SymbolUnitType": "GoPackage",
       "SymbolUnit": ".",
       "SymbolPath": "numcolors",
       "Def": true,
       "repo": "",
-      "Unit": "",
       "UnitType": "",
+      "Unit": "",
       "file": "foo.go",
       "start": 34,
       "end": 43
     },
     {
-      "RefID": 0,
       "SymbolRepo": "code.google.com/p/go",
       "SymbolUnitType": "GoPackage",
       "SymbolUnit": "src/pkg/builtin",
       "SymbolPath": "uint32",
       "Def": false,
       "repo": "",
-      "Unit": "",
       "UnitType": "",
+      "Unit": "",
       "file": "bar.go",
       "start": 47,
       "end": 53
