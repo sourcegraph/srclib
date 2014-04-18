@@ -20,19 +20,25 @@ import (
 )
 
 func makefile(args []string) {
-	make_(append(args, "-mf"))
+	make_cmd(append(args, "-mf"))
 }
 
-func make_(args []string) {
+func make_cmd(args []string) {
+	if err := make_(args); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func make_(args []string) error {
 	params := mustParseMakeParams(args)
 	if err := params.verify(); err != nil {
-		log.Fatal(err)
+		return err
 	}
 	repoConfig := params.RepositoryConfig.GetRepositoryConfig(task2.DefaultContext)
 
 	repoStore, err := buildstore.NewRepositoryStore(params.Repository.RootDir)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	// Get build directory (${REPO}/.sourcegraph-data/...)
@@ -42,7 +48,7 @@ func make_(args []string) {
 		buildDir, err = ioutil.TempDir("", fmt.Sprintf("sourcegraph-data.%s.%s-", strings.Replace(string(repoConfig.URI), "/", "-", -1),
 			params.Repository.CommitID))
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		if params.TestKeep {
 			defer log.Printf("Test build directory: %s", buildDir)
@@ -52,7 +58,7 @@ func make_(args []string) {
 	} else {
 		buildDir, err = buildstore.BuildDir(repoStore, params.Repository.CommitID)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		// Use a relative base path for the Makefile so that we aren't tied to
@@ -61,39 +67,39 @@ func make_(args []string) {
 		// certain path.)
 		buildDir, err = filepath.Rel(params.Repository.RootDir, buildDir)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 	}
 
 	// Create Makefile
 	mf, err := build.CreateMakefile(buildDir, repoConfig)
 	if err != nil {
-		log.Fatalf("error creating Makefile: %s", err)
+		return fmt.Errorf("error creating Makefile: %s", err)
 	}
 
 	if *Verbose || params.ShowOnly {
 		// Show Makefile
 		data, err := makex.Marshal(mf)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		fmt.Println(string(data))
 		if params.ShowOnly {
-			return
+			return nil
 		}
 	}
 
 	// Run Makefile
 	err = params.runMakefile(mf)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	if params.Test {
 		// Compare expected with actual
 		expectedBuildDir, err := buildstore.BuildDir(repoStore, params.Repository.CommitID)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		diffOut, err := exec.Command("diff", "-ur", "--exclude=config.json", expectedBuildDir, buildDir).CombinedOutput()
@@ -106,13 +112,16 @@ func make_(args []string) {
 			diffStr = strings.Replace(diffStr, buildDir, "<test-build>", -1)
 			log.Printf(diffStr)
 			log.Printf(brush.Red("** FAIL **").String())
+			return fmt.Errorf("output differed")
 		} else if err != nil {
-			log.Fatal(err)
 			log.Printf(brush.Red("** ERROR **").String())
+			return fmt.Errorf("failed to compute diff: %s", err)
 		} else if err == nil {
 			log.Printf(brush.Green("** PASS **").String())
+			return nil
 		}
 	}
+	return nil
 }
 
 type makeParams struct {
