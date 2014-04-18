@@ -1,9 +1,0 @@
-{
-  "Dirs": {
-    "cases/*": {
-      "Scan": true,
-      "RawDependencies": true,
-      "Graph": true
-    }
-  }
-}
