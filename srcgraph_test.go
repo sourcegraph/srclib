@@ -30,7 +30,7 @@ func Test_SrcgraphCmd(t *testing.T) {
 			t.Fatalf("Could not chdir: %s", err)
 		}
 
-		cmd := []string{"-v", "-commit=expected-test"}
+		cmd := []string{"-v", "-commit=expected-test", "-conf.cache=false"}
 		if !*generate {
 			cmd = append(cmd, "-test")
 			if *keepTestFiles {
