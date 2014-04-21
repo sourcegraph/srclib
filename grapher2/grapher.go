@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"sourcegraph.com/sourcegraph/graph"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
+	"sourcegraph.com/sourcegraph/srcgraph/graph"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
