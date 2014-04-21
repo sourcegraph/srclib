@@ -37,3 +37,13 @@ func (x *StatType) Scan(v interface{}) error {
 	}
 	return fmt.Errorf("%T.Scan failed: %v", x, v)
 }
+
+// UniqueRefSymbols groups refs by the RefSymbolKey field and returns a map of
+// how often each RefSymbolKey appears.
+func UniqueRefSymbols(refs []*Ref) map[RefSymbolKey]int {
+	m := make(map[RefSymbolKey]int)
+	for _, ref := range refs {
+		m[ref.RefSymbolKey()]++
+	}
+	return m
+}

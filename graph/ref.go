@@ -68,6 +68,15 @@ func (r *Ref) RefKey() RefKey {
 	}
 }
 
+func (r *Ref) RefSymbolKey() RefSymbolKey {
+	return RefSymbolKey{
+		SymbolRepo:     r.SymbolRepo,
+		SymbolUnitType: r.SymbolUnitType,
+		SymbolUnit:     r.SymbolUnit,
+		SymbolPath:     r.SymbolPath,
+	}
+}
+
 func (r *Ref) SymbolKey() SymbolKey {
 	return SymbolKey{
 		Repo:     r.SymbolRepo,
