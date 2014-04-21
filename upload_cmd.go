@@ -7,8 +7,8 @@ import (
 	"os"
 
 	"sourcegraph.com/sourcegraph/client"
-	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
+	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
 func upload(args []string) {

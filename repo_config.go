@@ -11,9 +11,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
+	"sourcegraph.com/sourcegraph/srcgraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/scan"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 

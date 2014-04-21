@@ -10,7 +10,7 @@ import (
 	"os"
 
 	"sourcegraph.com/sourcegraph/config2"
-	"sourcegraph.com/sourcegraph/repo"
+	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
 func push(args []string) {

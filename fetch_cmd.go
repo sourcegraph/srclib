@@ -10,8 +10,8 @@ import (
 	"github.com/sourcegraph/rwvfs"
 
 	"sourcegraph.com/sourcegraph/client"
-	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
+	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
 func fetch(args []string) {

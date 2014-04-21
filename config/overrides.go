@@ -1,6 +1,6 @@
 package config
 
-import "sourcegraph.com/sourcegraph/repo"
+import "sourcegraph.com/sourcegraph/srcgraph/repo"
 
 // repoOverrides contains config overrides for repositories that need special
 // handling.

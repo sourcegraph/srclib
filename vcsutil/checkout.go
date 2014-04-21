@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/sourcegraph/go-vcs"
-	"sourcegraph.com/sourcegraph/repo"
+	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
 func Checkout(cloneURL string, vcsType vcs.VCS, rev string) (string, string, error) {

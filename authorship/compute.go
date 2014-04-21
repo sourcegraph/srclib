@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"log"
 
-	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/graph"
 	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
+	"sourcegraph.com/sourcegraph/srcgraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/vcsutil"
 )
