@@ -9,7 +9,7 @@ import (
 
 	"github.com/sourcegraph/vcsserver"
 	"sourcegraph.com/sourcegraph/config2"
-	"sourcegraph.com/sourcegraph/repo"
+	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
 type getFormattedReadmeTest struct {

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"sourcegraph.com/sourcegraph/repo"
+	"sourcegraph.com/sourcegraph/srcgraph/repo"
 	"sourcegraph.com/sourcegraph/vcsfs"
 )
 
