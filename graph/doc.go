@@ -1,7 +1,7 @@
 package graph
 
 import (
-	"sourcegraph.com/sourcegraph/db"
+	"sourcegraph.com/sourcegraph/srcgraph/db_common"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
@@ -42,5 +42,5 @@ type DocPage struct {
 	Body  string `json:"body"`  // HTML tags with the data-sg-doc-symbol attribute will be linked to symbol pages and vice-versa in the UI
 	Toc   string `json:"toc"`   // Table of contents in conjunction (in sidebar) with body
 
-	SymbolPaths *db.StringSlice `json:"symbolPaths"` // symbols within the scope of this documentation page
+	SymbolPaths *db_common.StringSlice `json:"symbolPaths"` // symbols within the scope of this documentation page
 }

@@ -7,7 +7,7 @@ import (
 	"io"
 
 	"github.com/sourcegraph/go-nnz/nnz"
-	"sourcegraph.com/sourcegraph/db"
+	"sourcegraph.com/sourcegraph/srcgraph/db_common"
 )
 
 // User represents a user.
@@ -50,7 +50,7 @@ type User struct {
 	// RegisteredAt is the date that the user registered. If the user has not
 	// registered (i.e., we have processed their repos but they haven't signed
 	// into Sourcegraph), it is null.
-	RegisteredAt db.NullTime `db:"registered_at"`
+	RegisteredAt db_common.NullTime `db:"registered_at"`
 
 	// GitHubOAuth2AccessToken is the user's GitHub access token.
 	GitHubOAuth2AccessToken string `db:"github_oauth2_access_token" json:"-"` // don't write the OAuth2 access token to JSON
