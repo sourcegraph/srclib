@@ -9,8 +9,8 @@ import (
 
 	"github.com/sourcegraph/rwvfs"
 
-	"sourcegraph.com/sourcegraph/client"
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
+	"sourcegraph.com/sourcegraph/srcgraph/client"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
