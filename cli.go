@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"sourcegraph.com/sourcegraph/client"
+	"sourcegraph.com/sourcegraph/srcgraph/client"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
