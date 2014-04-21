@@ -3,8 +3,8 @@ package golang
 import (
 	"strings"
 
-	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/graph"
+	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
 // parseSymbolPath parses a Go symbol path such as "github.com/foo/bar/Baz" into

@@ -7,8 +7,8 @@ import (
 	"sync"
 
 	"code.google.com/p/rog-go/parallel"
-	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
+	"sourcegraph.com/sourcegraph/srcgraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )

@@ -2,7 +2,7 @@ package graph
 
 import (
 	"sourcegraph.com/sourcegraph/db"
-	"sourcegraph.com/sourcegraph/repo"
+	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
 // Docstring

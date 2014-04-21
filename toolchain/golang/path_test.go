@@ -3,8 +3,8 @@ package golang
 import (
 	"testing"
 
-	"sourcegraph.com/sourcegraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/graph"
+	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
 func TestParseSymbolPath(t *testing.T) {

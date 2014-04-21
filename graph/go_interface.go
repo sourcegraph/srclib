@@ -1,7 +1,7 @@
 package graph
 
 import (
-	"sourcegraph.com/sourcegraph/repo"
+	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
 // GoInterfaceMethod represents a Go interface method defined by an Go interface

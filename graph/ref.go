@@ -3,7 +3,7 @@ package graph
 import (
 	"strconv"
 
-	"sourcegraph.com/sourcegraph/repo"
+	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
 type RefSymbolKey struct {

@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"reflect"
 
-	"sourcegraph.com/sourcegraph/repo"
+	"sourcegraph.com/sourcegraph/srcgraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
