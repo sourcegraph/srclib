@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/sourcegraph/go-nnz/nnz"
-	"sourcegraph.com/sourcegraph/user"
+	"sourcegraph.com/sourcegraph/srcgraph/person"
 )
 
 // RID is the numeric primary key for a repository.
@@ -25,7 +25,7 @@ type Repository struct {
 	Name string
 
 	// OwnerUserID is the account that owns this repository.
-	OwnerUserID user.UID `db:"owner_user_id"`
+	OwnerUserID person.UID `db:"owner_user_id"`
 
 	// OwnerGitHubUserID is the GitHub user ID of this repository's owner, if this
 	// is a GitHub repository.
