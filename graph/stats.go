@@ -39,9 +39,12 @@ func (x *StatType) Scan(v interface{}) error {
 }
 
 // UniqueRefSymbols groups refs by the RefSymbolKey field and returns a map of
-// how often each RefSymbolKey appears.
-func UniqueRefSymbols(refs []*Ref) map[RefSymbolKey]int {
-	m := make(map[RefSymbolKey]int)
+// how often each RefSymbolKey appears. If m is non-nil, counts are incremented
+// and a new map is not created.
+func UniqueRefSymbols(refs []*Ref, m map[RefSymbolKey]int) map[RefSymbolKey]int {
+	if m == nil {
+		m = make(map[RefSymbolKey]int)
+	}
 	for _, ref := range refs {
 		m[ref.RefSymbolKey()]++
 	}
