@@ -15,5 +15,5 @@ type rubyEnv struct {
 
 var defaultRubyEnv = &rubyEnv{
 	Ruby:        "ruby2.0",
-	RDepVersion: "0.0.4c",
+	RDepVersion: "0.0.5a",
 }
