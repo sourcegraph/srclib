@@ -293,7 +293,7 @@ func TestRepositoriesService_ListByOwner(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	repos, _, err := client.Repositories.ListByOwner(PersonSpec{"a"}, nil)
+	repos, _, err := client.Repositories.ListByOwner(PersonSpec{Login: "a"}, nil)
 	if err != nil {
 		t.Errorf("Repositories.ListByOwner returned error: %v", err)
 	}
@@ -322,7 +322,7 @@ func TestRepositoriesService_ListByContributor(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	repos, _, err := client.Repositories.ListByContributor(PersonSpec{"a"}, &RepositoryListByContributorOptions{NoFork: true})
+	repos, _, err := client.Repositories.ListByContributor(PersonSpec{Login: "a"}, &RepositoryListByContributorOptions{NoFork: true})
 	if err != nil {
 		t.Errorf("Repositories.ListByContributor returned error: %v", err)
 	}
@@ -350,7 +350,7 @@ func TestRepositoriesService_ListByClient(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	repos, _, err := client.Repositories.ListByClient(PersonSpec{"a"}, nil)
+	repos, _, err := client.Repositories.ListByClient(PersonSpec{Login: "a"}, nil)
 	if err != nil {
 		t.Errorf("Repositories.ListByClient returned error: %v", err)
 	}
@@ -378,7 +378,7 @@ func TestRepositoriesService_ListByRefdAuthor(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	repos, _, err := client.Repositories.ListByRefdAuthor(PersonSpec{"a"}, nil)
+	repos, _, err := client.Repositories.ListByRefdAuthor(PersonSpec{Login: "a"}, nil)
 	if err != nil {
 		t.Errorf("Repositories.ListByRefdAuthor returned error: %v", err)
 	}

@@ -9,6 +9,31 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/person"
 )
 
+func TestPersonSpec(t *testing.T) {
+	tests := []struct {
+		str  string
+		spec PersonSpec
+	}{}
+
+	for _, test := range tests {
+		spec, err := ParsePersonSpec(test.str)
+		if err != nil {
+			t.Errorf("%q: ParsePersonSpec failed: %s", test.str, err)
+			continue
+		}
+		if spec != test.spec {
+			t.Errorf("%q: got spec %+v, want %+v", test.str, spec, test.spec)
+			continue
+		}
+
+		str := test.spec.PathComponent()
+		if str != test.str {
+			t.Errorf("%+v: got str %q, want %q", test.spec, str, test.str)
+			continue
+		}
+	}
+}
+
 func TestPeopleService_Get(t *testing.T) {
 	setup()
 	defer teardown()
@@ -23,7 +48,7 @@ func TestPeopleService_Get(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	person_, _, err := client.People.Get(PersonSpec{LoginOrEmail: "a"})
+	person_, _, err := client.People.Get(PersonSpec{Login: "a"})
 	if err != nil {
 		t.Errorf("People.Get returned error: %v", err)
 	}
@@ -58,7 +83,7 @@ func TestPeopleService_List(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	people, _, err := client.People.List(&PersonListOptions{
+	people, _, err := client.People.List(&PeopleListOptions{
 		Query:       "q",
 		Sort:        "name",
 		Direction:   "asc",
@@ -91,7 +116,7 @@ func TestPeopleService_ListAuthors(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	authors, _, err := client.People.ListAuthors(PersonSpec{LoginOrEmail: "a"}, nil)
+	authors, _, err := client.People.ListAuthors(PersonSpec{Login: "a"}, nil)
 	if err != nil {
 		t.Errorf("People.ListAuthors returned error: %v", err)
 	}
@@ -119,7 +144,7 @@ func TestPeopleService_ListClients(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	clients, _, err := client.People.ListClients(PersonSpec{LoginOrEmail: "a"}, nil)
+	clients, _, err := client.People.ListClients(PersonSpec{Login: "a"}, nil)
 	if err != nil {
 		t.Errorf("People.ListClients returned error: %v", err)
 	}
