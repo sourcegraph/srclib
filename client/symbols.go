@@ -33,6 +33,15 @@ type SymbolSpec struct {
 	Path     string
 }
 
+func (s *SymbolSpec) SymbolKey() graph.SymbolKey {
+	return graph.SymbolKey{
+		Repo:     repo.URI(s.Repo),
+		UnitType: s.UnitType,
+		Unit:     s.Unit,
+		Path:     graph.SymbolPath(s.Path),
+	}
+}
+
 func NewSymbolSpecFromSymbolKey(key graph.SymbolKey) SymbolSpec {
 	return SymbolSpec{
 		Repo:     string(key.Repo),
@@ -136,6 +145,13 @@ type Example struct {
 	graph.Ref
 	SrcHTML template.HTML
 }
+
+type Examples []*Example
+
+func (r *Example) sortKey() string     { return fmt.Sprintf("%+v", r) }
+func (vs Examples) Len() int           { return len(vs) }
+func (vs Examples) Swap(i, j int)      { vs[i], vs[j] = vs[j], vs[i] }
+func (vs Examples) Less(i, j int) bool { return vs[i].sortKey() < vs[j].sortKey() }
 
 type SymbolExampleListOptions struct {
 	Annotate bool
