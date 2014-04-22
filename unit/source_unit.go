@@ -30,7 +30,7 @@ func Register(name string, emptyInstance SourceUnit) {
 		panic("unit: Register called twice for type " + typ.String())
 	}
 	if name == "" {
-		panic("unit: Register name is nil")
+		panic("unit: Register name is empty")
 	}
 	TypeNames[typ] = name
 }
