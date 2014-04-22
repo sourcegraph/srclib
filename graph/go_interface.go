@@ -16,13 +16,13 @@ type GoInterfaceMethod struct {
 	OfUnit string `db:"of_unit"`
 
 	// Repo refers to the repository in which this method was defined.
-	Repo repo.URI `json:"repo"`
+	Repo repo.URI 
 
 	// Key is the canonical signature of the method for the implements
 	// operation. If a type's methods' keys are a superset of an interface's,
 	// then the type implements the interface.
-	CanonicalSignature string `db:"canonical_signature" json:"canonicalSignature"`
+	CanonicalSignature string `db:"canonical_signature"`
 
 	// Name is the method's name.
-	Name string `json:"name"`
+	Name string 
 }

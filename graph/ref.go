@@ -38,7 +38,7 @@ type Ref struct {
 	// Def is true if this ref is to a definition of the target symbol.
 	Def bool
 
-	Repo repo.URI `json:"repo"`
+	Repo repo.URI 
 
 	// CommitID is the immutable commit ID (not the branch name) of the VCS
 	// revision that this ref was found in.
@@ -47,9 +47,9 @@ type Ref struct {
 	UnitType string `db:"unit_type" json:",omitempty"`
 	Unit     string `json:",omitempty"`
 
-	File  string `json:"file"`
-	Start int    `json:"start"`
-	End   int    `json:"end"`
+	File  string 
+	Start int    
+	End   int    
 }
 
 func (r *Ref) RefKey() RefKey {
