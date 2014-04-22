@@ -1,10 +1,8 @@
 package ruby
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"text/template"
 
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
@@ -54,7 +52,7 @@ func (u *app) Paths() []string {
 }
 
 func (e *rubyEnv) BuildScanner(dir string, c *config.Repository, x *task2.Context) (*container.Command, error) {
-	scanDockerfile, err := e.scanDockerfile()
+	scanDockerfile, err := e.rdepDockerfile()
 	if err != nil {
 		return nil, err
 	}
@@ -105,35 +103,4 @@ func (e *rubyEnv) UnmarshalSourceUnits(data []byte) ([]unit.SourceUnit, error) {
 		}
 	}
 	return units, nil
-}
-
-// Note: git is needed because some projects (e.g., sinatra) call it from gemspec files
-var scanDockerfileTemplate = template.Must(template.New("").Parse(`FROM ubuntu:13.10
-RUN apt-get update
-
-RUN apt-get install -qy curl
-RUN apt-get install -qy git
-
-RUN apt-get install -qy {{.Ruby}}
-RUN gem install rdep -v {{.RDepVersion}}
-`))
-
-func (e *rubyEnv) scanDockerfile() ([]byte, error) {
-	var b bytes.Buffer
-	err := scanDockerfileTemplate.Execute(&b, e)
-	return b.Bytes(), err
-}
-
-type metadata_t struct {
-	Type         string         `json:"type"`
-	Path         string         `json:"path,omitempty"`
-	Name         string         `json:"name,omitempty"`
-	Version      string         `json:"version,omitempty"`
-	Dependencies []dependency_t `json:"dependencies,omitempty"`
-}
-
-type dependency_t struct {
-	Name         string   `json:"name"`
-	SourceURL    string   `json:"source_url,omitempty"`
-	Requirements []string `json:"requirements,omitempty"`
 }

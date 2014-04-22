@@ -75,7 +75,7 @@ func (p *pythonEnv) Resolve(dep *dep2.RawDependency, c *config.Repository, x *ta
 			ToUnitType:     unit.Type(toUnit),
 		}, nil
 	default:
-		return nil, fmt.Errorf("Unexpected target type for Python %+v", dep.TargetType)
+		return nil, fmt.Errorf("Unexpected target type for Python: %+v", dep.TargetType)
 	}
 }
 
