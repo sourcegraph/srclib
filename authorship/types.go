@@ -95,3 +95,15 @@ type RepoClient struct {
 	Email nnz.String
 	RepositoryClientship
 }
+
+type RepoUsage struct {
+	// SymbolRepo is the repository that defines the code that was referenced.
+	// It's called SymbolRepo because "Repo" usually refers to the repository
+	// whose analysis created this linkage (i.e., the repository that contains
+	// the reference).
+	SymbolRepo repo.URI `db:"symbol_repo" json:"-"`
+
+	RefCount int `db:"ref_count"`
+
+	AuthorshipInfo
+}
