@@ -44,8 +44,8 @@ func SourceUnits(dir string, c *config.Repository, x *task2.Context) ([]unit.Sou
 		sync.Mutex
 	}
 	run := parallel.NewRun(runtime.GOMAXPROCS(0))
-	for name, s_ := range Scanners {
-		s := s_
+	for name_, s_ := range Scanners {
+		name, s := name_, s_
 		run.Do(func() error {
 			x.Log.Printf("Scanning %s using %q scanner...", c.URI, name)
 			units2, err := s.Scan(dir, c, x)

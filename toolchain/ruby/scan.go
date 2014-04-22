@@ -107,8 +107,13 @@ func (e *rubyEnv) UnmarshalSourceUnits(data []byte) ([]unit.SourceUnit, error) {
 	return units, nil
 }
 
+// Note: git is needed because some projects (e.g., sinatra) call it from gemspec files
 var scanDockerfileTemplate = template.Must(template.New("").Parse(`FROM ubuntu:13.10
 RUN apt-get update
+
+RUN apt-get install -qy curl
+RUN apt-get install -qy git
+
 RUN apt-get install -qy {{.Ruby}}
 RUN gem install rdep -v {{.RDepVersion}}
 `))
