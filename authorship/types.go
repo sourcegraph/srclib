@@ -80,7 +80,7 @@ type RepositoryClientship struct {
 	// referred to, in code committed to another repository.
 	SymbolRepo repo.URI `db:"symbol_repo"`
 
-	// RefCount is the number of references this author made in this repository to ToRepo.
+	// RefCount is the number of references this author made in this repository to SymbolRepo.
 	RefCount int `db:"ref_count"`
 }
 
@@ -88,4 +88,10 @@ type RepoAuthor struct {
 	UID   nnz.Int
 	Email nnz.String
 	RepositoryAuthorship
+}
+
+type RepoClient struct {
+	UID   nnz.Int
+	Email nnz.String
+	RepositoryClientship
 }

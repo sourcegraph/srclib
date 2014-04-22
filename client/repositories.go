@@ -7,7 +7,6 @@ import (
 	"sourcegraph.com/sourcegraph/api_router"
 	"sourcegraph.com/sourcegraph/srcgraph/authorship"
 	"sourcegraph.com/sourcegraph/srcgraph/db_common"
-	"sourcegraph.com/sourcegraph/srcgraph/graph"
 	"sourcegraph.com/sourcegraph/srcgraph/person"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
@@ -256,10 +255,8 @@ func (s *repositoriesService) ListAuthors(repo RepositorySpec, opt *RepositoryAu
 // AugmentedRepoClient is a rel.RepoClient with the full person.User and
 // graph.Symbol structs embedded.
 type AugmentedRepoClient struct {
-	User          *person.User       `json:"user"`
-	Count         int                `json:"count"`
-	FeaturedUsage *graph.Symbol      `json:"featuredUsage"`
-	LastUsageDate db_common.NullTime `json:"lastUsageDate"`
+	User *person.User `json:"user"`
+	*authorship.RepoClient
 }
 
 type RepositoryClientListOptions struct {
