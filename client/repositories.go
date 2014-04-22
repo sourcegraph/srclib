@@ -84,6 +84,8 @@ type Repository struct {
 	NoticeTitle, NoticeBody string `json:",omitempty"`
 }
 
+func (r *Repository) Spec() RepositorySpec { return RepositorySpec{URI: string(r.Repository.URI)} }
+
 func (s *repositoriesService) Get(repo RepositorySpec) (*Repository, *Response, error) {
 	url, err := s.client.url(api_router.Repository, map[string]string{"RepoURI": repo.URI}, nil)
 	if err != nil {
