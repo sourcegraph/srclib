@@ -12,9 +12,9 @@ type Doc struct {
 	Format string
 	Data   string
 
-	File  string `json:"file"`
-	Start int    `json:"start"`
-	End   int    `json:"end"`
+	File  string 
+	Start int    
+	End   int    
 }
 
 func (d *Doc) sortKey() string { return d.SymbolKey.String() }
@@ -38,9 +38,9 @@ type DocPage struct {
 	DocPageKey
 
 	// Note: the contents of these fields is unsanitized. Any sanitization should be done in the UI.
-	Title string `json:"title"` // Doc title
-	Body  string `json:"body"`  // HTML tags with the data-sg-doc-symbol attribute will be linked to symbol pages and vice-versa in the UI
-	Toc   string `json:"toc"`   // Table of contents in conjunction (in sidebar) with body
+	Title string  // Doc title
+	Body  string   // HTML tags with the data-sg-doc-symbol attribute will be linked to symbol pages and vice-versa in the UI
+	Toc   string    // Table of contents in conjunction (in sidebar) with body
 
-	SymbolPaths *db_common.StringSlice `json:"symbolPaths"` // symbols within the scope of this documentation page
+	SymbolPaths *db_common.StringSlice  // symbols within the scope of this documentation page
 }

@@ -224,7 +224,7 @@ func (s *repositoriesService) ListCounters(repo RepositorySpec) ([]*Counter, *Re
 // AugmentedRepoAuthor is a rel.RepoAuthor with the full person.User and
 // graph.Symbol structs embedded.
 type AugmentedRepoAuthor struct {
-	User *person.User `json:"user"`
+	User *person.User 
 	*authorship.RepoAuthor
 }
 
@@ -255,7 +255,7 @@ func (s *repositoriesService) ListAuthors(repo RepositorySpec, opt *RepositoryAu
 // AugmentedRepoClient is a rel.RepoClient with the full person.User and
 // graph.Symbol structs embedded.
 type AugmentedRepoClient struct {
-	User *person.User `json:"user"`
+	User *person.User 
 	*authorship.RepoClient
 }
 
@@ -348,7 +348,7 @@ func (s *repositoriesService) ListDependents(repo RepositorySpec, opt *Repositor
 }
 
 type AugmentedRepoContribution struct {
-	Repo *repo.Repository `json:"repo"`
+	Repo *repo.Repository 
 	*authorship.RepoContribution
 }
 
@@ -404,9 +404,9 @@ func (s *repositoriesService) ListByContributor(person PersonSpec, opt *Reposito
 // AugmentedRepoUsage is a rel.RepoUsage with the full repo.Repository struct
 // embedded.
 type AugmentedRepoUsage struct {
-	Repo          *repo.Repository   `json:"repo"`
-	Count         int                `json:"count"`
-	LastUsageDate db_common.NullTime `json:"lastUsageDate"`
+	Repo          *repo.Repository   
+	Count         int                
+	LastUsageDate db_common.NullTime 
 }
 
 func (s *repositoriesService) listPersonRepositoryRefs(person PersonSpec, routeName string, opt ListOptions) ([]*AugmentedRepoUsage, *Response, error) {

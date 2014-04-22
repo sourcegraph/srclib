@@ -209,7 +209,7 @@ func (s *symbolsService) ListAuthors(symbol SymbolSpec, opt *SymbolAuthorListOpt
 }
 
 type AugmentedSymbolClient struct {
-	User *person.User `json:"user"`
+	User *person.User 
 	*authorship.SymbolClient
 }
 
@@ -238,8 +238,8 @@ func (s *symbolsService) ListClients(symbol SymbolSpec, opt *SymbolClientListOpt
 }
 
 type AugmentedRepoRef struct {
-	Repo  *repo.Repository `json:"repo"`
-	Count int              `json:"count"`
+	Repo  *repo.Repository 
+	Count int              
 }
 
 type SymbolDependentRepositoryListOptions struct {

@@ -104,8 +104,8 @@ func (s *peopleService) List(opt *PeopleListOptions) ([]*person.User, *Response,
 
 // AugmentedPersonRef is a rel.PersonRef with the full person.User struct embedded.
 type AugmentedPersonRef struct {
-	User  *person.User `json:"user"`
-	Count int          `json:"count"`
+	User  *person.User 
+	Count int          
 }
 
 func (s *peopleService) listPersonPersonRefs(person PersonSpec, routeName string, opt interface{}) ([]*AugmentedPersonRef, *Response, error) {

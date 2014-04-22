@@ -384,40 +384,40 @@ func (p *pythonEnv) pysonarSymPathToSymKey(pth string, c *config.Repository, req
 
 type rawGraphData struct {
 	Graph struct {
-		Syms []*pySym `json:"syms"`
-		Refs []*pyRef `json:"refs"`
-		Docs []*pyDoc `json:"docs"`
-	} `json:"graph"`
-	Reqs []requirement `json:"reqs"`
+		Syms []*pySym 
+		Refs []*pyRef 
+		Docs []*pyDoc 
+	} 
+	Reqs []requirement 
 }
 
 type pySym struct {
-	Path       string `json:"path"`
-	Name       string `json:"name"`
-	File       string `json:"file"`
-	IdentStart int    `json:"identStart"`
-	IdentEnd   int    `json:"identEnd"`
-	DefStart   int    `json:"defStart"`
-	DefEnd     int    `json:"defEnd"`
-	Exported   bool   `json:"exported"`
-	Kind       string `json:"kind"`
+	Path       string 
+	Name       string 
+	File       string 
+	IdentStart int    
+	IdentEnd   int    
+	DefStart   int    
+	DefEnd     int    
+	Exported   bool   
+	Kind       string 
 	FuncData   *struct {
-		Signature string `json:"signature"`
-	} `json:"funcData,omitempty"`
+		Signature string 
+	} `json:",omitempty"`
 }
 
 type pyRef struct {
-	Sym     string `json:"sym"`
-	File    string `json:"file"`
-	Start   int    `json:"start"`
-	End     int    `json:"end"`
-	Builtin bool   `json:"builtin"`
+	Sym     string 
+	File    string 
+	Start   int    
+	End     int    
+	Builtin bool   
 }
 
 type pyDoc struct {
-	Sym   string `json:"sym"`
-	File  string `json:"file"`
-	Body  string `json:"body"`
-	Start int    `json:"start"`
-	End   int    `json:"end"`
+	Sym   string 
+	File  string 
+	Body  string 
+	Start int    
+	End   int    
 }

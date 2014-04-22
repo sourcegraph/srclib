@@ -1,6 +1,6 @@
 package graph
 
 type SymbolCounts struct {
-	Exported      int            `json:"exported"`
-	SpecificKinds map[string]int `json:"specificKinds"`
+	Exported      int            
+	SpecificKinds map[string]int 
 }

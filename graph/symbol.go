@@ -19,7 +19,7 @@ type (
 type SymbolKey struct {
 	// Repo is the VCS repository that defines this symbol. Its Elasticsearch mapping is defined
 	// separately.
-	Repo repo.URI `json:"repo,omitempty"`
+	Repo repo.URI `json:",omitempty"`
 
 	UnitType string `db:"unit_type" json:",omitempty"`
 
@@ -27,7 +27,7 @@ type SymbolKey struct {
 
 	// Path is the path to this symbol, relative to the repo. Its Elasticsearch mapping is defined
 	// separately (because it is a multi_field, which the struct tag can't currently represent).
-	Path SymbolPath `json:"path"`
+	Path SymbolPath
 }
 
 func (s SymbolKey) String() string {
@@ -39,11 +39,11 @@ func (s SymbolKey) String() string {
 // SymbolKey. The CommitID holds the full commit ID of the commit, not a branch
 // or tag name.
 type SymbolCommitKey struct {
-	Repo     repo.URI   `json:"repo,omitempty"`
-	UnitType string     `db:"unit_type" json:",omitempty"`
-	Unit     string     `json:",omitempty"`
-	Path     SymbolPath `json:"path"`
-	CommitID string     `db:"commit_id"`
+	Repo     repo.URI `json:",omitempty"`
+	UnitType string   `db:"unit_type" json:",omitempty"`
+	Unit     string   `json:",omitempty"`
+	Path     SymbolPath
+	CommitID string `db:"commit_id"`
 }
 
 func (s SymbolCommitKey) SymbolKey() SymbolKey {
@@ -55,7 +55,7 @@ type Symbol struct {
 	// the symbol is emitted by the grapher and saved to the database. The SID
 	// is used as an optimization (e.g., joins are faster on SID than on
 	// SymbolKey).
-	SID SID `db:"sid" json:"sid,omitempty" elastic:"type:integer,index:no"`
+	SID SID `db:"sid" json:",omitempty" elastic:"type:integer,index:no"`
 
 	// SymbolKey is the natural unique key for a symbol. It is stable
 	// (subsequent runs of a grapher will emit the same symbols with the same
@@ -65,33 +65,33 @@ type Symbol struct {
 	// SpecificPath is the language-specific "path" to this symbol, using
 	// language-specific separators (e.g., "::" and "." instead of "/", which is
 	// used in the SymbolKey.Path value).
-	SpecificPath string `db:"specific_path" json:"specificPath"`
+	SpecificPath string `db:"specific_path"`
 
 	// Kind is the language-independent kind of this symbol.
-	Kind SymbolKind `json:"kind" elastic:"type:string,index:analyzed"`
+	Kind SymbolKind `elastic:"type:string,index:analyzed"`
 
 	// SpecificKind is the language-specific kind of this symbol (which is in
 	// some cases equal to the Kind).
-	SpecificKind string `db:"specific_kind" json:"specificKind"`
+	SpecificKind string `db:"specific_kind"`
 
-	Name string `json:"name"`
+	Name string
 
 	// Callable is true if this symbol may be called or invoked, such as in the
 	// case of functions or methods.
-	Callable bool `db:"callable" json:"callable"`
+	Callable bool `db:"callable"`
 
-	File string `json:"file" elastic:"type:string,index:no"`
+	File string `elastic:"type:string,index:no"`
 
 	// CommitID is the immutable commit ID (not the branch name) of the VCS
 	// revision that this symbol was graphed in.
 	CommitID string `db:"commit_id" elastic:"type:string,index:no"`
 
-	DefStart int `db:"def_start" json:"defStart" elastic:"type:integer,index:no"`
-	DefEnd   int `db:"def_end" json:"defEnd" elastic:"type:integer,index:no"`
+	DefStart int `db:"def_start" elastic:"type:integer,index:no"`
+	DefEnd   int `db:"def_end" elastic:"type:integer,index:no"`
 
-	Exported bool `json:"exported" elastic:"type:boolean,index:not_analyzed"`
+	Exported bool `elastic:"type:boolean,index:not_analyzed"`
 
-	TypeExpr string `db:"type_expr" json:"typeExpr,omitempty"`
+	TypeExpr string `db:"type_expr" json:",omitempty"`
 }
 
 func (s *Symbol) SymbolCommitKey() SymbolCommitKey {
@@ -244,7 +244,7 @@ func KindName(k string) string {
 }
 
 type ConstData struct {
-	ConstValue string `json:"constValue"`
+	ConstValue string
 }
 
 // SQL
