@@ -3,12 +3,16 @@ package golang
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"os"
 	"path/filepath"
 
 	"strings"
 
 	"github.com/golang/gddo/gosrc"
-	"sourcegraph.com/sourcegraph"
+	"github.com/peterbourgon/diskv"
+	"github.com/sourcegraph/httpcache"
+	"github.com/sourcegraph/httpcache/diskcache"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
 	"sourcegraph.com/sourcegraph/srcgraph/dep2"
@@ -115,7 +119,7 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository, 
 
 	x.Log.Printf("Resolving Go dep: %s", importPath)
 
-	dir, err := gosrc.Get(sourcegraph.AuthenticatingAsNeededHTTPClient, string(importPath), "")
+	dir, err := gosrc.Get(cachingHTTPClient, string(importPath), "")
 	if err != nil {
 		return nil, fmt.Errorf("unable to fetch information about Go package %q", importPath)
 	}
@@ -150,4 +154,13 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository, 
 	v.resolveCache[importPath] = resolvedTarget
 
 	return resolvedTarget, nil
+}
+
+var cachingHTTPClient = &http.Client{
+	Transport: &httpcache.Transport{
+		Cache: diskcache.NewWithDiskv(diskv.New(diskv.Options{
+			BasePath:     filepath.Join(os.TempDir(), "sg-golang-toolchain-cache"),
+			CacheSizeMax: 5000 * 1024 * 100, // 500 MB
+		})),
+	},
 }
