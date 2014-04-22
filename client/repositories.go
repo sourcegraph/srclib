@@ -283,9 +283,13 @@ func (s *repositoriesService) ListClients(repo RepositorySpec, opt *RepositoryCl
 	return clients, resp, nil
 }
 
+type RepoDependency struct {
+	ToRepo repo.URI `db:"to_repo"`
+}
+
 type AugmentedRepoDependency struct {
-	Repo  *repo.Repository `json:"repo"`
-	Count int              `json:"count"`
+	Repo *repo.Repository
+	*RepoDependency
 }
 
 type RepositoryDependencyListOptions struct {
@@ -312,8 +316,13 @@ func (s *repositoriesService) ListDependencies(repo RepositorySpec, opt *Reposit
 	return dependencies, resp, nil
 }
 
+type RepoDependent struct {
+	FromRepo repo.URI `db:"from_repo"`
+}
+
 type AugmentedRepoDependent struct {
-	Repo *repo.Repository `json:"repo"`
+	Repo *repo.Repository
+	*RepoDependent
 }
 
 type RepositoryDependentListOptions struct{ ListOptions }
