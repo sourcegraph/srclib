@@ -340,7 +340,7 @@ func TestRepositoriesService_ListByClient(t *testing.T) {
 	setup()
 	defer teardown()
 
-	want := []*AugmentedRepoUsage{{Repo: &repo.Repository{URI: "r"}}}
+	want := []*AugmentedRepoUsageByClient{{SymbolRepo: &repo.Repository{URI: "r"}}}
 
 	var called bool
 	mux.HandleFunc(urlPath(t, api_router.PersonRepositoryDependencies, map[string]string{"PersonSpec": "a"}), func(w http.ResponseWriter, r *http.Request) {
@@ -368,7 +368,7 @@ func TestRepositoriesService_ListByRefdAuthor(t *testing.T) {
 	setup()
 	defer teardown()
 
-	want := []*AugmentedRepoUsage{{Repo: &repo.Repository{URI: "r"}}}
+	want := []*AugmentedRepoUsageOfAuthor{{Repo: &repo.Repository{URI: "r"}}}
 
 	var called bool
 	mux.HandleFunc(urlPath(t, api_router.PersonRepositoryDependents, map[string]string{"PersonSpec": "a"}), func(w http.ResponseWriter, r *http.Request) {

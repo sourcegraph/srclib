@@ -33,6 +33,8 @@ type SymbolAuthor struct {
 	SymbolAuthorship
 }
 
+// RefAuthorship describes the authorship information (author email, date, and
+// commit ID) of a ref. A ref may only have one author.
 type RefAuthorship struct {
 	graph.RefKey
 	AuthorshipInfo
@@ -96,12 +98,24 @@ type RepoClient struct {
 	RepositoryClientship
 }
 
-type RepoUsage struct {
+// RepoUsageByClient describes a repository whose code is referenced by a
+// specific person.
+type RepoUsageByClient struct {
 	// SymbolRepo is the repository that defines the code that was referenced.
 	// It's called SymbolRepo because "Repo" usually refers to the repository
 	// whose analysis created this linkage (i.e., the repository that contains
 	// the reference).
 	SymbolRepo repo.URI `db:"symbol_repo" json:"-"`
+
+	RefCount int `db:"ref_count"`
+
+	AuthorshipInfo
+}
+
+// RepoUsageOfAuthor describes a repository referencing code committed by a
+// specific person.
+type RepoUsageOfAuthor struct {
+	Repo repo.URI `json:"-"`
 
 	RefCount int `db:"ref_count"`
 
