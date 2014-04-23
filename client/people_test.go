@@ -83,7 +83,7 @@ func TestPeopleService_List(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	people, _, err := client.People.List(&PeopleListOptions{
+	people, _, err := client.People.List(&PersonListOptions{
 		Query:       "q",
 		Sort:        "name",
 		Direction:   "asc",
@@ -106,7 +106,7 @@ func TestPeopleService_ListAuthors(t *testing.T) {
 	setup()
 	defer teardown()
 
-	want := []*AugmentedPersonRef{{User: &person.User{UID: 1}}}
+	want := []*AugmentedPersonUsageByClient{{Author: &person.User{UID: 1}}}
 
 	var called bool
 	mux.HandleFunc(urlPath(t, api_router.PersonAuthors, map[string]string{"PersonSpec": "a"}), func(w http.ResponseWriter, r *http.Request) {
@@ -134,7 +134,7 @@ func TestPeopleService_ListClients(t *testing.T) {
 	setup()
 	defer teardown()
 
-	want := []*AugmentedPersonRef{{User: &person.User{UID: 1}}}
+	want := []*AugmentedPersonUsageOfAuthor{{Client: &person.User{UID: 1}}}
 
 	var called bool
 	mux.HandleFunc(urlPath(t, api_router.PersonClients, map[string]string{"PersonSpec": "a"}), func(w http.ResponseWriter, r *http.Request) {
