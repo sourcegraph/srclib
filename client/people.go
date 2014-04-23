@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/sourcegraph/go-nnz/nnz"
+
 	"sourcegraph.com/sourcegraph/api_router"
 	"sourcegraph.com/sourcegraph/srcgraph/person"
 )
@@ -102,9 +104,15 @@ func (s *peopleService) List(opt *PersonListOptions) ([]*person.User, *Response,
 	return people, resp, nil
 }
 
+type PersonUsageByClient struct {
+	AuthorUID   nnz.Int    `db:"author_uid"`
+	AuthorEmail nnz.String `db:"author_email"`
+	RefCount    int        `db:"ref_count"`
+}
+
 type AugmentedPersonUsageByClient struct {
-	Author   *person.User
-	RefCount int
+	Author *person.User
+	*PersonUsageByClient
 }
 
 type PersonListAuthorsOptions PersonListOptions
@@ -129,9 +137,15 @@ func (s *peopleService) ListAuthors(person PersonSpec, opt *PersonListAuthorsOpt
 	return people, resp, nil
 }
 
+type PersonUsageOfAuthor struct {
+	ClientUID   nnz.Int    `db:"client_uid"`
+	ClientEmail nnz.String `db:"client_email"`
+	RefCount    int        `db:"ref_count"`
+}
+
 type AugmentedPersonUsageOfAuthor struct {
-	Client   *person.User
-	RefCount int
+	Client *person.User
+	*PersonUsageOfAuthor
 }
 
 type PersonListClientsOptions PersonListOptions
