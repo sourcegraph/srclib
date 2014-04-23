@@ -19,8 +19,8 @@ type SymbolsService interface {
 	ListAuthors(symbol SymbolSpec, opt *SymbolAuthorListOptions) ([]*AugmentedSymbolAuthor, *Response, error)
 	ListClients(symbol SymbolSpec, opt *SymbolClientListOptions) ([]*AugmentedSymbolClient, *Response, error)
 	ListDependentRepositories(symbol SymbolSpec, opt *SymbolDependentRepositoryListOptions) ([]*AugmentedRepoRef, *Response, error)
-	ListImplementations(symbol SymbolSpec, opt *SymbolImplementationListOptions) ([]*Symbol, *Response, error)
-	ListInterfaces(symbol SymbolSpec, opt *SymbolInterfaceListOptions) ([]*Symbol, *Response, error)
+	ListImplementations(symbol SymbolSpec, opt *SymbolListImplementationsOptions) ([]*Symbol, *Response, error)
+	ListInterfaces(symbol SymbolSpec, opt *SymbolListInterfacesOptions) ([]*Symbol, *Response, error)
 	CountByRepository(repo RepositorySpec) (*graph.SymbolCounts, *Response, error)
 }
 
@@ -266,11 +266,11 @@ func (s *symbolsService) ListDependentRepositories(symbol SymbolSpec, opt *Symbo
 	return dependents, resp, nil
 }
 
-type SymbolImplementationListOptions struct {
+type SymbolListImplementationsOptions struct {
 	ListOptions
 }
 
-func (s *symbolsService) ListImplementations(symbol SymbolSpec, opt *SymbolImplementationListOptions) ([]*Symbol, *Response, error) {
+func (s *symbolsService) ListImplementations(symbol SymbolSpec, opt *SymbolListImplementationsOptions) ([]*Symbol, *Response, error) {
 	url, err := s.client.url(api_router.SymbolImplementations, map[string]string{"RepoURI": symbol.Repo, "UnitType": symbol.UnitType, "Unit": symbol.Unit, "Path": symbol.Path}, opt)
 	if err != nil {
 		return nil, nil, err
@@ -290,11 +290,11 @@ func (s *symbolsService) ListImplementations(symbol SymbolSpec, opt *SymbolImple
 	return symbols, resp, nil
 }
 
-type SymbolInterfaceListOptions struct {
+type SymbolListInterfacesOptions struct {
 	ListOptions
 }
 
-func (s *symbolsService) ListInterfaces(symbol SymbolSpec, opt *SymbolInterfaceListOptions) ([]*Symbol, *Response, error) {
+func (s *symbolsService) ListInterfaces(symbol SymbolSpec, opt *SymbolListInterfacesOptions) ([]*Symbol, *Response, error) {
 	url, err := s.client.url(api_router.SymbolInterfaces, map[string]string{"RepoURI": symbol.Repo, "UnitType": symbol.UnitType, "Unit": symbol.Unit, "Path": symbol.Path}, opt)
 	if err != nil {
 		return nil, nil, err
@@ -341,8 +341,8 @@ type MockSymbolsService struct {
 	ListAuthors_               func(symbol SymbolSpec, opt *SymbolAuthorListOptions) ([]*AugmentedSymbolAuthor, *Response, error)
 	ListClients_               func(symbol SymbolSpec, opt *SymbolClientListOptions) ([]*AugmentedSymbolClient, *Response, error)
 	ListDependentRepositories_ func(symbol SymbolSpec, opt *SymbolDependentRepositoryListOptions) ([]*AugmentedRepoRef, *Response, error)
-	ListImplementations_       func(symbol SymbolSpec, opt *SymbolImplementationListOptions) ([]*Symbol, *Response, error)
-	ListInterfaces_            func(symbol SymbolSpec, opt *SymbolInterfaceListOptions) ([]*Symbol, *Response, error)
+	ListImplementations_       func(symbol SymbolSpec, opt *SymbolListImplementationsOptions) ([]*Symbol, *Response, error)
+	ListInterfaces_            func(symbol SymbolSpec, opt *SymbolListInterfacesOptions) ([]*Symbol, *Response, error)
 	CountByRepository_         func(repo RepositorySpec) (*graph.SymbolCounts, *Response, error)
 }
 
@@ -390,14 +390,14 @@ func (s MockSymbolsService) ListDependentRepositories(symbol SymbolSpec, opt *Sy
 	return s.ListDependentRepositories_(symbol, opt)
 }
 
-func (s MockSymbolsService) ListImplementations(symbol SymbolSpec, opt *SymbolImplementationListOptions) ([]*Symbol, *Response, error) {
+func (s MockSymbolsService) ListImplementations(symbol SymbolSpec, opt *SymbolListImplementationsOptions) ([]*Symbol, *Response, error) {
 	if s.ListImplementations_ == nil {
 		return nil, &Response{}, nil
 	}
 	return s.ListImplementations_(symbol, opt)
 }
 
-func (s MockSymbolsService) ListInterfaces(symbol SymbolSpec, opt *SymbolInterfaceListOptions) ([]*Symbol, *Response, error) {
+func (s MockSymbolsService) ListInterfaces(symbol SymbolSpec, opt *SymbolListInterfacesOptions) ([]*Symbol, *Response, error) {
 	if s.ListInterfaces_ == nil {
 		return nil, &Response{}, nil
 	}
