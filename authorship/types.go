@@ -118,6 +118,4 @@ type RepoUsageOfAuthor struct {
 	Repo repo.URI `json:"-"`
 
 	RefCount int `db:"ref_count"`
-
-	AuthorshipInfo
 }
