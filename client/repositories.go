@@ -50,11 +50,11 @@ type RepositoriesService interface {
 
 	// ListByClient lists repositories that contain symbols referenced by
 	// person.
-	ListByClient(person PersonSpec, opt *RepositoryListByClientOptions) ([]*AugmentedRepoUsage, *Response, error)
+	ListByClient(person PersonSpec, opt *RepositoryListByClientOptions) ([]*AugmentedRepoUsageByClient, *Response, error)
 
 	// ListByRefdAuthor lists repositories that reference code authored by
 	// person.
-	ListByRefdAuthor(person PersonSpec, opt *RepositoryListByRefdAuthorOptions) ([]*AugmentedRepoUsage, *Response, error)
+	ListByRefdAuthor(person PersonSpec, opt *RepositoryListByRefdAuthorOptions) ([]*AugmentedRepoUsageOfAuthor, *Response, error)
 }
 
 type repositoriesService struct {
@@ -400,15 +400,19 @@ func (s *repositoriesService) ListByContributor(person PersonSpec, opt *Reposito
 	return repos, resp, nil
 }
 
-// AugmentedRepoUsage is a authorship.RepoUsage with the full repo.Repository
+// AugmentedRepoUsageByClient is a authorship.RepoUsageByClient with the full repo.Repository
 // struct embedded.
-type AugmentedRepoUsage struct {
+type AugmentedRepoUsageByClient struct {
 	SymbolRepo *repo.Repository
-	*authorship.RepoUsage
+	*authorship.RepoUsageByClient
 }
 
-func (s *repositoriesService) listPersonRepositoryRefs(person PersonSpec, routeName string, opt ListOptions) ([]*AugmentedRepoUsage, *Response, error) {
-	url, err := s.client.url(routeName, map[string]string{"PersonSpec": person.PathComponent()}, opt)
+type RepositoryListByClientOptions struct {
+	ListOptions
+}
+
+func (s *repositoriesService) ListByClient(person PersonSpec, opt *RepositoryListByClientOptions) ([]*AugmentedRepoUsageByClient, *Response, error) {
+	url, err := s.client.url(api_router.PersonRepositoryDependencies, map[string]string{"PersonSpec": person.PathComponent()}, opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -418,7 +422,7 @@ func (s *repositoriesService) listPersonRepositoryRefs(person PersonSpec, routeN
 		return nil, nil, err
 	}
 
-	var repos []*AugmentedRepoUsage
+	var repos []*AugmentedRepoUsageByClient
 	resp, err := s.client.Do(req, &repos)
 	if err != nil {
 		return nil, resp, err
@@ -427,26 +431,35 @@ func (s *repositoriesService) listPersonRepositoryRefs(person PersonSpec, routeN
 	return repos, resp, nil
 }
 
-type RepositoryListByClientOptions struct {
-	ListOptions
-}
-
-func (s *repositoriesService) ListByClient(person PersonSpec, opt *RepositoryListByClientOptions) ([]*AugmentedRepoUsage, *Response, error) {
-	if opt == nil {
-		opt = new(RepositoryListByClientOptions)
-	}
-	return s.listPersonRepositoryRefs(person, api_router.PersonRepositoryDependencies, opt.ListOptions)
+// AugmentedRepoUsageOfAuthor is a authorship.RepoUsageOfAuthor with the full
+// repo.Repository struct embedded.
+type AugmentedRepoUsageOfAuthor struct {
+	Repo *repo.Repository
+	*authorship.RepoUsageOfAuthor
 }
 
 type RepositoryListByRefdAuthorOptions struct {
 	ListOptions
 }
 
-func (s *repositoriesService) ListByRefdAuthor(person PersonSpec, opt *RepositoryListByRefdAuthorOptions) ([]*AugmentedRepoUsage, *Response, error) {
-	if opt == nil {
-		opt = new(RepositoryListByRefdAuthorOptions)
+func (s *repositoriesService) ListByRefdAuthor(person PersonSpec, opt *RepositoryListByRefdAuthorOptions) ([]*AugmentedRepoUsageOfAuthor, *Response, error) {
+	url, err := s.client.url(api_router.PersonRepositoryDependents, map[string]string{"PersonSpec": person.PathComponent()}, opt)
+	if err != nil {
+		return nil, nil, err
 	}
-	return s.listPersonRepositoryRefs(person, api_router.PersonRepositoryDependents, opt.ListOptions)
+
+	req, err := s.client.NewRequest("GET", url.String(), nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var repos []*AugmentedRepoUsageOfAuthor
+	resp, err := s.client.Do(req, &repos)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return repos, resp, nil
 }
 
 type MockRepositoriesService struct {
@@ -461,8 +474,8 @@ type MockRepositoriesService struct {
 	ListDependents_    func(repo RepositorySpec, opt *RepositoryDependentListOptions) ([]*AugmentedRepoDependent, *Response, error)
 	ListByOwner_       func(person PersonSpec, opt *RepositoryListByOwnerOptions) ([]*repo.Repository, *Response, error)
 	ListByContributor_ func(person PersonSpec, opt *RepositoryListByContributorOptions) ([]*AugmentedRepoContribution, *Response, error)
-	ListByClient_      func(person PersonSpec, opt *RepositoryListByClientOptions) ([]*AugmentedRepoUsage, *Response, error)
-	ListByRefdAuthor_  func(person PersonSpec, opt *RepositoryListByRefdAuthorOptions) ([]*AugmentedRepoUsage, *Response, error)
+	ListByClient_      func(person PersonSpec, opt *RepositoryListByClientOptions) ([]*AugmentedRepoUsageByClient, *Response, error)
+	ListByRefdAuthor_  func(person PersonSpec, opt *RepositoryListByRefdAuthorOptions) ([]*AugmentedRepoUsageOfAuthor, *Response, error)
 }
 
 var _ RepositoriesService = MockRepositoriesService{}
@@ -544,14 +557,14 @@ func (s MockRepositoriesService) ListByContributor(person PersonSpec, opt *Repos
 	return s.ListByContributor_(person, opt)
 }
 
-func (s MockRepositoriesService) ListByClient(person PersonSpec, opt *RepositoryListByClientOptions) ([]*AugmentedRepoUsage, *Response, error) {
+func (s MockRepositoriesService) ListByClient(person PersonSpec, opt *RepositoryListByClientOptions) ([]*AugmentedRepoUsageByClient, *Response, error) {
 	if s.ListByClient_ == nil {
 		return nil, &Response{}, nil
 	}
 	return s.ListByClient_(person, opt)
 }
 
-func (s MockRepositoriesService) ListByRefdAuthor(person PersonSpec, opt *RepositoryListByRefdAuthorOptions) ([]*AugmentedRepoUsage, *Response, error) {
+func (s MockRepositoriesService) ListByRefdAuthor(person PersonSpec, opt *RepositoryListByRefdAuthorOptions) ([]*AugmentedRepoUsageOfAuthor, *Response, error) {
 	if s.ListByRefdAuthor_ == nil {
 		return nil, &Response{}, nil
 	}
