@@ -28,6 +28,15 @@ type RefKey struct {
 	End            int        `json:",omitempty"`
 }
 
+func (r *RefKey) RefSymbolKey() RefSymbolKey {
+	return RefSymbolKey{
+		SymbolRepo:     r.SymbolRepo,
+		SymbolUnitType: r.SymbolUnitType,
+		SymbolUnit:     r.SymbolUnit,
+		SymbolPath:     r.SymbolPath,
+	}
+}
+
 // Ref represents a reference from source code to a symbol.
 type Ref struct {
 	SymbolRepo     repo.URI   `db:"symbol_repo"`
@@ -38,7 +47,7 @@ type Ref struct {
 	// Def is true if this ref is to a definition of the target symbol.
 	Def bool
 
-	Repo repo.URI 
+	Repo repo.URI
 
 	// CommitID is the immutable commit ID (not the branch name) of the VCS
 	// revision that this ref was found in.
@@ -47,9 +56,9 @@ type Ref struct {
 	UnitType string `db:"unit_type" json:",omitempty"`
 	Unit     string `json:",omitempty"`
 
-	File  string 
-	Start int    
-	End   int    
+	File  string
+	Start int
+	End   int
 }
 
 func (r *Ref) RefKey() RefKey {
