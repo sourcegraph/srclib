@@ -67,6 +67,12 @@ type Symbol struct {
 	DocPages []*graph.DocPage `json:",omitempty"`
 }
 
+func (s *Symbol) SymbolSpec() SymbolSpec {
+	spec := NewSymbolSpecFromSymbolKey(s.Symbol.SymbolKey)
+	spec.SID = int64(s.Symbol.SID)
+	return spec
+}
+
 func (s *Symbol) XRefs() int     { return s.Stat["xrefs"] }
 func (s *Symbol) RRefs() int     { return s.Stat["rrefs"] }
 func (s *Symbol) URefs() int     { return s.Stat["urefs"] }
@@ -209,7 +215,7 @@ func (s *symbolsService) ListAuthors(symbol SymbolSpec, opt *SymbolAuthorListOpt
 }
 
 type AugmentedSymbolClient struct {
-	User *person.User 
+	User *person.User
 	*authorship.SymbolClient
 }
 
@@ -238,8 +244,8 @@ func (s *symbolsService) ListClients(symbol SymbolSpec, opt *SymbolClientListOpt
 }
 
 type AugmentedRepoRef struct {
-	Repo  *repo.Repository 
-	Count int              
+	Repo  *repo.Repository
+	Count int
 }
 
 type SymbolDependentRepositoryListOptions struct {
