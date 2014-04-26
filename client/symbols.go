@@ -12,18 +12,41 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
+// SymbolsService communicates with the symbol- and graph-related endpoints in
+// the Sourcegraph API.
 type SymbolsService interface {
+	// Get fetches a symbol.
 	Get(symbol SymbolSpec, opt *GetSymbolOptions) (*Symbol, *Response, error)
+
+	// List symbols.
 	List(opt *SymbolListOptions) ([]*Symbol, *Response, error)
+
+	// ListExamples lists examples for symbol.
 	ListExamples(symbol SymbolSpec, opt *SymbolExampleListOptions) ([]*Example, *Response, error)
+
+	// ListExamples lists people who committed parts of symbol's definition.
 	ListAuthors(symbol SymbolSpec, opt *SymbolAuthorListOptions) ([]*AugmentedSymbolAuthor, *Response, error)
+
+	// ListClients lists people who use symbol in their code.
 	ListClients(symbol SymbolSpec, opt *SymbolClientListOptions) ([]*AugmentedSymbolClient, *Response, error)
+
+	// ListDependentRepositories lists repositories that use symbol in their code.
 	ListDependentRepositories(symbol SymbolSpec, opt *SymbolDependentRepositoryListOptions) ([]*AugmentedRepoRef, *Response, error)
+
+	// ListImplementations lists types that implement symbol (an interface), according to
+	// language-specific semantics.
 	ListImplementations(symbol SymbolSpec, opt *SymbolListImplementationsOptions) ([]*Symbol, *Response, error)
+
+	// ListInterfaces lists interfaces that are implemented by symbol (a type),
+	// according to language-specific semantics.
 	ListInterfaces(symbol SymbolSpec, opt *SymbolListInterfacesOptions) ([]*Symbol, *Response, error)
+
+	// CountByRepository counts the symbols in repo grouped by kind.
 	CountByRepository(repo RepositorySpec) (*graph.SymbolCounts, *Response, error)
 }
 
+// SymbolSpec specifies a symbol. If SID == 0, then Repo, UnitType, and Unit
+// must all be non-empty. (It is valid for Path to be empty.)
 type SymbolSpec struct {
 	SID int64
 
@@ -33,7 +56,18 @@ type SymbolSpec struct {
 	Path     string
 }
 
+// SymbolKey returns the symbol key specified by s, using the Repo, UnitType,
+// Unit, and Path fields of s. If only s.SID is set, SymbolKey will panic.
 func (s *SymbolSpec) SymbolKey() graph.SymbolKey {
+	if s.Repo == "" {
+		panic("Repo is empty")
+	}
+	if s.UnitType == "" {
+		panic("UnitType is empty")
+	}
+	if s.Unit == "" {
+		panic("Unit is empty")
+	}
 	return graph.SymbolKey{
 		Repo:     repo.URI(s.Repo),
 		UnitType: s.UnitType,
@@ -42,6 +76,8 @@ func (s *SymbolSpec) SymbolKey() graph.SymbolKey {
 	}
 }
 
+// NewSymbolSpecFromSymbolKey returns a SymbolSpec that specifies the same
+// symbol as the given key.
 func NewSymbolSpecFromSymbolKey(key graph.SymbolKey) SymbolSpec {
 	return SymbolSpec{
 		Repo:     string(key.Repo),
@@ -51,12 +87,14 @@ func NewSymbolSpecFromSymbolKey(key graph.SymbolKey) SymbolSpec {
 	}
 }
 
+// symbolsService implements SymbolsService.
 type symbolsService struct {
 	client *Client
 }
 
 var _ SymbolsService = &symbolsService{}
 
+// Symbol is a code symbol returned by the Sourcegraph API.
 type Symbol struct {
 	graph.Symbol
 
@@ -67,6 +105,7 @@ type Symbol struct {
 	DocPages []*graph.DocPage `json:",omitempty"`
 }
 
+// SymbolSpec returns the SymbolSpec that specifies s.
 func (s *Symbol) SymbolSpec() SymbolSpec {
 	spec := NewSymbolSpecFromSymbolKey(s.Symbol.SymbolKey)
 	spec.SID = int64(s.Symbol.SID)
@@ -78,6 +117,7 @@ func (s *Symbol) RRefs() int     { return s.Stat["rrefs"] }
 func (s *Symbol) URefs() int     { return s.Stat["urefs"] }
 func (s *Symbol) TotalRefs() int { return s.XRefs() + s.RRefs() + s.URefs() }
 
+// GetSymbolOptions specifies options for SymbolsService.Get.
 type GetSymbolOptions struct {
 	Annotate bool `url:",omitempty"`
 	DocPages bool `url:",omitempty"`
@@ -109,6 +149,7 @@ func (s *symbolsService) Get(symbol SymbolSpec, opt *GetSymbolOptions) (*Symbol,
 	return symbol_, resp, nil
 }
 
+// SymbolListOptions specifies options for SymbolsService.List.
 type SymbolListOptions struct {
 	RepositoryURI string `url:",omitempty"`
 	Query         string `url:",omitempty"`
@@ -147,6 +188,7 @@ func (s *symbolsService) List(opt *SymbolListOptions) ([]*Symbol, *Response, err
 	return symbols, resp, nil
 }
 
+// Example is a usage example of a symbol.
 type Example struct {
 	graph.Ref
 	SrcHTML template.HTML
@@ -159,6 +201,7 @@ func (vs Examples) Len() int           { return len(vs) }
 func (vs Examples) Swap(i, j int)      { vs[i], vs[j] = vs[j], vs[i] }
 func (vs Examples) Less(i, j int) bool { return vs[i].sortKey() < vs[j].sortKey() }
 
+// SymbolExampleListOptions specifies options for SymbolsService.ListExamples.
 type SymbolExampleListOptions struct {
 	Annotate bool
 
@@ -190,6 +233,7 @@ type AugmentedSymbolAuthor struct {
 	*authorship.SymbolAuthor
 }
 
+// SymbolAuthorListOptions specifies options for SymbolsService.ListAuthors.
 type SymbolAuthorListOptions struct {
 	ListOptions
 }
@@ -219,6 +263,7 @@ type AugmentedSymbolClient struct {
 	*authorship.SymbolClient
 }
 
+// SymbolClientListOptions specifies options for SymbolsService.ListClients.
 type SymbolClientListOptions struct {
 	ListOptions
 }
@@ -248,6 +293,7 @@ type AugmentedRepoRef struct {
 	Count int
 }
 
+// SymbolDependentRepositoryListOptions specifies options for SymbolsService.ListDependentRepositories.
 type SymbolDependentRepositoryListOptions struct {
 	ListOptions
 }
@@ -272,6 +318,8 @@ func (s *symbolsService) ListDependentRepositories(symbol SymbolSpec, opt *Symbo
 	return dependents, resp, nil
 }
 
+// SymbolListImplementationsOptions specifies options for
+// SymbolsService.ListImplementations.
 type SymbolListImplementationsOptions struct {
 	ListOptions
 }
@@ -296,6 +344,8 @@ func (s *symbolsService) ListImplementations(symbol SymbolSpec, opt *SymbolListI
 	return symbols, resp, nil
 }
 
+// SymbolListInterfacesOptions specifies options for
+// SymbolsService.ListInterfaces.
 type SymbolListInterfacesOptions struct {
 	ListOptions
 }
