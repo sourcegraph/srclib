@@ -10,25 +10,38 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/person"
 )
 
+// PeopleService communicates with the people-related endpoints in the
+// Sourcegraph API.
 type PeopleService interface {
+	// Get fetches a person.
 	Get(person PersonSpec) (*person.User, *Response, error)
+
+	// List people.
 	List(opt *PersonListOptions) ([]*person.User, *Response, error)
+
+	// ListAuthors lists people who authored code that person uses.
 	ListAuthors(person PersonSpec, opt *PersonListAuthorsOptions) ([]*AugmentedPersonUsageByClient, *Response, error)
+
+	// ListClients lists people who use code that person authored.
 	ListClients(person PersonSpec, opt *PersonListClientsOptions) ([]*AugmentedPersonUsageOfAuthor, *Response, error)
 }
 
+// peopleService implements PeopleService.
 type peopleService struct {
 	client *Client
 }
 
 var _ PeopleService = &peopleService{}
 
+// PersonSpec specifies a person. At least one of Email, Login, and UID must be
+// nonempty.
 type PersonSpec struct {
 	Email string
 	Login string
 	UID   int
 }
 
+// PathComponent returns the URL path component that specifies the person.
 func (s *PersonSpec) PathComponent() string {
 	if s.Email != "" {
 		return s.Email
@@ -75,6 +88,7 @@ func (s *peopleService) Get(person_ PersonSpec) (*person.User, *Response, error)
 	return person__, resp, nil
 }
 
+// PersonListOptions specifies options for the PeopleService.List method.
 type PersonListOptions struct {
 	Query string `url:",omitempty"`
 
@@ -115,6 +129,8 @@ type AugmentedPersonUsageByClient struct {
 	*PersonUsageByClient
 }
 
+// PersonListAuthorsOptions specifies options for the PeopleService.ListAuthors
+// method.
 type PersonListAuthorsOptions PersonListOptions
 
 func (s *peopleService) ListAuthors(person PersonSpec, opt *PersonListAuthorsOptions) ([]*AugmentedPersonUsageByClient, *Response, error) {
@@ -148,6 +164,8 @@ type AugmentedPersonUsageOfAuthor struct {
 	*PersonUsageOfAuthor
 }
 
+// PersonListClientsOptions specifies options for the PeopleService.ListClients
+// method.
 type PersonListClientsOptions PersonListOptions
 
 func (s *peopleService) ListClients(person PersonSpec, opt *PersonListClientsOptions) ([]*AugmentedPersonUsageOfAuthor, *Response, error) {

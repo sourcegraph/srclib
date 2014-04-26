@@ -22,7 +22,9 @@ const (
 	userAgent      = "sourcegraph-client/" + libraryVersion
 )
 
+// A Client communicates with the Sourcegraph API.
 type Client struct {
+	// Services used to communicate with different parts of the Sourcegraph API.
 	DocPages       DocPagesService
 	Builds         BuildsService
 	People         PeopleService
@@ -32,10 +34,16 @@ type Client struct {
 	Search         SearchService
 	Symbols        SymbolsService
 
-	BaseURL   *url.URL
+	// Base URL for API requests, which should have a trailing slash.
+	BaseURL *url.URL
+
+	// Router used to generate URLs for the Sourcegraph API.
 	apiRouter *muxpkg.Router
 
-	UserAgent  string
+	// User agent used for HTTP requests to the Sourcegraph API.
+	UserAgent string
+
+	// HTTP client used to communicate with the Sourcegraph API.
 	httpClient *http.Client
 }
 
@@ -66,6 +74,8 @@ func NewClient(httpClient *http.Client) *Client {
 	return c
 }
 
+// url generates the URL to the named Sourcegraph API endpoint, using the
+// specified route variables and query options.
 func (c *Client) url(apiRouteName string, routeVars map[string]string, opt interface{}) (*url.URL, error) {
 	route := c.apiRouter.Get(apiRouteName)
 	if route == nil {
@@ -126,13 +136,15 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 	return req, nil
 }
 
-// newResponse creats a new Response for the provided http.Response.
+// newResponse creates a new Response for the provided http.Response.
 func newResponse(r *http.Response) *Response {
 	response := &Response{Response: r}
 	response.populatePageValues()
 	return response
 }
 
+// Response is a wrapped HTTP response from the Sourcegraph API with additional
+// Sourcegraph-specific response information parsed out.
 type Response struct {
 	*http.Response
 
@@ -219,7 +231,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 	return response, nil
 }
 
-// addOptions adds the parameters in opt as URL query parameters to u.  opt
+// addOptions adds the parameters in opt as URL query parameters to u. opt
 // must be a struct whose fields may contain "url" tags.
 func addOptions(u *url.URL, opt interface{}) error {
 	v := reflect.ValueOf(opt)
@@ -236,6 +248,7 @@ func addOptions(u *url.URL, opt interface{}) error {
 	return nil
 }
 
+// NewMockClient returns a mockable Client for use in tests.
 func NewMockClient() *Client {
 	return &Client{
 		DocPages:       &MockDocPagesService{},

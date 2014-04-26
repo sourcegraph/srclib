@@ -10,6 +10,8 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
+// RepositoriesService communicates with the repository-related endpoints in the
+// Sourcegraph API.
 type RepositoriesService interface {
 	// Get fetches a repository.
 	Get(repo RepositorySpec) (*Repository, *Response, error)
@@ -57,20 +59,21 @@ type RepositoriesService interface {
 	ListByRefdAuthor(person PersonSpec, opt *RepositoryListByRefdAuthorOptions) ([]*AugmentedRepoUsageOfAuthor, *Response, error)
 }
 
+// repositoriesService implements RepositoriesService.
 type repositoriesService struct {
 	client *Client
 }
 
 var _ RepositoriesService = &repositoriesService{}
 
+// RepositorySpec specifies a repository.
 type RepositorySpec struct {
 	URI string
 }
 
-func (s RepositorySpec) String() string {
-	return s.URI
-}
+func (s RepositorySpec) String() string { return s.URI }
 
+// Repository is a code repository returned by the Sourcegraph API.
 type Repository struct {
 	*repo.Repository
 
@@ -82,6 +85,7 @@ type Repository struct {
 	NoticeTitle, NoticeBody string `json:",omitempty"`
 }
 
+// Spec returns the RepositorySpec that specifies r.
 func (r *Repository) Spec() RepositorySpec { return RepositorySpec{URI: string(r.Repository.URI)} }
 
 func (s *repositoriesService) Get(repo RepositorySpec) (*Repository, *Response, error) {
