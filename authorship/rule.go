@@ -88,6 +88,6 @@ func (r *ComputeUnitAuthorshipRule) Prereqs() []string { return []string{r.Blame
 func (r *ComputeUnitAuthorshipRule) Recipes() []string {
 	return []string{
 		"mkdir -p `dirname $@`",
-		fmt.Sprintf("sgx x:unit-authorship %s %s 1> $@", makex.Quote(r.BlameOutput), makex.Quote(r.GraphOutput)),
+		fmt.Sprintf("srcgraph authorship %s %s 1> $@", makex.Quote(r.BlameOutput), makex.Quote(r.GraphOutput)),
 	}
 }

@@ -40,6 +40,6 @@ func (r *BlameSourceUnitRule) Prereqs() []string { return r.Unit.Paths() }
 func (r *BlameSourceUnitRule) Recipes() []string {
 	return []string{
 		"mkdir -p `dirname $@`",
-		fmt.Sprintf("sgx x:blame %s 1> $@", makex.Quote(string(unit.MakeID(r.Unit)))),
+		fmt.Sprintf("srcgraph blame %s 1> $@", makex.Quote(string(unit.MakeID(r.Unit)))),
 	}
 }
