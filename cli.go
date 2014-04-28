@@ -89,6 +89,8 @@ var Subcommands = []Subcommand{
 	{"list-deps", "list a repository's raw (unresolved) dependencies", listDeps},
 	{"resolve-deps", "resolve a repository's raw dependencies", resolveDeps},
 	{"graph", "analyze a repository's source code for definitions and references", graph_},
+	{"blame", "blame a source unit's source files to determine commit authors", blame},
+	{"authorship", "determine authorship of a source unit's symbols and refs", authorship_},
 	{"info", "show info about enabled capabilities", info},
 	{"help", "show help about a command", nil},
 }
