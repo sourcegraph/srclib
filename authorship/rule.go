@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"strings"
-
 	"github.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srcgraph/build"
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
@@ -18,17 +16,13 @@ import (
 func init() {
 	build.RegisterRuleMaker("authorship", makeAuthorshipRules)
 	buildstore.RegisterDataType("unit-authorship.v0", &SourceUnitOutput{})
-	buildstore.RegisterDataType("repo-authorship.v0", &RepositoryOutput{})
 }
 
 type SourceUnitOutput struct {
-	Symbols map[graph.SymbolPath][]*SymbolAuthorship
-	Refs    []*RefAuthorship
-}
-
-type RepositoryOutput struct {
-	Authors                    []*RepositoryAuthorship
-	ClientsOfOtherRepositories []*RepositoryClientship
+	Symbols             map[graph.SymbolPath][]*SymbolAuthorship
+	Refs                []*RefAuthorship
+	Authors             []*AuthorStats
+	ClientsOfOtherUnits []*ClientStats
 }
 
 // makeAuthorshipRules makes rules for computing authorship information about
@@ -75,12 +69,6 @@ func makeAuthorshipRules(c *config.Repository, dataDir string, existing []makex.
 		rules = append(rules, rule)
 	}
 
-	// make repository-level authorship rules
-	rules = append(rules, &ComputeRepositoryAuthorshipRule{
-		dataDir:               dataDir,
-		UnitAuthorshipOutputs: makex.Targets(rules),
-	})
-
 	return rules, nil
 }
 
@@ -101,23 +89,5 @@ func (r *ComputeUnitAuthorshipRule) Recipes() []string {
 	return []string{
 		"mkdir -p `dirname $@`",
 		fmt.Sprintf("sgx x:unit-authorship %s %s 1> $@", makex.Quote(r.BlameOutput), makex.Quote(r.GraphOutput)),
-	}
-}
-
-type ComputeRepositoryAuthorshipRule struct {
-	dataDir               string
-	UnitAuthorshipOutputs []string
-}
-
-func (r *ComputeRepositoryAuthorshipRule) Target() string {
-	return filepath.Join(r.dataDir, build.RepositoryCommitDataFilename(&RepositoryOutput{}))
-}
-
-func (r *ComputeRepositoryAuthorshipRule) Prereqs() []string { return r.UnitAuthorshipOutputs }
-
-func (r *ComputeRepositoryAuthorshipRule) Recipes() []string {
-	return []string{
-		"mkdir -p `dirname $@`",
-		fmt.Sprintf("sgx x:repo-authorship %s 1> $@", strings.Join(makex.QuoteList(r.UnitAuthorshipOutputs), " ")),
 	}
 }

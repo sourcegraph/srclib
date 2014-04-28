@@ -83,69 +83,35 @@ func ComputeSourceUnit(g *grapher2.Output, b *vcsutil.BlameOutput, c *config.Rep
 		}
 	}
 
-	return &o, nil
-}
-
-func ComputeRepository(unitOutputs []*SourceUnitOutput, c *config.Repository, x *task2.Context) (*RepositoryOutput, error) {
-	var o RepositoryOutput
-
 	var totalSymbols, totalExportedSymbols int
-
-	authorsByEmail := make(map[string]*RepositoryAuthorship)
-	clientsByEmail := make(map[string]map[repo.URI]*RepositoryClientship)
-	for _, uo := range unitOutputs {
-		for _, sas := range uo.Symbols {
-			totalSymbols++
-			if sas[0].Exported {
-				totalExportedSymbols++
-			}
-
-			for _, sa := range sas {
-				ra, present := authorsByEmail[sa.AuthorEmail]
-				if !present {
-					ra = new(RepositoryAuthorship)
-					ra.AuthorEmail = sa.AuthorEmail
-					authorsByEmail[sa.AuthorEmail] = ra
-				}
-
-				ra.SymbolCount++
-				if sa.Exported {
-					ra.ExportedSymbolCount++
-				}
-
-				if ra.LastCommitDate.Before(sa.LastCommitDate) {
-					ra.LastCommitDate = sa.LastCommitDate
-					ra.LastCommitID = sa.LastCommitID
-				}
-			}
+	authorsByEmail := make(map[string]*AuthorStats)
+	for _, sas := range o.Symbols {
+		totalSymbols++
+		if sas[0].Exported {
+			totalExportedSymbols++
 		}
 
-		for _, ra := range uo.Refs {
-			clientMap, present := clientsByEmail[ra.AuthorEmail]
+		for _, sa := range sas {
+			ra, present := authorsByEmail[sa.AuthorEmail]
 			if !present {
-				clientMap = make(map[repo.URI]*RepositoryClientship)
-				clientsByEmail[ra.AuthorEmail] = clientMap
+				ra = new(AuthorStats)
+				ra.AuthorEmail = sa.AuthorEmail
+				authorsByEmail[sa.AuthorEmail] = ra
 			}
 
-			rc, present := clientMap[ra.SymbolRepo]
-			if !present {
-				rc = new(RepositoryClientship)
-				rc.AuthorEmail = ra.AuthorEmail
-				rc.SymbolRepo = ra.SymbolRepo
-				clientMap[ra.SymbolRepo] = rc
+			ra.SymbolCount++
+			if sa.Exported {
+				ra.ExportedSymbolCount++
 			}
 
-			if rc.LastCommitDate.Before(ra.LastCommitDate) {
-				rc.LastCommitDate = ra.LastCommitDate
-				rc.LastCommitID = ra.LastCommitID
+			if ra.LastCommitDate.Before(sa.LastCommitDate) {
+				ra.LastCommitDate = sa.LastCommitDate
+				ra.LastCommitID = sa.LastCommitID
 			}
-
-			rc.RefCount++
 		}
 	}
-
 	// calculate proportions
-	o.Authors = make([]*RepositoryAuthorship, len(authorsByEmail))
+	o.Authors = make([]*AuthorStats, len(authorsByEmail))
 	i := 0
 	for _, ra := range authorsByEmail {
 		ra.SymbolsProportion = float64(ra.SymbolCount) / float64(totalSymbols)
@@ -155,10 +121,33 @@ func ComputeRepository(unitOutputs []*SourceUnitOutput, c *config.Repository, x 
 		i++
 	}
 
+	clientsByEmail := make(map[string]map[repo.URI]*ClientStats)
+	for _, ra := range o.Refs {
+		clientMap, present := clientsByEmail[ra.AuthorEmail]
+		if !present {
+			clientMap = make(map[repo.URI]*ClientStats)
+			clientsByEmail[ra.AuthorEmail] = clientMap
+		}
+
+		rc, present := clientMap[ra.SymbolRepo]
+		if !present {
+			rc = new(ClientStats)
+			rc.AuthorEmail = ra.AuthorEmail
+			rc.SymbolRepo = ra.SymbolRepo
+			clientMap[ra.SymbolRepo] = rc
+		}
+
+		if rc.LastCommitDate.Before(ra.LastCommitDate) {
+			rc.LastCommitDate = ra.LastCommitDate
+			rc.LastCommitID = ra.LastCommitID
+		}
+
+		rc.RefCount++
+	}
 	// convert to array
 	for _, clientMap := range clientsByEmail {
 		for _, rc := range clientMap {
-			o.ClientsOfOtherRepositories = append(o.ClientsOfOtherRepositories, rc)
+			o.ClientsOfOtherUnits = append(o.ClientsOfOtherUnits, rc)
 		}
 	}
 
