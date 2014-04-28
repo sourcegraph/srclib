@@ -3,7 +3,7 @@ package client
 import "sourcegraph.com/sourcegraph/api_router"
 
 type SearchService interface {
-	Search(opt *SearchOptions) ([]*Symbol, *Response, error)
+	Search(opt *SearchOptions) ([]*Symbol, Response, error)
 }
 
 type searchService struct {
@@ -19,7 +19,7 @@ type SearchOptions struct {
 	ListOptions
 }
 
-func (s *searchService) Search(opt *SearchOptions) ([]*Symbol, *Response, error) {
+func (s *searchService) Search(opt *SearchOptions) ([]*Symbol, Response, error) {
 	url, err := s.client.url(api_router.Search, nil, opt)
 	if err != nil {
 		return nil, nil, err
@@ -40,14 +40,14 @@ func (s *searchService) Search(opt *SearchOptions) ([]*Symbol, *Response, error)
 }
 
 type MockSearchService struct {
-	Search_ func(opt *SearchOptions) ([]*Symbol, *Response, error)
+	Search_ func(opt *SearchOptions) ([]*Symbol, Response, error)
 }
 
 var _ SearchService = MockSearchService{}
 
-func (s MockSearchService) Search(opt *SearchOptions) ([]*Symbol, *Response, error) {
+func (s MockSearchService) Search(opt *SearchOptions) ([]*Symbol, Response, error) {
 	if s.Search_ == nil {
-		return nil, &Response{}, nil
+		return nil, &HTTPResponse{}, nil
 	}
 	return s.Search_(opt)
 }

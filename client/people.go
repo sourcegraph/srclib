@@ -14,16 +14,16 @@ import (
 // Sourcegraph API.
 type PeopleService interface {
 	// Get fetches a person.
-	Get(person PersonSpec) (*person.User, *Response, error)
+	Get(person PersonSpec) (*person.User, Response, error)
 
 	// List people.
-	List(opt *PersonListOptions) ([]*person.User, *Response, error)
+	List(opt *PersonListOptions) ([]*person.User, Response, error)
 
 	// ListAuthors lists people who authored code that person uses.
-	ListAuthors(person PersonSpec, opt *PersonListAuthorsOptions) ([]*AugmentedPersonUsageByClient, *Response, error)
+	ListAuthors(person PersonSpec, opt *PersonListAuthorsOptions) ([]*AugmentedPersonUsageByClient, Response, error)
 
 	// ListClients lists people who use code that person authored.
-	ListClients(person PersonSpec, opt *PersonListClientsOptions) ([]*AugmentedPersonUsageOfAuthor, *Response, error)
+	ListClients(person PersonSpec, opt *PersonListClientsOptions) ([]*AugmentedPersonUsageOfAuthor, Response, error)
 }
 
 // peopleService implements PeopleService.
@@ -68,7 +68,7 @@ func ParsePersonSpec(pathComponent string) (PersonSpec, error) {
 	return PersonSpec{Login: pathComponent}, nil
 }
 
-func (s *peopleService) Get(person_ PersonSpec) (*person.User, *Response, error) {
+func (s *peopleService) Get(person_ PersonSpec) (*person.User, Response, error) {
 	url, err := s.client.url(api_router.Person, map[string]string{"PersonSpec": person_.PathComponent()}, nil)
 	if err != nil {
 		return nil, nil, err
@@ -98,7 +98,7 @@ type PersonListOptions struct {
 	ListOptions
 }
 
-func (s *peopleService) List(opt *PersonListOptions) ([]*person.User, *Response, error) {
+func (s *peopleService) List(opt *PersonListOptions) ([]*person.User, Response, error) {
 	url, err := s.client.url(api_router.People, nil, opt)
 	if err != nil {
 		return nil, nil, err
@@ -133,7 +133,7 @@ type AugmentedPersonUsageByClient struct {
 // method.
 type PersonListAuthorsOptions PersonListOptions
 
-func (s *peopleService) ListAuthors(person PersonSpec, opt *PersonListAuthorsOptions) ([]*AugmentedPersonUsageByClient, *Response, error) {
+func (s *peopleService) ListAuthors(person PersonSpec, opt *PersonListAuthorsOptions) ([]*AugmentedPersonUsageByClient, Response, error) {
 	url, err := s.client.url(api_router.PersonAuthors, map[string]string{"PersonSpec": person.PathComponent()}, opt)
 	if err != nil {
 		return nil, nil, err
@@ -168,7 +168,7 @@ type AugmentedPersonUsageOfAuthor struct {
 // method.
 type PersonListClientsOptions PersonListOptions
 
-func (s *peopleService) ListClients(person PersonSpec, opt *PersonListClientsOptions) ([]*AugmentedPersonUsageOfAuthor, *Response, error) {
+func (s *peopleService) ListClients(person PersonSpec, opt *PersonListClientsOptions) ([]*AugmentedPersonUsageOfAuthor, Response, error) {
 	url, err := s.client.url(api_router.PersonClients, map[string]string{"PersonSpec": person.PathComponent()}, opt)
 	if err != nil {
 		return nil, nil, err
@@ -189,38 +189,38 @@ func (s *peopleService) ListClients(person PersonSpec, opt *PersonListClientsOpt
 }
 
 type MockPeopleService struct {
-	Get_         func(person PersonSpec) (*person.User, *Response, error)
-	List_        func(opt *PersonListOptions) ([]*person.User, *Response, error)
-	ListAuthors_ func(person PersonSpec, opt *PersonListAuthorsOptions) ([]*AugmentedPersonUsageByClient, *Response, error)
-	ListClients_ func(person PersonSpec, opt *PersonListClientsOptions) ([]*AugmentedPersonUsageOfAuthor, *Response, error)
+	Get_         func(person PersonSpec) (*person.User, Response, error)
+	List_        func(opt *PersonListOptions) ([]*person.User, Response, error)
+	ListAuthors_ func(person PersonSpec, opt *PersonListAuthorsOptions) ([]*AugmentedPersonUsageByClient, Response, error)
+	ListClients_ func(person PersonSpec, opt *PersonListClientsOptions) ([]*AugmentedPersonUsageOfAuthor, Response, error)
 }
 
 var _ PeopleService = MockPeopleService{}
 
-func (s MockPeopleService) Get(person PersonSpec) (*person.User, *Response, error) {
+func (s MockPeopleService) Get(person PersonSpec) (*person.User, Response, error) {
 	if s.Get_ == nil {
-		return nil, &Response{}, nil
+		return nil, &HTTPResponse{}, nil
 	}
 	return s.Get_(person)
 }
 
-func (s MockPeopleService) List(opt *PersonListOptions) ([]*person.User, *Response, error) {
+func (s MockPeopleService) List(opt *PersonListOptions) ([]*person.User, Response, error) {
 	if s.List_ == nil {
-		return nil, &Response{}, nil
+		return nil, &HTTPResponse{}, nil
 	}
 	return s.List_(opt)
 }
 
-func (s MockPeopleService) ListAuthors(person PersonSpec, opt *PersonListAuthorsOptions) ([]*AugmentedPersonUsageByClient, *Response, error) {
+func (s MockPeopleService) ListAuthors(person PersonSpec, opt *PersonListAuthorsOptions) ([]*AugmentedPersonUsageByClient, Response, error) {
 	if s.ListAuthors_ == nil {
-		return nil, &Response{}, nil
+		return nil, &HTTPResponse{}, nil
 	}
 	return s.ListAuthors_(person, opt)
 }
 
-func (s MockPeopleService) ListClients(person PersonSpec, opt *PersonListClientsOptions) ([]*AugmentedPersonUsageOfAuthor, *Response, error) {
+func (s MockPeopleService) ListClients(person PersonSpec, opt *PersonListClientsOptions) ([]*AugmentedPersonUsageOfAuthor, Response, error) {
 	if s.ListClients_ == nil {
-		return nil, &Response{}, nil
+		return nil, &HTTPResponse{}, nil
 	}
 	return s.ListClients_(person, opt)
 }
