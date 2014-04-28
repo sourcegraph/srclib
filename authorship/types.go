@@ -50,19 +50,18 @@ type SymbolClient struct {
 	UseCount int `db:"use_count"`
 }
 
-type RepositoryAuthorship struct {
+type AuthorStats struct {
 	AuthorshipInfo
 
-	// SymbolCount is the number of symbols that this author
-	// contributed to this repository (where "contributed to" means "committed
-	// any hunk of code to the definition of").
+	// SymbolCount is the number of symbols that this author contributed (where
+	// "contributed" means "committed any hunk of code to source code files").
 	SymbolCount int `db:"symbol_count"`
 
 	SymbolsProportion float64 `db:"symbols_proportion"`
 
 	// ExportedSymbolCount is the number of exported symbols that this author
-	// contributed to this repository (where "contributed to" means "committed
-	// any hunk of code to the definition of").
+	// contributed (where "contributed to" means "committed any hunk of code to
+	// source code files").
 	ExportedSymbolCount int `db:"exported_symbol_count"`
 
 	ExportedSymbolsProportion float64 `db:"exported_symbols_proportion"`
@@ -72,30 +71,36 @@ type RepositoryAuthorship struct {
 
 type RepoContribution struct {
 	RepoURI repo.URI `db:"repo"`
-	RepositoryAuthorship
+	AuthorStats
 }
 
-type RepositoryClientship struct {
+type ClientStats struct {
 	AuthorshipInfo
 
-	// SymbolRepo is the repository that defines symbols that this author
-	// referred to, in code committed to another repository.
+	// SymbolRepo is the repository that defines symbols that this client
+	// referred to.
 	SymbolRepo repo.URI `db:"symbol_repo"`
 
-	// RefCount is the number of references this author made in this repository to SymbolRepo.
+	// SymbolUnit is the unit in SymbolRepo that defines symbols that this
+	// client referred to. If SymbolUnit == "", then this ClientStats is an
+	// aggregate of this client's refs to all units in SymbolRepo.
+	SymbolUnit nnz.String
+
+	// RefCount is the number of references this client made in this repository
+	// to SymbolRepo.
 	RefCount int `db:"ref_count"`
 }
 
 type RepoAuthor struct {
 	UID   nnz.Int
 	Email nnz.String
-	RepositoryAuthorship
+	AuthorStats
 }
 
 type RepoClient struct {
 	UID   nnz.Int
 	Email nnz.String
-	RepositoryClientship
+	ClientStats
 }
 
 // RepoUsageByClient describes a repository whose code is referenced by a
