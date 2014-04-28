@@ -12,6 +12,7 @@ import (
 	"os/user"
 	"path/filepath"
 	"strings"
+
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
@@ -111,6 +112,18 @@ func updateVCSIgnore(name string) {
 
 	data = append(data, []byte("\n\n# Sourcegraph build data\n"+entry+"\n")...)
 	err = ioutil.WriteFile(path, data, 0700)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func readJSONFile(file string, v interface{}) {
+	f, err := os.Open(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	err = json.NewDecoder(f).Decode(v)
 	if err != nil {
 		log.Fatal(err)
 	}
