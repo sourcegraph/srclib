@@ -16,10 +16,11 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/scan"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
-
-	"github.com/sourcegraph/go-vcs"
 )
 
+// repository represents a VCS repository on the filesystem. It can be
+// autodetected (using detectRepository) or overridden using
+// command-line flags (defined by AddRepositoryFlags).
 type repository struct {
 	CloneURL    string
 	CommitID    string
@@ -130,6 +131,10 @@ func findCachedRepoConfigFile(r *repository) (string, error) {
 	return filepath.Join(rootDataDir, repoStore.CommitPath(r.CommitID), buildstore.CachedRepositoryConfigFilename), nil
 }
 
+// repositoryConfigurator gets the *config.Repository for a
+// *repository. It uses a cached config if one exists (and cacheConfig
+// is true), and otherwise runs the config and scan steps to obtain
+// the *config.Repository.
 type repositoryConfigurator struct {
 	Repository  *repository
 	ConfigFile  string
