@@ -16,6 +16,11 @@ func (u URI) IsGitHubRepository() bool {
 	return strings.HasPrefix(strings.ToLower(string(u)), "github.com/")
 }
 
+// GitHubURL returns the https://github.com/USER/REPO URL for this repository.
+func (u URI) GitHubURL() string {
+	return "https://" + string(u)
+}
+
 // MakeURI converts a repository clone URL, such as
 // "git://github.com/user/repo.git", to a normalized URI string, such as
 // "github.com/user/repo".
