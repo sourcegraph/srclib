@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/sourcegraph/go-nnz/nnz"
+
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/graph"
 	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
@@ -114,27 +116,39 @@ func ComputeSourceUnit(g *grapher2.Output, b *vcsutil.BlameOutput, c *config.Rep
 	o.Authors = make([]*AuthorStats, len(authorsByEmail))
 	i := 0
 	for _, ra := range authorsByEmail {
-		ra.SymbolsProportion = float64(ra.SymbolCount) / float64(totalSymbols)
-		ra.ExportedSymbolsProportion = float64(ra.ExportedSymbolCount) / float64(totalExportedSymbols)
+		if totalSymbols != 0 {
+			ra.SymbolsProportion = float64(ra.SymbolCount) / float64(totalSymbols)
+		}
+		if totalExportedSymbols != 0 {
+			ra.ExportedSymbolsProportion = float64(ra.ExportedSymbolCount) / float64(totalExportedSymbols)
+		}
 
 		o.Authors[i] = ra
 		i++
 	}
 
-	clientsByEmail := make(map[string]map[repo.URI]*ClientStats)
+	type clientKey struct {
+		Repo     repo.URI
+		UnitType string
+		Unit     string
+	}
+	clientsByEmail := make(map[string]map[clientKey]*ClientStats)
 	for _, ra := range o.Refs {
 		clientMap, present := clientsByEmail[ra.AuthorEmail]
 		if !present {
-			clientMap = make(map[repo.URI]*ClientStats)
+			clientMap = make(map[clientKey]*ClientStats)
 			clientsByEmail[ra.AuthorEmail] = clientMap
 		}
 
-		rc, present := clientMap[ra.SymbolRepo]
+		key := clientKey{ra.SymbolRepo, ra.SymbolUnitType, ra.SymbolUnit}
+		rc, present := clientMap[key]
 		if !present {
-			rc = new(ClientStats)
+			rc = &ClientStats{}
 			rc.AuthorEmail = ra.AuthorEmail
 			rc.SymbolRepo = ra.SymbolRepo
-			clientMap[ra.SymbolRepo] = rc
+			rc.SymbolUnitType = nnz.String(ra.SymbolUnitType)
+			rc.SymbolUnit = nnz.String(ra.SymbolUnit)
+			clientMap[key] = rc
 		}
 
 		if rc.LastCommitDate.Before(ra.LastCommitDate) {

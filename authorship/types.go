@@ -81,10 +81,12 @@ type ClientStats struct {
 	// referred to.
 	SymbolRepo repo.URI `db:"symbol_repo"`
 
-	// SymbolUnit is the unit in SymbolRepo that defines symbols that this
-	// client referred to. If SymbolUnit == "", then this ClientStats is an
-	// aggregate of this client's refs to all units in SymbolRepo.
-	SymbolUnit nnz.String
+	// SymbolUnitType and SymbolUnit are the unit in SymbolRepo that defines
+	// symbols that this client referred to. If SymbolUnitType == "" and
+	// SymbolUnit == "", then this ClientStats is an aggregate of this client's
+	// refs to all units in SymbolRepo.
+	SymbolUnitType nnz.String `db:"symbol_unit_type"`
+	SymbolUnit     nnz.String `db:"symbol_unit"`
 
 	// RefCount is the number of references this client made in this repository
 	// to SymbolRepo.
