@@ -21,7 +21,7 @@ func Test_SrcgraphCmd(t *testing.T) {
 	testdir, _ := filepath.Abs("testdata")
 	testCases := getTestCases(testdir, *match)
 	testwd, _ := os.Getwd()
-	var testCaseErrs map[testCase]error
+	var testCaseErrs = make(map[testCase]error)
 
 	for _, testCase := range testCases {
 		t.Logf("Running test case %+v", testCase)
