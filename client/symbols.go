@@ -16,33 +16,33 @@ import (
 // the Sourcegraph API.
 type SymbolsService interface {
 	// Get fetches a symbol.
-	Get(symbol SymbolSpec, opt *GetSymbolOptions) (*Symbol, *Response, error)
+	Get(symbol SymbolSpec, opt *GetSymbolOptions) (*Symbol, Response, error)
 
 	// List symbols.
-	List(opt *SymbolListOptions) ([]*Symbol, *Response, error)
+	List(opt *SymbolListOptions) ([]*Symbol, Response, error)
 
 	// ListExamples lists examples for symbol.
-	ListExamples(symbol SymbolSpec, opt *SymbolExampleListOptions) ([]*Example, *Response, error)
+	ListExamples(symbol SymbolSpec, opt *SymbolExampleListOptions) ([]*Example, Response, error)
 
 	// ListExamples lists people who committed parts of symbol's definition.
-	ListAuthors(symbol SymbolSpec, opt *SymbolAuthorListOptions) ([]*AugmentedSymbolAuthor, *Response, error)
+	ListAuthors(symbol SymbolSpec, opt *SymbolAuthorListOptions) ([]*AugmentedSymbolAuthor, Response, error)
 
 	// ListClients lists people who use symbol in their code.
-	ListClients(symbol SymbolSpec, opt *SymbolClientListOptions) ([]*AugmentedSymbolClient, *Response, error)
+	ListClients(symbol SymbolSpec, opt *SymbolClientListOptions) ([]*AugmentedSymbolClient, Response, error)
 
 	// ListDependentRepositories lists repositories that use symbol in their code.
-	ListDependentRepositories(symbol SymbolSpec, opt *SymbolDependentRepositoryListOptions) ([]*AugmentedRepoRef, *Response, error)
+	ListDependentRepositories(symbol SymbolSpec, opt *SymbolDependentRepositoryListOptions) ([]*AugmentedRepoRef, Response, error)
 
 	// ListImplementations lists types that implement symbol (an interface), according to
 	// language-specific semantics.
-	ListImplementations(symbol SymbolSpec, opt *SymbolListImplementationsOptions) ([]*Symbol, *Response, error)
+	ListImplementations(symbol SymbolSpec, opt *SymbolListImplementationsOptions) ([]*Symbol, Response, error)
 
 	// ListInterfaces lists interfaces that are implemented by symbol (a type),
 	// according to language-specific semantics.
-	ListInterfaces(symbol SymbolSpec, opt *SymbolListInterfacesOptions) ([]*Symbol, *Response, error)
+	ListInterfaces(symbol SymbolSpec, opt *SymbolListInterfacesOptions) ([]*Symbol, Response, error)
 
 	// CountByRepository counts the symbols in repo grouped by kind.
-	CountByRepository(repo RepositorySpec) (*graph.SymbolCounts, *Response, error)
+	CountByRepository(repo RepositorySpec) (*graph.SymbolCounts, Response, error)
 }
 
 // SymbolSpec specifies a symbol. If SID == 0, then Repo, UnitType, and Unit
@@ -123,7 +123,7 @@ type GetSymbolOptions struct {
 	DocPages bool `url:",omitempty"`
 }
 
-func (s *symbolsService) Get(symbol SymbolSpec, opt *GetSymbolOptions) (*Symbol, *Response, error) {
+func (s *symbolsService) Get(symbol SymbolSpec, opt *GetSymbolOptions) (*Symbol, Response, error) {
 	var url *url.URL
 	var err error
 	if symbol.SID != 0 {
@@ -168,7 +168,7 @@ type SymbolListOptions struct {
 	ListOptions
 }
 
-func (s *symbolsService) List(opt *SymbolListOptions) ([]*Symbol, *Response, error) {
+func (s *symbolsService) List(opt *SymbolListOptions) ([]*Symbol, Response, error) {
 	url, err := s.client.url(api_router.Symbols, nil, opt)
 	if err != nil {
 		return nil, nil, err
@@ -208,7 +208,7 @@ type SymbolExampleListOptions struct {
 	ListOptions
 }
 
-func (s *symbolsService) ListExamples(symbol SymbolSpec, opt *SymbolExampleListOptions) ([]*Example, *Response, error) {
+func (s *symbolsService) ListExamples(symbol SymbolSpec, opt *SymbolExampleListOptions) ([]*Example, Response, error) {
 	url, err := s.client.url(api_router.SymbolExamples, map[string]string{"RepoURI": symbol.Repo, "UnitType": symbol.UnitType, "Unit": symbol.Unit, "Path": symbol.Path}, opt)
 	if err != nil {
 		return nil, nil, err
@@ -238,7 +238,7 @@ type SymbolAuthorListOptions struct {
 	ListOptions
 }
 
-func (s *symbolsService) ListAuthors(symbol SymbolSpec, opt *SymbolAuthorListOptions) ([]*AugmentedSymbolAuthor, *Response, error) {
+func (s *symbolsService) ListAuthors(symbol SymbolSpec, opt *SymbolAuthorListOptions) ([]*AugmentedSymbolAuthor, Response, error) {
 	url, err := s.client.url(api_router.SymbolAuthors, map[string]string{"RepoURI": symbol.Repo, "UnitType": symbol.UnitType, "Unit": symbol.Unit, "Path": symbol.Path}, opt)
 	if err != nil {
 		return nil, nil, err
@@ -268,7 +268,7 @@ type SymbolClientListOptions struct {
 	ListOptions
 }
 
-func (s *symbolsService) ListClients(symbol SymbolSpec, opt *SymbolClientListOptions) ([]*AugmentedSymbolClient, *Response, error) {
+func (s *symbolsService) ListClients(symbol SymbolSpec, opt *SymbolClientListOptions) ([]*AugmentedSymbolClient, Response, error) {
 	url, err := s.client.url(api_router.SymbolClients, map[string]string{"RepoURI": symbol.Repo, "UnitType": symbol.UnitType, "Unit": symbol.Unit, "Path": symbol.Path}, opt)
 	if err != nil {
 		return nil, nil, err
@@ -298,7 +298,7 @@ type SymbolDependentRepositoryListOptions struct {
 	ListOptions
 }
 
-func (s *symbolsService) ListDependentRepositories(symbol SymbolSpec, opt *SymbolDependentRepositoryListOptions) ([]*AugmentedRepoRef, *Response, error) {
+func (s *symbolsService) ListDependentRepositories(symbol SymbolSpec, opt *SymbolDependentRepositoryListOptions) ([]*AugmentedRepoRef, Response, error) {
 	url, err := s.client.url(api_router.SymbolDependents, map[string]string{"RepoURI": symbol.Repo, "UnitType": symbol.UnitType, "Unit": symbol.Unit, "Path": symbol.Path}, opt)
 	if err != nil {
 		return nil, nil, err
@@ -324,7 +324,7 @@ type SymbolListImplementationsOptions struct {
 	ListOptions
 }
 
-func (s *symbolsService) ListImplementations(symbol SymbolSpec, opt *SymbolListImplementationsOptions) ([]*Symbol, *Response, error) {
+func (s *symbolsService) ListImplementations(symbol SymbolSpec, opt *SymbolListImplementationsOptions) ([]*Symbol, Response, error) {
 	url, err := s.client.url(api_router.SymbolImplementations, map[string]string{"RepoURI": symbol.Repo, "UnitType": symbol.UnitType, "Unit": symbol.Unit, "Path": symbol.Path}, opt)
 	if err != nil {
 		return nil, nil, err
@@ -350,7 +350,7 @@ type SymbolListInterfacesOptions struct {
 	ListOptions
 }
 
-func (s *symbolsService) ListInterfaces(symbol SymbolSpec, opt *SymbolListInterfacesOptions) ([]*Symbol, *Response, error) {
+func (s *symbolsService) ListInterfaces(symbol SymbolSpec, opt *SymbolListInterfacesOptions) ([]*Symbol, Response, error) {
 	url, err := s.client.url(api_router.SymbolInterfaces, map[string]string{"RepoURI": symbol.Repo, "UnitType": symbol.UnitType, "Unit": symbol.Unit, "Path": symbol.Path}, opt)
 	if err != nil {
 		return nil, nil, err
@@ -370,7 +370,7 @@ func (s *symbolsService) ListInterfaces(symbol SymbolSpec, opt *SymbolListInterf
 	return symbols, resp, nil
 }
 
-func (s *symbolsService) CountByRepository(repo RepositorySpec) (*graph.SymbolCounts, *Response, error) {
+func (s *symbolsService) CountByRepository(repo RepositorySpec) (*graph.SymbolCounts, Response, error) {
 	url, err := s.client.url(api_router.RepositorySymbolCounts, map[string]string{"RepoURI": repo.URI}, nil)
 	if err != nil {
 		return nil, nil, err
@@ -391,78 +391,78 @@ func (s *symbolsService) CountByRepository(repo RepositorySpec) (*graph.SymbolCo
 }
 
 type MockSymbolsService struct {
-	Get_                       func(symbol SymbolSpec, opt *GetSymbolOptions) (*Symbol, *Response, error)
-	List_                      func(opt *SymbolListOptions) ([]*Symbol, *Response, error)
-	ListExamples_              func(symbol SymbolSpec, opt *SymbolExampleListOptions) ([]*Example, *Response, error)
-	ListAuthors_               func(symbol SymbolSpec, opt *SymbolAuthorListOptions) ([]*AugmentedSymbolAuthor, *Response, error)
-	ListClients_               func(symbol SymbolSpec, opt *SymbolClientListOptions) ([]*AugmentedSymbolClient, *Response, error)
-	ListDependentRepositories_ func(symbol SymbolSpec, opt *SymbolDependentRepositoryListOptions) ([]*AugmentedRepoRef, *Response, error)
-	ListImplementations_       func(symbol SymbolSpec, opt *SymbolListImplementationsOptions) ([]*Symbol, *Response, error)
-	ListInterfaces_            func(symbol SymbolSpec, opt *SymbolListInterfacesOptions) ([]*Symbol, *Response, error)
-	CountByRepository_         func(repo RepositorySpec) (*graph.SymbolCounts, *Response, error)
+	Get_                       func(symbol SymbolSpec, opt *GetSymbolOptions) (*Symbol, Response, error)
+	List_                      func(opt *SymbolListOptions) ([]*Symbol, Response, error)
+	ListExamples_              func(symbol SymbolSpec, opt *SymbolExampleListOptions) ([]*Example, Response, error)
+	ListAuthors_               func(symbol SymbolSpec, opt *SymbolAuthorListOptions) ([]*AugmentedSymbolAuthor, Response, error)
+	ListClients_               func(symbol SymbolSpec, opt *SymbolClientListOptions) ([]*AugmentedSymbolClient, Response, error)
+	ListDependentRepositories_ func(symbol SymbolSpec, opt *SymbolDependentRepositoryListOptions) ([]*AugmentedRepoRef, Response, error)
+	ListImplementations_       func(symbol SymbolSpec, opt *SymbolListImplementationsOptions) ([]*Symbol, Response, error)
+	ListInterfaces_            func(symbol SymbolSpec, opt *SymbolListInterfacesOptions) ([]*Symbol, Response, error)
+	CountByRepository_         func(repo RepositorySpec) (*graph.SymbolCounts, Response, error)
 }
 
 var _ SymbolsService = MockSymbolsService{}
 
-func (s MockSymbolsService) Get(symbol SymbolSpec, opt *GetSymbolOptions) (*Symbol, *Response, error) {
+func (s MockSymbolsService) Get(symbol SymbolSpec, opt *GetSymbolOptions) (*Symbol, Response, error) {
 	if s.Get_ == nil {
-		return nil, &Response{}, nil
+		return nil, &HTTPResponse{}, nil
 	}
 	return s.Get_(symbol, opt)
 }
 
-func (s MockSymbolsService) List(opt *SymbolListOptions) ([]*Symbol, *Response, error) {
+func (s MockSymbolsService) List(opt *SymbolListOptions) ([]*Symbol, Response, error) {
 	if s.List_ == nil {
-		return nil, &Response{}, nil
+		return nil, &HTTPResponse{}, nil
 	}
 	return s.List_(opt)
 }
 
-func (s MockSymbolsService) ListExamples(symbol SymbolSpec, opt *SymbolExampleListOptions) ([]*Example, *Response, error) {
+func (s MockSymbolsService) ListExamples(symbol SymbolSpec, opt *SymbolExampleListOptions) ([]*Example, Response, error) {
 	if s.ListExamples_ == nil {
-		return nil, &Response{}, nil
+		return nil, &HTTPResponse{}, nil
 	}
 	return s.ListExamples_(symbol, opt)
 }
 
-func (s MockSymbolsService) ListAuthors(symbol SymbolSpec, opt *SymbolAuthorListOptions) ([]*AugmentedSymbolAuthor, *Response, error) {
+func (s MockSymbolsService) ListAuthors(symbol SymbolSpec, opt *SymbolAuthorListOptions) ([]*AugmentedSymbolAuthor, Response, error) {
 	if s.ListAuthors_ == nil {
-		return nil, &Response{}, nil
+		return nil, &HTTPResponse{}, nil
 	}
 	return s.ListAuthors_(symbol, opt)
 }
 
-func (s MockSymbolsService) ListClients(symbol SymbolSpec, opt *SymbolClientListOptions) ([]*AugmentedSymbolClient, *Response, error) {
+func (s MockSymbolsService) ListClients(symbol SymbolSpec, opt *SymbolClientListOptions) ([]*AugmentedSymbolClient, Response, error) {
 	if s.ListClients_ == nil {
-		return nil, &Response{}, nil
+		return nil, &HTTPResponse{}, nil
 	}
 	return s.ListClients_(symbol, opt)
 }
 
-func (s MockSymbolsService) ListDependentRepositories(symbol SymbolSpec, opt *SymbolDependentRepositoryListOptions) ([]*AugmentedRepoRef, *Response, error) {
+func (s MockSymbolsService) ListDependentRepositories(symbol SymbolSpec, opt *SymbolDependentRepositoryListOptions) ([]*AugmentedRepoRef, Response, error) {
 	if s.ListDependentRepositories_ == nil {
-		return nil, &Response{}, nil
+		return nil, &HTTPResponse{}, nil
 	}
 	return s.ListDependentRepositories_(symbol, opt)
 }
 
-func (s MockSymbolsService) ListImplementations(symbol SymbolSpec, opt *SymbolListImplementationsOptions) ([]*Symbol, *Response, error) {
+func (s MockSymbolsService) ListImplementations(symbol SymbolSpec, opt *SymbolListImplementationsOptions) ([]*Symbol, Response, error) {
 	if s.ListImplementations_ == nil {
-		return nil, &Response{}, nil
+		return nil, &HTTPResponse{}, nil
 	}
 	return s.ListImplementations_(symbol, opt)
 }
 
-func (s MockSymbolsService) ListInterfaces(symbol SymbolSpec, opt *SymbolListInterfacesOptions) ([]*Symbol, *Response, error) {
+func (s MockSymbolsService) ListInterfaces(symbol SymbolSpec, opt *SymbolListInterfacesOptions) ([]*Symbol, Response, error) {
 	if s.ListInterfaces_ == nil {
-		return nil, &Response{}, nil
+		return nil, &HTTPResponse{}, nil
 	}
 	return s.ListInterfaces_(symbol, opt)
 }
 
-func (s MockSymbolsService) CountByRepository(repo RepositorySpec) (*graph.SymbolCounts, *Response, error) {
+func (s MockSymbolsService) CountByRepository(repo RepositorySpec) (*graph.SymbolCounts, Response, error) {
 	if s.CountByRepository_ == nil {
-		return &graph.SymbolCounts{}, &Response{}, nil
+		return &graph.SymbolCounts{}, &HTTPResponse{}, nil
 	}
 	return s.CountByRepository_(repo)
 }

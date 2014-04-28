@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
-	"strconv"
 	"strings"
 
 	"github.com/google/go-querystring/query"
@@ -137,33 +136,22 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 }
 
 // newResponse creates a new Response for the provided http.Response.
-func newResponse(r *http.Response) *Response {
-	response := &Response{Response: r}
-	response.populatePageValues()
-	return response
+func newResponse(r *http.Response) *HTTPResponse {
+	return &HTTPResponse{Response: r}
 }
 
-// Response is a wrapped HTTP response from the Sourcegraph API with additional
-// Sourcegraph-specific response information parsed out.
-type Response struct {
+// HTTPResponse is a wrapped HTTP response from the Sourcegraph API with
+// additional Sourcegraph-specific response information parsed out. It
+// implements Response.
+type HTTPResponse struct {
 	*http.Response
-
-	TotalCount int
 }
 
-func (r *Response) populatePageValues() {
-	countStr := r.Header.Get("x-paging-total")
-	if countStr == "" {
-		return
-	}
+type MockResponse struct{}
 
-	totalCount, err := strconv.Atoi(countStr)
-	if err != nil {
-		return
-	}
-
-	r.TotalCount = totalCount
-}
+// Response is a response from the Sourcegraph API. When using the HTTP API,
+// API methods return *HTTPResponse values that implement Response.
+type Response interface{}
 
 // ListOptions specifies general pagination options for fetching a list of
 // results.
@@ -201,7 +189,7 @@ func (o ListOptions) Offset() int {
 // Do sends an API request and returns the API response.  The API response is
 // decoded and stored in the value pointed to by v, or returned as an error if
 // an API error has occurred.
-func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
+func (c *Client) Do(req *http.Request, v interface{}) (*HTTPResponse, error) {
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, err

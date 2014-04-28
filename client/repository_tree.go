@@ -9,7 +9,7 @@ import (
 )
 
 type RepositoryTreeService interface {
-	Get(entry TreeEntrySpec, opt *RepositoryTreeGetOptions) (*TreeEntry, *Response, error)
+	Get(entry TreeEntrySpec, opt *RepositoryTreeGetOptions) (*TreeEntry, Response, error)
 }
 
 type repositoryTreeService struct {
@@ -46,7 +46,7 @@ type RepositoryTreeGetOptions struct {
 	Annotated bool
 }
 
-func (s *repositoryTreeService) Get(entry TreeEntrySpec, opt *RepositoryTreeGetOptions) (*TreeEntry, *Response, error) {
+func (s *repositoryTreeService) Get(entry TreeEntrySpec, opt *RepositoryTreeGetOptions) (*TreeEntry, Response, error) {
 	if !opt.Annotated {
 		return nil, nil, errors.New("non-annotated is not yet supported")
 	}
@@ -76,14 +76,14 @@ func (s *repositoryTreeService) Get(entry TreeEntrySpec, opt *RepositoryTreeGetO
 }
 
 type MockRepositoryTreeService struct {
-	Get_ func(entry TreeEntrySpec, opt *RepositoryTreeGetOptions) (*TreeEntry, *Response, error)
+	Get_ func(entry TreeEntrySpec, opt *RepositoryTreeGetOptions) (*TreeEntry, Response, error)
 }
 
 var _ RepositoryTreeService = MockRepositoryTreeService{}
 
-func (s MockRepositoryTreeService) Get(entry TreeEntrySpec, opt *RepositoryTreeGetOptions) (*TreeEntry, *Response, error) {
+func (s MockRepositoryTreeService) Get(entry TreeEntrySpec, opt *RepositoryTreeGetOptions) (*TreeEntry, Response, error) {
 	if s.Get_ == nil {
-		return nil, &Response{}, nil
+		return nil, &HTTPResponse{}, nil
 	}
 	return s.Get_(entry, opt)
 }
