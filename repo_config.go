@@ -141,6 +141,11 @@ type repositoryConfigurator struct {
 	cacheConfig bool
 }
 
+// GetRepositoryConfig gets the .sourcegraph repository config file
+// (parsed into *config.Repository) for the repository on the
+// filesystem set in rc.Repository. If a cached repository config
+// exists, and cacheConfig is true, that is used; otherwise, it runs
+// the config and scan steps to obtain the *config.Repository.
 func (rc *repositoryConfigurator) GetRepositoryConfig(x *task2.Context) *config.Repository {
 	if rc.ConfigFile != "" {
 		f, err := os.Open(rc.ConfigFile)
