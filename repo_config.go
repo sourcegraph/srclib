@@ -30,6 +30,12 @@ type repository struct {
 	RootDir     string
 }
 
+func detectRepository2(dir string) *repository {
+	r := detectRepository(dir)
+	return &r
+}
+
+// detects respository from filesystem layout
 func detectRepository(dir string) (dr repository) {
 	if !isDir(dir) {
 		log.Fatal("dir does not exist: ", dir)
@@ -100,6 +106,13 @@ func AddRepositoryFlags(fs *flag.FlagSet) *repository {
 	return &r
 }
 
+func AddRepositoryFlags2(fs *flag.FlagSet, r *repository) {
+	fs.StringVar(&r.CloneURL, "cloneurl", r.CloneURL, "clone URL of repository")
+	fs.StringVar(&r.CommitID, "commit", r.CommitID, "commit ID of current working tree")
+	fs.StringVar(&r.vcsTypeName, "vcs", r.vcsTypeName, `VCS type ("git" or "hg")`)
+	fs.StringVar(&r.RootDir, "root", r.RootDir, `root directory of repository`)
+}
+
 func AddRepositoryConfigFlags(fs *flag.FlagSet, r *repository) *repositoryConfigurator {
 	rc := &repositoryConfigurator{Repository: r}
 
@@ -111,6 +124,19 @@ func AddRepositoryConfigFlags(fs *flag.FlagSet, r *repository) *repositoryConfig
 	fs.StringVar(&rc.ConfigFile, "conf.cached", defaultFile, "cached repository config to use (if blank, scans repository for source units and reads .sourcegraph in root dir)")
 	fs.BoolVar(&rc.cacheConfig, "conf.cache", true, "cache generated config for repository (saves time on subsequent runs)")
 	return rc
+}
+
+func AddRepositoryConfigFlags2(fs *flag.FlagSet, rc *repositoryConfigurator) {
+	fs.StringVar(&rc.ConfigFile, "conf.cached", "", "cached repository config to use (if blank, scans repository for source units and reads .sourcegraph in root dir)")
+	fs.BoolVar(&rc.cacheConfig, "conf.cache", true, "cache generated config for repository (saves time on subsequent runs)")
+}
+
+func InitializeConfigurator(rc *repositoryConfigurator) {
+	if rc.ConfigFile == "" {
+		if f, err := findCachedRepoConfigFile(rc.Repository); err == nil && isFile(f) {
+			rc.ConfigFile = f
+		}
+	}
 }
 
 // findCachedRepoConfigFile determines the filename where the cached
