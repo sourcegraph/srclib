@@ -178,11 +178,11 @@ func TestSymbolsService_ListClients(t *testing.T) {
 	}
 }
 
-func TestSymbolsService_ListDependentRepositories(t *testing.T) {
+func TestSymbolsService_ListDependents(t *testing.T) {
 	setup()
 	defer teardown()
 
-	want := []*AugmentedRepoRef{{Repo: &repo.Repository{URI: "r2"}}}
+	want := []*AugmentedSymbolDependent{{Repo: &repo.Repository{URI: "r2"}}}
 
 	var called bool
 	mux.HandleFunc(urlPath(t, api_router.SymbolDependents, map[string]string{"RepoURI": "r", "UnitType": "t", "Unit": "u", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
@@ -192,9 +192,9 @@ func TestSymbolsService_ListDependentRepositories(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	dependents, _, err := client.Symbols.ListDependentRepositories(SymbolSpec{Repo: "r", UnitType: "t", Unit: "u", Path: "p"}, nil)
+	dependents, _, err := client.Symbols.ListDependents(SymbolSpec{Repo: "r", UnitType: "t", Unit: "u", Path: "p"}, nil)
 	if err != nil {
-		t.Errorf("Symbols.ListDependentRepositories returned error: %v", err)
+		t.Errorf("Symbols.ListDependents returned error: %v", err)
 	}
 
 	if !called {
@@ -202,7 +202,7 @@ func TestSymbolsService_ListDependentRepositories(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(dependents, want) {
-		t.Errorf("Symbols.ListDependentRepositories returned %+v, want %+v", dependents, want)
+		t.Errorf("Symbols.ListDependents returned %+v, want %+v", dependents, want)
 	}
 }
 
