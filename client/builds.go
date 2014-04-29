@@ -63,7 +63,13 @@ func (s *buildsService) Get(build BuildSpec, opt *BuildGetOptions) (*Build, Resp
 	return build_, nil, nil
 }
 
-type BuildListByRepositoryOptions struct{ ListOptions }
+type BuildListByRepositoryOptions struct {
+	Ended     bool   `url:",omitempty"`
+	Succeeded bool   `url:",omitempty"`
+	Rev       string `url:",omitempty"`
+
+	ListOptions
+}
 
 func (s *buildsService) ListByRepository(repo RepositorySpec, opt *BuildListByRepositoryOptions) ([]*Build, Response, error) {
 	url, err := s.client.url(api_router.RepositoryBuilds, map[string]string{"RepoURI": repo.URI}, opt)
