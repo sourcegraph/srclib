@@ -16,13 +16,32 @@ type (
 	SymbolKind string
 )
 
+// SymbolKey specifies a symbol, either concretely or abstractly. A concrete
+// symbol key has a non-empty CommitID and refers to a symbol defined in a
+// specific commit. An abstract symbol key has an empty CommitID and is
+// considered to refer to symbols from any number of commits (so long as the
+// Repo, UnitType, Unit, and Path match).
+//
+// You can think of CommitID as the time dimension. With an empty CommitID, you
+// are referring to a symbol that may or may not exist at various times. With a
+// non-empty CommitID, you are referring to a specific definition of a symbol at
+// the time specified by the CommitID.
 type SymbolKey struct {
 	// Repo is the VCS repository that defines this symbol. Its Elasticsearch mapping is defined
 	// separately.
 	Repo repo.URI `json:",omitempty"`
 
+	// CommitID is the ID of the VCS commit that this symbol was defined in. The
+	// CommitID is always a full commit ID (40 hexadecimal characters for git
+	// and hg), never a branch or tag name.
+	CommitID string `db:"commit_id" json:",omitempty"`
+
+	// UnitType is the type name of the source unit (obtained from unit.Type(u))
+	// that this symbol was defined in.
 	UnitType string `db:"unit_type" json:",omitempty"`
 
+	// Unit is the name of the source unit (obtained from u.Name()) that this
+	// symbol was defined in.
 	Unit string `json:",omitempty"`
 
 	// Path is the path to this symbol, relative to the repo. Its Elasticsearch mapping is defined
@@ -31,23 +50,11 @@ type SymbolKey struct {
 }
 
 func (s SymbolKey) String() string {
-	return string(s.Repo) + "#" + s.UnitType + ":" + s.Unit + "#" + string(s.Path)
-}
-
-// SymbolCommitKey is a unique identifier of a symbol at a specific commit. The
-// Repo, UnitType, Unit, and Path fields correspond to the same fields in a
-// SymbolKey. The CommitID holds the full commit ID of the commit, not a branch
-// or tag name.
-type SymbolCommitKey struct {
-	Repo     repo.URI `json:",omitempty"`
-	UnitType string   `db:"unit_type" json:",omitempty"`
-	Unit     string   `json:",omitempty"`
-	Path     SymbolPath
-	CommitID string `db:"commit_id"`
-}
-
-func (s SymbolCommitKey) SymbolKey() SymbolKey {
-	return SymbolKey{Repo: s.Repo, UnitType: s.UnitType, Unit: s.Unit, Path: s.Path}
+	b, err := json.Marshal(s)
+	if err != nil {
+		panic("SymbolKey.String: " + err.Error())
+	}
+	return string(b)
 }
 
 type Symbol struct {
@@ -82,26 +89,12 @@ type Symbol struct {
 
 	File string `elastic:"type:string,index:no"`
 
-	// CommitID is the immutable commit ID (not the branch name) of the VCS
-	// revision that this symbol was graphed in.
-	CommitID string `db:"commit_id" elastic:"type:string,index:no"`
-
 	DefStart int `db:"def_start" elastic:"type:integer,index:no"`
 	DefEnd   int `db:"def_end" elastic:"type:integer,index:no"`
 
 	Exported bool `elastic:"type:boolean,index:not_analyzed"`
 
 	TypeExpr string `db:"type_expr" json:",omitempty"`
-}
-
-func (s *Symbol) SymbolCommitKey() SymbolCommitKey {
-	return SymbolCommitKey{
-		Repo:     s.Repo,
-		UnitType: s.UnitType,
-		Unit:     s.Unit,
-		Path:     s.Path,
-		CommitID: s.CommitID,
-	}
 }
 
 // TODO!(sqs): factor this into the individual source unit packages
