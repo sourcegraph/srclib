@@ -6,7 +6,7 @@ import (
 )
 
 type SymbolStat struct {
-	SymbolCommitKey
+	SymbolKey
 	Type StatType
 	N    int
 }
