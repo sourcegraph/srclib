@@ -17,7 +17,7 @@ func TestRepositoryTreeService_Get(t *testing.T) {
 	want := &TreeEntry{Data: template.HTML("hello"), Type: File}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.RepositoryTreeEntry, map[string]string{"RepoURI": "r", "Rev": "v", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.RepositoryTreeEntry, map[string]string{"RepoURI": "r.com/x", "Rev": "v", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 		testFormValues(t, r, values{"Annotated": "true"})
@@ -26,7 +26,7 @@ func TestRepositoryTreeService_Get(t *testing.T) {
 	})
 
 	data, _, err := client.RepositoryTree.Get(TreeEntrySpec{
-		Repo: RepositorySpec{URI: "r"},
+		Repo: RepositorySpec{URI: "r.com/x"},
 		Rev:  "v",
 		Path: "p",
 	}, &RepositoryTreeGetOptions{Annotated: true})
@@ -47,12 +47,12 @@ func TestRepositoryTreeService_Get_file(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc(urlPath(t, api_router.RepositoryTreeEntry, map[string]string{"RepoURI": "r", "Rev": "v", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.RepositoryTreeEntry, map[string]string{"RepoURI": "r.com/x", "Rev": "v", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("content-type", "text/plain")
 	})
 
 	entry, _, err := client.RepositoryTree.Get(TreeEntrySpec{
-		Repo: RepositorySpec{URI: "r"},
+		Repo: RepositorySpec{URI: "r.com/x"},
 		Rev:  "v",
 		Path: "p",
 	}, &RepositoryTreeGetOptions{Annotated: true})
@@ -69,12 +69,12 @@ func TestRepositoryTreeService_Get_directory(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc(urlPath(t, api_router.RepositoryTreeEntry, map[string]string{"RepoURI": "r", "Rev": "v", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.RepositoryTreeEntry, map[string]string{"RepoURI": "r.com/x", "Rev": "v", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("content-type", "application/x-directory")
 	})
 
 	entry, _, err := client.RepositoryTree.Get(TreeEntrySpec{
-		Repo: RepositorySpec{URI: "r"},
+		Repo: RepositorySpec{URI: "r.com/x"},
 		Rev:  "v",
 		Path: "p",
 	}, &RepositoryTreeGetOptions{Annotated: true})

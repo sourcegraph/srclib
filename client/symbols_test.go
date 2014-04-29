@@ -18,7 +18,7 @@ func TestSymbolsService_Get(t *testing.T) {
 	want := &Symbol{Symbol: graph.Symbol{SID: 1}}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.Symbol, map[string]string{"RepoURI": "r", "UnitType": "t", "Unit": "u", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.Symbol, map[string]string{"RepoURI": "r.com/x", "UnitType": "t", "Unit": "u", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 		testFormValues(t, r, values{"Annotate": "true"})
@@ -26,7 +26,7 @@ func TestSymbolsService_Get(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	repo_, _, err := client.Symbols.Get(SymbolSpec{Repo: "r", UnitType: "t", Unit: "u", Path: "p"}, &GetSymbolOptions{Annotate: true})
+	repo_, _, err := client.Symbols.Get(SymbolSpec{Repo: "r.com/x", UnitType: "t", Unit: "u", Path: "p"}, &GetSymbolOptions{Annotate: true})
 	if err != nil {
 		t.Errorf("Symbols.Get returned error: %v", err)
 	}
@@ -101,14 +101,14 @@ func TestSymbolsService_ListExamples(t *testing.T) {
 	want := []*Example{{Ref: graph.Ref{File: "f"}}}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.SymbolExamples, map[string]string{"RepoURI": "r", "UnitType": "t", "Unit": "u", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.SymbolExamples, map[string]string{"RepoURI": "r.com/x", "UnitType": "t", "Unit": "u", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
 		writeJSON(w, want)
 	})
 
-	refs, _, err := client.Symbols.ListExamples(SymbolSpec{Repo: "r", UnitType: "t", Unit: "u", Path: "p"}, nil)
+	refs, _, err := client.Symbols.ListExamples(SymbolSpec{Repo: "r.com/x", UnitType: "t", Unit: "u", Path: "p"}, nil)
 	if err != nil {
 		t.Errorf("Symbols.ListExamples returned error: %v", err)
 	}
@@ -129,14 +129,14 @@ func TestSymbolsService_ListAuthors(t *testing.T) {
 	want := []*AugmentedSymbolAuthor{{User: &person.User{Login: "b"}}}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.SymbolAuthors, map[string]string{"RepoURI": "r", "UnitType": "t", "Unit": "u", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.SymbolAuthors, map[string]string{"RepoURI": "r.com/x", "UnitType": "t", "Unit": "u", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
 		writeJSON(w, want)
 	})
 
-	authors, _, err := client.Symbols.ListAuthors(SymbolSpec{Repo: "r", UnitType: "t", Unit: "u", Path: "p"}, nil)
+	authors, _, err := client.Symbols.ListAuthors(SymbolSpec{Repo: "r.com/x", UnitType: "t", Unit: "u", Path: "p"}, nil)
 	if err != nil {
 		t.Errorf("Symbols.ListAuthors returned error: %v", err)
 	}
@@ -157,14 +157,14 @@ func TestSymbolsService_ListClients(t *testing.T) {
 	want := []*AugmentedSymbolClient{{User: &person.User{Login: "b"}}}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.SymbolClients, map[string]string{"RepoURI": "r", "UnitType": "t", "Unit": "u", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.SymbolClients, map[string]string{"RepoURI": "r.com/x", "UnitType": "t", "Unit": "u", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
 		writeJSON(w, want)
 	})
 
-	clients, _, err := client.Symbols.ListClients(SymbolSpec{Repo: "r", UnitType: "t", Unit: "u", Path: "p"}, nil)
+	clients, _, err := client.Symbols.ListClients(SymbolSpec{Repo: "r.com/x", UnitType: "t", Unit: "u", Path: "p"}, nil)
 	if err != nil {
 		t.Errorf("Symbols.ListClients returned error: %v", err)
 	}
@@ -185,14 +185,14 @@ func TestSymbolsService_ListDependents(t *testing.T) {
 	want := []*AugmentedSymbolDependent{{Repo: &repo.Repository{URI: "r2"}}}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.SymbolDependents, map[string]string{"RepoURI": "r", "UnitType": "t", "Unit": "u", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.SymbolDependents, map[string]string{"RepoURI": "r.com/x", "UnitType": "t", "Unit": "u", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
 		writeJSON(w, want)
 	})
 
-	dependents, _, err := client.Symbols.ListDependents(SymbolSpec{Repo: "r", UnitType: "t", Unit: "u", Path: "p"}, nil)
+	dependents, _, err := client.Symbols.ListDependents(SymbolSpec{Repo: "r.com/x", UnitType: "t", Unit: "u", Path: "p"}, nil)
 	if err != nil {
 		t.Errorf("Symbols.ListDependents returned error: %v", err)
 	}
@@ -213,14 +213,14 @@ func TestSymbolsService_ListImplementations(t *testing.T) {
 	want := []*Symbol{{Symbol: graph.Symbol{SID: 1}}}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.SymbolImplementations, map[string]string{"RepoURI": "r", "UnitType": "t", "Unit": "u", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.SymbolImplementations, map[string]string{"RepoURI": "r.com/x", "UnitType": "t", "Unit": "u", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
 		writeJSON(w, want)
 	})
 
-	implementations, _, err := client.Symbols.ListImplementations(SymbolSpec{Repo: "r", UnitType: "t", Unit: "u", Path: "p"}, nil)
+	implementations, _, err := client.Symbols.ListImplementations(SymbolSpec{Repo: "r.com/x", UnitType: "t", Unit: "u", Path: "p"}, nil)
 	if err != nil {
 		t.Errorf("Symbols.ListImplementations returned error: %v", err)
 	}
@@ -241,14 +241,14 @@ func TestSymbolsService_ListInterfaces(t *testing.T) {
 	want := []*Symbol{{Symbol: graph.Symbol{SID: 1}}}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.SymbolInterfaces, map[string]string{"RepoURI": "r", "UnitType": "t", "Unit": "u", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.SymbolInterfaces, map[string]string{"RepoURI": "r.com/x", "UnitType": "t", "Unit": "u", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
 		writeJSON(w, want)
 	})
 
-	interfaces, _, err := client.Symbols.ListInterfaces(SymbolSpec{Repo: "r", UnitType: "t", Unit: "u", Path: "p"}, nil)
+	interfaces, _, err := client.Symbols.ListInterfaces(SymbolSpec{Repo: "r.com/x", UnitType: "t", Unit: "u", Path: "p"}, nil)
 	if err != nil {
 		t.Errorf("Symbols.ListInterfaces returned error: %v", err)
 	}
@@ -269,14 +269,14 @@ func TestSymbolsService_CountByRepository(t *testing.T) {
 	want := &graph.SymbolCounts{Exported: 1}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.RepositorySymbolCounts, map[string]string{"RepoURI": "r"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.RepositorySymbolCounts, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
 		writeJSON(w, want)
 	})
 
-	counts, _, err := client.Symbols.CountByRepository(RepositorySpec{URI: "r"})
+	counts, _, err := client.Symbols.CountByRepository(RepositorySpec{URI: "r.com/x"})
 	if err != nil {
 		t.Errorf("Symbols.CountByRepository returned error: %v", err)
 	}

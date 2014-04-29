@@ -15,14 +15,14 @@ func TestRepositoryBuildsService_Get(t *testing.T) {
 	want := &Build{BID: 1}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.RepositoryBuild, map[string]string{"RepoURI": "r", "BID": "1"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.RepositoryBuild, map[string]string{"RepoURI": "r.com/x", "BID": "1"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
 		writeJSON(w, want)
 	})
 
-	build, _, err := client.Builds.Get(BuildSpec{Repo: RepositorySpec{URI: "r"}, BID: 1}, nil)
+	build, _, err := client.Builds.Get(BuildSpec{Repo: RepositorySpec{URI: "r.com/x"}, BID: 1}, nil)
 	if err != nil {
 		t.Errorf("RepositoryBuilds.Get returned error: %v", err)
 	}
@@ -44,14 +44,14 @@ func TestRepositoryBuildsService_ListByRepository(t *testing.T) {
 	want := []*Build{{BID: 1}}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.RepositoryBuilds, map[string]string{"RepoURI": "r"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.RepositoryBuilds, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
 		writeJSON(w, want)
 	})
 
-	builds, _, err := client.Builds.ListByRepository(RepositorySpec{URI: "r"}, nil)
+	builds, _, err := client.Builds.ListByRepository(RepositorySpec{URI: "r.com/x"}, nil)
 	if err != nil {
 		t.Errorf("RepositoryBuilds.ListByRepository returned error: %v", err)
 	}

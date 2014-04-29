@@ -20,9 +20,9 @@ type buildDataService struct {
 var _ BuildDataService = &buildDataService{}
 
 type BuildDataFileSpec struct {
-	Repo     RepositorySpec
-	CommitID string
-	Path     string
+	Repo RepositorySpec
+	Rev  string
+	Path string
 }
 
 type BuildDataListOptions struct {
@@ -30,7 +30,7 @@ type BuildDataListOptions struct {
 }
 
 func (s *buildDataService) List(repo RepositorySpec, commitID string, opt *BuildDataListOptions) ([]*buildstore.BuildDataFileInfo, Response, error) {
-	url, err := s.client.url(api_router.RepositoryBuildDataIndex, map[string]string{"RepoURI": repo.URI, "CommitID": commitID}, opt)
+	url, err := s.client.url(api_router.RepositoryBuildDataFile, map[string]string{"RepoURI": repo.URI, "Rev": commitID, "Path": "."}, opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -50,7 +50,7 @@ func (s *buildDataService) List(repo RepositorySpec, commitID string, opt *Build
 }
 
 func (s *buildDataService) Get(file BuildDataFileSpec) ([]byte, Response, error) {
-	url, err := s.client.url(api_router.RepositoryBuildDataFile, map[string]string{"RepoURI": file.Repo.URI, "CommitID": file.CommitID, "Path": file.Path}, nil)
+	url, err := s.client.url(api_router.RepositoryBuildDataFile, map[string]string{"RepoURI": file.Repo.URI, "Rev": file.Rev, "Path": file.Path}, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -70,7 +70,7 @@ func (s *buildDataService) Get(file BuildDataFileSpec) ([]byte, Response, error)
 }
 
 func (s *buildDataService) Upload(file BuildDataFileSpec, body io.Reader) (Response, error) {
-	url, err := s.client.url(api_router.RepositoryBuildDataFile, map[string]string{"RepoURI": file.Repo.URI, "CommitID": file.CommitID, "Path": file.Path}, nil)
+	url, err := s.client.url(api_router.RepositoryBuildDataFile, map[string]string{"RepoURI": file.Repo.URI, "Rev": file.Rev, "Path": file.Path}, nil)
 	if err != nil {
 		return nil, err
 	}
