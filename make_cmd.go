@@ -137,8 +137,10 @@ type makeParams struct {
 
 func mustParseMakeParams(args []string) *makeParams {
 	fs := flag.NewFlagSet("make", flag.ExitOnError)
-	r := AddRepositoryFlags(fs)
-	rc := AddRepositoryConfigFlags(fs, r)
+	rc := &repositoryConfigurator{Repository: detectRepository2(*dir)}
+	AddRepositoryFlags2(fs, rc.Repository)
+	AddRepositoryConfigFlags2(fs, rc)
+
 	showOnly := fs.Bool("mf", false, "print generated Makefile and exit")
 	test := fs.Bool("test", false, "test build output against expected output in .sourcegraph-data/")
 	testKeep := fs.Bool("test-keep", false, "do NOT delete test build directory after test, used in conjunction with -test")
@@ -166,9 +168,10 @@ The options are:
 		os.Exit(1)
 	}
 	fs.Parse(args)
+	InitializeConfigurator(rc)
 
 	return &makeParams{
-		Repository:       r,
+		Repository:       rc.Repository,
 		RepositoryConfig: rc,
 		Goals:            fs.Args(),
 		ShowOnly:         *showOnly,
