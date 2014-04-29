@@ -5,12 +5,6 @@ import (
 	"fmt"
 )
 
-type SymbolStat struct {
-	SymbolKey
-	Type StatType
-	N    int
-}
-
 type Stats map[StatType]int
 
 type StatType string
