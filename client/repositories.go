@@ -30,17 +30,17 @@ type RepositoriesService interface {
 
 	// ListAuthors lists people who have contributed (i.e., committed) code to
 	// repo.
-	ListAuthors(repo RepositorySpec, opt *RepositoryAuthorListOptions) ([]*AugmentedRepoAuthor, Response, error)
+	ListAuthors(repo RepositorySpec, opt *RepositoryListAuthorsOptions) ([]*AugmentedRepoAuthor, Response, error)
 
 	// ListClients lists people who reference symbols defined in repo.
-	ListClients(repo RepositorySpec, opt *RepositoryClientListOptions) ([]*AugmentedRepoClient, Response, error)
+	ListClients(repo RepositorySpec, opt *RepositoryListClientsOptions) ([]*AugmentedRepoClient, Response, error)
 
 	// ListDependents lists repositories that contain symbols referenced by
 	// repo.
-	ListDependencies(repo RepositorySpec, opt *RepositoryDependencyListOptions) ([]*AugmentedRepoDependency, Response, error)
+	ListDependencies(repo RepositorySpec, opt *RepositoryListDependenciesOptions) ([]*AugmentedRepoDependency, Response, error)
 
 	// ListDependents lists repositories that reference symbols defined in repo.
-	ListDependents(repo RepositorySpec, opt *RepositoryDependentListOptions) ([]*AugmentedRepoDependent, Response, error)
+	ListDependents(repo RepositorySpec, opt *RepositoryListDependentsOptions) ([]*AugmentedRepoDependent, Response, error)
 
 	// ListByOwner lists repositories owned by person. Currently only GitHub
 	// repositories have an owner (e.g., alice owns github.com/alice/foo).
@@ -231,11 +231,11 @@ type AugmentedRepoAuthor struct {
 	*authorship.RepoAuthor
 }
 
-type RepositoryAuthorListOptions struct {
+type RepositoryListAuthorsOptions struct {
 	ListOptions
 }
 
-func (s *repositoriesService) ListAuthors(repo RepositorySpec, opt *RepositoryAuthorListOptions) ([]*AugmentedRepoAuthor, Response, error) {
+func (s *repositoriesService) ListAuthors(repo RepositorySpec, opt *RepositoryListAuthorsOptions) ([]*AugmentedRepoAuthor, Response, error) {
 	url, err := s.client.url(api_router.RepositoryAuthors, map[string]string{"RepoURI": repo.URI}, opt)
 	if err != nil {
 		return nil, nil, err
@@ -262,11 +262,11 @@ type AugmentedRepoClient struct {
 	*authorship.RepoClient
 }
 
-type RepositoryClientListOptions struct {
+type RepositoryListClientsOptions struct {
 	ListOptions
 }
 
-func (s *repositoriesService) ListClients(repo RepositorySpec, opt *RepositoryClientListOptions) ([]*AugmentedRepoClient, Response, error) {
+func (s *repositoriesService) ListClients(repo RepositorySpec, opt *RepositoryListClientsOptions) ([]*AugmentedRepoClient, Response, error) {
 	url, err := s.client.url(api_router.RepositoryClients, map[string]string{"RepoURI": repo.URI}, opt)
 	if err != nil {
 		return nil, nil, err
@@ -295,11 +295,11 @@ type AugmentedRepoDependency struct {
 	*RepoDependency
 }
 
-type RepositoryDependencyListOptions struct {
+type RepositoryListDependenciesOptions struct {
 	ListOptions
 }
 
-func (s *repositoriesService) ListDependencies(repo RepositorySpec, opt *RepositoryDependencyListOptions) ([]*AugmentedRepoDependency, Response, error) {
+func (s *repositoriesService) ListDependencies(repo RepositorySpec, opt *RepositoryListDependenciesOptions) ([]*AugmentedRepoDependency, Response, error) {
 	url, err := s.client.url(api_router.RepositoryDependencies, map[string]string{"RepoURI": repo.URI}, opt)
 	if err != nil {
 		return nil, nil, err
@@ -328,9 +328,9 @@ type AugmentedRepoDependent struct {
 	*RepoDependent
 }
 
-type RepositoryDependentListOptions struct{ ListOptions }
+type RepositoryListDependentsOptions struct{ ListOptions }
 
-func (s *repositoriesService) ListDependents(repo RepositorySpec, opt *RepositoryDependentListOptions) ([]*AugmentedRepoDependent, Response, error) {
+func (s *repositoriesService) ListDependents(repo RepositorySpec, opt *RepositoryListDependentsOptions) ([]*AugmentedRepoDependent, Response, error) {
 	url, err := s.client.url(api_router.RepositoryDependents, map[string]string{"RepoURI": repo.URI}, opt)
 	if err != nil {
 		return nil, nil, err
@@ -472,10 +472,10 @@ type MockRepositoriesService struct {
 	List_              func(opt *RepositoryListOptions) ([]*repo.Repository, Response, error)
 	ListBadges_        func(repo RepositorySpec) ([]*Badge, Response, error)
 	ListCounters_      func(repo RepositorySpec) ([]*Counter, Response, error)
-	ListAuthors_       func(repo RepositorySpec, opt *RepositoryAuthorListOptions) ([]*AugmentedRepoAuthor, Response, error)
-	ListClients_       func(repo RepositorySpec, opt *RepositoryClientListOptions) ([]*AugmentedRepoClient, Response, error)
-	ListDependencies_  func(repo RepositorySpec, opt *RepositoryDependencyListOptions) ([]*AugmentedRepoDependency, Response, error)
-	ListDependents_    func(repo RepositorySpec, opt *RepositoryDependentListOptions) ([]*AugmentedRepoDependent, Response, error)
+	ListAuthors_       func(repo RepositorySpec, opt *RepositoryListAuthorsOptions) ([]*AugmentedRepoAuthor, Response, error)
+	ListClients_       func(repo RepositorySpec, opt *RepositoryListClientsOptions) ([]*AugmentedRepoClient, Response, error)
+	ListDependencies_  func(repo RepositorySpec, opt *RepositoryListDependenciesOptions) ([]*AugmentedRepoDependency, Response, error)
+	ListDependents_    func(repo RepositorySpec, opt *RepositoryListDependentsOptions) ([]*AugmentedRepoDependent, Response, error)
 	ListByOwner_       func(person PersonSpec, opt *RepositoryListByOwnerOptions) ([]*repo.Repository, Response, error)
 	ListByContributor_ func(person PersonSpec, opt *RepositoryListByContributorOptions) ([]*AugmentedRepoContribution, Response, error)
 	ListByClient_      func(person PersonSpec, opt *RepositoryListByClientOptions) ([]*AugmentedRepoUsageByClient, Response, error)
@@ -519,28 +519,28 @@ func (s MockRepositoriesService) ListCounters(repo RepositorySpec) ([]*Counter, 
 	return s.ListCounters_(repo)
 }
 
-func (s MockRepositoriesService) ListAuthors(repo RepositorySpec, opt *RepositoryAuthorListOptions) ([]*AugmentedRepoAuthor, Response, error) {
+func (s MockRepositoriesService) ListAuthors(repo RepositorySpec, opt *RepositoryListAuthorsOptions) ([]*AugmentedRepoAuthor, Response, error) {
 	if s.ListAuthors_ == nil {
 		return nil, &HTTPResponse{}, nil
 	}
 	return s.ListAuthors_(repo, opt)
 }
 
-func (s MockRepositoriesService) ListClients(repo RepositorySpec, opt *RepositoryClientListOptions) ([]*AugmentedRepoClient, Response, error) {
+func (s MockRepositoriesService) ListClients(repo RepositorySpec, opt *RepositoryListClientsOptions) ([]*AugmentedRepoClient, Response, error) {
 	if s.ListClients_ == nil {
 		return nil, &HTTPResponse{}, nil
 	}
 	return s.ListClients_(repo, opt)
 }
 
-func (s MockRepositoriesService) ListDependencies(repo RepositorySpec, opt *RepositoryDependencyListOptions) ([]*AugmentedRepoDependency, Response, error) {
+func (s MockRepositoriesService) ListDependencies(repo RepositorySpec, opt *RepositoryListDependenciesOptions) ([]*AugmentedRepoDependency, Response, error) {
 	if s.ListDependencies_ == nil {
 		return nil, &HTTPResponse{}, nil
 	}
 	return s.ListDependencies_(repo, opt)
 }
 
-func (s MockRepositoriesService) ListDependents(repo RepositorySpec, opt *RepositoryDependentListOptions) ([]*AugmentedRepoDependent, Response, error) {
+func (s MockRepositoriesService) ListDependents(repo RepositorySpec, opt *RepositoryListDependentsOptions) ([]*AugmentedRepoDependent, Response, error) {
 	if s.ListDependents_ == nil {
 		return nil, &HTTPResponse{}, nil
 	}

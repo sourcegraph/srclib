@@ -16,13 +16,13 @@ import (
 // the Sourcegraph API.
 type SymbolsService interface {
 	// Get fetches a symbol.
-	Get(symbol SymbolSpec, opt *GetSymbolOptions) (*Symbol, Response, error)
+	Get(symbol SymbolSpec, opt *SymbolGetOptions) (*Symbol, Response, error)
 
 	// List symbols.
 	List(opt *SymbolListOptions) ([]*Symbol, Response, error)
 
 	// ListExamples lists examples for symbol.
-	ListExamples(symbol SymbolSpec, opt *SymbolExampleListOptions) ([]*Example, Response, error)
+	ListExamples(symbol SymbolSpec, opt *SymbolListExamplesOptions) ([]*Example, Response, error)
 
 	// ListExamples lists people who committed parts of symbol's definition.
 	ListAuthors(symbol SymbolSpec, opt *SymbolListAuthorsOptions) ([]*AugmentedSymbolAuthor, Response, error)
@@ -117,13 +117,13 @@ func (s *Symbol) RRefs() int     { return s.Stat["rrefs"] }
 func (s *Symbol) URefs() int     { return s.Stat["urefs"] }
 func (s *Symbol) TotalRefs() int { return s.XRefs() + s.RRefs() + s.URefs() }
 
-// GetSymbolOptions specifies options for SymbolsService.Get.
-type GetSymbolOptions struct {
+// SymbolGetOptions specifies options for SymbolsService.Get.
+type SymbolGetOptions struct {
 	Annotate bool `url:",omitempty"`
 	DocPages bool `url:",omitempty"`
 }
 
-func (s *symbolsService) Get(symbol SymbolSpec, opt *GetSymbolOptions) (*Symbol, Response, error) {
+func (s *symbolsService) Get(symbol SymbolSpec, opt *SymbolGetOptions) (*Symbol, Response, error) {
 	var url *url.URL
 	var err error
 	if symbol.SID != 0 {
@@ -201,14 +201,14 @@ func (vs Examples) Len() int           { return len(vs) }
 func (vs Examples) Swap(i, j int)      { vs[i], vs[j] = vs[j], vs[i] }
 func (vs Examples) Less(i, j int) bool { return vs[i].sortKey() < vs[j].sortKey() }
 
-// SymbolExampleListOptions specifies options for SymbolsService.ListExamples.
-type SymbolExampleListOptions struct {
+// SymbolListExamplesOptions specifies options for SymbolsService.ListExamples.
+type SymbolListExamplesOptions struct {
 	Annotate bool
 
 	ListOptions
 }
 
-func (s *symbolsService) ListExamples(symbol SymbolSpec, opt *SymbolExampleListOptions) ([]*Example, Response, error) {
+func (s *symbolsService) ListExamples(symbol SymbolSpec, opt *SymbolListExamplesOptions) ([]*Example, Response, error) {
 	url, err := s.client.url(api_router.SymbolExamples, map[string]string{"RepoURI": symbol.Repo, "UnitType": symbol.UnitType, "Unit": symbol.Unit, "Path": symbol.Path}, opt)
 	if err != nil {
 		return nil, nil, err
@@ -396,9 +396,9 @@ func (s *symbolsService) CountByRepository(repo RepositorySpec) (*graph.SymbolCo
 }
 
 type MockSymbolsService struct {
-	Get_                 func(symbol SymbolSpec, opt *GetSymbolOptions) (*Symbol, Response, error)
+	Get_                 func(symbol SymbolSpec, opt *SymbolGetOptions) (*Symbol, Response, error)
 	List_                func(opt *SymbolListOptions) ([]*Symbol, Response, error)
-	ListExamples_        func(symbol SymbolSpec, opt *SymbolExampleListOptions) ([]*Example, Response, error)
+	ListExamples_        func(symbol SymbolSpec, opt *SymbolListExamplesOptions) ([]*Example, Response, error)
 	ListAuthors_         func(symbol SymbolSpec, opt *SymbolListAuthorsOptions) ([]*AugmentedSymbolAuthor, Response, error)
 	ListClients_         func(symbol SymbolSpec, opt *SymbolListClientsOptions) ([]*AugmentedSymbolClient, Response, error)
 	ListDependents_      func(symbol SymbolSpec, opt *SymbolListDependentsOptions) ([]*AugmentedSymbolDependent, Response, error)
@@ -409,7 +409,7 @@ type MockSymbolsService struct {
 
 var _ SymbolsService = MockSymbolsService{}
 
-func (s MockSymbolsService) Get(symbol SymbolSpec, opt *GetSymbolOptions) (*Symbol, Response, error) {
+func (s MockSymbolsService) Get(symbol SymbolSpec, opt *SymbolGetOptions) (*Symbol, Response, error) {
 	if s.Get_ == nil {
 		return nil, &HTTPResponse{}, nil
 	}
@@ -423,7 +423,7 @@ func (s MockSymbolsService) List(opt *SymbolListOptions) ([]*Symbol, Response, e
 	return s.List_(opt)
 }
 
-func (s MockSymbolsService) ListExamples(symbol SymbolSpec, opt *SymbolExampleListOptions) ([]*Example, Response, error) {
+func (s MockSymbolsService) ListExamples(symbol SymbolSpec, opt *SymbolListExamplesOptions) ([]*Example, Response, error) {
 	if s.ListExamples_ == nil {
 		return nil, &HTTPResponse{}, nil
 	}
