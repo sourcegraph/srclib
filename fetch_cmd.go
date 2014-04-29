@@ -54,9 +54,9 @@ func fetchFile(repoStore *buildstore.RepositoryStore, repoURI string, fi *builds
 	path := repoStore.FilePath(fi.CommitID, fi.Path)
 
 	fileSpec := client.BuildDataFileSpec{
-		Repo:     client.RepositorySpec{repoURI},
-		CommitID: fi.CommitID,
-		Path:     fi.Path,
+		Repo: client.RepositorySpec{repoURI},
+		Rev:  fi.CommitID,
+		Path: fi.Path,
 	}
 
 	kb := float64(fi.Size) / 1024
