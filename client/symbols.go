@@ -98,7 +98,7 @@ var _ SymbolsService = &symbolsService{}
 type Symbol struct {
 	graph.Symbol
 
-	Stat map[graph.StatType]int `json:",omitempty"`
+	Stat graph.Stats `json:",omitempty"`
 
 	Doc      string           `json:",omitempty"`
 	DefHTML  template.HTML    `json:",omitempty"`

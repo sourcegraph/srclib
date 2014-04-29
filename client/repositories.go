@@ -77,7 +77,7 @@ func (s RepositorySpec) String() string { return s.URI }
 type Repository struct {
 	*repo.Repository
 
-	Stat map[repo.StatType]int `json:",omitempty"`
+	Stat repo.Stats `json:",omitempty"`
 
 	// Unsupported is whether Sourcegraph doesn't support this repository.
 	Unsupported bool `json:",omitempty"`
