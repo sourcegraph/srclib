@@ -20,6 +20,134 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
+type JobContext struct {
+	RootDir  string             // Root directory containing repository being analyzed
+	VCS      vcs.VCS            // VCS type (git or hg)
+	CommitID string             // CommitID of current working directory
+	Repo     *config.Repository // Repository-level configuration, read from .sourcegraph-data/config.json
+}
+
+func NewJobContext(dir string, x *task2.Context) (*JobContext, error) {
+	if !isDir(dir) {
+		return nil, fmt.Errorf("directory not exist: %q", dir)
+	}
+
+	// VCS and root directory
+	jc := new(JobContext)
+	for _, v := range vcs.VCSByName {
+		if d, err := getVCSRootDir(v, dir); err == nil {
+			jc.VCS = v
+			jc.RootDir = d
+			break
+		}
+	}
+	if jc.RootDir == "" {
+		return nil, fmt.Errorf("warning: failed to detect repository root dir for %q", dir)
+	}
+
+	// Clone URL and Repo
+	cloneURL, err := getVCSCloneURL(jc.VCS, dir)
+	if err != nil {
+		return nil, err
+	}
+	uri := repo.MakeURI(cloneURL)
+
+	// CommitID
+	repo, err := vcs.Open(jc.VCS, dir)
+	if err != nil {
+		return nil, err
+	}
+	jc.CommitID, err = repo.CurrentCommitID()
+	if err != nil {
+		return nil, err
+	}
+
+	// updateVCSIgnore("." + jc.VCSTypeName + "ignore") // TODO: desirable?
+
+	jc.Repo, err = ReadOrComputeRepositoryConfig(jc.RootDir, jc.CommitID, uri, x)
+	if err != nil {
+		return nil, err
+	}
+
+	return jc, nil
+}
+
+func ReadOrComputeRepositoryConfig(rootDir string, commitID string, repoURI repo.URI, x *task2.Context) (*config.Repository, error) {
+	if rootDir == "" {
+		return nil, fmt.Errorf("no repository root directory")
+	}
+	repoStore, err := buildstore.NewRepositoryStore(rootDir)
+	if err != nil {
+		return nil, err
+	}
+	rootDataDir, err := buildstore.RootDir(repoStore)
+	if err != nil {
+		return nil, err
+	}
+
+	configFile := filepath.Join(rootDataDir, repoStore.CommitPath(commitID), buildstore.CachedRepositoryConfigFilename)
+	if isFile(configFile) {
+		// Read
+		f, err := os.Open(configFile)
+		if err != nil {
+			return nil, err
+		}
+		var c config.Repository
+		err = json.NewDecoder(f).Decode(&c)
+		if err != nil {
+			return nil, err
+		}
+		return &c, nil
+	} else {
+		// Compute
+		return scan.ReadDirConfigAndScan(rootDir, repoURI, x)
+	}
+}
+
+func getVCSRootDir(v vcs.VCS, dir string) (string, error) {
+	var cmd *exec.Cmd
+	switch v {
+	case vcs.Git:
+		cmd = exec.Command("git", "rev-parse", "--show-toplevel")
+	case vcs.Hg:
+		exec.Command("hg", "root")
+	}
+	if cmd == nil {
+		return "", fmt.Errorf("unrecognized VCS %v", v)
+	}
+	out, err := cmd.Output()
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(string(out)), nil
+}
+
+func getVCSCloneURL(v vcs.VCS, dir string) (string, error) {
+	var cmd *exec.Cmd
+	switch v {
+	case vcs.Git:
+		cmd = exec.Command("git", "config", "remote.origin.url")
+	case vcs.Hg:
+		cmd = exec.Command("hg", "paths", "default")
+	}
+	if cmd == nil {
+		return "", fmt.Errorf("unrecognized VCS %v", v)
+	}
+	cmd.Dir = dir
+	out, err := cmd.Output()
+	if err != nil {
+		return "", err
+	}
+
+	cloneURL := strings.TrimSpace(string(out))
+	if v == vcs.Git {
+		cloneURL = strings.Replace(cloneURL, "git@github.com", "git://github.com/", 1)
+	}
+	return cloneURL, nil
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 // repository represents a VCS repository on the filesystem. It can be
 // autodetected (using detectRepository) or overridden using
 // command-line flags (defined by AddRepositoryFlags).
