@@ -18,14 +18,14 @@ func TestRepositoriesService_Get(t *testing.T) {
 	want := &Repository{Repository: &repo.Repository{RID: 1}}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.Repository, map[string]string{"RepoURI": "r"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.Repository, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
 		writeJSON(w, want)
 	})
 
-	repo_, _, err := client.Repositories.Get(RepositorySpec{URI: "r"})
+	repo_, _, err := client.Repositories.Get(RepositorySpec{URI: "r.com/x"})
 	if err != nil {
 		t.Errorf("Repositories.Get returned error: %v", err)
 	}
@@ -46,14 +46,14 @@ func TestRepositoriesService_GetReadme(t *testing.T) {
 	want := "hello"
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.RepositoryReadme, map[string]string{"RepoURI": "r"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.RepositoryReadme, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
 		io.WriteString(w, want)
 	})
 
-	readme, _, err := client.Repositories.GetReadme(RepositorySpec{URI: "r"})
+	readme, _, err := client.Repositories.GetReadme(RepositorySpec{URI: "r.com/x"})
 	if err != nil {
 		t.Errorf("Repositories.GetReadme returned error: %v", err)
 	}
@@ -118,14 +118,14 @@ func TestRepositoriesService_ListBadges(t *testing.T) {
 	want := []*Badge{{Name: "b"}}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.RepositoryBadges, map[string]string{"RepoURI": "r"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.RepositoryBadges, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
 		writeJSON(w, want)
 	})
 
-	badges, _, err := client.Repositories.ListBadges(RepositorySpec{"r"})
+	badges, _, err := client.Repositories.ListBadges(RepositorySpec{"r.com/x"})
 	if err != nil {
 		t.Errorf("Repositories.ListBadges returned error: %v", err)
 	}
@@ -146,14 +146,14 @@ func TestRepositoriesService_ListCounters(t *testing.T) {
 	want := []*Counter{{Name: "b"}}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.RepositoryCounters, map[string]string{"RepoURI": "r"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.RepositoryCounters, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
 		writeJSON(w, want)
 	})
 
-	counters, _, err := client.Repositories.ListCounters(RepositorySpec{"r"})
+	counters, _, err := client.Repositories.ListCounters(RepositorySpec{"r.com/x"})
 	if err != nil {
 		t.Errorf("Repositories.ListCounters returned error: %v", err)
 	}
@@ -174,14 +174,14 @@ func TestRepositoriesService_ListAuthors(t *testing.T) {
 	want := []*AugmentedRepoAuthor{{User: &person.User{Login: "b"}}}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.RepositoryAuthors, map[string]string{"RepoURI": "r"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.RepositoryAuthors, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
 		writeJSON(w, want)
 	})
 
-	authors, _, err := client.Repositories.ListAuthors(RepositorySpec{"r"}, nil)
+	authors, _, err := client.Repositories.ListAuthors(RepositorySpec{"r.com/x"}, nil)
 	if err != nil {
 		t.Errorf("Repositories.ListAuthors returned error: %v", err)
 	}
@@ -202,14 +202,14 @@ func TestRepositoriesService_ListClients(t *testing.T) {
 	want := []*AugmentedRepoClient{{User: &person.User{Login: "b"}}}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.RepositoryClients, map[string]string{"RepoURI": "r"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.RepositoryClients, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
 		writeJSON(w, want)
 	})
 
-	clients, _, err := client.Repositories.ListClients(RepositorySpec{"r"}, nil)
+	clients, _, err := client.Repositories.ListClients(RepositorySpec{"r.com/x"}, nil)
 	if err != nil {
 		t.Errorf("Repositories.ListClients returned error: %v", err)
 	}
@@ -230,14 +230,14 @@ func TestRepositoriesService_ListDependents(t *testing.T) {
 	want := []*AugmentedRepoDependent{{Repo: &repo.Repository{URI: "r2"}}}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.RepositoryDependents, map[string]string{"RepoURI": "r"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.RepositoryDependents, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
 		writeJSON(w, want)
 	})
 
-	dependents, _, err := client.Repositories.ListDependents(RepositorySpec{"r"}, nil)
+	dependents, _, err := client.Repositories.ListDependents(RepositorySpec{"r.com/x"}, nil)
 	if err != nil {
 		t.Errorf("Repositories.ListDependents returned error: %v", err)
 	}
@@ -258,14 +258,14 @@ func TestRepositoriesService_ListDependencies(t *testing.T) {
 	want := []*AugmentedRepoDependency{{Repo: &repo.Repository{URI: "r2"}}}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.RepositoryDependencies, map[string]string{"RepoURI": "r"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.RepositoryDependencies, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
 		writeJSON(w, want)
 	})
 
-	dependencies, _, err := client.Repositories.ListDependencies(RepositorySpec{"r"}, nil)
+	dependencies, _, err := client.Repositories.ListDependencies(RepositorySpec{"r.com/x"}, nil)
 	if err != nil {
 		t.Errorf("Repositories.ListDependencies returned error: %v", err)
 	}
@@ -283,7 +283,7 @@ func TestRepositoriesService_ListByOwner(t *testing.T) {
 	setup()
 	defer teardown()
 
-	want := []*repo.Repository{{URI: "r"}}
+	want := []*repo.Repository{{URI: "r.com/x"}}
 
 	var called bool
 	mux.HandleFunc(urlPath(t, api_router.PersonOwnedRepositories, map[string]string{"PersonSpec": "a"}), func(w http.ResponseWriter, r *http.Request) {
@@ -311,7 +311,7 @@ func TestRepositoriesService_ListByContributor(t *testing.T) {
 	setup()
 	defer teardown()
 
-	want := []*AugmentedRepoContribution{{Repo: &repo.Repository{URI: "r"}}}
+	want := []*AugmentedRepoContribution{{Repo: &repo.Repository{URI: "r.com/x"}}}
 
 	var called bool
 	mux.HandleFunc(urlPath(t, api_router.PersonRepositoryContributions, map[string]string{"PersonSpec": "a"}), func(w http.ResponseWriter, r *http.Request) {
@@ -340,7 +340,7 @@ func TestRepositoriesService_ListByClient(t *testing.T) {
 	setup()
 	defer teardown()
 
-	want := []*AugmentedRepoUsageByClient{{SymbolRepo: &repo.Repository{URI: "r"}}}
+	want := []*AugmentedRepoUsageByClient{{SymbolRepo: &repo.Repository{URI: "r.com/x"}}}
 
 	var called bool
 	mux.HandleFunc(urlPath(t, api_router.PersonRepositoryDependencies, map[string]string{"PersonSpec": "a"}), func(w http.ResponseWriter, r *http.Request) {
@@ -368,7 +368,7 @@ func TestRepositoriesService_ListByRefdAuthor(t *testing.T) {
 	setup()
 	defer teardown()
 
-	want := []*AugmentedRepoUsageOfAuthor{{Repo: &repo.Repository{URI: "r"}}}
+	want := []*AugmentedRepoUsageOfAuthor{{Repo: &repo.Repository{URI: "r.com/x"}}}
 
 	var called bool
 	mux.HandleFunc(urlPath(t, api_router.PersonRepositoryDependents, map[string]string{"PersonSpec": "a"}), func(w http.ResponseWriter, r *http.Request) {
