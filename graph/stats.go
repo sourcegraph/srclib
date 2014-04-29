@@ -11,6 +11,8 @@ type SymbolStat struct {
 	N    int
 }
 
+type Stats map[StatType]int
+
 type StatType string
 
 const (

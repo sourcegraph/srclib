@@ -7,6 +7,8 @@ import (
 
 type StatType string
 
+type Stats map[StatType]int
+
 const (
 	StatXRefs           = "xrefs"
 	StatAuthors         = "authors"
