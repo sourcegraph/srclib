@@ -107,6 +107,13 @@ func (nt *NullTime) UnmarshalJSON(data []byte) (err error) {
 	return
 }
 
+func (nt NullTime) String() string {
+	if nt.Valid {
+		return nt.Time.String()
+	}
+	return "<nil>"
+}
+
 func Now() NullTime {
 	return NullTime{Time: time.Now().In(time.UTC).Round(time.Millisecond), Valid: true}
 }
