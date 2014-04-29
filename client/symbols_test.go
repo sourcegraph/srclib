@@ -26,7 +26,7 @@ func TestSymbolsService_Get(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	repo_, _, err := client.Symbols.Get(SymbolSpec{Repo: "r.com/x", UnitType: "t", Unit: "u", Path: "p"}, &GetSymbolOptions{Annotate: true})
+	repo_, _, err := client.Symbols.Get(SymbolSpec{Repo: "r.com/x", UnitType: "t", Unit: "u", Path: "p"}, &SymbolGetOptions{Annotate: true})
 	if err != nil {
 		t.Errorf("Symbols.Get returned error: %v", err)
 	}

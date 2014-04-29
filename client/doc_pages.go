@@ -6,7 +6,7 @@ import (
 )
 
 type DocPagesService interface {
-	Get(docPage DocPageSpec, opt *GetDocPageOptions) (*graph.DocPage, Response, error)
+	Get(docPage DocPageSpec, opt *DocPageGetOptions) (*graph.DocPage, Response, error)
 }
 
 type DocPageSpec struct {
@@ -23,9 +23,9 @@ type docPagesService struct {
 
 var _ DocPagesService = &docPagesService{}
 
-type GetDocPageOptions struct{}
+type DocPageGetOptions struct{}
 
-func (s *docPagesService) Get(docPage DocPageSpec, opt *GetDocPageOptions) (*graph.DocPage, Response, error) {
+func (s *docPagesService) Get(docPage DocPageSpec, opt *DocPageGetOptions) (*graph.DocPage, Response, error) {
 	url, err := s.client.url(api_router.RepositoryDocPage, map[string]string{"RepoURI": docPage.Repo.URI, "Path": docPage.Path}, opt)
 	if err != nil {
 		return nil, nil, err
@@ -46,12 +46,12 @@ func (s *docPagesService) Get(docPage DocPageSpec, opt *GetDocPageOptions) (*gra
 }
 
 type MockDocPagesService struct {
-	Get_ func(docPage DocPageSpec, opt *GetDocPageOptions) (*graph.DocPage, Response, error)
+	Get_ func(docPage DocPageSpec, opt *DocPageGetOptions) (*graph.DocPage, Response, error)
 }
 
 var _ DocPagesService = MockDocPagesService{}
 
-func (s MockDocPagesService) Get(docPage DocPageSpec, opt *GetDocPageOptions) (*graph.DocPage, Response, error) {
+func (s MockDocPagesService) Get(docPage DocPageSpec, opt *DocPageGetOptions) (*graph.DocPage, Response, error) {
 	if s.Get_ == nil {
 		return nil, &HTTPResponse{}, nil
 	}
