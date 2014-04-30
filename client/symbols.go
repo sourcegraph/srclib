@@ -51,6 +51,7 @@ type SymbolSpec struct {
 	SID int64
 
 	Repo     string
+	CommitID string
 	UnitType string
 	Unit     string
 	Path     string
@@ -70,6 +71,7 @@ func (s *SymbolSpec) SymbolKey() graph.SymbolKey {
 	}
 	return graph.SymbolKey{
 		Repo:     repo.URI(s.Repo),
+		CommitID: s.CommitID,
 		UnitType: s.UnitType,
 		Unit:     s.Unit,
 		Path:     graph.SymbolPath(s.Path),
@@ -81,6 +83,7 @@ func (s *SymbolSpec) SymbolKey() graph.SymbolKey {
 func NewSymbolSpecFromSymbolKey(key graph.SymbolKey) SymbolSpec {
 	return SymbolSpec{
 		Repo:     string(key.Repo),
+		CommitID: key.CommitID,
 		UnitType: key.UnitType,
 		Unit:     key.Unit,
 		Path:     string(key.Path),
