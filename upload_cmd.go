@@ -52,7 +52,7 @@ func uploadFile(repoStore *buildstore.RepositoryStore, file *buildstore.BuildDat
 	path := repoStore.FilePath(file.CommitID, file.Path)
 
 	fileSpec := client.BuildDataFileSpec{
-		Repo: client.RepositorySpec{repoURI},
+		Repo: client.RepositorySpec{URI: repoURI},
 		Rev:  file.CommitID,
 		Path: file.Path,
 	}
