@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+
 	"github.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srcgraph/build"
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
@@ -47,9 +48,8 @@ The options are:
 	}
 	fs.Parse(args)
 	goals := fs.Args()
-	repoDir := *dir
 
-	context, err := NewJobContext(repoDir, task2.DefaultContext)
+	context, err := NewJobContext(*dir, task2.DefaultContext)
 	if err != nil {
 		return err
 	}
@@ -80,7 +80,7 @@ The options are:
 	}
 
 	// Run Makefile
-	err = runMakefile(mf, conf, repoDir, goals)
+	err = runMakefile(mf, conf, context.RepoRootDir, goals)
 	if err != nil {
 		return err
 	}

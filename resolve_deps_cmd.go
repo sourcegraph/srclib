@@ -13,8 +13,6 @@ import (
 
 func resolveDeps(args []string) {
 	fs := flag.NewFlagSet("resolve-deps", flag.ExitOnError)
-	r := AddRepositoryFlags(fs)
-	rc := AddRepositoryConfigFlags(fs, r)
 	jsonOutput := fs.Bool("json", false, "show JSON output")
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` resolve-deps [options] [raw_dep_file.json...]
@@ -32,7 +30,10 @@ The options are:
 	inputs := OpenInputFiles(fs.Args())
 	defer CloseAll(inputs)
 
-	c := rc.GetRepositoryConfig(task2.DefaultContext)
+	context, err := NewJobContext(*dir, task2.DefaultContext)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	var allRawDeps []*dep2.RawDependency
 	for name, input := range inputs {
@@ -48,7 +49,7 @@ The options are:
 		allRawDeps = append(allRawDeps, rawDeps...)
 	}
 
-	resolvedDeps, err := dep2.ResolveAll(allRawDeps, c, task2.DefaultContext)
+	resolvedDeps, err := dep2.ResolveAll(allRawDeps, context.Repo, task2.DefaultContext)
 	if err != nil {
 		log.Fatal(err)
 	}

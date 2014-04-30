@@ -14,8 +14,6 @@ import (
 
 func authorship_(args []string) {
 	fs := flag.NewFlagSet("authorship", flag.ExitOnError)
-	r := AddRepositoryFlags(fs)
-	rc := AddRepositoryConfigFlags(fs, r)
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` authorship [options] blame.json graph.json
 
@@ -28,12 +26,15 @@ The options are:
 		os.Exit(1)
 	}
 	fs.Parse(args)
-
 	if fs.NArg() != 2 {
 		fs.Usage()
 	}
-
 	blameFile, graphFile := fs.Arg(0), fs.Arg(1)
+
+	context, err := NewJobContext(*dir, task2.DefaultContext)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	var b *vcsutil.BlameOutput
 	readJSONFile(blameFile, &b)
@@ -41,9 +42,7 @@ The options are:
 	var g *grapher2.Output
 	readJSONFile(graphFile, &g)
 
-	c := rc.GetRepositoryConfig(task2.DefaultContext)
-
-	out, err := authorship.ComputeSourceUnit(g, b, c, task2.DefaultContext)
+	out, err := authorship.ComputeSourceUnit(g, b, context.Repo, task2.DefaultContext)
 	if err != nil {
 		log.Fatal(err)
 	}

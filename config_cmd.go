@@ -3,14 +3,14 @@ package srcgraph
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
+
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
 func config_(args []string) {
 	fs := flag.NewFlagSet("config", flag.ExitOnError)
-	r := AddRepositoryFlags(fs)
-	rc := AddRepositoryConfigFlags(fs, r)
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` config [options]
 
@@ -23,7 +23,10 @@ The options are:
 	}
 	fs.Parse(args)
 
-	c := rc.GetRepositoryConfig(task2.DefaultContext)
+	context, err := NewJobContext(*dir, task2.DefaultContext)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	PrintJSON(c, "")
+	PrintJSON(context.Repo, "")
 }

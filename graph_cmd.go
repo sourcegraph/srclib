@@ -13,8 +13,6 @@ import (
 
 func graph_(args []string) {
 	fs := flag.NewFlagSet("graph", flag.ExitOnError)
-	r := AddRepositoryFlags(fs)
-	rc := AddRepositoryConfigFlags(fs, r)
 	jsonOutput := fs.Bool("json", false, "show JSON output")
 	summary := fs.Bool("summary", true, "summarize output data")
 	fs.Usage = func() {
@@ -31,16 +29,19 @@ The options are:
 	fs.Parse(args)
 	sourceUnitSpecs := fs.Args()
 
-	c := rc.GetRepositoryConfig(task2.DefaultContext)
+	context, err := NewJobContext(*dir, task2.DefaultContext)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	for _, u := range c.SourceUnits {
+	for _, u := range context.Repo.SourceUnits {
 		if !SourceUnitMatchesArgs(sourceUnitSpecs, u) {
 			continue
 		}
 
 		log.Printf("## %s", unit.MakeID(u))
 
-		output, err := grapher2.Graph(r.RootDir, u, c, task2.DefaultContext)
+		output, err := grapher2.Graph(context.RepoRootDir, u, context.Repo, task2.DefaultContext)
 		if err != nil {
 			log.Fatal(err)
 		}

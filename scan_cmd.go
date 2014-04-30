@@ -6,14 +6,13 @@ import (
 	"fmt"
 	"log"
 	"os"
+
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
 func scan_(args []string) {
 	fs := flag.NewFlagSet("scan", flag.ExitOnError)
-	r := AddRepositoryFlags(fs)
-	rc := AddRepositoryConfigFlags(fs, r)
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` scan [options]
 
@@ -26,9 +25,12 @@ The options are:
 	}
 	fs.Parse(args)
 
-	c := rc.GetRepositoryConfig(task2.DefaultContext)
+	context, err := NewJobContext(*dir, task2.DefaultContext)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	for _, u := range c.SourceUnits {
+	for _, u := range context.Repo.SourceUnits {
 		fmt.Printf("## %s\n", unit.MakeID(u))
 		for _, p := range u.Paths() {
 			fmt.Printf("  %s\n", p)
