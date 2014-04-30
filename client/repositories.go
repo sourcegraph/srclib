@@ -72,8 +72,6 @@ type RepositorySpec struct {
 	CommitID string
 }
 
-func (s RepositorySpec) String() string { return s.URI }
-
 func (s RepositorySpec) RouteVars() map[string]string {
 	m := map[string]string{"RepoURI": s.URI}
 	if s.CommitID != "" {
@@ -86,6 +84,15 @@ func (s RepositorySpec) RouteVars() map[string]string {
 type Repository struct {
 	*repo.Repository
 
+	// CommitID is the commit which the Stats, Unsupported, and
+	// NoticeTitle/NoticeBody apply to. If the Repository was fetched with an
+	// empty (default) or non-commit-ID rev (such as a branch name), CommitID
+	// contains the resolved commit ID for that revision specifier.
+	CommitID string
+
+	// Build is the most recent successful build for the CommitID, if any.
+	Build *Build
+
 	Stat repo.Stats `json:",omitempty"`
 
 	// Unsupported is whether Sourcegraph doesn't support this repository.
@@ -95,7 +102,12 @@ type Repository struct {
 }
 
 // Spec returns the RepositorySpec that specifies r.
-func (r *Repository) Spec() RepositorySpec { return RepositorySpec{URI: string(r.Repository.URI)} }
+func (r *Repository) Spec() RepositorySpec {
+	return RepositorySpec{
+		URI:      string(r.Repository.URI),
+		CommitID: r.CommitID,
+	}
+}
 
 func (s *repositoriesService) Get(repo RepositorySpec) (*Repository, Response, error) {
 	url, err := s.client.url(api_router.Repository, repo.RouteVars(), nil)
