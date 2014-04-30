@@ -68,7 +68,8 @@ var _ RepositoriesService = &repositoriesService{}
 
 // RepositorySpec specifies a repository.
 type RepositorySpec struct {
-	URI string
+	URI      string
+	CommitID string
 }
 
 func (s RepositorySpec) String() string { return s.URI }
