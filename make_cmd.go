@@ -53,6 +53,9 @@ The options are:
 	if err != nil {
 		return err
 	}
+	if err := WriteRepositoryConfig(context.RepoRootDir, context.CommitID, context.Repo, false); err != nil {
+		return fmt.Errorf("unable to write repository config file due to error %s", err)
+	}
 
 	repoStore, err := buildstore.NewRepositoryStore(context.RepoRootDir)
 	if err != nil {
