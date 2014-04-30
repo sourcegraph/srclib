@@ -11,14 +11,11 @@ import (
 
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/client"
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
+	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
 func fetch(args []string) {
 	fs := flag.NewFlagSet("fetch", flag.ExitOnError)
-	r := detectRepository(*dir)
-	repoURI := fs.String("repo", string(repo.MakeURI(r.CloneURL)), "repository URI (ex: github.com/alice/foo)")
-	commitID := fs.String("commit", r.CommitID, "commit ID (optional)")
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` fetch [options]
 
@@ -30,23 +27,27 @@ The options are:
 		os.Exit(1)
 	}
 	fs.Parse(args)
-
 	if fs.NArg() != 0 {
 		fs.Usage()
 	}
 
-	localFiles, _, err := apiclient.BuildData.List(client.RepositorySpec{URI: *repoURI}, *commitID, nil)
+	context, err := NewJobContext(*dir, task2.DefaultContext)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	repoStore, err := buildstore.NewRepositoryStore(r.RootDir)
+	localFiles, _, err := apiclient.BuildData.List(client.RepositorySpec{URI: string(context.Repo.URI)}, context.CommitID, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	repoStore, err := buildstore.NewRepositoryStore(context.RepoRootDir)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for _, file := range localFiles {
-		fetchFile(repoStore, *repoURI, file)
+		fetchFile(repoStore, string(context.Repo.URI), file)
 	}
 }
 

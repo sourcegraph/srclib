@@ -15,8 +15,6 @@ func listDeps(args []string) {
 	fs := flag.NewFlagSet("list-deps", flag.ExitOnError)
 	resolve := fs.Bool("resolve", false, "resolve deps and print resolutions")
 	jsonOutput := fs.Bool("json", false, "show JSON output")
-	r := AddRepositoryFlags(fs)
-	rc := AddRepositoryConfigFlags(fs, r)
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` list-deps [options] [unit...]
 
@@ -31,15 +29,18 @@ The options are:
 	fs.Parse(args)
 	sourceUnitSpecs := fs.Args()
 
-	c := rc.GetRepositoryConfig(task2.DefaultContext)
+	context, err := NewJobContext(*dir, task2.DefaultContext)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	allRawDeps := []*dep2.RawDependency{}
-	for _, u := range c.SourceUnits {
+	for _, u := range context.Repo.SourceUnits {
 		if !SourceUnitMatchesArgs(sourceUnitSpecs, u) {
 			continue
 		}
 
-		rawDeps, err := dep2.List(r.RootDir, u, c, task2.DefaultContext)
+		rawDeps, err := dep2.List(context.RepoRootDir, u, context.Repo, task2.DefaultContext)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -57,7 +58,7 @@ The options are:
 
 			if *resolve {
 				log.Printf("# resolves to:")
-				resolvedDep, err := dep2.Resolve(rawDep, c, task2.DefaultContext)
+				resolvedDep, err := dep2.Resolve(rawDep, context.Repo, task2.DefaultContext)
 				if err != nil {
 					log.Fatal(err)
 				}

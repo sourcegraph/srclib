@@ -10,12 +10,11 @@ import (
 	"os"
 
 	"sourcegraph.com/sourcegraph/config2"
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
+	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
 func push(args []string) {
 	fs := flag.NewFlagSet("push", flag.ExitOnError)
-	r := AddRepositoryFlags(fs)
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` push [options]
 
@@ -30,8 +29,13 @@ The options are:
 	}
 	fs.Parse(args)
 
+	context, err := NewJobContext(*dir, task2.DefaultContext)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	url := config2.BaseAPIURL.ResolveReference(&url.URL{
-		Path: fmt.Sprintf("repositories/%s/commits/%s/build", repo.MakeURI(r.CloneURL), r.CommitID),
+		Path: fmt.Sprintf("repositories/%s/commits/%s/build", context.Repo.URI, context.CommitID),
 	})
 	req, err := http.NewRequest("PUT", url.String(), nil)
 	if err != nil {

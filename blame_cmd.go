@@ -13,8 +13,6 @@ import (
 
 func blame(args []string) {
 	fs := flag.NewFlagSet("blame", flag.ExitOnError)
-	r := AddRepositoryFlags(fs)
-	rc := AddRepositoryConfigFlags(fs, r)
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` blame [options] [unit...]
 
@@ -27,22 +25,24 @@ The options are:
 		os.Exit(1)
 	}
 	fs.Parse(args)
-
 	sourceUnitSpecs := fs.Args()
 
-	c := rc.GetRepositoryConfig(task2.DefaultContext)
+	context, err := NewJobContext(*dir, task2.DefaultContext)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	for _, u := range c.SourceUnits {
+	for _, u := range context.Repo.SourceUnits {
 		if !SourceUnitMatchesArgs(sourceUnitSpecs, u) {
 			continue
 		}
 
-		paths, err := unit.ExpandPaths(r.RootDir, u.Paths())
+		paths, err := unit.ExpandPaths(context.RepoRootDir, u.Paths())
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		out, err := vcsutil.BlameFiles(r.RootDir, paths, r.CommitID, c, task2.DefaultContext)
+		out, err := vcsutil.BlameFiles(context.RepoRootDir, paths, context.CommitID, context.Repo, task2.DefaultContext)
 		if err != nil {
 			log.Fatal(err)
 		}

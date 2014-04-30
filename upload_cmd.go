@@ -8,13 +8,11 @@ import (
 
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/client"
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
+	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
 func upload(args []string) {
 	fs := flag.NewFlagSet("upload", flag.ExitOnError)
-	r := detectRepository(*dir)
-	repoURI := fs.String("repo", string(repo.MakeURI(r.CloneURL)), "repository URI (ex: github.com/alice/foo)")
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` upload [options]
 
@@ -26,12 +24,16 @@ The options are:
 		os.Exit(1)
 	}
 	fs.Parse(args)
-
 	if fs.NArg() != 0 {
 		fs.Usage()
 	}
 
-	repoStore, err := buildstore.NewRepositoryStore(r.RootDir)
+	context, err := NewJobContext(*dir, task2.DefaultContext)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	repoStore, err := buildstore.NewRepositoryStore(context.RepoRootDir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -42,7 +44,7 @@ The options are:
 	}
 
 	for _, file := range localFiles {
-		uploadFile(repoStore, file, *repoURI)
+		uploadFile(repoStore, file, string(context.Repo.URI))
 	}
 }
 
