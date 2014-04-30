@@ -2,6 +2,7 @@ package client
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -75,6 +76,17 @@ func testFormValues(t *testing.T, r *http.Request, values values) {
 	r.ParseForm()
 	if !reflect.DeepEqual(want, r.Form) {
 		t.Errorf("Request parameters = %v, want %v", r.Form, want)
+	}
+}
+
+func testBody(t *testing.T, r *http.Request, want string) {
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		t.Errorf("Unable to read body")
+	}
+	str := string(b)
+	if want != str {
+		t.Errorf("Body = %s, want: %s", str, want)
 	}
 }
 
