@@ -162,14 +162,14 @@ type ListOptions struct {
 
 const DefaultPerPage = 10
 
-func (o ListOptions) page() int {
+func (o ListOptions) PageOrDefault() int {
 	if o.Page <= 0 {
 		return 1
 	}
 	return o.Page
 }
 
-func (o ListOptions) perPage() int {
+func (o ListOptions) PerPageOrDefault() int {
 	if o.PerPage <= 0 {
 		return DefaultPerPage
 	}
@@ -177,13 +177,13 @@ func (o ListOptions) perPage() int {
 }
 
 // Limit implements api_common.ResultSlice.
-func (o ListOptions) Limit() int { return o.perPage() }
+func (o ListOptions) Limit() int { return o.PerPageOrDefault() }
 
 // Offset returns the 0-indexed offset of the first item that appears on this
 // page, based on the PerPage and Page values (which are given default values if
 // they are zero).
 func (o ListOptions) Offset() int {
-	return (o.page() - 1) * o.perPage()
+	return (o.PageOrDefault() - 1) * o.PerPageOrDefault()
 }
 
 // Do sends an API request and returns the API response.  The API response is
