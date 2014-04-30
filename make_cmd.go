@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srcgraph/build"
@@ -62,6 +63,14 @@ The options are:
 		return err
 	}
 	buildDir, err := buildstore.BuildDir(repoStore, context.CommitID)
+	if err != nil {
+		return err
+	}
+	// Use a relative base path for the Makefile so that we aren't tied to
+	// absolute paths. This makes the Makefile more portable between hosts. (And
+	// makex uses vfs, which restricts it to accessing only files under a
+	// certain path.)
+	buildDir, err = filepath.Rel(context.RepoRootDir, buildDir)
 	if err != nil {
 		return err
 	}
