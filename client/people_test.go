@@ -62,6 +62,54 @@ func TestPeopleService_Get(t *testing.T) {
 	}
 }
 
+func TestPeopleService_GetOrCreateFromGitHub(t *testing.T) {
+	setup()
+	defer teardown()
+
+	want := &person.User{UID: 1, Login: "a"}
+
+	var called bool
+	mux.HandleFunc(urlPath(t, api_router.PersonFromGitHub, map[string]string{"GitHubUserSpec": "a"}), func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		testMethod(t, r, "GET")
+
+		writeJSON(w, want)
+	})
+
+	person_, _, err := client.People.GetOrCreateFromGitHub(GitHubUserSpec{Login: "a"})
+	if err != nil {
+		t.Errorf("People.GetOrCreateFromGitHub returned error: %v", err)
+	}
+
+	if !called {
+		t.Fatal("!called")
+	}
+
+	if !reflect.DeepEqual(person_, want) {
+		t.Errorf("People.GetOrCreateFromGitHub returned %+v, want %+v", person_, want)
+	}
+}
+
+func TestPeopleService_Sync(t *testing.T) {
+	setup()
+	defer teardown()
+
+	var called bool
+	mux.HandleFunc(urlPath(t, api_router.PersonSync, map[string]string{"PersonSpec": "a"}), func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.People.Sync(PersonSpec{Login: "a"})
+	if err != nil {
+		t.Errorf("People.Sync returned error: %v", err)
+	}
+
+	if !called {
+		t.Fatal("!called")
+	}
+}
+
 func TestPeopleService_List(t *testing.T) {
 	setup()
 	defer teardown()

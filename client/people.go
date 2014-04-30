@@ -16,6 +16,13 @@ type PeopleService interface {
 	// Get fetches a person.
 	Get(person PersonSpec) (*person.User, Response, error)
 
+	// GetOrCreateFromGitHub creates a new person based a GitHub user.
+	GetOrCreateFromGitHub(user GitHubUserSpec) (*person.User, Response, error)
+
+	// Sync updates the profile information for a person from external sources,
+	// such as GitHub.
+	Sync(personSpec PersonSpec) (Response, error)
+
 	// List people.
 	List(opt *PersonListOptions) ([]*person.User, Response, error)
 
@@ -90,6 +97,61 @@ func (s *peopleService) Get(person_ PersonSpec) (*person.User, Response, error) 
 	}
 
 	return person__, resp, nil
+}
+
+// GitHubUserSpec specifies a GitHub user, either by GitHub login or GitHub user
+// ID.
+type GitHubUserSpec struct {
+	Login string
+	ID    int
+}
+
+func (s GitHubUserSpec) RouteVars() map[string]string {
+	if s.ID != 0 {
+		panic("GitHubUserSpec ID not supported via HTTP API")
+	} else if s.Login != "" {
+		return map[string]string{"GitHubUserSpec": s.Login}
+	}
+	panic("empty GitHubUserSpec")
+}
+
+func (s *peopleService) GetOrCreateFromGitHub(user GitHubUserSpec) (*person.User, Response, error) {
+	url, err := s.client.url(api_router.PersonFromGitHub, user.RouteVars(), nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewRequest("GET", url.String(), nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var person__ *person.User
+	resp, err := s.client.Do(req, &person__)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return person__, resp, nil
+}
+
+func (s *peopleService) Sync(person_ PersonSpec) (Response, error) {
+	url, err := s.client.url(api_router.PersonSync, person_.RouteVars(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := s.client.NewRequest("PUT", url.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }
 
 // PersonListOptions specifies options for the PeopleService.List method.
@@ -193,10 +255,12 @@ func (s *peopleService) ListClients(person PersonSpec, opt *PersonListClientsOpt
 }
 
 type MockPeopleService struct {
-	Get_         func(person PersonSpec) (*person.User, Response, error)
-	List_        func(opt *PersonListOptions) ([]*person.User, Response, error)
-	ListAuthors_ func(person PersonSpec, opt *PersonListAuthorsOptions) ([]*AugmentedPersonUsageByClient, Response, error)
-	ListClients_ func(person PersonSpec, opt *PersonListClientsOptions) ([]*AugmentedPersonUsageOfAuthor, Response, error)
+	Get_                   func(person PersonSpec) (*person.User, Response, error)
+	GetOrCreateFromGitHub_ func(user GitHubUserSpec) (*person.User, Response, error)
+	Sync_                  func(personSpec PersonSpec) (Response, error)
+	List_                  func(opt *PersonListOptions) ([]*person.User, Response, error)
+	ListAuthors_           func(person PersonSpec, opt *PersonListAuthorsOptions) ([]*AugmentedPersonUsageByClient, Response, error)
+	ListClients_           func(person PersonSpec, opt *PersonListClientsOptions) ([]*AugmentedPersonUsageOfAuthor, Response, error)
 }
 
 var _ PeopleService = MockPeopleService{}
@@ -206,6 +270,20 @@ func (s MockPeopleService) Get(person PersonSpec) (*person.User, Response, error
 		return nil, &HTTPResponse{}, nil
 	}
 	return s.Get_(person)
+}
+
+func (s MockPeopleService) GetOrCreateFromGitHub(user GitHubUserSpec) (*person.User, Response, error) {
+	if s.GetOrCreateFromGitHub_ == nil {
+		return nil, nil, nil
+	}
+	return s.GetOrCreateFromGitHub_(user)
+}
+
+func (s MockPeopleService) Sync(personSpec PersonSpec) (Response, error) {
+	if s.Sync_ == nil {
+		return nil, nil
+	}
+	return s.Sync_(personSpec)
 }
 
 func (s MockPeopleService) List(opt *PersonListOptions) ([]*person.User, Response, error) {
