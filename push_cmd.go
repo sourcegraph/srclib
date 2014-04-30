@@ -29,7 +29,7 @@ The options are:
 	}
 	fs.Parse(args)
 
-	context, err := NewJobContext(*dir, task2.DefaultContext)
+	context, err := NewJobContext(*Dir, task2.DefaultContext)
 	if err != nil {
 		log.Fatal(err)
 	}
