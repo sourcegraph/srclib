@@ -39,6 +39,36 @@ func TestRepositoriesService_Get(t *testing.T) {
 	}
 }
 
+func TestRepositoriesService_Create(t *testing.T) {
+	setup()
+	defer teardown()
+
+	newRepo := NewRepositorySpec{Type: "git", CloneURLStr: "http://r.com/x"}
+	want := &repo.Repository{RID: 1}
+
+	var called bool
+	mux.HandleFunc(urlPath(t, api_router.RepositoriesCreate, nil), func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		testMethod(t, r, "POST")
+		testBody(t, r, `{"Type":"git","CloneURL":"http://r.com/x"}`+"\n")
+
+		writeJSON(w, want)
+	})
+
+	repo_, _, err := client.Repositories.Create(newRepo)
+	if err != nil {
+		t.Errorf("Repositories.Create returned error: %v", err)
+	}
+
+	if !called {
+		t.Fatal("!called")
+	}
+
+	if !reflect.DeepEqual(repo_, want) {
+		t.Errorf("Repositories.Create returned %+v, want %+v", repo_, want)
+	}
+}
+
 func TestRepositoriesService_GetReadme(t *testing.T) {
 	setup()
 	defer teardown()

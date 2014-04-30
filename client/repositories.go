@@ -16,6 +16,12 @@ type RepositoriesService interface {
 	// Get fetches a repository.
 	Get(repo RepositorySpec) (*Repository, Response, error)
 
+	// Create adds the repository at cloneURL, filling in all information about
+	// the repository that can be inferred from the URL (or, for GitHub
+	// repositories, fetched from the GitHub API). If a repository with the
+	// specified clone URL, or the same URI, already exists, it is returned.
+	Create(newRepoSpec NewRepositorySpec) (*repo.Repository, Response, error)
+
 	// GetReadme fetches the formatted README file for a repository.
 	GetReadme(repo RepositorySpec) (string, Response, error)
 
@@ -121,6 +127,31 @@ func (s *repositoriesService) Get(repo RepositorySpec) (*Repository, Response, e
 	}
 
 	var repo_ *Repository
+	resp, err := s.client.Do(req, &repo_)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return repo_, resp, nil
+}
+
+type NewRepositorySpec struct {
+	Type        repo.VCS
+	CloneURLStr string `json:"CloneURL"`
+}
+
+func (s *repositoriesService) Create(newRepoSpec NewRepositorySpec) (*repo.Repository, Response, error) {
+	url, err := s.client.url(api_router.RepositoriesCreate, nil, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewRequest("POST", url.String(), newRepoSpec)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var repo_ *repo.Repository
 	resp, err := s.client.Do(req, &repo_)
 	if err != nil {
 		return nil, resp, err
@@ -489,6 +520,7 @@ func (s *repositoriesService) ListByRefdAuthor(person PersonSpec, opt *Repositor
 
 type MockRepositoriesService struct {
 	Get_               func(spec RepositorySpec) (*Repository, Response, error)
+	Create_            func(newRepoSpec NewRepositorySpec) (*repo.Repository, Response, error)
 	GetReadme_         func(repo RepositorySpec) (string, Response, error)
 	List_              func(opt *RepositoryListOptions) ([]*repo.Repository, Response, error)
 	ListBadges_        func(repo RepositorySpec) ([]*Badge, Response, error)
@@ -510,6 +542,13 @@ func (s MockRepositoriesService) Get(repo RepositorySpec) (*Repository, Response
 		return nil, &HTTPResponse{}, nil
 	}
 	return s.Get_(repo)
+}
+
+func (s MockRepositoriesService) Create(newRepoSpec NewRepositorySpec) (*repo.Repository, Response, error) {
+	if s.Create_ == nil {
+		return nil, nil, nil
+	}
+	return s.Create_(newRepoSpec)
 }
 
 func (s MockRepositoriesService) GetReadme(repo RepositorySpec) (string, Response, error) {
