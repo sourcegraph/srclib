@@ -21,39 +21,39 @@ import (
 )
 
 type JobContext struct {
-	RootDir  string             // Root directory containing repository being analyzed
-	VCS      vcs.VCS            // VCS type (git or hg)
-	CommitID string             // CommitID of current working directory
-	Repo     *config.Repository // Repository-level configuration, read from .sourcegraph-data/config.json
+	RepoRootDir string             // Root directory containing repository being analyzed
+	VCS         vcs.VCS            // VCS type (git or hg)
+	CommitID    string             // CommitID of current working directory
+	Repo        *config.Repository // Repository-level configuration, read from .sourcegraph-data/config.json
 }
 
-func NewJobContext(dir string, x *task2.Context) (*JobContext, error) {
-	if !isDir(dir) {
-		return nil, fmt.Errorf("directory not exist: %q", dir)
+func NewJobContext(targetDir string, x *task2.Context) (*JobContext, error) {
+	if !isDir(targetDir) {
+		return nil, fmt.Errorf("directory not exist: %q", targetDir)
 	}
 
 	// VCS and root directory
 	jc := new(JobContext)
 	for _, v := range vcs.VCSByName {
-		if d, err := getVCSRootDir(v, dir); err == nil {
+		if d, err := getRepoRootDir(v, targetDir); err == nil {
 			jc.VCS = v
-			jc.RootDir = d
+			jc.RepoRootDir = d
 			break
 		}
 	}
-	if jc.RootDir == "" {
-		return nil, fmt.Errorf("warning: failed to detect repository root dir for %q", dir)
+	if jc.RepoRootDir == "" {
+		return nil, fmt.Errorf("warning: failed to detect repository root dir for %q", targetDir)
 	}
 
 	// Clone URL and Repo
-	cloneURL, err := getVCSCloneURL(jc.VCS, dir)
+	cloneURL, err := getVCSCloneURL(jc.VCS, targetDir)
 	if err != nil {
 		return nil, err
 	}
 	uri := repo.MakeURI(cloneURL)
 
 	// CommitID
-	repo, err := vcs.Open(jc.VCS, dir)
+	repo, err := vcs.Open(jc.VCS, jc.RepoRootDir)
 	if err != nil {
 		return nil, err
 	}
@@ -62,9 +62,9 @@ func NewJobContext(dir string, x *task2.Context) (*JobContext, error) {
 		return nil, err
 	}
 
-	// updateVCSIgnore("." + jc.VCSTypeName + "ignore") // TODO: desirable?
+	updateVCSIgnore("." + jc.VCS.ShortName() + "ignore") // TODO: desirable?
 
-	jc.Repo, err = ReadOrComputeRepositoryConfig(jc.RootDir, jc.CommitID, uri, x)
+	jc.Repo, err = ReadOrComputeRepositoryConfig(jc.RepoRootDir, jc.CommitID, uri, x)
 	if err != nil {
 		return nil, err
 	}
@@ -72,11 +72,11 @@ func NewJobContext(dir string, x *task2.Context) (*JobContext, error) {
 	return jc, nil
 }
 
-func ReadOrComputeRepositoryConfig(rootDir string, commitID string, repoURI repo.URI, x *task2.Context) (*config.Repository, error) {
-	if rootDir == "" {
+func ReadOrComputeRepositoryConfig(repoDir string, commitID string, repoURI repo.URI, x *task2.Context) (*config.Repository, error) {
+	if repoDir == "" {
 		return nil, fmt.Errorf("no repository root directory")
 	}
-	repoStore, err := buildstore.NewRepositoryStore(rootDir)
+	repoStore, err := buildstore.NewRepositoryStore(repoDir)
 	if err != nil {
 		return nil, err
 	}
@@ -100,11 +100,11 @@ func ReadOrComputeRepositoryConfig(rootDir string, commitID string, repoURI repo
 		return &c, nil
 	} else {
 		// Compute
-		return scan.ReadDirConfigAndScan(rootDir, repoURI, x)
+		return scan.ReadDirConfigAndScan(repoDir, repoURI, x)
 	}
 }
 
-func getVCSRootDir(v vcs.VCS, dir string) (string, error) {
+func getRepoRootDir(v vcs.VCS, dir string) (string, error) {
 	var cmd *exec.Cmd
 	switch v {
 	case vcs.Git:
@@ -115,6 +115,7 @@ func getVCSRootDir(v vcs.VCS, dir string) (string, error) {
 	if cmd == nil {
 		return "", fmt.Errorf("unrecognized VCS %v", v)
 	}
+	cmd.Dir = dir
 	out, err := cmd.Output()
 	if err != nil {
 		return "", err
@@ -122,7 +123,7 @@ func getVCSRootDir(v vcs.VCS, dir string) (string, error) {
 	return strings.TrimSpace(string(out)), nil
 }
 
-func getVCSCloneURL(v vcs.VCS, dir string) (string, error) {
+func getVCSCloneURL(v vcs.VCS, repoDir string) (string, error) {
 	var cmd *exec.Cmd
 	switch v {
 	case vcs.Git:
@@ -133,7 +134,7 @@ func getVCSCloneURL(v vcs.VCS, dir string) (string, error) {
 	if cmd == nil {
 		return "", fmt.Errorf("unrecognized VCS %v", v)
 	}
-	cmd.Dir = dir
+	cmd.Dir = repoDir
 	out, err := cmd.Output()
 	if err != nil {
 		return "", err
