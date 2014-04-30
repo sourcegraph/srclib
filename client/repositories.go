@@ -369,7 +369,7 @@ type RepositoryListByOwnerOptions struct {
 }
 
 func (s *repositoriesService) ListByOwner(person PersonSpec, opt *RepositoryListByOwnerOptions) ([]*repo.Repository, Response, error) {
-	url, err := s.client.url(api_router.PersonOwnedRepositories, map[string]string{"PersonSpec": person.PathComponent()}, opt)
+	url, err := s.client.url(api_router.PersonOwnedRepositories, person.RouteVars(), opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -394,7 +394,7 @@ type RepositoryListByContributorOptions struct {
 }
 
 func (s *repositoriesService) ListByContributor(person PersonSpec, opt *RepositoryListByContributorOptions) ([]*AugmentedRepoContribution, Response, error) {
-	url, err := s.client.url(api_router.PersonRepositoryContributions, map[string]string{"PersonSpec": person.PathComponent()}, opt)
+	url, err := s.client.url(api_router.PersonRepositoryContributions, person.RouteVars(), opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -425,7 +425,7 @@ type RepositoryListByClientOptions struct {
 }
 
 func (s *repositoriesService) ListByClient(person PersonSpec, opt *RepositoryListByClientOptions) ([]*AugmentedRepoUsageByClient, Response, error) {
-	url, err := s.client.url(api_router.PersonRepositoryDependencies, map[string]string{"PersonSpec": person.PathComponent()}, opt)
+	url, err := s.client.url(api_router.PersonRepositoryDependencies, person.RouteVars(), opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -456,7 +456,7 @@ type RepositoryListByRefdAuthorOptions struct {
 }
 
 func (s *repositoriesService) ListByRefdAuthor(person PersonSpec, opt *RepositoryListByRefdAuthorOptions) ([]*AugmentedRepoUsageOfAuthor, Response, error) {
-	url, err := s.client.url(api_router.PersonRepositoryDependents, map[string]string{"PersonSpec": person.PathComponent()}, opt)
+	url, err := s.client.url(api_router.PersonRepositoryDependents, person.RouteVars(), opt)
 	if err != nil {
 		return nil, nil, err
 	}
