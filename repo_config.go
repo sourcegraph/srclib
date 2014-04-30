@@ -3,6 +3,7 @@ package srcgraph
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -85,19 +86,10 @@ func NewJobContext(targetDir string, x *task2.Context) (*JobContext, error) {
 }
 
 func ReadOrComputeRepositoryConfig(repoDir string, commitID string, repoURI repo.URI, x *task2.Context) (*config.Repository, error) {
-	if repoDir == "" {
-		return nil, fmt.Errorf("no repository root directory")
-	}
-	repoStore, err := buildstore.NewRepositoryStore(repoDir)
+	configFile, err := getConfigFile(repoDir, commitID)
 	if err != nil {
 		return nil, err
 	}
-	rootDataDir, err := buildstore.RootDir(repoStore)
-	if err != nil {
-		return nil, err
-	}
-
-	configFile := filepath.Join(rootDataDir, repoStore.CommitPath(commitID), buildstore.CachedRepositoryConfigFilename)
 	if isFile(configFile) {
 		// Read
 		f, err := os.Open(configFile)
@@ -114,6 +106,42 @@ func ReadOrComputeRepositoryConfig(repoDir string, commitID string, repoURI repo
 		// Compute
 		return scan.ReadDirConfigAndScan(repoDir, repoURI, x)
 	}
+}
+
+func WriteRepositoryConfig(repoDir string, commitID string, c *config.Repository, overwrite bool) error {
+	configFile, err := getConfigFile(repoDir, commitID)
+	if err != nil {
+		return err
+	}
+	if isFile(configFile) && !overwrite {
+		return nil
+	}
+
+	err = os.MkdirAll(filepath.Dir(configFile), 0700)
+	if err != nil {
+		return err
+	}
+	b, err := json.MarshalIndent(c, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	return ioutil.WriteFile(configFile, b, 0700)
+}
+
+func getConfigFile(repoDir, commitID string) (string, error) {
+	if repoDir == "" {
+		return "", fmt.Errorf("no repository root directory")
+	}
+	repoStore, err := buildstore.NewRepositoryStore(repoDir)
+	if err != nil {
+		return "", err
+	}
+	rootDataDir, err := buildstore.RootDir(repoStore)
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(rootDataDir, repoStore.CommitPath(commitID), buildstore.CachedRepositoryConfigFilename), nil
 }
 
 func getRepoRootDir(v vcs.VCS, dir string) (string, error) {
