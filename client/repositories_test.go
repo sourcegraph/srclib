@@ -125,7 +125,7 @@ func TestRepositoriesService_ListBadges(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	badges, _, err := client.Repositories.ListBadges(RepositorySpec{"r.com/x"})
+	badges, _, err := client.Repositories.ListBadges(RepositorySpec{URI: "r.com/x"})
 	if err != nil {
 		t.Errorf("Repositories.ListBadges returned error: %v", err)
 	}
@@ -153,7 +153,7 @@ func TestRepositoriesService_ListCounters(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	counters, _, err := client.Repositories.ListCounters(RepositorySpec{"r.com/x"})
+	counters, _, err := client.Repositories.ListCounters(RepositorySpec{URI: "r.com/x"})
 	if err != nil {
 		t.Errorf("Repositories.ListCounters returned error: %v", err)
 	}
@@ -181,7 +181,7 @@ func TestRepositoriesService_ListAuthors(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	authors, _, err := client.Repositories.ListAuthors(RepositorySpec{"r.com/x"}, nil)
+	authors, _, err := client.Repositories.ListAuthors(RepositorySpec{URI: "r.com/x"}, nil)
 	if err != nil {
 		t.Errorf("Repositories.ListAuthors returned error: %v", err)
 	}
@@ -209,7 +209,7 @@ func TestRepositoriesService_ListClients(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	clients, _, err := client.Repositories.ListClients(RepositorySpec{"r.com/x"}, nil)
+	clients, _, err := client.Repositories.ListClients(RepositorySpec{URI: "r.com/x"}, nil)
 	if err != nil {
 		t.Errorf("Repositories.ListClients returned error: %v", err)
 	}
@@ -237,7 +237,7 @@ func TestRepositoriesService_ListDependents(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	dependents, _, err := client.Repositories.ListDependents(RepositorySpec{"r.com/x"}, nil)
+	dependents, _, err := client.Repositories.ListDependents(RepositorySpec{URI: "r.com/x"}, nil)
 	if err != nil {
 		t.Errorf("Repositories.ListDependents returned error: %v", err)
 	}
@@ -265,7 +265,7 @@ func TestRepositoriesService_ListDependencies(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	dependencies, _, err := client.Repositories.ListDependencies(RepositorySpec{"r.com/x"}, nil)
+	dependencies, _, err := client.Repositories.ListDependencies(RepositorySpec{URI: "r.com/x"}, nil)
 	if err != nil {
 		t.Errorf("Repositories.ListDependencies returned error: %v", err)
 	}

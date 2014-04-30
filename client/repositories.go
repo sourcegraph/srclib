@@ -74,6 +74,14 @@ type RepositorySpec struct {
 
 func (s RepositorySpec) String() string { return s.URI }
 
+func (s RepositorySpec) RouteVars() map[string]string {
+	m := map[string]string{"RepoURI": s.URI}
+	if s.CommitID != "" {
+		m["Rev"] = s.CommitID
+	}
+	return m
+}
+
 // Repository is a code repository returned by the Sourcegraph API.
 type Repository struct {
 	*repo.Repository
@@ -90,7 +98,7 @@ type Repository struct {
 func (r *Repository) Spec() RepositorySpec { return RepositorySpec{URI: string(r.Repository.URI)} }
 
 func (s *repositoriesService) Get(repo RepositorySpec) (*Repository, Response, error) {
-	url, err := s.client.url(api_router.Repository, map[string]string{"RepoURI": repo.URI}, nil)
+	url, err := s.client.url(api_router.Repository, repo.RouteVars(), nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -110,7 +118,7 @@ func (s *repositoriesService) Get(repo RepositorySpec) (*Repository, Response, e
 }
 
 func (s *repositoriesService) GetReadme(repo RepositorySpec) (string, Response, error) {
-	url, err := s.client.url(api_router.RepositoryReadme, map[string]string{"RepoURI": repo.URI}, nil)
+	url, err := s.client.url(api_router.RepositoryReadme, repo.RouteVars(), nil)
 	if err != nil {
 		return "", nil, err
 	}
@@ -174,7 +182,7 @@ func (b *Badge) HTML() string {
 }
 
 func (s *repositoriesService) ListBadges(repo RepositorySpec) ([]*Badge, Response, error) {
-	url, err := s.client.url(api_router.RepositoryBadges, map[string]string{"RepoURI": repo.URI}, nil)
+	url, err := s.client.url(api_router.RepositoryBadges, repo.RouteVars(), nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -206,7 +214,7 @@ func (c *Counter) HTML() string {
 }
 
 func (s *repositoriesService) ListCounters(repo RepositorySpec) ([]*Counter, Response, error) {
-	url, err := s.client.url(api_router.RepositoryCounters, map[string]string{"RepoURI": repo.URI}, nil)
+	url, err := s.client.url(api_router.RepositoryCounters, repo.RouteVars(), nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -237,7 +245,7 @@ type RepositoryListAuthorsOptions struct {
 }
 
 func (s *repositoriesService) ListAuthors(repo RepositorySpec, opt *RepositoryListAuthorsOptions) ([]*AugmentedRepoAuthor, Response, error) {
-	url, err := s.client.url(api_router.RepositoryAuthors, map[string]string{"RepoURI": repo.URI}, opt)
+	url, err := s.client.url(api_router.RepositoryAuthors, repo.RouteVars(), opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -268,7 +276,7 @@ type RepositoryListClientsOptions struct {
 }
 
 func (s *repositoriesService) ListClients(repo RepositorySpec, opt *RepositoryListClientsOptions) ([]*AugmentedRepoClient, Response, error) {
-	url, err := s.client.url(api_router.RepositoryClients, map[string]string{"RepoURI": repo.URI}, opt)
+	url, err := s.client.url(api_router.RepositoryClients, repo.RouteVars(), opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -301,7 +309,7 @@ type RepositoryListDependenciesOptions struct {
 }
 
 func (s *repositoriesService) ListDependencies(repo RepositorySpec, opt *RepositoryListDependenciesOptions) ([]*AugmentedRepoDependency, Response, error) {
-	url, err := s.client.url(api_router.RepositoryDependencies, map[string]string{"RepoURI": repo.URI}, opt)
+	url, err := s.client.url(api_router.RepositoryDependencies, repo.RouteVars(), opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -332,7 +340,7 @@ type AugmentedRepoDependent struct {
 type RepositoryListDependentsOptions struct{ ListOptions }
 
 func (s *repositoriesService) ListDependents(repo RepositorySpec, opt *RepositoryListDependentsOptions) ([]*AugmentedRepoDependent, Response, error) {
-	url, err := s.client.url(api_router.RepositoryDependents, map[string]string{"RepoURI": repo.URI}, opt)
+	url, err := s.client.url(api_router.RepositoryDependents, repo.RouteVars(), opt)
 	if err != nil {
 		return nil, nil, err
 	}
