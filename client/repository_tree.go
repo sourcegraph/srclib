@@ -24,6 +24,10 @@ type TreeEntrySpec struct {
 	Path string
 }
 
+func (s *TreeEntrySpec) RouteVars() map[string]string {
+	return map[string]string{"RepoURI": s.Repo.URI, "Rev": s.Rev, "Path": s.Path}
+}
+
 func (s TreeEntrySpec) String() string {
 	return fmt.Sprintf("%s: %s (rev %q)", s.Repo, s.Path, s.Rev)
 }
@@ -51,7 +55,7 @@ func (s *repositoryTreeService) Get(entry TreeEntrySpec, opt *RepositoryTreeGetO
 		return nil, nil, errors.New("non-annotated is not yet supported")
 	}
 
-	url, err := s.client.url(api_router.RepositoryTreeEntry, map[string]string{"RepoURI": entry.Repo.URI, "Rev": entry.Rev, "Path": entry.Path}, opt)
+	url, err := s.client.url(api_router.RepositoryTreeEntry, entry.RouteVars(), opt)
 	if err != nil {
 		return nil, nil, err
 	}

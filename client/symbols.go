@@ -57,6 +57,14 @@ type SymbolSpec struct {
 	Path     string
 }
 
+func (s *SymbolSpec) RouteVars() map[string]string {
+	m := map[string]string{"RepoURI": s.Repo, "UnitType": s.UnitType, "Unit": s.Unit, "Path": s.Path}
+	if s.CommitID != "" {
+		m["Rev"] = s.CommitID
+	}
+	return m
+}
+
 // SymbolKey returns the symbol key specified by s, using the Repo, UnitType,
 // Unit, and Path fields of s. If only s.SID is set, SymbolKey will panic.
 func (s *SymbolSpec) SymbolKey() graph.SymbolKey {
@@ -132,7 +140,7 @@ func (s *symbolsService) Get(symbol SymbolSpec, opt *SymbolGetOptions) (*Symbol,
 	if symbol.SID != 0 {
 		url, err = s.client.url(api_router.SymbolBySID, map[string]string{"SID": fmt.Sprintf("%d", symbol.SID)}, opt)
 	} else {
-		url, err = s.client.url(api_router.Symbol, map[string]string{"RepoURI": symbol.Repo, "UnitType": symbol.UnitType, "Unit": symbol.Unit, "Path": symbol.Path}, opt)
+		url, err = s.client.url(api_router.Symbol, symbol.RouteVars(), opt)
 	}
 	if err != nil {
 		return nil, nil, err
@@ -212,7 +220,7 @@ type SymbolListExamplesOptions struct {
 }
 
 func (s *symbolsService) ListExamples(symbol SymbolSpec, opt *SymbolListExamplesOptions) ([]*Example, Response, error) {
-	url, err := s.client.url(api_router.SymbolExamples, map[string]string{"RepoURI": symbol.Repo, "UnitType": symbol.UnitType, "Unit": symbol.Unit, "Path": symbol.Path}, opt)
+	url, err := s.client.url(api_router.SymbolExamples, symbol.RouteVars(), opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -242,7 +250,7 @@ type SymbolListAuthorsOptions struct {
 }
 
 func (s *symbolsService) ListAuthors(symbol SymbolSpec, opt *SymbolListAuthorsOptions) ([]*AugmentedSymbolAuthor, Response, error) {
-	url, err := s.client.url(api_router.SymbolAuthors, map[string]string{"RepoURI": symbol.Repo, "UnitType": symbol.UnitType, "Unit": symbol.Unit, "Path": symbol.Path}, opt)
+	url, err := s.client.url(api_router.SymbolAuthors, symbol.RouteVars(), opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -272,7 +280,7 @@ type SymbolListClientsOptions struct {
 }
 
 func (s *symbolsService) ListClients(symbol SymbolSpec, opt *SymbolListClientsOptions) ([]*AugmentedSymbolClient, Response, error) {
-	url, err := s.client.url(api_router.SymbolClients, map[string]string{"RepoURI": symbol.Repo, "UnitType": symbol.UnitType, "Unit": symbol.Unit, "Path": symbol.Path}, opt)
+	url, err := s.client.url(api_router.SymbolClients, symbol.RouteVars(), opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -307,7 +315,7 @@ type SymbolListDependentsOptions struct {
 }
 
 func (s *symbolsService) ListDependents(symbol SymbolSpec, opt *SymbolListDependentsOptions) ([]*AugmentedSymbolDependent, Response, error) {
-	url, err := s.client.url(api_router.SymbolDependents, map[string]string{"RepoURI": symbol.Repo, "UnitType": symbol.UnitType, "Unit": symbol.Unit, "Path": symbol.Path}, opt)
+	url, err := s.client.url(api_router.SymbolDependents, symbol.RouteVars(), opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -333,7 +341,7 @@ type SymbolListImplementationsOptions struct {
 }
 
 func (s *symbolsService) ListImplementations(symbol SymbolSpec, opt *SymbolListImplementationsOptions) ([]*Symbol, Response, error) {
-	url, err := s.client.url(api_router.SymbolImplementations, map[string]string{"RepoURI": symbol.Repo, "UnitType": symbol.UnitType, "Unit": symbol.Unit, "Path": symbol.Path}, opt)
+	url, err := s.client.url(api_router.SymbolImplementations, symbol.RouteVars(), opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -359,7 +367,7 @@ type SymbolListInterfacesOptions struct {
 }
 
 func (s *symbolsService) ListInterfaces(symbol SymbolSpec, opt *SymbolListInterfacesOptions) ([]*Symbol, Response, error) {
-	url, err := s.client.url(api_router.SymbolInterfaces, map[string]string{"RepoURI": symbol.Repo, "UnitType": symbol.UnitType, "Unit": symbol.Unit, "Path": symbol.Path}, opt)
+	url, err := s.client.url(api_router.SymbolInterfaces, symbol.RouteVars(), opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -379,7 +387,7 @@ func (s *symbolsService) ListInterfaces(symbol SymbolSpec, opt *SymbolListInterf
 }
 
 func (s *symbolsService) CountByRepository(repo RepositorySpec) (*graph.SymbolCounts, Response, error) {
-	url, err := s.client.url(api_router.RepositorySymbolCounts, map[string]string{"RepoURI": repo.URI}, nil)
+	url, err := s.client.url(api_router.RepositorySymbolCounts, repo.RouteVars(), nil)
 	if err != nil {
 		return nil, nil, err
 	}

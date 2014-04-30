@@ -17,6 +17,12 @@ type DocPageSpec struct {
 	// when we figure out the best way to set a primary key for doc pages.
 }
 
+func (s *DocPageSpec) RouteVars() map[string]string {
+	m := s.Repo.RouteVars()
+	m["Path"] = s.Path
+	return m
+}
+
 type docPagesService struct {
 	client *Client
 }
@@ -26,7 +32,7 @@ var _ DocPagesService = &docPagesService{}
 type DocPageGetOptions struct{}
 
 func (s *docPagesService) Get(docPage DocPageSpec, opt *DocPageGetOptions) (*graph.DocPage, Response, error) {
-	url, err := s.client.url(api_router.RepositoryDocPage, map[string]string{"RepoURI": docPage.Repo.URI, "Path": docPage.Path}, opt)
+	url, err := s.client.url(api_router.RepositoryDocPage, docPage.RouteVars(), opt)
 	if err != nil {
 		return nil, nil, err
 	}
