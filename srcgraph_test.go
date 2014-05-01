@@ -4,59 +4,105 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
+	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
+	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/util"
 
 	"github.com/aybabtme/color/brush"
 	"github.com/kr/fs"
+	"github.com/sourcegraph/makex"
 )
 
-var keepTestFiles = flag.Bool("keep", false, "keep test files around after test is run")
-var generate = flag.Bool("generate", false, "generate new expected test data")
+var mode = flag.String("mode", "test", "[test|keep|gen] 'test' runs test as normal; keep keeps around generated test files for inspection after tests complete; 'gen' generates new expected test data")
 var match = flag.String("match", "", "run only test cases that contain this string")
 
 func Test_SrcgraphCmd(t *testing.T) {
-	testdir, _ := filepath.Abs("testdata")
-	testCases := getTestCases(testdir, *match)
-	testwd, _ := os.Getwd()
-	var testCaseErrs = make(map[testCase]error)
-
-	for _, testCase := range testCases {
-		t.Logf("Running test case %+v", testCase)
-		err := os.Chdir(testCase.Dir)
-		if err != nil {
-			t.Fatalf("Could not chdir: %s", err)
-		}
-
-		cmd := []string{"-v", "-commit=expected-test", "-conf.cache=false"}
-		if !*generate {
-			cmd = append(cmd, "-test")
-			if *keepTestFiles {
-				cmd = append(cmd, "-test-keep")
-			}
-		}
-
-		if err = make_(cmd); err != nil {
-			testCaseErrs[testCase] = err
-		}
+	actDir := buildstore.BuildDataDirName
+	expDir := ".sourcegraph-data-exp"
+	if *mode == "gen" {
+		buildstore.BuildDataDirName = expDir
 	}
-	os.Chdir(testwd)
+
+	testRootDir, _ := filepath.Abs("testdata")
+	testCases := getTestCases(testRootDir, *match)
+	allPass := true
+	for _, tcase := range testCases {
+		func() {
+			prevwd, _ := os.Getwd()
+			os.Chdir(tcase.Dir)
+			defer os.Chdir(prevwd)
+
+			if *mode == "test" {
+				defer os.RemoveAll(buildstore.BuildDataDirName)
+			}
+
+			t.Logf("Running test case %+v", tcase)
+			context, err := NewJobContext(".", task2.DefaultContext)
+			if err != nil {
+				allPass = false
+				t.Errorf("Failed to get job context due to error %s", err)
+				return
+			}
+			context.CommitID = "test-commit"
+			err = make__(nil, context, &makex.Default, false, true)
+			if err != nil {
+				allPass = false
+				t.Errorf("Test case %+v returned error %s", tcase, err)
+				return
+			}
+			if *mode != "gen" {
+				same := compareResults(t, expDir, actDir)
+				if !same {
+					allPass = false
+				}
+			}
+		}()
+	}
 
 	t.Logf("Ran test cases %+v", testCases)
-	if len(testCaseErrs) == 0 {
+	if allPass && *mode != "gen" {
 		t.Log(brush.Green("** ALL PASS **").String())
-	} else {
-		t.Log(brush.Red("** ERRORS **").String())
-		for testCase, err := range testCaseErrs {
-			t.Log(brush.Red(fmt.Sprintf("Test case %+v: %s", testCase, err)).String())
-		}
+	}
+	if *mode == "gen" {
+		t.Log(brush.DarkYellow(fmt.Sprintf("Expected test data dumped to %s directories", expDir)))
+	}
+	if *mode == "keep" {
+		t.Log(brush.Cyan(fmt.Sprintf("Test files persisted in %s directories", actDir)))
 	}
 }
 
 type testCase struct {
 	Dir string
+}
+
+func compareResults(t *testing.T, expDir, actDir string) bool {
+	diffOut, err := exec.Command("diff", "-ur", expDir, actDir).CombinedOutput()
+	if err != nil {
+		t.Fatalf("Could not execute diff due to error %s, diff output: %s", err, string(diffOut))
+		return false
+	}
+	t.Logf("\n\n\n")
+	t.Logf("###########################")
+	t.Logf("##      TEST RESULTS     ##")
+	t.Logf("###########################")
+	if len(diffOut) > 0 {
+		diffStr := string(diffOut)
+		t.Errorf(diffStr)
+		t.Errorf(brush.Red("** FAIL **").String())
+		t.Errorf("output differed")
+		return false
+	} else if err != nil {
+		t.Errorf(brush.Red("** ERROR **").String())
+		t.Errorf("failed to compute diff: %s", err)
+		return false
+	} else {
+		t.Logf(brush.Green("** PASS **").String())
+		return true
+	}
 }
 
 func getTestCases(testdir string, match string) []testCase {

@@ -14,9 +14,7 @@ import (
 	"github.com/sourcegraph/rwvfs"
 )
 
-const (
-	BuildDataDirName = ".sourcegraph-data"
-)
+var BuildDataDirName = ".sourcegraph-data"
 
 var (
 	// localDirs stores the OS filesystem path that each local repository store
