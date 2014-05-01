@@ -32,7 +32,7 @@ func (u *gem) RootDir() string {
 }
 
 func (u *gem) Paths() []string {
-	return nil // TODO
+	return nil
 }
 
 type app struct {
@@ -48,7 +48,7 @@ func (u *app) RootDir() string {
 }
 
 func (u *app) Paths() []string {
-	return nil // TODO
+	return nil
 }
 
 func (e *rubyEnv) BuildScanner(dir string, c *config.Repository, x *task2.Context) (*container.Command, error) {

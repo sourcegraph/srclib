@@ -18,6 +18,8 @@ func init() {
 	dep2.RegisterResolver(rubyGemTargetType, defaultRubyEnv)
 }
 
+// TODO: make sure this handles the ruby standard lib and the emitted source unit is consistent with what's in grapher.go (special case)
+
 func (e *rubyEnv) BuildLister(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error) {
 	dockerfile, err := e.rdepDockerfile()
 	if err != nil {

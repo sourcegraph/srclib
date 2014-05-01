@@ -2,6 +2,7 @@ package container
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -25,6 +26,8 @@ var (
 	BuildRetries = 3
 )
 
+var keepContainer = flag.Bool("run.keep-container", false, "keep docker containers around after execution")
+
 type dockerRunner struct{}
 
 func (_ dockerRunner) Run(c *Command) ([]byte, error) {
@@ -32,7 +35,11 @@ func (_ dockerRunner) Run(c *Command) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer os.RemoveAll(tmpDir)
+	if *keepContainer {
+		log.Printf("container persisted at %s", tmpDir)
+	} else {
+		defer os.RemoveAll(tmpDir)
+	}
 
 	image := "sg-temp:" + filepath.Base(tmpDir)
 	log.Printf("Running image %s", image)

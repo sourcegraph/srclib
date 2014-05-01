@@ -63,11 +63,15 @@ func ComputeSourceUnit(g *grapher2.Output, b *vcsutil.BlameOutput, c *config.Rep
 		}
 		totalSymbolDefChars := float64(sym.DefEnd - sym.DefStart)
 		for _, author := range authors {
+			charsProportion := float64(0.0)
+			if totalSymbolDefChars != 0 {
+				charsProportion = float64(chars[author.AuthorEmail]) / totalSymbolDefChars
+			}
 			o.Symbols[sym.Path] = append(o.Symbols[sym.Path], &SymbolAuthorship{
 				AuthorshipInfo:  *author,
 				Exported:        sym.Exported,
 				Chars:           chars[author.AuthorEmail],
-				CharsProportion: float64(chars[author.AuthorEmail]) / totalSymbolDefChars,
+				CharsProportion: charsProportion,
 			})
 		}
 	}
