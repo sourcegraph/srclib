@@ -38,7 +38,7 @@ func TestPeopleService_Get(t *testing.T) {
 	setup()
 	defer teardown()
 
-	want := &person.User{UID: 1}
+	want := &Person{User: &person.User{UID: 1}}
 
 	var called bool
 	mux.HandleFunc(urlPath(t, api_router.Person, map[string]string{"PersonSpec": "a"}), func(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +48,7 @@ func TestPeopleService_Get(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	person_, _, err := client.People.Get(PersonSpec{Login: "a"})
+	person_, _, err := client.People.Get(PersonSpec{Login: "a"}, nil)
 	if err != nil {
 		t.Errorf("People.Get returned error: %v", err)
 	}
@@ -66,7 +66,7 @@ func TestPeopleService_GetOrCreateFromGitHub(t *testing.T) {
 	setup()
 	defer teardown()
 
-	want := &person.User{UID: 1, Login: "a"}
+	want := &Person{User: &person.User{UID: 1, Login: "a"}}
 
 	var called bool
 	mux.HandleFunc(urlPath(t, api_router.PersonFromGitHub, map[string]string{"GitHubUserSpec": "a"}), func(w http.ResponseWriter, r *http.Request) {
@@ -76,7 +76,7 @@ func TestPeopleService_GetOrCreateFromGitHub(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	person_, _, err := client.People.GetOrCreateFromGitHub(GitHubUserSpec{Login: "a"})
+	person_, _, err := client.People.GetOrCreateFromGitHub(GitHubUserSpec{Login: "a"}, nil)
 	if err != nil {
 		t.Errorf("People.GetOrCreateFromGitHub returned error: %v", err)
 	}

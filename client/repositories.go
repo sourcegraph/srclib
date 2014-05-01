@@ -126,7 +126,8 @@ func (r *Repository) Spec() RepositorySpec {
 }
 
 type RepositoryGetOptions struct {
-	// Stats is whether to include statistics in the response.
+	// Stats is whether to include statistics about the repository in the
+	// response.
 	Stats bool `url:",omitempty"`
 
 	// ResolveRev is whether to include the resolved VCS revision in the
@@ -520,8 +521,8 @@ func (s *repositoriesService) ListByContributor(person PersonSpec, opt *Reposito
 // AugmentedRepoUsageByClient is a authorship.RepoUsageByClient with the full repo.Repository
 // struct embedded.
 type AugmentedRepoUsageByClient struct {
-	SymbolRepo *repo.Repository
-	*authorship.RepoUsageByClient
+	SymbolRepo                    *repo.Repository
+	*authorship.RepoUsageByClient `json:"RepoUsageByClient"`
 }
 
 type RepositoryListByClientOptions struct {
@@ -551,8 +552,8 @@ func (s *repositoriesService) ListByClient(person PersonSpec, opt *RepositoryLis
 // AugmentedRepoUsageOfAuthor is a authorship.RepoUsageOfAuthor with the full
 // repo.Repository struct embedded.
 type AugmentedRepoUsageOfAuthor struct {
-	Repo *repo.Repository
-	*authorship.RepoUsageOfAuthor
+	Repo                          *repo.Repository
+	*authorship.RepoUsageOfAuthor `json:"RepoUsageOfAuthor"`
 }
 
 type RepositoryListByRefdAuthorOptions struct {
