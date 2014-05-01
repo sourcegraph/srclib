@@ -67,6 +67,12 @@ func (u *User) AvatarURLOfSize(width int) string {
 	return u.AvatarURL + fmt.Sprintf("&s=%d", width)
 }
 
+// CanSync is whether this person can be synced with the external source that
+// the person was originally fetched from (e.g., GitHub users).
+func (u *User) CanSync() bool {
+	return !u.Transient
+}
+
 // UID is the numeric primary key for a user.
 type UID int
 
