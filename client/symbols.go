@@ -111,7 +111,7 @@ type Symbol struct {
 
 	Stat graph.Stats `json:",omitempty"`
 
-	Doc      string           `json:",omitempty"`
+	DocHTML  string           `json:",omitempty"`
 	DefHTML  template.HTML    `json:",omitempty"`
 	DocPages []*graph.DocPage `json:",omitempty"`
 }
@@ -131,6 +131,7 @@ func (s *Symbol) TotalRefs() int { return s.XRefs() + s.RRefs() + s.URefs() }
 // SymbolGetOptions specifies options for SymbolsService.Get.
 type SymbolGetOptions struct {
 	Annotate bool `url:",omitempty"`
+	Doc      bool `url:",omitempty"`
 	DocPages bool `url:",omitempty"`
 }
 
