@@ -14,7 +14,17 @@ import (
 // Sourcegraph API.
 type RepositoriesService interface {
 	// Get fetches a repository.
-	Get(repo RepositorySpec) (*Repository, Response, error)
+	Get(repo RepositorySpec, opt *RepositoryGetOptions) (*Repository, Response, error)
+
+	// GetOrCreate fetches a repository using Get. If no such repository exists
+	// with the URI, and the URI refers to a recognized repository host (such as
+	// github.com), the repository's information is fetched from the external
+	// host and the repository is created.
+	GetOrCreate(repo RepositorySpec, opt *RepositoryGetOptions) (*Repository, Response, error)
+
+	// Sync updates the repository information for a repository, fetching it
+	// from an external host if the host is recognized (such as GitHub).
+	Sync(repo repo.URI) (Response, error)
 
 	// Create adds the repository at cloneURL, filling in all information about
 	// the repository that can be inferred from the URL (or, for GitHub
@@ -115,8 +125,20 @@ func (r *Repository) Spec() RepositorySpec {
 	}
 }
 
-func (s *repositoriesService) Get(repo RepositorySpec) (*Repository, Response, error) {
-	url, err := s.client.url(api_router.Repository, repo.RouteVars(), nil)
+type RepositoryGetOptions struct {
+	// Stats is whether to include statistics in the response.
+	Stats bool `url:",omitempty"`
+
+	// ResolveRev is whether to include the resolved VCS revision in the
+	// CommitID field in the response.
+	ResolveRev bool `url:",omitempty"`
+
+	// Build is whether to include the most recent build data in the response.
+	Build bool `url:",omitempty"`
+}
+
+func (s *repositoriesService) Get(repo RepositorySpec, opt *RepositoryGetOptions) (*Repository, Response, error) {
+	url, err := s.client.url(api_router.Repository, repo.RouteVars(), opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -133,6 +155,45 @@ func (s *repositoriesService) Get(repo RepositorySpec) (*Repository, Response, e
 	}
 
 	return repo_, resp, nil
+}
+
+func (s *repositoriesService) GetOrCreate(repo_ RepositorySpec, opt *RepositoryGetOptions) (*Repository, Response, error) {
+	url, err := s.client.url(api_router.RepositoriesGetOrCreate, repo_.RouteVars(), opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewRequest("PUT", url.String(), nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var repo__ *Repository
+	resp, err := s.client.Do(req, &repo__)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return repo__, resp, nil
+}
+
+func (s *repositoriesService) Sync(repo repo.URI) (Response, error) {
+	url, err := s.client.url(api_router.RepositorySync, map[string]string{"RepoURI": string(repo)}, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := s.client.NewRequest("PUT", url.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }
 
 type NewRepositorySpec struct {
@@ -519,7 +580,9 @@ func (s *repositoriesService) ListByRefdAuthor(person PersonSpec, opt *Repositor
 }
 
 type MockRepositoriesService struct {
-	Get_               func(spec RepositorySpec) (*Repository, Response, error)
+	Get_               func(spec RepositorySpec, opt *RepositoryGetOptions) (*Repository, Response, error)
+	GetOrCreate_       func(repo RepositorySpec, opt *RepositoryGetOptions) (*Repository, Response, error)
+	Sync_              func(repo repo.URI) (Response, error)
 	Create_            func(newRepoSpec NewRepositorySpec) (*repo.Repository, Response, error)
 	GetReadme_         func(repo RepositorySpec) (string, Response, error)
 	List_              func(opt *RepositoryListOptions) ([]*repo.Repository, Response, error)
@@ -537,11 +600,25 @@ type MockRepositoriesService struct {
 
 var _ RepositoriesService = MockRepositoriesService{}
 
-func (s MockRepositoriesService) Get(repo RepositorySpec) (*Repository, Response, error) {
+func (s MockRepositoriesService) Get(repo RepositorySpec, opt *RepositoryGetOptions) (*Repository, Response, error) {
 	if s.Get_ == nil {
 		return nil, &HTTPResponse{}, nil
 	}
-	return s.Get_(repo)
+	return s.Get_(repo, opt)
+}
+
+func (s MockRepositoriesService) GetOrCreate(repo RepositorySpec, opt *RepositoryGetOptions) (*Repository, Response, error) {
+	if s.GetOrCreate_ == nil {
+		return nil, &HTTPResponse{}, nil
+	}
+	return s.GetOrCreate_(repo, opt)
+}
+
+func (s MockRepositoriesService) Sync(repo repo.URI) (Response, error) {
+	if s.Sync_ == nil {
+		return nil, nil
+	}
+	return s.Sync_(repo)
 }
 
 func (s MockRepositoriesService) Create(newRepoSpec NewRepositorySpec) (*repo.Repository, Response, error) {

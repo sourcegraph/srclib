@@ -25,7 +25,7 @@ func TestRepositoriesService_Get(t *testing.T) {
 		writeJSON(w, want)
 	})
 
-	repo_, _, err := client.Repositories.Get(RepositorySpec{URI: "r.com/x"})
+	repo_, _, err := client.Repositories.Get(RepositorySpec{URI: "r.com/x"}, nil)
 	if err != nil {
 		t.Errorf("Repositories.Get returned error: %v", err)
 	}
@@ -36,6 +36,54 @@ func TestRepositoriesService_Get(t *testing.T) {
 
 	if !reflect.DeepEqual(repo_, want) {
 		t.Errorf("Repositories.Get returned %+v, want %+v", repo_, want)
+	}
+}
+
+func TestRepositoriesService_GetOrCreate(t *testing.T) {
+	setup()
+	defer teardown()
+
+	want := &Repository{Repository: &repo.Repository{RID: 1}}
+
+	var called bool
+	mux.HandleFunc(urlPath(t, api_router.RepositoriesGetOrCreate, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		testMethod(t, r, "PUT")
+
+		writeJSON(w, want)
+	})
+
+	repo_, _, err := client.Repositories.GetOrCreate(RepositorySpec{URI: "r.com/x"}, nil)
+	if err != nil {
+		t.Errorf("Repositories.GetOrCreate returned error: %v", err)
+	}
+
+	if !called {
+		t.Fatal("!called")
+	}
+
+	if !reflect.DeepEqual(repo_, want) {
+		t.Errorf("Repositories.GetOrCreate returned %+v, want %+v", repo_, want)
+	}
+}
+
+func TestRepositoriesService_Sync(t *testing.T) {
+	setup()
+	defer teardown()
+
+	var called bool
+	mux.HandleFunc(urlPath(t, api_router.RepositorySync, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Repositories.Sync("r.com/x")
+	if err != nil {
+		t.Errorf("Repositories.Sync returned error: %v", err)
+	}
+
+	if !called {
+		t.Fatal("!called")
 	}
 }
 
