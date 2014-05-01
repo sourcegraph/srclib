@@ -67,6 +67,12 @@ func (u *User) AvatarURLOfSize(width int) string {
 	return u.AvatarURL + fmt.Sprintf("&s=%d", width)
 }
 
+// CanOwnRepositories is whether the user is capable of owning repositories
+// (e.g., GitHub users can own GitHub repositories).
+func (u *User) CanOwnRepositories() bool {
+	return u.GitHubLogin() != ""
+}
+
 // CanSync is whether this person can be synced with the external source that
 // the person was originally fetched from (e.g., GitHub users).
 func (u *User) CanSync() bool {
