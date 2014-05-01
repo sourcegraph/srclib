@@ -48,14 +48,14 @@ func Test_SrcgraphCmd(t *testing.T) {
 				return
 			}
 			context.CommitID = "test-commit"
-			err = make__(nil, context, &makex.Default, false, true)
+			err = make__(nil, context, &makex.Default, false, *Verbose)
 			if err != nil {
 				allPass = false
 				t.Errorf("Test case %+v returned error %s", tcase, err)
 				return
 			}
 			if *mode != "gen" {
-				same := compareResults(t, expDir, actDir)
+				same := compareResults(t, tcase, expDir, actDir)
 				if !same {
 					allPass = false
 				}
@@ -63,9 +63,8 @@ func Test_SrcgraphCmd(t *testing.T) {
 		}()
 	}
 
-	t.Logf("Ran test cases %+v", testCases)
 	if allPass && *mode != "gen" {
-		t.Log(brush.Green("** ALL PASS **").String())
+		t.Log(brush.Green("ALL CASES PASS").String())
 	}
 	if *mode == "gen" {
 		t.Log(brush.DarkYellow(fmt.Sprintf("Expected test data dumped to %s directories", expDir)))
@@ -73,34 +72,34 @@ func Test_SrcgraphCmd(t *testing.T) {
 	if *mode == "keep" {
 		t.Log(brush.Cyan(fmt.Sprintf("Test files persisted in %s directories", actDir)))
 	}
+	t.Logf("Ran test cases %+v", testCases)
 }
 
 type testCase struct {
 	Dir string
 }
 
-func compareResults(t *testing.T, expDir, actDir string) bool {
+func compareResults(t *testing.T, tcase testCase, expDir, actDir string) bool {
 	diffOut, err := exec.Command("diff", "-ur", expDir, actDir).CombinedOutput()
 	if err != nil {
 		t.Fatalf("Could not execute diff due to error %s, diff output: %s", err, string(diffOut))
 		return false
 	}
-	t.Logf("\n\n\n")
-	t.Logf("###########################")
-	t.Logf("##      TEST RESULTS     ##")
-	t.Logf("###########################")
 	if len(diffOut) > 0 {
 		diffStr := string(diffOut)
+		t.Errorf(brush.Red("FAIL").String())
+		t.Errorf("test case %+v", tcase)
 		t.Errorf(diffStr)
-		t.Errorf(brush.Red("** FAIL **").String())
 		t.Errorf("output differed")
 		return false
 	} else if err != nil {
-		t.Errorf(brush.Red("** ERROR **").String())
+		t.Errorf(brush.Red("ERROR").String())
+		t.Errorf("test case %+v", tcase)
 		t.Errorf("failed to compute diff: %s", err)
 		return false
 	} else {
-		t.Logf(brush.Green("** PASS **").String())
+		t.Logf(brush.Green("PASS").String())
+		t.Logf("test case %+v", tcase)
 		return true
 	}
 }
