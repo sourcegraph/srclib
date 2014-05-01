@@ -14,16 +14,10 @@ import (
 )
 
 func makefile(args []string) {
-	make_cmd(append(args, "-mf"))
+	make_(append(args, "-mf"))
 }
 
-func make_cmd(args []string) {
-	if err := make_(args); err != nil {
-		log.Fatal(err)
-	}
-}
-
-func make_(args []string) error {
+func make_(args []string) {
 	fs := flag.NewFlagSet("make", flag.ExitOnError)
 	showOnly := fs.Bool("mf", false, "print generated makefile and exit")
 	conf := &makex.Default
@@ -52,8 +46,16 @@ The options are:
 
 	context, err := NewJobContext(*Dir, task2.DefaultContext)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
+
+	err = make__(goals, context, conf, *showOnly, *Verbose)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func make__(goals []string, context *JobContext, conf *makex.Config, showOnly bool, verbose bool) error {
 	if err := WriteRepositoryConfig(context.RepoRootDir, context.CommitID, context.Repo, false); err != nil {
 		return fmt.Errorf("unable to write repository config file due to error %s", err)
 	}
@@ -80,13 +82,13 @@ The options are:
 		return err
 	}
 
-	if *Verbose || *showOnly {
+	if verbose || showOnly {
 		data, err := makex.Marshal(mf)
 		if err != nil {
 			return err
 		}
 		fmt.Println(string(data))
-		if *showOnly {
+		if showOnly {
 			return nil
 		}
 	}
@@ -96,36 +98,6 @@ The options are:
 	if err != nil {
 		return err
 	}
-
-	// TODO: support test case
-
-	// if params.Test {
-	// 	// Compare expected with actual
-	// 	expectedBuildDir, err := buildstore.BuildDir(repoStore, params.Repository.CommitID)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-
-	// 	diffOut, err := exec.Command("diff", "-ur", "--exclude=config.json", expectedBuildDir, buildDir).CombinedOutput()
-	// 	log.Print("\n\n\n")
-	// 	log.Print("###########################")
-	// 	log.Print("##      TEST RESULTS     ##")
-	// 	log.Print("###########################")
-	// 	if len(diffOut) > 0 {
-	// 		diffStr := string(diffOut)
-	// 		diffStr = strings.Replace(diffStr, buildDir, "<test-build>", -1)
-	// 		log.Printf(diffStr)
-	// 		log.Printf(brush.Red("** FAIL **").String())
-	// 		return fmt.Errorf("output differed")
-	// 	} else if err != nil {
-	// 		log.Printf(brush.Red("** ERROR **").String())
-	// 		return fmt.Errorf("failed to compute diff: %s", err)
-	// 	} else if err == nil {
-	// 		log.Printf(brush.Green("** PASS **").String())
-	// 		return nil
-	// 	}
-	// }
-
 	return nil
 }
 
