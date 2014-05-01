@@ -112,7 +112,7 @@ type RepoUsageByClient struct {
 	// It's called SymbolRepo because "Repo" usually refers to the repository
 	// whose analysis created this linkage (i.e., the repository that contains
 	// the reference).
-	SymbolRepo repo.URI `db:"symbol_repo" json:"-"`
+	SymbolRepo repo.URI `db:"symbol_repo"`
 
 	RefCount int `db:"ref_count"`
 
@@ -122,7 +122,7 @@ type RepoUsageByClient struct {
 // RepoUsageOfAuthor describes a repository referencing code committed by a
 // specific person.
 type RepoUsageOfAuthor struct {
-	Repo repo.URI `json:"-"`
+	Repo repo.URI
 
 	RefCount int `db:"ref_count"`
 }

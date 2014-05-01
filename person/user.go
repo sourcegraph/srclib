@@ -54,13 +54,6 @@ type User struct {
 
 	// GitHubOAuth2AccessToken is the user's GitHub access token.
 	GitHubOAuth2AccessToken string `db:"github_oauth2_access_token" json:"-"` // don't write the OAuth2 access token to JSON
-
-	OwnedReposCount       int `db:"owned_repos_count"`
-	ContributedReposCount int `db:"contributed_repos_count"`
-	AuthorsCount          int `db:"authors_count"`
-	ClientsCount          int `db:"clients_count"`
-	DependentsCount       int `db:"dependents_count"`
-	DependenciesCount     int `db:"dependencies_count"`
 }
 
 // GitHubLogin returns the user's Login. They are the same for now, but callers
