@@ -15,12 +15,12 @@ func init() {
 }
 
 type rubyEnv struct {
-	Ruby        string
+	RubyVersion string
 	RDepVersion string
 }
 
 var defaultRubyEnv = &rubyEnv{
-	Ruby:        "ruby2.0",
+	RubyVersion: "2.1.1",
 	RDepVersion: "0.0.5a",
 }
 
@@ -46,7 +46,13 @@ RUN apt-get update
 RUN apt-get install -qy curl
 RUN apt-get install -qy git
 
-RUN apt-get install -qy {{.Ruby}}
+RUN apt-get install -qy ruby
+RUN curl -sSL https://get.rvm.io | bash -s stable --ruby
+RUN /bin/bash -l -c "rvm requirements"
+RUN /bin/bash -l -c "rvm reload"
+RUN /bin/bash -l -c "rvm install {{.RubyVersion}}"
+RUN echo "\nrvm use {{.RubyVersion}} &> /dev/null" >> /.bash_profile
+
 RUN gem install rdep -v {{.RDepVersion}}
 `))
 

@@ -42,11 +42,15 @@ The options are:
 			log.Fatal(err)
 		}
 
-		out, err := vcsutil.BlameFiles(context.RepoRootDir, paths, context.CommitID, context.Repo, task2.DefaultContext)
+		var out *vcsutil.BlameOutput
+		if paths == nil {
+			out, err = vcsutil.BlameRepository(context.RepoRootDir, context.CommitID, context.Repo, task2.DefaultContext)
+		} else {
+			out, err = vcsutil.BlameFiles(context.RepoRootDir, paths, context.CommitID, context.Repo, task2.DefaultContext)
+		}
 		if err != nil {
 			log.Fatal(err)
 		}
-
 		PrintJSON(out, "")
 	}
 }

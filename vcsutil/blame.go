@@ -25,6 +25,18 @@ var blameIgnores = []string{
 	"third-party",
 }
 
+func BlameRepository(dir string, commitID string, c *config.Repository, x *task2.Context) (*BlameOutput, error) {
+	blameOutput := new(BlameOutput)
+	if SkipBlame {
+		x.Log.Printf("Skipping VCS blame (returning empty BlameOutput)")
+		return blameOutput, nil
+	}
+
+	var err error
+	blameOutput.HunkMap, blameOutput.CommitMap, err = blame.BlameRepository(dir, commitID, nil)
+	return blameOutput, err
+}
+
 func BlameFiles(dir string, files []string, commitID string, c *config.Repository, x *task2.Context) (*BlameOutput, error) {
 	if SkipBlame {
 		x.Log.Printf("Skipping VCS blame (returning empty BlameOutput)")
