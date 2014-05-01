@@ -40,21 +40,19 @@ func (v *goVersion) BuildLister(dir string, unit unit.SourceUnit, c *config.Repo
 			Dockerfile: dockerfile,
 			RunOptions: []string{"-v", dir + ":" + containerDir},
 			// TODO(sqs): include TestImports and XTestImports
-			Cmd: []string{"go", "list", "-e", "-f", `[{{if .Imports}}"{{join .Imports "\",\""}}"{{end}}]`, pkg.ImportPath},
+			Cmd: []string{"go", "list", "-e", "-f", `{{join .Imports "\n"}}{{join .TestImports "\n"}}{{join .XTestImports "\n"}}`, pkg.ImportPath},
 		},
 		Transform: func(orig []byte) ([]byte, error) {
-			var importPaths []string
-			err := json.Unmarshal(orig, &importPaths)
-			if err != nil {
-				return nil, err
-			}
-
-			deps := make([]*dep2.RawDependency, len(importPaths))
-			for i, importPath := range importPaths {
-				deps[i] = &dep2.RawDependency{
+			importPaths := strings.Split(string(orig), "\n")
+			var deps []*dep2.RawDependency
+			for _, importPath := range importPaths {
+				if importPath == "" {
+					continue
+				}
+				deps = append(deps, &dep2.RawDependency{
 					TargetType: goImportPathTargetType,
 					Target:     goImportPath(importPath),
-				}
+				})
 			}
 
 			return json.Marshal(deps)
