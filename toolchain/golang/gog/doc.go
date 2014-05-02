@@ -54,7 +54,7 @@ func (g *Grapher) emitDocs(pkgInfo *loader.PackageInfo) error {
 	// ignore errors because we assume that syntax checking has already occurred
 	astPkg, _ := ast.NewPackage(g.program.Fset, files, nil, nil)
 
-	docPkg := doc.New(astPkg, pkgInfo.Pkg.Path(), doc.AllDecls|doc.AllMethods)
+	docPkg := doc.New(astPkg, pkgInfo.Pkg.Path(), doc.AllDecls)
 
 	if docPkg.Doc != "" {
 		// Find the file that defines package doc.
