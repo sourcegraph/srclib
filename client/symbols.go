@@ -123,10 +123,19 @@ func (s *Symbol) SymbolSpec() SymbolSpec {
 	return spec
 }
 
-func (s *Symbol) XRefs() int     { return s.Stat["xrefs"] }
-func (s *Symbol) RRefs() int     { return s.Stat["rrefs"] }
-func (s *Symbol) URefs() int     { return s.Stat["urefs"] }
-func (s *Symbol) TotalRefs() int { return s.XRefs() + s.RRefs() + s.URefs() }
+func (s *Symbol) XRefs() int { return s.Stat["xrefs"] }
+func (s *Symbol) RRefs() int { return s.Stat["rrefs"] }
+func (s *Symbol) URefs() int { return s.Stat["urefs"] }
+
+// TotalRefs is the number of unique references of all kinds to s. It
+// is computed as (xrefs + rrefs), omitting urefs to avoid double-counting
+// references in the same repository.
+//
+// The number of examples for s is usually TotalRefs() - 1, since the definition
+// of a symbol counts as a ref but not an example.
+func (s *Symbol) TotalRefs() int { return s.XRefs() + s.RRefs() }
+
+func (s *Symbol) TotalExamples() int { return s.TotalRefs() - 1 }
 
 // SymbolGetOptions specifies options for SymbolsService.Get.
 type SymbolGetOptions struct {
