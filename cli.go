@@ -91,6 +91,8 @@ var Subcommands = []Subcommand{
 	{"graph", "analyze a repository's source code for definitions and references", graph_},
 	{"blame", "blame a source unit's source files to determine commit authors", blame},
 	{"authorship", "determine authorship of a source unit's symbols and refs", authorship_},
+	{"repo-create", "create a repository (API)", repoCreate},
+	{"build", "create a new build for a repository (API)", build_},
 	{"info", "show info about enabled capabilities", info},
 	{"help", "show help about a command", nil},
 }
