@@ -16,6 +16,9 @@ type BuildsService interface {
 	// Get fetches a build.
 	Get(build BuildSpec, opt *BuildGetOptions) (*Build, Response, error)
 
+	// List builds.
+	List(opt *BuildListOptions) ([]*Build, Response, error)
+
 	// ListByRepository lists builds for a repository.
 	ListByRepository(repo RepositorySpec, opt *BuildListByRepositoryOptions) ([]*Build, Response, error)
 
@@ -92,12 +95,36 @@ func (s *buildsService) Get(build BuildSpec, opt *BuildGetOptions) (*Build, Resp
 	return build_, nil, nil
 }
 
-type BuildListByRepositoryOptions struct {
-	Ended     bool   `url:",omitempty"`
-	Succeeded bool   `url:",omitempty"`
-	Rev       string `url:",omitempty"`
+type BuildListOptions struct {
+	Ended     bool `url:",omitempty"`
+	Succeeded bool `url:",omitempty"`
 
 	ListOptions
+}
+
+func (s *buildsService) List(opt *BuildListOptions) ([]*Build, Response, error) {
+	url, err := s.client.url(api_router.Builds, nil, opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewRequest("GET", url.String(), nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var builds []*Build
+	resp, err := s.client.Do(req, &builds)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return builds, resp, nil
+}
+
+type BuildListByRepositoryOptions struct {
+	BuildListOptions
+	Rev string `url:",omitempty"`
 }
 
 func (s *buildsService) ListByRepository(repo RepositorySpec, opt *BuildListByRepositoryOptions) ([]*Build, Response, error) {
@@ -142,6 +169,7 @@ func (s *buildsService) Create(repo RepositorySpec, conf BuildConfig) (*Build, R
 
 type MockBuildsService struct {
 	Get_              func(build BuildSpec, opt *BuildGetOptions) (*Build, Response, error)
+	List_             func(opt *BuildListOptions) ([]*Build, Response, error)
 	ListByRepository_ func(repo RepositorySpec, opt *BuildListByRepositoryOptions) ([]*Build, Response, error)
 	Create_           func(repo RepositorySpec, conf BuildConfig) (*Build, Response, error)
 }
@@ -153,6 +181,13 @@ func (s MockBuildsService) Get(build BuildSpec, opt *BuildGetOptions) (*Build, R
 		return nil, &HTTPResponse{}, nil
 	}
 	return s.Get_(build, opt)
+}
+
+func (s MockBuildsService) List(opt *BuildListOptions) ([]*Build, Response, error) {
+	if s.List_ == nil {
+		return nil, nil, nil
+	}
+	return s.List_(opt)
 }
 
 func (s MockBuildsService) ListByRepository(repo RepositorySpec, opt *BuildListByRepositoryOptions) ([]*Build, Response, error) {
