@@ -34,12 +34,11 @@ type buildsService struct {
 var _ BuildsService = &buildsService{}
 
 type BuildSpec struct {
-	Repo RepositorySpec
-	BID  int64
+	BID int64
 }
 
 func (s *BuildSpec) RouteVars() map[string]string {
-	return map[string]string{"RepoURI": s.Repo.URI, "BID": fmt.Sprintf("%d", s.BID)}
+	return map[string]string{"BID": fmt.Sprintf("%d", s.BID)}
 }
 
 // A Build represents a scheduled, completed, or failed repository analysis and
@@ -76,7 +75,7 @@ var ErrBuildNotFound = errors.New("build not found")
 type BuildGetOptions struct{}
 
 func (s *buildsService) Get(build BuildSpec, opt *BuildGetOptions) (*Build, Response, error) {
-	url, err := s.client.url(api_router.RepositoryBuild, build.RouteVars(), opt)
+	url, err := s.client.url(api_router.Build, build.RouteVars(), opt)
 	if err != nil {
 		return nil, nil, err
 	}

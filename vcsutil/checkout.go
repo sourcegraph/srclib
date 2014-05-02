@@ -1,7 +1,6 @@
 package vcsutil
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 
@@ -17,7 +16,6 @@ func Checkout(cloneURL string, vcsType vcs.VCS, rev string) (string, string, err
 		return "", "", err
 	}
 
-	log.Printf("Cloning %s to %s.", cloneURL, dir)
 	r, err := vcs.CloneOrOpen(vcsType, cloneURL, dir)
 	if err != nil {
 		return "", "", err
