@@ -20,6 +20,8 @@ const (
 	StatClients          = "clients"
 	StatDependents       = "dependents"
 	StatExportedElements = "exported-elements"
+	StatInterfaces       = "interfaces"
+	StatImplementations  = "implementations"
 )
 
 func (x StatType) Value() (driver.Value, error) {
