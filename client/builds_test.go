@@ -67,6 +67,38 @@ func TestRepositoryBuildsService_ListByRepository(t *testing.T) {
 	}
 }
 
+func TestBuildsService_Create(t *testing.T) {
+	setup()
+	defer teardown()
+
+	config := BuildConfig{Import: true, Queue: true}
+	want := &Build{BID: 123, Repo: 456}
+
+	var called bool
+	mux.HandleFunc(urlPath(t, api_router.RepositoryBuildsCreate, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		testMethod(t, r, "POST")
+		testBody(t, r, `{"Import":true,"Queue":true}`+"\n")
+
+		writeJSON(w, want)
+	})
+
+	build_, _, err := client.Builds.Create(RepositorySpec{URI: "r.com/x"}, config)
+	if err != nil {
+		t.Errorf("Builds.Create returned error: %v", err)
+	}
+
+	if !called {
+		t.Fatal("!called")
+	}
+
+	normalizeBuildTime(build_)
+	normalizeBuildTime(want)
+	if !reflect.DeepEqual(build_, want) {
+		t.Errorf("Builds.Create returned %+v, want %+v", build_, want)
+	}
+}
+
 func normalizeBuildTime(bs ...*Build) {
 	for _, b := range bs {
 		normalizeTime(&b.CreatedAt)

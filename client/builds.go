@@ -10,9 +10,18 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
+// BuildsService communicates with the build-related endpoints in the
+// Sourcegraph API.
 type BuildsService interface {
+	// Get fetches a build.
 	Get(build BuildSpec, opt *BuildGetOptions) (*Build, Response, error)
+
+	// ListByRepository lists builds for a repository.
 	ListByRepository(repo RepositorySpec, opt *BuildListByRepositoryOptions) ([]*Build, Response, error)
+
+	// Create a new build. The build will run asynchronously (Create does not
+	// wait for it to return. To monitor the build's status, use Get.)
+	Create(repo RepositorySpec, conf BuildConfig) (*Build, Response, error)
 }
 
 type buildsService struct {
@@ -41,6 +50,22 @@ type Build struct {
 	EndedAt   db_common.NullTime `db:"ended_at"`
 	Success   bool
 	Failure   bool
+
+	BuildConfig
+}
+
+// BuildConfig configures a repository build.
+type BuildConfig struct {
+	// Import is whether to import the build data into the database when the
+	// build is complete. The data must be imported for Sourcegraph's web app or
+	// API to use it, except that unimported build data is available through the
+	// BuildData service. (TODO(sqs): BuildData isn't yet implemented.)
+	Import bool
+
+	// Queue is whether this build should be enqueued. If enqueued, any worker
+	// may begin running this build. If not enqueued, it is up to the client to
+	// run the build and update it accordingly.
+	Queue bool
 }
 
 var ErrBuildNotFound = errors.New("build not found")
@@ -95,9 +120,30 @@ func (s *buildsService) ListByRepository(repo RepositorySpec, opt *BuildListByRe
 	return builds, resp, nil
 }
 
+func (s *buildsService) Create(repo RepositorySpec, conf BuildConfig) (*Build, Response, error) {
+	url, err := s.client.url(api_router.RepositoryBuildsCreate, map[string]string{"RepoURI": repo.URI}, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewRequest("POST", url.String(), conf)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var build *Build
+	resp, err := s.client.Do(req, &build)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return build, resp, nil
+}
+
 type MockBuildsService struct {
 	Get_              func(build BuildSpec, opt *BuildGetOptions) (*Build, Response, error)
 	ListByRepository_ func(repo RepositorySpec, opt *BuildListByRepositoryOptions) ([]*Build, Response, error)
+	Create_           func(repo RepositorySpec, conf BuildConfig) (*Build, Response, error)
 }
 
 var _ BuildsService = MockBuildsService{}
@@ -108,9 +154,17 @@ func (s MockBuildsService) Get(build BuildSpec, opt *BuildGetOptions) (*Build, R
 	}
 	return s.Get_(build, opt)
 }
+
 func (s MockBuildsService) ListByRepository(repo RepositorySpec, opt *BuildListByRepositoryOptions) ([]*Build, Response, error) {
 	if s.ListByRepository_ == nil {
 		return nil, &HTTPResponse{}, nil
 	}
 	return s.ListByRepository_(repo, opt)
+}
+
+func (s MockBuildsService) Create(repo RepositorySpec, conf BuildConfig) (*Build, Response, error) {
+	if s.Create_ == nil {
+		return nil, nil, nil
+	}
+	return s.Create_(repo, conf)
 }
