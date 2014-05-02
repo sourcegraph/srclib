@@ -96,6 +96,7 @@ func (s *buildsService) Get(build BuildSpec, opt *BuildGetOptions) (*Build, Resp
 }
 
 type BuildListOptions struct {
+	Queued    bool `url:",omitempty"`
 	Ended     bool `url:",omitempty"`
 	Succeeded bool `url:",omitempty"`
 
@@ -148,7 +149,7 @@ func (s *buildsService) ListByRepository(repo RepositorySpec, opt *BuildListByRe
 }
 
 func (s *buildsService) Create(repo RepositorySpec, conf BuildConfig) (*Build, Response, error) {
-	url, err := s.client.url(api_router.RepositoryBuildsCreate, map[string]string{"RepoURI": repo.URI}, nil)
+	url, err := s.client.url(api_router.RepositoryBuildsCreate, repo.RouteVars(), nil)
 	if err != nil {
 		return nil, nil, err
 	}
