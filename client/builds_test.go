@@ -37,7 +37,37 @@ func TestBuildsService_Get(t *testing.T) {
 	}
 }
 
-func TestBuildsService_ListByRepository(t *testing.T) {
+func TestBuildsService_List(t *testing.T) {
+	setup()
+	defer teardown()
+
+	want := []*Build{{BID: 1}}
+
+	var called bool
+	mux.HandleFunc(urlPath(t, api_router.Builds, nil), func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		testMethod(t, r, "GET")
+
+		writeJSON(w, want)
+	})
+
+	builds, _, err := client.Builds.List(nil)
+	if err != nil {
+		t.Errorf("Builds.List returned error: %v", err)
+	}
+
+	if !called {
+		t.Fatal("!called")
+	}
+
+	normalizeBuildTime(builds...)
+	normalizeBuildTime(want...)
+	if !reflect.DeepEqual(builds, want) {
+		t.Errorf("Builds.List returned %+v, want %+v", builds, want)
+	}
+}
+
+func TestRepositoryBuildsService_ListByRepository(t *testing.T) {
 	setup()
 	defer teardown()
 
