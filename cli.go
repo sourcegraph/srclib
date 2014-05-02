@@ -26,7 +26,7 @@ Usage:
 The commands are:
 `)
 		for _, c := range Subcommands {
-			fmt.Fprintf(os.Stderr, "    %-10s %s\n", c.Name, c.Description)
+			fmt.Fprintf(os.Stderr, "    %-14s %s\n", c.Name, c.Description)
 		}
 		fmt.Fprintln(os.Stderr, `
 Use "`+Name+` command -h" for more information about a command.
