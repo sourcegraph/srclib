@@ -15,14 +15,14 @@ func TestBuildsService_Get(t *testing.T) {
 	want := &Build{BID: 1}
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.RepositoryBuild, map[string]string{"RepoURI": "r.com/x", "BID": "1"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.Build, map[string]string{"BID": "1"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
 		writeJSON(w, want)
 	})
 
-	build, _, err := client.Builds.Get(BuildSpec{Repo: RepositorySpec{URI: "r.com/x"}, BID: 1}, nil)
+	build, _, err := client.Builds.Get(BuildSpec{BID: 1}, nil)
 	if err != nil {
 		t.Errorf("Builds.Get returned error: %v", err)
 	}
