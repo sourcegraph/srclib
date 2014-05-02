@@ -8,7 +8,7 @@ import (
 	"sourcegraph.com/sourcegraph/api_router"
 )
 
-func TestRepositoryBuildsService_Get(t *testing.T) {
+func TestBuildsService_Get(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -24,7 +24,7 @@ func TestRepositoryBuildsService_Get(t *testing.T) {
 
 	build, _, err := client.Builds.Get(BuildSpec{Repo: RepositorySpec{URI: "r.com/x"}, BID: 1}, nil)
 	if err != nil {
-		t.Errorf("RepositoryBuilds.Get returned error: %v", err)
+		t.Errorf("Builds.Get returned error: %v", err)
 	}
 
 	if !called {
@@ -33,11 +33,11 @@ func TestRepositoryBuildsService_Get(t *testing.T) {
 
 	normalizeBuildTime(build, want)
 	if !reflect.DeepEqual(build, want) {
-		t.Errorf("RepositoryBuilds.Get returned %+v, want %+v", build, want)
+		t.Errorf("Builds.Get returned %+v, want %+v", build, want)
 	}
 }
 
-func TestRepositoryBuildsService_ListByRepository(t *testing.T) {
+func TestBuildsService_ListByRepository(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -53,7 +53,7 @@ func TestRepositoryBuildsService_ListByRepository(t *testing.T) {
 
 	builds, _, err := client.Builds.ListByRepository(RepositorySpec{URI: "r.com/x"}, nil)
 	if err != nil {
-		t.Errorf("RepositoryBuilds.ListByRepository returned error: %v", err)
+		t.Errorf("Builds.ListByRepository returned error: %v", err)
 	}
 
 	if !called {
@@ -63,7 +63,7 @@ func TestRepositoryBuildsService_ListByRepository(t *testing.T) {
 	normalizeBuildTime(builds...)
 	normalizeBuildTime(want...)
 	if !reflect.DeepEqual(builds, want) {
-		t.Errorf("RepositoryBuilds.ListByRepository returned %+v, want %+v", builds, want)
+		t.Errorf("Builds.ListByRepository returned %+v, want %+v", builds, want)
 	}
 }
 
