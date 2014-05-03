@@ -142,7 +142,7 @@ RUN echo "\nrvm use {{.RubyVersion}} &> /dev/null" >> /.bash_profile
 RUN /bin/bash -l -c "gem install bundler"
 
 # Install Sourcegraph's fork of YARD
-RUN git clone https://github.com/sourcegraph/yard /yard --single-branch --depth 1 --branch 0.0.0
+RUN git clone https://github.com/sourcegraph/yard /yard --single-branch --depth 1 --branch 0.0.1
 WORKDIR /yard
 RUN /bin/bash -l -c "bundle install"
 WORKDIR /
