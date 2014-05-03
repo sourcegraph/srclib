@@ -32,6 +32,7 @@ func (_ dockerRunner) Run(c *Command) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer os.RemoveAll(tmpDir)
 
 	image := "sg-temp:" + filepath.Base(tmpDir)
 	log.Printf("Running image %s", image)
