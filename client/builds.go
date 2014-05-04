@@ -54,6 +54,10 @@ type Build struct {
 	Failure   bool
 
 	BuildConfig
+
+	// RepoURI is populated (as a convenience) in results by Get and List but
+	// should not be set when creating builds (it will be ignored).
+	RepoURI repo.URI `db:"repo_uri" json:",omitempty"`
 }
 
 // BuildConfig configures a repository build.

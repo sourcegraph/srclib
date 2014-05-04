@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"sourcegraph.com/sourcegraph/srcgraph/client"
 )
@@ -43,6 +44,40 @@ The options are:
 		log.Printf("%-30s Build #%d", uri, build.BID)
 		if *Verbose {
 			PrintJSON(build, "")
+			log.Println()
+		}
+	}
+}
+
+func buildQueue(args []string) {
+	fs := flag.NewFlagSet("build-queue", flag.ExitOnError)
+	perPage := fs.Int("-n", 25, "max builds to show")
+	fs.Usage = func() {
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` build-queue [options]
+
+Displays the build queue of repositories waiting to be built.
+
+The options are:
+`)
+		fs.PrintDefaults()
+		os.Exit(1)
+	}
+	fs.Parse(args)
+
+	opt := &client.BuildListOptions{
+		Queued:      true,
+		ListOptions: client.ListOptions{PerPage: *perPage},
+	}
+	builds, _, err := apiclient.Builds.List(opt)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, b := range builds {
+		// TODO(sqs): show repository URI, not just ID
+		log.Printf("%-35s@ %s #%-5d %s ago", b.RepoURI, b.CommitID, b.BID, time.Since(b.CreatedAt))
+		if *Verbose {
+			PrintJSON(b, "")
 			log.Println()
 		}
 	}
