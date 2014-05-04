@@ -82,12 +82,12 @@ func (_ dockerRunner) Run(c *Command) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	buildCmd := exec.Command("docker", "build", "--rm=false", "-t", image, ".")
-	buildCmd.Dir = tmpDir
-	buildCmd.Stdout, buildCmd.Stderr = c.Stderr, c.Stderr
 
 	for i := 0; i < BuildRetries; i++ {
 		remainingAttempts := RunRetries - i - 1
+		buildCmd := exec.Command("docker", "build", "--rm=false", "-t", image, ".")
+		buildCmd.Dir = tmpDir
+		buildCmd.Stdout, buildCmd.Stderr = c.Stderr, c.Stderr
 		err = buildCmd.Run()
 		if err != nil {
 			if remainingAttempts == 0 {
