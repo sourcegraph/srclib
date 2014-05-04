@@ -2,6 +2,7 @@ package gog
 
 import (
 	"bytes"
+	"fmt"
 	"go/ast"
 	"go/doc"
 	"go/parser"
@@ -134,10 +135,27 @@ func (g *Grapher) emitDoc(obj types.Object, dc *ast.CommentGroup, docstring stri
 		return nil
 	}
 
+	if g.seenDocObjs == nil {
+		g.seenDocObjs = make(map[types.Object]struct{})
+	}
+	if _, seen := g.seenDocObjs[obj]; seen {
+		return fmt.Errorf("emitDoc: obj %v already seen", obj)
+	}
+	g.seenDocObjs[obj] = struct{}{}
+
 	key, _, err := g.symbolInfo(obj)
 	if err != nil {
 		return err
 	}
+
+	if g.seenDocKeys == nil {
+		g.seenDocKeys = make(map[string]struct{})
+	}
+	if _, seen := g.seenDocKeys[key.String()]; seen {
+		return fmt.Errorf("emitDoc: key %v already seen", key)
+	}
+	g.seenDocKeys[key.String()] = struct{}{}
+	log.Println(key.String())
 
 	var htmlBuf bytes.Buffer
 	doc.ToHTML(&htmlBuf, docstring, nil)

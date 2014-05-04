@@ -96,8 +96,8 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository, 
 		}
 		toUnit := &Package{Dir: dir, ImportPath: importPath}
 		return &dep2.ResolvedTarget{
-			// TODO(sqs): this is a URI not a clone URL
-			ToRepoCloneURL: string(c.URI),
+			// empty ToRepoCloneURL to indicate it's from this repository
+			ToRepoCloneURL: "",
 			ToUnit:         toUnit.Name(),
 			ToUnitType:     unit.Type(toUnit),
 		}, nil
@@ -108,7 +108,7 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository, 
 		return nil, nil
 	}
 
-	if gosrc.IsGoRepoPath(importPath) {
+	if gosrc.IsGoRepoPath(importPath) || importPath == "debug/goobj" || importPath == "debug/plan9obj" {
 		toUnit := &Package{ImportPath: importPath, Dir: "src/pkg/" + importPath}
 		return &dep2.ResolvedTarget{
 			ToRepoCloneURL:  v.RepositoryCloneURL,
@@ -123,7 +123,7 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository, 
 
 	dir, err := gosrc.Get(cachingHTTPClient, string(importPath), "")
 	if err != nil {
-		return nil, fmt.Errorf("unable to fetch information about Go package %q", importPath)
+		return nil, fmt.Errorf("unable to fetch information about Go package %q: %s", importPath, err)
 	}
 
 	// gosrc returns code.google.com URLs ending in a slash. Remove it.
