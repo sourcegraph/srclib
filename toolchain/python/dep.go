@@ -96,8 +96,8 @@ RUN apt-get install -qy curl
 RUN apt-get install -qy git
 RUN apt-get install -qy {{.Python}}
 RUN ln -s $(which {{.Python}}) /usr/bin/python
-RUN curl https://raw.githubusercontent.com/pypa/pip/cdee19c77cf6514d42e2d1b7134f10b8ed36b63a/contrib/get-pip.py > get-pip.py
-RUN python get-pip.py
+RUN curl https://raw.githubusercontent.com/pypa/pip/cdee19c77cf6514d42e2d1b7134f10b8ed36b63a/contrib/get-pip.py > /tmp/get-pip.py
+RUN python /tmp/get-pip.py
 
 RUN pip install git+git://github.com/sourcegraph/pydep@0.0
 `
