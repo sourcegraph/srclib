@@ -16,6 +16,12 @@ func (u URI) IsGitHubRepository() bool {
 	return strings.HasPrefix(strings.ToLower(string(u)), "github.com/")
 }
 
+// IsGoogleCodeRepository returns true iff this repository is hosted on Google
+// Code (code.google.com).
+func (u URI) IsGoogleCodeRepository() bool {
+	return strings.HasPrefix(strings.ToLower(string(u)), "code.google.com/p/")
+}
+
 // GitHubURL returns the https://github.com/USER/REPO URL for this repository.
 func (u URI) GitHubURL() string {
 	return "https://" + string(u)
