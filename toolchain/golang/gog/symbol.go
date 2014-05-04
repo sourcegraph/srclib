@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go/ast"
 	"path/filepath"
+	"strings"
 
 	"code.google.com/p/go.tools/go/loader"
 	"code.google.com/p/go.tools/go/types"
@@ -12,6 +13,10 @@ import (
 type SymbolKey struct {
 	PackageImportPath string
 	Path              []string
+}
+
+func (s *SymbolKey) String() string {
+	return s.PackageImportPath + "#" + strings.Join(s.Path, ".")
 }
 
 type Symbol struct {

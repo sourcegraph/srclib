@@ -94,7 +94,6 @@ func (v *goVersion) convertGoSymbol(gs *gog.Symbol, c *config.Repository, x *tas
 
 	sym := &graph.Symbol{
 		SymbolKey: graph.SymbolKey{
-			Repo:     repo.MakeURI(resolvedTarget.ToRepoCloneURL),
 			Unit:     resolvedTarget.ToUnit,
 			UnitType: resolvedTarget.ToUnitType,
 			Path:     graph.SymbolPath(strings.Join(gs.Path, "/")),
@@ -129,7 +128,7 @@ func (v *goVersion) convertGoRef(gr *gog.Ref, c *config.Repository, x *task2.Con
 		return nil, nil
 	}
 	return &graph.Ref{
-		SymbolRepo:     repo.MakeURI(resolvedTarget.ToRepoCloneURL),
+		SymbolRepo:     uriOrEmpty(resolvedTarget.ToRepoCloneURL),
 		SymbolPath:     graph.SymbolPath(strings.Join(gr.Symbol.Path, "/")),
 		SymbolUnit:     resolvedTarget.ToUnit,
 		SymbolUnitType: resolvedTarget.ToUnitType,
@@ -147,7 +146,6 @@ func (v *goVersion) convertGoDoc(gd *gog.Doc, c *config.Repository, x *task2.Con
 	}
 	return &graph.Doc{
 		SymbolKey: graph.SymbolKey{
-			Repo:     repo.MakeURI(resolvedTarget.ToRepoCloneURL),
 			Path:     graph.SymbolPath(strings.Join(gd.Path, "/")),
 			Unit:     resolvedTarget.ToUnit,
 			UnitType: resolvedTarget.ToUnitType,
@@ -158,4 +156,11 @@ func (v *goVersion) convertGoDoc(gd *gog.Doc, c *config.Repository, x *task2.Con
 		Start:  gd.Span[0],
 		End:    gd.Span[1],
 	}, nil
+}
+
+func uriOrEmpty(cloneURL string) repo.URI {
+	if cloneURL == "" {
+		return ""
+	}
+	return repo.MakeURI(cloneURL)
 }

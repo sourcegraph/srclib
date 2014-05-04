@@ -46,6 +46,9 @@ type Grapher struct {
 	// did not resolve (by design). Idents in this set are omitted from the list
 	// of unresolved idents in the tests.
 	skipResolve map[*ast.Ident]struct{}
+
+	seenDocObjs map[types.Object]struct{}
+	seenDocKeys map[string]struct{}
 }
 
 func New(prog *loader.Program) *Grapher {
