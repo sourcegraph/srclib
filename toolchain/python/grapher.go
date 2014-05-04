@@ -34,7 +34,7 @@ RUN apt-get install -qy curl
 RUN apt-get install -qy git
 RUN apt-get install -qy {{.Python}}
 RUN ln -s $(which {{.Python}}) /usr/bin/python
-RUN curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py > get-pip.py
+RUN curl https://raw.githubusercontent.com/pypa/pip/cdee19c77cf6514d42e2d1b7134f10b8ed36b63a/contrib/get-pip.py > get-pip.py
 RUN python get-pip.py
 RUN pip install virtualenv
 
@@ -384,40 +384,40 @@ func (p *pythonEnv) pysonarSymPathToSymKey(pth string, c *config.Repository, req
 
 type rawGraphData struct {
 	Graph struct {
-		Syms []*pySym 
-		Refs []*pyRef 
-		Docs []*pyDoc 
-	} 
-	Reqs []requirement 
+		Syms []*pySym
+		Refs []*pyRef
+		Docs []*pyDoc
+	}
+	Reqs []requirement
 }
 
 type pySym struct {
-	Path       string 
-	Name       string 
-	File       string 
-	IdentStart int    
-	IdentEnd   int    
-	DefStart   int    
-	DefEnd     int    
-	Exported   bool   
-	Kind       string 
+	Path       string
+	Name       string
+	File       string
+	IdentStart int
+	IdentEnd   int
+	DefStart   int
+	DefEnd     int
+	Exported   bool
+	Kind       string
 	FuncData   *struct {
-		Signature string 
+		Signature string
 	} `json:",omitempty"`
 }
 
 type pyRef struct {
-	Sym     string 
-	File    string 
-	Start   int    
-	End     int    
-	Builtin bool   
+	Sym     string
+	File    string
+	Start   int
+	End     int
+	Builtin bool
 }
 
 type pyDoc struct {
-	Sym   string 
-	File  string 
-	Body  string 
-	Start int    
-	End   int    
+	Sym   string
+	File  string
+	Body  string
+	Start int
+	End   int
 }
