@@ -48,7 +48,10 @@ func URIEqual(a, b URI) bool {
 
 // Scan implements database/sql.Scanner.
 func (u *URI) Scan(v interface{}) error {
-	if data, ok := v.([]byte); ok {
+	if v == nil {
+		*u = ""
+		return nil
+	} else if data, ok := v.([]byte); ok {
 		*u = URI(data)
 		return nil
 	}

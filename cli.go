@@ -93,6 +93,7 @@ var Subcommands = []Subcommand{
 	{"authorship", "determine authorship of a source unit's symbols and refs", authorship_},
 	{"repo-create", "create a repository (API)", repoCreate},
 	{"build", "create a new build for a repository (API)", build_},
+	{"build-queue", "display the build queue (API)", buildQueue},
 	{"info", "show info about enabled capabilities", info},
 	{"help", "show help about a command", nil},
 }
