@@ -150,7 +150,7 @@ func getRepoRootDir(v vcs.VCS, dir string) (string, error) {
 	case vcs.Git:
 		cmd = exec.Command("git", "rev-parse", "--show-toplevel")
 	case vcs.Hg:
-		exec.Command("hg", "root")
+		cmd = exec.Command("hg", "root")
 	}
 	if cmd == nil {
 		return "", fmt.Errorf("unrecognized VCS %v", v)
