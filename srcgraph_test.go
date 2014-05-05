@@ -81,7 +81,7 @@ type testCase struct {
 func compareResults(t *testing.T, tcase testCase, expDir, actDir string) bool {
 	diffOut, err := exec.Command("diff", "-ur", expDir, actDir).CombinedOutput()
 	if err != nil {
-		t.Fatalf("Could not execute diff due to error %s, diff output: %s", err, string(diffOut))
+		t.Fatalf("Diff failed (%s), diff output: %s", err, string(diffOut))
 		return false
 	}
 	if len(diffOut) > 0 {
@@ -94,7 +94,7 @@ func compareResults(t *testing.T, tcase testCase, expDir, actDir string) bool {
 	} else if err != nil {
 		t.Errorf(brush.Red("ERROR").String())
 		t.Errorf("test case %+v", tcase)
-		t.Errorf("failed to compute diff: %s", err)
+		t.Errorf("diff failed: %s", err)
 		return false
 	} else {
 		t.Logf(brush.Green("PASS").String())
