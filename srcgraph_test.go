@@ -115,7 +115,7 @@ func getTestCases(t *testing.T, match string) []testCase {
 	testRootDir, _ := filepath.Abs("testdata")
 	// Pull test repos if necessary
 	for testDir, testInfo := range testInfo {
-		if !isDir(filepath.Join(testRootDir, testDir)) {
+		if !isDir(filepath.Join(testRootDir, testDir, ".git")) {
 			t.Logf("Cloning test repository %v into directory %s", testInfo, testDir)
 			cloneCmd := exec.Command("git", "clone", testInfo.CloneURL, testDir)
 			cloneCmd.Dir = testRootDir
