@@ -3,6 +3,8 @@ package authorship
 import (
 	"fmt"
 	"log"
+	"sort"
+	"time"
 
 	"github.com/sourcegraph/go-nnz/nnz"
 
@@ -36,14 +38,14 @@ func ComputeSourceUnit(g *grapher2.Output, b *vcsutil.BlameOutput, c *config.Rep
 					// user contributed to 2+ hunks for this
 					if a.LastCommitDate.Before(commit.AuthorDate) {
 						// take most recent author date
-						a.LastCommitDate = commit.AuthorDate
+						a.LastCommitDate = commit.AuthorDate.In(time.UTC)
 						a.LastCommitID = commit.ID
 					}
 					charsByEmail[commit.Author.Email] += nchars
 				} else {
 					authorsByEmail[commit.Author.Email] = &AuthorshipInfo{
 						AuthorEmail:    commit.Author.Email,
-						LastCommitDate: commit.AuthorDate,
+						LastCommitDate: commit.AuthorDate.In(time.UTC),
 						LastCommitID:   commit.ID,
 					}
 					charsByEmail[commit.Author.Email] = nchars
@@ -111,7 +113,7 @@ func ComputeSourceUnit(g *grapher2.Output, b *vcsutil.BlameOutput, c *config.Rep
 			}
 
 			if ra.LastCommitDate.Before(sa.LastCommitDate) {
-				ra.LastCommitDate = sa.LastCommitDate
+				ra.LastCommitDate = sa.LastCommitDate.In(time.UTC)
 				ra.LastCommitID = sa.LastCommitID
 			}
 		}
@@ -156,7 +158,7 @@ func ComputeSourceUnit(g *grapher2.Output, b *vcsutil.BlameOutput, c *config.Rep
 		}
 
 		if rc.LastCommitDate.Before(ra.LastCommitDate) {
-			rc.LastCommitDate = ra.LastCommitDate
+			rc.LastCommitDate = ra.LastCommitDate.In(time.UTC)
 			rc.LastCommitID = ra.LastCommitID
 		}
 
@@ -169,7 +171,7 @@ func ComputeSourceUnit(g *grapher2.Output, b *vcsutil.BlameOutput, c *config.Rep
 		}
 	}
 
-	return &o, nil
+	return sortedOutput(&o), nil
 }
 
 func min(a, b int) int {
@@ -185,3 +187,28 @@ func max(a, b int) int {
 	}
 	return b
 }
+
+func sortedOutput(o *SourceUnitOutput) *SourceUnitOutput {
+	sort.Sort(refAuthorships(o.Refs))
+	sort.Sort(authorStats(o.Authors))
+	sort.Sort(clientsOfOtherUnits(o.ClientsOfOtherUnits))
+	return o
+}
+
+type refAuthorships []*RefAuthorship
+
+func (p refAuthorships) Len() int           { return len(p) }
+func (p refAuthorships) Less(i, j int) bool { return p[i].sortKey() < p[j].sortKey() }
+func (p refAuthorships) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+
+type authorStats []*AuthorStats
+
+func (p authorStats) Len() int           { return len(p) }
+func (p authorStats) Less(i, j int) bool { return p[i].sortKey() < p[j].sortKey() }
+func (p authorStats) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+
+type clientsOfOtherUnits []*ClientStats
+
+func (p clientsOfOtherUnits) Len() int           { return len(p) }
+func (p clientsOfOtherUnits) Less(i, j int) bool { return p[i].sortKey() < p[j].sortKey() }
+func (p clientsOfOtherUnits) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
