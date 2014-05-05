@@ -76,12 +76,21 @@ func ResolveAll(rawDeps []*RawDependency, c *config.Repository, x *task2.Context
 		if rt == nil {
 			continue
 		}
+
+		var toRepo repo.URI
+		if rt.ToRepoCloneURL == "" {
+			// empty clone URL means the current repository
+			toRepo = c.URI
+		} else {
+			toRepo = repo.MakeURI(rt.ToRepoCloneURL)
+		}
+
 		// TODO!(sqs): return repo clone URLs as well, so we can add new repositories
 		rd := &ResolvedDep{
 			FromRepo:        c.URI,
 			FromUnit:        rawDep.FromUnit,
 			FromUnitType:    rawDep.FromUnitType,
-			ToRepo:          repo.MakeURI(rt.ToRepoCloneURL),
+			ToRepo:          toRepo,
 			ToUnit:          rt.ToUnit,
 			ToUnitType:      rt.ToUnitType,
 			ToVersionString: rt.ToVersionString,
