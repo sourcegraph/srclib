@@ -97,6 +97,15 @@ type Symbol struct {
 	TypeExpr string `db:"type_expr" json:",omitempty"`
 }
 
+func (s *Symbol) Language() string {
+	switch s.UnitType {
+	case "GoPackage":
+		return "Go"
+		// TODO(sqs): add Python, JS, etc.
+	}
+	return "unknown language"
+}
+
 // TODO!(sqs): factor this into the individual source unit packages
 func (s *Symbol) Signature() string {
 	var removeOwnImportPath = func(str string) string {
