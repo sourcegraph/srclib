@@ -94,6 +94,10 @@ type Symbol struct {
 
 	Exported bool `elastic:"type:boolean,index:not_analyzed"`
 
+	// Test is whether this symbol is defined in test code (as opposed to main
+	// code). For example, definitions in Go *_test.go files have Test = true.
+	Test bool `elastic:"type:boolean,index:not_analyzed"`
+
 	TypeExpr string `db:"type_expr" json:",omitempty"`
 }
 
