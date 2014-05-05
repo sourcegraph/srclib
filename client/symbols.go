@@ -181,10 +181,13 @@ type SymbolListOptions struct {
 	Kinds        []string `url:",omitempty,comma"`
 	SpecificKind string   `url:",omitempty"`
 
-	Scope     string `url:",omitempty"`
-	Recursive bool   `url:",omitempty"`
-	Exported  bool   `url:",omitempty"`
-	Doc       bool   `url:",omitempty"`
+	CommitID   string `url:",omitempty"`
+	UnitType   string `url:",omitempty"`
+	Unit       string `url:",omitempty"`
+	ParentPath string `url:",omitempty"`
+
+	Exported bool `url:",omitempty"`
+	Doc      bool `url:",omitempty"`
 
 	ListOptions
 }
