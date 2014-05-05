@@ -27,8 +27,7 @@ func Test_SrcgraphCmd(t *testing.T) {
 		buildstore.BuildDataDirName = expDir
 	}
 
-	testRootDir, _ := filepath.Abs("testdata")
-	testCases := getTestCases(testRootDir, *match)
+	testCases := getTestCases(t, *match)
 	allPass := true
 	for _, tcase := range testCases {
 		func() {
@@ -104,9 +103,38 @@ func compareResults(t *testing.T, tcase testCase, expDir, actDir string) bool {
 	}
 }
 
-func getTestCases(testdir string, match string) []testCase {
+var testInfo = map[string]struct {
+	CloneURL string
+	CommitID string
+}{
+	"go-sample-0":     {"https://github.com/sgtest/go-sample-0", "26d7ed3c8bb76bbc126bc878918bfe8da6f8d142"},
+	"python-sample-0": {"https://github.com/sgtest/python-sample-0", "9390417f7326adc9d111fb41aefbf171b55fb725"},
+}
+
+func getTestCases(t *testing.T, match string) []testCase {
+	testRootDir, _ := filepath.Abs("testdata")
+	// Pull test repos if necessary
+	for testDir, testInfo := range testInfo {
+		if !isDir(filepath.Join(testRootDir, testDir)) {
+			t.Logf("Cloning test repository %v into directory %s", testInfo, testDir)
+			cloneCmd := exec.Command("git", "clone", testInfo.CloneURL, testDir)
+			cloneCmd.Dir = testRootDir
+			_, err := cloneCmd.Output()
+			if err != nil {
+				panic(err)
+			}
+		}
+		ckoutCmd := exec.Command("git", "checkout", testInfo.CommitID)
+		ckoutCmd.Dir = filepath.Join(testRootDir, testDir)
+		_, err := ckoutCmd.Output()
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	// Return test cases
 	var testCases []testCase
-	walker := fs.Walk(testdir)
+	walker := fs.Walk(testRootDir)
 	for walker.Step() {
 		path := walker.Path()
 		if walker.Stat().IsDir() && util.IsFile(filepath.Join(path, ".git/config")) {
