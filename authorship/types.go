@@ -1,6 +1,7 @@
 package authorship
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/sourcegraph/go-nnz/nnz"
@@ -40,6 +41,15 @@ type RefAuthorship struct {
 	AuthorshipInfo
 }
 
+func (a *RefAuthorship) sortKey() string {
+	// PERF TODO(sqs): slow
+	b, err := json.Marshal(a)
+	if err != nil {
+		panic(err.Error())
+	}
+	return string(b)
+}
+
 type SymbolClient struct {
 	UID   nnz.Int
 	Email nnz.String
@@ -69,6 +79,15 @@ type AuthorStats struct {
 	// TODO(sqs): add "most recently contributed exported symbol"
 }
 
+func (a *AuthorStats) sortKey() string {
+	// PERF TODO(sqs): slow
+	b, err := json.Marshal(a)
+	if err != nil {
+		panic(err.Error())
+	}
+	return string(b)
+}
+
 type RepoContribution struct {
 	RepoURI repo.URI `db:"repo"`
 	AuthorStats
@@ -91,6 +110,15 @@ type ClientStats struct {
 	// RefCount is the number of references this client made in this repository
 	// to SymbolRepo.
 	RefCount int `db:"ref_count"`
+}
+
+func (a *ClientStats) sortKey() string {
+	// PERF TODO(sqs): slow
+	b, err := json.Marshal(a)
+	if err != nil {
+		panic(err.Error())
+	}
+	return string(b)
 }
 
 type RepoAuthor struct {

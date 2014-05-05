@@ -3,6 +3,7 @@ package grapher2
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
@@ -66,5 +67,16 @@ func Graph(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Cont
 		return nil, fmt.Errorf("no grapher registered for source unit %T", unit)
 	}
 
-	return g.Graph(dir, unit, c, x)
+	o, err := g.Graph(dir, unit, c, x)
+	if err != nil {
+		return nil, err
+	}
+	return sortedOutput(o), nil
+}
+
+func sortedOutput(o *Output) *Output {
+	sort.Sort(graph.Symbols(o.Symbols))
+	sort.Sort(graph.Refs(o.Refs))
+	sort.Sort(graph.Docs(o.Docs))
+	return o
 }
