@@ -110,6 +110,7 @@ func (v *goVersion) convertGoSymbol(gs *gog.Symbol, c *config.Repository, x *tas
 		DefEnd:   gs.DeclSpan[1],
 
 		Exported: gs.Exported,
+		Test:     strings.HasSuffix(gs.File, "_test.go"),
 	}
 
 	if sym.Kind == "func" {

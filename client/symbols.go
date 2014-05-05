@@ -186,8 +186,9 @@ type SymbolListOptions struct {
 	Unit       string `url:",omitempty"`
 	ParentPath string `url:",omitempty"`
 
-	Exported bool `url:",omitempty"`
-	Doc      bool `url:",omitempty"`
+	Exported    bool `url:",omitempty"`
+	IncludeTest bool `url:",omitempty"`
+	Doc         bool `url:",omitempty"`
 
 	ListOptions
 }
