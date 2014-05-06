@@ -12,7 +12,7 @@ import (
 
 func init() {
 	scan.Register("python", &fauxScanner{})
-	unit.Register("python", &fauxPackage{})
+	unit.Register("python", &FauxPackage{})
 }
 
 type fauxScanner struct{}
@@ -28,7 +28,7 @@ func (p *fauxScanner) Scan(dir string, c *config.Repository, x *task2.Context) (
 	}
 
 	if len(files) > 0 {
-		return []unit.SourceUnit{&fauxPackage{Files: files}}, nil
+		return []unit.SourceUnit{&FauxPackage{Files: files}}, nil
 	} else {
 		return nil, nil
 	}

@@ -14,7 +14,7 @@ import (
 )
 
 func init() {
-	dep2.RegisterLister(&fauxPackage{}, dep2.DockerLister{defaultPythonEnv})
+	dep2.RegisterLister(&FauxPackage{}, dep2.DockerLister{defaultPythonEnv})
 	dep2.RegisterResolver(pythonRequirementTargetType, defaultPythonEnv)
 }
 
@@ -68,7 +68,7 @@ func (p *pythonEnv) Resolve(dep *dep2.RawDependency, c *config.Repository, x *ta
 		reqJson, _ := json.Marshal(dep.Target)
 		json.Unmarshal(reqJson, &req)
 
-		toUnit := &fauxPackage{}
+		toUnit := &FauxPackage{}
 		return &dep2.ResolvedTarget{
 			ToRepoCloneURL: req.RepoURL,
 			ToUnit:         toUnit.Name(),

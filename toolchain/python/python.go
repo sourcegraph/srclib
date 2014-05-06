@@ -14,18 +14,18 @@ func init() {
 	toolchain.Register("python", defaultPythonEnv)
 }
 
-type fauxPackage struct {
+type FauxPackage struct {
 	Files []string
 }
 
-func (p *fauxPackage) Name() string {
+func (p *FauxPackage) Name() string {
 	return "python-faux-package"
 }
 
-func (p *fauxPackage) RootDir() string {
+func (p *FauxPackage) RootDir() string {
 	return "."
 }
 
-func (p *fauxPackage) Paths() []string {
+func (p *FauxPackage) Paths() []string {
 	return p.Files
 }

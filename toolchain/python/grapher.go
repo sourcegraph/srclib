@@ -20,7 +20,7 @@ import (
 )
 
 func init() {
-	grapher2.Register(&fauxPackage{}, grapher2.DockerGrapher{defaultPythonEnv})
+	grapher2.Register(&FauxPackage{}, grapher2.DockerGrapher{defaultPythonEnv})
 }
 
 const srcRoot = "/src"
@@ -248,8 +248,8 @@ func (p *pythonEnv) convertRef(pyRef *pyRef, c *config.Repository, reqs []requir
 		Def:            false,
 
 		Repo:     refRepo,
-		UnitType: unit.Type(&fauxPackage{}),
-		Unit:     (&fauxPackage{}).Name(),
+		UnitType: unit.Type(&FauxPackage{}),
+		Unit:     (&FauxPackage{}).Name(),
 
 		File:  refFile,
 		Start: pyRef.Start,
@@ -323,7 +323,7 @@ func (p *pythonEnv) pysonarFilePathToRepoAndFile(pth string, c *config.Repositor
 }
 
 func (p *pythonEnv) pysonarSymPathToSymKey(pth string, c *config.Repository, reqs []requirement) (*graph.SymbolKey, error) {
-	fauxUnit := &fauxPackage{}
+	fauxUnit := &FauxPackage{}
 	if relpath, err := filepath.Rel(srcRoot, pth); err == nil {
 		return &graph.SymbolKey{
 			Repo:     c.URI,
