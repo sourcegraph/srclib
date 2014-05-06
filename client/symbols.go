@@ -226,8 +226,10 @@ type SymbolTreeOptions struct {
 	RepositoryURI string `url:",omitempty"`
 	// TODO(sqs): kinds' "comma" tag is not respected by gorilla/schema
 	Kinds       []string `url:",omitempty,comma"`
+	CommitID    string   `url:",omitempty"`
 	UnitType    string   `url:",omitempty"`
 	Unit        string   `url:",omitempty"`
+	ParentPath  string   `url:",omitempty"`
 	Exported    bool     `url:",omitempty"`
 	IncludeTest bool     `url:",omitempty"`
 
