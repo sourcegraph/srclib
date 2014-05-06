@@ -230,6 +230,11 @@ type SymbolTreeOptions struct {
 	Unit        string   `url:",omitempty"`
 	Exported    bool     `url:",omitempty"`
 	IncludeTest bool     `url:",omitempty"`
+
+	// TrimRootStubs is whether to eliminate root nodes that have no siblings
+	// and only contain children. If true, this operation is applied repeatedly
+	// until the root nodes are not subject to trimming.
+	TrimRootStubs bool `url:",omitempty"`
 }
 
 func (s *symbolsService) Tree(opt *SymbolTreeOptions) ([]*SymbolNode, Response, error) {
