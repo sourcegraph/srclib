@@ -21,6 +21,9 @@ type SymbolsService interface {
 	// List symbols.
 	List(opt *SymbolListOptions) ([]*Symbol, Response, error)
 
+	// Tree returns a tree of symbols.
+	Tree(opt *SymbolTreeOptions) ([]*SymbolNode, Response, error)
+
 	// ListExamples lists examples for symbol.
 	ListExamples(symbol SymbolSpec, opt *SymbolListExamplesOptions) ([]*Example, Response, error)
 
@@ -211,6 +214,42 @@ func (s *symbolsService) List(opt *SymbolListOptions) ([]*Symbol, Response, erro
 	}
 
 	return symbols, resp, nil
+}
+
+type SymbolNode struct {
+	Name     string
+	*Symbol  `json:"Symbol"`
+	Children []*SymbolNode
+}
+
+type SymbolTreeOptions struct {
+	RepositoryURI string `url:",omitempty"`
+	// TODO(sqs): kinds' "comma" tag is not respected by gorilla/schema
+	Kinds       []string `url:",omitempty,comma"`
+	UnitType    string   `url:",omitempty"`
+	Unit        string   `url:",omitempty"`
+	Exported    bool     `url:",omitempty"`
+	IncludeTest bool     `url:",omitempty"`
+}
+
+func (s *symbolsService) Tree(opt *SymbolTreeOptions) ([]*SymbolNode, Response, error) {
+	url, err := s.client.url(api_router.SymbolsTree, nil, opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewRequest("GET", url.String(), nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var symbolTree []*SymbolNode
+	resp, err := s.client.Do(req, &symbolTree)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return symbolTree, resp, nil
 }
 
 // Example is a usage example of a symbol.
@@ -423,6 +462,7 @@ func (s *symbolsService) CountByRepository(repo RepositorySpec) (*graph.SymbolCo
 type MockSymbolsService struct {
 	Get_                 func(symbol SymbolSpec, opt *SymbolGetOptions) (*Symbol, Response, error)
 	List_                func(opt *SymbolListOptions) ([]*Symbol, Response, error)
+	Tree_                func(opt *SymbolTreeOptions) ([]*SymbolNode, Response, error)
 	ListExamples_        func(symbol SymbolSpec, opt *SymbolListExamplesOptions) ([]*Example, Response, error)
 	ListAuthors_         func(symbol SymbolSpec, opt *SymbolListAuthorsOptions) ([]*AugmentedSymbolAuthor, Response, error)
 	ListClients_         func(symbol SymbolSpec, opt *SymbolListClientsOptions) ([]*AugmentedSymbolClient, Response, error)
@@ -446,6 +486,13 @@ func (s MockSymbolsService) List(opt *SymbolListOptions) ([]*Symbol, Response, e
 		return nil, &HTTPResponse{}, nil
 	}
 	return s.List_(opt)
+}
+
+func (s MockSymbolsService) Tree(opt *SymbolTreeOptions) ([]*SymbolNode, Response, error) {
+	if s.Tree_ == nil {
+		return nil, &HTTPResponse{}, nil
+	}
+	return s.Tree_(opt)
 }
 
 func (s MockSymbolsService) ListExamples(symbol SymbolSpec, opt *SymbolListExamplesOptions) ([]*Example, Response, error) {

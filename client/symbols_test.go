@@ -90,6 +90,39 @@ func TestSymbolsService_List(t *testing.T) {
 	}
 }
 
+func TestSymbolsService_Tree(t *testing.T) {
+	setup()
+	defer teardown()
+
+	want := []*SymbolNode{{Symbol: &Symbol{Symbol: graph.Symbol{SID: 1}}}}
+
+	var called bool
+	mux.HandleFunc(urlPath(t, api_router.SymbolsTree, nil), func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"RepositoryURI": "r1",
+		})
+
+		writeJSON(w, want)
+	})
+
+	symbols, _, err := client.Symbols.Tree(&SymbolTreeOptions{
+		RepositoryURI: "r1",
+	})
+	if err != nil {
+		t.Errorf("Symbols.Tree returned error: %v", err)
+	}
+
+	if !called {
+		t.Fatal("!called")
+	}
+
+	if !reflect.DeepEqual(symbols, want) {
+		t.Errorf("Symbols.Tree returned %+v, want %+v", symbols, want)
+	}
+}
+
 func TestSymbolsService_ListExamples(t *testing.T) {
 	setup()
 	defer teardown()
