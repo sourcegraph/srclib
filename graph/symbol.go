@@ -96,7 +96,7 @@ type Symbol struct {
 
 	// Test is whether this symbol is defined in test code (as opposed to main
 	// code). For example, definitions in Go *_test.go files have Test = true.
-	Test bool `elastic:"type:boolean,index:not_analyzed"`
+	Test bool `elastic:"type:boolean,index:not_analyzed" json:",omitempty"`
 
 	TypeExpr string `db:"type_expr" json:",omitempty"`
 }
