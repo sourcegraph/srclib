@@ -125,11 +125,23 @@ func getTestCases(t *testing.T, match string) []testCase {
 				panic(err)
 			}
 		}
-		ckoutCmd := exec.Command("git", "checkout", testInfo.CommitID)
-		ckoutCmd.Dir = filepath.Join(testRootDir, testDir)
-		_, err := ckoutCmd.Output()
-		if err != nil {
-			panic(err)
+
+		{
+			fetchCmd := exec.Command("git", "fetch", "origin")
+			fetchCmd.Dir = filepath.Join(testRootDir, testDir)
+			out, err := fetchCmd.CombinedOutput()
+			if err != nil {
+				panic(fmt.Sprintf("Error (%s) with output: %s", err, string(out)))
+			}
+		}
+
+		{
+			ckoutCmd := exec.Command("git", "checkout", testInfo.CommitID)
+			ckoutCmd.Dir = filepath.Join(testRootDir, testDir)
+			out, err := ckoutCmd.CombinedOutput()
+			if err != nil {
+				panic(fmt.Sprintf("Error (%s) with output: %s", err, string(out)))
+			}
 		}
 	}
 
