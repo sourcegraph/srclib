@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"sort"
+
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
@@ -128,5 +130,13 @@ func ResolveAll(rawDeps []*RawDependency, c *config.Repository, x *task2.Context
 		}
 		resolved = append(resolved, rd)
 	}
+	sort.Sort(resolvedDeps(resolved))
 	return resolved, nil
 }
+
+type resolvedDeps []*ResolvedDep
+
+func (d *ResolvedDep) sortKey() string    { b, _ := json.Marshal(d); return string(b) }
+func (l resolvedDeps) Len() int           { return len(l) }
+func (l resolvedDeps) Swap(i, j int)      { l[i], l[j] = l[j], l[i] }
+func (l resolvedDeps) Less(i, j int) bool { return l[i].sortKey() < l[j].sortKey() }

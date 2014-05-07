@@ -1,6 +1,7 @@
 package javascript
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"path/filepath"
@@ -11,6 +12,32 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
+
+func jsgCommand(plugins map[string]interface{}, defs []string, flags []string, origins []string) ([]string, error) {
+	args := []string{"nodejs", "/usr/local/bin/jsg"}
+
+	for name, config := range plugins {
+		args = append(args, "--plugin")
+		if config == nil {
+			args = append(args, name)
+		} else {
+			configJSON, err := json.Marshal(config)
+			if err != nil {
+				return nil, err
+			}
+			args = append(args, name+"="+string(configJSON))
+		}
+	}
+
+	for _, name := range defs {
+		args = append(args, "--def", name)
+	}
+
+	args = append(args, flags...)
+	args = append(args, origins...)
+
+	return args, nil
+}
 
 type jsgOutput struct {
 	Symbols []*Symbol

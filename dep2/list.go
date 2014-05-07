@@ -6,6 +6,8 @@ import (
 	"runtime"
 	"sync"
 
+	"sort"
+
 	"code.google.com/p/rog-go/parallel"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
@@ -133,5 +135,13 @@ func List(dir string, u unit.SourceUnit, c *config.Repository, x *task2.Context)
 		})
 	}
 	err := run.Wait()
+	sort.Sort(rawDependencies(deps.list))
 	return deps.list, err
 }
+
+type rawDependencies []*RawDependency
+
+func (d *RawDependency) sortKey() string     { b, _ := json.Marshal(d); return string(b) }
+func (l rawDependencies) Len() int           { return len(l) }
+func (l rawDependencies) Swap(i, j int)      { l[i], l[j] = l[j], l[i] }
+func (l rawDependencies) Less(i, j int) bool { return l[i].sortKey() < l[j].sortKey() }
