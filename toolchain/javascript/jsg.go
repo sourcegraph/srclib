@@ -52,6 +52,7 @@ type Ref struct {
 	File   string
 	Span   string
 	Target RefTarget
+	Def    bool
 }
 
 type RefTarget struct {
@@ -284,7 +285,7 @@ func convertRef(current unit.SourceUnit, jref *Ref) (*graph.Ref, error) {
 		SymbolUnitType: unit.Type(current),
 		SymbolUnit:     current.Name(),
 		SymbolPath:     path,
-		Def:            false, // TODO(sqs): determine if this is the Def
+		Def:            jref.Def,
 		File:           filepath.Join(jref.File),
 		Start:          start,
 		End:            end,
