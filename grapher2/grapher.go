@@ -36,6 +36,11 @@ func (g DockerGrapher) Graph(dir string, unit unit.SourceUnit, c *config.Reposit
 		return nil, err
 	}
 
+	if cmd == nil {
+		// No container command returned; don't do anything.
+		return &Output{}, nil
+	}
+
 	data, err := cmd.Run()
 	if err != nil {
 		return nil, err
