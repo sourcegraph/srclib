@@ -39,8 +39,6 @@ The options are:
 			continue
 		}
 
-		log.Printf("## %s", unit.MakeID(u))
-
 		output, err := grapher2.Graph(context.RepoRootDir, u, context.Repo, task2.DefaultContext)
 		if err != nil {
 			log.Fatal(err)
