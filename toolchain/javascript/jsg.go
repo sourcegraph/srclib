@@ -381,12 +381,15 @@ func convertSymbol(jsym *Symbol) (*graph.Symbol, []*graph.Ref, []*graph.Propagat
 	var propgs []*graph.Propagate
 	var docs []*graph.Doc
 
+	// unexported if it has (or is underneath) a name prefixed with "_"
+	exported := jsym.Exported && !strings.HasPrefix(jsym.Key.Path, "_") && !strings.Contains(jsym.Key.Path, "._")
+
 	// JavaScript symbol
 	sym := &graph.Symbol{
 		SymbolKey:    graph.SymbolKey{Path: jsym.Key.symbolPath()},
 		Kind:         kind(jsym),
 		SpecificKind: specificKind(jsym),
-		Exported:     jsym.Exported,
+		Exported:     exported,
 		TypeExpr:     jsym.Type,
 		Callable:     strings.HasPrefix(jsym.Type, "fn("),
 	}
