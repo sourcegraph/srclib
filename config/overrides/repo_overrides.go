@@ -73,6 +73,12 @@ func init() {
 						// In this repository, the node core modules are in the
 						// lib/ dir.
 						"node": map[string]string{"coreModulesDir": "lib/"},
+
+						"$(JSG_DIR)/node_modules/tern-node-api-doc/node-api-doc": map[string]string{
+							"apiDocDir":      "doc/api/",
+							"apiSrcDir":      "lib/",
+							"generateJSPath": "tools/doc/generate.js",
+						},
 					},
 				},
 			},

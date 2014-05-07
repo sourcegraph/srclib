@@ -36,6 +36,7 @@ var defaultJSG = &jsg{defaultNode}
 
 const (
 	containerNodeCoreModulesDir = "/tmp/node_core_modules"
+	jsgDir                      = "/usr/local/lib/node_modules/jsg"
 )
 
 func (v jsg) jsgConfig(c *config.Repository) *JSGConfig {
@@ -50,6 +51,18 @@ func (v jsg) jsgConfig(c *config.Repository) *JSGConfig {
 		// By default, use the node_core_modules dir that ships with jsg (for resolving refs to the node core).
 		jsgConfig.Plugins["node"] = map[string]string{"coreModulesDir": containerNodeCoreModulesDir}
 	}
+
+	// Replace $(JSG_DIR) with the actual dir to jsg on the container, so that
+	// configs can use jsg plugins defined in jsg's dependencies without having
+	// to hardcode the dir on the container.
+	const jsgDirVar = "$(JSG_DIR)"
+	for name, v := range jsgConfig.Plugins {
+		if strings.Contains(name, jsgDirVar) {
+			delete(jsgConfig.Plugins, name)
+			jsgConfig.Plugins[strings.Replace(name, jsgDirVar, jsgDir, -1)] = v
+		}
+	}
+
 	return jsgConfig
 }
 
@@ -75,7 +88,7 @@ func (v jsg) BuildGrapher(dir string, u unit.SourceUnit, c *config.Repository, x
 	dockerfile = append(dockerfile, []byte("\n\nRUN npm install -g "+jsgSrc+"\n")...)
 
 	// Copy the node core modules to the container.
-	dockerfile = append(dockerfile, []byte("\nRUN cp -R /usr/local/lib/node_modules/jsg/testdata/node_core_modules "+containerNodeCoreModulesDir+"\n")...)
+	dockerfile = append(dockerfile, []byte("\nRUN cp -R "+jsgDir+"/testdata/node_core_modules "+containerNodeCoreModulesDir+"\n")...)
 
 	jsgCmd, err := jsgCommand(jsgConfig.Plugins, nil, nil, pkg.sourceFiles())
 	if err != nil {
@@ -89,11 +102,18 @@ func (v jsg) BuildGrapher(dir string, u unit.SourceUnit, c *config.Repository, x
 	}
 
 	containerDir := containerDir(dir)
+
+	var preCmd []byte
+	if pkg.PackageJSONFile != "" {
+		// If there's a package.json file, `npm install` first.
+		preCmd = []byte("WORKDIR " + containerDir + "\nRUN npm install --ignore-scripts --no-bin-links")
+	}
+
 	cmd := container.Command{
 		Container: container.Container{
 			Dockerfile:       dockerfile,
 			AddDirs:          [][2]string{{dir, containerDir}},
-			PreCmdDockerfile: []byte("WORKDIR " + containerDir + "\nRUN npm install --ignore-scripts --no-bin-links"),
+			PreCmdDockerfile: preCmd,
 			Cmd:              jsgCmd,
 			Dir:              containerDir,
 			Stderr:           x.Stderr,
