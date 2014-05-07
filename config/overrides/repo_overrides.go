@@ -61,10 +61,21 @@ func init() {
 					},
 				},
 			},
+
 			// Suppress the Python source unit that exists because the node
 			// repo has *.py files.
 			ScanIgnoreUnitTypes: []string{unit.Type(&python.FauxPackage{})},
 			ScanIgnore:          []string{"./tools", "./deps", "./test", "./src"},
+
+			Global: config.Global{
+				"jsg": &javascript.JSGConfig{
+					Plugins: map[string]interface{}{
+						// In this repository, the node core modules are in the
+						// lib/ dir.
+						"node": map[string]string{"coreModulesDir": "lib/"},
+					},
+				},
+			},
 		},
 	}
 	for repoURI, c := range o {

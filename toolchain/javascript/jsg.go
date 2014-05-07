@@ -8,10 +8,138 @@ import (
 	"strconv"
 	"strings"
 
+	"sourcegraph.com/sourcegraph/srcgraph/config"
+	"sourcegraph.com/sourcegraph/srcgraph/container"
 	"sourcegraph.com/sourcegraph/srcgraph/graph"
+	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
+	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
+
+func init() {
+	config.Register("jsg", &JSGConfig{})
+	grapher2.Register(&CommonJSPackage{}, grapher2.DockerGrapher{defaultJSG})
+}
+
+// JSGConfig is custom configuration for node.js projects.
+type JSGConfig struct {
+	// Plugins is a map of plugin name to plugin configuration, for defining
+	// plugins that should be loaded in jsg. jsg uses tern's plugin loading
+	// system; see the jsg documentation for more information.
+	Plugins map[string]interface{}
+}
+
+type jsg struct{ nodeVersion }
+
+var defaultJSG = &jsg{defaultNode}
+
+const (
+	containerNodeCoreModulesDir = "/tmp/node_core_modules"
+)
+
+func (v jsg) jsgConfig(c *config.Repository) *JSGConfig {
+	jsgConfig, _ := c.Global["jsg"].(*JSGConfig)
+	if jsgConfig == nil {
+		jsgConfig = &JSGConfig{}
+	}
+	if jsgConfig.Plugins == nil {
+		jsgConfig.Plugins = map[string]interface{}{}
+	}
+	if _, present := jsgConfig.Plugins["node"]; !present {
+		// By default, use the node_core_modules dir that ships with jsg (for resolving refs to the node core).
+		jsgConfig.Plugins["node"] = map[string]string{"coreModulesDir": containerNodeCoreModulesDir}
+	}
+	return jsgConfig
+}
+
+func (v jsg) BuildGrapher(dir string, u unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error) {
+	pkg := u.(*CommonJSPackage)
+	jsgConfig := v.jsgConfig(c)
+
+	if len(pkg.sourceFiles()) == 0 {
+		// No source files found for source unit; proceed without running grapher.
+		return nil, nil
+	}
+
+	dockerfile, err := v.baseDockerfile()
+	if err != nil {
+		return nil, err
+	}
+
+	const (
+		jsgVersion = "jsg@0.0.1"
+		jsgGit     = "git://github.com/sourcegraph/jsg.git"
+		jsgSrc     = jsgGit
+	)
+	dockerfile = append(dockerfile, []byte("\n\nRUN npm install -g "+jsgSrc+"\n")...)
+
+	// Copy the node core modules to the container.
+	dockerfile = append(dockerfile, []byte("\nRUN cp -R /usr/local/lib/node_modules/jsg/testdata/node_core_modules "+containerNodeCoreModulesDir+"\n")...)
+
+	jsgCmd, err := jsgCommand(jsgConfig.Plugins, nil, nil, pkg.sourceFiles())
+	if err != nil {
+		return nil, err
+	}
+
+	// Track test files so we can set the Test field on symbols efficiently.
+	isTestFile := make(map[string]struct{}, len(pkg.TestFiles))
+	for _, f := range pkg.TestFiles {
+		isTestFile[f] = struct{}{}
+	}
+
+	containerDir := containerDir(dir)
+	cmd := container.Command{
+		Container: container.Container{
+			Dockerfile:       dockerfile,
+			AddDirs:          [][2]string{{dir, containerDir}},
+			PreCmdDockerfile: []byte("WORKDIR " + containerDir + "\nRUN npm install --ignore-scripts --no-bin-links"),
+			Cmd:              jsgCmd,
+			Dir:              containerDir,
+			Stderr:           x.Stderr,
+			Stdout:           x.Stdout,
+		},
+		Transform: func(in []byte) ([]byte, error) {
+			var o jsgOutput
+			err := json.Unmarshal(in, &o)
+			if err != nil {
+				return nil, err
+			}
+
+			var o2 grapher2.Output
+
+			for _, js := range o.Symbols {
+				sym, refs, propgs, docs, err := convertSymbol(js)
+				if err != nil {
+					return nil, err
+				}
+
+				if _, isTest := isTestFile[sym.File]; isTest {
+					sym.Test = true
+				}
+
+				o2.Symbols = append(o2.Symbols, sym)
+				o2.Refs = append(o2.Refs, refs...)
+				// TODO(sqs): handle propgs
+				_ = propgs
+				o2.Docs = append(o2.Docs, docs...)
+			}
+			for _, jr := range o.Refs {
+				ref, err := convertRef(u, jr)
+				if err != nil {
+					return nil, err
+				}
+				if ref != nil {
+					o2.Refs = append(o2.Refs, ref)
+				}
+			}
+
+			return json.Marshal(o2)
+		},
+	}
+
+	return &cmd, nil
+}
 
 func jsgCommand(plugins map[string]interface{}, defs []string, flags []string, origins []string) ([]string, error) {
 	args := []string{"nodejs", "/usr/local/bin/jsg"}
