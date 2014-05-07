@@ -271,6 +271,11 @@ func (v *npmVersion) List(dir string, unit unit.SourceUnit, c *config.Repository
 func (v *npmVersion) BuildGrapher(dir string, u unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error) {
 	pkg := u.(*CommonJSPackage)
 
+	if len(pkg.sourceFiles()) == 0 {
+		// No source files found for source unit; proceed without running grapher.
+		return nil, nil
+	}
+
 	dockerfile, err := v.baseDockerfile()
 	if err != nil {
 		return nil, err
@@ -284,12 +289,26 @@ func (v *npmVersion) BuildGrapher(dir string, u unit.SourceUnit, c *config.Repos
 	)
 	dockerfile = append(dockerfile, []byte("\n\nRUN npm install -g "+jsgSrc+"\n")...)
 
-	jsgCmd := []string{"nodejs", "/usr/local/bin/jsg", "--plugin", "node"}
-	if len(pkg.sourceFiles()) == 0 {
-		// No source files found for source unit; proceed without running grapher.
-		return nil, nil
+	jsgPlugins := map[string]interface{}{}
+	isStdlib := false
+	if isStdlib {
+		// Use the lib/ dir in the node repository itself.
+	} else {
+		// Use the node_core_modules dir that ships with jsg (for resolving refs to the node core).
+
+		// Copy node_core_modules to a separate dir so that refs to them aren't interpreted as refs to jsg.
+		nodeCoreModulesDir := "/tmp/node_core_modules"
+		dockerfile = append(dockerfile, []byte("\nRUN cp -R /usr/local/lib/node_modules/jsg/testdata/node_core_modules "+nodeCoreModulesDir+"\n")...)
+
+		jsgPlugins["node"] = struct {
+			CoreModulesDir string `json:"coreModulesDir"`
+		}{nodeCoreModulesDir}
 	}
-	jsgCmd = append(jsgCmd, pkg.sourceFiles()...)
+
+	jsgCmd, err := jsgCommand(jsgPlugins, nil, nil, pkg.sourceFiles())
+	if err != nil {
+		return nil, err
+	}
 
 	// Track test files so we can set the Test field on symbols efficiently.
 	isTestFile := make(map[string]struct{}, len(pkg.TestFiles))
@@ -300,12 +319,13 @@ func (v *npmVersion) BuildGrapher(dir string, u unit.SourceUnit, c *config.Repos
 	containerDir := containerDir(dir)
 	cmd := container.Command{
 		Container: container.Container{
-			Dockerfile: dockerfile,
-			RunOptions: []string{"-v", dir + ":" + containerDir},
-			Cmd:        jsgCmd,
-			Dir:        containerDir,
-			Stderr:     x.Stderr,
-			Stdout:     x.Stdout,
+			Dockerfile:       dockerfile,
+			AddDirs:          [][2]string{{dir, containerDir}},
+			PreCmdDockerfile: []byte("WORKDIR " + containerDir + "\nRUN npm install --ignore-scripts --no-bin-links"),
+			Cmd:              jsgCmd,
+			Dir:              containerDir,
+			Stderr:           x.Stderr,
+			Stdout:           x.Stdout,
 		},
 		Transform: func(in []byte) ([]byte, error) {
 			var o jsgOutput
