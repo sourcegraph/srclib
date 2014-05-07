@@ -84,7 +84,7 @@ func (v *npmVersion) BuildScanner(dir string, c *config.Repository, x *task2.Con
 	}
 
 	const (
-		findpkgsNPM = "commonjs-findpkgs@0.0.2"
+		findpkgsNPM = "commonjs-findpkgs@0.0.3"
 		findpkgsGit = "git://github.com/sourcegraph/commonjs-findpkgs.git"
 		findpkgsSrc = findpkgsNPM
 	)
