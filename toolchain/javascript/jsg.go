@@ -133,6 +133,9 @@ func (v jsg) BuildGrapher(dir string, u unit.SourceUnit, c *config.Repository, x
 				if err != nil {
 					return nil, err
 				}
+				if sym == nil {
+					continue
+				}
 
 				if _, isTest := isTestFile[sym.File]; isTest {
 					sym.Test = true
@@ -416,6 +419,14 @@ func convertSymbol(jsym *Symbol) (*graph.Symbol, []*graph.Ref, []*graph.Propagat
 				return nil, nil, nil, nil, err
 			}
 		}
+	}
+
+	// HACK TODO(sqs): some avals have an origin in this project but a file
+	// outside of it, and they refer to defs outside of this project. but
+	// because the origin is in this project, they get emitted as symbols in
+	// this project. fix this in jsg dump.js (most likely).
+	if strings.Contains(string(sym.Path), "/node_core_modules/") {
+		return nil, nil, nil, nil, nil
 	}
 
 	if jsym.Doc != "" {
