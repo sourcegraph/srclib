@@ -110,7 +110,7 @@ var testInfo = map[string]struct {
 }{
 	"go-sample-0":                {"https://github.com/sgtest/go-sample-0", "1dd4664fec342c0727850380931429a5850a4402"},
 	"python-sample-0":            {"https://github.com/sgtest/python-sample-0", "23acfddb33dc51478914821249bc20a08ddd9318"},
-	"javascript-nodejs-sample-0": {"https://github.com/sgtest/javascript-nodejs-sample-0", "ae48e5ac00d626e93e4bdc77cadfdd7568983d0f"},
+	"javascript-nodejs-sample-0": {"https://github.com/sgtest/javascript-nodejs-sample-0", "1cf21d58208c1550f5724ef6edd49656d0dcb825"},
 }
 
 func getTestCases(t *testing.T, match string) []testCase {
