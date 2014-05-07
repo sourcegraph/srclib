@@ -1,9 +1,11 @@
 package dep2
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"sourcegraph.com/sourcegraph/srcgraph/config"
+	"sourcegraph.com/sourcegraph/srcgraph/container"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
@@ -27,6 +29,34 @@ func RegisterResolver(targetType string, resolver Resolver) {
 
 type Resolver interface {
 	Resolve(dep *RawDependency, c *config.Repository, x *task2.Context) (*ResolvedTarget, error)
+}
+
+type ResolverBuilder interface {
+	BuildResolver(dep *RawDependency, c *config.Repository, x *task2.Context) (*container.Command, error)
+}
+
+type DockerResolver struct {
+	ResolverBuilder
+}
+
+func (l DockerResolver) Resolve(dep *RawDependency, c *config.Repository, x *task2.Context) (*ResolvedTarget, error) {
+	cmd, err := l.BuildResolver(dep, c, x)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := cmd.Run()
+	if err != nil {
+		return nil, err
+	}
+
+	var resolv *ResolvedTarget
+	err = json.Unmarshal(data, &resolv)
+	if err != nil {
+		return nil, err
+	}
+
+	return resolv, nil
 }
 
 // ResolvedTarget represents a resolved dependency target.

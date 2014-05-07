@@ -8,5 +8,5 @@ import (
 	_ "sourcegraph.com/sourcegraph/srcgraph/toolchain/golang"
 	_ "sourcegraph.com/sourcegraph/srcgraph/toolchain/python"
 	// _ "sourcegraph.com/sourcegraph/srcgraph/toolchain/ruby"
-	//	_ "sourcegraph.com/sourcegraph/srcgraph/toolchain/javascript"
+	_ "sourcegraph.com/sourcegraph/srcgraph/toolchain/javascript"
 )
