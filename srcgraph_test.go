@@ -109,7 +109,7 @@ var testInfo = map[string]struct {
 	CommitID string
 }{
 	"go-sample-0":     {"https://github.com/sgtest/go-sample-0", "1dd4664fec342c0727850380931429a5850a4402"},
-	"python-sample-0": {"https://github.com/sgtest/python-sample-0", "f873e579e2e4d9d3fb9a30d0694e4a23420b0079"},
+	"python-sample-0": {"https://github.com/sgtest/python-sample-0", "23acfddb33dc51478914821249bc20a08ddd9318"},
 }
 
 func getTestCases(t *testing.T, match string) []testCase {
