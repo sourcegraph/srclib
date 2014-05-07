@@ -53,11 +53,30 @@ func SourceUnits(dir string, c *config.Repository, x *task2.Context) ([]unit.Sou
 				x.Log.Printf("Failed to scan %s using %q scanner: %s.", c.URI, name, err)
 				return err
 			}
-			x.Log.Printf("Finished scanning %s using %q scanner. Found %d source units.", c.URI, name, len(units2))
+
+			// Ignore source units per the config (ScanIgnore and ScanIgnoreUnitTypes).
+			var units3 []unit.SourceUnit
+			for _, u := range units2 {
+				ignored := false
+				for _, ignoreType := range c.ScanIgnoreUnitTypes {
+					if unit.Type(u) == ignoreType {
+						ignored = true
+						break
+					}
+				}
+				if !ignored && dirsContains(c.ScanIgnore, u.RootDir()) {
+					ignored = true
+				}
+				if !ignored {
+					units3 = append(units3, u)
+				}
+			}
+
+			x.Log.Printf("Finished scanning %s using %q scanner. %d source units found (after ignoring %d).", c.URI, name, len(units3), len(units2)-len(units3))
 
 			units.Lock()
 			defer units.Unlock()
-			units.u = append(units.u, units2...)
+			units.u = append(units.u, units3...)
 			return nil
 		})
 	}
@@ -81,9 +100,6 @@ func ReadDirConfigAndScan(dir string, repoURI repo.URI, x *task2.Context) (*conf
 		return nil, err
 	}
 	for _, u := range units {
-		if dirsContains(c.ScanIgnore, u.RootDir()) {
-			continue
-		}
 		c.SourceUnits.AddIfNotExists(u)
 	}
 
