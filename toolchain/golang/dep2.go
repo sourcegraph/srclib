@@ -13,6 +13,7 @@ import (
 	"github.com/peterbourgon/diskv"
 	"github.com/sourcegraph/httpcache"
 	"github.com/sourcegraph/httpcache/diskcache"
+	"sourcegraph.com/sourcegraph"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
 	"sourcegraph.com/sourcegraph/srcgraph/dep2"
@@ -121,7 +122,7 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository, 
 
 	x.Log.Printf("Resolving Go dep: %s", importPath)
 
-	dir, err := gosrc.Get(cachingHTTPClient, string(importPath), "")
+	dir, err := gosrc.Get(sourcegraph.AuthenticatingAsNeededHTTPClient, string(importPath), "")
 	if err != nil {
 		return nil, fmt.Errorf("unable to fetch information about Go package %q: %s", importPath, err)
 	}
