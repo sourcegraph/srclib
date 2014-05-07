@@ -1,7 +1,6 @@
 package javascript
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -31,13 +30,21 @@ func init() {
 const nodeStdlibRepoURL = "git://github.com/joyent/node.git"
 
 type CommonJSPackage struct {
+	// If the field names of CommonJSPackage change, you need to EITHER (1)
+	// update commonjs-findpkgs or (2) add a Transform func in the scanner to
+	// map from the commonjs-findpkgs output to []*CommonJSPackage.
+
 	PackageJSONFile string
-	SourceFiles     []string
+	LibFiles        []string
+	TestFiles       []string
 }
 
 func (p CommonJSPackage) Name() string    { return filepath.Dir(p.PackageJSONFile) }
 func (p CommonJSPackage) RootDir() string { return filepath.Dir(p.PackageJSONFile) }
-func (p CommonJSPackage) Paths() []string { return p.SourceFiles }
+func (p CommonJSPackage) sourceFiles() []string {
+	return append(append([]string{}, p.LibFiles...), p.TestFiles...)
+}
+func (p CommonJSPackage) Paths() []string { return append(p.sourceFiles(), p.PackageJSONFile) }
 
 type npmVersion struct{}
 
@@ -63,35 +70,25 @@ func (v *npmVersion) BuildScanner(dir string, c *config.Repository, x *task2.Con
 		return nil, err
 	}
 
+	const (
+		findpkgsNPM = "commonjs-findpkgs@0.0.1"
+		findpkgsGit = "git://github.com/sourcegraph/commonjs-findpkgs.git"
+		findpkgsSrc = findpkgsGit
+	)
+	dockerfile = append(dockerfile, []byte("\n\nRUN npm install -g "+findpkgsSrc+"\n")...)
+
 	containerDir := containerDir(dir)
 	cont := container.Container{
 		Dockerfile: dockerfile,
 		RunOptions: []string{"-v", dir + ":" + containerDir},
-		Cmd:        []string{"find", containerDir, "-name", "package.json"},
+		Cmd:        []string{"commonjs-findpkgs"},
+		Dir:        containerDir,
 		Stderr:     x.Stderr,
 		Stdout:     x.Stdout,
 	}
 	cmd := container.Command{
 		Container: cont,
-		Transform: func(orig []byte) ([]byte, error) {
-			if len(orig) == 0 {
-				return nil, nil
-			}
-
-			lines := bytes.Split(bytes.TrimSpace(orig), []byte("\n"))
-			units := make([]*CommonJSPackage, len(lines))
-			for i, line := range lines {
-				packageJSONFile := string(line)
-				packageJSONFile, err := filepath.Rel(containerDir, packageJSONFile)
-				if err != nil {
-					return nil, err
-				}
-				units[i] = &CommonJSPackage{
-					PackageJSONFile: packageJSONFile,
-				}
-			}
-			return json.Marshal(units)
-		},
+		// No Transform func needed because the output exactly matches CommonJS package;
 	}
 	return &cmd, nil
 }
@@ -244,7 +241,9 @@ func (v *npmVersion) List(dir string, unit unit.SourceUnit, c *config.Repository
 	return rawDeps, nil
 }
 
-func (v *npmVersion) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error) {
+func (v *npmVersion) BuildGrapher(dir string, u unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error) {
+	pkg := u.(*CommonJSPackage)
+
 	dockerfile, err := v.baseDockerfile()
 	if err != nil {
 		return nil, err
@@ -256,14 +255,27 @@ func (v *npmVersion) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Re
 		jsgGit     = "git://github.com/sourcegraph/jsg.git"
 		jsgSrc     = jsgGit
 	)
-	dockerfile = append(dockerfile, []byte("\n\nRUN npm install --debug -g "+jsgSrc+"\n")...)
+	dockerfile = append(dockerfile, []byte("\n\nRUN npm install -g "+jsgSrc+"\n")...)
+
+	jsgCmd := []string{"nodejs", "/usr/local/bin/jsg", "--plugin", "node"}
+	if len(pkg.sourceFiles()) == 0 {
+		// No source files found for source unit; proceed without running grapher.
+		return nil, nil
+	}
+	jsgCmd = append(jsgCmd, pkg.sourceFiles()...)
+
+	// Track test files so we can set the Test field on symbols efficiently.
+	isTestFile := make(map[string]struct{}, len(pkg.TestFiles))
+	for _, f := range pkg.TestFiles {
+		isTestFile[f] = struct{}{}
+	}
 
 	containerDir := containerDir(dir)
 	cmd := container.Command{
 		Container: container.Container{
 			Dockerfile: dockerfile,
 			RunOptions: []string{"-v", dir + ":" + containerDir},
-			Cmd:        []string{"nodejs", "/usr/local/bin/jsg", "--plugin", "node", "animal.js", "animal_test.js"},
+			Cmd:        jsgCmd,
 			Dir:        containerDir,
 			Stderr:     x.Stderr,
 			Stdout:     x.Stdout,
@@ -282,6 +294,11 @@ func (v *npmVersion) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Re
 				if err != nil {
 					return nil, err
 				}
+
+				if _, isTest := isTestFile[sym.File]; isTest {
+					sym.Test = true
+				}
+
 				o2.Symbols = append(o2.Symbols, sym)
 				o2.Refs = append(o2.Refs, refs...)
 				// TODO(sqs): handle propgs
@@ -289,7 +306,7 @@ func (v *npmVersion) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Re
 				o2.Docs = append(o2.Docs, docs...)
 			}
 			for _, jr := range o.Refs {
-				ref, err := convertRef(unit, jr)
+				ref, err := convertRef(u, jr)
 				if err != nil {
 					return nil, err
 				}

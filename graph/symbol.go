@@ -105,7 +105,9 @@ func (s *Symbol) Language() string {
 	switch s.UnitType {
 	case "GoPackage":
 		return "Go"
-		// TODO(sqs): add Python, JS, etc.
+	case "CommonJSPackage":
+		return "JavaScript"
+		// TODO(sqs): add Python, etc.
 	}
 	return "unknown language"
 }
@@ -132,7 +134,7 @@ func (s *Symbol) Signature() string {
 	switch s.UnitType {
 	case "GoPackage":
 		return removeOwnImportPath(strings.TrimPrefix(s.TypeExpr, "func"))
-	case "js":
+	case "CommonJSPackage":
 		return strings.TrimPrefix(s.TypeExpr, "fn")
 	case "python":
 		// remove up to first paren
