@@ -3,6 +3,7 @@ package vcsutil
 import (
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/sourcegraph/go-blame/blame"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
@@ -34,7 +35,7 @@ func BlameRepository(dir string, commitID string, c *config.Repository, x *task2
 
 	var err error
 	blameOutput.HunkMap, blameOutput.CommitMap, err = blame.BlameRepository(dir, commitID, nil)
-	return blameOutput, err
+	return utcTime(blameOutput), err
 }
 
 func BlameFiles(dir string, files []string, commitID string, c *config.Repository, x *task2.Context) (*BlameOutput, error) {
@@ -64,5 +65,15 @@ func BlameFiles(dir string, files []string, commitID string, c *config.Repositor
 		}
 	}
 
-	return &BlameOutput{commitMap, hunkMap}, nil
+	return utcTime(&BlameOutput{commitMap, hunkMap}), nil
+}
+
+// utcTime sets the commit timestamps to UTC. PERF TODO(sqs): This is very
+// inefficient because the map values are not pointers.
+func utcTime(o *BlameOutput) *BlameOutput {
+	for id, c := range o.CommitMap {
+		c.AuthorDate = c.AuthorDate.In(time.UTC)
+		o.CommitMap[id] = c
+	}
+	return o
 }
