@@ -14,27 +14,30 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/container"
 	"sourcegraph.com/sourcegraph/srcgraph/dep2"
 	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
+	"sourcegraph.com/sourcegraph/srcgraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/scan"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
 func init() {
-	unit.Register("NPMPackage", &NPMPackage{})
+	unit.Register("CommonJSPackage", &CommonJSPackage{})
 	scan.Register("npm", scan.DockerScanner{defaultNPM})
-	dep2.RegisterLister(&NPMPackage{}, defaultNPM)
+	dep2.RegisterLister(&CommonJSPackage{}, defaultNPM)
 	dep2.RegisterResolver(npmDependencyTargetType, dep2.DockerResolver{defaultNPM})
-	grapher2.Register(&NPMPackage{}, grapher2.DockerGrapher{defaultNPM})
+	grapher2.Register(&CommonJSPackage{}, grapher2.DockerGrapher{defaultNPM})
 }
 
-type NPMPackage struct {
+const nodeStdlibRepoURL = "git://github.com/joyent/node.git"
+
+type CommonJSPackage struct {
 	PackageJSONFile string
 	SourceFiles     []string
 }
 
-func (p NPMPackage) Name() string    { return filepath.Dir(p.PackageJSONFile) }
-func (p NPMPackage) RootDir() string { return filepath.Dir(p.PackageJSONFile) }
-func (p NPMPackage) Paths() []string { return p.SourceFiles }
+func (p CommonJSPackage) Name() string    { return filepath.Dir(p.PackageJSONFile) }
+func (p CommonJSPackage) RootDir() string { return filepath.Dir(p.PackageJSONFile) }
+func (p CommonJSPackage) Paths() []string { return p.SourceFiles }
 
 type npmVersion struct{}
 
@@ -46,7 +49,7 @@ func (v *npmVersion) baseDockerfile() ([]byte, error) {
 
 const baseNPMDockerfile = `FROM ubuntu:14.04
 RUN apt-get update
-RUN apt-get install -qy nodejs npm`
+RUN apt-get install -qy nodejs npm git`
 
 // containerDir returns the directory in the Docker container to use for the
 // local directory dir.
@@ -76,14 +79,14 @@ func (v *npmVersion) BuildScanner(dir string, c *config.Repository, x *task2.Con
 			}
 
 			lines := bytes.Split(bytes.TrimSpace(orig), []byte("\n"))
-			units := make([]*NPMPackage, len(lines))
+			units := make([]*CommonJSPackage, len(lines))
 			for i, line := range lines {
 				packageJSONFile := string(line)
 				packageJSONFile, err := filepath.Rel(containerDir, packageJSONFile)
 				if err != nil {
 					return nil, err
 				}
-				units[i] = &NPMPackage{
+				units[i] = &CommonJSPackage{
 					PackageJSONFile: packageJSONFile,
 				}
 			}
@@ -98,7 +101,7 @@ func (v *npmVersion) UnmarshalSourceUnits(data []byte) ([]unit.SourceUnit, error
 		return nil, nil
 	}
 
-	var npmPackages []*NPMPackage
+	var npmPackages []*CommonJSPackage
 	err := json.Unmarshal(data, &npmPackages)
 	if err != nil {
 		return nil, err
@@ -192,7 +195,7 @@ func (v *npmVersion) BuildResolver(dep *dep2.RawDependency, c *config.Repository
 
 			return json.Marshal(&dep2.ResolvedTarget{
 				ToRepoCloneURL:  toRepoCloneURL,
-				ToUnitType:      unit.Type((&NPMPackage{})),
+				ToUnitType:      unit.Type((&CommonJSPackage{})),
 				ToUnit:          ".",
 				ToVersionString: resolvedDep.ID,
 				ToRevSpec:       toRevSpec,
@@ -205,7 +208,7 @@ func (v *npmVersion) BuildResolver(dep *dep2.RawDependency, c *config.Repository
 // List reads the "dependencies" key in the NPM package's package.json file and
 // outputs the properties as raw dependencies.
 func (v *npmVersion) List(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) ([]*dep2.RawDependency, error) {
-	pkg := unit.(*NPMPackage)
+	pkg := unit.(*CommonJSPackage)
 	pkgFile := filepath.Join(dir, pkg.PackageJSONFile)
 
 	f, err := os.Open(pkgFile)
@@ -242,5 +245,64 @@ func (v *npmVersion) List(dir string, unit unit.SourceUnit, c *config.Repository
 }
 
 func (v *npmVersion) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error) {
-	return &container.Command{}, nil
+	dockerfile, err := v.baseDockerfile()
+	if err != nil {
+		return nil, err
+	}
+
+	// Install VCS tools in Docker container.
+	dockerfile = append(dockerfile, []byte("\n\nRUN npm install -g jsg@0.0.1\n")...)
+
+	containerDir := containerDir(dir)
+	cmd := container.Command{
+		Container: container.Container{
+			Dockerfile: dockerfile,
+			RunOptions: []string{"-v", dir + ":" + containerDir},
+			Cmd:        []string{"nodejs", "/usr/local/bin/jsg", "--plugin", "node", "animal.js", "animal_test.js"},
+			Dir:        containerDir,
+			Stderr:     x.Stderr,
+			Stdout:     x.Stdout,
+		},
+		Transform: func(in []byte) ([]byte, error) {
+			var o jsgOutput
+			err := json.Unmarshal(in, &o)
+			if err != nil {
+				return nil, err
+			}
+
+			var o2 grapher2.Output
+
+			for _, js := range o.Symbols {
+				sym, refs, propgs, docs, err := convertSymbol(js)
+				if err != nil {
+					return nil, err
+				}
+				o2.Symbols = append(o2.Symbols, sym)
+				o2.Refs = append(o2.Refs, refs...)
+				// TODO(sqs): handle propgs
+				_ = propgs
+				o2.Docs = append(o2.Docs, docs...)
+			}
+			for _, jr := range o.Refs {
+				ref, err := convertRef(unit, jr)
+				if err != nil {
+					return nil, err
+				}
+				if ref != nil {
+					o2.Refs = append(o2.Refs, ref)
+				}
+			}
+
+			return json.Marshal(o2)
+		},
+	}
+
+	return &cmd, nil
+}
+
+func uriOrEmpty(cloneURL string) repo.URI {
+	if cloneURL == "" {
+		return ""
+	}
+	return repo.MakeURI(cloneURL)
 }
