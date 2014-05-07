@@ -108,7 +108,7 @@ var testInfo = map[string]struct {
 	CloneURL string
 	CommitID string
 }{
-	"go-sample-0":     {"https://github.com/sgtest/go-sample-0", "7538a5ec55397101dae8e099a6c9af53fe06dfdd"},
+	"go-sample-0":     {"https://github.com/sgtest/go-sample-0", "1dd4664fec342c0727850380931429a5850a4402"},
 	"python-sample-0": {"https://github.com/sgtest/python-sample-0", "f873e579e2e4d9d3fb9a30d0694e4a23420b0079"},
 }
 
