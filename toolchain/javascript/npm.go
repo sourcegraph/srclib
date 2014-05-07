@@ -251,7 +251,12 @@ func (v *npmVersion) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Re
 	}
 
 	// Install VCS tools in Docker container.
-	dockerfile = append(dockerfile, []byte("\n\nRUN npm install -g jsg@0.0.1\n")...)
+	const (
+		jsgVersion = "jsg@0.0.1"
+		jsgGit     = "git://github.com/sourcegraph/jsg.git"
+		jsgSrc     = jsgGit
+	)
+	dockerfile = append(dockerfile, []byte("\n\nRUN npm install --debug -g "+jsgSrc+"\n")...)
 
 	containerDir := containerDir(dir)
 	cmd := container.Command{
