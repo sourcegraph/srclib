@@ -246,6 +246,8 @@ type RepositoryListOptions struct {
 	URIs  []string `url:",comma,omitempty"`
 	Query string   `url:",omitempty"`
 
+	BuiltOnly bool `url:",omitempty"`
+
 	Sort      string `url:",omitempty"`
 	Direction string `url:",omitempty"`
 
