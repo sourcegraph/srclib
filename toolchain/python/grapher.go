@@ -50,7 +50,7 @@ RUN pip install git+git://github.com/sourcegraph/pydep@0.0
 
 # Pysonar
 RUN apt-get install -qy maven
-RUN git clone --depth 1 --branch v0.0 https://github.com/sourcegraph/pysonar2.git /pysonar2
+RUN git clone --depth 1 --branch 0.0.1 https://github.com/sourcegraph/pysonar2.git /pysonar2
 WORKDIR /pysonar2
 RUN mvn clean package
 WORKDIR /
