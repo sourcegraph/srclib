@@ -118,7 +118,11 @@ func (p *pythonEnv) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Rep
 			var o rawGraphData
 			err := json.Unmarshal(orig, &o)
 			if err != nil {
-				return nil, err
+				outPrefix := string(orig)
+				if len(outPrefix) > 100 {
+					outPrefix = outPrefix[0:100] + "..."
+				}
+				return nil, fmt.Errorf("could not unmarshal grapher output as JSON (%s): %s", err, outPrefix)
 			}
 
 			o2 := grapher2.Output{
@@ -131,7 +135,7 @@ func (p *pythonEnv) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Rep
 			for _, psym := range o.Graph.Syms {
 				sym, selfref, err := p.convertSym(psym, c, o.Reqs)
 				if err != nil {
-					return nil, err
+					return nil, fmt.Errorf("could not convert sym %+v: %s", psym, err)
 				}
 
 				if sym != nil {
@@ -154,12 +158,16 @@ func (p *pythonEnv) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Rep
 			for _, pdoc := range o.Graph.Docs {
 				doc, err := p.convertDoc(pdoc, c, o.Reqs)
 				if err != nil {
-					return nil, err
+					return nil, fmt.Errorf("could not convert doc %+v: %s", pdoc, err)
 				}
 				o2.Docs = append(o2.Docs, doc)
 			}
 
-			return json.Marshal(o2)
+			b, err := json.Marshal(o2)
+			if err != nil {
+				return nil, fmt.Errorf("Could not marshal graph JSON: %s", err)
+			}
+			return b, nil
 		},
 	}, nil
 }
