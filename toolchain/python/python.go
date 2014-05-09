@@ -3,11 +3,13 @@ package python
 import "sourcegraph.com/sourcegraph/srcgraph/toolchain"
 
 type pythonEnv struct {
-	PythonVersion string
+	PythonVersion  string
+	Python3Version string
 }
 
 var defaultPythonEnv = &pythonEnv{
-	PythonVersion: "python2.7",
+	PythonVersion:  "python2.7",
+	Python3Version: "python3.3",
 }
 
 func init() {

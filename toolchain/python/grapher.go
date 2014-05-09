@@ -38,6 +38,13 @@ RUN curl https://raw.githubusercontent.com/pypa/pip/cdee19c77cf6514d42e2d1b7134f
 RUN python /tmp/get-pip.py
 RUN pip install virtualenv
 
+# install python3 version
+RUN add-apt-repository ppa:fkrull/deadsnakes > /dev/null  # (TODO: kinda sketchy)
+RUN apt-get update
+RUN apt-get install -qy {{.Python3}}
+RUN rm /usr/bin/python3
+RUN ln -s $(which {{.Python3}}) /usr/bin/python3
+
 # PyDep
 RUN pip install git+git://github.com/sourcegraph/pydep@0.0
 
@@ -71,11 +78,13 @@ echo "{ \"graph\": $GRAPHDATA, \"reqs\": $REQDATA }";
 func (p *pythonEnv) grapherDockerfile() []byte {
 	var buf bytes.Buffer
 	grapherDockerfileTemplate.Execute(&buf, struct {
-		Python string
-		SrcDir string
+		Python  string
+		Python3 string
+		SrcDir  string
 	}{
-		Python: p.PythonVersion,
-		SrcDir: srcRoot,
+		Python:  p.PythonVersion,
+		Python3: p.Python3Version,
+		SrcDir:  srcRoot,
 	})
 	return buf.Bytes()
 }
