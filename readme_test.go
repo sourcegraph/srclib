@@ -1,26 +1,24 @@
 package doc
 
 import (
-	"io"
-	"net/http"
-	"net/http/httptest"
-	"net/url"
 	"testing"
 
-	"github.com/sourcegraph/vcsserver"
-	"sourcegraph.com/sourcegraph/config2"
+	"github.com/sourcegraph/go-vcs/vcs"
+	vcs_testing "github.com/sourcegraph/go-vcs/vcs/testing"
+	"github.com/sourcegraph/vcsstore/vcsclient"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
 type getFormattedReadmeTest struct {
-	repo                 *repo.Repository
-	remoteReadmeFilename string
-	remoteReadmeContents string
-	wantReadme           string
-	wantErr              error
+	repo           *repo.Repository
+	readmeFilename string
+	readmeContents string
+
+	wantFormattedReadme string
+	wantErr             error
 }
 
-func TestGetFormattedReadme(t *testing.T) {
+func TestReadmeFormatter_GetFormattedReadme(t *testing.T) {
 	fooRepo := &repo.Repository{
 		URI:      "github.com/foo/bar",
 		CloneURL: "git://github.com/foo/bar.git",
@@ -57,38 +55,22 @@ func TestGetFormattedReadme(t *testing.T) {
 }
 
 func testGetFormattedReadme(t *testing.T, label string, test getFormattedReadmeTest) {
-	u, err := url.Parse(test.repo.CloneURL)
-	if err != nil {
-		t.Fatal(err)
+	o := vcsclient.MockRepositoryOpener{
+		Return: vcs_testing.MockRepository{
+			ResolveBranch_: func(name string) (vcs.CommitID, error) { return "abcd", nil },
+			FileSystem_: func(at vcs.CommitID) (vcs.FileSystem, error) {
+				return vcs_testing.MapFS(map[string]string{test.readmeFilename: test.readmeContents}), nil
+			},
+		},
 	}
+	rf := NewReadmeFormatter(o)
 
-	mux := http.NewServeMux()
-	handled := false
-	handlerPath := vcsserver.BatchFilesURI(string(test.repo.VCS), u, test.repo.RevSpecOrDefault(), []string{}).Path
-	mux.HandleFunc(handlerPath, func(w http.ResponseWriter, _ *http.Request) {
-		handled = true
-		w.Header().Set("x-batch-file", test.remoteReadmeFilename)
-		io.WriteString(w, test.remoteReadmeContents)
-	})
-	server := httptest.NewServer(mux)
-	defer server.Close()
-
-	origVCSMirrorURL := config2.VCSMirrorURL
-	config2.VCSMirrorURL, _ = url.Parse(server.URL)
-	defer func() {
-		config2.VCSMirrorURL = origVCSMirrorURL
-	}()
-
-	readme, err := Default.GetFormattedReadme(test.repo)
+	readme, err := rf.GetFormattedReadme(test.repo)
 	if err != test.wantErr {
 		t.Errorf("%s: GetFormattedReadme: want err == %v, got %v", label, test.wantErr, err)
 		return
 	}
-	if test.wantReadme != readme {
-		t.Errorf("%s: want readme == %q, got %q", label, test.wantReadme, readme)
-	}
-
-	if !handled {
-		t.Errorf("%s: readme handler never called")
+	if test.wantFormattedReadme != readme {
+		t.Errorf("%s: got formatted readme == %q, want %q", label, readme, test.wantFormattedReadme)
 	}
 }
