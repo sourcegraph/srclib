@@ -4,39 +4,38 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/sourcegraph/go-vcs"
+	"github.com/sourcegraph/go-vcs/vcs"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
-func Checkout(cloneURL string, vcsType vcs.VCS, rev string) (string, string, error) {
-	dir := filepath.Join("/tmp/sg", string(repo.MakeURI(cloneURL)))
+func Checkout(cloneURL string, vcsType string, rev string) (dir string, commitID string, err error) {
+	dir = filepath.Join("/tmp/sg", string(repo.MakeURI(cloneURL)))
 
-	err := os.MkdirAll(filepath.Dir(dir), 0700)
+	err = os.MkdirAll(filepath.Dir(dir), 0700)
 	if err != nil {
 		return "", "", err
 	}
 
-	r, err := vcs.CloneOrOpen(vcsType, cloneURL, dir)
-	if err != nil {
-		return "", "", err
-	}
-
-	err = r.Download()
-	if err != nil {
-		return "", "", err
-	}
-
-	if rev != "" {
-		_, err = r.CheckOut(rev)
+	var r vcs.Repository
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		r, err = vcs.Clone(vcsType, cloneURL, dir)
+		if err != nil {
+			return "", "", err
+		}
+	} else if err != nil {
+		return "", "", nil
+	} else {
+		r, err = vcs.Open(vcsType, dir)
 		if err != nil {
 			return "", "", err
 		}
 	}
 
-	commitID, err := r.CurrentCommitID()
+	// TODO(new-arch): implement Checkout so that the working tree is at rev
+	commitID_, err := r.ResolveRevision(rev)
 	if err != nil {
 		return "", "", err
 	}
 
-	return dir, commitID, nil
+	return dir, string(commitID_), nil
 }

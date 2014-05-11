@@ -130,9 +130,9 @@ type RepositoryGetOptions struct {
 	// response.
 	Stats bool `url:",omitempty"`
 
-	// ResolveRev is whether to include the resolved VCS revision in the
+	// ResolveRevision is whether to include the resolved VCS revision in the
 	// CommitID field in the response.
-	ResolveRev bool `url:",omitempty"`
+	ResolveRevision bool `url:",omitempty"`
 
 	// Build is whether to include the most recent build data in the response.
 	Build bool `url:",omitempty"`

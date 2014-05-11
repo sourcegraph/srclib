@@ -9,8 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/sourcegraph/go-vcs"
-
+	"github.com/sourcegraph/go-vcs/vcs"
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
@@ -19,9 +18,9 @@ import (
 )
 
 type RepoContext struct {
-	RepoRootDir string  // Root directory containing repository being analyzed
-	VCS         vcs.VCS // VCS type (git or hg)
-	CommitID    string  // CommitID of current working directory
+	RepoRootDir string // Root directory containing repository being analyzed
+	VCSType     string // VCS type (git or hg)
+	CommitID    string // CommitID of current working directory
 }
 
 func NewRepoContext(targetDir string) (*RepoContext, error) {
@@ -31,9 +30,9 @@ func NewRepoContext(targetDir string) (*RepoContext, error) {
 
 	// VCS and root directory
 	rc := new(RepoContext)
-	for _, v := range vcs.VCSByName {
-		if d, err := getRepoRootDir(v, targetDir); err == nil {
-			rc.VCS = v
+	for _, vcsType := range []string{"git", "hg"} {
+		if d, err := getRepoRootDir(vcsType, targetDir); err == nil {
+			rc.VCSType = vcsType
 			rc.RepoRootDir = d
 			break
 		}
@@ -42,15 +41,24 @@ func NewRepoContext(targetDir string) (*RepoContext, error) {
 		return nil, fmt.Errorf("warning: failed to detect repository root dir for %q", targetDir)
 	}
 
-	// CommitID
-	repo, err := vcs.Open(rc.VCS, rc.RepoRootDir)
+	// Determine current working tree commit ID.
+	repo, err := vcs.Open(rc.VCSType, rc.RepoRootDir)
 	if err != nil {
 		return nil, err
 	}
-	rc.CommitID, err = repo.CurrentCommitID()
+	var currentRevSpec string
+	switch rc.VCSType {
+	case "git":
+		currentRevSpec = "HEAD"
+	case "hg":
+		currentRevSpec = "tip"
+	}
+	currentCommitID, err := repo.ResolveRevision(currentRevSpec)
 	if err != nil {
 		return nil, err
 	}
+
+	rc.CommitID = string(currentCommitID)
 
 	// updateVCSIgnore("." + rc.VCS.ShortName() + "ignore") // TODO: desirable?
 	return rc, nil
@@ -71,7 +79,7 @@ func NewJobContext(targetDir string, x *task2.Context) (*JobContext, error) {
 
 	// get default URI (if URI is not specified in .sourcegraph file)
 	// TODO(bliu): this seems like it should get pushed into ReadOrComputeRepositoryConfig...
-	cloneURL, err := getVCSCloneURL(rc.VCS, targetDir)
+	cloneURL, err := getVCSCloneURL(rc.VCSType, targetDir)
 	if err != nil {
 		return nil, err
 	}
@@ -144,16 +152,16 @@ func getConfigFile(repoDir, commitID string) (string, error) {
 	return filepath.Join(rootDataDir, repoStore.CommitPath(commitID), buildstore.CachedRepositoryConfigFilename), nil
 }
 
-func getRepoRootDir(v vcs.VCS, dir string) (string, error) {
+func getRepoRootDir(vcsType string, dir string) (string, error) {
 	var cmd *exec.Cmd
-	switch v {
-	case vcs.Git:
+	switch vcsType {
+	case "git":
 		cmd = exec.Command("git", "rev-parse", "--show-toplevel")
-	case vcs.Hg:
+	case "hg":
 		cmd = exec.Command("hg", "root")
 	}
 	if cmd == nil {
-		return "", fmt.Errorf("unrecognized VCS %v", v)
+		return "", fmt.Errorf("unrecognized VCS %v", vcsType)
 	}
 	cmd.Dir = dir
 	out, err := cmd.Output()
@@ -163,16 +171,16 @@ func getRepoRootDir(v vcs.VCS, dir string) (string, error) {
 	return strings.TrimSpace(string(out)), nil
 }
 
-func getVCSCloneURL(v vcs.VCS, repoDir string) (string, error) {
+func getVCSCloneURL(vcsType string, repoDir string) (string, error) {
 	var cmd *exec.Cmd
-	switch v {
-	case vcs.Git:
+	switch vcsType {
+	case "git":
 		cmd = exec.Command("git", "config", "remote.origin.url")
-	case vcs.Hg:
+	case "hg":
 		cmd = exec.Command("hg", "paths", "default")
 	}
 	if cmd == nil {
-		return "", fmt.Errorf("unrecognized VCS %v", v)
+		return "", fmt.Errorf("unrecognized VCS %v", vcsType)
 	}
 	cmd.Dir = repoDir
 	out, err := cmd.Output()
@@ -181,8 +189,8 @@ func getVCSCloneURL(v vcs.VCS, repoDir string) (string, error) {
 	}
 
 	cloneURL := strings.TrimSpace(string(out))
-	if v == vcs.Git {
-		cloneURL = strings.Replace(cloneURL, "git@github.com", "git://github.com/", 1)
+	if vcsType == "git" {
+		cloneURL = strings.Replace(cloneURL, "git@github.com:", "git://github.com/", 1)
 	}
 	return cloneURL, nil
 }
