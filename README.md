@@ -27,9 +27,10 @@ The `srcgraph make` command first determines what needs to be done (e.g., by
 detecting the languages of the repository's code) and produces a Makefile that
 does the work. Then it executes the Makefile.
 
-The output is written to `/tmp/sg/github.com/USER/REPO/COMMITID`. To display the
-output on [Sourcegraph.com](https://sourcegraph.com), so that people can browse documentation and examples
-online, run:
+The output is written to `/tmp/sg/github.com/USER/REPO/COMMITID` (assuming your
+build dir is /tmp/sg). To display the output on
+[Sourcegraph.com](https://sourcegraph.com), so that people can browse
+documentation and examples online, run:
 
 ```bash
 srcgraph push
