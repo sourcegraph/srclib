@@ -34,7 +34,7 @@ RUN apt-get install -qy curl
 RUN apt-get install -qy git
 RUN apt-get install -qy {{.PythonVersion}}
 RUN ln -s $(which {{.PythonVersion}}) /usr/bin/python
-RUN apt-get install -qy python-pip
+RUN curl https://raw.githubusercontent.com/pypa/pip/1.5.5/contrib/get-pip.py | python
 RUN pip install virtualenv
 
 # install python3 version
@@ -55,14 +55,14 @@ RUN mvn clean package
 WORKDIR /
 
 # PyDep
-RUN pip install git+https://github.com/sourcegraph/pydep@{{.PydepVersion}}
+RUN pip install git+https://github.com/sourcegraph/pydep.git@{{.PydepVersion}}
 `))
 
 var grapherDockerCmdTemplate = template.Must(template.New("").Parse(`
 /venv/bin/pip install {{.SrcDir}} 1>&2 || /venv/bin/pip install -r {{.SrcDir}}/requirements.txt 1>&2;
 
 # Compute requirements
-REQDATA=$(pydep-run.py {{.SrcDir}});
+REQDATA=$(pydep-run.py dep {{.SrcDir}});
 
 # Compute graph
 echo 'Running graphing step...' 1>&2;

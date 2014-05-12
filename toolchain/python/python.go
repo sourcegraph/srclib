@@ -11,7 +11,7 @@ type pythonEnv struct {
 var defaultPythonEnv = &pythonEnv{
 	PythonVersion:  "python2.7",
 	Python3Version: "python3.3",
-	PydepVersion:   "0.0.1",
+	PydepVersion:   "65604616d5ea53e98475d89e6d9891f8f627edda",
 }
 
 func init() {

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"text/template"
 
 	"sourcegraph.com/sourcegraph/srcgraph/config"
@@ -28,7 +29,7 @@ func (p *pythonEnv) BuildLister(dir string, unit unit.SourceUnit, c *config.Repo
 		Container: container.Container{
 			Dockerfile: dockerfile,
 			RunOptions: []string{"-v", dir + ":" + srcRoot},
-			Cmd:        []string{"pydep-run.py", srcRoot},
+			Cmd:        []string{"pydep-run.py", "dep", srcRoot},
 			Stderr:     x.Stderr,
 			Stdout:     x.Stdout,
 		},
@@ -38,11 +39,16 @@ func (p *pythonEnv) BuildLister(dir string, unit unit.SourceUnit, c *config.Repo
 			if err != nil {
 				return nil, err
 			}
-			deps := make([]*dep2.RawDependency, len(reqs))
-			for i, req := range reqs {
-				deps[i] = &dep2.RawDependency{
-					TargetType: pythonRequirementTargetType,
-					Target:     req,
+
+			deps := make([]*dep2.RawDependency, 0)
+			for _, req := range reqs {
+				if req.RepoURL != "" { // cannot resolve dependencies with no clone URL
+					deps = append(deps, &dep2.RawDependency{
+						TargetType: pythonRequirementTargetType,
+						Target:     req,
+					})
+				} else {
+					log.Printf("(warn) ignoring dependency %+v because repo URL absent", req)
 				}
 			}
 			return json.Marshal(deps)
@@ -59,6 +65,8 @@ type requirement struct {
 	RepoURL     string      `json:"repo_url"`
 	Packages    []string    `json:"packages"`
 	Modules     []string    `json:"modules"`
+	Resolved    bool        `json:"resolved"`
+	Type        string      `json:"type"`
 }
 
 func (p *pythonEnv) Resolve(dep *dep2.RawDependency, c *config.Repository, x *task2.Context) (*dep2.ResolvedTarget, error) {
@@ -92,7 +100,7 @@ RUN apt-get install -qy curl
 RUN apt-get install -qy git
 RUN apt-get install -qy {{.PythonVersion}}
 RUN ln -s $(which {{.PythonVersion}}) /usr/bin/python
-RUN apt-get install -qy python-pip
+RUN curl https://raw.githubusercontent.com/pypa/pip/1.5.5/contrib/get-pip.py | python
 
-RUN pip install git+git://github.com/sourcegraph/pydep@{{.PydepVersion}}
+RUN pip install git+git://github.com/sourcegraph/pydep.git@{{.PydepVersion}}
 `
