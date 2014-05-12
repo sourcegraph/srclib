@@ -5,11 +5,12 @@ import (
 	"path/filepath"
 
 	"github.com/sourcegraph/go-vcs/vcs"
+	"sourcegraph.com/sourcegraph/config2"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
 func Checkout(cloneURL string, vcsType string, rev string) (dir string, commitID string, err error) {
-	dir = filepath.Join("/tmp/sg", string(repo.MakeURI(cloneURL)))
+	dir = filepath.Join(config2.BuildDir, string(repo.MakeURI(cloneURL)))
 
 	err = os.MkdirAll(filepath.Dir(dir), 0700)
 	if err != nil {
