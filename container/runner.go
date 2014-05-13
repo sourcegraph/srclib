@@ -85,7 +85,7 @@ func (_ dockerRunner) Run(c *Command) ([]byte, error) {
 
 	for i := 0; i < BuildRetries; i++ {
 		remainingAttempts := RunRetries - i - 1
-		buildCmd := exec.Command("docker", "build", "--rm=false", "-t", image, ".")
+		buildCmd := exec.Command("docker", "build", "-t", image, ".")
 		buildCmd.Dir = tmpDir
 		buildCmd.Stdout, buildCmd.Stderr = c.Stderr, c.Stderr
 		err = buildCmd.Run()
@@ -102,7 +102,7 @@ func (_ dockerRunner) Run(c *Command) ([]byte, error) {
 
 	for i := 0; i < RunRetries; i++ {
 		remainingAttempts := RunRetries - i - 1
-		runOptions := append([]string{}, c.RunOptions...)
+		runOptions := append([]string{"-rm"}, c.RunOptions...)
 		if c.Dir != "" {
 			runOptions = append(runOptions, "--workdir="+c.Dir)
 		}
