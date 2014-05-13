@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 	"sourcegraph.com/sourcegraph/srcgraph/vcsutil"
 )
@@ -27,7 +25,7 @@ The options are:
 	fs.Parse(args)
 	sourceUnitSpecs := fs.Args()
 
-	context, err := NewJobContext(*Dir, task2.DefaultContext)
+	context, err := NewJobContext(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -44,9 +42,9 @@ The options are:
 
 		var out *vcsutil.BlameOutput
 		if paths == nil {
-			out, err = vcsutil.BlameRepository(context.RepoRootDir, context.CommitID, context.Repo, task2.DefaultContext)
+			out, err = vcsutil.BlameRepository(context.RepoRootDir, context.CommitID, context.Repo)
 		} else {
-			out, err = vcsutil.BlameFiles(context.RepoRootDir, paths, context.CommitID, context.Repo, task2.DefaultContext)
+			out, err = vcsutil.BlameFiles(context.RepoRootDir, paths, context.CommitID, context.Repo)
 		}
 		if err != nil {
 			log.Fatal(err)

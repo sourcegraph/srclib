@@ -9,7 +9,6 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
 // Resolvers maps RawDependency.TargetType strings to their registered
@@ -30,19 +29,19 @@ func RegisterResolver(targetType string, resolver Resolver) {
 }
 
 type Resolver interface {
-	Resolve(dep *RawDependency, c *config.Repository, x *task2.Context) (*ResolvedTarget, error)
+	Resolve(dep *RawDependency, c *config.Repository) (*ResolvedTarget, error)
 }
 
 type ResolverBuilder interface {
-	BuildResolver(dep *RawDependency, c *config.Repository, x *task2.Context) (*container.Command, error)
+	BuildResolver(dep *RawDependency, c *config.Repository) (*container.Command, error)
 }
 
 type DockerResolver struct {
 	ResolverBuilder
 }
 
-func (l DockerResolver) Resolve(dep *RawDependency, c *config.Repository, x *task2.Context) (*ResolvedTarget, error) {
-	cmd, err := l.BuildResolver(dep, c, x)
+func (l DockerResolver) Resolve(dep *RawDependency, c *config.Repository) (*ResolvedTarget, error) {
+	cmd, err := l.BuildResolver(dep, c)
 	if err != nil {
 		return nil, err
 	}
@@ -89,19 +88,19 @@ type ResolvedTarget struct {
 
 // Resolve resolves a raw dependency using the registered resolver for the
 // RawDependency's TargetType.
-func Resolve(dep *RawDependency, c *config.Repository, x *task2.Context) (*ResolvedTarget, error) {
+func Resolve(dep *RawDependency, c *config.Repository) (*ResolvedTarget, error) {
 	r, registered := Resolvers[dep.TargetType]
 	if !registered {
 		return nil, fmt.Errorf("no resolver registered for raw dependency target type %q", dep.TargetType)
 	}
 
-	return r.Resolve(dep, c, x)
+	return r.Resolve(dep, c)
 }
 
-func ResolveAll(rawDeps []*RawDependency, c *config.Repository, x *task2.Context) ([]*ResolvedDep, error) {
+func ResolveAll(rawDeps []*RawDependency, c *config.Repository) ([]*ResolvedDep, error) {
 	var resolved []*ResolvedDep
 	for _, rawDep := range rawDeps {
-		rt, err := Resolve(rawDep, c, x)
+		rt, err := Resolve(rawDep, c)
 		if err != nil {
 			return nil, err
 		}

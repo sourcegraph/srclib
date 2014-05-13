@@ -6,7 +6,6 @@ import (
 	"github.com/kr/fs"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/scan"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
@@ -17,7 +16,7 @@ func init() {
 
 type fauxScanner struct{}
 
-func (p *fauxScanner) Scan(dir string, c *config.Repository, x *task2.Context) ([]unit.SourceUnit, error) {
+func (p *fauxScanner) Scan(dir string, c *config.Repository) ([]unit.SourceUnit, error) {
 	var files []string
 	walker := fs.Walk(dir)
 	for walker.Step() {

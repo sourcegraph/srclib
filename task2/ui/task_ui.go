@@ -9,7 +9,7 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
-func Start(bufferedUI bool, tasks []task2.Task, x *task2.Context) {
+func Start(bufferedUI bool, tasks []task2.Task) {
 	go func() {
 		if bufferedUI {
 			for {

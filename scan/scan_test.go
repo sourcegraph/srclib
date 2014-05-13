@@ -21,7 +21,7 @@ func (p DummyPackage) Paths() []string { return []string{p.Dir} }
 
 type DummyScanner struct{}
 
-func (_ DummyScanner) Scan(dir string, c *config.Repository, x *task2.Context) ([]unit.SourceUnit, error) {
+func (_ DummyScanner) Scan(dir string, c *config.Repository) ([]unit.SourceUnit, error) {
 	return []unit.SourceUnit{DummyPackage{"foo"}}, nil
 }
 

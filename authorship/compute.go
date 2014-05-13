@@ -12,11 +12,10 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/graph"
 	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/vcsutil"
 )
 
-func ComputeSourceUnit(g *grapher2.Output, b *vcsutil.BlameOutput, c *config.Repository, x *task2.Context) (*SourceUnitOutput, error) {
+func ComputeSourceUnit(g *grapher2.Output, b *vcsutil.BlameOutput, c *config.Repository) (*SourceUnitOutput, error) {
 	var getAuthors = func(file string, start, end int) (map[string]*AuthorshipInfo, map[string]int, error) {
 		hunks, present := b.HunkMap[file]
 		if !present {

@@ -13,7 +13,6 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/container"
 	"sourcegraph.com/sourcegraph/srcgraph/dep2"
 	"sourcegraph.com/sourcegraph/srcgraph/scan"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
@@ -48,7 +47,7 @@ func containerDir(dir string) string {
 	return filepath.Join("/tmp/sg", filepath.Base(dir))
 }
 
-func (v *npmVersion) BuildScanner(dir string, c *config.Repository, x *task2.Context) (*container.Command, error) {
+func (v *npmVersion) BuildScanner(dir string, c *config.Repository) (*container.Command, error) {
 	dockerfile, err := v.baseDockerfile()
 	if err != nil {
 		return nil, err
@@ -67,8 +66,6 @@ func (v *npmVersion) BuildScanner(dir string, c *config.Repository, x *task2.Con
 		RunOptions: []string{"-v", dir + ":" + containerDir},
 		Cmd:        []string{"commonjs-findpkgs"},
 		Dir:        containerDir,
-		Stderr:     x.Stderr,
-		Stdout:     x.Stdout,
 	}
 	cmd := container.Command{
 		Container: cont,
@@ -118,7 +115,7 @@ type npmDependency struct {
 
 const npmDependencyTargetType = "npm-dep"
 
-func (v *npmVersion) BuildResolver(dep *dep2.RawDependency, c *config.Repository, x *task2.Context) (*container.Command, error) {
+func (v *npmVersion) BuildResolver(dep *dep2.RawDependency, c *config.Repository) (*container.Command, error) {
 	var npmDep npmDependency
 	j, _ := json.Marshal(dep.Target)
 	json.Unmarshal(j, &npmDep)
@@ -133,8 +130,6 @@ func (v *npmVersion) BuildResolver(dep *dep2.RawDependency, c *config.Repository
 		Container: container.Container{
 			Dockerfile: dockerfile,
 			Cmd:        []string{"nodejs", "/usr/local/bin/npm-deptool", npmDep.Name + "@" + npmDep.Spec},
-			Stderr:     x.Stderr,
-			Stdout:     x.Stdout,
 		},
 		Transform: func(orig []byte) ([]byte, error) {
 			// resolvedDep is output from npm-deptool.
@@ -196,7 +191,7 @@ func (v *npmVersion) BuildResolver(dep *dep2.RawDependency, c *config.Repository
 
 // List reads the "dependencies" key in the NPM package's package.json file and
 // outputs the properties as raw dependencies.
-func (v *npmVersion) List(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) ([]*dep2.RawDependency, error) {
+func (v *npmVersion) List(dir string, unit unit.SourceUnit, c *config.Repository) ([]*dep2.RawDependency, error) {
 	pkg := unit.(*CommonJSPackage)
 
 	if pkg.PackageJSONFile == "" {

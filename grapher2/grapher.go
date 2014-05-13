@@ -8,12 +8,11 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
 	"sourcegraph.com/sourcegraph/srcgraph/graph"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
 type Grapher interface {
-	Graph(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*Output, error)
+	Graph(dir string, unit unit.SourceUnit, c *config.Repository) (*Output, error)
 }
 
 type Output struct {
@@ -23,15 +22,15 @@ type Output struct {
 }
 
 type GrapherBuilder interface {
-	BuildGrapher(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error)
+	BuildGrapher(dir string, unit unit.SourceUnit, c *config.Repository) (*container.Command, error)
 }
 
 type DockerGrapher struct {
 	GrapherBuilder
 }
 
-func (g DockerGrapher) Graph(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*Output, error) {
-	cmd, err := g.BuildGrapher(dir, unit, c, x)
+func (g DockerGrapher) Graph(dir string, unit unit.SourceUnit, c *config.Repository) (*Output, error) {
+	cmd, err := g.BuildGrapher(dir, unit, c)
 	if err != nil {
 		return nil, err
 	}
@@ -66,13 +65,13 @@ func (g DockerGrapher) Graph(dir string, unit unit.SourceUnit, c *config.Reposit
 
 // Graph uses the registered grapher (if any) to graph the source unit (whose repository is cloned to
 // dir).
-func Graph(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*Output, error) {
+func Graph(dir string, unit unit.SourceUnit, c *config.Repository) (*Output, error) {
 	g, registered := Graphers[ptrTo(unit)]
 	if !registered {
 		return nil, fmt.Errorf("no grapher registered for source unit %T", unit)
 	}
 
-	o, err := g.Graph(dir, unit, c, x)
+	o, err := g.Graph(dir, unit, c)
 	if err != nil {
 		return nil, err
 	}

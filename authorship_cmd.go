@@ -8,7 +8,6 @@ import (
 
 	"sourcegraph.com/sourcegraph/srcgraph/authorship"
 	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/vcsutil"
 )
 
@@ -31,7 +30,7 @@ The options are:
 	}
 	blameFile, graphFile := fs.Arg(0), fs.Arg(1)
 
-	context, err := NewJobContext(*Dir, task2.DefaultContext)
+	context, err := NewJobContext(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -42,7 +41,7 @@ The options are:
 	var g *grapher2.Output
 	readJSONFile(graphFile, &g)
 
-	out, err := authorship.ComputeSourceUnit(g, b, context.Repo, task2.DefaultContext)
+	out, err := authorship.ComputeSourceUnit(g, b, context.Repo)
 	if err != nil {
 		log.Fatal(err)
 	}

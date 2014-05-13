@@ -3,7 +3,6 @@ package scan
 import (
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
@@ -14,7 +13,7 @@ type ScannerBuilder interface {
 	// using the supplied repository configuration. The dir refers to a
 	// directory on the host (not the container). Typically, the container
 	// mounts this host dir.
-	BuildScanner(dir string, c *config.Repository, x *task2.Context) (*container.Command, error)
+	BuildScanner(dir string, c *config.Repository) (*container.Command, error)
 
 	// UnmarshalSourceUnits unmarshals data, which is the stdout output from a
 	// command returned by Scan, and returns a list of source units that data
@@ -31,8 +30,8 @@ type DockerScanner struct {
 	ScannerBuilder
 }
 
-func (s DockerScanner) Scan(dir string, c *config.Repository, x *task2.Context) ([]unit.SourceUnit, error) {
-	cmd, err := s.BuildScanner(dir, c, x)
+func (s DockerScanner) Scan(dir string, c *config.Repository) ([]unit.SourceUnit, error) {
+	cmd, err := s.BuildScanner(dir, c)
 	if err != nil {
 		return nil, err
 	}

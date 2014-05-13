@@ -87,7 +87,7 @@ func (_ dockerRunner) Run(c *Command) ([]byte, error) {
 		remainingAttempts := RunRetries - i - 1
 		buildCmd := exec.Command("docker", "build", "-t", image, ".")
 		buildCmd.Dir = tmpDir
-		buildCmd.Stdout, buildCmd.Stderr = c.Stderr, c.Stderr
+		buildCmd.Stdout, buildCmd.Stderr = os.Stderr, os.Stderr
 		err = buildCmd.Run()
 		if err != nil {
 			if remainingAttempts == 0 {

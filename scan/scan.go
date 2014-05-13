@@ -1,6 +1,7 @@
 package scan
 
 import (
+	"log"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -9,7 +10,6 @@ import (
 	"code.google.com/p/rog-go/parallel"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
@@ -17,7 +17,7 @@ import (
 type Scanner interface {
 	// Scan returns a list of source units that exist in dir and its
 	// subdirectories. Paths in the source units should be relative to dir.
-	Scan(dir string, c *config.Repository, x *task2.Context) ([]unit.SourceUnit, error)
+	Scan(dir string, c *config.Repository) ([]unit.SourceUnit, error)
 }
 
 // Scanners holds all registered scanners.
@@ -38,7 +38,7 @@ func Register(name string, scanner Scanner) {
 
 // SourceUnits scans dir and its subdirectories for source units, using all
 // registered toolchains that implement Scanner.
-func SourceUnits(dir string, c *config.Repository, x *task2.Context) ([]unit.SourceUnit, error) {
+func SourceUnits(dir string, c *config.Repository) ([]unit.SourceUnit, error) {
 	var units struct {
 		u []unit.SourceUnit
 		sync.Mutex
@@ -47,10 +47,10 @@ func SourceUnits(dir string, c *config.Repository, x *task2.Context) ([]unit.Sou
 	for name_, s_ := range Scanners {
 		name, s := name_, s_
 		run.Do(func() error {
-			x.Log.Printf("Scanning %s using %q scanner...", c.URI, name)
-			units2, err := s.Scan(dir, c, x)
+			log.Printf("Scanning %s using %q scanner...", c.URI, name)
+			units2, err := s.Scan(dir, c)
 			if err != nil {
-				x.Log.Printf("Failed to scan %s using %q scanner: %s.", c.URI, name, err)
+				log.Printf("Failed to scan %s using %q scanner: %s.", c.URI, name, err)
 				return err
 			}
 
@@ -72,7 +72,7 @@ func SourceUnits(dir string, c *config.Repository, x *task2.Context) ([]unit.Sou
 				}
 			}
 
-			x.Log.Printf("Finished scanning %s using %q scanner. %d source units found (after ignoring %d).", c.URI, name, len(units3), len(units2)-len(units3))
+			log.Printf("Finished scanning %s using %q scanner. %d source units found (after ignoring %d).", c.URI, name, len(units3), len(units2)-len(units3))
 
 			units.Lock()
 			defer units.Unlock()
@@ -81,7 +81,7 @@ func SourceUnits(dir string, c *config.Repository, x *task2.Context) ([]unit.Sou
 		})
 	}
 	err := run.Wait()
-	x.Log.Printf("Scanning %s found %d source units total.", c.URI, len(units.u))
+	log.Printf("Scanning %s found %d source units total.", c.URI, len(units.u))
 
 	return units.u, err
 }
@@ -89,13 +89,13 @@ func SourceUnits(dir string, c *config.Repository, x *task2.Context) ([]unit.Sou
 // ReadDirConfigAndScan runs config.ReadDir to load the repository configuration
 // for the repository in dir and adds all scanned source units to the
 // configuration.
-func ReadDirConfigAndScan(dir string, repoURI repo.URI, x *task2.Context) (*config.Repository, error) {
+func ReadDirConfigAndScan(dir string, repoURI repo.URI) (*config.Repository, error) {
 	c, err := config.ReadDir(dir, repoURI)
 	if err != nil {
 		return nil, err
 	}
 
-	units, err := SourceUnits(dir, c, x)
+	units, err := SourceUnits(dir, c)
 	if err != nil {
 		return nil, err
 	}

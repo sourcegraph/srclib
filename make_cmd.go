@@ -10,7 +10,6 @@ import (
 	"github.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srcgraph/build"
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
 func makefile(args []string) {
@@ -44,7 +43,7 @@ The options are:
 	fs.Parse(args)
 	goals := fs.Args()
 
-	context, err := NewJobContext(*Dir, task2.DefaultContext)
+	context, err := NewJobContext(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}

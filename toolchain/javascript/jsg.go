@@ -13,7 +13,6 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/graph"
 	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
@@ -66,7 +65,7 @@ func (v jsg) jsgConfig(c *config.Repository) *JSGConfig {
 	return jsgConfig
 }
 
-func (v jsg) BuildGrapher(dir string, u unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error) {
+func (v jsg) BuildGrapher(dir string, u unit.SourceUnit, c *config.Repository) (*container.Command, error) {
 	pkg := u.(*CommonJSPackage)
 	jsgConfig := v.jsgConfig(c)
 
@@ -116,8 +115,6 @@ func (v jsg) BuildGrapher(dir string, u unit.SourceUnit, c *config.Repository, x
 			PreCmdDockerfile: preCmd,
 			Cmd:              jsgCmd,
 			Dir:              containerDir,
-			Stderr:           x.Stderr,
-			Stdout:           x.Stdout,
 		},
 		Transform: func(in []byte) ([]byte, error) {
 			var o jsgOutput

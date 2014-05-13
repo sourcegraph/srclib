@@ -10,7 +10,6 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
 	"sourcegraph.com/sourcegraph/srcgraph/dep2"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
@@ -19,7 +18,7 @@ func init() {
 	dep2.RegisterResolver(pythonRequirementTargetType, defaultPythonEnv)
 }
 
-func (p *pythonEnv) BuildLister(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error) {
+func (p *pythonEnv) BuildLister(dir string, unit unit.SourceUnit, c *config.Repository) (*container.Command, error) {
 	var dockerfile []byte
 	var cmd []string
 	var err error
@@ -40,8 +39,6 @@ func (p *pythonEnv) BuildLister(dir string, unit unit.SourceUnit, c *config.Repo
 			Dockerfile: dockerfile,
 			RunOptions: runOpts,
 			Cmd:        cmd,
-			Stderr:     x.Stderr,
-			Stdout:     x.Stdout,
 		},
 		Transform: func(orig []byte) ([]byte, error) {
 			var reqs []requirement
@@ -79,7 +76,7 @@ type requirement struct {
 	Type        string      `json:"type"`
 }
 
-func (p *pythonEnv) Resolve(dep *dep2.RawDependency, c *config.Repository, x *task2.Context) (*dep2.ResolvedTarget, error) {
+func (p *pythonEnv) Resolve(dep *dep2.RawDependency, c *config.Repository) (*dep2.ResolvedTarget, error) {
 	switch dep.TargetType {
 	case pythonRequirementTargetType:
 		var req requirement

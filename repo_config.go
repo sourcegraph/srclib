@@ -14,7 +14,6 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/scan"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
 type RepoContext struct {
@@ -69,7 +68,7 @@ type JobContext struct {
 	Repo *config.Repository // Repository-level configuration, read from .sourcegraph-data/config.json
 }
 
-func NewJobContext(targetDir string, x *task2.Context) (*JobContext, error) {
+func NewJobContext(targetDir string) (*JobContext, error) {
 	rc, err := NewRepoContext(targetDir)
 	if err != nil {
 		return nil, err
@@ -85,7 +84,7 @@ func NewJobContext(targetDir string, x *task2.Context) (*JobContext, error) {
 	}
 	uri := repo.MakeURI(cloneURL)
 
-	jc.Repo, err = ReadOrComputeRepositoryConfig(jc.RepoRootDir, jc.CommitID, uri, x)
+	jc.Repo, err = ReadOrComputeRepositoryConfig(jc.RepoRootDir, jc.CommitID, uri)
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +92,7 @@ func NewJobContext(targetDir string, x *task2.Context) (*JobContext, error) {
 	return jc, nil
 }
 
-func ReadOrComputeRepositoryConfig(repoDir string, commitID string, repoURI repo.URI, x *task2.Context) (*config.Repository, error) {
+func ReadOrComputeRepositoryConfig(repoDir string, commitID string, repoURI repo.URI) (*config.Repository, error) {
 	configFile, err := getConfigFile(repoDir, commitID)
 	if err != nil {
 		return nil, err
@@ -112,7 +111,7 @@ func ReadOrComputeRepositoryConfig(repoDir string, commitID string, repoURI repo
 		return &c, nil
 	} else {
 		// Compute
-		return scan.ReadDirConfigAndScan(repoDir, repoURI, x)
+		return scan.ReadDirConfigAndScan(repoDir, repoURI)
 	}
 }
 
