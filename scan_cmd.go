@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
@@ -25,7 +23,7 @@ The options are:
 	}
 	fs.Parse(args)
 
-	context, err := NewJobContext(*Dir, task2.DefaultContext)
+	context, err := NewJobContext(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}

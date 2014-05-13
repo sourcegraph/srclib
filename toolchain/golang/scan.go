@@ -10,7 +10,6 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
 	"sourcegraph.com/sourcegraph/srcgraph/scan"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
@@ -18,7 +17,7 @@ func init() {
 	scan.Register("go", scan.DockerScanner{defaultGoVersion})
 }
 
-func (v *goVersion) BuildScanner(dir string, c *config.Repository, x *task2.Context) (*container.Command, error) {
+func (v *goVersion) BuildScanner(dir string, c *config.Repository) (*container.Command, error) {
 	goConfig := v.goConfig(c)
 
 	dockerfile, err := v.baseDockerfile()
@@ -31,8 +30,6 @@ func (v *goVersion) BuildScanner(dir string, c *config.Repository, x *task2.Cont
 		Dockerfile: dockerfile,
 		RunOptions: []string{"-v", dir + ":" + containerDir},
 		Cmd:        []string{"go", "list", "-e", "-json", goConfig.BaseImportPath + "/..."},
-		Stderr:     x.Stderr,
-		Stdout:     x.Stdout,
 	}
 	cmd := container.Command{
 		Container: cont,

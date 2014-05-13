@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"sourcegraph.com/sourcegraph/srcgraph/dep2"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
@@ -29,7 +28,7 @@ The options are:
 	fs.Parse(args)
 	sourceUnitSpecs := fs.Args()
 
-	context, err := NewJobContext(*Dir, task2.DefaultContext)
+	context, err := NewJobContext(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -40,7 +39,7 @@ The options are:
 			continue
 		}
 
-		rawDeps, err := dep2.List(context.RepoRootDir, u, context.Repo, task2.DefaultContext)
+		rawDeps, err := dep2.List(context.RepoRootDir, u, context.Repo)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -58,7 +57,7 @@ The options are:
 
 			if *resolve {
 				log.Printf("# resolves to:")
-				resolvedDep, err := dep2.Resolve(rawDep, context.Repo, task2.DefaultContext)
+				resolvedDep, err := dep2.Resolve(rawDep, context.Repo)
 				if err != nil {
 					log.Fatal(err)
 				}

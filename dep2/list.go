@@ -11,7 +11,6 @@ import (
 	"code.google.com/p/rog-go/parallel"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
@@ -76,19 +75,19 @@ type RawDependency struct {
 }
 
 type Lister interface {
-	List(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) ([]*RawDependency, error)
+	List(dir string, unit unit.SourceUnit, c *config.Repository) ([]*RawDependency, error)
 }
 
 type ListerBuilder interface {
-	BuildLister(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error)
+	BuildLister(dir string, unit unit.SourceUnit, c *config.Repository) (*container.Command, error)
 }
 
 type DockerLister struct {
 	ListerBuilder
 }
 
-func (l DockerLister) List(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) ([]*RawDependency, error) {
-	cmd, err := l.BuildLister(dir, unit, c, x)
+func (l DockerLister) List(dir string, unit unit.SourceUnit, c *config.Repository) ([]*RawDependency, error) {
+	cmd, err := l.BuildLister(dir, unit, c)
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +108,7 @@ func (l DockerLister) List(dir string, unit unit.SourceUnit, c *config.Repositor
 
 // List lists all dependencies of the source unit (whose repository is cloned to
 // dir), using all registered Listers.
-func List(dir string, u unit.SourceUnit, c *config.Repository, x *task2.Context) ([]*RawDependency, error) {
+func List(dir string, u unit.SourceUnit, c *config.Repository) ([]*RawDependency, error) {
 	var deps struct {
 		list []*RawDependency
 		sync.Mutex
@@ -119,7 +118,7 @@ func List(dir string, u unit.SourceUnit, c *config.Repository, x *task2.Context)
 	for _, l_ := range Listers[ptrTo(u)] {
 		l := l_
 		run.Do(func() error {
-			deps2, err := l.List(dir, u, c, x)
+			deps2, err := l.List(dir, u, c)
 			if err != nil {
 				return err
 			}

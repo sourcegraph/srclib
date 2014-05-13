@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
@@ -29,7 +28,7 @@ The options are:
 	fs.Parse(args)
 	sourceUnitSpecs := fs.Args()
 
-	context, err := NewJobContext(*Dir, task2.DefaultContext)
+	context, err := NewJobContext(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,7 +38,7 @@ The options are:
 			continue
 		}
 
-		output, err := grapher2.Graph(context.RepoRootDir, u, context.Repo, task2.DefaultContext)
+		output, err := grapher2.Graph(context.RepoRootDir, u, context.Repo)
 		if err != nil {
 			log.Fatal(err)
 		}

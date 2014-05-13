@@ -3,6 +3,7 @@ package golang
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -17,7 +18,6 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
 	"sourcegraph.com/sourcegraph/srcgraph/dep2"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
@@ -26,7 +26,7 @@ func init() {
 	dep2.RegisterResolver(goImportPathTargetType, defaultGoVersion)
 }
 
-func (v *goVersion) BuildLister(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error) {
+func (v *goVersion) BuildLister(dir string, unit unit.SourceUnit, c *config.Repository) (*container.Command, error) {
 	goConfig := v.goConfig(c)
 	pkg := unit.(*Package)
 
@@ -72,12 +72,12 @@ type goImportPath string
 
 const goImportPathTargetType = "go-import-path"
 
-func (v *goVersion) Resolve(dep *dep2.RawDependency, c *config.Repository, x *task2.Context) (*dep2.ResolvedTarget, error) {
+func (v *goVersion) Resolve(dep *dep2.RawDependency, c *config.Repository) (*dep2.ResolvedTarget, error) {
 	importPath := dep.Target.(string)
-	return v.resolveGoImportDep(importPath, c, x)
+	return v.resolveGoImportDep(importPath, c)
 }
 
-func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository, x *task2.Context) (*dep2.ResolvedTarget, error) {
+func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository) (*dep2.ResolvedTarget, error) {
 	// Look up in cache.
 	resolvedTarget := func() *dep2.ResolvedTarget {
 		v.resolveCacheMu.Lock()
@@ -120,7 +120,7 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository, 
 		}, nil
 	}
 
-	x.Log.Printf("Resolving Go dep: %s", importPath)
+	log.Printf("Resolving Go dep: %s", importPath)
 
 	dir, err := gosrc.Get(sourcegraph.AuthenticatingAsNeededHTTPClient, string(importPath), "")
 	if err != nil {

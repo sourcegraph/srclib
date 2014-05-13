@@ -8,7 +8,6 @@ import (
 	"os"
 
 	"sourcegraph.com/sourcegraph/srcgraph/dep2"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
 func resolveDeps(args []string) {
@@ -30,7 +29,7 @@ The options are:
 	inputs := OpenInputFiles(fs.Args())
 	defer CloseAll(inputs)
 
-	context, err := NewJobContext(*Dir, task2.DefaultContext)
+	context, err := NewJobContext(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -49,7 +48,7 @@ The options are:
 		allRawDeps = append(allRawDeps, rawDeps...)
 	}
 
-	resolvedDeps, err := dep2.ResolveAll(allRawDeps, context.Repo, task2.DefaultContext)
+	resolvedDeps, err := dep2.ResolveAll(allRawDeps, context.Repo)
 	if err != nil {
 		log.Fatal(err)
 	}

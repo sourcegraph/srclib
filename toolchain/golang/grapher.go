@@ -13,7 +13,6 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/graph"
 	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/toolchain/golang/gog"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
@@ -22,7 +21,7 @@ func init() {
 	grapher2.Register(&Package{}, grapher2.DockerGrapher{defaultGoVersion})
 }
 
-func (v *goVersion) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error) {
+func (v *goVersion) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Repository) (*container.Command, error) {
 	gogBinPath := filepath.Join(os.Getenv("GOBIN"), "gog")
 
 	dockerfile, err := v.baseDockerfile()
@@ -44,8 +43,6 @@ func (v *goVersion) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Rep
 			AddFiles:   [][2]string{{gogBinPath, "/usr/local/bin/gog"}},
 			Cmd:        []string{"bash", "-c", fmt.Sprintf("go get -v -t %s; gog %s", pkg.ImportPath, pkg.ImportPath)},
 			Dir:        containerDir,
-			Stderr:     x.Stderr,
-			Stdout:     x.Stdout,
 		},
 		Transform: func(in []byte) ([]byte, error) {
 			var o gog.Output
@@ -61,19 +58,19 @@ func (v *goVersion) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Rep
 			}
 
 			for i, gs := range o.Symbols {
-				o2.Symbols[i], err = v.convertGoSymbol(gs, c, x)
+				o2.Symbols[i], err = v.convertGoSymbol(gs, c)
 				if err != nil {
 					return nil, err
 				}
 			}
 			for i, gr := range o.Refs {
-				o2.Refs[i], err = v.convertGoRef(gr, c, x)
+				o2.Refs[i], err = v.convertGoRef(gr, c)
 				if err != nil {
 					return nil, err
 				}
 			}
 			for i, gd := range o.Docs {
-				o2.Docs[i], err = v.convertGoDoc(gd, c, x)
+				o2.Docs[i], err = v.convertGoDoc(gd, c)
 				if err != nil {
 					return nil, err
 				}
@@ -86,8 +83,8 @@ func (v *goVersion) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Rep
 	return &cmd, nil
 }
 
-func (v *goVersion) convertGoSymbol(gs *gog.Symbol, c *config.Repository, x *task2.Context) (*graph.Symbol, error) {
-	resolvedTarget, err := v.resolveGoImportDep(gs.SymbolKey.PackageImportPath, c, x)
+func (v *goVersion) convertGoSymbol(gs *gog.Symbol, c *config.Repository) (*graph.Symbol, error) {
+	resolvedTarget, err := v.resolveGoImportDep(gs.SymbolKey.PackageImportPath, c)
 	if err != nil {
 		return nil, err
 	}
@@ -120,8 +117,8 @@ func (v *goVersion) convertGoSymbol(gs *gog.Symbol, c *config.Repository, x *tas
 	return sym, nil
 }
 
-func (v *goVersion) convertGoRef(gr *gog.Ref, c *config.Repository, x *task2.Context) (*graph.Ref, error) {
-	resolvedTarget, err := v.resolveGoImportDep(gr.Symbol.PackageImportPath, c, x)
+func (v *goVersion) convertGoRef(gr *gog.Ref, c *config.Repository) (*graph.Ref, error) {
+	resolvedTarget, err := v.resolveGoImportDep(gr.Symbol.PackageImportPath, c)
 	if err != nil {
 		return nil, err
 	}
@@ -140,8 +137,8 @@ func (v *goVersion) convertGoRef(gr *gog.Ref, c *config.Repository, x *task2.Con
 	}, nil
 }
 
-func (v *goVersion) convertGoDoc(gd *gog.Doc, c *config.Repository, x *task2.Context) (*graph.Doc, error) {
-	resolvedTarget, err := v.resolveGoImportDep(gd.PackageImportPath, c, x)
+func (v *goVersion) convertGoDoc(gd *gog.Doc, c *config.Repository) (*graph.Doc, error) {
+	resolvedTarget, err := v.resolveGoImportDep(gd.PackageImportPath, c)
 	if err != nil {
 		return nil, err
 	}

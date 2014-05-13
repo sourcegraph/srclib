@@ -8,7 +8,6 @@ import (
 
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/client"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
 func data(args []string) {
@@ -30,7 +29,7 @@ The options are:
 		fs.Usage()
 	}
 
-	context, err := NewJobContext(*Dir, task2.DefaultContext)
+	context, err := NewJobContext(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -1,17 +1,12 @@
 package vcsutil
 
 import (
-	"os"
 	"path/filepath"
 	"time"
 
 	"github.com/sourcegraph/go-blame/blame"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
-	"sourcegraph.com/sourcegraph/util"
 )
-
-var SkipBlame = util.ParseBool(os.Getenv("SG_SKIP_BLAME"))
 
 type BlameOutput struct {
 	CommitMap map[string]blame.Commit
@@ -26,24 +21,14 @@ var blameIgnores = []string{
 	"third-party",
 }
 
-func BlameRepository(dir string, commitID string, c *config.Repository, x *task2.Context) (*BlameOutput, error) {
-	blameOutput := new(BlameOutput)
-	if SkipBlame {
-		x.Log.Printf("Skipping VCS blame (returning empty BlameOutput)")
-		return blameOutput, nil
-	}
-
+func BlameRepository(dir string, commitID string, c *config.Repository) (*BlameOutput, error) {
+	blameOutput := &BlameOutput{}
 	var err error
 	blameOutput.HunkMap, blameOutput.CommitMap, err = blame.BlameRepository(dir, commitID, nil)
 	return utcTime(blameOutput), err
 }
 
-func BlameFiles(dir string, files []string, commitID string, c *config.Repository, x *task2.Context) (*BlameOutput, error) {
-	if SkipBlame {
-		x.Log.Printf("Skipping VCS blame (returning empty BlameOutput)")
-		return new(BlameOutput), nil
-	}
-
+func BlameFiles(dir string, files []string, commitID string, c *config.Repository) (*BlameOutput, error) {
 	hunkMap := make(map[string][]blame.Hunk)
 	commitMap := make(map[string]blame.Commit)
 

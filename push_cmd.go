@@ -10,7 +10,6 @@ import (
 	"os"
 
 	"sourcegraph.com/sourcegraph/config2"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
 func push(args []string) {
@@ -29,7 +28,7 @@ The options are:
 	}
 	fs.Parse(args)
 
-	context, err := NewJobContext(*Dir, task2.DefaultContext)
+	context, err := NewJobContext(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}

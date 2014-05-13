@@ -15,7 +15,6 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/graph"
 	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
@@ -116,14 +115,12 @@ func (p *pythonEnv) grapherCmd(isStdLib bool) []string {
 	return []string{"/bin/bash", "-c", buf.String()}
 }
 
-func (p *pythonEnv) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error) {
+func (p *pythonEnv) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Repository) (*container.Command, error) {
 	return &container.Command{
 		Container: container.Container{
 			RunOptions: []string{"-v", dir + ":" + srcRoot},
 			Dockerfile: p.grapherDockerfile(),
 			Cmd:        p.grapherCmd(c.URI == stdLibRepo),
-			Stderr:     x.Stderr,
-			Stdout:     x.Stdout,
 		},
 		Transform: func(orig []byte) ([]byte, error) {
 			var o rawGraphData
