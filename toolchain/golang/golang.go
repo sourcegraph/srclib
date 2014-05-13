@@ -63,7 +63,7 @@ func (v *goVersion) baseDockerfile() ([]byte, error) {
 
 const containerGOPATH = "/tmp/sg/gopath"
 
-const baseDockerfile = `FROM ubuntu:13.10
+const baseDockerfile = `FROM ubuntu:14.04
 RUN apt-get update
 RUN apt-get install -qy curl
 
