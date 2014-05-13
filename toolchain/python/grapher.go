@@ -23,9 +23,6 @@ func init() {
 	grapher2.Register(&FauxPackage{}, grapher2.DockerGrapher{defaultPythonEnv})
 }
 
-const srcRoot = "/src"
-const stdLibRepo = repo.URI("hg.python.org/cpython")
-
 var builtinPrefixes = map[string]string{"sys": "sys", "os": "os", "path": "os/path"}
 
 var grapherDockerfileTemplate = template.Must(template.New("").Parse(`FROM dockerfile/java
@@ -59,10 +56,16 @@ RUN pip install git+https://github.com/sourcegraph/pydep.git@{{.PydepVersion}}
 `))
 
 var grapherDockerCmdTemplate = template.Must(template.New("").Parse(`
+{{if not .IsStdLib}}
 /venv/bin/pip install {{.SrcDir}} 1>&2 || /venv/bin/pip install -r {{.SrcDir}}/requirements.txt 1>&2;
+{{end}}
 
 # Compute requirements
+{{if .IsStdLib}}
+REQDATA='[]'
+{{else}}
 REQDATA=$(pydep-run.py dep {{.SrcDir}});
+{{end}}
 
 # Compute graph
 echo 'Running graphing step...' 1>&2;
@@ -94,7 +97,7 @@ func (p *pythonEnv) sitePackagesDir() string {
 	return filepath.Join("/venv", "lib", p.PythonVersion, "site-packages")
 }
 
-func (p *pythonEnv) grapherCmd() []string {
+func (p *pythonEnv) grapherCmd(isStdLib bool) []string {
 	javaOpts := os.Getenv("PYGRAPH_JAVA_OPTS")
 	inclpaths := []string{srcRoot, p.stdLibDir(), p.sitePackagesDir()}
 
@@ -103,10 +106,12 @@ func (p *pythonEnv) grapherCmd() []string {
 		JavaOpts     string
 		SrcDir       string
 		IncludePaths string
+		IsStdLib     bool
 	}{
 		JavaOpts:     javaOpts,
 		SrcDir:       srcRoot,
 		IncludePaths: strings.Join(inclpaths, ":"),
+		IsStdLib:     isStdLib,
 	})
 	return []string{"/bin/bash", "-c", buf.String()}
 }
@@ -116,7 +121,7 @@ func (p *pythonEnv) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Rep
 		Container: container.Container{
 			RunOptions: []string{"-v", dir + ":" + srcRoot},
 			Dockerfile: p.grapherDockerfile(),
-			Cmd:        p.grapherCmd(),
+			Cmd:        p.grapherCmd(c.URI == stdLibRepo),
 			Stderr:     x.Stderr,
 			Stdout:     x.Stdout,
 		},
