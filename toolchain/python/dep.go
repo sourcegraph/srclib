@@ -86,7 +86,7 @@ func (l *pythonEnv) depDockerfile() ([]byte, error) {
 }
 
 const pythonRequirementTargetType = "python-requirement"
-const depDockerfile = `FROM ubuntu:13.10
+const depDockerfile = `FROM ubuntu:14.04
 RUN apt-get update
 RUN apt-get install -qy curl
 RUN apt-get install -qy git
