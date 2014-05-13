@@ -185,7 +185,7 @@ func getVCSCloneURL(vcsType string, repoDir string) (string, error) {
 	cmd.Dir = repoDir
 	out, err := cmd.Output()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("could not get VCS URL: %s", err)
 	}
 
 	cloneURL := strings.TrimSpace(string(out))
