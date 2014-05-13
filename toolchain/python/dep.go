@@ -20,16 +20,26 @@ func init() {
 }
 
 func (p *pythonEnv) BuildLister(dir string, unit unit.SourceUnit, c *config.Repository, x *task2.Context) (*container.Command, error) {
-	dockerfile, err := p.depDockerfile()
-	if err != nil {
-		return nil, err
+	var dockerfile []byte
+	var cmd []string
+	var err error
+	var runOpts = []string{"-v", dir + ":" + srcRoot}
+	if c.URI == stdLibRepo {
+		dockerfile = []byte(`FROM ubuntu:14.04`)
+		cmd = []string{"echo", "[]"}
+	} else {
+		dockerfile, err = p.depDockerfile()
+		if err != nil {
+			return nil, err
+		}
+		cmd = []string{"pydep-run.py", "dep", srcRoot}
 	}
 
 	return &container.Command{
 		Container: container.Container{
 			Dockerfile: dockerfile,
-			RunOptions: []string{"-v", dir + ":" + srcRoot},
-			Cmd:        []string{"pydep-run.py", "dep", srcRoot},
+			RunOptions: runOpts,
+			Cmd:        cmd,
 			Stderr:     x.Stderr,
 			Stdout:     x.Stdout,
 		},
