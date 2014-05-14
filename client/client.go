@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/google/go-querystring/query"
@@ -145,11 +146,30 @@ type HTTPResponse struct {
 	*http.Response
 }
 
+// TotalCount implements Response.
+func (r *HTTPResponse) TotalCount() int {
+	tc := r.Header.Get("x-total-count")
+	if tc == "" {
+		return -1
+	}
+	n, err := strconv.Atoi(tc)
+	if err != nil {
+		return -1
+	}
+	return n
+}
+
 type MockResponse struct{}
 
 // Response is a response from the Sourcegraph API. When using the HTTP API,
 // API methods return *HTTPResponse values that implement Response.
-type Response interface{}
+type Response interface {
+	// TotalCount is the total number of items in the resource or result set
+	// that exist remotely. Only a portion of the total may be in the response
+	// body. If the endpoint did not return a total count, then TotalCount
+	// returns -1.
+	TotalCount() int
+}
 
 // ListOptions specifies general pagination options for fetching a list of
 // results.

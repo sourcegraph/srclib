@@ -150,6 +150,7 @@ type BuildListOptions struct {
 	Queued    bool `url:",omitempty"`
 	Ended     bool `url:",omitempty"`
 	Succeeded bool `url:",omitempty"`
+	Failed    bool `url:",omitempty"`
 
 	ListOptions
 }
