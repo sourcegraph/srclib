@@ -59,6 +59,9 @@ type Build struct {
 	Success   bool
 	Failure   bool
 
+	// Host is the hostname of the machine that is working on this build.
+	Host string
+
 	BuildConfig
 
 	// RepoURI is populated (as a convenience) in results by Get and List but
