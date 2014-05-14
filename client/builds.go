@@ -71,6 +71,11 @@ func (b *Build) IDString() string { return buildIDString(b.BID) }
 
 func buildIDString(bid int64) string { return "B" + strconv.FormatInt(bid, 36) }
 
+// LogURL is the URL to the logs for this build.
+func (b *Build) LogURL() string {
+	return task2.LogURLForTag(b.IDString())
+}
+
 // A BuildTask represents an individual step of a build.
 type BuildTask struct {
 	TID int64
