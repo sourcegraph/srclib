@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/util"
 
 	"github.com/aybabtme/color/brush"
@@ -41,7 +40,7 @@ func Test_SrcgraphCmd(t *testing.T) {
 			}
 
 			t.Logf("Running test case %+v", tcase)
-			context, err := NewJobContext(".", task2.DefaultContext)
+			context, err := NewJobContext(".")
 			if err != nil {
 				allPass = false
 				t.Errorf("Failed to get job context due to error %s", err)

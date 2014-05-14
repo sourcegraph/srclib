@@ -6,7 +6,6 @@ import (
 
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
@@ -41,7 +40,7 @@ func TestSourceUnits(t *testing.T) {
 
 	wantUnits := []unit.SourceUnit{DummyPackage{"foo"}}
 
-	units, err := SourceUnits("qux", &config.Repository{}, task2.DefaultContext)
+	units, err := SourceUnits("qux", &config.Repository{})
 	if err != nil {
 		t.Fatal(err)
 	}
