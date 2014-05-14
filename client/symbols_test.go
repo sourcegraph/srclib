@@ -90,6 +90,46 @@ func TestSymbolsService_List(t *testing.T) {
 	}
 }
 
+func TestSymbolsService_Search(t *testing.T) {
+	setup()
+	defer teardown()
+
+	want := []*Symbol{{Symbol: graph.Symbol{SID: 1}}}
+
+	var called bool
+	mux.HandleFunc(urlPath(t, api_router.SymbolSearch, nil), func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"Query":    "q",
+			"Exported": "true",
+			"Instant":  "true",
+			"PerPage":  "1",
+			"Page":     "2",
+		})
+
+		writeJSON(w, want)
+	})
+
+	people, _, err := client.Symbols.Search(&SymbolSearchOptions{
+		Query:       "q",
+		Exported:    true,
+		Instant:     true,
+		ListOptions: ListOptions{PerPage: 1, Page: 2},
+	})
+	if err != nil {
+		t.Errorf("Search.Search returned error: %v", err)
+	}
+
+	if !called {
+		t.Fatal("!called")
+	}
+
+	if !reflect.DeepEqual(people, want) {
+		t.Errorf("Search.Search returned %+v, want %+v", people, want)
+	}
+}
+
 func TestSymbolsService_Tree(t *testing.T) {
 	setup()
 	defer teardown()

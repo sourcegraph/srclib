@@ -21,6 +21,9 @@ type SymbolsService interface {
 	// List symbols.
 	List(opt *SymbolListOptions) ([]*Symbol, Response, error)
 
+	// Search symbols.
+	Search(opt *SymbolSearchOptions) ([]*Symbol, Response, error)
+
 	// Tree returns a tree of symbols.
 	Tree(opt *SymbolTreeOptions) ([]*SymbolNode, Response, error)
 
@@ -198,6 +201,36 @@ type SymbolListOptions struct {
 
 func (s *symbolsService) List(opt *SymbolListOptions) ([]*Symbol, Response, error) {
 	url, err := s.client.url(api_router.Symbols, nil, opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewRequest("GET", url.String(), nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var symbols []*Symbol
+	resp, err := s.client.Do(req, &symbols)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return symbols, resp, nil
+}
+
+// SymbolSearchOptions specifies options for SymbolsService.Search
+type SymbolSearchOptions struct {
+	Query         string
+	Exported      bool   `url:",omitempty"` // TODO: make mandatory true for non-repo-limited queries
+	RepositoryURI string `url:",omitempty"` // TODO
+	ParentPath    string `url:",omitempty"` // TODO
+	Instant       bool   `url:",omitempty"`
+	ListOptions
+}
+
+func (s *symbolsService) Search(opt *SymbolSearchOptions) ([]*Symbol, Response, error) {
+	url, err := s.client.url(api_router.SymbolSearch, nil, opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -469,6 +502,7 @@ func (s *symbolsService) CountByRepository(repo RepositorySpec) (*graph.SymbolCo
 type MockSymbolsService struct {
 	Get_                 func(symbol SymbolSpec, opt *SymbolGetOptions) (*Symbol, Response, error)
 	List_                func(opt *SymbolListOptions) ([]*Symbol, Response, error)
+	Search_              func(opt *SymbolSearchOptions) ([]*Symbol, Response, error)
 	Tree_                func(opt *SymbolTreeOptions) ([]*SymbolNode, Response, error)
 	ListExamples_        func(symbol SymbolSpec, opt *SymbolListExamplesOptions) ([]*Example, Response, error)
 	ListAuthors_         func(symbol SymbolSpec, opt *SymbolListAuthorsOptions) ([]*AugmentedSymbolAuthor, Response, error)
@@ -493,6 +527,13 @@ func (s MockSymbolsService) List(opt *SymbolListOptions) ([]*Symbol, Response, e
 		return nil, &HTTPResponse{}, nil
 	}
 	return s.List_(opt)
+}
+
+func (s MockSymbolsService) Search(opt *SymbolSearchOptions) ([]*Symbol, Response, error) {
+	if s.Search_ == nil {
+		return nil, &HTTPResponse{}, nil
+	}
+	return s.Search_(opt)
 }
 
 func (s MockSymbolsService) Tree(opt *SymbolTreeOptions) ([]*SymbolNode, Response, error) {
