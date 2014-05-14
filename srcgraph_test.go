@@ -48,8 +48,11 @@ func Test_SrcgraphCmd(t *testing.T) {
 				return
 			}
 			context.CommitID = "test-commit"
-			err = make__(nil, context, &makex.Default, false, *Verbose)
+			mk, _, err := NewMaker(nil, context, &makex.Default)
 			if err != nil {
+				t.Fatalf("Test case %+v failed to prepare make: %s", err)
+			}
+			if err = mk.Run(); err != nil {
 				allPass = false
 				t.Errorf("Test case %+v returned error %s", tcase, err)
 				return

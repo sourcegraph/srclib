@@ -9,12 +9,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"sourcegraph.com/sourcegraph/util"
 	"sync"
 )
 
 var LogDir = filepath.Join(os.TempDir(), "sg-log")
-var TagLength = 3
 
 func init() {
 	err := os.MkdirAll(LogDir, 0700)
@@ -23,18 +21,14 @@ func init() {
 	}
 }
 
-type Context struct {
-	Log            *log.Logger
-	Stderr, Stdout io.Writer
-
+type Logger struct {
+	*log.Logger
+	io.Writer
 	Destination string
-
-	tag string
-
-	c []io.Closer
+	c           []io.Closer
 }
 
-func (x *Context) Close() error {
+func (x *Logger) Close() error {
 	if len(x.c) == 0 {
 		return nil
 	}
@@ -47,29 +41,12 @@ func (x *Context) Close() error {
 	return nil
 }
 
-func (x *Context) Child() *Context {
-	if x.tag == "" {
-		return x
-	}
-
-	return newRecordedContext(x.tag + "-" + newRandomTag())
+func LogURLForTag(tag string) string {
+	return fmt.Sprintf("https://papertrailapp.com/groups/591393/events?q=program:%s", url.QueryEscape(tag))
 }
 
-var DefaultContext *Context = &Context{
-	Log:         log.New(os.Stderr, "", log.Ltime|log.Lmicroseconds),
-	Stderr:      os.Stderr,
-	Stdout:      os.Stdout,
-	Destination: "console",
-}
-
-func newRandomTag() string { return util.RandomPrintable(TagLength) }
-
-func NewRecordedContext() *Context {
-	return newRecordedContext(newRandomTag())
-}
-
-func newRecordedContext(tag string) *Context {
-	logURL := fmt.Sprintf("https://papertrailapp.com/groups/591393/events?q=program:%s", url.QueryEscape(tag))
+func NewLogger(tag string) *Logger {
+	logURL := LogURLForTag(tag)
 	pw, err := syslog.Dial("udp", "logs.papertrailapp.com:50140", syslog.LOG_INFO, tag)
 	if err != nil {
 		log.Fatal(err)
@@ -87,12 +64,10 @@ func newRecordedContext(tag string) *Context {
 	defer closersMu.Unlock()
 	closers = append(closers, pw, fw)
 
-	return &Context{
-		Log:         log.New(mw, "", 0),
-		Stderr:      mw,
-		Stdout:      mw,
+	return &Logger{
+		Logger:      log.New(mw, "", 0),
+		Writer:      mw,
 		Destination: fmt.Sprintf("%s and %s", logURL, logFile),
-		tag:         tag,
 		c:           []io.Closer{pw, fw},
 	}
 }

@@ -48,24 +48,48 @@ The options are:
 		log.Fatal(err)
 	}
 
-	err = make__(goals, context, conf, *showOnly, *Verbose)
+	mk, mf, err := NewMaker(goals, context, conf)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if *Verbose || *showOnly {
+		data, err := makex.Marshal(mf)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(string(data))
+		if *showOnly {
+			return
+		}
+	}
+
+	if conf.DryRun {
+		err := mk.DryRun(os.Stdout)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
+
+	err = mk.Run()
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func make__(goals []string, context *JobContext, conf *makex.Config, showOnly bool, verbose bool) error {
+func NewMaker(goals []string, context *JobContext, conf *makex.Config) (*makex.Maker, *makex.Makefile, error) {
 	if err := WriteRepositoryConfig(context.RepoRootDir, context.CommitID, context.Repo, false); err != nil {
-		return fmt.Errorf("unable to write repository config file due to error %s", err)
+		return nil, nil, fmt.Errorf("unable to write repository config file due to error %s", err)
 	}
 
 	repoStore, err := buildstore.NewRepositoryStore(context.RepoRootDir)
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 	buildDir, err := buildstore.BuildDir(repoStore, context.CommitID)
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 	// Use a relative base path for the Makefile so that we aren't tied to
 	// absolute paths. This makes the Makefile more portable between hosts. (And
@@ -73,50 +97,34 @@ func make__(goals []string, context *JobContext, conf *makex.Config, showOnly bo
 	// certain path.)
 	buildDir, err = filepath.Rel(context.RepoRootDir, buildDir)
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 
 	mf, err := build.CreateMakefile(buildDir, context.Repo)
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 
-	if verbose || showOnly {
-		data, err := makex.Marshal(mf)
-		if err != nil {
-			return err
-		}
-		fmt.Println(string(data))
-		if showOnly {
-			return nil
-		}
-	}
-
-	// Run Makefile
-	err = runMakefile(mf, conf, context.RepoRootDir, goals)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func runMakefile(mf *makex.Makefile, conf *makex.Config, repoDir string, goals []string) error {
 	if len(goals) == 0 {
 		if defaultRule := mf.DefaultRule(); defaultRule != nil {
 			goals = []string{defaultRule.Target()}
-		} else {
-			// No rules in Makefile
-			return nil
 		}
 	}
 
-	err := os.Chdir(repoDir) // TODO: kinda ugly
-	if err != nil {
-		return err
+	// Change to the directory that make prereqs are relative to, so that makex
+	// can properly compute the DAG.
+	if err := os.Chdir(context.RepoRootDir); err != nil {
+		return nil, nil, err
 	}
-	mk := conf.NewMaker(mf, goals...)
-	if conf.DryRun {
-		return mk.DryRun(os.Stdout)
-	}
-	return mk.Run()
+
+	return conf.NewMaker(mf, goals...), mf, nil
 }
+
+// func runMakefile(mf *makex.Makefile, conf *makex.Config, repoDir string, goals []string, w io.Writer) error {
+
+// 	mk.RuleOutput = func(rule makex.Rule) (out io.Writer, err io.Writer) {
+// 		return nil, nil
+// 	}
+
+// 	return mk.Run()
+// }

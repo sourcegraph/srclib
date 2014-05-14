@@ -5,9 +5,12 @@ import (
 	"fmt"
 	"time"
 
+	"strconv"
+
 	"sourcegraph.com/sourcegraph/api_router"
 	"sourcegraph.com/sourcegraph/srcgraph/db_common"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
+	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 
 // BuildsService communicates with the build-related endpoints in the
@@ -25,6 +28,9 @@ type BuildsService interface {
 	// Create a new build. The build will run asynchronously (Create does not
 	// wait for it to return. To monitor the build's status, use Get.)
 	Create(repo RepositorySpec, conf BuildConfig) (*Build, Response, error)
+
+	// ListBuildTasks lists the tasks associated with a build.
+	ListBuildTasks(build BuildSpec, opt *BuildTaskListOptions) ([]*BuildTask, Response, error)
 }
 
 type buildsService struct {
@@ -58,6 +64,40 @@ type Build struct {
 	// RepoURI is populated (as a convenience) in results by Get and List but
 	// should not be set when creating builds (it will be ignored).
 	RepoURI repo.URI `db:"repo_uri" json:",omitempty"`
+}
+
+// IDString returns a succinct string that uniquely identifies this build.
+func (b *Build) IDString() string { return buildIDString(b.BID) }
+
+func buildIDString(bid int64) string { return "B" + strconv.FormatInt(bid, 36) }
+
+// A BuildTask represents an individual step of a build.
+type BuildTask struct {
+	TID int64
+
+	// BID is the build that this task is a part of.
+	BID int64
+
+	UnitType string
+	Unit     string
+
+	Title string
+
+	StartedAt db_common.NullTime `db:"started_at"`
+	EndedAt   db_common.NullTime `db:"ended_at"`
+
+	Success bool
+	Failure bool
+}
+
+// IDString returns a succinct string that uniquely identifies this build task.
+func (t *BuildTask) IDString() string {
+	return buildIDString(t.BID) + "-T" + strconv.FormatInt(t.TID, 36)
+}
+
+// LogURL is the URL to the logs for this task.
+func (t *BuildTask) LogURL() string {
+	return task2.LogURLForTag(t.IDString())
 }
 
 // BuildConfig configures a repository build.
@@ -171,11 +211,34 @@ func (s *buildsService) Create(repo RepositorySpec, conf BuildConfig) (*Build, R
 	return build, resp, nil
 }
 
+type BuildTaskListOptions struct{ ListOptions }
+
+func (s *buildsService) ListBuildTasks(build BuildSpec, opt *BuildTaskListOptions) ([]*BuildTask, Response, error) {
+	url, err := s.client.url(api_router.BuildTasks, build.RouteVars(), opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewRequest("GET", url.String(), nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var tasks []*BuildTask
+	resp, err := s.client.Do(req, &tasks)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return tasks, resp, nil
+}
+
 type MockBuildsService struct {
 	Get_              func(build BuildSpec, opt *BuildGetOptions) (*Build, Response, error)
 	List_             func(opt *BuildListOptions) ([]*Build, Response, error)
 	ListByRepository_ func(repo RepositorySpec, opt *BuildListByRepositoryOptions) ([]*Build, Response, error)
 	Create_           func(repo RepositorySpec, conf BuildConfig) (*Build, Response, error)
+	ListBuildTasks_   func(build BuildSpec, opt *BuildTaskListOptions) ([]*BuildTask, Response, error)
 }
 
 var _ BuildsService = MockBuildsService{}
@@ -206,4 +269,11 @@ func (s MockBuildsService) Create(repo RepositorySpec, conf BuildConfig) (*Build
 		return nil, nil, nil
 	}
 	return s.Create_(repo, conf)
+}
+
+func (s MockBuildsService) ListBuildTasks(build BuildSpec, opt *BuildTaskListOptions) ([]*BuildTask, Response, error) {
+	if s.ListBuildTasks_ == nil {
+		return nil, nil, nil
+	}
+	return s.ListBuildTasks_(build, opt)
 }
