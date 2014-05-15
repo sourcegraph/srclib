@@ -13,20 +13,22 @@ const (
 	// StatXRefs is the number of external references to a symbol (i.e.,
 	// references from other repositories). It is only computed for abstract
 	// symbols (see the docs for SymbolKey) because it is not easy to determine
-	// which specific commit a ref references.
+	// which specific commit a ref references (for external refs).
 	StatXRefs = "xrefs"
 
 	// StatRRefs is the number of references to a symbol from the same
 	// repository in which the symbol is defined. It is inclusive of the
 	// StatURefs count. It is only computed for concrete symbols (see the docs
 	// for SymbolKey) because otherwise it would count 1 rref for each unique
-	// revision of the repository that we have processed.
+	// revision of the repository that we have processed. (It is easy to
+	// determine which specific commit an internal ref references; we just
+	// assume it references a symbol in the same commit.)
 	StatRRefs = "rrefs"
 
 	// StatURefs is the number of references to a symbol from the same source
 	// unit in which the symbol is defined. It is included in the StatRRefs
 	// count. It is only computed for concrete symbols (see the docs for
-	// SymbolKey) because otherwise it would count 1 rref for each revision of
+	// SymbolKey) because otherwise it would count 1 uref for each revision of
 	// the repository that we have processed.
 	StatURefs = "urefs"
 
