@@ -5,9 +5,11 @@ import (
 	"fmt"
 )
 
-type Stats map[StatType]int
-
+// StatType is the name of a symbol statistic (see below for a listing).
 type StatType string
+
+// Stats holds statistics for a symbol.
+type Stats map[StatType]int
 
 const (
 	// StatXRefs is the number of external references to a symbol (i.e.,
@@ -68,10 +70,12 @@ const (
 	StatImplementations = "implementations"
 )
 
+// Value implements database/sql/driver.Valuer.
 func (x StatType) Value() (driver.Value, error) {
 	return string(x), nil
 }
 
+// Scan implements database/sql.Scanner.
 func (x *StatType) Scan(v interface{}) error {
 	if data, ok := v.([]byte); ok {
 		*x = StatType(data)
