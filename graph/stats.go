@@ -10,18 +10,60 @@ type Stats map[StatType]int
 type StatType string
 
 const (
-	StatXRefs            = "xrefs"
-	StatRRefs            = "rrefs"
-	StatURefs            = "urefs"
-	StatXRefsRecursive   = "xrefs-recursive"
-	StatRRefsRecursive   = "rrefs-recursive"
-	StatURefsRecursive   = "urefs-recursive"
-	StatAuthors          = "authors"
-	StatClients          = "clients"
-	StatDependents       = "dependents"
+	// StatXRefs is the number of external references to a symbol (i.e.,
+	// references from other repositories). It is only computed for abstract
+	// symbols (see the docs for SymbolKey) because it is not easy to determine
+	// which specific commit a ref references.
+	StatXRefs = "xrefs"
+
+	// StatRRefs is the number of references to a symbol from the same
+	// repository in which the symbol is defined. It is inclusive of the
+	// StatURefs count. It is only computed for concrete symbols (see the docs
+	// for SymbolKey) because otherwise it would count 1 rref for each unique
+	// revision of the repository that we have processed.
+	StatRRefs = "rrefs"
+
+	// StatURefs is the number of references to a symbol from the same source
+	// unit in which the symbol is defined. It is included in the StatRRefs
+	// count. It is only computed for concrete symbols (see the docs for
+	// SymbolKey) because otherwise it would count 1 rref for each revision of
+	// the repository that we have processed.
+	StatURefs = "urefs"
+
+	// StatAuthors is the number of distinct resolved people who contributed
+	// code to a symbol's definition (according to a VCS "blame" of the
+	// version). It is only computed for concrete symbols (see the docs for
+	// SymbolKey).
+	StatAuthors = "authors"
+
+	// StatClients is the number of distinct resolved people who have committed
+	// refs that reference a symbol. It is only computed for abstract symbols
+	// (see the docs for SymbolKey) because it is not easy to determine which
+	// specific commit a ref references.
+	StatClients = "clients"
+
+	// StatClients is the number of distinct repositories that contain refs that
+	// reference a symbol. It is only computed for abstract symbols (see the
+	// docs for SymbolKey) because it is not easy to determine which specific
+	// commit a ref references.
+	StatDependents = "dependents"
+
+	// StatExportedElements is the number of exported symbols whose path is a
+	// descendant of this symbol's path (and that is in the same repository and
+	// source unit). It is only computed for concrete symbols (see the docs for
+	// SymbolKey) because otherwise it would count 1 exported element for each
+	// revision of the repository that we have processed.
 	StatExportedElements = "exported-elements"
-	StatInterfaces       = "interfaces"
-	StatImplementations  = "implementations"
+
+	// StatInterfaces is the number of interfaces that a symbol implements (in
+	// its own repository or other repositories). TODO(sqs): it is not currently
+	// being computed.
+	StatInterfaces = "interfaces"
+
+	// StatImplementations is the number of implementations of an interface
+	// symbol (in its own repository or other repositories). TODO(sqs): it is
+	// not currently being computed.
+	StatImplementations = "implementations"
 )
 
 func (x StatType) Value() (driver.Value, error) {
