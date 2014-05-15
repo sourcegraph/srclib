@@ -6,6 +6,9 @@ import (
 	"reflect"
 	"testing"
 
+	"strings"
+
+	"sourcegraph.com/sourcegraph/Godeps/_workspace/src/github.com/kr/pretty"
 	"sourcegraph.com/sourcegraph/api_router"
 	"sourcegraph.com/sourcegraph/srcgraph/person"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
@@ -149,7 +152,7 @@ func TestRepositoriesService_List(t *testing.T) {
 	setup()
 	defer teardown()
 
-	want := []*repo.Repository{{RID: 1}}
+	want := []*Repository{&Repository{Repository: &repo.Repository{RID: 1}}}
 
 	var called bool
 	mux.HandleFunc(urlPath(t, api_router.Repositories, nil), func(w http.ResponseWriter, r *http.Request) {
@@ -185,7 +188,7 @@ func TestRepositoriesService_List(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(repos, want) {
-		t.Errorf("Repositories.List returned %+v, want %+v", repos, want)
+		t.Errorf("Repositories.List returned %+v, want %+v with diff: %s", repos, want, strings.Join(pretty.Diff(want, repos), "\n"))
 	}
 }
 
