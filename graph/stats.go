@@ -46,10 +46,10 @@ const (
 	// specific commit a ref references.
 	StatClients = "clients"
 
-	// StatClients is the number of distinct repositories that contain refs that
-	// reference a symbol. It is only computed for abstract symbols (see the
-	// docs for SymbolKey) because it is not easy to determine which specific
-	// commit a ref references.
+	// StatDependents is the number of distinct repositories that contain refs
+	// that reference a symbol. It is only computed for abstract symbols (see
+	// the docs for SymbolKey) because it is not easy to determine which
+	// specific commit a ref references.
 	StatDependents = "dependents"
 
 	// StatExportedElements is the number of exported symbols whose path is a
