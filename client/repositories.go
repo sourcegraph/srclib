@@ -36,7 +36,7 @@ type RepositoriesService interface {
 	GetReadme(repo RepositorySpec) (string, Response, error)
 
 	// List repositories.
-	List(opt *RepositoryListOptions) ([]*repo.Repository, Response, error)
+	List(opt *RepositoryListOptions) ([]*Repository, Response, error)
 
 	// ListBadges lists the available badges for repo.
 	ListBadges(repo RepositorySpec) ([]*Badge, Response, error)
@@ -256,7 +256,7 @@ type RepositoryListOptions struct {
 	ListOptions
 }
 
-func (s *repositoriesService) List(opt *RepositoryListOptions) ([]*repo.Repository, Response, error) {
+func (s *repositoriesService) List(opt *RepositoryListOptions) ([]*Repository, Response, error) {
 	url, err := s.client.url(api_router.Repositories, nil, opt)
 	if err != nil {
 		return nil, nil, err
@@ -267,7 +267,7 @@ func (s *repositoriesService) List(opt *RepositoryListOptions) ([]*repo.Reposito
 		return nil, nil, err
 	}
 
-	var repos []*repo.Repository
+	var repos []*Repository
 	resp, err := s.client.Do(req, &repos)
 	if err != nil {
 		return nil, resp, err
@@ -588,7 +588,7 @@ type MockRepositoriesService struct {
 	Sync_              func(repo repo.URI) (Response, error)
 	Create_            func(newRepoSpec NewRepositorySpec) (*repo.Repository, Response, error)
 	GetReadme_         func(repo RepositorySpec) (string, Response, error)
-	List_              func(opt *RepositoryListOptions) ([]*repo.Repository, Response, error)
+	List_              func(opt *RepositoryListOptions) ([]*Repository, Response, error)
 	ListBadges_        func(repo RepositorySpec) ([]*Badge, Response, error)
 	ListCounters_      func(repo RepositorySpec) ([]*Counter, Response, error)
 	ListAuthors_       func(repo RepositorySpec, opt *RepositoryListAuthorsOptions) ([]*AugmentedRepoAuthor, Response, error)
@@ -638,7 +638,7 @@ func (s MockRepositoriesService) GetReadme(repo RepositorySpec) (string, Respons
 	return s.GetReadme_(repo)
 }
 
-func (s MockRepositoriesService) List(opt *RepositoryListOptions) ([]*repo.Repository, Response, error) {
+func (s MockRepositoriesService) List(opt *RepositoryListOptions) ([]*Repository, Response, error) {
 	if s.List_ == nil {
 		return nil, &HTTPResponse{}, nil
 	}
