@@ -5,8 +5,10 @@ import (
 	"fmt"
 )
 
+// StatType is the name of a repository statistic (see below for a listing).
 type StatType string
 
+// Stats holds statistics for a repository.
 type Stats map[StatType]int
 
 const (
@@ -49,10 +51,12 @@ const (
 	StatExportedSymbols = "exported-symbols"
 )
 
+// Value implements database/sql/driver.Valuer.
 func (x StatType) Value() (driver.Value, error) {
 	return string(x), nil
 }
 
+// Scan implements database/sql.Scanner.
 func (x *StatType) Scan(v interface{}) error {
 	if data, ok := v.([]byte); ok {
 		*x = StatType(data)
