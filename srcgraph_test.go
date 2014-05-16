@@ -23,8 +23,13 @@ var match = flag.String("match", "", "run only test cases that contain this stri
 func Test_SrcgraphCmd(t *testing.T) {
 	actDir := buildstore.BuildDataDirName
 	expDir := ".sourcegraph-data-exp"
+	var expTmpDir string
 	if *mode == "gen" {
-		buildstore.BuildDataDirName = expDir
+		expTmpDir = expDir + "-tmp"
+		buildstore.BuildDataDirName = expTmpDir
+		defer os.RemoveAll(expTmpDir)
+	} else {
+		defer os.RemoveAll(actDir)
 	}
 
 	testCases := getTestCases(t, *match)
@@ -56,7 +61,14 @@ func Test_SrcgraphCmd(t *testing.T) {
 				t.Errorf("Test case %+v returned error %s", tcase, err)
 				return
 			}
-			if *mode != "gen" {
+			if *mode == "gen" {
+				if err := os.RemoveAll(expDir); err != nil {
+					t.Fatalf("Failed to remove old expected data directory %s: %s", expDir, err)
+				}
+				if err := os.Rename(expTmpDir, expDir); err != nil {
+					t.Fatalf("Failed to move move %s to %s: %s", expTmpDir, expDir, err)
+				}
+			} else {
 				same := compareResults(t, tcase, expDir, actDir)
 				if !same {
 					allPass = false
@@ -111,7 +123,7 @@ var testInfo = map[string]struct {
 	CommitID string
 }{
 	"go-sample-0":                {"https://github.com/sgtest/go-sample-0", "1dd4664fec342c0727850380931429a5850a4402"},
-	"python-sample-0":            {"https://github.com/sgtest/python-sample-0", "6993a8ef88bb01e37729a3c552962c6c13dbcf2c"},
+	"python-sample-0":            {"https://github.com/sgtest/python-sample-0", "7748225b44286e44afbd8033d519204724783ac1"},
 	"python-sample-1":            {"https://github.com/sgtest/python-sample-1", "3d5485023500bfd03bafe89ad3fb36e2bb228de8"},
 	"javascript-nodejs-sample-0": {"https://github.com/sgtest/javascript-nodejs-sample-0", "e10faf45fd536676a48bbbdb6ab650e7721782bb"},
 	"javascript-nodejs-xrefs-0":  {"https://github.com/sgtest/javascript-nodejs-xrefs-0", "a82948d15bfcbac86530caf0e9c0929e6c41c353"},
