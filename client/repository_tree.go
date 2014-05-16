@@ -20,16 +20,15 @@ var _ RepositoryTreeService = &repositoryTreeService{}
 
 type TreeEntrySpec struct {
 	Repo RepositorySpec
-	Rev  string
 	Path string
 }
 
 func (s *TreeEntrySpec) RouteVars() map[string]string {
-	return map[string]string{"RepoURI": s.Repo.URI, "Rev": s.Rev, "Path": s.Path}
+	return map[string]string{"RepoURI": s.Repo.URI, "Rev": s.Repo.CommitID, "Path": s.Path}
 }
 
 func (s TreeEntrySpec) String() string {
-	return fmt.Sprintf("%s: %s (rev %q)", s.Repo, s.Path, s.Rev)
+	return fmt.Sprintf("%s: %s (rev %q)", s.Repo.URI, s.Path, s.Repo.CommitID)
 }
 
 type TreeEntryType string
@@ -42,8 +41,9 @@ const (
 type TreeEntry struct {
 	Type TreeEntryType
 
-	// TODO(sqs): why is this HTML?
-	Data template.HTML
+	File *FileData `json:",omitempty"`
+
+	// TODO(sqs): add Dir field
 }
 
 type RepositoryTreeGetOptions struct {
@@ -71,12 +71,22 @@ func (s *repositoryTreeService) Get(entry TreeEntrySpec, opt *RepositoryTreeGetO
 		return nil, resp, err
 	}
 
-	filetypename := resp.Header.Get("Content-Type")
-	filetype := File
-	if filetypename == "application/x-directory" {
-		filetype = Dir
+	e := &TreeEntry{}
+	switch resp.Header.Get("content-type") {
+	case "application/x-directory":
+		e.Type = Dir
+		// TODO(sqs): fill in information about this dir
+	default:
+		e.Type = File
+		e.File = &FileData{
+			Repo:       entry.Repo,
+			File:       entry.Path,
+			EntireFile: true,
+			Annotated:  template.HTML(data),
+		}
 	}
-	return &TreeEntry{Data: template.HTML(data), Type: filetype}, resp, nil
+
+	return e, resp, nil
 }
 
 type MockRepositoryTreeService struct {

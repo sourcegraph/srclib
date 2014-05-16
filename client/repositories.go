@@ -104,7 +104,20 @@ type Repository struct {
 	// NoticeTitle/NoticeBody apply to. If the Repository was fetched with an
 	// empty (default) or non-commit-ID rev (such as a branch name), CommitID
 	// contains the resolved commit ID for that revision specifier.
+	//
+	// If CommitID is empty, it means that either the revision could not be
+	// resolved to a commit ID, or the repository's VCS has not been cloned to
+	// Sourcegraph yet.
 	CommitID string
+
+	// NoVCSData is true if the repository has NOT been cloned and no local copy
+	// resides on the Sourcegraph servers. If it has been cloned successfully,
+	// HasVCSData is false.
+	//
+	// If the caller specified no options to Get that require fetching VCS data
+	// (e.g., ResolveRevision), NoVCSData will be false (its value is unknowable
+	// without fetching VCS data).
+	NoVCSData bool `json:",omitempty"`
 
 	// Build is the most recent successful build for the CommitID, if any.
 	Build *Build
