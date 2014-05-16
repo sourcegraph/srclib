@@ -14,7 +14,15 @@ func TestRepositoryTreeService_Get(t *testing.T) {
 	setup()
 	defer teardown()
 
-	want := &TreeEntry{Data: template.HTML("hello"), Type: File}
+	want := &TreeEntry{
+		Type: File,
+		File: &FileData{
+			Repo:       RepositorySpec{URI: "r.com/x", CommitID: "v"},
+			File:       "p",
+			EntireFile: true,
+			Annotated:  template.HTML("hello"),
+		},
+	}
 
 	var called bool
 	mux.HandleFunc(urlPath(t, api_router.RepositoryTreeEntry, map[string]string{"RepoURI": "r.com/x", "Rev": "v", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
@@ -22,12 +30,11 @@ func TestRepositoryTreeService_Get(t *testing.T) {
 		testMethod(t, r, "GET")
 		testFormValues(t, r, values{"Annotated": "true"})
 
-		io.WriteString(w, string(want.Data))
+		io.WriteString(w, string(want.File.Annotated))
 	})
 
 	data, _, err := client.RepositoryTree.Get(TreeEntrySpec{
-		Repo: RepositorySpec{URI: "r.com/x"},
-		Rev:  "v",
+		Repo: RepositorySpec{URI: "r.com/x", CommitID: "v"},
 		Path: "p",
 	}, &RepositoryTreeGetOptions{Annotated: true})
 	if err != nil {
@@ -52,8 +59,7 @@ func TestRepositoryTreeService_Get_file(t *testing.T) {
 	})
 
 	entry, _, err := client.RepositoryTree.Get(TreeEntrySpec{
-		Repo: RepositorySpec{URI: "r.com/x"},
-		Rev:  "v",
+		Repo: RepositorySpec{URI: "r.com/x", CommitID: "v"},
 		Path: "p",
 	}, &RepositoryTreeGetOptions{Annotated: true})
 	if err != nil {
@@ -74,8 +80,7 @@ func TestRepositoryTreeService_Get_directory(t *testing.T) {
 	})
 
 	entry, _, err := client.RepositoryTree.Get(TreeEntrySpec{
-		Repo: RepositorySpec{URI: "r.com/x"},
-		Rev:  "v",
+		Repo: RepositorySpec{URI: "r.com/x", CommitID: "v"},
 		Path: "p",
 	}, &RepositoryTreeGetOptions{Annotated: true})
 	if err != nil {
