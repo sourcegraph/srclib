@@ -80,10 +80,6 @@ type Subcommand struct {
 var Subcommands = []Subcommand{
 	{"make", "make a repository", make_},
 	{"makefile", "print the Makefile and exit", makefile},
-	{"data", "list repository data", data},
-	{"upload", "upload a previously generated build", upload},
-	{"fetch", "downloads build data files from the server", fetch},
-	{"push", "update a repository and related information on Sourcegraph", push},
 	{"scan", "scan a repository for source units", scan_},
 	{"config", "validate and print a repository's configuration", config_},
 	{"list-deps", "list a repository's raw (unresolved) dependencies", listDeps},
