@@ -26,6 +26,9 @@ type User struct {
 	// Name is the (possibly empty) full name of the user.
 	Name string
 
+	// Type is either "User" or "Organization".
+	Type string
+
 	// AvatarURL is the URL to an avatar image specified by the user.
 	AvatarURL string
 
@@ -63,6 +66,10 @@ func (u *User) GitHubLogin() string {
 	return u.Login
 }
 
+// IsOrganization is whether this user represents a GitHub organization
+// (which are treated as a subclass of User in GitHub's data model).
+func (u *User) IsOrganization() bool { return u.Type == "Organization" }
+
 func (u *User) AvatarURLOfSize(width int) string {
 	return u.AvatarURL + fmt.Sprintf("&s=%d", width)
 }
@@ -71,6 +78,12 @@ func (u *User) AvatarURLOfSize(width int) string {
 // (e.g., GitHub users can own GitHub repositories).
 func (u *User) CanOwnRepositories() bool {
 	return u.GitHubLogin() != ""
+}
+
+// CanAttributeCodeTo is whether this user can commit code. It is false for
+// organizations and true for both users and transient users.
+func (u *User) CanAttributeCodeTo() bool {
+	return !u.IsOrganization()
 }
 
 // CanSync is whether this person can be synced with the external source that
