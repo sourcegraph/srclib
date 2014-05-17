@@ -38,8 +38,8 @@ func (_ *nodeVersion) baseDockerfile() ([]byte, error) {
 }
 
 const baseNPMDockerfile = `FROM ubuntu:14.04
-RUN apt-get update
-RUN apt-get install -qy nodejs npm git`
+RUN apt-get update -qq
+RUN apt-get install -qqy nodejs npm git`
 
 // containerDir returns the directory in the Docker container to use for the
 // local directory dir.
