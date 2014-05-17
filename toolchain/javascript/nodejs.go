@@ -164,7 +164,7 @@ func (v *npmVersion) BuildResolver(dep *dep2.RawDependency, c *config.Repository
 				return nil, fmt.Errorf("npm-deptool did not output anything for raw dependency %+v", dep)
 			}
 			if len(resolvedDeps) != 1 {
-				return nil, fmt.Errorf("npm-deptool unexpectedly returned %d deps for raw dependency %+v", len(resolvedDeps), dep)
+				return nil, fmt.Errorf("npm-deptool unexpectedly returned %d deps for raw dependency %+v: deps are %+v", len(resolvedDeps), dep, resolvedDeps)
 			}
 
 			var resolvedDep npmDeptoolOutput
