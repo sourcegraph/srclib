@@ -124,7 +124,7 @@ var testInfo = map[string]struct {
 }{
 	"go-sample-0":                {"https://github.com/sgtest/go-sample-0", "1dd4664fec342c0727850380931429a5850a4402"},
 	"python-sample-0":            {"https://github.com/sgtest/python-sample-0", "7748225b44286e44afbd8033d519204724783ac1"},
-	"python-sample-1":            {"https://github.com/sgtest/python-sample-1", "3d5485023500bfd03bafe89ad3fb36e2bb228de8"},
+	"python-sample-1":            {"https://github.com/sgtest/python-sample-1", "8a7dac432187679e8a009c682aa9c90640ff3051"},
 	"javascript-nodejs-sample-0": {"https://github.com/sgtest/javascript-nodejs-sample-0", "e10faf45fd536676a48bbbdb6ab650e7721782bb"},
 	"javascript-nodejs-xrefs-0":  {"https://github.com/sgtest/javascript-nodejs-xrefs-0", "a82948d15bfcbac86530caf0e9c0929e6c41c353"},
 }
