@@ -47,7 +47,7 @@ RUN virtualenv /venv
 RUN apt-get install -qqy maven
 RUN git clone --depth 1 --branch 0.0.1 https://github.com/sourcegraph/pysonar2.git /pysonar2
 WORKDIR /pysonar2
-RUN mvn clean package
+RUN mvn -q clean package
 WORKDIR /
 
 # PyDep
