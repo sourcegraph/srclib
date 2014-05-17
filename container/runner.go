@@ -102,7 +102,7 @@ func (_ dockerRunner) Run(c *Command) ([]byte, error) {
 
 	for i := 0; i < RunRetries; i++ {
 		remainingAttempts := RunRetries - i - 1
-		runOptions := append([]string{"-rm"}, c.RunOptions...)
+		runOptions := append([]string{"--rm"}, c.RunOptions...)
 		if c.Dir != "" {
 			runOptions = append(runOptions, "--workdir="+c.Dir)
 		}
