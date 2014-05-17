@@ -157,6 +157,9 @@ type BuildListOptions struct {
 	Succeeded bool `url:",omitempty"`
 	Failed    bool `url:",omitempty"`
 
+	Sort      string `url:",omitempty"`
+	Direction string `url:",omitempty"`
+
 	ListOptions
 }
 
