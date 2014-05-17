@@ -58,7 +58,7 @@ func (v *npmVersion) BuildScanner(dir string, c *config.Repository) (*container.
 		findpkgsGit = "git://github.com/sourcegraph/commonjs-findpkgs.git"
 		findpkgsSrc = findpkgsNPM
 	)
-	dockerfile = append(dockerfile, []byte("\n\nRUN npm install -g "+findpkgsSrc+"\n")...)
+	dockerfile = append(dockerfile, []byte("\n\nRUN npm install --quiet -g "+findpkgsSrc+"\n")...)
 
 	containerDir := containerDir(dir)
 	cont := container.Container{
@@ -124,7 +124,7 @@ func (v *npmVersion) BuildResolver(dep *dep2.RawDependency, c *config.Repository
 	if err != nil {
 		return nil, err
 	}
-	dockerfile = append(dockerfile, []byte("\n\nRUN npm install -g deptool@~0.0.2\n")...)
+	dockerfile = append(dockerfile, []byte("\n\nRUN npm install --quiet -g deptool@~0.0.2\n")...)
 
 	cmd := container.Command{
 		Container: container.Container{

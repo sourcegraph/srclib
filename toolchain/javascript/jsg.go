@@ -84,7 +84,7 @@ func (v jsg) BuildGrapher(dir string, u unit.SourceUnit, c *config.Repository) (
 		jsgGit     = "git://github.com/sourcegraph/jsg.git"
 		jsgSrc     = jsgGit
 	)
-	dockerfile = append(dockerfile, []byte("\n\nRUN npm install -g "+jsgSrc+"\n")...)
+	dockerfile = append(dockerfile, []byte("\n\nRUN npm install --quiet -g "+jsgSrc+"\n")...)
 
 	// Copy the node core modules to the container.
 	dockerfile = append(dockerfile, []byte("\nRUN cp -R "+jsgDir+"/testdata/node_core_modules "+containerNodeCoreModulesDir+"\n")...)
@@ -105,7 +105,7 @@ func (v jsg) BuildGrapher(dir string, u unit.SourceUnit, c *config.Repository) (
 	var preCmd []byte
 	if pkg.PackageJSONFile != "" {
 		// If there's a package.json file, `npm install` first.
-		preCmd = []byte("WORKDIR " + containerDir + "\nRUN npm install --ignore-scripts --no-bin-links")
+		preCmd = []byte("WORKDIR " + containerDir + "\nRUN npm install --quiet --ignore-scripts --no-bin-links")
 	}
 
 	cmd := container.Command{
