@@ -25,18 +25,18 @@ func init() {
 var builtinPrefixes = map[string]string{"sys": "sys", "os": "os", "path": "os/path"}
 
 var grapherDockerfileTemplate = template.Must(template.New("").Parse(`FROM dockerfile/java
-RUN apt-get update
-RUN apt-get install -qy curl
-RUN apt-get install -qy git
-RUN apt-get install -qy {{.PythonVersion}}
+RUN apt-get update -qq
+RUN apt-get install -qqy curl
+RUN apt-get install -qqy git
+RUN apt-get install -qqy {{.PythonVersion}}
 RUN ln -s $(which {{.PythonVersion}}) /usr/bin/python
 RUN curl https://raw.githubusercontent.com/pypa/pip/1.5.5/contrib/get-pip.py | python
 RUN pip install virtualenv
 
 # install python3 version
 RUN add-apt-repository ppa:fkrull/deadsnakes > /dev/null  # (TODO: kinda sketchy)
-RUN apt-get update
-RUN apt-get install -qy {{.Python3Version}}
+RUN apt-get update -qq
+RUN apt-get install -qqy {{.Python3Version}}
 RUN rm /usr/bin/python3
 RUN ln -s $(which {{.Python3Version}}) /usr/bin/python3
 
@@ -44,7 +44,7 @@ RUN ln -s $(which {{.Python3Version}}) /usr/bin/python3
 RUN virtualenv /venv
 
 # Pysonar
-RUN apt-get install -qy maven
+RUN apt-get install -qqy maven
 RUN git clone --depth 1 --branch 0.0.1 https://github.com/sourcegraph/pysonar2.git /pysonar2
 WORKDIR /pysonar2
 RUN mvn clean package

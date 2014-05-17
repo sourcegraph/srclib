@@ -64,8 +64,8 @@ func (v *goVersion) baseDockerfile() ([]byte, error) {
 const containerGOPATH = "/tmp/sg/gopath"
 
 const baseDockerfile = `FROM ubuntu:14.04
-RUN apt-get update
-RUN apt-get install -qy curl
+RUN apt-get update -qq
+RUN apt-get install -qqy curl
 
 # Install Go {{.GoVersion.VersionString}}.
 RUN curl -o /tmp/golang.tgz https://go.googlecode.com/files/{{.GoVersion.VersionString}}.linux-amd64.tar.gz

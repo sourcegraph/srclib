@@ -102,10 +102,10 @@ func (l *pythonEnv) depDockerfile() ([]byte, error) {
 
 const pythonRequirementTargetType = "python-requirement"
 const depDockerfile = `FROM ubuntu:14.04
-RUN apt-get update
-RUN apt-get install -qy curl
-RUN apt-get install -qy git
-RUN apt-get install -qy {{.PythonVersion}}
+RUN apt-get update -qq
+RUN apt-get install -qqy curl
+RUN apt-get install -qqy git
+RUN apt-get install -qqy {{.PythonVersion}}
 RUN ln -s $(which {{.PythonVersion}}) /usr/bin/python
 RUN curl https://raw.githubusercontent.com/pypa/pip/1.5.5/contrib/get-pip.py | python
 
