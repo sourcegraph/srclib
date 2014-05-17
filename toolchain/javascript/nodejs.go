@@ -81,7 +81,15 @@ func (v *npmVersion) BuildScanner(dir string, c *config.Repository) (*container.
 				return nil, err
 			}
 
-			return json.Marshal(pkgs)
+			// filter out undesirable packages
+			var pkgs2 []*CommonJSPackage
+			for _, pkg := range pkgs {
+				if !strings.Contains(pkg.Dir, "node_modules") {
+					pkgs2 = append(pkgs2, pkg)
+				}
+			}
+
+			return json.Marshal(pkgs2)
 		},
 	}
 	return &cmd, nil
