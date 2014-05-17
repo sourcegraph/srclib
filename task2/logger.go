@@ -45,12 +45,17 @@ func LogURLForTag(tag string) string {
 	return fmt.Sprintf("https://papertrailapp.com/groups/591393/events?q=program:%s", url.QueryEscape(tag))
 }
 
-func NewLogger(tag string) *Logger {
-	logURL := LogURLForTag(tag)
+func NewPapertrailLogger(tag string) *syslog.Writer {
 	pw, err := syslog.Dial("udp", "logs.papertrailapp.com:50140", syslog.LOG_INFO, tag)
 	if err != nil {
 		log.Fatal(err)
 	}
+	return pw
+}
+
+func NewLogger(tag string) *Logger {
+	logURL := LogURLForTag(tag)
+	pw := NewPapertrailLogger(tag)
 
 	logFile := filepath.Join(LogDir, tag+".log")
 	fw, err := os.Create(logFile)
