@@ -270,6 +270,12 @@ type SymbolTreeOptions struct {
 	// and only contain children. If true, this operation is applied repeatedly
 	// until the root nodes are not subject to trimming.
 	TrimRootStubs bool `url:",omitempty"`
+
+	// CollapseUnitDotSymbols is whether to treat a symbol whose path is "." as
+	// the symbol for the unit. If false, the tree will contain a parent node
+	// for the source unit and a child for the unit's "." symbol (which
+	// typically represents the unit).
+	CollapseUnitDotSymbols bool `url:",omitempty"`
 }
 
 func (s *symbolsService) Tree(opt *SymbolTreeOptions) ([]*SymbolNode, Response, error) {
