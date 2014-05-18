@@ -38,6 +38,7 @@ func (x *Logger) Close() error {
 			return err
 		}
 	}
+	x.c = nil
 	return nil
 }
 
