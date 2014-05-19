@@ -58,15 +58,9 @@ func (g *Grapher) emitDocs(pkgInfo *loader.PackageInfo) error {
 	docPkg := doc.New(astPkg, pkgInfo.Pkg.Path(), doc.AllDecls)
 
 	if docPkg.Doc != "" {
-		// Find the file that defines package doc.
-		for _, f := range sortedFiles(astPkg.Files) {
-			if f.Doc != nil {
-				err := g.emitDoc(types.NewPkgName(f.Package, pkgInfo.Pkg, pkgInfo.Pkg.Path()), f.Doc, docPkg.Doc)
-				if err != nil {
-					return err
-				}
-				break
-			}
+		err := g.emitDoc(types.NewPkgName(0, pkgInfo.Pkg, pkgInfo.Pkg.Path()), nil, docPkg.Doc)
+		if err != nil {
+			return err
 		}
 	}
 
