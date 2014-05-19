@@ -178,25 +178,29 @@ func (s *symbolsService) Get(symbol SymbolSpec, opt *SymbolGetOptions) (*Symbol,
 
 // SymbolListOptions specifies options for SymbolsService.List.
 type SymbolListOptions struct {
+	// Filters
 	RepositoryURI string `url:",omitempty"`
-	Query         string `url:",omitempty"`
+	CommitID      string `url:",omitempty"`
+	UnitType      string `url:",omitempty"`
+	Unit          string `url:",omitempty"`
 
+	ParentPath string `url:",omitempty"`
+	ChildDepth int    `url:",omitempty"`
+
+	Query        string   `url:",omitempty"`
+	Kinds        []string `url:",omitempty,comma"`
+	SpecificKind string   `url:",omitempty"`
+	Exported     bool     `url:",omitempty"`
+	IncludeTest  bool     `url:",omitempty"`
+
+	// Enhancements
+	Doc bool `url:",omitempty"`
+
+	// Sorting
 	Sort      string `url:",omitempty"`
 	Direction string `url:",omitempty"`
 
-	Kinds        []string `url:",omitempty,comma"`
-	SpecificKind string   `url:",omitempty"`
-
-	CommitID   string `url:",omitempty"`
-	UnitType   string `url:",omitempty"`
-	Unit       string `url:",omitempty"`
-	Path       string `url:",omitempty"`
-	ParentPath string `url:",omitempty"`
-
-	Exported    bool `url:",omitempty"`
-	IncludeTest bool `url:",omitempty"`
-	Doc         bool `url:",omitempty"`
-
+	// Paging
 	ListOptions
 }
 
@@ -265,6 +269,7 @@ type SymbolTreeOptions struct {
 	Unit        string   `url:",omitempty"`
 	Path        string   `url:",omitempty"`
 	ParentPath  string   `url:",omitempty"`
+	ChildDepth  int      `url:",omitempty"`
 	Exported    bool     `url:",omitempty"`
 	IncludeTest bool     `url:",omitempty"`
 
