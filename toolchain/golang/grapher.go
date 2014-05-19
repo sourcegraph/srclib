@@ -89,11 +89,18 @@ func (v *goVersion) convertGoSymbol(gs *gog.Symbol, c *config.Repository) (*grap
 		return nil, err
 	}
 
+	var path graph.SymbolPath
+	if len(gs.Path) > 0 {
+		path = graph.SymbolPath(strings.Join(gs.Path, "/"))
+	} else {
+		path = "."
+	}
+
 	sym := &graph.Symbol{
 		SymbolKey: graph.SymbolKey{
 			Unit:     resolvedTarget.ToUnit,
 			UnitType: resolvedTarget.ToUnitType,
-			Path:     graph.SymbolPath(strings.Join(gs.Path, "/")),
+			Path:     path,
 		},
 
 		Name:         gs.Name,

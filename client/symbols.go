@@ -190,6 +190,7 @@ type SymbolListOptions struct {
 	CommitID   string `url:",omitempty"`
 	UnitType   string `url:",omitempty"`
 	Unit       string `url:",omitempty"`
+	Path       string `url:",omitempty"`
 	ParentPath string `url:",omitempty"`
 
 	Exported    bool `url:",omitempty"`
@@ -262,6 +263,7 @@ type SymbolTreeOptions struct {
 	CommitID    string   `url:",omitempty"`
 	UnitType    string   `url:",omitempty"`
 	Unit        string   `url:",omitempty"`
+	Path        string   `url:",omitempty"`
 	ParentPath  string   `url:",omitempty"`
 	Exported    bool     `url:",omitempty"`
 	IncludeTest bool     `url:",omitempty"`
