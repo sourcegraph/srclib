@@ -272,6 +272,7 @@ type SymbolTreeOptions struct {
 	ChildDepth  int      `url:",omitempty"`
 	Exported    bool     `url:",omitempty"`
 	IncludeTest bool     `url:",omitempty"`
+	Doc         bool     `url:",omitempty"`
 
 	// TrimRootStubs is whether to eliminate root nodes that have no siblings
 	// and only contain children. If true, this operation is applied repeatedly
