@@ -234,6 +234,19 @@ const (
 
 var AllSymbolKinds = []SymbolKind{Const, Field, Func, Module, Package, Type, Var}
 
+func IsContainer(symbolKind SymbolKind) bool {
+	switch symbolKind {
+	case Module:
+		fallthrough
+	case Package:
+		fallthrough
+	case Type:
+		return true
+	default:
+		return false
+	}
+}
+
 // Returns true iff k is a known symbol kind.
 func (k SymbolKind) Valid() bool {
 	for _, kk := range AllSymbolKinds {
