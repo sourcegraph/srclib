@@ -184,8 +184,12 @@ type SymbolListOptions struct {
 	UnitType      string `url:",omitempty"`
 	Unit          string `url:",omitempty"`
 
+	// If specified, will filter on descendants of ParentPath (up to ChildDepth)
 	ParentPath string `url:",omitempty"`
 	ChildDepth int    `url:",omitempty"`
+
+	// If specified, will filter on ancestors of ChildPath
+	ChildPath string `url:",omitempty"`
 
 	Query        string   `url:",omitempty"`
 	Kinds        []string `url:",omitempty,comma"`
