@@ -117,8 +117,12 @@ type Symbol struct {
 
 	Stat graph.Stats `json:",omitempty"`
 
-	DocHTML  string           `json:",omitempty"`
-	DefHTML  template.HTML    `json:",omitempty"`
+	DocHTML string        `json:",omitempty"`
+	DefHTML template.HTML `json:",omitempty"`
+
+	PreHTML  template.HTML `json:",omitempty"`
+	PostHTML template.HTML `json:",omitempty"`
+
 	DocPages []*graph.DocPage `json:",omitempty"`
 }
 
