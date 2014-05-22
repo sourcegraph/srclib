@@ -83,6 +83,16 @@ func (v *goVersion) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Rep
 	return &cmd, nil
 }
 
+// SymbolData is extra Go-specific data about a symbol.
+type SymbolData struct {
+	gog.SymbolInfo
+
+	// PackageImportPath is the import path of the package containing this
+	// symbol (if this symbol is not a package). If this symbol is a package,
+	// PackageImportPath is its own import path.
+	PackageImportPath string `json:",omitempty"`
+}
+
 func (v *goVersion) convertGoSymbol(gs *gog.Symbol, c *config.Repository) (*graph.Symbol, error) {
 	resolvedTarget, err := v.resolveGoImportDep(gs.SymbolKey.PackageImportPath, c)
 	if err != nil {
@@ -105,7 +115,6 @@ func (v *goVersion) convertGoSymbol(gs *gog.Symbol, c *config.Repository) (*grap
 
 		Name:         gs.Name,
 		SpecificPath: gs.Name, // TODO!(sqs)
-		TypeExpr:     gs.Description,
 		Kind:         graph.SymbolKind(gog.GeneralKindMap[gs.Kind]),
 		SpecificKind: gs.Kind,
 
@@ -113,8 +122,17 @@ func (v *goVersion) convertGoSymbol(gs *gog.Symbol, c *config.Repository) (*grap
 		DefStart: gs.DeclSpan[0],
 		DefEnd:   gs.DeclSpan[1],
 
-		Exported: gs.Exported,
+		Exported: gs.SymbolInfo.Exported,
 		Test:     strings.HasSuffix(gs.File, "_test.go"),
+	}
+
+	d := SymbolData{
+		PackageImportPath: gs.SymbolKey.PackageImportPath,
+		SymbolInfo:        gs.SymbolInfo,
+	}
+	sym.Data, err = json.Marshal(d)
+	if err != nil {
+		return nil, err
 	}
 
 	if sym.Kind == "func" {
