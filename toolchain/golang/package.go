@@ -6,6 +6,8 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
+const goPackageUnitType = "GoPackage"
+
 func init() {
 	unit.Register("GoPackage", &Package{})
 }

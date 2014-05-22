@@ -11,6 +11,7 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/dep2"
+	"sourcegraph.com/sourcegraph/srcgraph/graph"
 	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
 	"sourcegraph.com/sourcegraph/srcgraph/scan"
 	"sourcegraph.com/sourcegraph/srcgraph/toolchain"
@@ -51,6 +52,12 @@ The options are:
 	log.Printf("Source units (%d)", len(unit.Types))
 	for name, typ := range unit.Types {
 		log.Printf(" - %s (type %T)", name, typ)
+	}
+	log.Println()
+
+	log.Printf("Symbol formatters (%d)", len(graph.SymbolFormatters))
+	for unitType, f := range graph.SymbolFormatters {
+		log.Printf(" - %s (type %T)", unitType, f)
 	}
 	log.Println()
 

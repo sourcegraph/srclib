@@ -20,9 +20,7 @@ func (s *SymbolKey) String() string {
 }
 
 type Symbol struct {
-	Name        string
-	Description string
-	Kind        string
+	Name string
 
 	*SymbolKey
 
@@ -30,8 +28,25 @@ type Symbol struct {
 	IdentSpan [2]int
 	DeclSpan  [2]int
 
-	PkgScope bool
+	SymbolInfo
+}
+
+type SymbolInfo struct {
+	// Exported is whether this symbol is exported.
 	Exported bool
+
+	// PkgScope is whether this symbol is in Go package scope.
+	PkgScope bool
+
+	// TypeString is a string describing this symbol's Go type.
+	TypeString string
+
+	// UnderlyingTypeString is the function or method signature, if this is a function or method.
+	UnderlyingTypeString string `json:",omitempty"`
+
+	// Kind is the kind of Go thing this symbol is: struct, interface, func,
+	// package, etc.
+	Kind string `json:",omitempty"`
 }
 
 // NewSymbol creates a new Symbol.
@@ -56,15 +71,21 @@ found:
 		return nil, err
 	}
 
-	var desc string
+	si := SymbolInfo{
+		Exported: info.exported,
+		PkgScope: info.pkgscope,
+		Kind:     symbolKind(obj),
+	}
+
 	if typ := obj.Type(); typ != nil {
-		desc = typ.String()
+		si.TypeString = typ.String()
+		if utyp := typ.Underlying(); utyp != nil {
+			si.UnderlyingTypeString = utyp.String()
+		}
 	}
 
 	return &Symbol{
-		Name:        obj.Name(),
-		Description: desc,
-		Kind:        symbolKind(obj),
+		Name: obj.Name(),
 
 		SymbolKey: key,
 
@@ -72,8 +93,7 @@ found:
 		IdentSpan: makeSpan(g.program.Fset, declIdent),
 		DeclSpan:  makeSpan(g.program.Fset, declNode),
 
-		Exported: info.exported,
-		PkgScope: info.pkgscope,
+		SymbolInfo: si,
 	}, nil
 }
 
@@ -86,13 +106,15 @@ func (g *Grapher) NewPackageSymbol(pkgInfo *loader.PackageInfo, pkg *types.Packa
 
 	return &Symbol{
 		Name: pkg.Name(),
-		Kind: Package,
 
 		SymbolKey: &SymbolKey{PackageImportPath: pkg.Path(), Path: []string{}},
 
 		File: pkgDir,
 
-		Exported: true,
+		SymbolInfo: SymbolInfo{
+			Exported: true,
+			Kind:     Package,
+		},
 	}, nil
 }
 

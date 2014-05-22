@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-	"strings"
 
+	"github.com/jmoiron/sqlx/types"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 
@@ -69,17 +69,8 @@ type Symbol struct {
 	// SymbolKeys).
 	SymbolKey
 
-	// SpecificPath is the language-specific "path" to this symbol, using
-	// language-specific separators (e.g., "::" and "." instead of "/", which is
-	// used in the SymbolKey.Path value).
-	SpecificPath string `db:"specific_path"`
-
 	// Kind is the language-independent kind of this symbol.
 	Kind SymbolKind `elastic:"type:string,index:analyzed"`
-
-	// SpecificKind is the language-specific kind of this symbol (which is in
-	// some cases equal to the Kind).
-	SpecificKind string `db:"specific_kind"`
 
 	Name string
 
@@ -98,55 +89,54 @@ type Symbol struct {
 	// code). For example, definitions in Go *_test.go files have Test = true.
 	Test bool `elastic:"type:boolean,index:not_analyzed" json:",omitempty"`
 
-	TypeExpr string `db:"type_expr" json:",omitempty"`
+	// Data contains additional language- and toolchain-specific information
+	// about the symbol. Data is used to construct function signatures,
+	// import/require statements, language-specific type descriptions, etc.
+	Data types.JsonText `json:",omitempty" elastic:"type:object,enabled:false"`
+
+	SpecificKind string `db:"specific_kind"`
+	SpecificPath string `db:"specific_path"`
+	TypeExpr     string `db:"type_expr"`
 }
 
+// Language is the name of the programming language that the symbol is defined
+// in.
 func (s *Symbol) Language() string {
-	switch s.UnitType {
-	case "GoPackage":
-		return "Go"
-	case "CommonJSPackage":
-		return "JavaScript"
-		// TODO(sqs): add Python, etc.
+	sf := SymbolFormatters[s.UnitType]
+	if sf == nil {
+		return "Unknown"
 	}
-	return "unknown language"
+	return sf.LanguageName(s)
 }
 
-// TODO!(sqs): factor this into the individual source unit packages
-func (s *Symbol) Signature() string {
-	var removeOwnImportPath = func(str string) string {
-		if s.UnitType == "GoPackage" {
-			return strings.Replace(strings.Replace(str, string(s.Repo)+".", "", -1), string(s.Repo)+"/", "", -1)
-		}
-		return str
+// KindName is the language-specific name of the symbol's kind, but not
+// including the language (which can be obtained using the Language method).
+func (s *Symbol) KindName() string {
+	sf := SymbolFormatters[s.UnitType]
+	if sf == nil {
+		return "Unknown"
 	}
+	return sf.KindName(s)
+}
 
-	if s.TypeExpr == "" {
-		return ""
+// QualifiedName is the qualified name of the symbol, as it would be referenced
+// in source code. See (SymbolFormatter).QualifiedName for more information.
+func (s *Symbol) QualifiedName() string {
+	sf := SymbolFormatters[s.UnitType]
+	if sf == nil {
+		return "Unknown"
 	}
-	if !s.Callable {
-		if (s.Kind == Field || s.Kind == Var || s.Kind == Type) && len(s.TypeExpr) < 50 {
-			return " " + removeOwnImportPath(s.TypeExpr)
-		}
-		return ""
-	}
+	return sf.QualifiedName(s, nil)
+}
 
-	switch s.UnitType {
-	case "GoPackage":
-		return removeOwnImportPath(strings.TrimPrefix(s.TypeExpr, "func"))
-	case "CommonJSPackage":
-		return strings.TrimPrefix(s.TypeExpr, "fn")
-	case "python":
-		// remove up to first paren
-		i := strings.Index(s.TypeExpr, "(")
-		if i == -1 {
-			return s.TypeExpr
-		}
-		return s.TypeExpr[:i]
-	case "ruby":
-		return s.TypeExpr
+// TypeString is the type signature of the symbol in source code. See
+// (SymbolFormatter).TypeString for more information.
+func (s *Symbol) TypeString() string {
+	sf := SymbolFormatters[s.UnitType]
+	if sf == nil {
+		return "?"
 	}
-	return s.TypeExpr
+	return sf.TypeString(s)
 }
 
 func (s *Symbol) sortKey() string { return s.SymbolKey.String() }
@@ -257,23 +247,6 @@ func (k SymbolKind) Valid() bool {
 	return false
 }
 
-func KindName(s *Symbol) string {
-	if s.UnitType == "GoPackage" && s.Kind == Package {
-		return "Go package"
-	} else if s.UnitType == "CommonJSPackage" {
-		if s.Kind == Module {
-			return "JavaScript module"
-		} else if s.Kind == "Package" {
-			return "CommonJS package"
-		}
-	}
-	return strings.Replace(string(s.Kind), "_", " ", -1)
-}
-
-type ConstData struct {
-	ConstValue string
-}
-
 // SQL
 
 func (x SID) Value() (driver.Value, error) {
@@ -308,20 +281,6 @@ func (x *SymbolKind) Scan(v interface{}) error {
 	if data, ok := v.([]byte); ok {
 		*x = SymbolKind(data)
 		return nil
-	}
-	return fmt.Errorf("%T.Scan failed: %v", x, v)
-}
-
-func (x *ConstData) Value() (driver.Value, error) {
-	if x == nil {
-		return nil, nil
-	}
-	return json.Marshal(x)
-}
-
-func (x *ConstData) Scan(v interface{}) error {
-	if data, ok := v.([]byte); ok {
-		return json.Unmarshal(data, x)
 	}
 	return fmt.Errorf("%T.Scan failed: %v", x, v)
 }
