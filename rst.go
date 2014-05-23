@@ -1,9 +1,9 @@
 package doc
 
 import (
+	"bytes"
 	"os"
 	"os/exec"
-	"strings"
 )
 
 var rst2html string
@@ -18,25 +18,18 @@ func init() {
 	}
 }
 
-// TODO(sqs): parsing rst live is a pain because it requires the web
-// server have rst2html.py installed (which requires maintaining process
-// in deployment and dev box setup scripts) and shell out (which is
-// slow). maybe we could dockerize this or make some external host that
-// runs a rst2html http api.
-
-func ReStructuredTextToHTML(txt string) (string, error) {
+func ReStructuredTextToHTML(rst []byte) ([]byte, error) {
 	cmd := exec.Command(rst2html, "--quiet")
 	cmd.Stderr = os.Stderr
 	in, err := cmd.StdinPipe()
-	in.Write([]byte(txt))
+	in.Write(rst)
 	in.Close()
-	b, err := cmd.Output()
+	html, err := cmd.Output()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	html := string(b)
-	start := strings.Index(html, "<body>") + len("<body>")
-	end := strings.Index(html, "</body>")
-	return strings.TrimSpace(html[start:end]), nil
+	start := bytes.Index(html, []byte("<body>")) + len("<body>")
+	end := bytes.Index(html, []byte("</body>"))
+	return bytes.TrimSpace(html[start:end]), nil
 }

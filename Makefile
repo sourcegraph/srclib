@@ -1,2 +1,0 @@
-dep:
-	pip install docutils

@@ -1,45 +1,69 @@
 package doc
 
 import (
-	"errors"
+	"bytes"
 	"html"
+	"path/filepath"
 	"strings"
 
 	"github.com/russross/blackfriday"
 )
 
-type Format string
+type Formatter string
 
 const (
-	Text             Format = "text"
-	Markdown         Format = "markdown"
-	ReStructuredText Format = "rst"
+	Text             Formatter = "text"
+	Markdown         Formatter = "markdown"
+	ReStructuredText Formatter = "rst"
 )
 
-// ToHTML converts a source document in format to an HTML string. If conversion
-// fails, it returns a failsafe plaintext-to-HTML conversion and a non-nil error.
-func ToHTML(format Format, source string) (htmlSource string, err error) {
-	switch format {
+// ExtensionFormat maps a lowercase file extension (beginning with ".", such as
+// ".md") to the formatter that should be used.
+var ExtensionFormat = map[string]Formatter{
+	".md":       Markdown,
+	".markdown": Markdown,
+	".mdown":    Markdown,
+	".rdoc":     Markdown, // TODO(sqs): actually implement RDoc
+	".txt":      Text,
+	".text":     Text,
+	"":          Text,
+	".ascii":    Text,
+	".rst":      ReStructuredText,
+}
+
+// Format returns the doc formatter to use for the given filename. It determines
+// it based on the file extension and defaults to plain text.
+func Format(filename string) Formatter {
+	ext := strings.ToLower(filepath.Ext(filename))
+	if fmt, present := ExtensionFormat[ext]; present {
+		return fmt
+	}
+	return Text
+}
+
+// ToHTML converts a source document in format to HTML. If conversion fails, it
+// returns a failsafe plaintext-to-HTML conversion and a non-nil error.
+func ToHTML(formatter Formatter, src []byte) ([]byte, error) {
+	var out []byte
+	var err error
+
+	switch formatter {
 	case Markdown:
 		// Some README.md files use "~~~" instead of "```" for delimiting code
 		// blocks. But "~~~" is not supported by blackfriday, so hackily replace
 		// the former with the latter. See, e.g., the code blocks at
 		// https://raw.githubusercontent.com/go-martini/martini/de643861770082784ad14cba4557ad68568dcc7b/README.md.
-		source = strings.Replace(source, "\n~~~", "\n```", -1)
+		src = bytes.Replace(src, []byte("\n~~~"), []byte("\n```"), -1)
+		out = blackfriday.MarkdownCommon([]byte(src))
 
-		var out []byte
-		out = blackfriday.MarkdownCommon([]byte(source))
-		htmlSource = string(out)
 	case ReStructuredText:
-		htmlSource, err = ReStructuredTextToHTML(source)
-	case Text:
-	default:
-		err = ErrUnhandledFormat
-	}
-	if err != nil || htmlSource == "" {
-		htmlSource = "<pre>" + strings.TrimSpace(html.EscapeString(source)) + "</pre>"
-	}
-	return
-}
+		out, err = ReStructuredTextToHTML(src)
 
-var ErrUnhandledFormat = errors.New("unhandled doc format")
+	case Text:
+		// wrap in <pre> below
+	}
+	if err != nil || len(out) == 0 {
+		out = []byte("<pre>" + strings.TrimSpace(html.EscapeString(string(src))) + "</pre>")
+	}
+	return out, err
+}
