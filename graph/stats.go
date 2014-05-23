@@ -57,7 +57,7 @@ const (
 	// source unit). It is only computed for concrete symbols (see the docs for
 	// SymbolKey) because otherwise it would count 1 exported element for each
 	// revision of the repository that we have processed.
-	StatExportedElements = "exported-elements"
+	StatExportedElements = "exported_elements"
 
 	// StatInterfaces is the number of interfaces that a symbol implements (in
 	// its own repository or other repositories). TODO(sqs): it is not currently
@@ -69,6 +69,21 @@ const (
 	// not currently being computed.
 	StatImplementations = "implementations"
 )
+
+var AllStatTypes = []StatType{StatXRefs, StatRRefs, StatURefs, StatAuthors, StatClients, StatDependents, StatExportedElements, StatInterfaces, StatImplementations}
+
+func (x StatType) IsAbstract() bool {
+	switch x {
+	case StatXRefs:
+		fallthrough
+	case StatClients:
+		fallthrough
+	case StatDependents:
+		return true
+	default:
+		return false
+	}
+}
 
 // Value implements database/sql/driver.Valuer.
 func (x StatType) Value() (driver.Value, error) {
