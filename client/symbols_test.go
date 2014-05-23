@@ -21,12 +21,12 @@ func TestSymbolsService_Get(t *testing.T) {
 	mux.HandleFunc(urlPath(t, api_router.Symbol, map[string]string{"RepoURI": "r.com/x", "UnitType": "t", "Unit": "u", "Path": "p"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{"Annotate": "true"})
+		testFormValues(t, r, values{"Doc": "true"})
 
 		writeJSON(w, want)
 	})
 
-	repo_, _, err := client.Symbols.Get(SymbolSpec{Repo: "r.com/x", UnitType: "t", Unit: "u", Path: "p"}, &SymbolGetOptions{Annotate: true})
+	repo_, _, err := client.Symbols.Get(SymbolSpec{Repo: "r.com/x", UnitType: "t", Unit: "u", Path: "p"}, &SymbolGetOptions{Doc: true})
 	if err != nil {
 		t.Errorf("Symbols.Get returned error: %v", err)
 	}

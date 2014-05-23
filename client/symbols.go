@@ -117,12 +117,7 @@ type Symbol struct {
 
 	Stat graph.Stats `json:",omitempty"`
 
-	DocHTML string        `json:",omitempty"`
-	DefHTML template.HTML `json:",omitempty"`
-
-	PreHTML  template.HTML `json:",omitempty"`
-	PostHTML template.HTML `json:",omitempty"`
-
+	DocHTML  string           `json:",omitempty"`
 	DocPages []*graph.DocPage `json:",omitempty"`
 }
 
@@ -149,7 +144,6 @@ func (s *Symbol) TotalExamples() int { return s.TotalRefs() - 1 }
 
 // SymbolGetOptions specifies options for SymbolsService.Get.
 type SymbolGetOptions struct {
-	Annotate bool `url:",omitempty"`
 	Doc      bool `url:",omitempty"`
 	DocPages bool `url:",omitempty"`
 }
@@ -329,7 +323,7 @@ func (vs Examples) Less(i, j int) bool { return vs[i].sortKey() < vs[j].sortKey(
 
 // SymbolListExamplesOptions specifies options for SymbolsService.ListExamples.
 type SymbolListExamplesOptions struct {
-	Annotate bool
+	Formatted bool
 
 	ListOptions
 }
