@@ -1,10 +1,12 @@
 package client
 
 import (
-	"io"
 	"net/http"
 	"reflect"
 	"testing"
+	"time"
+
+	"github.com/sourcegraph/vcsstore/vcsclient"
 
 	"strings"
 
@@ -124,14 +126,15 @@ func TestRepositoriesService_GetReadme(t *testing.T) {
 	setup()
 	defer teardown()
 
-	want := "hello"
+	want := &vcsclient.TreeEntry{Name: "hello"}
+	want.ModTime = want.ModTime.In(time.UTC)
 
 	var called bool
 	mux.HandleFunc(urlPath(t, api_router.RepositoryReadme, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "GET")
 
-		io.WriteString(w, want)
+		writeJSON(w, want)
 	})
 
 	readme, _, err := client.Repositories.GetReadme(RepositorySpec{URI: "r.com/x"})

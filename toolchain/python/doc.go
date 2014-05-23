@@ -14,7 +14,7 @@ var rstDirectiveRegex = regexp.MustCompile(`\.\. [a-zA-Z]+:: `)
 // Properly format python documentation by doing the following:
 // Check if txt is rST. If so, compile into html, otherwise return html approximation to plaintext.
 func formatDocs(txt string) string {
-	var format doc.Format
+	var format doc.Formatter
 	if strings.Contains(txt, "~~~") || len(rstDirectiveRegex.FindStringIndex(txt)) > 0 {
 		format = doc.ReStructuredText
 
@@ -29,11 +29,11 @@ func formatDocs(txt string) string {
 		format = doc.Text
 	}
 
-	html, err := doc.ToHTML(format, txt)
+	html, err := doc.ToHTML(format, []byte(txt))
 	if err != nil {
 		log.Printf("doc.ToHTML failed: %s", err)
 	}
-	return html
+	return string(html)
 }
 
 var indentMatcher = regexp.MustCompile("(\\s*)[^\\s].*")

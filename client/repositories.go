@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"text/template"
 
+	"github.com/sourcegraph/vcsstore/vcsclient"
+
 	"sourcegraph.com/sourcegraph/api_router"
 	"sourcegraph.com/sourcegraph/srcgraph/authorship"
 	"sourcegraph.com/sourcegraph/srcgraph/person"
@@ -33,7 +35,7 @@ type RepositoriesService interface {
 	Create(newRepoSpec NewRepositorySpec) (*repo.Repository, Response, error)
 
 	// GetReadme fetches the formatted README file for a repository.
-	GetReadme(repo RepositorySpec) (string, Response, error)
+	GetReadme(repo RepositorySpec) (*vcsclient.TreeEntry, Response, error)
 
 	// List repositories.
 	List(opt *RepositoryListOptions) ([]*Repository, Response, error)
@@ -235,24 +237,24 @@ func (s *repositoriesService) Create(newRepoSpec NewRepositorySpec) (*repo.Repos
 	return repo_, resp, nil
 }
 
-func (s *repositoriesService) GetReadme(repo RepositorySpec) (string, Response, error) {
+func (s *repositoriesService) GetReadme(repo RepositorySpec) (*vcsclient.TreeEntry, Response, error) {
 	url, err := s.client.url(api_router.RepositoryReadme, repo.RouteVars(), nil)
 	if err != nil {
-		return "", nil, err
+		return nil, nil, err
 	}
 
 	req, err := s.client.NewRequest("GET", url.String(), nil)
 	if err != nil {
-		return "", nil, err
+		return nil, nil, err
 	}
 
-	var readme []byte
+	var readme *vcsclient.TreeEntry
 	resp, err := s.client.Do(req, &readme)
 	if err != nil {
-		return "", resp, err
+		return nil, resp, err
 	}
 
-	return string(readme), resp, nil
+	return readme, resp, nil
 }
 
 type RepositoryListOptions struct {
@@ -600,7 +602,7 @@ type MockRepositoriesService struct {
 	GetOrCreate_       func(repo RepositorySpec, opt *RepositoryGetOptions) (*Repository, Response, error)
 	Sync_              func(repo repo.URI) (Response, error)
 	Create_            func(newRepoSpec NewRepositorySpec) (*repo.Repository, Response, error)
-	GetReadme_         func(repo RepositorySpec) (string, Response, error)
+	GetReadme_         func(repo RepositorySpec) (*vcsclient.TreeEntry, Response, error)
 	List_              func(opt *RepositoryListOptions) ([]*Repository, Response, error)
 	ListBadges_        func(repo RepositorySpec) ([]*Badge, Response, error)
 	ListCounters_      func(repo RepositorySpec) ([]*Counter, Response, error)
@@ -644,9 +646,9 @@ func (s MockRepositoriesService) Create(newRepoSpec NewRepositorySpec) (*repo.Re
 	return s.Create_(newRepoSpec)
 }
 
-func (s MockRepositoriesService) GetReadme(repo RepositorySpec) (string, Response, error) {
+func (s MockRepositoriesService) GetReadme(repo RepositorySpec) (*vcsclient.TreeEntry, Response, error) {
 	if s.GetReadme_ == nil {
-		return "", nil, nil
+		return nil, nil, nil
 	}
 	return s.GetReadme_(repo)
 }
