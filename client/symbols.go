@@ -189,7 +189,13 @@ type SymbolListOptions struct {
 	// If specified, will filter on ancestors of ChildPath
 	ChildPath string `url:",omitempty"`
 
+	// File, if specified, will restrict the results to only symbols defined in
+	// the specified file.
 	File string `url:",omitempty"`
+
+	// FilePathPrefix, if specified, will restrict the results to only symbols defined in
+	// files whose path is underneath the specified prefix.
+	FilePathPrefix string `url:",omitempty"`
 
 	Query        string   `url:",omitempty"`
 	Kinds        []string `url:",omitempty,comma"`
