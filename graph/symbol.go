@@ -257,11 +257,17 @@ func (k SymbolKind) Valid() bool {
 	return false
 }
 
-func KindName(k string) string {
-	if strings.HasSuffix(k, "_module") {
-		return "module"
+func KindName(s *Symbol) string {
+	if s.UnitType == "GoPackage" && s.Kind == Package {
+		return "Go package"
+	} else if s.UnitType == "CommonJSPackage" {
+		if s.Kind == Module {
+			return "JavaScript module"
+		} else if s.Kind == "Package" {
+			return "CommonJS package"
+		}
 	}
-	return strings.Replace(k, "_", " ", -1)
+	return strings.Replace(string(s.Kind), "_", " ", -1)
 }
 
 type ConstData struct {
