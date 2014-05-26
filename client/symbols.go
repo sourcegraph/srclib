@@ -189,6 +189,8 @@ type SymbolListOptions struct {
 	// If specified, will filter on ancestors of ChildPath
 	ChildPath string `url:",omitempty"`
 
+	File string `url:",omitempty"`
+
 	Query        string   `url:",omitempty"`
 	Kinds        []string `url:",omitempty,comma"`
 	SpecificKind string   `url:",omitempty"`
