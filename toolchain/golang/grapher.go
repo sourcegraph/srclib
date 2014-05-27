@@ -113,10 +113,8 @@ func (v *goVersion) convertGoSymbol(gs *gog.Symbol, c *config.Repository) (*grap
 			Path:     path,
 		},
 
-		Name:         gs.Name,
-		SpecificPath: gs.Name, // TODO!(sqs)
-		Kind:         graph.SymbolKind(gog.GeneralKindMap[gs.Kind]),
-		SpecificKind: gs.Kind,
+		Name: gs.Name,
+		Kind: graph.SymbolKind(gog.GeneralKindMap[gs.Kind]),
 
 		File:     gs.File,
 		DefStart: gs.DeclSpan[0],

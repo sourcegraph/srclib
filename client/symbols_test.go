@@ -52,11 +52,9 @@ func TestSymbolsService_List(t *testing.T) {
 		testMethod(t, r, "GET")
 		testFormValues(t, r, values{
 			"RepositoryURI": "r1",
-			"Query":         "q",
 			"Sort":          "name",
 			"Direction":     "asc",
 			"Kinds":         "a,b",
-			"SpecificKind":  "k",
 			"Exported":      "true",
 			"Doc":           "true",
 			"PerPage":       "1",
@@ -68,11 +66,9 @@ func TestSymbolsService_List(t *testing.T) {
 
 	symbols, _, err := client.Symbols.List(&SymbolListOptions{
 		RepositoryURI: "r1",
-		Query:         "q",
 		Sort:          "name",
 		Direction:     "asc",
 		Kinds:         []string{"a", "b"},
-		SpecificKind:  "k",
 		Exported:      true,
 		Doc:           true,
 		ListOptions:   ListOptions{PerPage: 1, Page: 2},
@@ -328,33 +324,5 @@ func TestSymbolsService_ListInterfaces(t *testing.T) {
 
 	if !reflect.DeepEqual(interfaces, want) {
 		t.Errorf("Symbols.ListInterfaces returned %+v, want %+v", interfaces, want)
-	}
-}
-
-func TestSymbolsService_CountByRepository(t *testing.T) {
-	setup()
-	defer teardown()
-
-	want := &graph.SymbolCounts{Exported: 1}
-
-	var called bool
-	mux.HandleFunc(urlPath(t, api_router.RepositorySymbolCounts, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
-		called = true
-		testMethod(t, r, "GET")
-
-		writeJSON(w, want)
-	})
-
-	counts, _, err := client.Symbols.CountByRepository(RepositorySpec{URI: "r.com/x"})
-	if err != nil {
-		t.Errorf("Symbols.CountByRepository returned error: %v", err)
-	}
-
-	if !called {
-		t.Fatal("!called")
-	}
-
-	if !reflect.DeepEqual(counts, want) {
-		t.Errorf("Symbols.CountByRepository returned %+v, want %+v", counts, want)
 	}
 }

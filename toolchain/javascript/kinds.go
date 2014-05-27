@@ -18,7 +18,7 @@ const (
 )
 
 func kind(s *Symbol) graph.SymbolKind {
-	sk := specificKind(s)
+	sk := jsKind(s)
 	switch sk {
 	case Property:
 		return graph.Field
@@ -32,7 +32,7 @@ func kind(s *Symbol) graph.SymbolKind {
 	return graph.SymbolKind(sk)
 }
 
-func specificKind(s *Symbol) string {
+func jsKind(s *Symbol) string {
 	if s.Data != nil {
 		if s.Data.NodeJS != nil && s.Data.NodeJS.ModuleExports {
 			return CommonJSModule

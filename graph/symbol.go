@@ -93,50 +93,20 @@ type Symbol struct {
 	// about the symbol. Data is used to construct function signatures,
 	// import/require statements, language-specific type descriptions, etc.
 	Data types.JsonText `json:",omitempty" elastic:"type:object,enabled:false"`
-
-	SpecificKind string `db:"specific_kind"`
-	SpecificPath string `db:"specific_path"`
-	TypeExpr     string `db:"type_expr"`
 }
 
-// Language is the name of the programming language that the symbol is defined
-// in.
-func (s *Symbol) Language() string {
-	sf := SymbolFormatters[s.UnitType]
-	if sf == nil {
-		return "Unknown"
-	}
-	return sf.LanguageName(s)
-}
+func (s *Symbol) Fmt() SymbolPrintFormatter { return PrintFormatter(s) }
 
-// KindName is the language-specific name of the symbol's kind, but not
-// including the language (which can be obtained using the Language method).
-func (s *Symbol) KindName() string {
-	sf := SymbolFormatters[s.UnitType]
-	if sf == nil {
-		return "Unknown"
+// HasImplementations returns true if this symbol is a Go interface and false
+// otherwise. It is used for the interface implementations queries. TODO(sqs):
+// run this through the golang toolchain instead of doing it here.
+func (s *Symbol) HasImplementations() bool {
+	if s.Kind != Type {
+		return false
 	}
-	return sf.KindName(s)
-}
-
-// QualifiedName is the qualified name of the symbol, as it would be referenced
-// in source code. See (SymbolFormatter).QualifiedName for more information.
-func (s *Symbol) QualifiedName() string {
-	sf := SymbolFormatters[s.UnitType]
-	if sf == nil {
-		return "Unknown"
-	}
-	return sf.QualifiedName(s, nil)
-}
-
-// TypeString is the type signature of the symbol in source code. See
-// (SymbolFormatter).TypeString for more information.
-func (s *Symbol) TypeString() string {
-	sf := SymbolFormatters[s.UnitType]
-	if sf == nil {
-		return "?"
-	}
-	return sf.TypeString(s)
+	var m map[string]string
+	json.Unmarshal(s.Data, &m)
+	return m["Kind"] == "interface"
 }
 
 func (s *Symbol) sortKey() string { return s.SymbolKey.String() }

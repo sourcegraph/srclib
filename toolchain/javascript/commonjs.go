@@ -2,8 +2,10 @@ package javascript
 
 import "sourcegraph.com/sourcegraph/srcgraph/unit"
 
+const commonJSPackageUnitType = "CommonJSPackage"
+
 func init() {
-	unit.Register("CommonJSPackage", &CommonJSPackage{})
+	unit.Register(commonJSPackageUnitType, &CommonJSPackage{})
 }
 
 type CommonJSPackage struct {

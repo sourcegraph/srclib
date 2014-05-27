@@ -191,32 +191,24 @@ func (p *pythonEnv) convertSym(pySym *pySym, c *config.Repository, reqs []requir
 	}
 
 	sym = &graph.Symbol{
-		SymbolKey:    *symKey,
-		Name:         pySym.Name,
-		File:         file,
-		DefStart:     pySym.DefStart,
-		DefEnd:       pySym.DefEnd,
-		Exported:     pySym.Exported,
-		Callable:     callableSymbolKinds[pySym.Kind],
-		Kind:         symbolKinds[pySym.Kind],
-		SpecificKind: symbolSpecificKinds[pySym.Kind],
+		SymbolKey: *symKey,
+		Name:      pySym.Name,
+		File:      file,
+		DefStart:  pySym.DefStart,
+		DefEnd:    pySym.DefEnd,
+		Exported:  pySym.Exported,
+		Callable:  callableSymbolKinds[pySym.Kind],
+		Kind:      symbolKinds[pySym.Kind],
 	}
-	if pySym.Exported {
-		components := strings.Split(string(sym.Path), "/")
-		if len(components) == 1 {
-			sym.SpecificPath = components[0]
-		} else {
-			// take the last 2 path components
-			sym.SpecificPath = components[len(components)-2] + "." + components[len(components)-1]
-		}
-	} else {
-		sym.SpecificPath = pySym.Name
+	sd := symbolData{
+		Kind: strings.ToLower(pySym.Kind),
 	}
+
 	if pySym.FuncData != nil {
-		sym.TypeExpr = pySym.FuncData.Signature
+		sd.FuncSignature = pySym.FuncData.Signature
 	}
 	if pySym.Kind == "MODULE" && strings.HasSuffix(pySym.File, "__init__.py") {
-		sym.SpecificKind = Package
+		sd.Kind = Package
 		sym.Kind = graph.Package
 	}
 
@@ -242,6 +234,12 @@ func (p *pythonEnv) convertSym(pySym *pySym, c *config.Repository, reqs []requir
 			End:   pySym.IdentEnd,
 		}
 	}
+
+	b, err := json.Marshal(sd)
+	if err != nil {
+		return nil, nil, err
+	}
+	sym.Data = b
 
 	return
 }
@@ -454,4 +452,10 @@ type pyDoc struct {
 	Body  string
 	Start int
 	End   int
+}
+
+// symbolData is stored in graph.Symbol's Data field as JSON.
+type symbolData struct {
+	Kind          string
+	FuncSignature string
 }

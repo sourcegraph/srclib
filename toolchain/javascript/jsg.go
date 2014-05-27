@@ -206,21 +206,26 @@ type Symbol struct {
 
 	Doc string
 
-	Data *struct {
-		NodeJS *struct {
-			ModuleExports bool
-		}
-		AMD *struct {
-			Module bool
-		}
+	Data *jsgSymbolData
+}
+
+// jsgSymbolData is the "data" field output by jsg.
+type jsgSymbolData struct {
+	NodeJS *struct {
+		ModuleExports bool
+	}
+	AMD *struct {
+		Module bool
 	}
 }
 
-func makeSymbolSpecificPath(sym *Symbol) string {
-	if sym.Key.Namespace == "global" || sym.Key.Namespace == "file" {
-		return scopePathComponentsAfterAtSign(sym.Key.Path)
-	}
-	return strings.TrimSuffix(filepath.Base(sym.Key.Module), ".js") + "." + sym.Key.Path
+// symbolData is stored in the graph.Symbol's Data field as JSON.
+type symbolData struct {
+	Kind string
+	Key  DefPath
+	*jsgSymbolData
+	Type   string
+	IsFunc bool
 }
 
 type Ref struct {
@@ -385,21 +390,28 @@ func convertSymbol(jsym *Symbol) (*graph.Symbol, []*graph.Ref, []*graph.Propagat
 	// contains "<i>" (the array element marker)
 	exported := jsym.Exported && !strings.HasPrefix(jsym.Key.Path, "_") && !strings.Contains(jsym.Key.Path, "._") && !strings.Contains(jsym.Key.Path, "<i>")
 
+	isFunc := strings.HasPrefix(jsym.Type, "fn(")
+
 	// JavaScript symbol
 	sym := &graph.Symbol{
-		SymbolKey:    graph.SymbolKey{Path: jsym.Key.symbolPath()},
-		Kind:         kind(jsym),
-		SpecificKind: specificKind(jsym),
-		Exported:     exported,
-		TypeExpr:     jsym.Type,
-		Callable:     strings.HasPrefix(jsym.Type, "fn("),
+		SymbolKey: graph.SymbolKey{Path: jsym.Key.symbolPath()},
+		Kind:      kind(jsym),
+		Exported:  exported,
+		Callable:  isFunc,
 	}
 
-	if sym.SpecificKind == AMDModule || sym.SpecificKind == CommonJSModule {
+	sd := symbolData{
+		Kind:          jsKind(jsym),
+		Key:           jsym.Key,
+		jsgSymbolData: jsym.Data,
+		Type:          jsym.Type,
+		IsFunc:        isFunc,
+	}
+
+	if sd.Kind == AMDModule || sd.Kind == CommonJSModule {
 		// File
 		moduleFile := jsym.Key.Module
 		moduleName := strings.TrimSuffix(jsym.Key.Module, ".js")
-		sym.SpecificPath = strings.TrimSuffix(filepath.Base(moduleName), ".js")
 		sym.Name = moduleName
 		sym.File = moduleFile
 		sym.DefStart = 0
@@ -407,7 +419,6 @@ func convertSymbol(jsym *Symbol) (*graph.Symbol, []*graph.Ref, []*graph.Propagat
 		sym.Exported = true
 	} else {
 		sym.Name = lastScopePathComponent(jsym.Key.Path)
-		sym.SpecificPath = makeSymbolSpecificPath(jsym)
 		sym.File = jsym.File
 
 		if jsym.DefnSpan != "" {
@@ -448,6 +459,12 @@ func convertSymbol(jsym *Symbol) (*graph.Symbol, []*graph.Ref, []*graph.Propagat
 			SrcRepo: srcRepo,
 			SrcPath: srcPath,
 		})
+	}
+
+	if b, err := json.Marshal(sd); err != nil {
+		return nil, nil, nil, nil, err
+	} else {
+		sym.Data = b
 	}
 
 	return sym, refs, propgs, docs, nil
