@@ -48,6 +48,8 @@ func (f symbolFormatter) Name(qual graph.Qualification) string {
 		return f.symbol.Name
 	}
 
+	// TODO(beyang): this doesn't handle packages correctly; also won't always be the case if the root package is
+	// definied in a subdirectory (i.e., not in repository root)
 	module := strings.TrimSuffix(f.symbol.File, ".py")
 	relPath := strings.TrimPrefix(strings.TrimPrefix(string(f.symbol.Path), module), "/")
 
