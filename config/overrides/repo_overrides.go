@@ -65,7 +65,7 @@ func init() {
 
 			// Suppress the Python source unit that exists because the node
 			// repo has *.py files.
-			ScanIgnoreUnitTypes: []string{unit.Type(&python.FauxPackage{})},
+			ScanIgnoreUnitTypes: []string{unit.Type(&python.DistPackage{})},
 			ScanIgnore:          []string{"./tools", "./deps", "./test", "./src"},
 
 			Global: config.Global{

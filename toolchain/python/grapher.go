@@ -19,7 +19,7 @@ import (
 )
 
 func init() {
-	grapher2.Register(&FauxPackage{}, grapher2.DockerGrapher{defaultPythonEnv})
+	grapher2.Register(&DistPackage{}, grapher2.DockerGrapher{defaultPythonEnv})
 }
 
 var builtinPrefixes = map[string]string{"sys": "sys", "os": "os", "path": "os/path"}
@@ -262,8 +262,8 @@ func (p *pythonEnv) convertRef(pyRef *pyRef, c *config.Repository, reqs []requir
 		Def:            false,
 
 		Repo:     refRepo,
-		UnitType: unit.Type(&FauxPackage{}),
-		Unit:     (&FauxPackage{}).Name(),
+		UnitType: unit.Type(&DistPackage{}),
+		Unit:     (&DistPackage{}).Name(),
 
 		File:  refFile,
 		Start: pyRef.Start,
@@ -343,7 +343,7 @@ func (p *pythonEnv) pysonarFilePathToRepoAndFile(pth string, c *config.Repositor
 }
 
 func (p *pythonEnv) pysonarSymPathToSymKey(pth string, c *config.Repository, reqs []requirement) (*graph.SymbolKey, error) {
-	fauxUnit := &FauxPackage{}
+	fauxUnit := &DistPackage{}
 	if filepath.HasPrefix(pth, srcRoot) {
 		relpath, err := filepath.Rel(srcRoot, pth)
 		if err != nil {

@@ -49,7 +49,7 @@ type Repository struct {
 	DefaultBranch string `db:"default_branch"`
 
 	// Language is the primary programming language used in this repository.
-	Language string 
+	Language string
 
 	// GitHubStars is the number of stargazers this repository has on GitHub (or
 	// 0 if it is not a GitHub repository).
