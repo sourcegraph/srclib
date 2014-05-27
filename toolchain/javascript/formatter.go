@@ -15,8 +15,10 @@ func init() {
 
 func newSymbolFormatter(s *graph.Symbol) graph.SymbolFormatter {
 	var si symbolData
-	if err := json.Unmarshal(s.Data, &si); err != nil {
-		panic("unmarshal JavaScript symbol data: " + err.Error())
+	if len(s.Data) > 0 {
+		if err := json.Unmarshal(s.Data, &si); err != nil {
+			panic("unmarshal JavaScript symbol data: " + err.Error())
+		}
 	}
 	return symbolFormatter{s, &si}
 }
