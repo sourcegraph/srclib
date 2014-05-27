@@ -27,18 +27,18 @@ func init() {
 	toolchain.Register("python", defaultPythonEnv)
 }
 
-type FauxPackage struct {
+type DistPackage struct {
 	Files []string
 }
 
-func (p *FauxPackage) Name() string {
+func (p *DistPackage) Name() string {
 	return "python-faux-package"
 }
 
-func (p *FauxPackage) RootDir() string {
+func (p *DistPackage) RootDir() string {
 	return "."
 }
 
-func (p *FauxPackage) Paths() []string {
+func (p *DistPackage) Paths() []string {
 	return p.Files
 }
