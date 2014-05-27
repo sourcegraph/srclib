@@ -36,7 +36,6 @@ func TestSymbolFormatter_Name(t *testing.T) {
 			symbol: &graph.Symbol{
 				SymbolKey: graph.SymbolKey{Path: "a/b/c"},
 				File:      "a/b.py",
-				Data:      types.JsonText(`{}`),
 			},
 			qual: graph.ScopeQualified,
 			want: "c",
@@ -46,7 +45,6 @@ func TestSymbolFormatter_Name(t *testing.T) {
 			symbol: &graph.Symbol{
 				SymbolKey: graph.SymbolKey{Path: "a/b/c"},
 				File:      "a.py",
-				Data:      types.JsonText(`{}`),
 			},
 			qual: graph.ScopeQualified,
 			want: "b.c",
@@ -56,7 +54,6 @@ func TestSymbolFormatter_Name(t *testing.T) {
 			symbol: &graph.Symbol{
 				SymbolKey: graph.SymbolKey{Path: "a/b/c/d"},
 				File:      "a/b.py",
-				Data:      types.JsonText(`{}`),
 			},
 			qual: graph.DepQualified,
 			want: "b.c.d",
@@ -66,7 +63,6 @@ func TestSymbolFormatter_Name(t *testing.T) {
 			symbol: &graph.Symbol{
 				SymbolKey: graph.SymbolKey{Path: "c/d"},
 				File:      "a/b.py",
-				Data:      types.JsonText(`{}`),
 			},
 			qual: graph.RepositoryWideQualified,
 			want: "a.b.c.d",
@@ -76,7 +72,6 @@ func TestSymbolFormatter_Name(t *testing.T) {
 			symbol: &graph.Symbol{
 				SymbolKey: graph.SymbolKey{Repo: "r/s", Path: "a/b/c/d"},
 				File:      "a/b",
-				Data:      types.JsonText(`{}`),
 			},
 			qual: graph.LanguageWideQualified,
 			want: "r/s/a.b.c.d",
