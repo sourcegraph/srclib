@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"reflect"
 
 	"github.com/kr/text"
 	"sourcegraph.com/sourcegraph/srcgraph/build"
@@ -55,9 +56,9 @@ The options are:
 	}
 	log.Println()
 
-	log.Printf("Symbol formatters (%d)", len(graph.SymbolFormatters))
-	for unitType, f := range graph.SymbolFormatters {
-		log.Printf(" - %s (type %T)", unitType, f)
+	log.Printf("Symbol formatters (%d)", len(graph.MakeSymbolFormatters))
+	for unitType, f := range graph.MakeSymbolFormatters {
+		log.Printf(" - %s (type %s)", unitType, reflect.TypeOf(f).Out(0))
 	}
 	log.Println()
 

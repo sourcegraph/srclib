@@ -11,50 +11,133 @@ import (
 )
 
 func init() {
-	graph.RegisterSymbolFormatter(goPackageUnitType, symbolFormatter{})
+	graph.RegisterMakeSymbolFormatter(goPackageUnitType, newSymbolFormatter)
 }
 
-type symbolFormatter struct{}
-
-func (_ symbolFormatter) getData(s *graph.Symbol) *gog.SymbolInfo {
-	var si gog.SymbolInfo
+func newSymbolFormatter(s *graph.Symbol) graph.SymbolFormatter {
+	var si SymbolData
 	if err := json.Unmarshal(s.Data, &si); err != nil {
 		panic("unmarshal Go symbol data: " + err.Error())
 	}
-	return &si
+	return symbolFormatter{s, &si}
 }
 
-func (_ symbolFormatter) LanguageName(s *graph.Symbol) string { return "Go" }
-
-func (_ symbolFormatter) KindName(s *graph.Symbol) string {
-	return s.SpecificKind
+type symbolFormatter struct {
+	symbol *graph.Symbol
+	info   *SymbolData
 }
 
-func (_ symbolFormatter) QualifiedName(s *graph.Symbol, relativeTo *graph.SymbolKey) string {
-	return s.SpecificPath
+func (f symbolFormatter) Language() string { return "Go" }
+
+func (f symbolFormatter) DefKeyword() string {
+	switch f.info.Kind {
+	case gog.Func:
+		return "func"
+	case gog.Var:
+		if f.info.FieldOfStruct == "" && f.info.PkgScope {
+			return "var"
+		}
+	case gog.Type:
+		return "type"
+	case gog.Package:
+		return "package"
+	}
+	return ""
 }
 
-func (f symbolFormatter) TypeString(s *graph.Symbol) string {
-	si := f.getData(s)
+func (f symbolFormatter) Kind() string { return f.info.Kind }
+
+func (f symbolFormatter) pkgPath(qual graph.Qualification) string {
+	switch qual {
+	case graph.DepQualified:
+		return f.info.PkgName
+	case graph.RepositoryWideQualified:
+		// keep the last path component from the repo
+		return strings.TrimPrefix(strings.TrimPrefix(f.info.PackageImportPath, filepath.Join(string(f.symbol.Repo), "..")), "/")
+	case graph.LanguageWideQualified:
+		return f.info.PackageImportPath
+	}
+	return ""
+}
+
+func (f symbolFormatter) Name(qual graph.Qualification) string {
+	if qual == graph.Unqualified {
+		return f.symbol.Name
+	}
+
+	var recvlike string
+	if f.info.Kind == gog.Field {
+		recvlike = f.info.FieldOfStruct
+	} else if f.info.Kind == gog.Method {
+		recvlike = f.info.Receiver
+	}
+
+	pkg := f.pkgPath(qual)
+
+	if f.info.Kind == gog.Package {
+		if qual == graph.ScopeQualified {
+			pkg = f.symbol.Name // otherwise it'd be empty
+		}
+		return pkg
+	}
+
+	var prefix string
+	if recvlike != "" {
+		prefix = fmtReceiver(recvlike, pkg)
+	} else if pkg != "" {
+		prefix = pkg + "."
+	}
+
+	return prefix + f.symbol.Name
+}
+
+// fmtReceiver formats strings like `(*a/b.T).`.
+func fmtReceiver(recv string, pkg string) string {
+	// deref recv
+	var recvName, ptrs string
+	if i := strings.LastIndex(recv, "*"); i > -1 {
+		ptrs = recv[:i+1]
+		recvName = recv[i+1:]
+	} else {
+		recvName = recv
+	}
+
+	if pkg != "" {
+		pkg += "."
+	}
+
+	return "(" + ptrs + pkg + recvName + ")."
+}
+
+func (f symbolFormatter) NameAndTypeSeparator() string {
+	if f.info.Kind == gog.Func || f.info.Kind == gog.Method {
+		return ""
+	}
+	return " "
+}
+
+func (f symbolFormatter) Type(qual graph.Qualification) string {
 	var ts string
-	switch s.Kind {
+	switch f.symbol.Kind {
 	case graph.Func:
-		ts = si.TypeString
+		ts = f.info.TypeString
 		ts = strings.TrimPrefix(ts, "func")
 	case graph.Type:
-		ts = si.UnderlyingTypeString
+		ts = f.info.UnderlyingTypeString
 		if i := strings.Index(ts, "{"); i != -1 {
 			ts = ts[:i]
 		}
 		ts = " " + ts
 	default:
-		ts = " " + si.TypeString
+		ts = " " + f.info.TypeString
 	}
-	ts = strings.Replace(ts, filepath.Join(string(s.Repo), s.Unit)+".", "", -1)
-	return ts
-}
 
-func (_ symbolFormatter) RepositoryListing(pkglike *graph.Symbol) graph.RepositoryListingSymbol {
-	// TODO(sqs)
-	return graph.RepositoryListingSymbol{}
+	// qualify the package path based on qual
+	oldPkgPath := f.info.PackageImportPath + "."
+	newPkgPath := f.pkgPath(qual)
+	if newPkgPath != "" {
+		newPkgPath += "."
+	}
+	ts = strings.Replace(ts, oldPkgPath, newPkgPath, -1)
+	return ts
 }

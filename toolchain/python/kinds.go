@@ -29,16 +29,3 @@ var symbolKinds = map[string]graph.SymbolKind{
 	"SCOPE":       graph.Var,
 	"VARIABLE":    graph.Var,
 }
-
-var symbolSpecificKinds = map[string]string{
-	"ATTRIBUTE":   "attr",
-	"CLASS":       "class",
-	"CONSTRUCTOR": "constructor",
-	"FUNCTION":    "func",
-	"METHOD":      "method",
-	"MODULE":      "module",
-	"PACKAGE":     "package",
-	"PARAMETER":   "param",
-	"SCOPE":       "var",
-	"VARIABLE":    "var",
-}

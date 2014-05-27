@@ -33,10 +33,22 @@ type Symbol struct {
 
 type SymbolInfo struct {
 	// Exported is whether this symbol is exported.
-	Exported bool
+	Exported bool `json:",omitempty"`
 
 	// PkgScope is whether this symbol is in Go package scope.
-	PkgScope bool
+	PkgScope bool `json:",omitempty"`
+
+	// PkgName is the name (not import path) of the package containing this
+	// symbol.
+	PkgName string
+
+	// Receiver is the receiver of this symbol (or the empty string if this
+	// symbol is not a method).
+	Receiver string `json:",omitempty"`
+
+	// FieldOfStruct is the struct that this symbol is a field of (or the empty string if this
+	// symbol is not a struct field).
+	FieldOfStruct string `json:",omitempty"`
 
 	// TypeString is a string describing this symbol's Go type.
 	TypeString string
@@ -74,6 +86,7 @@ found:
 	si := SymbolInfo{
 		Exported: info.exported,
 		PkgScope: info.pkgscope,
+		PkgName:  obj.Pkg().Name(),
 		Kind:     symbolKind(obj),
 	}
 
@@ -81,6 +94,23 @@ found:
 		si.TypeString = typ.String()
 		if utyp := typ.Underlying(); utyp != nil {
 			si.UnderlyingTypeString = utyp.String()
+		}
+	}
+
+	switch obj := obj.(type) {
+	case *types.Var:
+		if obj.IsField() {
+			if fieldStruct, ok := g.structFields[obj]; ok {
+				if struct_, ok := fieldStruct.parent.(*types.Named); ok {
+					si.FieldOfStruct = struct_.Obj().Name()
+				}
+			}
+		}
+	case *types.Func:
+		sig := obj.Type().(*types.Signature)
+		if recv := sig.Recv(); recv != nil && recv.Type() != nil {
+			// omit package path; just get receiver type name
+			si.Receiver = strings.Replace(recv.Type().String(), obj.Pkg().Path()+".", "", 1)
 		}
 	}
 
@@ -113,6 +143,7 @@ func (g *Grapher) NewPackageSymbol(pkgInfo *loader.PackageInfo, pkg *types.Packa
 
 		SymbolInfo: SymbolInfo{
 			Exported: true,
+			PkgName:  pkg.Name(),
 			Kind:     Package,
 		},
 	}, nil
@@ -127,6 +158,9 @@ func symbolKind(obj types.Object) string {
 	case *types.TypeName:
 		return Type
 	case *types.Var:
+		if obj.IsField() {
+			return Field
+		}
 		return Var
 	case *types.Func:
 		sig := obj.Type().(*types.Signature)

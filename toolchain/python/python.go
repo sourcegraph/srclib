@@ -5,8 +5,11 @@ import (
 	"sourcegraph.com/sourcegraph/srcgraph/toolchain"
 )
 
-const srcRoot = "/src"
-const stdLibRepo = repo.URI("hg.python.org/cpython")
+const (
+	srcRoot        = "/src"
+	stdLibRepo     = repo.URI("hg.python.org/cpython")
+	pythonUnitType = "python"
+)
 
 type pythonEnv struct {
 	PythonVersion  string

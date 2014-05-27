@@ -46,9 +46,6 @@ type SymbolsService interface {
 	// ListInterfaces lists interfaces that are implemented by symbol (a type),
 	// according to language-specific semantics.
 	ListInterfaces(symbol SymbolSpec, opt *SymbolListInterfacesOptions) ([]*Symbol, Response, error)
-
-	// CountByRepository counts the symbols in repo grouped by kind.
-	CountByRepository(repo RepositorySpec) (*graph.SymbolCounts, Response, error)
 }
 
 // SymbolSpec specifies a symbol. If SID == 0, then Repo, UnitType, and Unit
@@ -197,11 +194,9 @@ type SymbolListOptions struct {
 	// files whose path is underneath the specified prefix.
 	FilePathPrefix string `url:",omitempty"`
 
-	Query        string   `url:",omitempty"`
-	Kinds        []string `url:",omitempty,comma"`
-	SpecificKind string   `url:",omitempty"`
-	Exported     bool     `url:",omitempty"`
-	IncludeTest  bool     `url:",omitempty"`
+	Kinds       []string `url:",omitempty,comma"`
+	Exported    bool     `url:",omitempty"`
+	IncludeTest bool     `url:",omitempty"`
 
 	// Enhancements
 	Doc bool `url:",omitempty"`
@@ -503,26 +498,6 @@ func (s *symbolsService) ListInterfaces(symbol SymbolSpec, opt *SymbolListInterf
 	return symbols, resp, nil
 }
 
-func (s *symbolsService) CountByRepository(repo RepositorySpec) (*graph.SymbolCounts, Response, error) {
-	url, err := s.client.url(api_router.RepositorySymbolCounts, repo.RouteVars(), nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	req, err := s.client.NewRequest("GET", url.String(), nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	var counts *graph.SymbolCounts
-	resp, err := s.client.Do(req, &counts)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return counts, resp, nil
-}
-
 type MockSymbolsService struct {
 	Get_                 func(symbol SymbolSpec, opt *SymbolGetOptions) (*Symbol, Response, error)
 	List_                func(opt *SymbolListOptions) ([]*Symbol, Response, error)
@@ -534,7 +509,6 @@ type MockSymbolsService struct {
 	ListDependents_      func(symbol SymbolSpec, opt *SymbolListDependentsOptions) ([]*AugmentedSymbolDependent, Response, error)
 	ListImplementations_ func(symbol SymbolSpec, opt *SymbolListImplementationsOptions) ([]*Symbol, Response, error)
 	ListInterfaces_      func(symbol SymbolSpec, opt *SymbolListInterfacesOptions) ([]*Symbol, Response, error)
-	CountByRepository_   func(repo RepositorySpec) (*graph.SymbolCounts, Response, error)
 }
 
 var _ SymbolsService = MockSymbolsService{}
@@ -607,11 +581,4 @@ func (s MockSymbolsService) ListInterfaces(symbol SymbolSpec, opt *SymbolListInt
 		return nil, &HTTPResponse{}, nil
 	}
 	return s.ListInterfaces_(symbol, opt)
-}
-
-func (s MockSymbolsService) CountByRepository(repo RepositorySpec) (*graph.SymbolCounts, Response, error) {
-	if s.CountByRepository_ == nil {
-		return &graph.SymbolCounts{}, &HTTPResponse{}, nil
-	}
-	return s.CountByRepository_(repo)
 }
