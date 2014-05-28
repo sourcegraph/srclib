@@ -66,16 +66,18 @@ func NewLogger(tag string) *Logger {
 
 	mw := io.MultiWriter(fw, pw)
 
-	closersMu.Lock()
-	defer closersMu.Unlock()
-	closers = append(closers, pw, fw)
-
-	return &Logger{
+	l := &Logger{
 		Logger:      log.New(mw, "", 0),
 		Writer:      mw,
 		Destination: fmt.Sprintf("%s and %s", logURL, logFile),
 		c:           []io.Closer{pw, fw},
 	}
+
+	closersMu.Lock()
+	defer closersMu.Unlock()
+	closers = append(closers, l)
+
+	return l
 }
 
 var (
