@@ -102,7 +102,10 @@ RUN apt-get install -qqy mercurial
 			return nil, err
 		}
 		for _, e := range entries {
-			if n := e.Name(); n == "." || n == ".." || n == "pkg" || n == "bin" || n == buildstore.BuildDataDirName {
+			if n := e.Name(); n == "." || n == "test" || n == "api" || n == ".." || n == "pkg" || n == "bin" || n == buildstore.BuildDataDirName {
+				continue
+			}
+			if !e.Mode().IsDir() {
 				continue
 			}
 			addDirs = append(addDirs, [2]string{e.Name(), filepath.Join("/tmp/go", e.Name())})
