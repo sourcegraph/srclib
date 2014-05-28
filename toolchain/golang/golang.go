@@ -115,13 +115,15 @@ RUN apt-get install -qqy mercurial
 		preCmdDockerfile = []byte(fmt.Sprintf(`
 RUN cd /tmp/go/src && ./make.bash
 `))
+
+		containerDir = "/tmp/go"
 	}
 
 	return &container.Container{
 		Dockerfile:       dockerfile,
 		RunOptions:       []string{"-v", dir + ":" + containerDir},
 		PreCmdDockerfile: preCmdDockerfile,
-		Dir:              "/tmp/go",
+		Dir:              containerDir,
 		AddDirs:          addDirs,
 		AddFiles:         addFiles,
 	}, nil
