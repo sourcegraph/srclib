@@ -140,7 +140,7 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository) 
 	if gosrc.IsGoRepoPath(dir.ImportPath) {
 		resolvedTarget.ToVersionString = v.VersionString
 		resolvedTarget.ToRevSpec = v.VCSRevision
-		resolvedTarget.ToUnit = "src/pkg/" + resolvedTarget.ToUnit
+		resolvedTarget.ToUnit = resolvedTarget.ToUnit
 	}
 
 	// Save in cache.

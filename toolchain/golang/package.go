@@ -18,7 +18,7 @@ type Package struct {
 	Files      []string
 }
 
-func (p Package) Name() string    { return p.Dir }
+func (p Package) Name() string    { return p.ImportPath }
 func (p Package) RootDir() string { return p.Dir }
 func (p Package) Paths() []string {
 	paths := make([]string, len(p.Files))
