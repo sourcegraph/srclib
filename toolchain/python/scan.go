@@ -27,7 +27,7 @@ func (p *pythonEnv) BuildScanner(dir string, c *config.Repository) (*container.C
 	if hasSetupPy {
 		cmd = []string{"pydep-run.py", "info", srcRoot}
 	} else {
-		cmd = []string{"echo", "-n"} // kludge
+		cmd = []string{"echo", "-n", "."} // kludge
 	}
 	return &container.Command{
 		Container: container.Container{

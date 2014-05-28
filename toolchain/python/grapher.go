@@ -350,10 +350,9 @@ func (p *pythonEnv) pysonarSymPathToSymKey(pth string, c *config.Repository, req
 			return nil, err
 		}
 		return &graph.SymbolKey{
-			Repo:     "", // no repo URI means same repo
-			UnitType: unit.Type(fauxUnit),
-			Unit:     fauxUnit.Name(),
-			Path:     graph.SymbolPath(relpath),
+			Repo: "", // no repo URI means same repo
+			Unit: fauxUnit.Name(),
+			Path: graph.SymbolPath(relpath),
 		}, nil
 	} else if filepath.HasPrefix(pth, p.sitePackagesDir()) {
 		relpath, err := filepath.Rel(p.sitePackagesDir(), pth)
@@ -382,10 +381,11 @@ func (p *pythonEnv) pysonarSymPathToSymKey(pth string, c *config.Repository, req
 			return nil, fmt.Errorf("Could not find requirement matching path %s, site-packages dir: %s, stdlib dir: %s", pth, p.sitePackagesDir(), p.stdLibDir())
 		}
 
+		dpkg := &DistPackage{ProjectName: foundReq.ProjectName}
 		return &graph.SymbolKey{
 			Repo:     repo.MakeURI(foundReq.RepoURL),
-			UnitType: unit.Type(fauxUnit),
-			Unit:     fauxUnit.Name(),
+			UnitType: unit.Type(dpkg),
+			Unit:     dpkg.Name(),
 			Path:     graph.SymbolPath(relpath),
 		}, nil
 	} else if filepath.HasPrefix(pth, p.stdLibDir()) {
@@ -394,19 +394,17 @@ func (p *pythonEnv) pysonarSymPathToSymKey(pth string, c *config.Repository, req
 			return nil, err
 		}
 		return &graph.SymbolKey{
-			Repo:     stdLibRepo,
-			UnitType: unit.Type(fauxUnit),
-			Unit:     fauxUnit.Name(),
-			Path:     graph.SymbolPath(relpath),
+			Repo: stdLibRepo,
+			Unit: ".",
+			Path: graph.SymbolPath(relpath),
 		}, nil
 	} else {
 		for prefix, newPrefix := range builtinPrefixes {
 			if strings.HasPrefix(pth, prefix) {
 				return &graph.SymbolKey{
-					Repo:     stdLibRepo,
-					UnitType: unit.Type(fauxUnit),
-					Unit:     fauxUnit.Name(),
-					Path:     graph.SymbolPath(strings.Replace(pth, prefix, newPrefix, 1)),
+					Repo: stdLibRepo,
+					Unit: ".",
+					Path: graph.SymbolPath(strings.Replace(pth, prefix, newPrefix, 1)),
 				}, nil
 			}
 		}
