@@ -20,7 +20,7 @@ func init() {
 			ScanIgnore: []string{"./misc", "./test", "./doc", "./cmd", "./src/cmd"},
 		},
 		"github.com/joyent/node": &config.Repository{
-			SourceUnits: config.SourceUnits{
+			SourceUnits: unit.SourceUnits{
 				&javascript.CommonJSPackage{
 					Package: struct{ Name string }{javascript.NodeJSStdlibUnit},
 					Dir:     ".",

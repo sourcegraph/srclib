@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"reflect"
 	"testing"
 
 	"sourcegraph.com/sourcegraph/srcgraph/unit"
@@ -17,6 +18,11 @@ func (_ DummyPackage) ID() string      { return "dummy" }
 func (_ DummyPackage) Name() string    { return "dummy" }
 func (_ DummyPackage) RootDir() string { return "dummy" }
 func (p DummyPackage) Paths() []string { return []string{p.Dir} }
+
+func unregisterSourceUnitType(name string) {
+	delete(unit.TypeNames, reflect.TypeOf(unit.Types[name]))
+	delete(unit.Types, name)
+}
 
 func TestUnmarshal_RejectInvalidFilePaths(t *testing.T) {
 	unit.Register("Dummy", &DummyPackage{})

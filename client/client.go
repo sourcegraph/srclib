@@ -31,6 +31,7 @@ type Client struct {
 	Repositories   RepositoriesService
 	RepositoryTree RepositoryTreeService
 	Symbols        SymbolsService
+	Units          UnitsService
 
 	// Base URL for API requests, which should have a trailing slash.
 	BaseURL *url.URL
@@ -61,6 +62,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Repositories = &repositoriesService{c}
 	c.RepositoryTree = &repositoryTreeService{c}
 	c.Symbols = &symbolsService{c}
+	c.Units = &unitsService{c}
 
 	c.BaseURL = config2.BaseAPIURL
 	c.apiRouter = api_router.NewAPIRouter("")

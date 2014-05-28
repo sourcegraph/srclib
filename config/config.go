@@ -3,7 +3,6 @@ package config
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -37,9 +36,9 @@ var (
 )
 
 type Repository struct {
-	URI         repo.URI    `json:",omitempty"`
-	SourceUnits SourceUnits `json:",omitempty"`
-	ScanIgnore  []string    `json:",omitempty"`
+	URI         repo.URI         `json:",omitempty"`
+	SourceUnits unit.SourceUnits `json:",omitempty"`
+	ScanIgnore  []string         `json:",omitempty"`
 
 	// ScanIgnoreUnitTypes is a list of source unit type names (e.g.,
 	// "GoPackage") that should be ignored if found by the scanner.
@@ -48,7 +47,6 @@ type Repository struct {
 	Global Global `json:",omitempty"`
 }
 
-type SourceUnits []unit.SourceUnit
 type Global map[string]interface{}
 
 // ReadDir parses and validates the configuration for a repository. If no
@@ -98,74 +96,6 @@ func (c *Repository) finish(repoURI repo.URI) (*Repository, error) {
 	}
 	c.URI = repoURI
 	return c, nil
-}
-
-// AddIfNotExists adds unit to the list of source units. If a source unit
-// already exists with the same ID as u, nothing is done.
-func (us *SourceUnits) AddIfNotExists(u unit.SourceUnit) {
-	unitID := unit.MakeID(u)
-	for _, u2 := range *us {
-		if unit.MakeID(u2) == unitID {
-			return
-		}
-	}
-	*us = append(*us, u)
-}
-
-// MarshalJSON implements encoding/json.Marshaler to marshal to a JSON array
-// where each element is a JSON-encoded SourceUnit with an additional property,
-// "Type", denoting the registered type name of the source unit.
-func (us SourceUnits) MarshalJSON() ([]byte, error) {
-	m := make([]map[string]interface{}, len(us))
-
-	for i, u := range us {
-		// Create a map from the struct.
-		um, err := unmarshalAsUntyped(u)
-		if err != nil {
-			return nil, err
-		}
-
-		typ := reflect.TypeOf(u)
-		if typeName, registered := unit.TypeNames[typ]; registered {
-			um["Type"] = typeName
-		} else {
-			return nil, fmt.Errorf("no type name for unregistered type: %s", typ)
-		}
-
-		m[i] = um
-	}
-
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements encoding/json.Unmarshaler to unmarshal to a slice
-// whose elements are struct-typed for registered source unit types.
-func (u *SourceUnits) UnmarshalJSON(data []byte) error {
-	var s []map[string]interface{}
-	err := json.Unmarshal(data, &s)
-	if err != nil {
-		return err
-	}
-
-	// Unmarshal all registered source unit types into typed structs.
-	for i, e := range s {
-		typeName, _ := e["Type"].(string)
-		if typeName == "" {
-			return fmt.Errorf(`source unit at index %d is missing "Type"`, i)
-		}
-		if emptyInstance, registered := unit.Types[typeName]; registered {
-			typed := reflect.New(reflect.TypeOf(emptyInstance).Elem()).Interface()
-			err = unmarshalAsTyped(e, typed)
-			if err != nil {
-				return err
-			}
-			*u = append(*u, reflect.ValueOf(typed).Interface().(unit.SourceUnit))
-		} else {
-			return fmt.Errorf("unrecognized source unit type %q", typeName)
-		}
-	}
-
-	return nil
 }
 
 // UnmarshalJSON implements encoding/json.Unmarshaler to unmarshal to a map
