@@ -24,26 +24,21 @@ func init() {
 func (v *goVersion) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Repository) (*container.Command, error) {
 	gogBinPath := filepath.Join(os.Getenv("GOBIN"), "gog")
 
-	dockerfile, err := v.baseDockerfile()
+	pkg := unit.(*Package)
+
+	cont, err := v.containerForRepo(dir, unit, c)
 	if err != nil {
 		return nil, err
 	}
 
 	// Install VCS tools in Docker container.
-	dockerfile = append(dockerfile, []byte("RUN apt-get -yq install git mercurial bzr subversion\n")...)
+	cont.Dockerfile = append(cont.Dockerfile, []byte("RUN apt-get -yq install git mercurial bzr subversion\n")...)
 
-	pkg := unit.(*Package)
+	cont.AddFiles = append(cont.AddFiles, [2]string{gogBinPath, "/usr/local/bin/gog"})
+	cont.Cmd = []string{"bash", "-c", fmt.Sprintf("go get -v -t %s; gog %s", pkg.ImportPath, pkg.ImportPath)}
 
-	goConfig := v.goConfig(c)
-	containerDir := filepath.Join(containerGOPATH, "src", goConfig.BaseImportPath)
 	cmd := container.Command{
-		Container: container.Container{
-			Dockerfile: dockerfile,
-			RunOptions: []string{"-v", dir + ":" + containerDir},
-			AddFiles:   [][2]string{{gogBinPath, "/usr/local/bin/gog"}},
-			Cmd:        []string{"bash", "-c", fmt.Sprintf("go get -v -t %s; gog %s", pkg.ImportPath, pkg.ImportPath)},
-			Dir:        containerDir,
-		},
+		Container: *cont,
 		Transform: func(in []byte) ([]byte, error) {
 			var o gog.Output
 			err := json.Unmarshal(in, &o)

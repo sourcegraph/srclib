@@ -14,6 +14,7 @@ import (
 )
 
 var buildTags = flag.String("tags", "", "a list of build tags to consider satisfied")
+var srcImports = flag.Bool("src", false, "use source (not compiled binary pkgs) for analysis")
 
 func main() {
 	flag.Usage = func() {
@@ -30,6 +31,7 @@ func main() {
 	log.SetFlags(0)
 
 	config := &gog.Default
+	config.SourceImports = *srcImports
 
 	if tags := strings.Split(*buildTags, ","); *buildTags != "" {
 		build.Default.BuildTags = tags

@@ -22,21 +22,17 @@ func init() {
 }
 
 func (v *goVersion) BuildLister(dir string, unit unit.SourceUnit, c *config.Repository) (*container.Command, error) {
-	goConfig := v.goConfig(c)
 	pkg := unit.(*Package)
 
-	dockerfile, err := v.baseDockerfile()
+	cont, err := v.containerForRepo(dir, unit, c)
 	if err != nil {
 		return nil, err
 	}
 
-	containerDir := filepath.Join(containerGOPATH, "src", goConfig.BaseImportPath)
+	cont.Cmd = []string{"go", "list", "-e", "-f", `{{join .Imports "\n"}}` + "\n" + `{{join .TestImports "\n"}}` + "\n" + `{{join .XTestImports "\n"}}`, pkg.ImportPath}
+
 	cmd := container.Command{
-		Container: container.Container{
-			Dockerfile: dockerfile,
-			RunOptions: []string{"-v", dir + ":" + containerDir},
-			Cmd:        []string{"go", "list", "-e", "-f", `{{join .Imports "\n"}}` + "\n" + `{{join .TestImports "\n"}}` + "\n" + `{{join .XTestImports "\n"}}`, pkg.ImportPath},
-		},
+		Container: *cont,
 		Transform: func(orig []byte) ([]byte, error) {
 			importPaths := strings.Split(string(orig), "\n")
 			seen := make(map[string]struct{})
@@ -73,6 +69,9 @@ func (v *goVersion) Resolve(dep *dep2.RawDependency, c *config.Repository) (*dep
 }
 
 func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository) (*dep2.ResolvedTarget, error) {
+	// Map code.google.com/p/go to Go stdlib.
+	importPath = strings.TrimPrefix(importPath, v.BaseImportPath+"/")
+
 	// Look up in cache.
 	resolvedTarget := func() *dep2.ResolvedTarget {
 		v.resolveCacheMu.Lock()

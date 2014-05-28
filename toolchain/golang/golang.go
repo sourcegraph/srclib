@@ -2,13 +2,20 @@ package golang
 
 import (
 	"bytes"
+	"fmt"
+	"io/ioutil"
+	"path/filepath"
+	"sync"
 	"text/template"
 
-	"sync"
-
 	"github.com/sourcegraph/go-vcsurl"
+	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
+	"sourcegraph.com/sourcegraph/srcgraph/config"
+	"sourcegraph.com/sourcegraph/srcgraph/container"
 	"sourcegraph.com/sourcegraph/srcgraph/dep2"
+	"sourcegraph.com/sourcegraph/srcgraph/repo"
 	"sourcegraph.com/sourcegraph/srcgraph/toolchain"
+	"sourcegraph.com/sourcegraph/srcgraph/unit"
 )
 
 func init() {
@@ -25,9 +32,11 @@ type goVersion struct {
 	VersionString string
 
 	RepositoryCloneURL string
+	RepositoryURI      repo.URI
 	RepositoryVCS      vcsurl.VCS
 	VCSRevision        string
-	SourceUnitPrefix   string
+	BaseImportPath     string
+	BasePkgDir         string
 
 	resolveCache   map[string]*dep2.ResolvedTarget
 	resolveCacheMu sync.Mutex
@@ -37,9 +46,11 @@ var goVersions = map[string]*goVersion{
 	"1.2.1": &goVersion{
 		VersionString:      "go1.2.1",
 		RepositoryCloneURL: "https://code.google.com/p/go",
+		RepositoryURI:      "code.google.com/p/go",
 		RepositoryVCS:      vcsurl.Mercurial,
 		VCSRevision:        "go1.2.1",
-		SourceUnitPrefix:   "src/pkg",
+		BaseImportPath:     "code.google.com/p/go/src/pkg",
+		BasePkgDir:         "src/pkg",
 	},
 }
 
@@ -59,6 +70,58 @@ func (v *goVersion) baseDockerfile() ([]byte, error) {
 	}
 
 	return buf.Bytes(), nil
+}
+
+func (v *goVersion) containerForRepo(dir string, unit unit.SourceUnit, c *config.Repository) (*container.Container, error) {
+	dockerfile, err := v.baseDockerfile()
+	if err != nil {
+		return nil, err
+	}
+
+	goConfig := v.goConfig(c)
+	containerDir := filepath.Join(containerGOPATH, "src", goConfig.BaseImportPath)
+
+	var preCmdDockerfile []byte
+	var addDirs, addFiles [][2]string
+	if c.URI == v.RepositoryURI {
+		// Go stdlib. This is fairly hacky. We want stdlib package paths to not
+		// be prefixed with "code.google.com/p/go" everywhere (just
+		dockerfile = append(dockerfile, []byte(fmt.Sprintf(`
+# Adjust for Go stdlib
+ENV GOROOT /tmp/go
+RUN apt-get update -qqy
+RUN apt-get install -qqy build-essential
+RUN apt-get install -qqy mercurial
+	`))...)
+
+		// Add all dirs needed for make.bash. Exclude dirs that change when
+		// we build, so that we can take advantage of ADD caching and not
+		// recompile the Go stdlib for each package.
+		entries, err := ioutil.ReadDir(dir)
+		if err != nil {
+			return nil, err
+		}
+		for _, e := range entries {
+			if n := e.Name(); n == "." || n == ".." || n == "pkg" || n == "bin" || n == buildstore.BuildDataDirName {
+				continue
+			}
+			addDirs = append(addDirs, [2]string{e.Name(), filepath.Join("/tmp/go", e.Name())})
+		}
+
+		// We need to actually build the version of Go we want to analyze.
+		preCmdDockerfile = []byte(fmt.Sprintf(`
+RUN cd /tmp/go/src && ./make.bash
+`))
+	}
+
+	return &container.Container{
+		Dockerfile:       dockerfile,
+		RunOptions:       []string{"-v", dir + ":" + containerDir},
+		PreCmdDockerfile: preCmdDockerfile,
+		Dir:              "/tmp/go",
+		AddDirs:          addDirs,
+		AddFiles:         addFiles,
+	}, nil
 }
 
 const containerGOPATH = "/tmp/sg/gopath"

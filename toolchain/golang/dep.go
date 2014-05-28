@@ -6,10 +6,11 @@ import (
 	"net/url"
 	"path/filepath"
 
-	"github.com/sourcegraph/go-vcsurl"
 	"go/build"
 	"go/token"
 	"sort"
+
+	"github.com/sourcegraph/go-vcsurl"
 	"sourcegraph.com/sourcegraph/dep"
 )
 
@@ -118,7 +119,7 @@ func (t *goToolchain) ResolveDependencies(deps []*dep.RawDependency) (resolved m
 		if _, isBuiltin := t.Stdlib.BuiltinPackages[importPath]; isBuiltin {
 			resolvedDep.TargetRepositoryCloneURL = t.Stdlib.RepositoryCloneURL
 			resolvedDep.TargetRepositoryVCS = t.Stdlib.RepositoryVCS
-			resolvedDep.TargetSourceUnit = filepath.Join(t.Stdlib.SourceUnitPrefix, importPath)
+			resolvedDep.TargetSourceUnit = importPath
 			resolvedDep.TargetSourceUnitType = "GoPackage"
 		} else {
 			urlinfo, err := vcsurl.Parse(importPath)

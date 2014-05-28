@@ -17,7 +17,7 @@ import (
 func init() {
 	o := map[repo.URI]*config.Repository{
 		"code.google.com/p/go": &config.Repository{
-			ScanIgnore: []string{"./misc", "./test", "./doc", "./cmd"},
+			ScanIgnore: []string{"./misc", "./test", "./doc", "./cmd", "./src/cmd"},
 		},
 		"github.com/joyent/node": &config.Repository{
 			SourceUnits: config.SourceUnits{
