@@ -149,7 +149,6 @@ func (g *Grapher) emitDoc(obj types.Object, dc *ast.CommentGroup, docstring stri
 		return fmt.Errorf("emitDoc: key %v already seen", key)
 	}
 	g.seenDocKeys[key.String()] = struct{}{}
-	log.Println(key.String())
 
 	var htmlBuf bytes.Buffer
 	doc.ToHTML(&htmlBuf, docstring, nil)

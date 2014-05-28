@@ -1,6 +1,11 @@
 package javascript
 
-import "sourcegraph.com/sourcegraph/srcgraph/unit"
+import (
+	"encoding/json"
+
+	"sourcegraph.com/sourcegraph/srcgraph/repo"
+	"sourcegraph.com/sourcegraph/srcgraph/unit"
+)
 
 const commonJSPackageUnitType = "CommonJSPackage"
 
@@ -21,17 +26,20 @@ type CommonJSPackage struct {
 	// exists.
 	PackageJSONFile string
 
-	// Package is the parsed package.json file. We only read into a subset of
-	// the fields.
-	Package struct {
-		Name string
-	}
+	// Package is the unparsed package.json file contents.
+	Package json.RawMessage
+
+	// PackageName is the value of the package.json "name" key.
+	PackageName string
+
+	// PackageDescription is the value of the package.json "description" key.
+	PackageDescription string
 
 	LibFiles  []string
 	TestFiles []string
 }
 
-func (p CommonJSPackage) Name() string    { return p.Package.Name }
+func (p CommonJSPackage) Name() string    { return p.PackageName }
 func (p CommonJSPackage) RootDir() string { return p.Dir }
 func (p CommonJSPackage) sourceFiles() []string {
 	return append(append([]string{}, p.LibFiles...), p.TestFiles...)
@@ -43,3 +51,15 @@ func (p CommonJSPackage) Paths() []string {
 	}
 	return f
 }
+
+// NameInRepository implements unit.Info.
+func (p CommonJSPackage) NameInRepository(defining repo.URI) string { return p.Name() }
+
+// GlobalName implements unit.Info.
+func (p CommonJSPackage) GlobalName() string { return p.Name() }
+
+// Description implements unit.Info.
+func (p CommonJSPackage) Description() string { return p.PackageDescription }
+
+// Type implements unit.Info.
+func (p CommonJSPackage) Type() string { return "NPM package" }

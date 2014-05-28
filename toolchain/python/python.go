@@ -31,8 +31,9 @@ func init() {
 }
 
 type DistPackage struct {
-	ProjectName string
-	Files       []string
+	ProjectName        string
+	Files              []string
+	ProjectDescription string
 }
 
 func (p *DistPackage) Name() string {
@@ -46,6 +47,18 @@ func (p *DistPackage) RootDir() string {
 func (p *DistPackage) Paths() []string {
 	return p.Files
 }
+
+// NameInRepository implements unit.Info.
+func (p *DistPackage) NameInRepository(defining repo.URI) string { return p.Name() }
+
+// GlobalName implements unit.Info.
+func (p *DistPackage) GlobalName() string { return p.Name() }
+
+// Description implements unit.Info.
+func (p *DistPackage) Description() string { return p.ProjectDescription }
+
+// Type implements unit.Info.
+func (p *DistPackage) Type() string { return "Python package" }
 
 // pydep data structures
 

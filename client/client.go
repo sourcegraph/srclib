@@ -263,5 +263,6 @@ func NewMockClient() *Client {
 		Repositories:   &MockRepositoriesService{},
 		RepositoryTree: &MockRepositoryTreeService{},
 		Symbols:        &MockSymbolsService{},
+		Units:          &MockUnitsService{},
 	}
 }

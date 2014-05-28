@@ -46,7 +46,7 @@ func (p *pythonEnv) BuildScanner(dir string, c *config.Repository) (*container.C
 				return nil, err
 			}
 			units := []*DistPackage{
-				{ProjectName: info.ProjectName, Files: pythonFiles},
+				{ProjectName: info.ProjectName, Files: pythonFiles, ProjectDescription: info.Description},
 			}
 			return json.Marshal(units)
 		},
