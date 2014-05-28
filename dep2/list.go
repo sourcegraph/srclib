@@ -91,6 +91,9 @@ func (l DockerLister) List(dir string, unit unit.SourceUnit, c *config.Repositor
 	if err != nil {
 		return nil, err
 	}
+	if cmd == nil {
+		return nil, nil
+	}
 
 	data, err := cmd.Run()
 	if err != nil {

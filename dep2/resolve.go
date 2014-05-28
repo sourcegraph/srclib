@@ -45,6 +45,9 @@ func (l DockerResolver) Resolve(dep *RawDependency, c *config.Repository) (*Reso
 	if err != nil {
 		return nil, err
 	}
+	if cmd == nil {
+		return nil, nil
+	}
 
 	data, err := cmd.Run()
 	if err != nil {

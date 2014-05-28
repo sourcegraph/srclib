@@ -47,10 +47,17 @@ func (v *goVersion) BuildScanner(dir string, c *config.Repository) (*container.C
 					return nil, err
 				}
 
+				// Get import path, and adjust for stdlib (remove "code.google.com/p/go").
 				importPath := pkg["ImportPath"].(string)
-				dir, err := filepath.Rel(goConfig.BaseImportPath, importPath)
-				if err != nil {
-					return nil, err
+				var dir string
+				if stdlibPrefix := v.BaseImportPath + "/"; strings.HasPrefix(importPath, stdlibPrefix) {
+					importPath = strings.TrimPrefix(importPath, stdlibPrefix)
+					dir = filepath.Join(v.BasePkgDir, importPath)
+				} else {
+					dir, err = filepath.Rel(goConfig.BaseImportPath, importPath)
+					if err != nil {
+						return nil, err
+					}
 				}
 
 				// collect all filenames
