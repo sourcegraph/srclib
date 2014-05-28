@@ -22,7 +22,10 @@ func init() {
 	dep2.RegisterResolver(npmDependencyTargetType, dep2.DockerResolver{defaultNPM})
 }
 
-const nodeStdlibRepoURL = "git://github.com/joyent/node.git"
+const (
+	nodeStdlibRepoURL = "git://github.com/joyent/node.git"
+	NodeJSStdlibUnit  = "node"
+)
 
 type nodeVersion struct{}
 
@@ -59,11 +62,11 @@ func (v *npmVersion) BuildScanner(dir string, c *config.Repository) (*container.
 	}
 
 	const (
-		findpkgsNPM = "commonjs-findpkgs@0.0.3"
+		findpkgsNPM = "commonjs-findpkgs@0.0.4"
 		findpkgsGit = "git://github.com/sourcegraph/commonjs-findpkgs.git"
 		findpkgsSrc = findpkgsNPM
 	)
-	dockerfile = append(dockerfile, []byte("\n\nRUN npm install --quiet -g "+findpkgsSrc+"\n")...)
+	dockerfile = append(dockerfile, []byte("\n\nRUN npm install --quiet -g "+findpkgsNPM+"\n")...)
 
 	containerDir := containerDir(dir)
 	cont := container.Container{
@@ -147,6 +150,7 @@ func (v *npmVersion) BuildResolver(dep *dep2.RawDependency, c *config.Repository
 		Transform: func(orig []byte) ([]byte, error) {
 			// resolvedDep is output from npm-deptool.
 			type npmDeptoolOutput struct {
+				Name        string
 				ResolvedURL string `json:"_resolved"`
 				ID          string `json:"_id"`
 				Repository  struct {
@@ -193,7 +197,7 @@ func (v *npmVersion) BuildResolver(dep *dep2.RawDependency, c *config.Repository
 			return json.Marshal(&dep2.ResolvedTarget{
 				ToRepoCloneURL:  toRepoCloneURL,
 				ToUnitType:      unit.Type((&CommonJSPackage{})),
-				ToUnit:          ".",
+				ToUnit:          resolvedDep.Name,
 				ToVersionString: resolvedDep.ID,
 				ToRevSpec:       toRevSpec,
 			})

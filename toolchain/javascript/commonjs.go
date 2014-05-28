@@ -21,11 +21,17 @@ type CommonJSPackage struct {
 	// exists.
 	PackageJSONFile string
 
+	// Package is the parsed package.json file. We only read into a subset of
+	// the fields.
+	Package struct {
+		Name string
+	}
+
 	LibFiles  []string
 	TestFiles []string
 }
 
-func (p CommonJSPackage) Name() string    { return p.Dir }
+func (p CommonJSPackage) Name() string    { return p.Package.Name }
 func (p CommonJSPackage) RootDir() string { return p.Dir }
 func (p CommonJSPackage) sourceFiles() []string {
 	return append(append([]string{}, p.LibFiles...), p.TestFiles...)

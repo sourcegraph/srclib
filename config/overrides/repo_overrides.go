@@ -22,7 +22,8 @@ func init() {
 		"github.com/joyent/node": &config.Repository{
 			SourceUnits: config.SourceUnits{
 				&javascript.CommonJSPackage{
-					Dir: ".",
+					Package: struct{ Name string }{javascript.NodeJSStdlibUnit},
+					Dir:     ".",
 					LibFiles: []string{
 						"lib/assert.js",
 						"lib/buffer.js",
