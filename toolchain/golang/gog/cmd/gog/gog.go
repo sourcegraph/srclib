@@ -39,12 +39,29 @@ func main() {
 		log.Printf("Using build tags: %q", tags)
 	}
 
+	var importUnsafe bool
+	for _, a := range flag.Args() {
+		if a == "unsafe" {
+			importUnsafe = true
+			break
+		}
+	}
+
 	extraArgs, err := config.FromArgs(flag.Args(), true)
 	if err != nil {
 		log.Fatal(err)
 	}
 	if len(extraArgs) > 0 {
 		flag.Usage()
+	}
+
+	if importUnsafe {
+		// Special-case "unsafe" because go/loader does not let you load it
+		// directly.
+		if config.ImportPkgs == nil {
+			config.ImportPkgs = make(map[string]bool)
+		}
+		config.ImportPkgs["unsafe"] = true
 	}
 
 	prog, err := config.Load()
