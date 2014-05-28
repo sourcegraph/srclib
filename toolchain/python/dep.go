@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"text/template"
 
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
@@ -22,12 +21,11 @@ func (p *pythonEnv) BuildLister(dir string, unit unit.SourceUnit, c *config.Repo
 	var dockerfile []byte
 	var cmd []string
 	var err error
-	var runOpts = []string{"-v", dir + ":" + srcRoot}
 	if c.URI == stdLibRepo {
 		dockerfile = []byte(`FROM ubuntu:14.04`)
 		cmd = []string{"echo", "[]"}
 	} else {
-		dockerfile, err = p.depDockerfile()
+		dockerfile, err = p.pydepDockerfile()
 		if err != nil {
 			return nil, err
 		}
@@ -37,7 +35,7 @@ func (p *pythonEnv) BuildLister(dir string, unit unit.SourceUnit, c *config.Repo
 	return &container.Command{
 		Container: container.Container{
 			Dockerfile: dockerfile,
-			RunOptions: runOpts,
+			RunOptions: []string{"-v", dir + ":" + srcRoot},
 			Cmd:        cmd,
 		},
 		Transform: func(orig []byte) ([]byte, error) {
@@ -63,19 +61,6 @@ func (p *pythonEnv) BuildLister(dir string, unit unit.SourceUnit, c *config.Repo
 	}, nil
 }
 
-type requirement struct {
-	ProjectName string      `json:"project_name"`
-	UnsafeName  string      `json:"unsafe_name"`
-	Key         string      `json:"key"`
-	Specs       [][2]string `json:"specs"`
-	Extras      []string    `json:"extras"`
-	RepoURL     string      `json:"repo_url"`
-	Packages    []string    `json:"packages"`
-	Modules     []string    `json:"modules"`
-	Resolved    bool        `json:"resolved"`
-	Type        string      `json:"type"`
-}
-
 func (p *pythonEnv) Resolve(dep *dep2.RawDependency, c *config.Repository) (*dep2.ResolvedTarget, error) {
 	switch dep.TargetType {
 	case pythonRequirementTargetType:
@@ -83,7 +68,9 @@ func (p *pythonEnv) Resolve(dep *dep2.RawDependency, c *config.Repository) (*dep
 		reqJson, _ := json.Marshal(dep.Target)
 		json.Unmarshal(reqJson, &req)
 
-		toUnit := &DistPackage{}
+		toUnit := &DistPackage{
+			ProjectName: req.ProjectName,
+		}
 		return &dep2.ResolvedTarget{
 			ToRepoCloneURL: req.RepoURL,
 			ToUnit:         toUnit.Name(),
@@ -94,20 +81,4 @@ func (p *pythonEnv) Resolve(dep *dep2.RawDependency, c *config.Repository) (*dep
 	}
 }
 
-func (l *pythonEnv) depDockerfile() ([]byte, error) {
-	var buf bytes.Buffer
-	template.Must(template.New("").Parse(depDockerfile)).Execute(&buf, l)
-	return buf.Bytes(), nil
-}
-
 const pythonRequirementTargetType = "python-requirement"
-const depDockerfile = `FROM ubuntu:14.04
-RUN apt-get update -qq
-RUN apt-get install -qqy curl
-RUN apt-get install -qqy git
-RUN apt-get install -qqy {{.PythonVersion}}
-RUN ln -s $(which {{.PythonVersion}}) /usr/bin/python
-RUN curl https://raw.githubusercontent.com/pypa/pip/1.5.5/contrib/get-pip.py | python
-
-RUN pip install git+git://github.com/sourcegraph/pydep.git@{{.PydepVersion}}
-`
