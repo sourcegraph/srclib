@@ -350,7 +350,7 @@ func (p *pythonEnv) pysonarSymPathToSymKey(pth string, c *config.Repository, req
 			return nil, err
 		}
 		return &graph.SymbolKey{
-			Repo:     c.URI,
+			Repo:     "", // no repo URI means same repo
 			UnitType: unit.Type(fauxUnit),
 			Unit:     fauxUnit.Name(),
 			Path:     graph.SymbolPath(relpath),
