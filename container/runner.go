@@ -21,8 +21,7 @@ type Runner interface {
 var DefaultRunner Runner = dockerRunner{}
 
 var (
-	RunRetries   = 3
-	BuildRetries = 3
+	Retries = 3
 )
 
 type dockerRunner struct{}
@@ -83,8 +82,9 @@ func (_ dockerRunner) Run(c *Command) ([]byte, error) {
 		return nil, err
 	}
 
-	for i := 0; i < BuildRetries; i++ {
-		remainingAttempts := RunRetries - i - 1
+	for i := 0; i < Retries; i++ {
+		remainingAttempts := Retries - i - 1
+
 		buildCmd := exec.Command("docker", "build", "-t", image, ".")
 		buildCmd.Dir = tmpDir
 		buildCmd.Stdout, buildCmd.Stderr = os.Stderr, os.Stderr
@@ -97,11 +97,7 @@ func (_ dockerRunner) Run(c *Command) ([]byte, error) {
 				continue
 			}
 		}
-		break
-	}
 
-	for i := 0; i < RunRetries; i++ {
-		remainingAttempts := RunRetries - i - 1
 		runOptions := append([]string{"--rm"}, c.RunOptions...)
 		if c.Dir != "" {
 			runOptions = append(runOptions, "--workdir="+c.Dir)
