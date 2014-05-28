@@ -1,6 +1,10 @@
 package unit
 
 import (
+	"encoding/json"
+	"fmt"
+	"reflect"
+
 	"github.com/jmoiron/sqlx/types"
 
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
@@ -19,4 +23,20 @@ type RepoSourceUnit struct {
 
 	// Data is the JSON of the underlying SourceUnit.
 	Data types.JsonText
+}
+
+// SourceUnit decodes u's Data JSON field to the SourceUnit it represents, using
+// the source unit registered as u.UnitType.
+func (u *RepoSourceUnit) SourceUnit() (SourceUnit, error) {
+	if u.UnitType == "" {
+		return nil, fmt.Errorf(`source unit is missing "UnitType"`)
+	}
+	if emptyInstance, registered := Types[u.UnitType]; registered {
+		typed := reflect.New(reflect.TypeOf(emptyInstance).Elem()).Interface()
+		if err := json.Unmarshal(u.Data, typed); err != nil {
+			return nil, err
+		}
+		return typed.(SourceUnit), nil
+	}
+	return nil, fmt.Errorf("unrecognized source unit type %q", u.UnitType)
 }

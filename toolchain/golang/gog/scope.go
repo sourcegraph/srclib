@@ -129,9 +129,11 @@ func (g *Grapher) assignPaths(s *types.Scope, prefix []string, exported, pkgscop
 
 	for _, name := range s.Names() {
 		e := s.Lookup(name)
+		if _, seen := g.paths[e]; seen {
+			continue
+		}
 		path := append(append([]string{}, prefix...), name)
 		g.paths[e] = path
-
 		thisExported := exported && ast.IsExported(name)
 		g.exported[e] = thisExported
 		g.pkgscope[e] = pkgscope
@@ -157,6 +159,7 @@ func (g *Grapher) assignPaths(s *types.Scope, prefix []string, exported, pkgscop
 	for i := 0; i < s.NumChildren(); i++ {
 		c := s.Child(i)
 		childPrefix := prefix
+		pkgscope, exported := pkgscope, exported
 
 		if path := g.scopePath(prefix, c); path != nil {
 			childPrefix = append([]string{}, path...)

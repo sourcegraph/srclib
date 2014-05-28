@@ -92,6 +92,19 @@ func (v *npmVersion) BuildScanner(dir string, c *config.Repository) (*container.
 				}
 			}
 
+			// set other fields
+			for _, pkg := range pkgs2 {
+				var pkgjson struct {
+					Name        string
+					Description string
+				}
+				if err := json.Unmarshal(pkg.Package, &pkgjson); err != nil {
+					return nil, err
+				}
+				pkg.PackageName = pkgjson.Name
+				pkg.PackageDescription = pkgjson.Description
+			}
+
 			return json.Marshal(pkgs2)
 		},
 	}

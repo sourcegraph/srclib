@@ -79,7 +79,8 @@ func (v *goVersion) containerForRepo(dir string, unit unit.SourceUnit, c *config
 	}
 
 	goConfig := v.goConfig(c)
-	containerDir := filepath.Join(containerGOPATH, "src", goConfig.BaseImportPath)
+	mountDir := filepath.Join(containerGOPATH, "src", goConfig.BaseImportPath)
+	containerDir := mountDir
 
 	var preCmdDockerfile []byte
 	var addDirs, addFiles [][2]string
@@ -121,7 +122,7 @@ RUN cd /tmp/go/src && ./make.bash
 
 	return &container.Container{
 		Dockerfile:       dockerfile,
-		RunOptions:       []string{"-v", dir + ":" + containerDir},
+		RunOptions:       []string{"-v", dir + ":" + mountDir},
 		PreCmdDockerfile: preCmdDockerfile,
 		Dir:              containerDir,
 		AddDirs:          addDirs,

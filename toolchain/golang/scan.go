@@ -50,9 +50,11 @@ func (v *goVersion) BuildScanner(dir string, c *config.Repository) (*container.C
 				// Get import path, and adjust for stdlib (remove "code.google.com/p/go").
 				importPath := pkg["ImportPath"].(string)
 				var dir string
+				isStdlib := false
 				if stdlibPrefix := v.BaseImportPath + "/"; strings.HasPrefix(importPath, stdlibPrefix) {
 					importPath = strings.TrimPrefix(importPath, stdlibPrefix)
 					dir = filepath.Join(v.BasePkgDir, importPath)
+					isStdlib = true
 				} else {
 					dir, err = filepath.Rel(goConfig.BaseImportPath, importPath)
 					if err != nil {
@@ -72,10 +74,23 @@ func (v *goVersion) BuildScanner(dir string, c *config.Repository) (*container.C
 					}
 				}
 
+				var doc string
+				if s, ok := pkg["Doc"].(string); ok {
+					doc = s
+				}
+
+				var pkgname string
+				if s, ok := pkg["Name"].(string); ok {
+					pkgname = s
+				}
+
 				units[i] = &Package{
-					Dir:        dir,
-					ImportPath: importPath,
-					Files:      files,
+					Dir:         dir,
+					ImportPath:  importPath,
+					Files:       files,
+					PackageName: pkgname,
+					Doc:         doc,
+					IsStdlib:    isStdlib,
 				}
 			}
 			return json.Marshal(units)

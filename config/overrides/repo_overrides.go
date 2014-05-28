@@ -22,8 +22,10 @@ func init() {
 		"github.com/joyent/node": &config.Repository{
 			SourceUnits: unit.SourceUnits{
 				&javascript.CommonJSPackage{
-					Package: struct{ Name string }{javascript.NodeJSStdlibUnit},
-					Dir:     ".",
+					Package:            []byte(`{}`),
+					PackageName:        javascript.NodeJSStdlibUnit,
+					PackageDescription: "The Node.js core API.",
+					Dir:                ".",
 					LibFiles: []string{
 						"lib/assert.js",
 						"lib/buffer.js",

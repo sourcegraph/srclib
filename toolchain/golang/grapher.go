@@ -94,18 +94,11 @@ func (v *goVersion) convertGoSymbol(gs *gog.Symbol, c *config.Repository) (*grap
 		return nil, err
 	}
 
-	var path graph.SymbolPath
-	if len(gs.Path) > 0 {
-		path = graph.SymbolPath(strings.Join(gs.Path, "/"))
-	} else {
-		path = "."
-	}
-
 	sym := &graph.Symbol{
 		SymbolKey: graph.SymbolKey{
 			Unit:     resolvedTarget.ToUnit,
 			UnitType: resolvedTarget.ToUnitType,
-			Path:     path,
+			Path:     graph.SymbolPath(pathOrDot(strings.Join(gs.Path, "/"))),
 		},
 
 		Name: gs.Name,
@@ -143,9 +136,10 @@ func (v *goVersion) convertGoRef(gr *gog.Ref, c *config.Repository) (*graph.Ref,
 	if resolvedTarget == nil {
 		return nil, nil
 	}
+
 	return &graph.Ref{
 		SymbolRepo:     uriOrEmpty(resolvedTarget.ToRepoCloneURL),
-		SymbolPath:     graph.SymbolPath(strings.Join(gr.Symbol.Path, "/")),
+		SymbolPath:     graph.SymbolPath(pathOrDot(strings.Join(gr.Symbol.Path, "/"))),
 		SymbolUnit:     resolvedTarget.ToUnit,
 		SymbolUnitType: resolvedTarget.ToUnitType,
 		Def:            gr.Def,
@@ -162,7 +156,7 @@ func (v *goVersion) convertGoDoc(gd *gog.Doc, c *config.Repository) (*graph.Doc,
 	}
 	return &graph.Doc{
 		SymbolKey: graph.SymbolKey{
-			Path:     graph.SymbolPath(strings.Join(gd.Path, "/")),
+			Path:     graph.SymbolPath(pathOrDot(strings.Join(gd.Path, "/"))),
 			Unit:     resolvedTarget.ToUnit,
 			UnitType: resolvedTarget.ToUnitType,
 		},
@@ -179,4 +173,11 @@ func uriOrEmpty(cloneURL string) repo.URI {
 		return ""
 	}
 	return repo.MakeURI(cloneURL)
+}
+
+func pathOrDot(path string) string {
+	if path == "" {
+		return "."
+	}
+	return path
 }
