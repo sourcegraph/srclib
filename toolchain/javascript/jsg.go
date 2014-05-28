@@ -254,15 +254,15 @@ type RefTarget struct {
 
 var ErrSkipResolve = errors.New("skip resolution of this ref target")
 
-func (t RefTarget) Resolve() (repo.URI, graph.SymbolPath, error) {
+func (t RefTarget) Resolve() (r repo.URI, unit string, path graph.SymbolPath, err error) {
 	// TODO(sqs): assume vcs type can be determined from the repoURL
 	var uri repo.URI
-	repoURL, _, err := t.Repository()
+	repoURL, unit, _, err := t.Repository()
 	if err != nil {
 		if t.Origin == "ecma5" || t.Origin == "browser" {
-			return "", "", ErrSkipResolve
+			return "", "", "", ErrSkipResolve
 		}
-		return "", "", err
+		return "", "", "", err
 	}
 	if repoURL != "" {
 		uri = repo.MakeURI(repoURL)
@@ -270,10 +270,10 @@ func (t RefTarget) Resolve() (repo.URI, graph.SymbolPath, error) {
 
 	dp, err := t.DefPath()
 	if err != nil {
-		return "", "", err
+		return "", "", "", err
 	}
 
-	return uri, dp.symbolPath(), nil
+	return uri, unit, dp.symbolPath(), nil
 }
 
 var ErrNotAnNPMPackage = errors.New("not an npm package")
@@ -287,18 +287,18 @@ func (t RefTarget) ModuleRelativeToNPMPackage() (string, error) {
 
 var ErrUnknownTargetRepository = errors.New("couldn't determine target repository")
 
-func (t *RefTarget) Repository() (url string, vcs repo.VCS, err error) {
+func (t *RefTarget) Repository() (url string, unit string, vcs repo.VCS, err error) {
 	if t.NPMPackage != nil && t.NPMPackage.Repository != nil {
-		return t.NPMPackage.Repository.URL, repo.VCS(t.NPMPackage.Repository.Type), nil
+		return t.NPMPackage.Repository.URL, t.NPMPackage.Name, repo.VCS(t.NPMPackage.Repository.Type), nil
 	}
 	if t.Origin == "node" || t.NodeJSCoreModule != "" {
-		return nodeStdlibRepoURL, repo.Git, nil
+		return nodeStdlibRepoURL, NodeJSStdlibUnit, repo.Git, nil
 	}
 	if !t.Abstract {
 		// Current repository
-		return "", "", nil
+		return "", "", "", nil
 	}
-	return "", "", ErrUnknownTargetRepository
+	return "", "", "", ErrUnknownTargetRepository
 }
 
 func (t *RefTarget) DefPath() (*DefPath, error) {
@@ -447,7 +447,7 @@ func convertSymbol(jsym *Symbol) (*graph.Symbol, []*graph.Ref, []*graph.Propagat
 	}
 
 	for _, recv := range jsym.Recv {
-		srcRepo, srcPath, err := recv.Resolve()
+		srcRepo, srcUnit, srcPath, err := recv.Resolve()
 		if err == ErrSkipResolve {
 			continue
 		}
@@ -457,6 +457,7 @@ func convertSymbol(jsym *Symbol) (*graph.Symbol, []*graph.Ref, []*graph.Propagat
 		propgs = append(propgs, &graph.Propagate{
 			DstPath: sym.Path,
 			SrcRepo: srcRepo,
+			SrcUnit: srcUnit,
 			SrcPath: srcPath,
 		})
 	}
@@ -471,7 +472,7 @@ func convertSymbol(jsym *Symbol) (*graph.Symbol, []*graph.Ref, []*graph.Propagat
 }
 
 func convertRef(current unit.SourceUnit, jref *Ref) (*graph.Ref, error) {
-	repoURI, path, err := jref.Target.Resolve()
+	repoURI, u, path, err := jref.Target.Resolve()
 	if err == ErrSkipResolve {
 		return nil, nil
 	}
@@ -487,7 +488,7 @@ func convertRef(current unit.SourceUnit, jref *Ref) (*graph.Ref, error) {
 	ref := &graph.Ref{
 		SymbolRepo:     repoURI,
 		SymbolUnitType: unit.Type(current),
-		SymbolUnit:     current.Name(),
+		SymbolUnit:     u,
 		SymbolPath:     path,
 		Def:            jref.Def,
 		File:           filepath.Join(jref.File),
