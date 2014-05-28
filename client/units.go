@@ -8,6 +8,9 @@ import (
 // UnitsService communicates with the source unit-related endpoints in
 // the Sourcegraph API.
 type UnitsService interface {
+	// Get fetches a unit.
+	Get(spec *UnitSpec) (*unit.RepoSourceUnit, Response, error)
+
 	// List units.
 	List(opt *UnitListOptions) ([]*unit.RepoSourceUnit, Response, error)
 }
@@ -18,6 +21,15 @@ type UnitSpec struct {
 	CommitID string
 	UnitType string
 	Unit     string
+}
+
+func SpecFromUnit(u *unit.RepoSourceUnit) *UnitSpec {
+	return &UnitSpec{
+		Repo:     string(u.Repo),
+		CommitID: u.CommitID,
+		UnitType: u.UnitType,
+		Unit:     u.Unit,
+	}
 }
 
 func (s *UnitSpec) RouteVars() map[string]string {
@@ -47,6 +59,26 @@ type UnitListOptions struct {
 	ListOptions
 }
 
+func (s *unitsService) Get(spec *UnitSpec) (*unit.RepoSourceUnit, Response, error) {
+	url, err := s.client.url(api_router.Unit, spec.RouteVars(), nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewRequest("GET", url.String(), nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var u unit.RepoSourceUnit
+	resp, err := s.client.Do(req, &u)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return &u, resp, nil
+}
+
 func (s *unitsService) List(opt *UnitListOptions) ([]*unit.RepoSourceUnit, Response, error) {
 	url, err := s.client.url(api_router.Units, nil, opt)
 	if err != nil {
@@ -69,6 +101,7 @@ func (s *unitsService) List(opt *UnitListOptions) ([]*unit.RepoSourceUnit, Respo
 
 type MockUnitsService struct {
 	List_ func(opt *UnitListOptions) ([]*unit.RepoSourceUnit, Response, error)
+	Get_  func(spec *UnitSpec) (*unit.RepoSourceUnit, Response, error)
 }
 
 var _ UnitsService = MockUnitsService{}
@@ -78,4 +111,11 @@ func (s MockUnitsService) List(opt *UnitListOptions) ([]*unit.RepoSourceUnit, Re
 		return nil, &HTTPResponse{}, nil
 	}
 	return s.List_(opt)
+}
+
+func (s MockUnitsService) Get(spec *UnitSpec) (*unit.RepoSourceUnit, Response, error) {
+	if s.Get_ == nil {
+		return nil, &HTTPResponse{}, nil
+	}
+	return s.Get_(spec)
 }
