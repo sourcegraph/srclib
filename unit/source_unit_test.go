@@ -8,6 +8,7 @@ func TestParseID(t *testing.T) {
 		wantName, wantType string
 	}{
 		{"a@b", "a", "b"},
+		{"a%2Fb@b", "a/b", "b"},
 	}
 	for _, test := range tests {
 		name, typ, err := ParseID(test.input)

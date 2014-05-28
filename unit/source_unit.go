@@ -3,6 +3,7 @@ package unit
 import (
 	"database/sql/driver"
 	"fmt"
+	"net/url"
 	"path/filepath"
 	"reflect"
 	"strings"
@@ -74,7 +75,7 @@ func Type(u SourceUnit) string {
 var idSeparator = "@"
 
 func MakeID(u SourceUnit) ID {
-	return ID(fmt.Sprintf("%s%s%s", u.Name(), idSeparator, Type(u)))
+	return ID(fmt.Sprintf("%s%s%s", url.QueryEscape(u.Name()), idSeparator, Type(u)))
 }
 
 func ParseID(unitID string) (name, typ string, err error) {
@@ -82,9 +83,13 @@ func ParseID(unitID string) (name, typ string, err error) {
 	if at == -1 {
 		return "", "", fmt.Errorf("no %q in source unit ID", idSeparator)
 	}
-	name = unitID[:at]
+
+	name, err = url.QueryUnescape(unitID[:at])
+	if err != nil {
+		return "", "", err
+	}
 	typ = unitID[at+len(idSeparator):]
-	return
+	return name, typ, nil
 }
 
 type ID string
