@@ -4,16 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
-	"os"
 	"path/filepath"
 
 	"strings"
 
 	"github.com/golang/gddo/gosrc"
-	"github.com/peterbourgon/diskv"
-	"github.com/sourcegraph/httpcache"
-	"github.com/sourcegraph/httpcache/diskcache"
 	"sourcegraph.com/sourcegraph"
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
@@ -157,13 +152,4 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository) 
 	v.resolveCache[importPath] = resolvedTarget
 
 	return resolvedTarget, nil
-}
-
-var cachingHTTPClient = &http.Client{
-	Transport: &httpcache.Transport{
-		Cache: diskcache.NewWithDiskv(diskv.New(diskv.Options{
-			BasePath:     filepath.Join(os.TempDir(), "sg-golang-toolchain-cache"),
-			CacheSizeMax: 5000 * 1024 * 100, // 500 MB
-		})),
-	},
 }
