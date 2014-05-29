@@ -189,9 +189,14 @@ func (p *pythonEnv) convertSym(pySym *pySym, c *config.Repository, reqs []requir
 	if err != nil {
 		return
 	}
+	treePath := graph.TreePath(symKey.Path)
+	if !treePath.IsValid() {
+		return nil, nil, fmt.Errorf("'%s' is not a valid tree-path")
+	}
 
 	sym = &graph.Symbol{
 		SymbolKey: *symKey,
+		TreePath:  treePath,
 		Name:      pySym.Name,
 		File:      file,
 		DefStart:  pySym.DefStart,

@@ -93,13 +93,19 @@ func (v *goVersion) convertGoSymbol(gs *gog.Symbol, c *config.Repository) (*grap
 	if err != nil {
 		return nil, err
 	}
+	path := graph.SymbolPath(pathOrDot(strings.Join(gs.Path, "/")))
+	treePath := graph.TreePath(path)
+	if !treePath.IsValid() {
+		return nil, fmt.Errorf("'%s' is not a valid tree-path")
+	}
 
 	sym := &graph.Symbol{
 		SymbolKey: graph.SymbolKey{
 			Unit:     resolvedTarget.ToUnit,
 			UnitType: resolvedTarget.ToUnitType,
-			Path:     graph.SymbolPath(pathOrDot(strings.Join(gs.Path, "/"))),
+			Path:     path,
 		},
+		TreePath: treePath,
 
 		Name: gs.Name,
 		Kind: graph.SymbolKind(gog.GeneralKindMap[gs.Kind]),
@@ -179,5 +185,5 @@ func pathOrDot(path string) string {
 	if path == "" {
 		return "."
 	}
-	return path
+	return fmt.Sprintf("./%s", path)
 }

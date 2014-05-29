@@ -391,10 +391,16 @@ func convertSymbol(jsym *Symbol) (*graph.Symbol, []*graph.Ref, []*graph.Propagat
 	exported := jsym.Exported && !strings.HasPrefix(jsym.Key.Path, "_") && !strings.Contains(jsym.Key.Path, "._") && !strings.Contains(jsym.Key.Path, "<i>")
 
 	isFunc := strings.HasPrefix(jsym.Type, "fn(")
+	path := jsym.Key.symbolPath()
+	treePath := graph.TreePath(path)
+	if !treePath.IsValid() {
+		return nil, nil, nil, nil, fmt.Errorf("'%s' is not a valid tree-path")
+	}
 
 	// JavaScript symbol
 	sym := &graph.Symbol{
-		SymbolKey: graph.SymbolKey{Path: jsym.Key.symbolPath()},
+		SymbolKey: graph.SymbolKey{Path: path},
+		TreePath:  treePath,
 		Kind:      kind(jsym),
 		Exported:  exported,
 		Callable:  isFunc,
