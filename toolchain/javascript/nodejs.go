@@ -263,3 +263,5 @@ func (v *npmVersion) List(dir string, unit unit.SourceUnit, c *config.Repository
 
 	return rawDeps, nil
 }
+
+const fixPhantomJSHack = "\n\n# fix phantomjs bad url issue (https://github.com/Medium/phantomjs/issues/170)\n" + `RUN sed -ri 's/"phantomjs"\s*:\s*"[^"]+"/"phantomjs":"1.9.7-8"/g' package.json` + "\n"

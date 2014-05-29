@@ -105,7 +105,7 @@ func (v jsg) BuildGrapher(dir string, u unit.SourceUnit, c *config.Repository) (
 	var preCmd []byte
 	if pkg.PackageJSONFile != "" {
 		// If there's a package.json file, `npm install` first.
-		preCmd = []byte("WORKDIR " + containerDir + "\nRUN npm install --quiet --ignore-scripts --no-bin-links")
+		preCmd = []byte("WORKDIR " + containerDir + "\n" + fixPhantomJSHack + "\nRUN npm install --quiet --ignore-scripts --no-bin-links")
 	}
 
 	cmd := container.Command{
