@@ -4,6 +4,7 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strconv"
 
 	"github.com/jmoiron/sqlx/types"
@@ -14,6 +15,7 @@ type (
 	SID        int64
 	SymbolPath string
 	SymbolKind string
+	TreePath   string
 )
 
 // SymbolKey specifies a symbol, either concretely or abstractly. A concrete
@@ -44,8 +46,17 @@ type SymbolKey struct {
 	// symbol was defined in.
 	Unit string `json:",omitempty"`
 
-	// Path is the path to this symbol, relative to the repo. Its Elasticsearch mapping is defined
-	// separately (because it is a multi_field, which the struct tag can't currently represent).
+	// Path is a unique identifier for the symbol, relative to the source unit.
+	// It should remain stable across commits as long as the symbol is the
+	// "same" symbol. Its Elasticsearch mapping is defined separately (because
+	// it is a multi_field, which the struct tag can't currently represent).
+	//
+	// Path encodes no structural semantics. Its only meaning is to be a stable
+	// unique identifier within a given source unit. In many languages, it is
+	// convenient to use the namespace hierarchy (with some modifications) as
+	// the Path, but this may not always be the case. I.e., don't rely on Path
+	// to find parents or children or any other structural propreties of the
+	// symbol hierarchy). See Symbol.TreePath instead.
 	Path SymbolPath
 }
 
@@ -68,6 +79,20 @@ type Symbol struct {
 	// (subsequent runs of a grapher will emit the same symbols with the same
 	// SymbolKeys).
 	SymbolKey
+
+	// TreePath is a structurally significant path descriptor for a symbol. For
+	// many languages, it may be identical or similar to SymbolKey.Path.
+	// However, it has the following constraints, which allow it to define a
+	// symbol tree.
+	//
+	// A tree-path is a chain of '/'-delimited components. A component is either a
+	// symbol name or a ghost component.
+	// - A symbol name satifies the regex [^/-][^/]*
+	// - A ghost component satisfies the regex -[^/]*
+	// Any prefix of a tree-path that terminates in a symbol name must be a valid
+	// tree-path for some symbol.
+	// The following regex captures the children of a tree-path X: X(/-[^/]*)*(/[^/-][^/]*)
+	TreePath TreePath `db:"treepath" json:",omitempty"`
 
 	// Kind is the language-independent kind of this symbol.
 	Kind SymbolKind `elastic:"type:string,index:analyzed"`
@@ -93,6 +118,12 @@ type Symbol struct {
 	// about the symbol. Data is used to construct function signatures,
 	// import/require statements, language-specific type descriptions, etc.
 	Data types.JsonText `json:",omitempty" elastic:"type:object,enabled:false"`
+}
+
+var treePathPattern = regexp.MustCompile(`^(?:[^/]+)(?:/[^/]+)*$`)
+
+func (p TreePath) IsValid() bool {
+	return treePathPattern.MatchString(string(p))
 }
 
 func (s *Symbol) Fmt() SymbolPrintFormatter { return PrintFormatter(s) }
@@ -238,6 +269,18 @@ func (x SymbolPath) Value() (driver.Value, error) {
 func (x *SymbolPath) Scan(v interface{}) error {
 	if data, ok := v.([]byte); ok {
 		*x = SymbolPath(data)
+		return nil
+	}
+	return fmt.Errorf("%T.Scan failed: %v", x, v)
+}
+
+func (x TreePath) Value() (driver.Value, error) {
+	return string(x), nil
+}
+
+func (x *TreePath) Scan(v interface{}) error {
+	if data, ok := v.([]byte); ok {
+		*x = TreePath(data)
 		return nil
 	}
 	return fmt.Errorf("%T.Scan failed: %v", x, v)
