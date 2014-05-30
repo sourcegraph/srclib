@@ -180,11 +180,11 @@ type SymbolListOptions struct {
 	Unit          string `url:",omitempty"`
 
 	// If specified, will filter on descendants of ParentPath (up to ChildDepth)
-	ParentPath string `url:",omitempty"`
-	ChildDepth int    `url:",omitempty"`
+	ParentTreePath string `url:",omitempty"`
+	ChildDepth     int    `url:",omitempty"`
 
 	// If specified, will filter on ancestors of ChildPath
-	ChildPath string `url:",omitempty"`
+	ChildTreePath string `url:",omitempty"`
 
 	// File, if specified, will restrict the results to only symbols defined in
 	// the specified file.
@@ -231,11 +231,11 @@ func (s *symbolsService) List(opt *SymbolListOptions) ([]*Symbol, Response, erro
 
 // SymbolSearchOptions specifies options for SymbolsService.Search
 type SymbolSearchOptions struct {
-	Query         string
-	Exported      bool   `url:",omitempty"` // TODO: make mandatory true for non-repo-limited queries
-	RepositoryURI string `url:",omitempty"` // TODO
-	ParentPath    string `url:",omitempty"` // TODO
-	Instant       bool   `url:",omitempty"`
+	Query          string
+	Exported       bool   `url:",omitempty"` // TODO: make mandatory true for non-repo-limited queries
+	RepositoryURI  string `url:",omitempty"` // TODO
+	ParentTreePath string `url:",omitempty"` // TODO
+	Instant        bool   `url:",omitempty"`
 	ListOptions
 }
 
@@ -268,16 +268,16 @@ type SymbolNode struct {
 type SymbolTreeOptions struct {
 	RepositoryURI string `url:",omitempty"`
 	// TODO(sqs): kinds' "comma" tag is not respected by gorilla/schema
-	Kinds       []string `url:",omitempty,comma"`
-	CommitID    string   `url:",omitempty"`
-	UnitType    string   `url:",omitempty"`
-	Unit        string   `url:",omitempty"`
-	Path        string   `url:",omitempty"`
-	ParentPath  string   `url:",omitempty"`
-	ChildDepth  int      `url:",omitempty"`
-	Exported    bool     `url:",omitempty"`
-	IncludeTest bool     `url:",omitempty"`
-	Doc         bool     `url:",omitempty"`
+	Kinds          []string `url:",omitempty,comma"`
+	CommitID       string   `url:",omitempty"`
+	UnitType       string   `url:",omitempty"`
+	Unit           string   `url:",omitempty"`
+	Path           string   `url:",omitempty"`
+	ParentTreePath string   `url:",omitempty"`
+	ChildDepth     int      `url:",omitempty"`
+	Exported       bool     `url:",omitempty"`
+	IncludeTest    bool     `url:",omitempty"`
+	Doc            bool     `url:",omitempty"`
 
 	// TrimRootStubs is whether to eliminate root nodes that have no siblings
 	// and only contain children. If true, this operation is applied repeatedly
