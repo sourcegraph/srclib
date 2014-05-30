@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"path/filepath"
 
 	"sourcegraph.com/sourcegraph/srcgraph/config"
 	"sourcegraph.com/sourcegraph/srcgraph/container"
@@ -17,7 +18,7 @@ func init() {
 	dep2.RegisterResolver(pythonRequirementTargetType, defaultPythonEnv)
 }
 
-func (p *pythonEnv) BuildLister(dir string, unit unit.SourceUnit, c *config.Repository) (*container.Command, error) {
+func (p *pythonEnv) BuildLister(dir string, u unit.SourceUnit, c *config.Repository) (*container.Command, error) {
 	var dockerfile []byte
 	var cmd []string
 	var err error
@@ -29,7 +30,7 @@ func (p *pythonEnv) BuildLister(dir string, unit unit.SourceUnit, c *config.Repo
 		if err != nil {
 			return nil, err
 		}
-		cmd = []string{"pydep-run.py", "dep", srcRoot}
+		cmd = []string{"pydep-run.py", "dep", filepath.Join(srcRoot, u.RootDir())}
 	}
 
 	return &container.Command{
@@ -68,9 +69,7 @@ func (p *pythonEnv) Resolve(dep *dep2.RawDependency, c *config.Repository) (*dep
 		reqJson, _ := json.Marshal(dep.Target)
 		json.Unmarshal(reqJson, &req)
 
-		toUnit := &DistPackage{
-			ProjectName: req.ProjectName,
-		}
+		toUnit := req.DistPackage()
 		return &dep2.ResolvedTarget{
 			ToRepoCloneURL: req.RepoURL,
 			ToUnit:         toUnit.Name(),

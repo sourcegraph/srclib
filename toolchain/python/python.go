@@ -9,10 +9,34 @@ import (
 )
 
 const (
-	srcRoot        = "/src"
-	stdLibRepo     = repo.URI("hg.python.org/cpython")
-	pythonUnitType = "python"
+	srcRoot    = "/src"
+	stdLibRepo = repo.URI("hg.python.org/cpython")
 )
+
+// Taken from hg.python.org/cpython's setup.py
+var stdLibUnit = &DistPackage{
+	ProjectName: "Python",
+	ProjectDescription: `A high-level object-oriented programming language
+
+Python is an interpreted, interactive, object-oriented programming
+language. It is often compared to Tcl, Perl, Scheme or Java.
+
+Python combines remarkable power with very clear syntax. It has
+modules, classes, exceptions, very high level dynamic data types, and
+dynamic typing. There are interfaces to many system calls and
+libraries, as well as to various windowing systems (X11, Motif, Tk,
+Mac, MFC). New built-in modules are easily written in C or C++. Python
+is also usable as an extension language for applications that need a
+programmable interface.
+
+The Python implementation is portable: it runs on many brands of UNIX,
+on Windows, DOS, Mac, Amiga... If your favorite system isn't
+listed here, it may still be supported, if there's a C compiler for
+it. Ask around on comp.lang.python -- or just try compiling Python
+yourself.`,
+	RootDirectory: ".",
+	Files:         nil, // should be filled in when needed
+}
 
 type pythonEnv struct {
 	PythonVersion  string
@@ -23,17 +47,29 @@ type pythonEnv struct {
 var defaultPythonEnv = &pythonEnv{
 	PythonVersion:  "python2.7",
 	Python3Version: "python3.3",
-	PydepVersion:   "bd61d1a16f696b90828e198a610da7aae10b8ac2",
+	PydepVersion:   "336457855e25fb0fd30db8ab5fac2f4e936551cc",
 }
 
 func init() {
 	toolchain.Register("python", defaultPythonEnv)
 }
 
+const DistPackageDisplayName = "PipPackage"
+
 type DistPackage struct {
-	ProjectName        string
-	Files              []string
+	// Name of the DistPackage as defined in setup.py. E.g., Django, Flask, etc.
+	ProjectName string
+
+	// Description of the DistPackage (extracted from its setup.py). This may be empty if derived from a requirement.
 	ProjectDescription string
+
+	// The root directory relative to the repository root that contains the setup.py. This may be empty if this
+	// DistPackage is derived from a requirement (there is no way to recover a Python distUtils package's location in
+	// its source repository without accessing the source repository itself).
+	RootDirectory string
+
+	// The files in the package. This may be empty (it is only necessary for computing blame).
+	Files []string
 }
 
 func (p *DistPackage) Name() string {
@@ -41,7 +77,7 @@ func (p *DistPackage) Name() string {
 }
 
 func (p *DistPackage) RootDir() string {
-	return "."
+	return p.RootDirectory
 }
 
 func (p *DistPackage) Paths() []string {
@@ -63,6 +99,7 @@ func (p *DistPackage) Type() string { return "Python package" }
 // pydep data structures
 
 type pkgInfo struct {
+	RootDir     string   `json:"rootdir,omitempty"`
 	ProjectName string   `json:"project_name,omitempty"`
 	Version     string   `json:"version,omitempty"`
 	RepoURL     string   `json:"repo_url,omitempty"`
@@ -71,6 +108,23 @@ type pkgInfo struct {
 	Scripts     []string `json:"scripts,omitempty"`
 	Author      string   `json:"author,omitempty"`
 	Description string   `json:"description,omitempty"`
+}
+
+func (p pkgInfo) DistPackage() *DistPackage {
+	return &DistPackage{
+		ProjectName:        p.ProjectName,
+		ProjectDescription: p.Description,
+		RootDirectory:      p.RootDir,
+	}
+}
+
+func (p pkgInfo) DistPackageWithFiles(files []string) *DistPackage {
+	return &DistPackage{
+		ProjectName:        p.ProjectName,
+		ProjectDescription: p.Description,
+		RootDirectory:      p.RootDir,
+		Files:              files,
+	}
 }
 
 type requirement struct {
@@ -84,6 +138,12 @@ type requirement struct {
 	Modules     []string    `json:"modules"`
 	Resolved    bool        `json:"resolved"`
 	Type        string      `json:"type"`
+}
+
+func (r requirement) DistPackage() *DistPackage {
+	return &DistPackage{
+		ProjectName: r.ProjectName,
+	}
 }
 
 func (l *pythonEnv) pydepDockerfile() ([]byte, error) {
