@@ -120,10 +120,10 @@ type Symbol struct {
 	Data types.JsonText `json:",omitempty" elastic:"type:object,enabled:false"`
 }
 
-var treePathPattern = regexp.MustCompile(`^(?:[^/]+)(?:/[^/]+)*$`)
+var treePathRegexp = regexp.MustCompile(`^(?:[^/]+)(?:/[^/]+)*$`)
 
 func (p TreePath) IsValid() bool {
-	return treePathPattern.MatchString(string(p))
+	return treePathRegexp.MatchString(string(p))
 }
 
 func (s *Symbol) Fmt() SymbolPrintFormatter { return PrintFormatter(s) }
