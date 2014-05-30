@@ -339,6 +339,25 @@ func (p DefPath) symbolPath() graph.SymbolPath {
 	}
 }
 
+func (p DefPath) symbolTreePath() graph.TreePath {
+	p.Path = strconv.QuoteToASCII(p.Path)
+	p.Path = p.Path[1 : len(p.Path)-1]
+
+	namespaceComponents := strings.Split(p.Namespace, "/")
+	for n := 0; n < len(namespaceComponents); n++ {
+		namespaceComponents[n] = "-" + namespaceComponents[n]
+	}
+	ghostedNamespace := strings.Join(namespaceComponents, "/")
+
+	if p.Module == "" {
+		return graph.TreePath(fmt.Sprintf("%s/-/%s", ghostedNamespace, p.Path))
+	} else if p.Path == "" {
+		return graph.TreePath(fmt.Sprintf("%s/%s", ghostedNamespace, p.Module))
+	} else {
+		return graph.TreePath(fmt.Sprintf("%s/%s/-/%s", ghostedNamespace, p.Module, strings.Replace(p.Path, ".", "/", -1)))
+	}
+}
+
 func lastScopePathComponent(scopePath string) string {
 	lastDot := strings.LastIndex(scopePath, ".")
 	if lastDot == -1 {
@@ -392,7 +411,7 @@ func convertSymbol(jsym *Symbol) (*graph.Symbol, []*graph.Ref, []*graph.Propagat
 
 	isFunc := strings.HasPrefix(jsym.Type, "fn(")
 	path := jsym.Key.symbolPath()
-	treePath := graph.TreePath(path)
+	treePath := jsym.Key.symbolTreePath()
 	if !treePath.IsValid() {
 		return nil, nil, nil, nil, fmt.Errorf("'%s' is not a valid tree-path")
 	}
