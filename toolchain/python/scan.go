@@ -13,22 +13,15 @@ import (
 
 func init() {
 	scan.Register("python", scan.DockerScanner{defaultPythonEnv})
-	unit.Register("python", &DistPackage{})
+	unit.Register(DistPackageDisplayName, &DistPackage{})
 }
 
 func (p *pythonEnv) BuildScanner(dir string, c *config.Repository) (*container.Command, error) {
-	pythonFiles, hasSetupPy := pythonSourceFiles(dir)
-
 	dockerfile, err := p.pydepDockerfile()
 	if err != nil {
 		return nil, err
 	}
-	var cmd []string
-	if hasSetupPy {
-		cmd = []string{"pydep-run.py", "info", srcRoot}
-	} else {
-		cmd = []string{"echo", "-n"} // kludge
-	}
+	var cmd = []string{"pydep-run.py", "list", srcRoot}
 	return &container.Command{
 		Container: container.Container{
 			Dockerfile: dockerfile,
@@ -40,13 +33,14 @@ func (p *pythonEnv) BuildScanner(dir string, c *config.Repository) (*container.C
 				return nil, nil
 			}
 
-			var info pkgInfo
-			err := json.Unmarshal(orig, &info)
+			var pkgs []pkgInfo
+			err := json.Unmarshal(orig, &pkgs)
 			if err != nil {
 				return nil, err
 			}
-			units := []*DistPackage{
-				{ProjectName: info.ProjectName, Files: pythonFiles, ProjectDescription: info.Description},
+			var units []*DistPackage
+			for _, pkg := range pkgs {
+				units = append(units, pkg.DistPackageWithFiles(pythonSourceFiles(pkg.RootDir)))
 			}
 			return json.Marshal(units)
 		},
@@ -72,13 +66,10 @@ func (p *pythonEnv) UnmarshalSourceUnits(data []byte) ([]unit.SourceUnit, error)
 	return units, nil
 }
 
-func pythonSourceFiles(dir string) (files []string, hasSetupPy bool) {
+func pythonSourceFiles(dir string) (files []string) {
 	walker := fs.Walk(dir)
 	for walker.Step() {
 		if err := walker.Err(); err == nil && !walker.Stat().IsDir() && filepath.Ext(walker.Path()) == ".py" {
-			if filepath.Base(walker.Path()) == "setup.py" {
-				hasSetupPy = true
-			}
 			file, _ := filepath.Rel(dir, walker.Path())
 			files = append(files, file)
 		}

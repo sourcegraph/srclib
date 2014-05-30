@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	graph.RegisterMakeSymbolFormatter(pythonUnitType, newSymbolFormatter)
+	graph.RegisterMakeSymbolFormatter(DistPackageDisplayName, newSymbolFormatter)
 }
 
 func newSymbolFormatter(s *graph.Symbol) graph.SymbolFormatter {
