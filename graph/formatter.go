@@ -71,6 +71,13 @@ const (
 	LanguageWideQualified = "lang-wide"
 )
 
+// qualLevels associates a number (the slice index) with each Qualification, for
+// use in format strings (so that, e.g., "%.0n" means Unqualified name and
+// "%.2n" means DepQualified name).
+var qualLevels = []Qualification{
+	Unqualified, ScopeQualified, DepQualified, RepositoryWideQualified, LanguageWideQualified,
+}
+
 // A MakeSymbolFormatter is a function, typically implemented by toolchains,
 // that creates a SymbolFormatter for a symbol.
 type MakeSymbolFormatter func(*Symbol) SymbolFormatter
@@ -163,7 +170,11 @@ type printFormatter struct{ SymbolFormatter }
 func (pf *printFormatter) Format(f fmt.State, c rune) {
 	var qual Qualification
 	if prec, ok := f.Precision(); ok {
-		qual = Qualification(prec)
+		if prec < 0 || prec >= len(qualLevels) {
+			fmt.Fprint(f, "%%!%c(invalid qual %d)", c, prec)
+			return
+		}
+		qual = qualLevels[prec]
 	}
 
 	switch c {

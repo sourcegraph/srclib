@@ -15,6 +15,8 @@ func (_ testFormatter) Name(qual Qualification) string {
 		return "scope.name"
 	case DepQualified:
 		return "imp.scope.name"
+	case RepositoryWideQualified:
+		return "dir/lib.scope.name"
 	case LanguageWideQualified:
 		return "lib.scope.name"
 	}
@@ -29,6 +31,8 @@ func (_ testFormatter) Type(qual Qualification) string {
 		return "scope.typeName"
 	case DepQualified:
 		return "imp.scope.typeName"
+	case RepositoryWideQualified:
+		return "dir/lib.scope.typeName"
 	case LanguageWideQualified:
 		return "lib.scope.typeName"
 	}
@@ -52,12 +56,14 @@ func TestPrintFormatter(t *testing.T) {
 		{"%.0n", "name"},
 		{"%.1n", "scope.name"},
 		{"%.2n", "imp.scope.name"},
-		{"%.3n", "lib.scope.name"},
+		{"%.3n", "dir/lib.scope.name"},
+		{"%.4n", "lib.scope.name"},
 		{"%t", "typeName"},
 		{"%.0t", "typeName"},
 		{"%.1t", "scope.typeName"},
 		{"%.2t", "imp.scope.typeName"},
-		{"%.3t", "lib.scope.typeName"},
+		{"%.3t", "dir/lib.scope.typeName"},
+		{"%.4t", "lib.scope.typeName"},
 		{"% t", "_typeName"},
 		{"%w", "defkw"},
 		{"%k", "kind"},
