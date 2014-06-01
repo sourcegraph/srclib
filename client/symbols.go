@@ -21,12 +21,6 @@ type SymbolsService interface {
 	// List symbols.
 	List(opt *SymbolListOptions) ([]*Symbol, Response, error)
 
-	// Search symbols.
-	Search(opt *SymbolSearchOptions) ([]*Symbol, Response, error)
-
-	// Tree returns a tree of symbols.
-	Tree(opt *SymbolTreeOptions) ([]*SymbolNode, Response, error)
-
 	// ListExamples lists examples for symbol.
 	ListExamples(symbol SymbolSpec, opt *SymbolListExamplesOptions) ([]*Example, Response, error)
 
@@ -229,88 +223,6 @@ func (s *symbolsService) List(opt *SymbolListOptions) ([]*Symbol, Response, erro
 	return symbols, resp, nil
 }
 
-// SymbolSearchOptions specifies options for SymbolsService.Search
-type SymbolSearchOptions struct {
-	Query          string
-	Exported       bool   `url:",omitempty"` // TODO: make mandatory true for non-repo-limited queries
-	RepositoryURI  string `url:",omitempty"` // TODO
-	ParentTreePath string `url:",omitempty"` // TODO
-	Instant        bool   `url:",omitempty"`
-	ListOptions
-}
-
-func (s *symbolsService) Search(opt *SymbolSearchOptions) ([]*Symbol, Response, error) {
-	url, err := s.client.url(api_router.SymbolSearch, nil, opt)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	req, err := s.client.NewRequest("GET", url.String(), nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	var symbols []*Symbol
-	resp, err := s.client.Do(req, &symbols)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return symbols, resp, nil
-}
-
-type SymbolNode struct {
-	Name     string
-	*Symbol  `json:"Symbol"`
-	Children []*SymbolNode
-}
-
-type SymbolTreeOptions struct {
-	RepositoryURI string `url:",omitempty"`
-	// TODO(sqs): kinds' "comma" tag is not respected by gorilla/schema
-	Kinds          []string `url:",omitempty,comma"`
-	CommitID       string   `url:",omitempty"`
-	UnitType       string   `url:",omitempty"`
-	Unit           string   `url:",omitempty"`
-	Path           string   `url:",omitempty"`
-	ParentTreePath string   `url:",omitempty"`
-	ChildDepth     int      `url:",omitempty"`
-	Exported       bool     `url:",omitempty"`
-	IncludeTest    bool     `url:",omitempty"`
-	Doc            bool     `url:",omitempty"`
-
-	// TrimRootStubs is whether to eliminate root nodes that have no siblings
-	// and only contain children. If true, this operation is applied repeatedly
-	// until the root nodes are not subject to trimming.
-	TrimRootStubs bool `url:",omitempty"`
-
-	// CollapseUnitDotSymbols is whether to treat a symbol whose path is "." as
-	// the symbol for the unit. If false, the tree will contain a parent node
-	// for the source unit and a child for the unit's "." symbol (which
-	// typically represents the unit).
-	CollapseUnitDotSymbols bool `url:",omitempty"`
-}
-
-func (s *symbolsService) Tree(opt *SymbolTreeOptions) ([]*SymbolNode, Response, error) {
-	url, err := s.client.url(api_router.SymbolsTree, nil, opt)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	req, err := s.client.NewRequest("GET", url.String(), nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	var symbolTree []*SymbolNode
-	resp, err := s.client.Do(req, &symbolTree)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return symbolTree, resp, nil
-}
-
 // Example is a usage example of a symbol.
 type Example struct {
 	graph.Ref
@@ -501,8 +413,6 @@ func (s *symbolsService) ListInterfaces(symbol SymbolSpec, opt *SymbolListInterf
 type MockSymbolsService struct {
 	Get_                 func(symbol SymbolSpec, opt *SymbolGetOptions) (*Symbol, Response, error)
 	List_                func(opt *SymbolListOptions) ([]*Symbol, Response, error)
-	Search_              func(opt *SymbolSearchOptions) ([]*Symbol, Response, error)
-	Tree_                func(opt *SymbolTreeOptions) ([]*SymbolNode, Response, error)
 	ListExamples_        func(symbol SymbolSpec, opt *SymbolListExamplesOptions) ([]*Example, Response, error)
 	ListAuthors_         func(symbol SymbolSpec, opt *SymbolListAuthorsOptions) ([]*AugmentedSymbolAuthor, Response, error)
 	ListClients_         func(symbol SymbolSpec, opt *SymbolListClientsOptions) ([]*AugmentedSymbolClient, Response, error)
@@ -525,20 +435,6 @@ func (s MockSymbolsService) List(opt *SymbolListOptions) ([]*Symbol, Response, e
 		return nil, &HTTPResponse{}, nil
 	}
 	return s.List_(opt)
-}
-
-func (s MockSymbolsService) Search(opt *SymbolSearchOptions) ([]*Symbol, Response, error) {
-	if s.Search_ == nil {
-		return nil, &HTTPResponse{}, nil
-	}
-	return s.Search_(opt)
-}
-
-func (s MockSymbolsService) Tree(opt *SymbolTreeOptions) ([]*SymbolNode, Response, error) {
-	if s.Tree_ == nil {
-		return nil, &HTTPResponse{}, nil
-	}
-	return s.Tree_(opt)
 }
 
 func (s MockSymbolsService) ListExamples(symbol SymbolSpec, opt *SymbolListExamplesOptions) ([]*Example, Response, error) {
