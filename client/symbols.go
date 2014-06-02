@@ -169,6 +169,8 @@ func (s *symbolsService) Get(symbol SymbolSpec, opt *SymbolGetOptions) (*Symbol,
 type SymbolListOptions struct {
 	Name string `url:",omitempty"`
 
+	Query string `url:",omitempty"`
+
 	// Filters
 	RepositoryURI string `url:",omitempty"`
 	CommitID      string `url:",omitempty"`
