@@ -18,6 +18,10 @@ type SearchResults struct {
 	Repositories []*Repository
 }
 
+func (r *SearchResults) Empty() bool {
+	return len(r.Symbols) == 0 && len(r.People) == 0 && len(r.Repositories) == 0
+}
+
 // searchService implements SearchService.
 type searchService struct {
 	client *Client
