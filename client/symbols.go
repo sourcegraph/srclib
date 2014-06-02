@@ -167,6 +167,8 @@ func (s *symbolsService) Get(symbol SymbolSpec, opt *SymbolGetOptions) (*Symbol,
 
 // SymbolListOptions specifies options for SymbolsService.List.
 type SymbolListOptions struct {
+	Name string `url:",omitempty"`
+
 	// Filters
 	RepositoryURI string `url:",omitempty"`
 	CommitID      string `url:",omitempty"`

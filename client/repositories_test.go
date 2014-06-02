@@ -163,7 +163,7 @@ func TestRepositoriesService_List(t *testing.T) {
 		testMethod(t, r, "GET")
 		testFormValues(t, r, values{
 			"URIs":      "a,b",
-			"Query":     "q",
+			"Name":      "n",
 			"Sort":      "name",
 			"Direction": "asc",
 			"NoFork":    "true",
@@ -176,7 +176,7 @@ func TestRepositoriesService_List(t *testing.T) {
 
 	repos, _, err := client.Repositories.List(&RepositoryListOptions{
 		URIs:        []string{"a", "b"},
-		Query:       "q",
+		Name:        "n",
 		Sort:        "name",
 		Direction:   "asc",
 		NoFork:      true,

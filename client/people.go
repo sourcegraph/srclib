@@ -167,7 +167,9 @@ func (s *peopleService) Sync(person_ PersonSpec) (Response, error) {
 
 // PersonListOptions specifies options for the PeopleService.List method.
 type PersonListOptions struct {
-	Query string `url:",omitempty"`
+	// NameOrLogin filters the results to only those with matching logins or
+	// names.
+	NameOrLogin string `url:",omitempty"`
 
 	Sort      string `url:",omitempty"`
 	Direction string `url:",omitempty"`

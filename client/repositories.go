@@ -258,8 +258,9 @@ func (s *repositoriesService) GetReadme(repo RepositorySpec) (*vcsclient.TreeEnt
 }
 
 type RepositoryListOptions struct {
-	URIs  []string `url:",comma,omitempty"`
-	Query string   `url:",omitempty"`
+	Name string `url:",omitempty"`
+
+	URIs []string `url:",comma,omitempty"`
 
 	BuiltOnly bool `url:",omitempty"`
 

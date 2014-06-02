@@ -121,18 +121,18 @@ func TestPeopleService_List(t *testing.T) {
 		called = true
 		testMethod(t, r, "GET")
 		testFormValues(t, r, values{
-			"Query":     "q",
-			"Sort":      "name",
-			"Direction": "asc",
-			"PerPage":   "1",
-			"Page":      "2",
+			"NameOrLogin": "nl",
+			"Sort":        "name",
+			"Direction":   "asc",
+			"PerPage":     "1",
+			"Page":        "2",
 		})
 
 		writeJSON(w, want)
 	})
 
 	people, _, err := client.People.List(&PersonListOptions{
-		Query:       "q",
+		NameOrLogin: "nl",
 		Sort:        "name",
 		Direction:   "asc",
 		ListOptions: ListOptions{PerPage: 1, Page: 2},
