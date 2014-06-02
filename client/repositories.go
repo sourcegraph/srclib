@@ -258,16 +258,16 @@ func (s *repositoriesService) GetReadme(repo RepositorySpec) (*vcsclient.TreeEnt
 }
 
 type RepositoryListOptions struct {
-	Name string `url:",omitempty"`
+	Name string `url:",omitempty" json:",omitempty"`
 
-	URIs []string `url:",comma,omitempty"`
+	URIs []string `url:",comma,omitempty" json:",omitempty"`
 
-	BuiltOnly bool `url:",omitempty"`
+	BuiltOnly bool `url:",omitempty" json:",omitempty"`
 
-	Sort      string `url:",omitempty"`
-	Direction string `url:",omitempty"`
+	Sort      string `url:",omitempty" json:",omitempty"`
+	Direction string `url:",omitempty" json:",omitempty"`
 
-	NoFork bool `url:",omitempty"`
+	NoFork bool `url:",omitempty" json:",omitempty"`
 
 	ListOptions
 }

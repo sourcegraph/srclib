@@ -176,8 +176,8 @@ type Response interface {
 // ListOptions specifies general pagination options for fetching a list of
 // results.
 type ListOptions struct {
-	PerPage int `url:",omitempty"`
-	Page    int `url:",omitempty"`
+	PerPage int `url:",omitempty" json:",omitempty"`
+	Page    int `url:",omitempty" json:",omitempty"`
 }
 
 const DefaultPerPage = 10

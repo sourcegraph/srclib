@@ -167,41 +167,43 @@ func (s *symbolsService) Get(symbol SymbolSpec, opt *SymbolGetOptions) (*Symbol,
 
 // SymbolListOptions specifies options for SymbolsService.List.
 type SymbolListOptions struct {
-	Name string `url:",omitempty"`
+	Name string `url:",omitempty" json:",omitempty"`
 
-	Query string `url:",omitempty"`
+	Query string `url:",omitempty" json:",omitempty"`
 
 	// Filters
-	RepositoryURI string `url:",omitempty"`
-	CommitID      string `url:",omitempty"`
-	UnitType      string `url:",omitempty"`
-	Unit          string `url:",omitempty"`
+	RepositoryURI string `url:",omitempty" json:",omitempty"`
+	CommitID      string `url:",omitempty" json:",omitempty"`
+	UnitType      string `url:",omitempty" json:",omitempty"`
+	Unit          string `url:",omitempty" json:",omitempty"`
+
+	Path string `url:",omitempty" json:",omitempty"`
 
 	// If specified, will filter on descendants of ParentPath (up to ChildDepth)
-	ParentTreePath string `url:",omitempty"`
-	ChildDepth     int    `url:",omitempty"`
+	ParentTreePath string `url:",omitempty" json:",omitempty"`
+	ChildDepth     int    `url:",omitempty" json:",omitempty"`
 
 	// If specified, will filter on ancestors of ChildPath
-	ChildTreePath string `url:",omitempty"`
+	ChildTreePath string `url:",omitempty" json:",omitempty"`
 
 	// File, if specified, will restrict the results to only symbols defined in
 	// the specified file.
-	File string `url:",omitempty"`
+	File string `url:",omitempty" json:",omitempty"`
 
 	// FilePathPrefix, if specified, will restrict the results to only symbols defined in
 	// files whose path is underneath the specified prefix.
-	FilePathPrefix string `url:",omitempty"`
+	FilePathPrefix string `url:",omitempty" json:",omitempty"`
 
-	Kinds       []string `url:",omitempty,comma"`
-	Exported    bool     `url:",omitempty"`
-	IncludeTest bool     `url:",omitempty"`
+	Kinds       []string `url:",omitempty,comma" json:",omitempty"`
+	Exported    bool     `url:",omitempty" json:",omitempty"`
+	IncludeTest bool     `url:",omitempty" json:",omitempty"`
 
 	// Enhancements
-	Doc bool `url:",omitempty"`
+	Doc bool `url:",omitempty" json:",omitempty"`
 
 	// Sorting
-	Sort      string `url:",omitempty"`
-	Direction string `url:",omitempty"`
+	Sort      string `url:",omitempty" json:",omitempty"`
+	Direction string `url:",omitempty" json:",omitempty"`
 
 	// Paging
 	ListOptions

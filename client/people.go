@@ -169,10 +169,10 @@ func (s *peopleService) Sync(person_ PersonSpec) (Response, error) {
 type PersonListOptions struct {
 	// NameOrLogin filters the results to only those with matching logins or
 	// names.
-	NameOrLogin string `url:",omitempty"`
+	NameOrLogin string `url:",omitempty" json:",omitempty"`
 
-	Sort      string `url:",omitempty"`
-	Direction string `url:",omitempty"`
+	Sort      string `url:",omitempty" json:",omitempty"`
+	Direction string `url:",omitempty" json:",omitempty"`
 
 	ListOptions
 }
