@@ -80,9 +80,9 @@ func (v jsg) BuildGrapher(dir string, u unit.SourceUnit, c *config.Repository) (
 	}
 
 	const (
-		jsgVersion = "jsg@0.0.1"
+		jsgVersion = "jsg@0.0.3"
 		jsgGit     = "git://github.com/sourcegraph/jsg.git"
-		jsgSrc     = jsgGit
+		jsgSrc     = jsgVersion
 	)
 	dockerfile = append(dockerfile, []byte("\n\nRUN npm install --quiet -g "+jsgSrc+"\n")...)
 
