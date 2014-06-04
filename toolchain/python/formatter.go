@@ -48,18 +48,45 @@ func (f symbolFormatter) Name(qual graph.Qualification) string {
 		return f.symbol.Name
 	}
 
-	// TODO(beyang): this doesn't handle packages correctly; also won't always be the case if the root package is
-	// definied in a subdirectory (i.e., not in repository root)
-	module := strings.TrimSuffix(f.symbol.File, ".py")
-	relPath := strings.TrimPrefix(strings.TrimPrefix(string(f.symbol.Path), module), "/")
+	// Get the name of the containing package or module
+	var containerName string
+	if filename := filepath.Base(f.symbol.File); filename == "__init__.py" {
+		containerName = filepath.Base(filepath.Dir(f.symbol.File))
+	} else if strings.HasSuffix(filename, ".py") {
+		containerName = filename[:len(filename)-len(".py")]
+	} else {
+		// Should never reach here, but fall back to TreePath if we do
+		return string(f.symbol.TreePath)
+	}
+
+	// Compute the path relative to the containing package or module
+	var treePathCmps = strings.Split(string(f.symbol.TreePath), "/")
+	// Note(kludge): The first occurrence of the container name in the treepath may not be the correct occurrence.
+	containerCmpIdx := -1
+	for t, component := range treePathCmps {
+		if component == containerName {
+			containerCmpIdx = t
+			break
+		}
+	}
+	var relTreePath string
+	if containerCmpIdx != -1 {
+		relTreePath = strings.Join(treePathCmps[containerCmpIdx+1:], "/")
+		if relTreePath == "" {
+			relTreePath = "."
+		}
+	} else {
+		// Should never reach here, but fall back to the unqualified name if we do
+		relTreePath = f.symbol.Name
+	}
 
 	switch qual {
 	case graph.ScopeQualified:
-		return dotted(relPath)
+		return dotted(relTreePath)
 	case graph.DepQualified:
-		return dotted(filepath.Join(filepath.Base(module), relPath))
+		return dotted(filepath.Join(containerName, relTreePath))
 	case graph.RepositoryWideQualified:
-		return dotted(filepath.Join(module, relPath))
+		return dotted(string(f.symbol.TreePath))
 	case graph.LanguageWideQualified:
 		return string(f.symbol.Repo) + "/" + f.Name(graph.RepositoryWideQualified)
 	}
