@@ -22,9 +22,11 @@ func (p *pythonEnv) BuildLister(dir string, u unit.SourceUnit, c *config.Reposit
 	var dockerfile []byte
 	var cmd []string
 	var err error
-	if c.URI == stdLibRepo {
+
+	hardcodedDeps, hardcoded := hardcodedDep[repoUnit{Repo: c.URI, Unit: u.Name(), UnitType: unit.Type(u)}]
+	if hardcoded {
 		dockerfile = []byte(`FROM ubuntu:14.04`)
-		cmd = []string{"echo", "[]"}
+		cmd = []string{"echo", ""}
 	} else {
 		dockerfile, err = p.pydepDockerfile()
 		if err != nil {
@@ -40,6 +42,10 @@ func (p *pythonEnv) BuildLister(dir string, u unit.SourceUnit, c *config.Reposit
 			Cmd:        cmd,
 		},
 		Transform: func(orig []byte) ([]byte, error) {
+			if hardcoded {
+				return json.Marshal(hardcodedDeps)
+			}
+
 			var reqs []requirement
 			err := json.NewDecoder(bytes.NewReader(orig)).Decode(&reqs)
 			if err != nil {
