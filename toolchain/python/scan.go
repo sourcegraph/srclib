@@ -17,11 +17,22 @@ func init() {
 }
 
 func (p *pythonEnv) BuildScanner(dir string, c *config.Repository) (*container.Command, error) {
-	dockerfile, err := p.pydepDockerfile()
-	if err != nil {
-		return nil, err
+	var dockerfile []byte
+	var cmd []string
+	var err error
+
+	hardcodedUnits, hardcoded := hardcodedScan[c.URI]
+	if hardcoded {
+		dockerfile = []byte(`FROM ubuntu:14.04`)
+		cmd = []string{"echo", ""}
+	} else {
+		dockerfile, err = p.pydepDockerfile()
+		if err != nil {
+			return nil, err
+		}
+		cmd = []string{"pydep-run.py", "list", srcRoot}
 	}
-	var cmd = []string{"pydep-run.py", "list", srcRoot}
+
 	return &container.Command{
 		Container: container.Container{
 			Dockerfile: dockerfile,
@@ -29,6 +40,10 @@ func (p *pythonEnv) BuildScanner(dir string, c *config.Repository) (*container.C
 			Cmd:        cmd,
 		},
 		Transform: func(orig []byte) ([]byte, error) {
+			if hardcoded {
+				return json.Marshal(hardcodedUnits)
+			}
+
 			if len(orig) == 0 {
 				return nil, nil
 			}
