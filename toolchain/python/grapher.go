@@ -71,9 +71,7 @@ REQDATA=$(pydep-run.py dep {{.SrcDir}});
 
 # Compute graph
 echo 'Running graphing step...' 1>&2;
-mkfifo /tmp/pysonar.err;
-cat -v /tmp/pysonar.err &> /dev/null &  # bug: container hangs if we print this output
-GRAPHDATA=$(java {{.JavaOpts}} -classpath /pysonar2/target/pysonar-2.0-SNAPSHOT.jar org.yinwang.pysonar.JSONDump {{.SrcDir}} '{{.IncludePaths}}' '' 2>/tmp/pysonar.err);
+GRAPHDATA=$(java {{.JavaOpts}} -classpath /pysonar2/target/pysonar-2.0-SNAPSHOT.jar org.yinwang.pysonar.JSONDump {{.SrcDir}} '{{.IncludePaths}}' '');
 echo 'Graphing done.' 1>&2;
 
 echo "{ \"graph\": $GRAPHDATA, \"reqs\": $REQDATA }";
