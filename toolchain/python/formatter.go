@@ -36,6 +36,12 @@ func (f symbolFormatter) DefKeyword() string {
 	if f.data.Kind == "class" {
 		return "class"
 	}
+	if f.data.Kind == "module" {
+		return "module"
+	}
+	if f.data.Kind == "package" {
+		return "package"
+	}
 	return ""
 }
 
@@ -106,5 +112,9 @@ func (f symbolFormatter) NameAndTypeSeparator() string {
 }
 
 func (f symbolFormatter) Type(qual graph.Qualification) string {
-	return f.data.FuncSignature
+	fullSig := f.data.FuncSignature
+	if strings.Contains(fullSig, ")") { // kludge to get rid of extra type info (very noisy)
+		return fullSig[:strings.Index(fullSig, ")")+1]
+	}
+	return fullSig
 }
