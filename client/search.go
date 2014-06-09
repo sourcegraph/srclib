@@ -31,6 +31,7 @@ var _ SearchService = &searchService{}
 
 type SearchOptions struct {
 	Query string `url:"q" schema:"q"`
+	Sort  string `url:",omitempty" json:",omitempty"`
 
 	ListOptions
 }
