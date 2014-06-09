@@ -31,9 +31,10 @@ var _ SearchService = &searchService{}
 
 type SearchOptions struct {
 	Query string `url:"q" schema:"q"`
-	Sort  string `url:",omitempty" json:",omitempty"`
 
-	ListOptions
+	Symbols      bool
+	Repositories bool
+	People       bool
 }
 
 func (s *searchService) Search(opt *SearchOptions) (*SearchResults, Response, error) {
