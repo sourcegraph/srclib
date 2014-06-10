@@ -35,6 +35,8 @@ type SearchOptions struct {
 	Symbols      bool
 	Repositories bool
 	People       bool
+
+	ListOptions
 }
 
 func (s *searchService) Search(opt *SearchOptions) (*SearchResults, Response, error) {
