@@ -51,6 +51,8 @@ const (
 	StatExportedSymbols = "exported-symbols"
 )
 
+var StatTypes = map[StatType]struct{}{StatXRefs: struct{}{}, StatAuthors: struct{}{}, StatClients: struct{}{}, StatDependencies: struct{}{}, StatDependents: struct{}{}, StatSymbols: struct{}{}, StatExportedSymbols: struct{}{}}
+
 // Value implements database/sql/driver.Valuer.
 func (x StatType) Value() (driver.Value, error) {
 	return string(x), nil
