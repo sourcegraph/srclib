@@ -340,6 +340,8 @@ func (p DefPath) symbolPath() graph.SymbolPath {
 }
 
 func (p DefPath) symbolTreePath() graph.TreePath {
+	// hack so we don't break on paths containing "//"
+	p.Path = strings.Replace(p.Path, "//", "/", -1)
 	p.Path = strconv.QuoteToASCII(p.Path)
 	p.Path = p.Path[1 : len(p.Path)-1]
 
