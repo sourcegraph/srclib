@@ -258,7 +258,9 @@ func (s *repositoriesService) GetReadme(repo RepositorySpec) (*vcsclient.TreeEnt
 }
 
 type RepositoryListOptions struct {
-	Name  string `url:",omitempty" json:",omitempty"`
+	Name string `url:",omitempty" json:",omitempty"`
+
+	// Specifies a search query for repositories. If specified, then the Sort and Direction options are ignored
 	Query string `url:",omitempty" json:",omitempty"`
 
 	URIs []string `url:",comma,omitempty" json:",omitempty"`

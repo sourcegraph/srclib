@@ -169,7 +169,7 @@ func (s *symbolsService) Get(symbol SymbolSpec, opt *SymbolGetOptions) (*Symbol,
 type SymbolListOptions struct {
 	Name string `url:",omitempty" json:",omitempty"`
 
-	// Specifies a search query for symbols. If this is specified, then the Sort and Direction column are ignored
+	// Specifies a search query for symbols. If specified, then the Sort and Direction options are ignored
 	Query string `url:",omitempty" json:",omitempty"`
 
 	// Filters
