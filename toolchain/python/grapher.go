@@ -201,7 +201,7 @@ func (p *pythonEnv) convertSym(pySym *pySym, u unit.SourceUnit, reqs []requireme
 	}
 	treePath := graph.TreePath(symKey.Path)
 	if !treePath.IsValid() {
-		return nil, nil, fmt.Errorf("'%s' is not a valid tree-path")
+		return nil, nil, fmt.Errorf("'%s' is not a valid tree-path", treePath)
 	}
 
 	sym = &graph.Symbol{

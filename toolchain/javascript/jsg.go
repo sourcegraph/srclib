@@ -413,7 +413,7 @@ func convertSymbol(jsym *Symbol) (*graph.Symbol, []*graph.Ref, []*graph.Propagat
 	path := jsym.Key.symbolPath()
 	treePath := jsym.Key.symbolTreePath()
 	if !treePath.IsValid() {
-		return nil, nil, nil, nil, fmt.Errorf("'%s' is not a valid tree-path")
+		return nil, nil, nil, nil, fmt.Errorf("'%s' is not a valid tree-path", treePath)
 	}
 
 	// JavaScript symbol
