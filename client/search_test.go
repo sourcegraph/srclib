@@ -19,9 +19,12 @@ func TestSearchService_Search(t *testing.T) {
 		called = true
 		testMethod(t, r, "GET")
 		testFormValues(t, r, values{
-			"q":       "q",
-			"PerPage": "1",
-			"Page":    "2",
+			"q":            "q",
+			"People":       "false",
+			"Repositories": "false",
+			"Symbols":      "false",
+			"PerPage":      "1",
+			"Page":         "2",
 		})
 
 		writeJSON(w, want)
