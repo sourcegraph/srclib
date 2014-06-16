@@ -1,8 +1,6 @@
 package client
 
 import (
-	"time"
-
 	"sourcegraph.com/sourcegraph/api_router"
 	"sourcegraph.com/sourcegraph/srcgraph/person"
 )
@@ -42,7 +40,6 @@ type SearchOptions struct {
 }
 
 func (s *searchService) Search(opt *SearchOptions) (*SearchResults, Response, error) {
-	time.Sleep(time.Second)
 	url, err := s.client.url(api_router.Search, nil, opt)
 	if err != nil {
 		return nil, nil, err

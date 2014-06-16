@@ -12,7 +12,6 @@ import (
 	"strings"
 
 	"github.com/google/go-querystring/query"
-	muxpkg "github.com/sqs/mux"
 	"sourcegraph.com/sourcegraph/api_router"
 	"sourcegraph.com/sourcegraph/config2"
 )
@@ -36,9 +35,6 @@ type Client struct {
 
 	// Base URL for API requests, which should have a trailing slash.
 	BaseURL *url.URL
-
-	// Router used to generate URLs for the Sourcegraph API.
-	apiRouter *muxpkg.Router
 
 	// User agent used for HTTP requests to the Sourcegraph API.
 	UserAgent string
@@ -67,17 +63,19 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Units = &unitsService{c}
 
 	c.BaseURL = config2.BaseAPIURL
-	c.apiRouter = api_router.NewAPIRouter("")
 
 	c.UserAgent = userAgent
 
 	return c
 }
 
+// router is used to generate URLs for the Sourcegraph API.
+var router = api_router.NewAPIRouter("")
+
 // url generates the URL to the named Sourcegraph API endpoint, using the
 // specified route variables and query options.
 func (c *Client) url(apiRouteName string, routeVars map[string]string, opt interface{}) (*url.URL, error) {
-	route := c.apiRouter.Get(apiRouteName)
+	route := router.Get(apiRouteName)
 	if route == nil {
 		return nil, fmt.Errorf("no API route named %q", apiRouteName)
 	}
