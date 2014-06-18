@@ -340,26 +340,29 @@ func (p *pythonEnv) pysonarSymPathToSymbolKey(pySymPath string, u unit.SourceUni
 	} else if relpath, err := filepath.Rel(p.sitePackagesDir(), pySymPath); err == nil && !strings.HasPrefix(relpath, "..") {
 		// Case 2: in dependent source unit(depUnits)
 		var foundReq *requirement
+		candidates := make([]string, 0)
 	FindReq:
 		for _, req := range reqs {
 			for _, pkg := range req.Packages {
 				pkgpath := filepath.Join(p.sitePackagesDir(), pkg)
-				if r, err := filepath.Rel(pySymPath, pkgpath); err == nil && !strings.HasPrefix(r, "..") {
+				if r, err := filepath.Rel(pkgpath, pySymPath); err == nil && !strings.HasPrefix(r, "..") {
 					foundReq = &req
 					break FindReq
 				}
+				candidates = append(candidates, pkg)
 			}
 			for _, mod := range req.Modules {
 				modpath := filepath.Join(p.sitePackagesDir(), mod+".py")
-				if r, err := filepath.Rel(pySymPath, modpath); err == nil && !strings.HasPrefix(r, "..") {
+				if r, err := filepath.Rel(modpath, pySymPath); err == nil && !strings.HasPrefix(r, "..") {
 					foundReq = &req
 					break FindReq
 				}
+				candidates = append(candidates, mod)
 			}
 		}
 		if foundReq == nil {
-			return nil, fmt.Errorf("Could not find requirement matching path %s, site-packages dir: %s, stdlib dir: %s",
-				pySymPath, p.sitePackagesDir(), p.stdLibDir())
+			return nil, fmt.Errorf("Could not find requirement matching path %s, stdlib-dir: %s, site-packages-dir: %s with candidates %v",
+				pySymPath, p.stdLibDir(), p.sitePackagesDir(), candidates)
 		}
 
 		var reqUnit = foundReq.DistPackage()
