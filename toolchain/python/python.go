@@ -2,7 +2,6 @@ package python
 
 import (
 	"bytes"
-	"path/filepath"
 	"text/template"
 
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
@@ -82,11 +81,7 @@ func (p *DistPackage) RootDir() string {
 }
 
 func (p *DistPackage) Paths() []string {
-	paths := make([]string, len(p.Files))
-	for i, f := range p.Files {
-		paths[i] = filepath.Join(p.RootDirectory, f)
-	}
-	return paths
+	return p.Files
 }
 
 // NameInRepository implements unit.Info.
