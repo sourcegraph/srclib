@@ -59,7 +59,8 @@ RUN pip install git+https://github.com/sourcegraph/pydep.git@{{.PydepVersion}}
 
 var grapherDockerCmdTemplate = template.Must(template.New("").Parse(`
 {{if not .IsStdLib}}
-/venv/bin/pip install {{.SrcDir}} 1>&2 || /venv/bin/pip install -r {{.SrcDir}}/requirements.txt 1>&2;
+/venv/bin/pip install {{.SrcDir}} 1>&2;
+/venv/bin/pip install -r {{.SrcDir}}/requirements.txt 1>&2;
 {{end}}
 
 # Compute requirements
