@@ -25,7 +25,7 @@ type TestCase struct {
 var tests = []TestCase{
 	{"go-sample-0", "https://github.com/sgtest/go-sample-0", "1dd4664fec342c0727850380931429a5850a4402"},
 	{"python-sample-0", "https://github.com/sgtest/python-sample-0", "7f4959756bdfc406f318fedfe9f8e8ba98dfe48b"},
-	{"python-sample-1", "https://github.com/sgtest/python-sample-1", "8a7dac432187679e8a009c682aa9c90640ff3051"},
+	{"python-sample-1", "https://github.com/sgtest/python-sample-1", "0b7a781f8bebf79d36fa8aacb400ca6b892cba95"},
 	{"javascript-nodejs-sample-0", "https://github.com/sgtest/javascript-nodejs-sample-0", "e10faf45fd536676a48bbbdb6ab650e7721782bb"},
 	{"javascript-nodejs-xrefs-0", "https://github.com/sgtest/javascript-nodejs-xrefs-0", "a82948d15bfcbac86530caf0e9c0929e6c41c353"},
 }
