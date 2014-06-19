@@ -2,6 +2,7 @@ package doc
 
 import (
 	"bytes"
+	"fmt"
 	"html"
 	"path/filepath"
 	"strings"
@@ -66,4 +67,9 @@ func ToHTML(formatter Formatter, src []byte) ([]byte, error) {
 		out = []byte("<pre>" + strings.TrimSpace(html.EscapeString(string(src))) + "</pre>")
 	}
 	return out, err
+}
+
+func EscapeUnprintable(s string) string {
+	quoted := fmt.Sprintf("%q", s)
+	return quoted[1 : len(quoted)-1] // remove double quotes
 }
