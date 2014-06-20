@@ -132,53 +132,10 @@ func (p *pythonEnv) BuildGrapher(dir string, u unit.SourceUnit, c *config.Reposi
 				}
 				return nil, fmt.Errorf("could not unmarshal grapher output as JSON (%s): %s", err, outPrefix)
 			}
-			o.Reqs, _ = pruneReqs(o.Reqs)
 
-			o2 := grapher2.Output{
-				Symbols: make([]*graph.Symbol, 0),
-				Refs:    make([]*graph.Ref, 0),
-				Docs:    make([]*graph.Doc, 0),
-			}
-
-			selfrefs := make(map[graph.Ref]struct{})
-			for _, psym := range o.Graph.Syms {
-				sym, selfref, err := p.convertSym(psym, u, o.Reqs)
-				if err == notInUnitError {
-					continue
-				}
-				if err != nil {
-					return nil, fmt.Errorf("could not convert sym %+v: %s", psym, err)
-				}
-
-				o2.Symbols = append(o2.Symbols, sym)
-				if selfref != nil {
-					selfrefs[*selfref] = struct{}{}
-					o2.Refs = append(o2.Refs, selfref)
-				}
-			}
-			for _, pref := range o.Graph.Refs {
-				ref, err := p.convertRef(pref, u, o.Reqs)
-				if err == notInUnitError {
-					continue
-				}
-				if err != nil {
-					log.Printf("  (warn) unable to convert reference %+v: %s", pref, err)
-					continue
-				}
-
-				if _, exists := selfrefs[*ref]; !exists {
-					o2.Refs = append(o2.Refs, ref)
-				}
-			}
-			for _, pdoc := range o.Graph.Docs {
-				doc, err := p.convertDoc(pdoc, u, o.Reqs)
-				if err == notInUnitError {
-					continue
-				}
-				if err != nil {
-					return nil, fmt.Errorf("could not convert doc %+v: %s", pdoc, err)
-				}
-				o2.Docs = append(o2.Docs, doc)
+			o2, err := p.grapherTransform(&o, u)
+			if err != nil {
+				return nil, err
 			}
 
 			b, err := json.Marshal(o2)
@@ -188,6 +145,60 @@ func (p *pythonEnv) BuildGrapher(dir string, u unit.SourceUnit, c *config.Reposi
 			return b, nil
 		},
 	}, nil
+}
+
+// Transforms pysonar output to our format
+func (p *pythonEnv) grapherTransform(o *rawGraphData, u unit.SourceUnit) (*grapher2.Output, error) {
+	o.Reqs, _ = pruneReqs(o.Reqs)
+
+	o2 := grapher2.Output{
+		Symbols: make([]*graph.Symbol, 0),
+		Refs:    make([]*graph.Ref, 0),
+		Docs:    make([]*graph.Doc, 0),
+	}
+
+	selfrefs := make(map[graph.Ref]struct{})
+	for _, psym := range o.Graph.Syms {
+		sym, selfref, err := p.convertSym(psym, u, o.Reqs)
+		if err == notInUnitError {
+			continue
+		}
+		if err != nil {
+			return nil, fmt.Errorf("could not convert sym %+v: %s", psym, err)
+		}
+
+		o2.Symbols = append(o2.Symbols, sym)
+		if selfref != nil {
+			selfrefs[*selfref] = struct{}{}
+			o2.Refs = append(o2.Refs, selfref)
+		}
+	}
+	for _, pref := range o.Graph.Refs {
+		ref, err := p.convertRef(pref, u, o.Reqs)
+		if err == notInUnitError {
+			continue
+		}
+		if err != nil {
+			log.Printf("  (warn) unable to convert reference %+v: %s", pref, err)
+			continue
+		}
+
+		if _, exists := selfrefs[*ref]; !exists {
+			o2.Refs = append(o2.Refs, ref)
+		}
+	}
+	for _, pdoc := range o.Graph.Docs {
+		doc, err := p.convertDoc(pdoc, u, o.Reqs)
+		if err == notInUnitError {
+			continue
+		}
+		if err != nil {
+			return nil, fmt.Errorf("could not convert doc %+v: %s", pdoc, err)
+		}
+		o2.Docs = append(o2.Docs, doc)
+	}
+
+	return &o2, nil
 }
 
 // Converts a pysonar symbol into a graph.Symbol. If err is nil, then sym is guaranteed to be not nil. selfref could be
@@ -402,13 +413,15 @@ func (p *pythonEnv) pysonarSymPathToSymbolKey(pySymPath string, u unit.SourceUni
 	}
 }
 
+type graphData_ struct {
+	Syms []*pySym
+	Refs []*pyRef
+	Docs []*pyDoc
+}
+
 type rawGraphData struct {
-	Graph struct {
-		Syms []*pySym
-		Refs []*pyRef
-		Docs []*pyDoc
-	}
-	Reqs []requirement
+	Graph graphData_
+	Reqs  []requirement
 }
 
 type pySym struct {
