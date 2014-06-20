@@ -51,17 +51,21 @@ func (p *pythonEnv) BuildLister(dir string, u unit.SourceUnit, c *config.Reposit
 			if err != nil {
 				return nil, err
 			}
+			reqs, ignoredReqs := pruneReqs(reqs)
+			if len(ignoredReqs) > 0 {
+				ignoredKeys := make([]string, len(ignoredReqs))
+				for r, req := range ignoredReqs {
+					ignoredKeys[r] = req.Key
+				}
+				log.Printf("(warn) ignoring dependencies %v because repo URL absent", ignoredKeys)
+			}
 
 			deps := make([]*dep2.RawDependency, 0)
 			for _, req := range reqs {
-				if req.RepoURL != "" { // cannot resolve dependencies with no clone URL
-					deps = append(deps, &dep2.RawDependency{
-						TargetType: pythonRequirementTargetType,
-						Target:     req,
-					})
-				} else {
-					log.Printf("(warn) ignoring dependency %+v because repo URL absent", req)
-				}
+				deps = append(deps, &dep2.RawDependency{
+					TargetType: pythonRequirementTargetType,
+					Target:     req,
+				})
 			}
 			return json.Marshal(deps)
 		},
@@ -84,6 +88,17 @@ func (p *pythonEnv) Resolve(dep *dep2.RawDependency, c *config.Repository) (*dep
 	default:
 		return nil, fmt.Errorf("Unexpected target type for Python: %+v", dep.TargetType)
 	}
+}
+
+func pruneReqs(reqs []requirement) (kept, ignored []requirement) {
+	for _, req := range reqs {
+		if req.RepoURL != "" { // cannot resolve dependencies with no clone URL
+			kept = append(kept, req)
+		} else {
+			ignored = append(ignored, req)
+		}
+	}
+	return
 }
 
 const pythonRequirementTargetType = "python-requirement"

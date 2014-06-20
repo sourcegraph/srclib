@@ -132,6 +132,7 @@ func (p *pythonEnv) BuildGrapher(dir string, u unit.SourceUnit, c *config.Reposi
 				}
 				return nil, fmt.Errorf("could not unmarshal grapher output as JSON (%s): %s", err, outPrefix)
 			}
+			o.Reqs, _ = pruneReqs(o.Reqs)
 
 			o2 := grapher2.Output{
 				Symbols: make([]*graph.Symbol, 0),
