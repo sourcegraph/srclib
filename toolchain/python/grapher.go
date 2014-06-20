@@ -351,7 +351,11 @@ func (p *pythonEnv) pysonarSymPathToSymbolKey(pySymPath string, u unit.SourceUni
 					foundReq = &req
 					break FindReq
 				}
-				candidates = append(candidates, pkg)
+				if len(candidates) < 7 {
+					candidates = append(candidates, pkg)
+				} else if len(candidates) == 7 {
+					candidates = append(candidates, "and more...")
+				}
 			}
 			for _, mod := range req.Modules {
 				modpath := filepath.Join(p.sitePackagesDir(), mod+".py")
