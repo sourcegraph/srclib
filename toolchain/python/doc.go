@@ -14,7 +14,7 @@ var rstDirectiveRegex = regexp.MustCompile(`\.\. [a-zA-Z]+:: `)
 // Properly format python documentation by doing the following:
 // Check if txt is rST. If so, compile into html, otherwise return html approximation to plaintext.
 func formatDocs(txt string) string {
-	txt = doc.EscapeUnprintable(txt)
+	txt = doc.StripNulls(txt)
 
 	var format doc.Formatter
 	if strings.Contains(txt, "~~~") || len(rstDirectiveRegex.FindStringIndex(txt)) > 0 {
