@@ -2,7 +2,6 @@ package doc
 
 import (
 	"bytes"
-	"fmt"
 	"html"
 	"path/filepath"
 	"strings"
@@ -69,7 +68,11 @@ func ToHTML(formatter Formatter, src []byte) ([]byte, error) {
 	return out, err
 }
 
-func EscapeUnprintable(s string) string {
-	quoted := fmt.Sprintf("%q", s)
-	return quoted[1 : len(quoted)-1] // remove double quotes
+func StripNulls(s string) string {
+	return strings.Map(func(r rune) rune {
+		if r == '\x00' {
+			return -1
+		}
+		return r
+	}, s)
 }
