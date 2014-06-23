@@ -38,6 +38,8 @@ func (s TreeEntrySpec) String() string {
 type TreeEntry struct {
 	*vcsclient.TreeEntry
 
+	ContentsString string
+
 	// FormatResult is only set if this TreeEntry is a file.
 	FormatResult *FormatResult `json:",omitempty"`
 
@@ -72,6 +74,8 @@ type RepositoryTreeGetOptions struct {
 	// in any file underneath "b/". Not all symbols defined in the entries are
 	// returned; only the top few are.
 	DirEntryDefinitions bool `url:",omitempty"`
+
+	ContentsAsString bool `url:",omitempty"`
 }
 
 func (s *repositoryTreeService) Get(entry TreeEntrySpec, opt *RepositoryTreeGetOptions) (*TreeEntry, Response, error) {
