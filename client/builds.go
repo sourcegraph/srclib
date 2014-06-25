@@ -27,7 +27,7 @@ type BuildsService interface {
 
 	// Create a new build. The build will run asynchronously (Create does not
 	// wait for it to return. To monitor the build's status, use Get.)
-	Create(repo RepositorySpec, conf BuildConfig) (*Build, Response, error)
+	Create(repo RepositorySpec, opt *BuildCreateOptions) (*Build, Response, error)
 
 	// ListBuildTasks lists the tasks associated with a build.
 	ListBuildTasks(build BuildSpec, opt *BuildTaskListOptions) ([]*BuildTask, Response, error)
@@ -126,6 +126,14 @@ type BuildConfig struct {
 	Queue bool
 }
 
+type BuildCreateOptions struct {
+	BuildConfig
+
+	// Force creation of build (if false, the build will not be created if it already exists and has succeeded)
+	// TODO(bliu): test this
+	Force bool
+}
+
 var ErrBuildNotFound = errors.New("build not found")
 
 type BuildGetOptions struct{}
@@ -208,13 +216,13 @@ func (s *buildsService) ListByRepository(repo RepositorySpec, opt *BuildListByRe
 	return builds, resp, nil
 }
 
-func (s *buildsService) Create(repo RepositorySpec, conf BuildConfig) (*Build, Response, error) {
+func (s *buildsService) Create(repo RepositorySpec, opt *BuildCreateOptions) (*Build, Response, error) {
 	url, err := s.client.url(api_router.RepositoryBuildsCreate, repo.RouteVars(), nil)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest("POST", url.String(), conf)
+	req, err := s.client.NewRequest("POST", url.String(), opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -254,7 +262,7 @@ type MockBuildsService struct {
 	Get_              func(build BuildSpec, opt *BuildGetOptions) (*Build, Response, error)
 	List_             func(opt *BuildListOptions) ([]*Build, Response, error)
 	ListByRepository_ func(repo RepositorySpec, opt *BuildListByRepositoryOptions) ([]*Build, Response, error)
-	Create_           func(repo RepositorySpec, conf BuildConfig) (*Build, Response, error)
+	Create_           func(repo RepositorySpec, opt *BuildCreateOptions) (*Build, Response, error)
 	ListBuildTasks_   func(build BuildSpec, opt *BuildTaskListOptions) ([]*BuildTask, Response, error)
 }
 
@@ -281,11 +289,11 @@ func (s MockBuildsService) ListByRepository(repo RepositorySpec, opt *BuildListB
 	return s.ListByRepository_(repo, opt)
 }
 
-func (s MockBuildsService) Create(repo RepositorySpec, conf BuildConfig) (*Build, Response, error) {
+func (s MockBuildsService) Create(repo RepositorySpec, opt *BuildCreateOptions) (*Build, Response, error) {
 	if s.Create_ == nil {
 		return nil, nil, nil
 	}
-	return s.Create_(repo, conf)
+	return s.Create_(repo, opt)
 }
 
 func (s MockBuildsService) ListBuildTasks(build BuildSpec, opt *BuildTaskListOptions) ([]*BuildTask, Response, error) {

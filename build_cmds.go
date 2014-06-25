@@ -36,7 +36,10 @@ The options are:
 	for _, uri := range fs.Args() {
 		build, _, err := apiclient.Builds.Create(
 			client.RepositorySpec{URI: uri, CommitID: *rev},
-			client.BuildConfig{Queue: *queue, Import: *import_},
+			&client.BuildCreateOptions{
+				Force:       true,
+				BuildConfig: client.BuildConfig{Queue: *queue, Import: *import_},
+			},
 		)
 		if err != nil {
 			log.Fatalf("Error creating build for %q: %s", uri, err)
