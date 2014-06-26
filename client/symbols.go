@@ -247,6 +247,12 @@ func (vs Examples) Less(i, j int) bool { return vs[i].sortKey() < vs[j].sortKey(
 type SymbolListExamplesOptions struct {
 	Formatted bool
 
+	// Filter by a specific Repository URI
+	Repository string
+
+	// Filter by a specific User
+	User string
+
 	ListOptions
 }
 
