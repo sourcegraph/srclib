@@ -13,6 +13,7 @@ import (
 	"sync"
 
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
+	"sourcegraph.com/sourcegraph/srcgraph/util2"
 
 	"testing"
 
@@ -135,7 +136,7 @@ func checkResults(t *testing.T, output bytes.Buffer, repoName, gotOutputDir, wan
 		if len(out) > 0 {
 			fmt.Println(brush.Red(repoName + "FAIL"))
 			fmt.Println(output.String())
-			fmt.Println(string(colorizeDiff(out)))
+			fmt.Println(string(util2.ColorizeDiff(out)))
 			t.Errorf("Output for %s differed from expected.", repoName)
 		}
 	} else {
@@ -152,17 +153,4 @@ func getHEADOrTipCommitID(t *testing.T, repoDir string) string {
 		t.Fatal(err)
 	}
 	return string(bytes.TrimSpace(out))
-}
-
-func colorizeDiff(diff []byte) []byte {
-	lines := bytes.Split(diff, []byte{'\n'})
-	for i, line := range lines {
-		if bytes.HasPrefix(line, []byte{'-'}) {
-			lines[i] = []byte(brush.Red(string(line)).String())
-		}
-		if bytes.HasPrefix(line, []byte{'+'}) {
-			lines[i] = []byte(brush.Green(string(line)).String())
-		}
-	}
-	return bytes.Join(lines, []byte{'\n'})
 }
