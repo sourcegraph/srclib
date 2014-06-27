@@ -1,0 +1,24 @@
+{
+  "URI": "github.com/sgtest/javascript-nodejs-xrefs-0",
+  "SourceUnits": [
+    {
+      "Dir": ".",
+      "LibFiles": [
+        "lib/async.js",
+        "lib/fs.js",
+        "lib/glob.js",
+        "lib/http.js",
+        "lib/lodash.js",
+        "lib/minimatch.js",
+        "lib/mysql.js",
+        "lib/pg.js",
+        "lib/read-package-json.js",
+        "lib/underscore.js",
+        "index.js"
+      ],
+      "PackageJSONFile": "package.json",
+      "TestFiles": [],
+      "Type": "CommonJSPackage"
+    }
+  ]
+}

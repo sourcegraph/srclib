@@ -1,0 +1,1491 @@
+{
+  "Symbols": {
+    "commonjs/animal.js": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": true,
+        "Chars": 0,
+        "CharsProportion": 0
+      }
+    ],
+    "commonjs/animal.js/-/Animal": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": true,
+        "Chars": 14,
+        "CharsProportion": 1
+      }
+    ],
+    "commonjs/animal.js/-/Animal/prototype/makeNoise": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": true,
+        "Chars": 60,
+        "CharsProportion": 1
+      }
+    ],
+    "commonjs/animal.js/-/Animal/prototype/sayHello": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": true,
+        "Chars": 61,
+        "CharsProportion": 1
+      }
+    ],
+    "commonjs/animal.js/-/Dog": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": true,
+        "Chars": 8,
+        "CharsProportion": 1
+      }
+    ],
+    "commonjs/animal.js/-/Dog/prototype": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": true,
+        "Chars": 24,
+        "CharsProportion": 1
+      }
+    ],
+    "commonjs/animal.js/-/Dog/prototype/bark": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": true,
+        "Chars": 42,
+        "CharsProportion": 1
+      }
+    ],
+    "commonjs/animal.js/-/Dog/prototype/name": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": true,
+        "Chars": 11,
+        "CharsProportion": 1
+      }
+    ],
+    "commonjs/animal.js/-/Dog/prototype/sayExtendedHello": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": true,
+        "Chars": 79,
+        "CharsProportion": 1
+      }
+    ],
+    "commonjs/test/animal_test.js": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T04:45:44Z",
+        "LastCommitID": "ae48e5ac00d626e93e4bdc77cadfdd7568983d0f",
+        "Exported": true,
+        "Chars": 0,
+        "CharsProportion": 0
+      }
+    ],
+    "file/animal.js/-/Animal": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 45,
+        "CharsProportion": 1
+      }
+    ],
+    "file/animal.js/-/Animal/@local/name": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "file/animal.js/-/Dog": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 95,
+        "CharsProportion": 1
+      }
+    ],
+    "file/animal.js/-/Dog/@local/breed": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 5,
+        "CharsProportion": 1
+      }
+    ],
+    "file/animal.js/-/Dog/@local/name": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "file/animal.js/-/module/exports": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 43,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/@536/@local/@536/@local/@1043/@local/a": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 50,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/@536/@local/@536/@local/@1043/@local/done": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 27,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/breed": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 13,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/name": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 11,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/noise": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 15,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/done": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/@536/@local/@536/@local/@707/@local/a": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 50,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/@536/@local/@536/@local/@707/@local/done": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/@536/@local/@536/@local/@894/@local/a": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 50,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/@536/@local/@536/@local/@894/@local/done": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/a": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 30,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/a/name": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 11,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/done": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/@87/@local/@87/@local/@255/@local/a": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 30,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/@87/@local/@87/@local/@255/@local/done": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/@87/@local/@87/@local/@399/@local/a": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 30,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/@87/@local/@87/@local/@399/@local/done": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/animal": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T04:45:44Z",
+        "LastCommitID": "ae48e5ac00d626e93e4bdc77cadfdd7568983d0f",
+        "Exported": false,
+        "Chars": 29,
+        "CharsProportion": 1
+      }
+    ],
+    "file/test/animal_test.js/-/should": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-06-30T11:52:57Z",
+        "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "Exported": false,
+        "Chars": 26,
+        "CharsProportion": 1
+      }
+    ]
+  },
+  "Refs": [
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/lib/assert.js/-/Assertion/prototype/eql",
+      "File": "test/animal_test.js",
+      "Start": 1145,
+      "End": 1148,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/lib/assert.js/-/Assertion/prototype/eql",
+      "File": "test/animal_test.js",
+      "Start": 204,
+      "End": 207,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/lib/assert.js/-/Assertion/prototype/eql",
+      "File": "test/animal_test.js",
+      "Start": 336,
+      "End": 339,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/lib/assert.js/-/Assertion/prototype/eql",
+      "File": "test/animal_test.js",
+      "Start": 481,
+      "End": 484,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/lib/assert.js/-/Assertion/prototype/eql",
+      "File": "test/animal_test.js",
+      "Start": 647,
+      "End": 650,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/lib/assert.js/-/Assertion/prototype/eql",
+      "File": "test/animal_test.js",
+      "Start": 816,
+      "End": 819,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/lib/assert.js/-/Assertion/prototype/eql",
+      "File": "test/animal_test.js",
+      "Start": 991,
+      "End": 994,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Animal",
+      "File": "test/animal_test.js",
+      "Start": 169,
+      "End": 175,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Animal",
+      "File": "test/animal_test.js",
+      "Start": 295,
+      "End": 301,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Animal",
+      "File": "test/animal_test.js",
+      "Start": 439,
+      "End": 445,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Animal/prototype",
+      "File": "animal.js",
+      "Start": 135,
+      "End": 144,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Animal/prototype",
+      "File": "animal.js",
+      "Start": 54,
+      "End": 63,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Animal/prototype/makeNoise",
+      "Def": true,
+      "File": "animal.js",
+      "Start": 145,
+      "End": 154,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Animal/prototype/makeNoise",
+      "File": "test/animal_test.js",
+      "Start": 1126,
+      "End": 1135,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Animal/prototype/makeNoise",
+      "File": "test/animal_test.js",
+      "Start": 462,
+      "End": 471,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Animal/prototype/sayHello",
+      "Def": true,
+      "File": "animal.js",
+      "Start": 64,
+      "End": 72,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Animal/prototype/sayHello",
+      "File": "animal.js",
+      "Start": 396,
+      "End": 404,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Animal/prototype/sayHello",
+      "File": "test/animal_test.js",
+      "Start": 318,
+      "End": 326,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Dog",
+      "File": "test/animal_test.js",
+      "Start": 1083,
+      "End": 1086,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Dog",
+      "File": "test/animal_test.js",
+      "Start": 615,
+      "End": 618,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Dog",
+      "File": "test/animal_test.js",
+      "Start": 747,
+      "End": 750,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Dog",
+      "File": "test/animal_test.js",
+      "Start": 934,
+      "End": 937,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Dog/prototype",
+      "Def": true,
+      "File": "animal.js",
+      "Start": 309,
+      "End": 318,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Dog/prototype",
+      "File": "animal.js",
+      "Start": 340,
+      "End": 349,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Dog/prototype",
+      "File": "animal.js",
+      "Start": 436,
+      "End": 445,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Dog/prototype/bark",
+      "Def": true,
+      "File": "animal.js",
+      "Start": 446,
+      "End": 450,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Dog/prototype/bark",
+      "File": "test/animal_test.js",
+      "Start": 977,
+      "End": 981,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Dog/prototype/sayExtendedHello",
+      "Def": true,
+      "File": "animal.js",
+      "Start": 350,
+      "End": 366,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "commonjs/animal.js/-/Dog/prototype/sayExtendedHello",
+      "File": "test/animal_test.js",
+      "Start": 790,
+      "End": 806,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/animal.js/-/Animal",
+      "Def": true,
+      "File": "animal.js",
+      "Start": 9,
+      "End": 15,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/animal.js/-/Animal",
+      "File": "animal.js",
+      "Start": 128,
+      "End": 134,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/animal.js/-/Animal",
+      "File": "animal.js",
+      "Start": 325,
+      "End": 331,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/animal.js/-/Animal",
+      "File": "animal.js",
+      "Start": 47,
+      "End": 53,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/animal.js/-/Animal",
+      "File": "animal.js",
+      "Start": 520,
+      "End": 526,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/animal.js/-/Animal/@local/name",
+      "Def": true,
+      "File": "animal.js",
+      "Start": 16,
+      "End": 20,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/animal.js/-/Animal/@local/name",
+      "File": "animal.js",
+      "Start": 38,
+      "End": 42,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/animal.js/-/Dog",
+      "Def": true,
+      "File": "animal.js",
+      "Start": 217,
+      "End": 220,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/animal.js/-/Dog",
+      "File": "animal.js",
+      "Start": 305,
+      "End": 308,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/animal.js/-/Dog",
+      "File": "animal.js",
+      "Start": 336,
+      "End": 339,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/animal.js/-/Dog",
+      "File": "animal.js",
+      "Start": 432,
+      "End": 435,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/animal.js/-/Dog",
+      "File": "animal.js",
+      "Start": 535,
+      "End": 538,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/animal.js/-/Dog/@local/breed",
+      "Def": true,
+      "File": "animal.js",
+      "Start": 227,
+      "End": 232,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/animal.js/-/Dog/@local/breed",
+      "File": "animal.js",
+      "Start": 271,
+      "End": 276,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/animal.js/-/Dog/@local/name",
+      "Def": true,
+      "File": "animal.js",
+      "Start": 221,
+      "End": 225,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/animal.js/-/Dog/@local/name",
+      "File": "animal.js",
+      "Start": 250,
+      "End": 254,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/animal.js/-/module",
+      "File": "animal.js",
+      "Start": 491,
+      "End": 497,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/animal.js/-/module/exports",
+      "Def": true,
+      "File": "animal.js",
+      "Start": 498,
+      "End": 505,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@1043/@local/a",
+      "Def": true,
+      "File": "test/animal_test.js",
+      "Start": 1068,
+      "End": 1069,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@1043/@local/a",
+      "File": "test/animal_test.js",
+      "Start": 1124,
+      "End": 1125,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@1043/@local/done",
+      "Def": true,
+      "File": "test/animal_test.js",
+      "Start": 1052,
+      "End": 1056,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@1043/@local/done",
+      "File": "test/animal_test.js",
+      "Start": 1163,
+      "End": 1167,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a",
+      "Def": true,
+      "File": "test/animal_test.js",
+      "Start": 600,
+      "End": 601,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a",
+      "File": "test/animal_test.js",
+      "Start": 633,
+      "End": 634,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/breed",
+      "Def": true,
+      "File": "animal.js",
+      "Start": 263,
+      "End": 268,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/breed",
+      "File": "animal.js",
+      "Start": 421,
+      "End": 426,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/name",
+      "Def": true,
+      "File": "animal.js",
+      "Start": 243,
+      "End": 247,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/name",
+      "File": "test/animal_test.js",
+      "Start": 635,
+      "End": 639,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/noise",
+      "Def": true,
+      "File": "animal.js",
+      "Start": 285,
+      "End": 290,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/noise",
+      "File": "animal.js",
+      "Start": 184,
+      "End": 189,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/noise",
+      "File": "animal.js",
+      "Start": 480,
+      "End": 485,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/done",
+      "Def": true,
+      "File": "test/animal_test.js",
+      "Start": 584,
+      "End": 588,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/done",
+      "File": "test/animal_test.js",
+      "Start": 665,
+      "End": 669,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@707/@local/a",
+      "Def": true,
+      "File": "test/animal_test.js",
+      "Start": 732,
+      "End": 733,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@707/@local/a",
+      "File": "test/animal_test.js",
+      "Start": 788,
+      "End": 789,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@707/@local/done",
+      "Def": true,
+      "File": "test/animal_test.js",
+      "Start": 716,
+      "End": 720,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@707/@local/done",
+      "File": "test/animal_test.js",
+      "Start": 866,
+      "End": 870,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@894/@local/a",
+      "Def": true,
+      "File": "test/animal_test.js",
+      "Start": 919,
+      "End": 920,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@894/@local/a",
+      "File": "test/animal_test.js",
+      "Start": 975,
+      "End": 976,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@894/@local/done",
+      "Def": true,
+      "File": "test/animal_test.js",
+      "Start": 903,
+      "End": 907,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@894/@local/done",
+      "File": "test/animal_test.js",
+      "Start": 1009,
+      "End": 1013,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/a",
+      "Def": true,
+      "File": "test/animal_test.js",
+      "Start": 154,
+      "End": 155,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/a",
+      "File": "test/animal_test.js",
+      "Start": 190,
+      "End": 191,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/a/name",
+      "Def": true,
+      "File": "animal.js",
+      "Start": 31,
+      "End": 35,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/a/name",
+      "File": "animal.js",
+      "Start": 118,
+      "End": 122,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/a/name",
+      "File": "test/animal_test.js",
+      "Start": 192,
+      "End": 196,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/done",
+      "Def": true,
+      "File": "test/animal_test.js",
+      "Start": 138,
+      "End": 142,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/done",
+      "File": "test/animal_test.js",
+      "Start": 222,
+      "End": 226,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@255/@local/a",
+      "Def": true,
+      "File": "test/animal_test.js",
+      "Start": 280,
+      "End": 281,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@255/@local/a",
+      "File": "test/animal_test.js",
+      "Start": 316,
+      "End": 317,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@255/@local/done",
+      "Def": true,
+      "File": "test/animal_test.js",
+      "Start": 264,
+      "End": 268,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@255/@local/done",
+      "File": "test/animal_test.js",
+      "Start": 365,
+      "End": 369,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@399/@local/a",
+      "Def": true,
+      "File": "test/animal_test.js",
+      "Start": 424,
+      "End": 425,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@399/@local/a",
+      "File": "test/animal_test.js",
+      "Start": 460,
+      "End": 461,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@399/@local/done",
+      "Def": true,
+      "File": "test/animal_test.js",
+      "Start": 408,
+      "End": 412,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@399/@local/done",
+      "File": "test/animal_test.js",
+      "Start": 501,
+      "End": 505,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/animal",
+      "Def": true,
+      "File": "test/animal_test.js",
+      "Start": 4,
+      "End": 10,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T04:45:44Z",
+      "LastCommitID": "ae48e5ac00d626e93e4bdc77cadfdd7568983d0f"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/animal",
+      "File": "test/animal_test.js",
+      "Start": 1076,
+      "End": 1082,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/animal",
+      "File": "test/animal_test.js",
+      "Start": 162,
+      "End": 168,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/animal",
+      "File": "test/animal_test.js",
+      "Start": 288,
+      "End": 294,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/animal",
+      "File": "test/animal_test.js",
+      "Start": 432,
+      "End": 438,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/animal",
+      "File": "test/animal_test.js",
+      "Start": 608,
+      "End": 614,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/animal",
+      "File": "test/animal_test.js",
+      "Start": 740,
+      "End": 746,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/animal",
+      "File": "test/animal_test.js",
+      "Start": 927,
+      "End": 933,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/require",
+      "File": "test/animal_test.js",
+      "Start": 13,
+      "End": 20,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T04:45:44Z",
+      "LastCommitID": "ae48e5ac00d626e93e4bdc77cadfdd7568983d0f"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/require",
+      "File": "test/animal_test.js",
+      "Start": 48,
+      "End": 55,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "SymbolPath": "file/test/animal_test.js/-/should",
+      "Def": true,
+      "File": "test/animal_test.js",
+      "Start": 39,
+      "End": 45,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547"
+    }
+  ],
+  "Authors": [
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T04:45:44Z",
+      "LastCommitID": "ae48e5ac00d626e93e4bdc77cadfdd7568983d0f",
+      "SymbolCount": 36,
+      "SymbolsProportion": 1,
+      "ExportedSymbolCount": 10,
+      "ExportedSymbolsProportion": 1
+    }
+  ],
+  "ClientsOfOtherUnits": [
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-06-30T11:52:57Z",
+      "LastCommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "RefCount": 7
+    },
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T04:45:44Z",
+      "LastCommitID": "ae48e5ac00d626e93e4bdc77cadfdd7568983d0f",
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": ".",
+      "RefCount": 89
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "Symbols": {
+    "app": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-05-10T06:52:01Z",
+        "LastCommitID": "d75909f7fe60aedfa57b315419c4221b96e16dbe",
+        "Exported": true,
+        "Chars": 1,
+        "CharsProportion": 1
+      }
+    ],
+    "app/app": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-05-10T06:52:01Z",
+        "LastCommitID": "d75909f7fe60aedfa57b315419c4221b96e16dbe",
+        "Exported": true,
+        "Chars": 46,
+        "CharsProportion": 1
+      }
+    ],
+    "app/app/x": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-05-10T06:52:01Z",
+        "LastCommitID": "d75909f7fe60aedfa57b315419c4221b96e16dbe",
+        "Exported": false,
+        "Chars": 1,
+        "CharsProportion": 1
+      }
+    ],
+    "setup": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-06-18T23:49:22Z",
+        "LastCommitID": "7903b0746678790682fdc3ec026b62e39bd4d318",
+        "Exported": true,
+        "Chars": 162,
+        "CharsProportion": 1
+      }
+    ]
+  },
+  "Refs": [
+    {
+      "SymbolRepo": "github.com/sgtest/python-sample-0",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "File": "app/app.py",
+      "Start": 28,
+      "End": 34,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-05-10T06:52:01Z",
+      "LastCommitID": "d75909f7fe60aedfa57b315419c4221b96e16dbe"
+    },
+    {
+      "SymbolRepo": "github.com/sgtest/python-sample-0",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0/meth0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "File": "app/app.py",
+      "Start": 39,
+      "End": 44,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-05-10T06:52:01Z",
+      "LastCommitID": "d75909f7fe60aedfa57b315419c4221b96e16dbe"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-1",
+      "SymbolPath": "app/app/x",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "File": "app/app.py",
+      "Start": 16,
+      "End": 17,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-05-10T06:52:01Z",
+      "LastCommitID": "d75909f7fe60aedfa57b315419c4221b96e16dbe"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-1",
+      "SymbolPath": "app/app/x",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "File": "app/app.py",
+      "Start": 37,
+      "End": 38,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-05-10T06:52:01Z",
+      "LastCommitID": "d75909f7fe60aedfa57b315419c4221b96e16dbe"
+    }
+  ],
+  "Authors": [
+    {
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-06-18T23:49:22Z",
+      "LastCommitID": "7903b0746678790682fdc3ec026b62e39bd4d318",
+      "SymbolCount": 4,
+      "SymbolsProportion": 1,
+      "ExportedSymbolCount": 3,
+      "ExportedSymbolsProportion": 1
+    }
+  ],
+  "ClientsOfOtherUnits": [
+    {
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-05-10T06:52:01Z",
+      "LastCommitID": "d75909f7fe60aedfa57b315419c4221b96e16dbe",
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-1",
+      "RefCount": 2
+    },
+    {
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-05-10T06:52:01Z",
+      "LastCommitID": "d75909f7fe60aedfa57b315419c4221b96e16dbe",
+      "SymbolRepo": "github.com/sgtest/python-sample-0",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "RefCount": 2
+    }
+  ]
+}

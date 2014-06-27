@@ -1,0 +1,95 @@
+{
+  "CommitMap": {
+    "ae48e5ac00d626e93e4bdc77cadfdd7568983d0f": {
+      "ID": "ae48e5ac00d626e93e4bdc77cadfdd7568983d0f",
+      "Author": {
+        "Name": "Quinn Slack",
+        "Email": "qslack@qslack.com"
+      },
+      "Message": "follow commonjs spec (test files in test/, lib files in lib/ or named as main in package.json)",
+      "AuthorDate": "2014-05-07T04:45:44Z"
+    },
+    "b8a3e9f14084907d0ead0d84cd87f1383de97547": {
+      "ID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+      "Author": {
+        "Name": "Quinn Slack",
+        "Email": "qslack@qslack.com"
+      },
+      "Message": "Animal type",
+      "AuthorDate": "2013-06-30T11:52:57Z"
+    },
+    "e08dbe6a09171b0638721ee0265794b1f415b9de": {
+      "ID": "e08dbe6a09171b0638721ee0265794b1f415b9de",
+      "Author": {
+        "Name": "Quinn Slack",
+        "Email": "qslack@qslack.com"
+      },
+      "Message": "npm js package name",
+      "AuthorDate": "2013-08-09T16:34:49Z"
+    }
+  },
+  "HunkMap": {
+    "animal.js": [
+      {
+        "CommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "LineStart": 0,
+        "LineEnd": 32,
+        "CharStart": 0,
+        "CharEnd": 543
+      }
+    ],
+    "package.json": [
+      {
+        "CommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "LineStart": 0,
+        "LineEnd": 1,
+        "CharStart": 0,
+        "CharEnd": 2
+      },
+      {
+        "CommitID": "e08dbe6a09171b0638721ee0265794b1f415b9de",
+        "LineStart": 1,
+        "LineEnd": 2,
+        "CharStart": 2,
+        "CharEnd": 41
+      },
+      {
+        "CommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "LineStart": 2,
+        "LineEnd": 7,
+        "CharStart": 41,
+        "CharEnd": 200
+      },
+      {
+        "CommitID": "ae48e5ac00d626e93e4bdc77cadfdd7568983d0f",
+        "LineStart": 7,
+        "LineEnd": 8,
+        "CharStart": 200,
+        "CharEnd": 220
+      },
+      {
+        "CommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "LineStart": 8,
+        "LineEnd": 18,
+        "CharStart": 220,
+        "CharEnd": 398
+      }
+    ],
+    "test/animal_test.js": [
+      {
+        "CommitID": "ae48e5ac00d626e93e4bdc77cadfdd7568983d0f",
+        "LineStart": 0,
+        "LineEnd": 1,
+        "CharStart": 0,
+        "CharEnd": 35
+      },
+      {
+        "CommitID": "b8a3e9f14084907d0ead0d84cd87f1383de97547",
+        "LineStart": 1,
+        "LineEnd": 43,
+        "CharStart": 35,
+        "CharEnd": 1181
+      }
+    ]
+  }
+}
