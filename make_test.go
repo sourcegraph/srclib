@@ -29,6 +29,13 @@ func TestMakeCmd(t *testing.T) {
 		return
 	}
 
+	cmd := exec.Command("git", "submodule", "update", "--init", "srcgraph/testdata/repos")
+	cmd.Dir = ".."
+	if out, err := cmd.CombinedOutput(); err != nil {
+		t.Errorf("Failed to update or init git submodules: %s.\n\nOutput was:\n%s", err, out)
+		return
+	}
+
 	const testReposDir = "testdata/repos"
 	fis, err := ioutil.ReadDir("testdata/repos")
 	if err != nil {
@@ -54,14 +61,6 @@ func TestMakeCmd(t *testing.T) {
 }
 
 func testMakeCmd(t *testing.T, repoDir string) {
-	// Update the git submodule automatically.
-	cmd := exec.Command("git", "submodule", "update", filepath.Join("srcgraph", repoDir))
-	cmd.Dir = ".."
-	if out, err := cmd.CombinedOutput(); err != nil {
-		t.Errorf("Failed to update git submodule for %s: %s.\n\nOutput was:\n%s", repoDir, err, out)
-		return
-	}
-
 	repoName := filepath.Base(repoDir)
 
 	// Directories for the actual ("got") and expected ("want") outputs.
@@ -111,7 +110,7 @@ func testMakeCmd(t *testing.T, repoDir string) {
 	} else {
 		w = &buf
 	}
-	cmd = exec.Command("srcgraph", "-v", "make")
+	cmd := exec.Command("srcgraph", "-v", "make")
 	cmd.Stderr, cmd.Stdout = w, w
 	cmd.Dir = repoDir
 
