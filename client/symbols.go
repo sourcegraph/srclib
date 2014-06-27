@@ -234,6 +234,12 @@ func (s *symbolsService) List(opt *SymbolListOptions) ([]*Symbol, Response, erro
 type Example struct {
 	graph.Ref
 	SrcHTML template.HTML
+
+	// The line that the given example starts on
+	StartLine int
+
+	// The line that the given example ends on
+	EndLine int
 }
 
 type Examples []*Example

@@ -59,6 +59,12 @@ type FormatResult struct {
 	// number of refs in the file exceeds the (server-defined) limit, NumRefs is
 	// capped at the limit.
 	NumRefs int
+
+	// The line in the file that the formatted section starts at
+	StartLine int
+
+	// The line that the formatted section ends at
+	EndLine int
 }
 
 // RepositoryTreeGetOptions specifies options for (RepositoryTreeService).Get.
