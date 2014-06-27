@@ -26,8 +26,16 @@
         "LastCommitDate": "2014-04-18T00:43:13Z",
         "LastCommitID": "cb571fc8ade41e1d30f50708f7c18c44da5612cc",
         "Exported": false,
-        "Chars": 22,
-        "CharsProportion": 1
+        "Chars": 15,
+        "CharsProportion": 0.6818181818181818
+      },
+      {
+        "AuthorEmail": "sqs@sourcegraph.com",
+        "LastCommitDate": "2014-06-27T21:40:21Z",
+        "LastCommitID": "e8ebc81af3c3cbb31ec2ac58983d5dfa92d74f70",
+        "Exported": false,
+        "Chars": 7,
+        "CharsProportion": 0.3181818181818182
       }
     ],
     "numcolors": [
@@ -95,9 +103,9 @@
       "File": "mypkg/bar.go",
       "Start": 70,
       "End": 73,
-      "AuthorEmail": "beyang.liu@gmail.com",
-      "LastCommitDate": "2014-04-18T00:43:13Z",
-      "LastCommitID": "cb571fc8ade41e1d30f50708f7c18c44da5612cc"
+      "AuthorEmail": "sqs@sourcegraph.com",
+      "LastCommitDate": "2014-06-27T21:40:21Z",
+      "LastCommitID": "e8ebc81af3c3cbb31ec2ac58983d5dfa92d74f70"
     },
     {
       "SymbolUnitType": "GoPackage",
@@ -156,6 +164,15 @@
       "SymbolsProportion": 1,
       "ExportedSymbolCount": 2,
       "ExportedSymbolsProportion": 1
+    },
+    {
+      "AuthorEmail": "sqs@sourcegraph.com",
+      "LastCommitDate": "2014-06-27T21:40:21Z",
+      "LastCommitID": "e8ebc81af3c3cbb31ec2ac58983d5dfa92d74f70",
+      "SymbolCount": 1,
+      "SymbolsProportion": 0.25,
+      "ExportedSymbolCount": 0,
+      "ExportedSymbolsProportion": 0
     }
   ],
   "ClientsOfOtherUnits": [
@@ -166,7 +183,7 @@
       "SymbolRepo": "",
       "SymbolUnitType": "GoPackage",
       "SymbolUnit": "github.com/sgtest/go-sample-0/mypkg",
-      "RefCount": 8
+      "RefCount": 7
     },
     {
       "AuthorEmail": "beyang.liu@gmail.com",
@@ -175,6 +192,15 @@
       "SymbolRepo": "code.google.com/p/go",
       "SymbolUnitType": "GoPackage",
       "SymbolUnit": "builtin",
+      "RefCount": 1
+    },
+    {
+      "AuthorEmail": "sqs@sourcegraph.com",
+      "LastCommitDate": "2014-06-27T21:40:21Z",
+      "LastCommitID": "e8ebc81af3c3cbb31ec2ac58983d5dfa92d74f70",
+      "SymbolRepo": "",
+      "SymbolUnitType": "GoPackage",
+      "SymbolUnit": "github.com/sgtest/go-sample-0/mypkg",
       "RefCount": 1
     }
   ]
