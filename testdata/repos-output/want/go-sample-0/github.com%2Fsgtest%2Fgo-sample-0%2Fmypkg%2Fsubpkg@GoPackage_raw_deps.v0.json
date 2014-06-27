@@ -1,0 +1,8 @@
+[
+  {
+    "FromUnit": "github.com/sgtest/go-sample-0/mypkg/subpkg",
+    "FromUnitType": "GoPackage",
+    "TargetType": "go-import-path",
+    "Target": "github.com/sgtest/go-sample-0/mypkg"
+  }
+]

@@ -1,0 +1,47 @@
+{
+  "CommitMap": {
+    "465567ba60911f6985ddc7bb543775b25d3e7cec": {
+      "ID": "465567ba60911f6985ddc7bb543775b25d3e7cec",
+      "Author": {
+        "Name": "Beyang Liu",
+        "Email": "beyang.liu@gmail.com"
+      },
+      "Message": "fix import",
+      "AuthorDate": "2014-04-18T03:37:10Z"
+    },
+    "cb571fc8ade41e1d30f50708f7c18c44da5612cc": {
+      "ID": "cb571fc8ade41e1d30f50708f7c18c44da5612cc",
+      "Author": {
+        "Name": "Beyang Liu",
+        "Email": "beyang.liu@gmail.com"
+      },
+      "Message": "initial stuff",
+      "AuthorDate": "2014-04-18T00:43:13Z"
+    }
+  },
+  "HunkMap": {
+    "mypkg/subpkg/subfoo.go": [
+      {
+        "CommitID": "cb571fc8ade41e1d30f50708f7c18c44da5612cc",
+        "LineStart": 0,
+        "LineEnd": 2,
+        "CharStart": 0,
+        "CharEnd": 16
+      },
+      {
+        "CommitID": "465567ba60911f6985ddc7bb543775b25d3e7cec",
+        "LineStart": 2,
+        "LineEnd": 3,
+        "CharStart": 16,
+        "CharEnd": 61
+      },
+      {
+        "CommitID": "cb571fc8ade41e1d30f50708f7c18c44da5612cc",
+        "LineStart": 3,
+        "LineEnd": 9,
+        "CharStart": 61,
+        "CharEnd": 117
+      }
+    ]
+  }
+}

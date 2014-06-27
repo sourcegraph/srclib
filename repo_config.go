@@ -125,7 +125,7 @@ func WriteRepositoryConfig(repoDir string, commitID string, c *config.Repository
 	}
 
 	err = os.MkdirAll(filepath.Dir(configFile), 0700)
-	if err != nil {
+	if err != nil && !os.IsExist(err) {
 		return err
 	}
 	b, err := json.MarshalIndent(c, "", "  ")

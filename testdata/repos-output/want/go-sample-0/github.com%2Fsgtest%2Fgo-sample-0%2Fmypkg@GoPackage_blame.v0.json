@@ -1,0 +1,33 @@
+{
+  "CommitMap": {
+    "cb571fc8ade41e1d30f50708f7c18c44da5612cc": {
+      "ID": "cb571fc8ade41e1d30f50708f7c18c44da5612cc",
+      "Author": {
+        "Name": "Beyang Liu",
+        "Email": "beyang.liu@gmail.com"
+      },
+      "Message": "initial stuff",
+      "AuthorDate": "2014-04-18T00:43:13Z"
+    }
+  },
+  "HunkMap": {
+    "mypkg/bar.go": [
+      {
+        "CommitID": "cb571fc8ade41e1d30f50708f7c18c44da5612cc",
+        "LineStart": 0,
+        "LineEnd": 8,
+        "CharStart": 0,
+        "CharEnd": 78
+      }
+    ],
+    "mypkg/foo.go": [
+      {
+        "CommitID": "cb571fc8ade41e1d30f50708f7c18c44da5612cc",
+        "LineStart": 0,
+        "LineEnd": 5,
+        "CharStart": 0,
+        "CharEnd": 48
+      }
+    ]
+  }
+}

@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/exec"
 	"path/filepath"
 
-	"github.com/aybabtme/color/brush"
 	"github.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srcgraph/build"
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
@@ -23,7 +21,6 @@ func makefile(args []string) {
 func make_(args []string) {
 	fs := flag.NewFlagSet("make", flag.ExitOnError)
 	showOnly := fs.Bool("mf", false, "print generated makefile and exit")
-	test := fs.Bool("test", false, "diff against expected test data")
 	conf := &makex.Default
 	makex.Flags(fs, conf, "")
 	fs.Usage = func() {
@@ -53,10 +50,6 @@ The options are:
 		log.Fatal(err)
 	}
 
-	if *test {
-		context.CommitID = "test-commit"
-	}
-
 	mk, mf, err := NewMaker(goals, context, conf)
 	if err != nil {
 		log.Fatal(err)
@@ -84,13 +77,6 @@ The options are:
 	err = mk.Run()
 	if err != nil {
 		log.Fatal(err)
-	}
-
-	if *test {
-		success := compareResults(testBuildDataDirName, buildstore.BuildDataDirName)
-		if !success {
-			os.Exit(1)
-		}
 	}
 }
 
@@ -135,30 +121,3 @@ func NewMaker(goals []string, context *JobContext, conf *makex.Config) (*makex.M
 
 	return conf.NewMaker(mf, goals...), mf, nil
 }
-
-func compareResults(expDir, actDir string) bool {
-	diffOut, err := exec.Command("diff", "-ur", expDir, actDir).CombinedOutput()
-	if err != nil {
-		log.Printf(brush.Red("ERROR").String())
-		log.Printf("diff failed (%s), diff output: %s", err, string(diffOut))
-		return false
-	} else if len(diffOut) > 0 {
-		diffStr := string(diffOut)
-		log.Printf(brush.Red("FAIL").String())
-		log.Printf(diffStr)
-		log.Printf("output differed")
-		return false
-	} else {
-		log.Printf(brush.Green("PASS").String())
-		return true
-	}
-}
-
-// func runMakefile(mf *makex.Makefile, conf *makex.Config, repoDir string, goals []string, w io.Writer) error {
-
-// 	mk.RuleOutput = func(rule makex.Rule) (out io.Writer, err io.Writer) {
-// 		return nil, nil
-// 	}
-
-// 	return mk.Run()
-// }

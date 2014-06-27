@@ -1,0 +1,12 @@
+[
+  {
+    "FromRepo": "github.com/sgtest/go-sample-0",
+    "FromUnit": "github.com/sgtest/go-sample-0/mypkg/subpkg",
+    "FromUnitType": "GoPackage",
+    "ToRepo": "github.com/sgtest/go-sample-0",
+    "ToUnit": "github.com/sgtest/go-sample-0/mypkg",
+    "ToUnitType": "GoPackage",
+    "ToVersionString": "",
+    "ToRevSpec": ""
+  }
+]

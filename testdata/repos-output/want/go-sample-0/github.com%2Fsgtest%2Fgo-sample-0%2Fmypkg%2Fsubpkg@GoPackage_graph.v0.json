@@ -1,0 +1,158 @@
+{
+  "Symbols": [
+    {
+      "UnitType": "GoPackage",
+      "Unit": "github.com/sgtest/go-sample-0/mypkg/subpkg",
+      "Path": ".",
+      "TreePath": ".",
+      "Kind": "package",
+      "Name": "subpkg",
+      "Callable": false,
+      "File": "mypkg/subpkg",
+      "DefStart": 0,
+      "DefEnd": 0,
+      "Exported": true,
+      "Data": {
+        "Exported": true,
+        "PkgName": "subpkg",
+        "TypeString": "",
+        "Kind": "package",
+        "PackageImportPath": "github.com/sgtest/go-sample-0/mypkg/subpkg"
+      }
+    },
+    {
+      "UnitType": "GoPackage",
+      "Unit": "github.com/sgtest/go-sample-0/mypkg/subpkg",
+      "Path": "Subqux",
+      "TreePath": "./Subqux",
+      "Kind": "type",
+      "Name": "Subqux",
+      "Callable": false,
+      "File": "mypkg/subpkg/subfoo.go",
+      "DefStart": 67,
+      "DefEnd": 83,
+      "Exported": true,
+      "Data": {
+        "Exported": true,
+        "PkgScope": true,
+        "PkgName": "subpkg",
+        "TypeString": "github.com/sgtest/go-sample-0/mypkg/subpkg.Subqux",
+        "UnderlyingTypeString": "uint32",
+        "Kind": "type",
+        "PackageImportPath": "github.com/sgtest/go-sample-0/mypkg/subpkg"
+      }
+    },
+    {
+      "UnitType": "GoPackage",
+      "Unit": "github.com/sgtest/go-sample-0/mypkg/subpkg",
+      "Path": "subfunc",
+      "TreePath": "./subfunc",
+      "Kind": "func",
+      "Name": "subfunc",
+      "Callable": true,
+      "File": "mypkg/subpkg/subfoo.go",
+      "DefStart": 85,
+      "DefEnd": 116,
+      "Exported": false,
+      "Data": {
+        "PkgScope": true,
+        "PkgName": "subpkg",
+        "TypeString": "func()",
+        "UnderlyingTypeString": "func()",
+        "Kind": "func",
+        "PackageImportPath": "github.com/sgtest/go-sample-0/mypkg/subpkg"
+      }
+    }
+  ],
+  "Refs": [
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "GoPackage",
+      "SymbolUnit": "github.com/sgtest/go-sample-0/mypkg/subpkg",
+      "SymbolPath": ".",
+      "Def": false,
+      "Repo": "",
+      "File": "mypkg/subpkg/subfoo.go",
+      "Start": 8,
+      "End": 14
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "GoPackage",
+      "SymbolUnit": "github.com/sgtest/go-sample-0/mypkg",
+      "SymbolPath": ".",
+      "Def": false,
+      "Repo": "",
+      "File": "mypkg/subpkg/subfoo.go",
+      "Start": 103,
+      "End": 108
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "GoPackage",
+      "SymbolUnit": "github.com/sgtest/go-sample-0/mypkg",
+      "SymbolPath": ".",
+      "Def": false,
+      "Repo": "",
+      "File": "mypkg/subpkg/subfoo.go",
+      "Start": 23,
+      "End": 60
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "GoPackage",
+      "SymbolUnit": "github.com/sgtest/go-sample-0/mypkg",
+      "SymbolPath": ".",
+      "Def": false,
+      "Repo": "",
+      "File": "mypkg/subpkg/subfoo.go",
+      "Start": 74,
+      "End": 79
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "GoPackage",
+      "SymbolUnit": "github.com/sgtest/go-sample-0/mypkg",
+      "SymbolPath": "Foo",
+      "Def": false,
+      "Repo": "",
+      "File": "mypkg/subpkg/subfoo.go",
+      "Start": 109,
+      "End": 112
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "GoPackage",
+      "SymbolUnit": "github.com/sgtest/go-sample-0/mypkg",
+      "SymbolPath": "Qux",
+      "Def": false,
+      "Repo": "",
+      "File": "mypkg/subpkg/subfoo.go",
+      "Start": 80,
+      "End": 83
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "GoPackage",
+      "SymbolUnit": "github.com/sgtest/go-sample-0/mypkg/subpkg",
+      "SymbolPath": "Subqux",
+      "Def": true,
+      "Repo": "",
+      "File": "mypkg/subpkg/subfoo.go",
+      "Start": 67,
+      "End": 73
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "GoPackage",
+      "SymbolUnit": "github.com/sgtest/go-sample-0/mypkg/subpkg",
+      "SymbolPath": "subfunc",
+      "Def": true,
+      "Repo": "",
+      "File": "mypkg/subpkg/subfoo.go",
+      "Start": 90,
+      "End": 97
+    }
+  ]
+}
+
