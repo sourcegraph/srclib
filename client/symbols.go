@@ -240,6 +240,9 @@ type Example struct {
 
 	// The line that the given example ends on
 	EndLine int
+
+	// Error is whether an error occurred while fetching this example.
+	Error bool
 }
 
 type Examples []*Example
