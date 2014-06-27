@@ -1,0 +1,4878 @@
+{
+  "Symbols": {
+    "commonjs/index.js": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": true,
+        "Chars": 0,
+        "CharsProportion": 0
+      }
+    ],
+    "commonjs/lib/async.js": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": true,
+        "Chars": 0,
+        "CharsProportion": 0
+      }
+    ],
+    "commonjs/lib/fs.js": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": true,
+        "Chars": 0,
+        "CharsProportion": 0
+      }
+    ],
+    "commonjs/lib/glob.js": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": true,
+        "Chars": 0,
+        "CharsProportion": 0
+      }
+    ],
+    "commonjs/lib/http.js": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": true,
+        "Chars": 0,
+        "CharsProportion": 0
+      }
+    ],
+    "commonjs/lib/lodash.js": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": true,
+        "Chars": 0,
+        "CharsProportion": 0
+      }
+    ],
+    "commonjs/lib/minimatch.js": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": true,
+        "Chars": 0,
+        "CharsProportion": 0
+      }
+    ],
+    "commonjs/lib/mysql.js": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": true,
+        "Chars": 0,
+        "CharsProportion": 0
+      }
+    ],
+    "commonjs/lib/pg.js": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": true,
+        "Chars": 0,
+        "CharsProportion": 0
+      }
+    ],
+    "commonjs/lib/read-package-json.js": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": true,
+        "Chars": 0,
+        "CharsProportion": 0
+      }
+    ],
+    "commonjs/lib/underscore.js": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": true,
+        "Chars": 0,
+        "CharsProportion": 0
+      }
+    ],
+    "file/lib/async.js/-/@104/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/async.js/-/@104/@local/results": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 7,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/async.js/-/@223/@local/results": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 7,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/async.js/-/async": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 24,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/async.js/-/fs": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 18,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/fs.js/-/@53/@local/data": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/fs.js/-/@53/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/fs.js/-/fs": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 18,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/glob.js/-/@88/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/glob.js/-/@88/@local/files": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 5,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/glob.js/-/glob": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 22,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/http.js/-/@155/@local/e": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 1,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/http.js/-/@74/@local/res": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/http.js/-/http": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 22,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/lodash.js/-/@227/@local/a": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 1,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/lodash.js/-/@227/@local/b": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 1,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/lodash.js/-/@339/@local/num": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/lodash.js/-/@449/@local/num": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/lodash.js/-/@560/@local/num": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/lodash.js/-/@91/@local/num": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/lodash.js/-/_": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 21,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/lodash.js/-/even": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 72,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/lodash.js/-/evens": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 75,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/lodash.js/-/flat": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 70,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/lodash.js/-/list": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 31,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/lodash.js/-/odds": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 74,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/lodash.js/-/thrice": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 59,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/minimatch.js/-/minimatch": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 32,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@1033/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@1033/@local/response": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 8,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@1220/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@1328/@local/fields": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 6,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@1416/@local/row": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/@1800/@local/@2023/@local/@2023/@local/@2170/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/@1800/@local/@2023/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/@1800/@local/@2023/@local/result": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 6,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/log": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 42,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/result": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 6,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@1699/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@217/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@217/@local/fields": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 6,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@217/@local/rows": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@2463/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@2590/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@362/@local/@362/@local/@453/@local/key": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@362/@local/@362/@local/@453/@local/txt": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@362/@local/query": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 5,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@362/@local/values": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 6,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@736/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@736/@local/result": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 6,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@880/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/@880/@local/result": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 6,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/connection": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 107,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/mysql": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 29,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/mysql.js/-/query": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 47,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/pg.js/-/@114/@local/@114/@local/@276/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/pg.js/-/@114/@local/@114/@local/@276/@local/result": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 6,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/pg.js/-/@114/@local/client": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 6,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/pg.js/-/@114/@local/done": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/pg.js/-/@114/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/pg.js/-/@570/@local/@570/@local/@710/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/pg.js/-/@570/@local/@570/@local/@710/@local/result": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 6,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/pg.js/-/@570/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/pg.js/-/client": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 33,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/pg.js/-/conString": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 61,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/pg.js/-/pg": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 18,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/read-package-json.js/-/@70/@local/data": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/read-package-json.js/-/@70/@local/err": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/read-package-json.js/-/readJson": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 39,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/underscore.js/-/@231/@local/a": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 1,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/underscore.js/-/@231/@local/b": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 1,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/underscore.js/-/@343/@local/num": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/underscore.js/-/@453/@local/num": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/underscore.js/-/@564/@local/num": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/underscore.js/-/@95/@local/num": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 3,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/underscore.js/-/_": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 25,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/underscore.js/-/even": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 72,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/underscore.js/-/evens": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 75,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/underscore.js/-/flat": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 70,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/underscore.js/-/list": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 31,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/underscore.js/-/odds": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 74,
+        "CharsProportion": 1
+      }
+    ],
+    "file/lib/underscore.js/-/thrice": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 59,
+        "CharsProportion": 1
+      }
+    ],
+    "file/node_modules/mysql/index.js/-/@415/@local/config/port": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2014-05-07T15:37:10Z",
+        "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "Exported": false,
+        "Chars": 11,
+        "CharsProportion": 1
+      }
+    ]
+  },
+  "Refs": [
+    {
+      "SymbolRepo": "github.com/brianc/node-postgres",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "pg",
+      "SymbolPath": "commonjs/lib/index.js/-/Client",
+      "File": "lib/pg.js",
+      "Start": 536,
+      "End": 542,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/caolan/async",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "async",
+      "SymbolPath": "commonjs/lib/async.js/-/each",
+      "File": "lib/lodash.js",
+      "Start": 30,
+      "End": 34,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/caolan/async",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "async",
+      "SymbolPath": "commonjs/lib/async.js/-/filter",
+      "File": "lib/async.js",
+      "Start": 176,
+      "End": 182,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/caolan/async",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "async",
+      "SymbolPath": "commonjs/lib/async.js/-/map",
+      "File": "lib/async.js",
+      "Start": 61,
+      "End": 64,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/caolan/async",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "async",
+      "SymbolPath": "commonjs/lib/async.js/-/reject",
+      "File": "lib/lodash.js",
+      "Start": 533,
+      "End": 539,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/index.js/-/createConnection",
+      "File": "lib/mysql.js",
+      "Start": 2391,
+      "End": 2407,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/index.js/-/createConnection",
+      "File": "lib/mysql.js",
+      "Start": 58,
+      "End": 74,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/beginTransaction",
+      "File": "lib/mysql.js",
+      "Start": 1682,
+      "End": 1698,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/commit",
+      "File": "lib/mysql.js",
+      "Start": 2163,
+      "End": 2169,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/connect",
+      "File": "lib/mysql.js",
+      "Start": 160,
+      "End": 167,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/connect",
+      "File": "lib/mysql.js",
+      "Start": 2455,
+      "End": 2462,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/connect",
+      "File": "lib/pg.js",
+      "Start": 562,
+      "End": 569,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/end",
+      "File": "lib/mysql.js",
+      "Start": 2699,
+      "End": 2702,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/end",
+      "File": "lib/pg.js",
+      "Start": 915,
+      "End": 918,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/escape",
+      "File": "lib/mysql.js",
+      "Start": 531,
+      "End": 537,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/pause",
+      "File": "lib/mysql.js",
+      "Start": 1520,
+      "End": 1525,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/query",
+      "File": "lib/mysql.js",
+      "Start": 1003,
+      "End": 1008,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/query",
+      "File": "lib/mysql.js",
+      "Start": 1169,
+      "End": 1174,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/query",
+      "File": "lib/mysql.js",
+      "Start": 1754,
+      "End": 1759,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/query",
+      "File": "lib/mysql.js",
+      "Start": 183,
+      "End": 188,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/query",
+      "File": "lib/mysql.js",
+      "Start": 1982,
+      "End": 1987,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/query",
+      "File": "lib/mysql.js",
+      "Start": 2572,
+      "End": 2577,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/query",
+      "File": "lib/mysql.js",
+      "Start": 606,
+      "End": 611,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/query",
+      "File": "lib/mysql.js",
+      "Start": 686,
+      "End": 691,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/query",
+      "File": "lib/mysql.js",
+      "Start": 831,
+      "End": 836,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/query",
+      "File": "lib/pg.js",
+      "Start": 675,
+      "End": 680,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/resume",
+      "File": "lib/mysql.js",
+      "Start": 1580,
+      "End": 1586,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/rollback",
+      "File": "lib/mysql.js",
+      "Start": 1856,
+      "End": 1864,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/rollback",
+      "File": "lib/mysql.js",
+      "Start": 2083,
+      "End": 2091,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "SymbolPath": "commonjs/lib/Connection.js/-/prototype/rollback",
+      "File": "lib/mysql.js",
+      "Start": 2226,
+      "End": 2234,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/isaacs/node-glob",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "glob",
+      "SymbolPath": "commonjs/glob.js/-/sync",
+      "File": "lib/glob.js",
+      "Start": 60,
+      "End": 64,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/jashkenas/underscore",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "underscore",
+      "SymbolPath": "commonjs/underscore.js/-/each",
+      "File": "lib/underscore.js",
+      "Start": 34,
+      "End": 38,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/jashkenas/underscore",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "underscore",
+      "SymbolPath": "commonjs/underscore.js/-/filter",
+      "File": "lib/underscore.js",
+      "Start": 426,
+      "End": 432,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/jashkenas/underscore",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "underscore",
+      "SymbolPath": "commonjs/underscore.js/-/find",
+      "File": "lib/underscore.js",
+      "Start": 318,
+      "End": 322,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/jashkenas/underscore",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "underscore",
+      "SymbolPath": "commonjs/underscore.js/-/map",
+      "File": "lib/underscore.js",
+      "Start": 80,
+      "End": 83,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/jashkenas/underscore",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "underscore",
+      "SymbolPath": "commonjs/underscore.js/-/reduceRight",
+      "File": "lib/underscore.js",
+      "Start": 213,
+      "End": 224,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/jashkenas/underscore",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "underscore",
+      "SymbolPath": "commonjs/underscore.js/-/reject",
+      "File": "lib/underscore.js",
+      "Start": 537,
+      "End": 543,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "node",
+      "SymbolPath": "commonjs/lib/events.js/-/prototype/on",
+      "File": "lib/http.js",
+      "Start": 143,
+      "End": 145,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "node",
+      "SymbolPath": "commonjs/lib/events.js/-/prototype/on",
+      "File": "lib/mysql.js",
+      "Start": 1315,
+      "End": 1317,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "node",
+      "SymbolPath": "commonjs/lib/events.js/-/prototype/on",
+      "File": "lib/mysql.js",
+      "Start": 1403,
+      "End": 1405,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "node",
+      "SymbolPath": "commonjs/lib/events.js/-/prototype/on",
+      "File": "lib/mysql.js",
+      "Start": 1606,
+      "End": 1608,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "node",
+      "SymbolPath": "commonjs/lib/fs.js/-/exists",
+      "File": "lib/async.js",
+      "Start": 215,
+      "End": 221,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "node",
+      "SymbolPath": "commonjs/lib/fs.js/-/readFile",
+      "File": "lib/fs.js",
+      "Start": 28,
+      "End": 36,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "node",
+      "SymbolPath": "commonjs/lib/fs.js/-/stat",
+      "File": "lib/async.js",
+      "Start": 98,
+      "End": 102,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "node",
+      "SymbolPath": "commonjs/lib/http.js/-/get",
+      "File": "lib/http.js",
+      "Start": 34,
+      "End": 37,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "node",
+      "SymbolPath": "file/lib/assert.js/-/getMessage/@local/self/message",
+      "File": "lib/http.js",
+      "Start": 201,
+      "End": 208,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "node",
+      "SymbolPath": "file/lib/url.js/-/urlParse/@local/u/query",
+      "File": "lib/pg.js",
+      "Start": 235,
+      "End": 240,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/async.js/-/@104/@local/err",
+      "Def": true,
+      "File": "lib/async.js",
+      "Start": 113,
+      "End": 116,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/async.js/-/@104/@local/err",
+      "File": "lib/async.js",
+      "Start": 150,
+      "End": 153,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/async.js/-/@104/@local/results",
+      "Def": true,
+      "File": "lib/async.js",
+      "Start": 118,
+      "End": 125,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/async.js/-/@104/@local/results",
+      "File": "lib/async.js",
+      "Start": 155,
+      "End": 162,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/async.js/-/@223/@local/results",
+      "Def": true,
+      "File": "lib/async.js",
+      "Start": 232,
+      "End": 239,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/async.js/-/@223/@local/results",
+      "File": "lib/async.js",
+      "Start": 267,
+      "End": 274,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/async.js/-/async",
+      "Def": true,
+      "File": "lib/async.js",
+      "Start": 28,
+      "End": 33,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/async.js/-/async",
+      "File": "lib/async.js",
+      "Start": 170,
+      "End": 175,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/async.js/-/async",
+      "File": "lib/async.js",
+      "Start": 55,
+      "End": 60,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/async.js/-/fs",
+      "Def": true,
+      "File": "lib/async.js",
+      "Start": 4,
+      "End": 6,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/async.js/-/fs",
+      "File": "lib/async.js",
+      "Start": 212,
+      "End": 214,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/async.js/-/fs",
+      "File": "lib/async.js",
+      "Start": 95,
+      "End": 97,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/async.js/-/require",
+      "File": "lib/async.js",
+      "Start": 36,
+      "End": 43,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/async.js/-/require",
+      "File": "lib/async.js",
+      "Start": 9,
+      "End": 16,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/fs.js/-/@53/@local/data",
+      "Def": true,
+      "File": "lib/fs.js",
+      "Start": 67,
+      "End": 71,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/fs.js/-/@53/@local/data",
+      "File": "lib/fs.js",
+      "Start": 108,
+      "End": 112,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/fs.js/-/@53/@local/err",
+      "Def": true,
+      "File": "lib/fs.js",
+      "Start": 62,
+      "End": 65,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/fs.js/-/@53/@local/err",
+      "File": "lib/fs.js",
+      "Start": 103,
+      "End": 106,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/fs.js/-/fs",
+      "Def": true,
+      "File": "lib/fs.js",
+      "Start": 4,
+      "End": 6,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/fs.js/-/fs",
+      "File": "lib/fs.js",
+      "Start": 25,
+      "End": 27,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/fs.js/-/require",
+      "File": "lib/fs.js",
+      "Start": 9,
+      "End": 16,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/glob.js/-/@88/@local/err",
+      "Def": true,
+      "File": "lib/glob.js",
+      "Start": 97,
+      "End": 100,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/glob.js/-/@88/@local/err",
+      "File": "lib/glob.js",
+      "Start": 134,
+      "End": 137,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/glob.js/-/@88/@local/files",
+      "Def": true,
+      "File": "lib/glob.js",
+      "Start": 102,
+      "End": 107,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/glob.js/-/@88/@local/files",
+      "File": "lib/glob.js",
+      "Start": 139,
+      "End": 144,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/glob.js/-/glob",
+      "Def": true,
+      "File": "lib/glob.js",
+      "Start": 4,
+      "End": 8,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/glob.js/-/glob",
+      "File": "lib/glob.js",
+      "Start": 55,
+      "End": 59,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/glob.js/-/glob",
+      "File": "lib/glob.js",
+      "Start": 75,
+      "End": 79,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/glob.js/-/require",
+      "File": "lib/glob.js",
+      "Start": 11,
+      "End": 18,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/http.js/-/@155/@local/e",
+      "Def": true,
+      "File": "lib/http.js",
+      "Start": 164,
+      "End": 165,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/http.js/-/@155/@local/e",
+      "File": "lib/http.js",
+      "Start": 199,
+      "End": 200,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/http.js/-/@74/@local/res",
+      "Def": true,
+      "File": "lib/http.js",
+      "Start": 83,
+      "End": 86,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/http.js/-/@74/@local/res",
+      "File": "lib/http.js",
+      "Start": 123,
+      "End": 126,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/http.js/-/http",
+      "Def": true,
+      "File": "lib/http.js",
+      "Start": 4,
+      "End": 8,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/http.js/-/http",
+      "File": "lib/http.js",
+      "Start": 29,
+      "End": 33,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/http.js/-/require",
+      "File": "lib/http.js",
+      "Start": 11,
+      "End": 18,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/@227/@local/a",
+      "Def": true,
+      "File": "lib/lodash.js",
+      "Start": 236,
+      "End": 237,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/@227/@local/a",
+      "File": "lib/lodash.js",
+      "Start": 251,
+      "End": 252,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/@227/@local/b",
+      "Def": true,
+      "File": "lib/lodash.js",
+      "Start": 239,
+      "End": 240,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/@227/@local/b",
+      "File": "lib/lodash.js",
+      "Start": 260,
+      "End": 261,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/@339/@local/num",
+      "Def": true,
+      "File": "lib/lodash.js",
+      "Start": 348,
+      "End": 351,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/@339/@local/num",
+      "File": "lib/lodash.js",
+      "Start": 361,
+      "End": 364,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/@449/@local/num",
+      "Def": true,
+      "File": "lib/lodash.js",
+      "Start": 458,
+      "End": 461,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/@449/@local/num",
+      "File": "lib/lodash.js",
+      "Start": 471,
+      "End": 474,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/@560/@local/num",
+      "Def": true,
+      "File": "lib/lodash.js",
+      "Start": 569,
+      "End": 572,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/@560/@local/num",
+      "File": "lib/lodash.js",
+      "Start": 582,
+      "End": 585,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/@91/@local/num",
+      "Def": true,
+      "File": "lib/lodash.js",
+      "Start": 100,
+      "End": 103,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/@91/@local/num",
+      "File": "lib/lodash.js",
+      "Start": 113,
+      "End": 116,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/_",
+      "Def": true,
+      "File": "lib/lodash.js",
+      "Start": 4,
+      "End": 5,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/_",
+      "File": "lib/lodash.js",
+      "Start": 207,
+      "End": 208,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/_",
+      "File": "lib/lodash.js",
+      "Start": 28,
+      "End": 29,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/_",
+      "File": "lib/lodash.js",
+      "Start": 312,
+      "End": 313,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/_",
+      "File": "lib/lodash.js",
+      "Start": 420,
+      "End": 421,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/_",
+      "File": "lib/lodash.js",
+      "Start": 531,
+      "End": 532,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/_",
+      "File": "lib/lodash.js",
+      "Start": 74,
+      "End": 75,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/even",
+      "Def": true,
+      "File": "lib/lodash.js",
+      "Start": 305,
+      "End": 309,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/even",
+      "File": "lib/lodash.js",
+      "Start": 400,
+      "End": 404,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/evens",
+      "Def": true,
+      "File": "lib/lodash.js",
+      "Start": 412,
+      "End": 417,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/evens",
+      "File": "lib/lodash.js",
+      "Start": 511,
+      "End": 516,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/flat",
+      "Def": true,
+      "File": "lib/lodash.js",
+      "Start": 200,
+      "End": 204,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/flat",
+      "File": "lib/lodash.js",
+      "Start": 293,
+      "End": 297,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/list",
+      "Def": true,
+      "File": "lib/lodash.js",
+      "Start": 163,
+      "End": 167,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/list",
+      "File": "lib/lodash.js",
+      "Start": 221,
+      "End": 225,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/odds",
+      "Def": true,
+      "File": "lib/lodash.js",
+      "Start": 524,
+      "End": 528,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/odds",
+      "File": "lib/lodash.js",
+      "Start": 621,
+      "End": 625,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/require",
+      "File": "lib/lodash.js",
+      "Start": 8,
+      "End": 15,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/thrice",
+      "Def": true,
+      "File": "lib/lodash.js",
+      "Start": 65,
+      "End": 71,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/lodash.js/-/thrice",
+      "File": "lib/lodash.js",
+      "Start": 149,
+      "End": 155,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/minimatch.js/-/minimatch",
+      "Def": true,
+      "File": "lib/minimatch.js",
+      "Start": 4,
+      "End": 13,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/minimatch.js/-/minimatch",
+      "File": "lib/minimatch.js",
+      "Start": 65,
+      "End": 74,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/minimatch.js/-/require",
+      "File": "lib/minimatch.js",
+      "Start": 16,
+      "End": 23,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1033/@local/err",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 1043,
+      "End": 1046,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1033/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 1066,
+      "End": 1069,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1033/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 1077,
+      "End": 1080,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1033/@local/response",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 1048,
+      "End": 1056,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1220/@local/err",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 1229,
+      "End": 1232,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1328/@local/fields",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 1337,
+      "End": 1343,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1416/@local/row",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 1425,
+      "End": 1428,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1416/@local/row",
+      "File": "lib/mysql.js",
+      "Start": 1545,
+      "End": 1548,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/@1800/@local/@2023/@local/@2023/@local/@2170/@local/err",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 2179,
+      "End": 2182,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/@1800/@local/@2023/@local/@2023/@local/@2170/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 2198,
+      "End": 2201,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/@1800/@local/@2023/@local/@2023/@local/@2170/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 2266,
+      "End": 2269,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/@1800/@local/@2023/@local/err",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 2032,
+      "End": 2035,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/@1800/@local/@2023/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 2057,
+      "End": 2060,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/@1800/@local/@2023/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 2121,
+      "End": 2124,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/@1800/@local/@2023/@local/result",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 2037,
+      "End": 2043,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/err",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 1809,
+      "End": 1812,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 1832,
+      "End": 1835,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 1892,
+      "End": 1895,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/log",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 1922,
+      "End": 1925,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/log",
+      "File": "lib/mysql.js",
+      "Start": 2018,
+      "End": 2021,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/result",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 1814,
+      "End": 1820,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1699/@local/@1699/@local/@1800/@local/result",
+      "File": "lib/mysql.js",
+      "Start": 1938,
+      "End": 1944,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1699/@local/err",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 1708,
+      "End": 1711,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1699/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 1721,
+      "End": 1724,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@1699/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 1734,
+      "End": 1737,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@217/@local/err",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 226,
+      "End": 229,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@217/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 253,
+      "End": 256,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@217/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 264,
+      "End": 267,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@217/@local/fields",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 237,
+      "End": 243,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@217/@local/rows",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 231,
+      "End": 235,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@217/@local/rows",
+      "File": "lib/mysql.js",
+      "Start": 305,
+      "End": 309,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@2463/@local/err",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 2472,
+      "End": 2475,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@2463/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 2493,
+      "End": 2496,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@2463/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 2536,
+      "End": 2539,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@2590/@local/err",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 2599,
+      "End": 2602,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@2590/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 2620,
+      "End": 2623,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@2590/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 2663,
+      "End": 2666,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@362/@local/@362/@local/@453/@local/key",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 468,
+      "End": 471,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@362/@local/@362/@local/@453/@local/key",
+      "File": "lib/mysql.js",
+      "Start": 505,
+      "End": 508,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@362/@local/@362/@local/@453/@local/key",
+      "File": "lib/mysql.js",
+      "Start": 545,
+      "End": 548,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@362/@local/@362/@local/@453/@local/txt",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 463,
+      "End": 466,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@362/@local/@362/@local/@453/@local/txt",
+      "File": "lib/mysql.js",
+      "Start": 569,
+      "End": 572,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@362/@local/query",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 372,
+      "End": 377,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@362/@local/query",
+      "File": "lib/mysql.js",
+      "Start": 411,
+      "End": 416,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@362/@local/query",
+      "File": "lib/mysql.js",
+      "Start": 427,
+      "End": 432,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@362/@local/values",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 379,
+      "End": 385,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@362/@local/values",
+      "File": "lib/mysql.js",
+      "Start": 396,
+      "End": 402,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@362/@local/values",
+      "File": "lib/mysql.js",
+      "Start": 483,
+      "End": 489,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@362/@local/values",
+      "File": "lib/mysql.js",
+      "Start": 538,
+      "End": 544,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@736/@local/err",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 745,
+      "End": 748,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@736/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 766,
+      "End": 769,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@736/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 777,
+      "End": 780,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@736/@local/result",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 750,
+      "End": 756,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@736/@local/result",
+      "File": "lib/mysql.js",
+      "Start": 797,
+      "End": 803,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@880/@local/err",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 890,
+      "End": 893,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@880/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 911,
+      "End": 914,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@880/@local/err",
+      "File": "lib/mysql.js",
+      "Start": 922,
+      "End": 925,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@880/@local/result",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 895,
+      "End": 901,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/@880/@local/result",
+      "File": "lib/mysql.js",
+      "Start": 955,
+      "End": 961,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 39,
+      "End": 49,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 1158,
+      "End": 1168,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 149,
+      "End": 159,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 1509,
+      "End": 1519,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 1569,
+      "End": 1579,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 1671,
+      "End": 1681,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 172,
+      "End": 182,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 1743,
+      "End": 1753,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 1845,
+      "End": 1855,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 1971,
+      "End": 1981,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 2072,
+      "End": 2082,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 2152,
+      "End": 2162,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 2215,
+      "End": 2225,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 2361,
+      "End": 2371,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 2444,
+      "End": 2454,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 2561,
+      "End": 2571,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 2688,
+      "End": 2698,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 330,
+      "End": 340,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 595,
+      "End": 605,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 675,
+      "End": 685,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 820,
+      "End": 830,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection",
+      "File": "lib/mysql.js",
+      "Start": 992,
+      "End": 1002,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/connection/config/queryFormat",
+      "File": "lib/mysql.js",
+      "Start": 348,
+      "End": 359,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/mysql",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 4,
+      "End": 9,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/mysql",
+      "File": "lib/mysql.js",
+      "Start": 52,
+      "End": 57,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/query",
+      "Def": true,
+      "File": "lib/mysql.js",
+      "Start": 1150,
+      "End": 1155,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/query",
+      "File": "lib/mysql.js",
+      "Start": 1199,
+      "End": 1204,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/require",
+      "File": "lib/mysql.js",
+      "Start": 17,
+      "End": 24,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/mysql.js/-/require",
+      "File": "lib/mysql.js",
+      "Start": 2374,
+      "End": 2381,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@114/@local/@114/@local/@276/@local/err",
+      "Def": true,
+      "File": "lib/pg.js",
+      "Start": 285,
+      "End": 288,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@114/@local/@114/@local/@276/@local/err",
+      "File": "lib/pg.js",
+      "Start": 379,
+      "End": 382,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@114/@local/@114/@local/@276/@local/err",
+      "File": "lib/pg.js",
+      "Start": 436,
+      "End": 439,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@114/@local/@114/@local/@276/@local/result",
+      "Def": true,
+      "File": "lib/pg.js",
+      "Start": 290,
+      "End": 296,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@114/@local/@114/@local/@276/@local/result",
+      "File": "lib/pg.js",
+      "Start": 464,
+      "End": 470,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@114/@local/client",
+      "Def": true,
+      "File": "lib/pg.js",
+      "Start": 128,
+      "End": 134,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@114/@local/client",
+      "File": "lib/pg.js",
+      "Start": 228,
+      "End": 234,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@114/@local/done",
+      "Def": true,
+      "File": "lib/pg.js",
+      "Start": 136,
+      "End": 140,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@114/@local/done",
+      "File": "lib/pg.js",
+      "Start": 363,
+      "End": 367,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@114/@local/err",
+      "Def": true,
+      "File": "lib/pg.js",
+      "Start": 123,
+      "End": 126,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@114/@local/err",
+      "File": "lib/pg.js",
+      "Start": 149,
+      "End": 152,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@114/@local/err",
+      "File": "lib/pg.js",
+      "Start": 216,
+      "End": 219,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@570/@local/@570/@local/@710/@local/err",
+      "Def": true,
+      "File": "lib/pg.js",
+      "Start": 719,
+      "End": 722,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@570/@local/@570/@local/@710/@local/err",
+      "File": "lib/pg.js",
+      "Start": 741,
+      "End": 744,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@570/@local/@570/@local/@710/@local/err",
+      "File": "lib/pg.js",
+      "Start": 798,
+      "End": 801,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@570/@local/@570/@local/@710/@local/result",
+      "Def": true,
+      "File": "lib/pg.js",
+      "Start": 724,
+      "End": 730,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@570/@local/@570/@local/@710/@local/result",
+      "File": "lib/pg.js",
+      "Start": 826,
+      "End": 832,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@570/@local/err",
+      "Def": true,
+      "File": "lib/pg.js",
+      "Start": 579,
+      "End": 582,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@570/@local/err",
+      "File": "lib/pg.js",
+      "Start": 591,
+      "End": 594,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/@570/@local/err",
+      "File": "lib/pg.js",
+      "Start": 656,
+      "End": 659,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/client",
+      "Def": true,
+      "File": "lib/pg.js",
+      "Start": 520,
+      "End": 526,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/client",
+      "File": "lib/pg.js",
+      "Start": 555,
+      "End": 561,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/client",
+      "File": "lib/pg.js",
+      "Start": 668,
+      "End": 674,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/client",
+      "File": "lib/pg.js",
+      "Start": 908,
+      "End": 914,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/conString",
+      "Def": true,
+      "File": "lib/pg.js",
+      "Start": 28,
+      "End": 37,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/conString",
+      "File": "lib/pg.js",
+      "Start": 103,
+      "End": 112,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/conString",
+      "File": "lib/pg.js",
+      "Start": 543,
+      "End": 552,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/pg",
+      "Def": true,
+      "File": "lib/pg.js",
+      "Start": 4,
+      "End": 6,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/pg",
+      "File": "lib/pg.js",
+      "Start": 533,
+      "End": 535,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/pg",
+      "File": "lib/pg.js",
+      "Start": 92,
+      "End": 94,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/pg.js/-/require",
+      "File": "lib/pg.js",
+      "Start": 9,
+      "End": 16,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/read-package-json.js/-/@70/@local/data",
+      "Def": true,
+      "File": "lib/read-package-json.js",
+      "Start": 84,
+      "End": 88,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/read-package-json.js/-/@70/@local/data",
+      "File": "lib/read-package-json.js",
+      "Start": 124,
+      "End": 128,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/read-package-json.js/-/@70/@local/err",
+      "Def": true,
+      "File": "lib/read-package-json.js",
+      "Start": 79,
+      "End": 82,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/read-package-json.js/-/@70/@local/err",
+      "File": "lib/read-package-json.js",
+      "Start": 119,
+      "End": 122,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/read-package-json.js/-/readJson",
+      "Def": true,
+      "File": "lib/read-package-json.js",
+      "Start": 4,
+      "End": 12,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/read-package-json.js/-/readJson",
+      "File": "lib/read-package-json.js",
+      "Start": 45,
+      "End": 53,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/read-package-json.js/-/require",
+      "File": "lib/read-package-json.js",
+      "Start": 15,
+      "End": 22,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/@231/@local/a",
+      "Def": true,
+      "File": "lib/underscore.js",
+      "Start": 240,
+      "End": 241,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/@231/@local/a",
+      "File": "lib/underscore.js",
+      "Start": 255,
+      "End": 256,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/@231/@local/b",
+      "Def": true,
+      "File": "lib/underscore.js",
+      "Start": 243,
+      "End": 244,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/@231/@local/b",
+      "File": "lib/underscore.js",
+      "Start": 264,
+      "End": 265,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/@343/@local/num",
+      "Def": true,
+      "File": "lib/underscore.js",
+      "Start": 352,
+      "End": 355,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/@343/@local/num",
+      "File": "lib/underscore.js",
+      "Start": 365,
+      "End": 368,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/@453/@local/num",
+      "Def": true,
+      "File": "lib/underscore.js",
+      "Start": 462,
+      "End": 465,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/@453/@local/num",
+      "File": "lib/underscore.js",
+      "Start": 475,
+      "End": 478,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/@564/@local/num",
+      "Def": true,
+      "File": "lib/underscore.js",
+      "Start": 573,
+      "End": 576,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/@564/@local/num",
+      "File": "lib/underscore.js",
+      "Start": 586,
+      "End": 589,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/@95/@local/num",
+      "Def": true,
+      "File": "lib/underscore.js",
+      "Start": 104,
+      "End": 107,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/@95/@local/num",
+      "File": "lib/underscore.js",
+      "Start": 117,
+      "End": 120,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/_",
+      "Def": true,
+      "File": "lib/underscore.js",
+      "Start": 4,
+      "End": 5,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/_",
+      "File": "lib/underscore.js",
+      "Start": 211,
+      "End": 212,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/_",
+      "File": "lib/underscore.js",
+      "Start": 316,
+      "End": 317,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/_",
+      "File": "lib/underscore.js",
+      "Start": 32,
+      "End": 33,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/_",
+      "File": "lib/underscore.js",
+      "Start": 424,
+      "End": 425,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/_",
+      "File": "lib/underscore.js",
+      "Start": 535,
+      "End": 536,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/_",
+      "File": "lib/underscore.js",
+      "Start": 78,
+      "End": 79,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/even",
+      "Def": true,
+      "File": "lib/underscore.js",
+      "Start": 309,
+      "End": 313,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/even",
+      "File": "lib/underscore.js",
+      "Start": 404,
+      "End": 408,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/evens",
+      "Def": true,
+      "File": "lib/underscore.js",
+      "Start": 416,
+      "End": 421,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/evens",
+      "File": "lib/underscore.js",
+      "Start": 515,
+      "End": 520,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/flat",
+      "Def": true,
+      "File": "lib/underscore.js",
+      "Start": 204,
+      "End": 208,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/flat",
+      "File": "lib/underscore.js",
+      "Start": 297,
+      "End": 301,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/list",
+      "Def": true,
+      "File": "lib/underscore.js",
+      "Start": 167,
+      "End": 171,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/list",
+      "File": "lib/underscore.js",
+      "Start": 225,
+      "End": 229,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/odds",
+      "Def": true,
+      "File": "lib/underscore.js",
+      "Start": 528,
+      "End": 532,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/odds",
+      "File": "lib/underscore.js",
+      "Start": 625,
+      "End": 629,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/require",
+      "File": "lib/underscore.js",
+      "Start": 8,
+      "End": 15,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/thrice",
+      "Def": true,
+      "File": "lib/underscore.js",
+      "Start": 69,
+      "End": 75,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/lib/underscore.js/-/thrice",
+      "File": "lib/underscore.js",
+      "Start": 153,
+      "End": 159,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/node_modules/glob/glob.js/-/@14723/@local/e/code",
+      "File": "lib/mysql.js",
+      "Start": 2497,
+      "End": 2501,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/node_modules/glob/glob.js/-/@14723/@local/e/code",
+      "File": "lib/mysql.js",
+      "Start": 2624,
+      "End": 2628,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/node_modules/lodash/dist/lodash.js/-/@410/@local/@410/@local/runInContext/@local/lodash/find",
+      "File": "lib/lodash.js",
+      "Start": 314,
+      "End": 318,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/node_modules/lodash/dist/lodash.js/-/@410/@local/objectTypes/number",
+      "File": "lib/pg.js",
+      "Start": 479,
+      "End": 485,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/node_modules/mysql/lib/Connection.js/-/@3057/@local/self/config",
+      "File": "lib/mysql.js",
+      "Start": 341,
+      "End": 347,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/node_modules/mysql/lib/protocol/Protocol.js/-/@1896/@local/err/fatal",
+      "File": "lib/mysql.js",
+      "Start": 2540,
+      "End": 2545,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/node_modules/mysql/lib/protocol/Protocol.js/-/@1896/@local/err/fatal",
+      "File": "lib/mysql.js",
+      "Start": 2667,
+      "End": 2672,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/node_modules/mysql/lib/protocol/sequences/Query.js/-/@4123/@local/self/_resultSet/rows",
+      "File": "lib/pg.js",
+      "Start": 471,
+      "End": 475,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "file/node_modules/mysql/lib/protocol/sequences/Query.js/-/@4123/@local/self/_resultSet/rows",
+      "File": "lib/pg.js",
+      "Start": 833,
+      "End": 837,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/Array.prototype.concat",
+      "File": "lib/lodash.js",
+      "Start": 253,
+      "End": 259,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/Array.prototype.concat",
+      "File": "lib/underscore.js",
+      "Start": 257,
+      "End": 263,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/Array.prototype.filter",
+      "File": "lib/lodash.js",
+      "Start": 422,
+      "End": 428,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/Array.prototype.map",
+      "File": "lib/lodash.js",
+      "Start": 76,
+      "End": 79,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/Array.prototype.reduceRight",
+      "File": "lib/lodash.js",
+      "Start": 209,
+      "End": 220,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/Function.prototype.bind",
+      "File": "lib/mysql.js",
+      "Start": 578,
+      "End": 582,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/Object.prototype.hasOwnProperty",
+      "File": "lib/mysql.js",
+      "Start": 490,
+      "End": 504,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/String.prototype.replace",
+      "File": "lib/mysql.js",
+      "Start": 433,
+      "End": 440,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "index.js",
+      "End": 7,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/async.js",
+      "Start": 130,
+      "End": 137,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/async.js",
+      "Start": 244,
+      "End": 251,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/fs.js",
+      "Start": 77,
+      "End": 84,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/glob.js",
+      "Start": 113,
+      "End": 120,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/glob.js",
+      "Start": 29,
+      "End": 36,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/http.js",
+      "Start": 171,
+      "End": 178,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/http.js",
+      "Start": 92,
+      "End": 99,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/lodash.js",
+      "Start": 126,
+      "End": 133,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/lodash.js",
+      "Start": 272,
+      "End": 279,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/lodash.js",
+      "Start": 379,
+      "End": 386,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/lodash.js",
+      "Start": 46,
+      "End": 53,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/lodash.js",
+      "Start": 489,
+      "End": 496,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/lodash.js",
+      "Start": 600,
+      "End": 607,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/minimatch.js",
+      "Start": 39,
+      "End": 46,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/mysql.js",
+      "Start": 1085,
+      "End": 1092,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/mysql.js",
+      "Start": 2303,
+      "End": 2310,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/mysql.js",
+      "Start": 2481,
+      "End": 2488,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/mysql.js",
+      "Start": 2524,
+      "End": 2531,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/mysql.js",
+      "Start": 2608,
+      "End": 2615,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/mysql.js",
+      "Start": 2651,
+      "End": 2658,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/mysql.js",
+      "Start": 272,
+      "End": 279,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/mysql.js",
+      "Start": 785,
+      "End": 792,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/mysql.js",
+      "Start": 930,
+      "End": 937,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/pg.js",
+      "Start": 167,
+      "End": 174,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/pg.js",
+      "Start": 399,
+      "End": 406,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/pg.js",
+      "Start": 452,
+      "End": 459,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/pg.js",
+      "Start": 609,
+      "End": 616,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/pg.js",
+      "Start": 761,
+      "End": 768,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/pg.js",
+      "Start": 814,
+      "End": 821,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/read-package-json.js",
+      "Start": 94,
+      "End": 101,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/underscore.js",
+      "Start": 130,
+      "End": 137,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/underscore.js",
+      "Start": 276,
+      "End": 283,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/underscore.js",
+      "Start": 383,
+      "End": 390,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/underscore.js",
+      "Start": 493,
+      "End": 500,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/underscore.js",
+      "Start": 50,
+      "End": 57,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console",
+      "File": "lib/underscore.js",
+      "Start": 604,
+      "End": 611,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.error",
+      "File": "index.js",
+      "Start": 8,
+      "End": 13,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.error",
+      "File": "lib/fs.js",
+      "Start": 85,
+      "End": 90,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.error",
+      "File": "lib/pg.js",
+      "Start": 175,
+      "End": 180,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.error",
+      "File": "lib/pg.js",
+      "Start": 407,
+      "End": 412,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.error",
+      "File": "lib/pg.js",
+      "Start": 617,
+      "End": 622,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.error",
+      "File": "lib/pg.js",
+      "Start": 769,
+      "End": 774,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/async.js",
+      "Start": 138,
+      "End": 141,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/async.js",
+      "Start": 252,
+      "End": 255,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/glob.js",
+      "Start": 121,
+      "End": 124,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/glob.js",
+      "Start": 37,
+      "End": 40,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/http.js",
+      "Start": 100,
+      "End": 103,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/http.js",
+      "Start": 179,
+      "End": 182,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/lodash.js",
+      "Start": 134,
+      "End": 137,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/lodash.js",
+      "Start": 280,
+      "End": 283,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/lodash.js",
+      "Start": 387,
+      "End": 390,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/lodash.js",
+      "Start": 497,
+      "End": 500,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/lodash.js",
+      "Start": 54,
+      "End": 57,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/lodash.js",
+      "Start": 608,
+      "End": 611,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/minimatch.js",
+      "Start": 47,
+      "End": 50,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/mysql.js",
+      "Start": 1093,
+      "End": 1096,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/mysql.js",
+      "Start": 2311,
+      "End": 2314,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/mysql.js",
+      "Start": 2489,
+      "End": 2492,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/mysql.js",
+      "Start": 2532,
+      "End": 2535,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/mysql.js",
+      "Start": 2616,
+      "End": 2619,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/mysql.js",
+      "Start": 2659,
+      "End": 2662,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/mysql.js",
+      "Start": 280,
+      "End": 283,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/mysql.js",
+      "Start": 793,
+      "End": 796,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/mysql.js",
+      "Start": 938,
+      "End": 941,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/pg.js",
+      "Start": 460,
+      "End": 463,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/pg.js",
+      "Start": 822,
+      "End": 825,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/read-package-json.js",
+      "Start": 102,
+      "End": 105,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/underscore.js",
+      "Start": 138,
+      "End": 141,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/underscore.js",
+      "Start": 284,
+      "End": 287,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/underscore.js",
+      "Start": 391,
+      "End": 394,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/underscore.js",
+      "Start": 501,
+      "End": 504,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/underscore.js",
+      "Start": 58,
+      "End": 61,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    },
+    {
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolPath": "global/-/console.log",
+      "File": "lib/underscore.js",
+      "Start": 612,
+      "End": 615,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00"
+    }
+  ],
+  "Authors": [
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+      "SymbolCount": 95,
+      "SymbolsProportion": 1,
+      "ExportedSymbolCount": 11,
+      "ExportedSymbolsProportion": 1
+    }
+  ],
+  "ClientsOfOtherUnits": [
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": null,
+      "RefCount": 320
+    },
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+      "SymbolRepo": "github.com/brianc/node-postgres",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "pg",
+      "RefCount": 1
+    },
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+      "SymbolRepo": "github.com/caolan/async",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "async",
+      "RefCount": 4
+    },
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+      "SymbolRepo": "github.com/felixge/node-mysql",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "mysql",
+      "RefCount": 25
+    },
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+      "SymbolRepo": "github.com/isaacs/node-glob",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "glob",
+      "RefCount": 1
+    },
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+      "SymbolRepo": "github.com/jashkenas/underscore",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "underscore",
+      "RefCount": 6
+    },
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-05-07T15:37:10Z",
+      "LastCommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "node",
+      "RefCount": 10
+    }
+  ]
+}

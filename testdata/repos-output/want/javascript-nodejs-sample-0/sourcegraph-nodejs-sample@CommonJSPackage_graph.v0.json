@@ -1,0 +1,1928 @@
+{
+  "Symbols": [
+    {
+      "Path": "commonjs/animal.js",
+      "TreePath": "-commonjs/animal.js",
+      "Kind": "module",
+      "Name": "animal",
+      "Callable": false,
+      "File": "animal.js",
+      "DefStart": 0,
+      "DefEnd": 0,
+      "Exported": true,
+      "Data": {
+        "Kind": "commonjs_module",
+        "Key": {
+          "Namespace": "commonjs",
+          "Module": "animal.js",
+          "Path": ""
+        },
+        "NodeJS": {
+          "ModuleExports": true
+        },
+        "AMD": null,
+        "Type": "{Animal: fn(name: string), Dog: fn(name: string, breed: string)}",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "commonjs/animal.js/-/Animal",
+      "TreePath": "-commonjs/animal.js/-/Animal",
+      "Kind": "func",
+      "Name": "Animal",
+      "Callable": true,
+      "File": "animal.js",
+      "DefStart": 512,
+      "DefEnd": 526,
+      "Exported": true,
+      "Data": {
+        "Kind": "func",
+        "Key": {
+          "Namespace": "commonjs",
+          "Module": "animal.js",
+          "Path": "Animal"
+        },
+        "Type": "fn(name: string)",
+        "IsFunc": true
+      }
+    },
+    {
+      "Path": "commonjs/animal.js/-/Animal/prototype",
+      "TreePath": "-commonjs/animal.js/-/Animal/prototype",
+      "Kind": "type",
+      "Name": "prototype",
+      "Callable": false,
+      "File": "",
+      "DefStart": 0,
+      "DefEnd": 0,
+      "Exported": true,
+      "Data": {
+        "Kind": "prototype",
+        "Key": {
+          "Namespace": "commonjs",
+          "Module": "animal.js",
+          "Path": "Animal.prototype"
+        },
+        "Type": "{makeNoise: fn() -\u003e string, sayHello: fn() -\u003e string}",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "commonjs/animal.js/-/Animal/prototype/makeNoise",
+      "TreePath": "-commonjs/animal.js/-/Animal/prototype/makeNoise",
+      "Kind": "func",
+      "Name": "makeNoise",
+      "Callable": true,
+      "File": "animal.js",
+      "DefStart": 145,
+      "DefEnd": 205,
+      "Exported": true,
+      "Data": {
+        "Kind": "func",
+        "Key": {
+          "Namespace": "commonjs",
+          "Module": "animal.js",
+          "Path": "Animal.prototype.makeNoise"
+        },
+        "Type": "fn() -\u003e string",
+        "IsFunc": true
+      }
+    },
+    {
+      "Path": "commonjs/animal.js/-/Animal/prototype/sayHello",
+      "TreePath": "-commonjs/animal.js/-/Animal/prototype/sayHello",
+      "Kind": "func",
+      "Name": "sayHello",
+      "Callable": true,
+      "File": "animal.js",
+      "DefStart": 64,
+      "DefEnd": 125,
+      "Exported": true,
+      "Data": {
+        "Kind": "func",
+        "Key": {
+          "Namespace": "commonjs",
+          "Module": "animal.js",
+          "Path": "Animal.prototype.sayHello"
+        },
+        "Type": "fn() -\u003e string",
+        "IsFunc": true
+      }
+    },
+    {
+      "Path": "commonjs/animal.js/-/Dog",
+      "TreePath": "-commonjs/animal.js/-/Dog",
+      "Kind": "func",
+      "Name": "Dog",
+      "Callable": true,
+      "File": "animal.js",
+      "DefStart": 530,
+      "DefEnd": 538,
+      "Exported": true,
+      "Data": {
+        "Kind": "func",
+        "Key": {
+          "Namespace": "commonjs",
+          "Module": "animal.js",
+          "Path": "Dog"
+        },
+        "Type": "fn(name: string, breed: string)",
+        "IsFunc": true
+      }
+    },
+    {
+      "Path": "commonjs/animal.js/-/Dog/prototype",
+      "TreePath": "-commonjs/animal.js/-/Dog/prototype",
+      "Kind": "type",
+      "Name": "prototype",
+      "Callable": false,
+      "File": "animal.js",
+      "DefStart": 309,
+      "DefEnd": 333,
+      "Exported": true,
+      "Data": {
+        "Kind": "prototype",
+        "Key": {
+          "Namespace": "commonjs",
+          "Module": "animal.js",
+          "Path": "Dog.prototype"
+        },
+        "Type": "{bark: fn() -\u003e string, name: string, sayExtendedHello: fn() -\u003e string}",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "commonjs/animal.js/-/Dog/prototype/bark",
+      "TreePath": "-commonjs/animal.js/-/Dog/prototype/bark",
+      "Kind": "func",
+      "Name": "bark",
+      "Callable": true,
+      "File": "animal.js",
+      "DefStart": 446,
+      "DefEnd": 488,
+      "Exported": true,
+      "Data": {
+        "Kind": "func",
+        "Key": {
+          "Namespace": "commonjs",
+          "Module": "animal.js",
+          "Path": "Dog.prototype.bark"
+        },
+        "Type": "fn() -\u003e string",
+        "IsFunc": true
+      }
+    },
+    {
+      "Path": "commonjs/animal.js/-/Dog/prototype/name",
+      "TreePath": "-commonjs/animal.js/-/Dog/prototype/name",
+      "Kind": "field",
+      "Name": "name",
+      "Callable": false,
+      "File": "animal.js",
+      "DefStart": 31,
+      "DefEnd": 42,
+      "Exported": true,
+      "Data": {
+        "Kind": "property",
+        "Key": {
+          "Namespace": "commonjs",
+          "Module": "animal.js",
+          "Path": "Dog.prototype.name"
+        },
+        "Type": "string",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "commonjs/animal.js/-/Dog/prototype/sayExtendedHello",
+      "TreePath": "-commonjs/animal.js/-/Dog/prototype/sayExtendedHello",
+      "Kind": "func",
+      "Name": "sayExtendedHello",
+      "Callable": true,
+      "File": "animal.js",
+      "DefStart": 350,
+      "DefEnd": 429,
+      "Exported": true,
+      "Data": {
+        "Kind": "func",
+        "Key": {
+          "Namespace": "commonjs",
+          "Module": "animal.js",
+          "Path": "Dog.prototype.sayExtendedHello"
+        },
+        "Type": "fn() -\u003e string",
+        "IsFunc": true
+      }
+    },
+    {
+      "Path": "commonjs/test/animal_test.js",
+      "TreePath": "-commonjs/test/animal_test.js",
+      "Kind": "module",
+      "Name": "test/animal_test",
+      "Callable": false,
+      "File": "test/animal_test.js",
+      "DefStart": 0,
+      "DefEnd": 0,
+      "Exported": true,
+      "Test": true,
+      "Data": {
+        "Kind": "commonjs_module",
+        "Key": {
+          "Namespace": "commonjs",
+          "Module": "test/animal_test.js",
+          "Path": ""
+        },
+        "NodeJS": {
+          "ModuleExports": true
+        },
+        "AMD": null,
+        "Type": "{}",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/animal.js/-/Animal",
+      "TreePath": "-file/animal.js/-/Animal",
+      "Kind": "func",
+      "Name": "Animal",
+      "Callable": true,
+      "File": "animal.js",
+      "DefStart": 0,
+      "DefEnd": 45,
+      "Exported": false,
+      "Data": {
+        "Kind": "func",
+        "Key": {
+          "Namespace": "file",
+          "Module": "animal.js",
+          "Path": "Animal"
+        },
+        "Type": "fn(name: string)",
+        "IsFunc": true
+      }
+    },
+    {
+      "Path": "file/animal.js/-/Animal/@local/name",
+      "TreePath": "-file/animal.js/-/Animal/@local/name",
+      "Kind": "field",
+      "Name": "name",
+      "Callable": false,
+      "File": "animal.js",
+      "DefStart": 16,
+      "DefEnd": 20,
+      "Exported": false,
+      "Data": {
+        "Kind": "property",
+        "Key": {
+          "Namespace": "file",
+          "Module": "animal.js",
+          "Path": "Animal.@local.name"
+        },
+        "Type": "string",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/animal.js/-/Dog",
+      "TreePath": "-file/animal.js/-/Dog",
+      "Kind": "func",
+      "Name": "Dog",
+      "Callable": true,
+      "File": "animal.js",
+      "DefStart": 208,
+      "DefEnd": 303,
+      "Exported": false,
+      "Data": {
+        "Kind": "func",
+        "Key": {
+          "Namespace": "file",
+          "Module": "animal.js",
+          "Path": "Dog"
+        },
+        "Type": "fn(name: string, breed: string)",
+        "IsFunc": true
+      }
+    },
+    {
+      "Path": "file/animal.js/-/Dog/@local/breed",
+      "TreePath": "-file/animal.js/-/Dog/@local/breed",
+      "Kind": "field",
+      "Name": "breed",
+      "Callable": false,
+      "File": "animal.js",
+      "DefStart": 227,
+      "DefEnd": 232,
+      "Exported": false,
+      "Data": {
+        "Kind": "property",
+        "Key": {
+          "Namespace": "file",
+          "Module": "animal.js",
+          "Path": "Dog.@local.breed"
+        },
+        "Type": "string",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/animal.js/-/Dog/@local/name",
+      "TreePath": "-file/animal.js/-/Dog/@local/name",
+      "Kind": "field",
+      "Name": "name",
+      "Callable": false,
+      "File": "animal.js",
+      "DefStart": 221,
+      "DefEnd": 225,
+      "Exported": false,
+      "Data": {
+        "Kind": "property",
+        "Key": {
+          "Namespace": "file",
+          "Module": "animal.js",
+          "Path": "Dog.@local.name"
+        },
+        "Type": "string",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/animal.js/-/exports",
+      "TreePath": "-file/animal.js/-/exports",
+      "Kind": "var",
+      "Name": "exports",
+      "Callable": false,
+      "File": "",
+      "DefStart": 0,
+      "DefEnd": 0,
+      "Exported": false,
+      "Data": {
+        "Kind": "var",
+        "Key": {
+          "Namespace": "file",
+          "Module": "animal.js",
+          "Path": "exports"
+        },
+        "Type": "{}",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/animal.js/-/module/exports",
+      "TreePath": "-file/animal.js/-/module/exports",
+      "Kind": "var",
+      "Name": "exports",
+      "Callable": false,
+      "File": "animal.js",
+      "DefStart": 498,
+      "DefEnd": 541,
+      "Exported": false,
+      "Data": {
+        "Kind": "var",
+        "Key": {
+          "Namespace": "file",
+          "Module": "animal.js",
+          "Path": "module.exports"
+        },
+        "Type": "{Animal: fn(name: string), Dog: fn(name: string, breed: string)}",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/@536/@local/@536/@local/@1043/@local/a",
+      "TreePath": "-file/test/animal_test.js/-/@536/@local/@536/@local/@1043/@local/a",
+      "Kind": "field",
+      "Name": "a",
+      "Callable": false,
+      "File": "test/animal_test.js",
+      "DefStart": 1068,
+      "DefEnd": 1118,
+      "Exported": false,
+      "Test": true,
+      "Data": {
+        "Kind": "property",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "@536.@local.@536.@local.@1043.@local.a"
+        },
+        "Type": "{breed: string, name: string, noise: string}",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/@536/@local/@536/@local/@1043/@local/done",
+      "TreePath": "-file/test/animal_test.js/-/@536/@local/@536/@local/@1043/@local/done",
+      "Kind": "func",
+      "Name": "done",
+      "Callable": true,
+      "File": "test/animal_test.js",
+      "DefStart": 1052,
+      "DefEnd": 1056,
+      "Exported": false,
+      "Test": true,
+      "Data": {
+        "Kind": "func",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "@536.@local.@536.@local.@1043.@local.done"
+        },
+        "Type": "fn()",
+        "IsFunc": true
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a",
+      "TreePath": "-file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a",
+      "Kind": "field",
+      "Name": "a",
+      "Callable": false,
+      "File": "test/animal_test.js",
+      "DefStart": 600,
+      "DefEnd": 627,
+      "Exported": false,
+      "Test": true,
+      "Data": {
+        "Kind": "property",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "@536.@local.@536.@local.@575.@local.a"
+        },
+        "Type": "{breed: string, name: string, noise: string}",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/breed",
+      "TreePath": "-file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/breed",
+      "Kind": "field",
+      "Name": "breed",
+      "Callable": false,
+      "File": "animal.js",
+      "DefStart": 263,
+      "DefEnd": 276,
+      "Exported": false,
+      "Data": {
+        "Kind": "property",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "@536.@local.@536.@local.@575.@local.a.breed"
+        },
+        "Type": "string",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/name",
+      "TreePath": "-file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/name",
+      "Kind": "field",
+      "Name": "name",
+      "Callable": false,
+      "File": "animal.js",
+      "DefStart": 243,
+      "DefEnd": 254,
+      "Exported": false,
+      "Data": {
+        "Kind": "property",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "@536.@local.@536.@local.@575.@local.a.name"
+        },
+        "Type": "string",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/noise",
+      "TreePath": "-file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/noise",
+      "Kind": "field",
+      "Name": "noise",
+      "Callable": false,
+      "File": "animal.js",
+      "DefStart": 285,
+      "DefEnd": 300,
+      "Exported": false,
+      "Data": {
+        "Kind": "property",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "@536.@local.@536.@local.@575.@local.a.noise"
+        },
+        "Type": "string",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/done",
+      "TreePath": "-file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/done",
+      "Kind": "func",
+      "Name": "done",
+      "Callable": true,
+      "File": "test/animal_test.js",
+      "DefStart": 584,
+      "DefEnd": 588,
+      "Exported": false,
+      "Test": true,
+      "Data": {
+        "Kind": "func",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "@536.@local.@536.@local.@575.@local.done"
+        },
+        "Type": "fn()",
+        "IsFunc": true
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/@536/@local/@536/@local/@707/@local/a",
+      "TreePath": "-file/test/animal_test.js/-/@536/@local/@536/@local/@707/@local/a",
+      "Kind": "field",
+      "Name": "a",
+      "Callable": false,
+      "File": "test/animal_test.js",
+      "DefStart": 732,
+      "DefEnd": 782,
+      "Exported": false,
+      "Test": true,
+      "Data": {
+        "Kind": "property",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "@536.@local.@536.@local.@707.@local.a"
+        },
+        "Type": "{breed: string, name: string, noise: string}",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/@536/@local/@536/@local/@707/@local/done",
+      "TreePath": "-file/test/animal_test.js/-/@536/@local/@536/@local/@707/@local/done",
+      "Kind": "func",
+      "Name": "done",
+      "Callable": true,
+      "File": "test/animal_test.js",
+      "DefStart": 716,
+      "DefEnd": 720,
+      "Exported": false,
+      "Test": true,
+      "Data": {
+        "Kind": "func",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "@536.@local.@536.@local.@707.@local.done"
+        },
+        "Type": "fn()",
+        "IsFunc": true
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/@536/@local/@536/@local/@894/@local/a",
+      "TreePath": "-file/test/animal_test.js/-/@536/@local/@536/@local/@894/@local/a",
+      "Kind": "field",
+      "Name": "a",
+      "Callable": false,
+      "File": "test/animal_test.js",
+      "DefStart": 919,
+      "DefEnd": 969,
+      "Exported": false,
+      "Test": true,
+      "Data": {
+        "Kind": "property",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "@536.@local.@536.@local.@894.@local.a"
+        },
+        "Type": "{breed: string, name: string, noise: string}",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/@536/@local/@536/@local/@894/@local/done",
+      "TreePath": "-file/test/animal_test.js/-/@536/@local/@536/@local/@894/@local/done",
+      "Kind": "func",
+      "Name": "done",
+      "Callable": true,
+      "File": "test/animal_test.js",
+      "DefStart": 903,
+      "DefEnd": 907,
+      "Exported": false,
+      "Test": true,
+      "Data": {
+        "Kind": "func",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "@536.@local.@536.@local.@894.@local.done"
+        },
+        "Type": "fn()",
+        "IsFunc": true
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/a",
+      "TreePath": "-file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/a",
+      "Kind": "field",
+      "Name": "a",
+      "Callable": false,
+      "File": "test/animal_test.js",
+      "DefStart": 154,
+      "DefEnd": 184,
+      "Exported": false,
+      "Test": true,
+      "Data": {
+        "Kind": "property",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "@87.@local.@87.@local.@129.@local.a"
+        },
+        "Type": "{name: string}",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/a/name",
+      "TreePath": "-file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/a/name",
+      "Kind": "field",
+      "Name": "name",
+      "Callable": false,
+      "File": "animal.js",
+      "DefStart": 31,
+      "DefEnd": 42,
+      "Exported": false,
+      "Data": {
+        "Kind": "property",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "@87.@local.@87.@local.@129.@local.a.name"
+        },
+        "Type": "string",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/done",
+      "TreePath": "-file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/done",
+      "Kind": "func",
+      "Name": "done",
+      "Callable": true,
+      "File": "test/animal_test.js",
+      "DefStart": 138,
+      "DefEnd": 142,
+      "Exported": false,
+      "Test": true,
+      "Data": {
+        "Kind": "func",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "@87.@local.@87.@local.@129.@local.done"
+        },
+        "Type": "fn()",
+        "IsFunc": true
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/@87/@local/@87/@local/@255/@local/a",
+      "TreePath": "-file/test/animal_test.js/-/@87/@local/@87/@local/@255/@local/a",
+      "Kind": "field",
+      "Name": "a",
+      "Callable": false,
+      "File": "test/animal_test.js",
+      "DefStart": 280,
+      "DefEnd": 310,
+      "Exported": false,
+      "Test": true,
+      "Data": {
+        "Kind": "property",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "@87.@local.@87.@local.@255.@local.a"
+        },
+        "Type": "{name: string}",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/@87/@local/@87/@local/@255/@local/done",
+      "TreePath": "-file/test/animal_test.js/-/@87/@local/@87/@local/@255/@local/done",
+      "Kind": "func",
+      "Name": "done",
+      "Callable": true,
+      "File": "test/animal_test.js",
+      "DefStart": 264,
+      "DefEnd": 268,
+      "Exported": false,
+      "Test": true,
+      "Data": {
+        "Kind": "func",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "@87.@local.@87.@local.@255.@local.done"
+        },
+        "Type": "fn()",
+        "IsFunc": true
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/@87/@local/@87/@local/@399/@local/a",
+      "TreePath": "-file/test/animal_test.js/-/@87/@local/@87/@local/@399/@local/a",
+      "Kind": "field",
+      "Name": "a",
+      "Callable": false,
+      "File": "test/animal_test.js",
+      "DefStart": 424,
+      "DefEnd": 454,
+      "Exported": false,
+      "Test": true,
+      "Data": {
+        "Kind": "property",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "@87.@local.@87.@local.@399.@local.a"
+        },
+        "Type": "{name: string}",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/@87/@local/@87/@local/@399/@local/done",
+      "TreePath": "-file/test/animal_test.js/-/@87/@local/@87/@local/@399/@local/done",
+      "Kind": "func",
+      "Name": "done",
+      "Callable": true,
+      "File": "test/animal_test.js",
+      "DefStart": 408,
+      "DefEnd": 412,
+      "Exported": false,
+      "Test": true,
+      "Data": {
+        "Kind": "func",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "@87.@local.@87.@local.@399.@local.done"
+        },
+        "Type": "fn()",
+        "IsFunc": true
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/animal",
+      "TreePath": "-file/test/animal_test.js/-/animal",
+      "Kind": "var",
+      "Name": "animal",
+      "Callable": false,
+      "File": "test/animal_test.js",
+      "DefStart": 4,
+      "DefEnd": 33,
+      "Exported": false,
+      "Test": true,
+      "Data": {
+        "Kind": "var",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "animal"
+        },
+        "Type": "{Animal: fn(name: string), Dog: fn(name: string, breed: string)}",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/exports",
+      "TreePath": "-file/test/animal_test.js/-/exports",
+      "Kind": "var",
+      "Name": "exports",
+      "Callable": false,
+      "File": "",
+      "DefStart": 0,
+      "DefEnd": 0,
+      "Exported": false,
+      "Data": {
+        "Kind": "var",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "exports"
+        },
+        "Type": "{}",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/module/exports",
+      "TreePath": "-file/test/animal_test.js/-/module/exports",
+      "Kind": "var",
+      "Name": "exports",
+      "Callable": false,
+      "File": "",
+      "DefStart": 0,
+      "DefEnd": 0,
+      "Exported": false,
+      "Data": {
+        "Kind": "var",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "module.exports"
+        },
+        "Type": "{}",
+        "IsFunc": false
+      }
+    },
+    {
+      "Path": "file/test/animal_test.js/-/should",
+      "TreePath": "-file/test/animal_test.js/-/should",
+      "Kind": "var",
+      "Name": "should",
+      "Callable": false,
+      "File": "test/animal_test.js",
+      "DefStart": 39,
+      "DefEnd": 65,
+      "Exported": false,
+      "Test": true,
+      "Data": {
+        "Kind": "var",
+        "Key": {
+          "Namespace": "file",
+          "Module": "test/animal_test.js",
+          "Path": "should"
+        },
+        "Type": "",
+        "IsFunc": false
+      }
+    }
+  ],
+  "Refs": [
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Animal/prototype/makeNoise",
+      "Def": true,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 145,
+      "End": 154
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Animal/prototype/makeNoise",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 1126,
+      "End": 1135
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Animal/prototype/makeNoise",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 462,
+      "End": 471
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Animal/prototype/sayHello",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 396,
+      "End": 404
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Animal/prototype/sayHello",
+      "Def": true,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 64,
+      "End": 72
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Animal/prototype/sayHello",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 318,
+      "End": 326
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Animal/prototype",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 135,
+      "End": 144
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Animal/prototype",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 54,
+      "End": 63
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Animal",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 169,
+      "End": 175
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Animal",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 295,
+      "End": 301
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Animal",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 439,
+      "End": 445
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Dog/prototype/bark",
+      "Def": true,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 446,
+      "End": 450
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Dog/prototype/bark",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 977,
+      "End": 981
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Dog/prototype/sayExtendedHello",
+      "Def": true,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 350,
+      "End": 366
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Dog/prototype/sayExtendedHello",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 790,
+      "End": 806
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Dog/prototype",
+      "Def": true,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 309,
+      "End": 318
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Dog/prototype",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 340,
+      "End": 349
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Dog/prototype",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 436,
+      "End": 445
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Dog",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 1083,
+      "End": 1086
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Dog",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 615,
+      "End": 618
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Dog",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 747,
+      "End": 750
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "commonjs/animal.js/-/Dog",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 934,
+      "End": 937
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "node",
+      "SymbolPath": "commonjs/lib/assert.js/-/Assertion/prototype/eql",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 1145,
+      "End": 1148
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "node",
+      "SymbolPath": "commonjs/lib/assert.js/-/Assertion/prototype/eql",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 204,
+      "End": 207
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "node",
+      "SymbolPath": "commonjs/lib/assert.js/-/Assertion/prototype/eql",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 336,
+      "End": 339
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "node",
+      "SymbolPath": "commonjs/lib/assert.js/-/Assertion/prototype/eql",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 481,
+      "End": 484
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "node",
+      "SymbolPath": "commonjs/lib/assert.js/-/Assertion/prototype/eql",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 647,
+      "End": 650
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "node",
+      "SymbolPath": "commonjs/lib/assert.js/-/Assertion/prototype/eql",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 816,
+      "End": 819
+    },
+    {
+      "SymbolRepo": "github.com/joyent/node",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "node",
+      "SymbolPath": "commonjs/lib/assert.js/-/Assertion/prototype/eql",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 991,
+      "End": 994
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/animal.js/-/Animal/@local/name",
+      "Def": true,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 16,
+      "End": 20
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/animal.js/-/Animal/@local/name",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 38,
+      "End": 42
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/animal.js/-/Animal",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 128,
+      "End": 134
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/animal.js/-/Animal",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 325,
+      "End": 331
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/animal.js/-/Animal",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 47,
+      "End": 53
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/animal.js/-/Animal",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 520,
+      "End": 526
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/animal.js/-/Animal",
+      "Def": true,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 9,
+      "End": 15
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/animal.js/-/Dog/@local/breed",
+      "Def": true,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 227,
+      "End": 232
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/animal.js/-/Dog/@local/breed",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 271,
+      "End": 276
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/animal.js/-/Dog/@local/name",
+      "Def": true,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 221,
+      "End": 225
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/animal.js/-/Dog/@local/name",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 250,
+      "End": 254
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/animal.js/-/Dog",
+      "Def": true,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 217,
+      "End": 220
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/animal.js/-/Dog",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 305,
+      "End": 308
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/animal.js/-/Dog",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 336,
+      "End": 339
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/animal.js/-/Dog",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 432,
+      "End": 435
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/animal.js/-/Dog",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 535,
+      "End": 538
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/animal.js/-/module/exports",
+      "Def": true,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 498,
+      "End": 505
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/animal.js/-/module",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 491,
+      "End": 497
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@1043/@local/a",
+      "Def": true,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 1068,
+      "End": 1069
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@1043/@local/a",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 1124,
+      "End": 1125
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@1043/@local/done",
+      "Def": true,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 1052,
+      "End": 1056
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@1043/@local/done",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 1163,
+      "End": 1167
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/breed",
+      "Def": true,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 263,
+      "End": 268
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/breed",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 421,
+      "End": 426
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/name",
+      "Def": true,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 243,
+      "End": 247
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/name",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 635,
+      "End": 639
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/noise",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 184,
+      "End": 189
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/noise",
+      "Def": true,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 285,
+      "End": 290
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a/noise",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 480,
+      "End": 485
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a",
+      "Def": true,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 600,
+      "End": 601
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/a",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 633,
+      "End": 634
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/done",
+      "Def": true,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 584,
+      "End": 588
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@575/@local/done",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 665,
+      "End": 669
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@707/@local/a",
+      "Def": true,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 732,
+      "End": 733
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@707/@local/a",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 788,
+      "End": 789
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@707/@local/done",
+      "Def": true,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 716,
+      "End": 720
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@707/@local/done",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 866,
+      "End": 870
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@894/@local/a",
+      "Def": true,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 919,
+      "End": 920
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@894/@local/a",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 975,
+      "End": 976
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@894/@local/done",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 1009,
+      "End": 1013
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@536/@local/@536/@local/@894/@local/done",
+      "Def": true,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 903,
+      "End": 907
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/a/name",
+      "Def": false,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 118,
+      "End": 122
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/a/name",
+      "Def": true,
+      "Repo": "",
+      "File": "animal.js",
+      "Start": 31,
+      "End": 35
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/a/name",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 192,
+      "End": 196
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/a",
+      "Def": true,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 154,
+      "End": 155
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/a",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 190,
+      "End": 191
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/done",
+      "Def": true,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 138,
+      "End": 142
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@129/@local/done",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 222,
+      "End": 226
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@255/@local/a",
+      "Def": true,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 280,
+      "End": 281
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@255/@local/a",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 316,
+      "End": 317
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@255/@local/done",
+      "Def": true,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 264,
+      "End": 268
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@255/@local/done",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 365,
+      "End": 369
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@399/@local/a",
+      "Def": true,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 424,
+      "End": 425
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@399/@local/a",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 460,
+      "End": 461
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@399/@local/done",
+      "Def": true,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 408,
+      "End": 412
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/@87/@local/@87/@local/@399/@local/done",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 501,
+      "End": 505
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/animal",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 1076,
+      "End": 1082
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/animal",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 162,
+      "End": 168
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/animal",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 288,
+      "End": 294
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/animal",
+      "Def": true,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 4,
+      "End": 10
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/animal",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 432,
+      "End": 438
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/animal",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 608,
+      "End": 614
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/animal",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 740,
+      "End": 746
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/animal",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 927,
+      "End": 933
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/require",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 13,
+      "End": 20
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/require",
+      "Def": false,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 48,
+      "End": 55
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "CommonJSPackage",
+      "SymbolUnit": "",
+      "SymbolPath": "file/test/animal_test.js/-/should",
+      "Def": true,
+      "Repo": "",
+      "File": "test/animal_test.js",
+      "Start": 39,
+      "End": 45
+    }
+  ]
+}
+
