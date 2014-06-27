@@ -86,7 +86,13 @@ var _ RepositoriesService = &repositoriesService{}
 
 // RepositorySpec specifies a repository.
 type RepositorySpec struct {
-	URI      string
+	URI string
+
+	// CommitID specifies which revision of the repository's VCS data to fetch
+	// data pertaining to. If CommitID is empty, the repository's default branch
+	// will be used. If CommitID is non-empty, it will be resolved as a VCS
+	// revision (so it can be a commit ID, branch, tag, etc.), and data
+	// pertaining to that revision will be returned.
 	CommitID string
 }
 
@@ -107,9 +113,13 @@ type Repository struct {
 	// empty (default) or non-commit-ID rev (such as a branch name), CommitID
 	// contains the resolved commit ID for that revision specifier.
 	//
-	// If CommitID is empty, it means that either the revision could not be
-	// resolved to a commit ID, or the repository's VCS has not been cloned to
-	// Sourcegraph yet.
+	// If CommitID is empty, it means that either the revision in
+	// RepositorySpec.CommitID could not be resolved to a commit ID, or the
+	// repository's VCS has not been cloned to Sourcegraph yet.
+	//
+	// This field is only populated in the Get method's results, and even then
+	// only if the RepositoryGetOptions.ResolveRevision or
+	// RepositoryGetOptions.Build field is true.
 	CommitID string
 
 	// NoVCSData is true if the repository has NOT been cloned and no local copy
@@ -121,9 +131,8 @@ type Repository struct {
 	// without fetching VCS data).
 	NoVCSData bool `json:",omitempty"`
 
-	// Build is the most recent successful build for the CommitID, if any.
-	Build *Build
-
+	// Stat is a map of the statistics for the repository. It is only populated
+	// if the options Stats field is true.
 	Stat repo.Stats `json:",omitempty"`
 
 	// Unsupported is whether Sourcegraph doesn't support this repository.
@@ -148,9 +157,6 @@ type RepositoryGetOptions struct {
 	// ResolveRevision is whether to include the resolved VCS revision in the
 	// CommitID field in the response.
 	ResolveRevision bool `url:",omitempty"`
-
-	// Build is whether to include the most recent build data in the response.
-	Build bool `url:",omitempty"`
 }
 
 func (s *repositoriesService) Get(repo RepositorySpec, opt *RepositoryGetOptions) (*Repository, Response, error) {

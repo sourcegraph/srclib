@@ -101,14 +101,14 @@ func TestBuildsService_Create(t *testing.T) {
 	setup()
 	defer teardown()
 
-	config := BuildConfig{Import: true, Queue: true}
+	config := &BuildCreateOptions{BuildConfig: BuildConfig{Import: true, Queue: true}, Force: true}
 	want := &Build{BID: 123, Repo: 456}
 
 	var called bool
 	mux.HandleFunc(urlPath(t, api_router.RepositoryBuildsCreate, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "POST")
-		testBody(t, r, `{"Import":true,"Queue":true}`+"\n")
+		testBody(t, r, `{"Import":true,"Queue":true,"Force":true}`+"\n")
 
 		writeJSON(w, want)
 	})
