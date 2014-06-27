@@ -3,13 +3,14 @@ package srcgraph
 import (
 	"bytes"
 	"flag"
+	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
 
@@ -34,12 +35,19 @@ func TestMakeCmd(t *testing.T) {
 		t.Fatal(err)
 	}
 	n := 0
+	var wg sync.WaitGroup
 	for _, fi := range fis {
 		if repoDir := fi.Name(); strings.Contains(repoDir, *repoMatch) {
-			testMakeCmd(t, filepath.Join(testReposDir, repoDir))
+			fullRepoDir := filepath.Join(testReposDir, repoDir)
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				testMakeCmd(t, fullRepoDir)
+			}()
 			n++
 		}
 	}
+	wg.Wait()
 	if n == 0 {
 		t.Errorf("No TestMakeCmd cases were run. Did none match your constraint -test.match=%q?", *repoMatch)
 	}
@@ -77,6 +85,9 @@ func testMakeCmd(t *testing.T, repoDir string) {
 
 	// Symlink ${repoDir}/.sourcegraph-data/${commitID} to the desired output dir.
 	origOutputDestDir := filepath.Join(repoDir, buildstore.BuildDataDirName, getHEADOrTipCommitID(t, repoDir))
+	if err := os.Mkdir(filepath.Dir(origOutputDestDir), 0755); err != nil && !os.IsExist(err) {
+		t.Fatal(err)
+	}
 	if err := os.Remove(origOutputDestDir); err != nil && !os.IsNotExist(err) {
 		t.Fatal(err)
 	}
@@ -93,8 +104,13 @@ func testMakeCmd(t *testing.T, repoDir string) {
 	}()
 
 	// Run `srcgraph make`.
+	var w io.Writer
 	var buf bytes.Buffer
-	w := io.MultiWriter(&buf, os.Stderr)
+	if testing.Verbose() {
+		w = io.MultiWriter(&buf, os.Stderr)
+	} else {
+		w = &buf
+	}
 	cmd = exec.Command("srcgraph", "-v", "make")
 	cmd.Stderr, cmd.Stdout = w, w
 	cmd.Dir = repoDir
@@ -108,16 +124,19 @@ func testMakeCmd(t *testing.T, repoDir string) {
 	if *mode == "gen" {
 		t.Errorf("Successfully generated expected output for %s in %s. (Triggering test error so you won't mistakenly interpret a 0 return code as a test success. Run without -test.mode=gen to run the test.)", repoName, wantOutputDir)
 	} else {
-		checkResults(t, repoName, gotOutputDir, wantOutputDir)
+		checkResults(t, buf, repoName, gotOutputDir, wantOutputDir)
 	}
 }
 
-func checkResults(t *testing.T, repoName, gotOutputDir, wantOutputDir string) {
+func checkResults(t *testing.T, output bytes.Buffer, repoName, gotOutputDir, wantOutputDir string) {
 	out, err := exec.Command("diff", "-ur", wantOutputDir, gotOutputDir).CombinedOutput()
 	if err != nil || len(out) > 0 {
+		t.Logf(brush.Red(repoName + " FAIL").String())
 		t.Errorf("Diff failed for %s: %s.", repoName, err)
 		if len(out) > 0 {
-			t.Log(string(colorizeDiff(out)))
+			fmt.Println(brush.Red(repoName + "FAIL"))
+			fmt.Println(output.String())
+			fmt.Println(string(colorizeDiff(out)))
 			t.Errorf("Output for %s differed from expected.", repoName)
 		}
 	} else {
@@ -139,7 +158,6 @@ func getHEADOrTipCommitID(t *testing.T, repoDir string) string {
 func colorizeDiff(diff []byte) []byte {
 	lines := bytes.Split(diff, []byte{'\n'})
 	for i, line := range lines {
-		log.Printf("XXXXXX %q", line)
 		if bytes.HasPrefix(line, []byte{'-'}) {
 			lines[i] = []byte(brush.Red(string(line)).String())
 		}
