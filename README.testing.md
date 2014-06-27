@@ -6,10 +6,10 @@ repositories.
 
 The repositories are stored as git submodules in `testdata/repos`. If you
 attempt to run tests and have not initialized the submodules, the tests will
-fail with an explanation. If a git submodule's pointer has been updated but the
-version in your local checkout hasn't yet been updated, then the tests will
-automatically run `git submodule update` on that submodule. (This will not
-destroy any local changes you've made.)
+automatically run `git submodule init`. If a git submodule's pointer has been
+updated but the version in your local checkout hasn't yet been updated, then the
+tests will automatically run `git submodule update` on that submodule. (This
+will not destroy any local changes you've made.)
 
 The expected output is in `testdata/repos-output/${reponame}/want`. The actual
 output is written to the sibling dir `got` (which is not committed to the git
