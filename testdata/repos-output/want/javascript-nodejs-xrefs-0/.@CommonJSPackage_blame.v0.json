@@ -1,0 +1,123 @@
+{
+  "CommitMap": {
+    "a844e156259de7e967b0d47b9b78bb6197cade00": {
+      "ID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+      "Author": {
+        "Name": "Quinn Slack",
+        "Email": "qslack@qslack.com"
+      },
+      "Message": "initial commit",
+      "AuthorDate": "2014-05-07T15:37:10Z"
+    }
+  },
+  "HunkMap": {
+    "index.js": [
+      {
+        "CommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "LineStart": 0,
+        "LineEnd": 1,
+        "CharStart": 0,
+        "CharEnd": 31
+      }
+    ],
+    "lib/async.js": [
+      {
+        "CommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "LineStart": 0,
+        "LineEnd": 10,
+        "CharStart": 0,
+        "CharEnd": 281
+      }
+    ],
+    "lib/fs.js": [
+      {
+        "CommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "LineStart": 0,
+        "LineEnd": 5,
+        "CharStart": 0,
+        "CharEnd": 119
+      }
+    ],
+    "lib/glob.js": [
+      {
+        "CommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "LineStart": 0,
+        "LineEnd": 6,
+        "CharStart": 0,
+        "CharEnd": 150
+      }
+    ],
+    "lib/http.js": [
+      {
+        "CommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "LineStart": 0,
+        "LineEnd": 7,
+        "CharStart": 0,
+        "CharEnd": 215
+      }
+    ],
+    "lib/lodash.js": [
+      {
+        "CommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "LineStart": 0,
+        "LineEnd": 19,
+        "CharStart": 0,
+        "CharEnd": 628
+      }
+    ],
+    "lib/minimatch.js": [
+      {
+        "CommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "LineStart": 0,
+        "LineEnd": 3,
+        "CharStart": 0,
+        "CharEnd": 97
+      }
+    ],
+    "lib/mysql.js": [
+      {
+        "CommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "LineStart": 0,
+        "LineEnd": 110,
+        "CharStart": 0,
+        "CharEnd": 2706
+      }
+    ],
+    "lib/pg.js": [
+      {
+        "CommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "LineStart": 0,
+        "LineEnd": 34,
+        "CharStart": 0,
+        "CharEnd": 932
+      }
+    ],
+    "lib/read-package-json.js": [
+      {
+        "CommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "LineStart": 0,
+        "LineEnd": 4,
+        "CharStart": 0,
+        "CharEnd": 135
+      }
+    ],
+    "lib/underscore.js": [
+      {
+        "CommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "LineStart": 0,
+        "LineEnd": 19,
+        "CharStart": 0,
+        "CharEnd": 632
+      }
+    ],
+    "package.json": [
+      {
+        "CommitID": "a844e156259de7e967b0d47b9b78bb6197cade00",
+        "LineStart": 0,
+        "LineEnd": 26,
+        "CharStart": 0,
+        "CharEnd": 774
+      }
+    ]
+  }
+}

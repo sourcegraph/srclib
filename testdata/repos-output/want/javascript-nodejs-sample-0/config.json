@@ -1,0 +1,16 @@
+{
+  "URI": "github.com/sgtest/javascript-nodejs-sample-0",
+  "SourceUnits": [
+    {
+      "Dir": ".",
+      "LibFiles": [
+        "animal.js"
+      ],
+      "PackageJSONFile": "package.json",
+      "TestFiles": [
+        "test/animal_test.js"
+      ],
+      "Type": "CommonJSPackage"
+    }
+  ]
+}

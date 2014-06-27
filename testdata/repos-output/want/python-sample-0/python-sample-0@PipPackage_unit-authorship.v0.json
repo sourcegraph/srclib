@@ -1,0 +1,1015 @@
+{
+  "Symbols": {
+    "pkg0": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": true,
+        "Chars": 1,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": true,
+        "Chars": 551,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/Class0": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": true,
+        "Chars": 87,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/Class0/meth0": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": true,
+        "Chars": 21,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/Class0/meth0/self": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/Class0/var0": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/Class0_0": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": true,
+        "Chars": 114,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/Class0_0/__init__": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 86,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/Class0_0/__init__/arg0": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/Class0_0/__init__/arg1": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/Class0_0/__init__/self": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/Class1": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": true,
+        "Chars": 186,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/Class1/__init__": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 89,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/Class1/__init__/self": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/Class1/meth0": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": true,
+        "Chars": 65,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/Class1/meth0/self": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/Class1/meth0/var0": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/Class1/var0": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/Class1/var1": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/f0": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": true,
+        "Chars": 104,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/f0/var0": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/f0/var1": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m0/f0/var2": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m1": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": true,
+        "Chars": 259,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m1/Class0_0": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": true,
+        "Chars": 88,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m1/Class0_0/__init__": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 60,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m1/Class0_0/__init__/self": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m1/m2_fn1": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": true,
+        "Chars": 85,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m1/m2_fn1/var0": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "pkg0/m1/m2_fn1/var1": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:16:55Z",
+        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+        "Exported": false,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "setup": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-10T01:24:27Z",
+        "LastCommitID": "353aa7e690cb569ef14712500977c8a5b8fe1ab3",
+        "Exported": true,
+        "Chars": 188,
+        "CharsProportion": 1
+      }
+    ]
+  },
+  "Refs": [
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 241,
+      "End": 245,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 246,
+      "End": 248,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 60,
+      "End": 66,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 296,
+      "End": 302,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 346,
+      "End": 352,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 468,
+      "End": 474,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 199,
+      "End": 205,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 99,
+      "End": 105,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0/meth0",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 124,
+      "End": 129,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0/meth0/self",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 130,
+      "End": 134,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0/var0",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 107,
+      "End": 111,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0_0",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 337,
+      "End": 345,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0_0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 422,
+      "End": 430,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0_0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 508,
+      "End": 516,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0_0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 249,
+      "End": 257,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0_0/__init__",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 363,
+      "End": 371,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0_0/__init__/arg0",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 378,
+      "End": 382,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0_0/__init__/arg1",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 384,
+      "End": 388,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0_0/__init__/self",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 372,
+      "End": 376,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0_0/__init__/self",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 432,
+      "End": 436,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class1",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 149,
+      "End": 155,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class1",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 488,
+      "End": 494,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class1/__init__",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 173,
+      "End": 181,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class1/__init__/self",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 182,
+      "End": 186,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class1/__init__/self",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 197,
+      "End": 201,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class1/__init__/self",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 219,
+      "End": 223,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class1/__init__/self",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 242,
+      "End": 246,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class1/meth0",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 268,
+      "End": 273,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class1/meth0/self",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 274,
+      "End": 278,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class1/meth0/self",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 313,
+      "End": 317,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class1/meth0/var0",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 289,
+      "End": 293,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class1/meth0/var0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 325,
+      "End": 329,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class1/var0",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 202,
+      "End": 206,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class1/var1",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 247,
+      "End": 251,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/f0",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 451,
+      "End": 453,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/f0/var0",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 461,
+      "End": 465,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/f0/var0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 535,
+      "End": 539,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/f0/var1",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 481,
+      "End": 485,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/f0/var1",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 541,
+      "End": 545,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/f0/var2",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 501,
+      "End": 505,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/f0/var2",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m0.py",
+      "Start": 547,
+      "End": 551,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m1/Class0_0",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 90,
+      "End": 98,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m1/Class0_0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 146,
+      "End": 154,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m1/Class0_0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 219,
+      "End": 227,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m1/Class0_0/__init__",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 116,
+      "End": 124,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m1/Class0_0/__init__/self",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 125,
+      "End": 129,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m1/Class0_0/__init__/self",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 156,
+      "End": 160,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m1/m2_fn1",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 178,
+      "End": 184,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m1/m2_fn1/var0",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 192,
+      "End": 196,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m1/m2_fn1/var1",
+      "Def": true,
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 212,
+      "End": 216,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    }
+  ],
+  "Authors": [
+    {
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:24:27Z",
+      "LastCommitID": "353aa7e690cb569ef14712500977c8a5b8fe1ab3",
+      "SymbolCount": 31,
+      "SymbolsProportion": 1,
+      "ExportedSymbolCount": 12,
+      "ExportedSymbolsProportion": 1
+    }
+  ],
+  "ClientsOfOtherUnits": [
+    {
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "RefCount": 50
+    }
+  ]
+}

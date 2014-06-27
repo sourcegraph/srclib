@@ -1,0 +1,51 @@
+{
+  "CommitMap": {
+    "7903b0746678790682fdc3ec026b62e39bd4d318": {
+      "ID": "7903b0746678790682fdc3ec026b62e39bd4d318",
+      "Author": {
+        "Name": "Beyang Liu",
+        "Email": "beyang.liu@gmail.com"
+      },
+      "Message": "add setup.py",
+      "AuthorDate": "2014-06-18T23:49:22Z"
+    },
+    "d75909f7fe60aedfa57b315419c4221b96e16dbe": {
+      "ID": "d75909f7fe60aedfa57b315419c4221b96e16dbe",
+      "Author": {
+        "Name": "Beyang Liu",
+        "Email": "beyang.liu@gmail.com"
+      },
+      "Message": "initial files",
+      "AuthorDate": "2014-05-10T06:52:01Z"
+    }
+  },
+  "HunkMap": {
+    "app/__init__.py": [
+      {
+        "CommitID": "d75909f7fe60aedfa57b315419c4221b96e16dbe",
+        "LineStart": 0,
+        "LineEnd": 0,
+        "CharStart": 0,
+        "CharEnd": 24
+      }
+    ],
+    "app/app.py": [
+      {
+        "CommitID": "d75909f7fe60aedfa57b315419c4221b96e16dbe",
+        "LineStart": 0,
+        "LineEnd": 4,
+        "CharStart": 0,
+        "CharEnd": 47
+      }
+    ],
+    "setup.py": [
+      {
+        "CommitID": "7903b0746678790682fdc3ec026b62e39bd4d318",
+        "LineStart": 0,
+        "LineEnd": 8,
+        "CharStart": 0,
+        "CharEnd": 163
+      }
+    ]
+  }
+}

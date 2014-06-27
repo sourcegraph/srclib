@@ -1,0 +1,16 @@
+{
+  "URI": "github.com/sgtest/python-sample-1",
+  "SourceUnits": [
+    {
+      "Files": [
+        "app/__init__.py",
+        "app/app.py",
+        "setup.py"
+      ],
+      "ProjectDescription": "",
+      "ProjectName": "python-sample-1",
+      "RootDirectory": ".",
+      "Type": "PipPackage"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+[
+  {
+    "FromUnit": "python-sample-1",
+    "FromUnitType": "PipPackage",
+    "TargetType": "python-requirement",
+    "Target": {
+      "extras": null,
+      "key": "https://github.com/sgtest/python-sample-0",
+      "modules": null,
+      "packages": [
+        "pkg0"
+      ],
+      "project_name": "python-sample-0",
+      "repo_url": "https://github.com/sgtest/python-sample-0",
+      "resolved": true,
+      "specs": null,
+      "type": "vcs",
+      "unsafe_name": ""
+    }
+  }
+]

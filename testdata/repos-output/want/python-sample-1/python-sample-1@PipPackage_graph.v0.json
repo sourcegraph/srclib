@@ -1,0 +1,127 @@
+{
+  "Symbols": [
+    {
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "Path": "app",
+      "TreePath": "app",
+      "Kind": "package",
+      "Name": "app",
+      "Callable": false,
+      "File": "app/__init__.py",
+      "DefStart": 0,
+      "DefEnd": 1,
+      "Exported": true,
+      "Data": {
+        "Kind": "package",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "Path": "app/app",
+      "TreePath": "app/app",
+      "Kind": "module",
+      "Name": "app",
+      "Callable": false,
+      "File": "app/app.py",
+      "DefStart": 0,
+      "DefEnd": 46,
+      "Exported": true,
+      "Data": {
+        "Kind": "module",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "Path": "app/app/x",
+      "TreePath": "app/app/x",
+      "Kind": "var",
+      "Name": "x",
+      "Callable": false,
+      "File": "app/app.py",
+      "DefStart": 16,
+      "DefEnd": 17,
+      "Exported": false,
+      "Data": {
+        "Kind": "scope",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "Path": "setup",
+      "TreePath": "setup",
+      "Kind": "module",
+      "Name": "setup",
+      "Callable": false,
+      "File": "setup.py",
+      "DefStart": 0,
+      "DefEnd": 162,
+      "Exported": true,
+      "Data": {
+        "Kind": "module",
+        "FuncSignature": ""
+      }
+    }
+  ],
+  "Refs": [
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-1",
+      "SymbolPath": "app/app/x",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "File": "app/app.py",
+      "Start": 16,
+      "End": 17
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-1",
+      "SymbolPath": "app/app/x",
+      "Def": false,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "File": "app/app.py",
+      "Start": 37,
+      "End": 38
+    },
+    {
+      "SymbolRepo": "github.com/sgtest/python-sample-0",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0/meth0",
+      "Def": false,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "File": "app/app.py",
+      "Start": 39,
+      "End": 44
+    },
+    {
+      "SymbolRepo": "github.com/sgtest/python-sample-0",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0",
+      "Def": false,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "File": "app/app.py",
+      "Start": 28,
+      "End": 34
+    }
+  ]
+}
+

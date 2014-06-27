@@ -1,0 +1,22 @@
+[
+  {
+    "FromUnit": ".",
+    "FromUnitType": "CommonJSPackage",
+    "FromFile": "package.json",
+    "TargetType": "npm-dep",
+    "Target": {
+      "Name": "mocha",
+      "Spec": "1.10.0"
+    }
+  },
+  {
+    "FromUnit": ".",
+    "FromUnitType": "CommonJSPackage",
+    "FromFile": "package.json",
+    "TargetType": "npm-dep",
+    "Target": {
+      "Name": "should",
+      "Spec": "~1.2.2"
+    }
+  }
+]
