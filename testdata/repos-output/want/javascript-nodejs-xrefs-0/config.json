@@ -16,7 +16,40 @@
         "lib/underscore.js",
         "index.js"
       ],
+      "Package": {
+        "_id": "javascript-nodejs-xrefs-0@0.0.0",
+        "author": {
+          "email": "sqs@sourcegraph.com",
+          "name": "Quinn Slack"
+        },
+        "bugs": {
+          "url": "https://github.com/sgtest/javascript-nodejs-xrefs-0/issues"
+        },
+        "dependencies": {
+          "async": "~0.8.0",
+          "glob": "~3.2.9",
+          "lodash": "~2.4.1",
+          "minimatch": "~0.2.14",
+          "mysql": "~2.2.0",
+          "pg": "~3.0.3",
+          "read-package-json": "~1.1.9",
+          "underscore": "~1.6.0"
+        },
+        "description": "JavaScript (node.js) test repository for Sourcegraph with refs to the node.js core and other NPM modules",
+        "homepage": "https://github.com/sgtest/javascript-nodejs-xrefs-0",
+        "license": "BSD",
+        "main": "index.js",
+        "name": "javascript-nodejs-xrefs-0",
+        "readme": "ERROR: No README data found!",
+        "repository": {
+          "type": "git",
+          "url": "git://github.com/sgtest/javascript-nodejs-xrefs-0.git"
+        },
+        "version": "0.0.0"
+      },
+      "PackageDescription": "JavaScript (node.js) test repository for Sourcegraph with refs to the node.js core and other NPM modules",
       "PackageJSONFile": "package.json",
+      "PackageName": "javascript-nodejs-xrefs-0",
       "TestFiles": [],
       "Type": "CommonJSPackage"
     }

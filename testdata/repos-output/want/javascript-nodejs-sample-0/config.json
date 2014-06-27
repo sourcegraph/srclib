@@ -6,7 +6,34 @@
       "LibFiles": [
         "animal.js"
       ],
+      "Package": {
+        "_id": "sourcegraph-nodejs-sample@0.0.1",
+        "author": {
+          "email": "sqs@sourcegraph.com",
+          "name": "Quinn Slack"
+        },
+        "bugs": {
+          "url": "https://github.com/sourcegraph/nodejs-sample/issues"
+        },
+        "description": "node.js sample package for Sourcegraph",
+        "devDependencies": {
+          "mocha": "1.10.0",
+          "should": "~1.2.2"
+        },
+        "homepage": "https://github.com/sourcegraph/nodejs-sample",
+        "main": "animal",
+        "name": "sourcegraph-nodejs-sample",
+        "readme": "# javascript-nodejs-sample-0\n\nnode.js sample repository for Sourcegraph.\n",
+        "readmeFilename": "README.md",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/sourcegraph/nodejs-sample"
+        },
+        "version": "0.0.1"
+      },
+      "PackageDescription": "node.js sample package for Sourcegraph",
       "PackageJSONFile": "package.json",
+      "PackageName": "sourcegraph-nodejs-sample",
       "TestFiles": [
         "test/animal_test.js"
       ],
