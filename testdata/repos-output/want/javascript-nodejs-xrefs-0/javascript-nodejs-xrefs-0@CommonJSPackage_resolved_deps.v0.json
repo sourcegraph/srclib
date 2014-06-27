@@ -1,0 +1,82 @@
+[
+  {
+    "FromRepo": "github.com/sgtest/javascript-nodejs-xrefs-0",
+    "FromUnit": "javascript-nodejs-xrefs-0",
+    "FromUnitType": "CommonJSPackage",
+    "ToRepo": "github.com/brianc/node-postgres",
+    "ToUnit": "pg",
+    "ToUnitType": "CommonJSPackage",
+    "ToVersionString": "pg@3.0.3",
+    "ToRevSpec": ""
+  },
+  {
+    "FromRepo": "github.com/sgtest/javascript-nodejs-xrefs-0",
+    "FromUnit": "javascript-nodejs-xrefs-0",
+    "FromUnitType": "CommonJSPackage",
+    "ToRepo": "github.com/caolan/async",
+    "ToUnit": "async",
+    "ToUnitType": "CommonJSPackage",
+    "ToVersionString": "async@0.8.0",
+    "ToRevSpec": ""
+  },
+  {
+    "FromRepo": "github.com/sgtest/javascript-nodejs-xrefs-0",
+    "FromUnit": "javascript-nodejs-xrefs-0",
+    "FromUnitType": "CommonJSPackage",
+    "ToRepo": "github.com/felixge/node-mysql",
+    "ToUnit": "mysql",
+    "ToUnitType": "CommonJSPackage",
+    "ToVersionString": "mysql@2.2.0",
+    "ToRevSpec": ""
+  },
+  {
+    "FromRepo": "github.com/sgtest/javascript-nodejs-xrefs-0",
+    "FromUnit": "javascript-nodejs-xrefs-0",
+    "FromUnitType": "CommonJSPackage",
+    "ToRepo": "github.com/isaacs/minimatch",
+    "ToUnit": "minimatch",
+    "ToUnitType": "CommonJSPackage",
+    "ToVersionString": "minimatch@0.2.14",
+    "ToRevSpec": ""
+  },
+  {
+    "FromRepo": "github.com/sgtest/javascript-nodejs-xrefs-0",
+    "FromUnit": "javascript-nodejs-xrefs-0",
+    "FromUnitType": "CommonJSPackage",
+    "ToRepo": "github.com/isaacs/node-glob",
+    "ToUnit": "glob",
+    "ToUnitType": "CommonJSPackage",
+    "ToVersionString": "glob@3.2.11",
+    "ToRevSpec": ""
+  },
+  {
+    "FromRepo": "github.com/sgtest/javascript-nodejs-xrefs-0",
+    "FromUnit": "javascript-nodejs-xrefs-0",
+    "FromUnitType": "CommonJSPackage",
+    "ToRepo": "github.com/isaacs/read-package-json",
+    "ToUnit": "read-package-json",
+    "ToUnitType": "CommonJSPackage",
+    "ToVersionString": "read-package-json@1.1.9",
+    "ToRevSpec": ""
+  },
+  {
+    "FromRepo": "github.com/sgtest/javascript-nodejs-xrefs-0",
+    "FromUnit": "javascript-nodejs-xrefs-0",
+    "FromUnitType": "CommonJSPackage",
+    "ToRepo": "github.com/jashkenas/underscore",
+    "ToUnit": "underscore",
+    "ToUnitType": "CommonJSPackage",
+    "ToVersionString": "underscore@1.6.0",
+    "ToRevSpec": ""
+  },
+  {
+    "FromRepo": "github.com/sgtest/javascript-nodejs-xrefs-0",
+    "FromUnit": "javascript-nodejs-xrefs-0",
+    "FromUnitType": "CommonJSPackage",
+    "ToRepo": "github.com/lodash/lodash",
+    "ToUnit": "lodash",
+    "ToUnitType": "CommonJSPackage",
+    "ToVersionString": "lodash@2.4.1",
+    "ToRevSpec": ""
+  }
+]
