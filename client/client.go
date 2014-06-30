@@ -13,7 +13,6 @@ import (
 
 	"github.com/google/go-querystring/query"
 	"sourcegraph.com/sourcegraph/api_router"
-	"sourcegraph.com/sourcegraph/config2"
 )
 
 const (
@@ -62,7 +61,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Symbols = &symbolsService{c}
 	c.Units = &unitsService{c}
 
-	c.BaseURL = config2.BaseAPIURL
+	c.BaseURL = &url.URL{Scheme: "https", Host: "sourcegraph.com", Path: "/api/"}
 
 	c.UserAgent = userAgent
 
