@@ -15,6 +15,7 @@ func build_(args []string) {
 	rev := fs.String("rev", "", "VCS revision to build (defaults to latest commit on default branch)")
 	queue := fs.Bool("queue", true, "enqueue build to be run")
 	import_ := fs.Bool("import", true, "import build data into Sourcegraph app/API when build completes")
+	force := fs.Bool("force", true, "force build (even if repository has already been built")
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` build [options] [REPO-URI ...]
 
@@ -37,7 +38,7 @@ The options are:
 		build, _, err := apiclient.Builds.Create(
 			client.RepositorySpec{URI: uri, CommitID: *rev},
 			&client.BuildCreateOptions{
-				Force:       true,
+				Force:       *force,
 				BuildConfig: client.BuildConfig{Queue: *queue, Import: *import_},
 			},
 		)
