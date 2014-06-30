@@ -4,8 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/url"
 	"os"
 
+	"sourcegraph.com/sourcegraph/conf"
 	"sourcegraph.com/sourcegraph/srcgraph/client"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
@@ -42,6 +44,10 @@ var Verbose = flag.Bool("v", false, "show verbose output")
 var Dir = flag.String("dir", ".", "directory to work in")
 
 var apiclient = client.NewClient(nil)
+
+func init() {
+	apiclient.BaseURL = conf.BaseURL.ResolveReference(&url.URL{Path: "/api/"})
+}
 
 func Main() {
 	flag.Parse()
