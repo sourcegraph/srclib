@@ -1,7 +1,6 @@
 package authorship
 
 import (
-	"fmt"
 	"log"
 	"sort"
 	"time"
@@ -29,7 +28,7 @@ func ComputeSourceUnit(g *grapher2.Output, b *vcsutil.BlameOutput, c *config.Rep
 			if h.CharStart <= end && h.CharEnd > start {
 				commit, present := b.CommitMap[h.CommitID]
 				if !present {
-					return nil, nil, fmt.Errorf("no commit ID %q for hunk %+v", h.CommitID, h)
+					log.Printf("warning: no commit ID %q for hunk %+v in file %s", h.CommitID, h, file)
 				}
 
 				nchars := min(end, h.CharEnd) - max(start, h.CharStart)
