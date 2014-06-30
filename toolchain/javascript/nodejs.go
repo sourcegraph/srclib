@@ -62,17 +62,22 @@ func (v *npmVersion) BuildScanner(dir string, c *config.Repository) (*container.
 	}
 
 	const (
-		findpkgsNPM = "commonjs-findpkgs@0.0.4"
+		findpkgsNPM = "commonjs-findpkgs@0.0.5"
 		findpkgsGit = "git://github.com/sourcegraph/commonjs-findpkgs.git"
 		findpkgsSrc = findpkgsNPM
 	)
 	dockerfile = append(dockerfile, []byte("\n\nRUN npm install --quiet -g "+findpkgsNPM+"\n")...)
 
+	scanIgnores, err := json.Marshal(c.ScanIgnore)
+	if err != nil {
+		return nil, err
+	}
+
 	containerDir := containerDir(dir)
 	cont := container.Container{
 		Dockerfile: dockerfile,
 		RunOptions: []string{"-v", dir + ":" + containerDir},
-		Cmd:        []string{"commonjs-findpkgs"},
+		Cmd:        []string{"commonjs-findpkgs", "--ignore", string(scanIgnores)},
 		Dir:        containerDir,
 	}
 	cmd := container.Command{
