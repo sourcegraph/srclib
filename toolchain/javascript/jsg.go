@@ -356,7 +356,7 @@ func (p DefPath) symbolTreePath() graph.TreePath {
 	} else if p.Path == "" {
 		return graph.TreePath(fmt.Sprintf("%s/%s", ghostedNamespace, p.Module))
 	} else {
-		return graph.TreePath(fmt.Sprintf("%s/%s/-/%s", ghostedNamespace, p.Module, strings.Replace(p.Path, ".", "/", -1)))
+		return graph.TreePath(fmt.Sprintf("%s/%s/-/%s", ghostedNamespace, p.Module, strings.Replace(strings.Replace(p.Path, ".", "/", -1), "//", "/", -1)))
 	}
 }
 
