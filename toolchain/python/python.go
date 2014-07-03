@@ -43,14 +43,14 @@ type pythonEnv struct {
 	PythonVersion   string
 	Python3Version  string
 	PydepVersion    string
-	Pysonar2Version string
+	PySonar2Version string
 }
 
 var defaultPythonEnv = &pythonEnv{
 	PythonVersion:   "python2.7",
 	Python3Version:  "python3.3",
 	PydepVersion:    "debfd0e681c3b60e33eec237a4473aed1f767004",
-	Pysonar2Version: "1b152a16d1292b66280e60047a8dbdbfc86a103b",
+	PySonar2Version: "1b152a16d1292b66280e60047a8dbdbfc86a103b",
 }
 
 func init() {
