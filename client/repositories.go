@@ -24,9 +24,28 @@ type RepositoriesService interface {
 	// host and the repository is created.
 	GetOrCreate(repo RepositorySpec, opt *RepositoryGetOptions) (*Repository, Response, error)
 
-	// Sync updates the repository information for a repository, fetching it
-	// from an external host if the host is recognized (such as GitHub).
-	Sync(repo repo.URI) (Response, error)
+	// RefreshProfile updates the repository metadata for a repository, fetching
+	// it from an external host if the host is recognized (such as GitHub).
+	//
+	// This operation is performed asynchronously on the server side (after
+	// receiving the request) and the API currently has no way of notifying
+	// callers when the operation completes.
+	RefreshProfile(repo RepositorySpec) (Response, error)
+
+	// RefreshVCSData updates the repository VCS (git/hg) data, fetching all new
+	// commits, branches, tags, and blobs.
+	//
+	// This operation is performed asynchronously on the server side (after
+	// receiving the request) and the API currently has no way of notifying
+	// callers when the operation completes.
+	RefreshVCSData(repo RepositorySpec) (Response, error)
+
+	// ComputeStats updates the statistics about a repository.
+	//
+	// This operation is performed asynchronously on the server side (after
+	// receiving the request) and the API currently has no way of notifying
+	// callers when the operation completes.
+	ComputeStats(repo RepositorySpec) (Response, error)
 
 	// Create adds the repository at cloneURL, filling in all information about
 	// the repository that can be inferred from the URL (or, for GitHub
@@ -199,8 +218,46 @@ func (s *repositoriesService) GetOrCreate(repo_ RepositorySpec, opt *RepositoryG
 	return repo__, resp, nil
 }
 
-func (s *repositoriesService) Sync(repo repo.URI) (Response, error) {
-	url, err := s.client.url(api_router.RepositorySync, map[string]string{"RepoURI": string(repo)}, nil)
+func (s *repositoriesService) RefreshProfile(repo RepositorySpec) (Response, error) {
+	url, err := s.client.url(api_router.RepositoryRefreshProfile, repo.RouteVars(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := s.client.NewRequest("PUT", url.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+func (s *repositoriesService) RefreshVCSData(repo RepositorySpec) (Response, error) {
+	url, err := s.client.url(api_router.RepositoryRefreshVCSData, repo.RouteVars(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := s.client.NewRequest("PUT", url.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+func (s *repositoriesService) ComputeStats(repo RepositorySpec) (Response, error) {
+	url, err := s.client.url(api_router.RepositoryComputeStats, repo.RouteVars(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -610,7 +667,9 @@ func (s *repositoriesService) ListByRefdAuthor(person PersonSpec, opt *Repositor
 type MockRepositoriesService struct {
 	Get_               func(spec RepositorySpec, opt *RepositoryGetOptions) (*Repository, Response, error)
 	GetOrCreate_       func(repo RepositorySpec, opt *RepositoryGetOptions) (*Repository, Response, error)
-	Sync_              func(repo repo.URI) (Response, error)
+	RefreshProfile_    func(repo RepositorySpec) (Response, error)
+	RefreshVCSData_    func(repo RepositorySpec) (Response, error)
+	ComputeStats_      func(repo RepositorySpec) (Response, error)
 	Create_            func(newRepoSpec NewRepositorySpec) (*repo.Repository, Response, error)
 	GetReadme_         func(repo RepositorySpec) (*vcsclient.TreeEntry, Response, error)
 	List_              func(opt *RepositoryListOptions) ([]*Repository, Response, error)
@@ -642,11 +701,25 @@ func (s MockRepositoriesService) GetOrCreate(repo RepositorySpec, opt *Repositor
 	return s.GetOrCreate_(repo, opt)
 }
 
-func (s MockRepositoriesService) Sync(repo repo.URI) (Response, error) {
-	if s.Sync_ == nil {
+func (s MockRepositoriesService) RefreshProfile(repo RepositorySpec) (Response, error) {
+	if s.RefreshProfile_ == nil {
 		return nil, nil
 	}
-	return s.Sync_(repo)
+	return s.RefreshProfile_(repo)
+}
+
+func (s MockRepositoriesService) RefreshVCSData(repo RepositorySpec) (Response, error) {
+	if s.RefreshVCSData_ == nil {
+		return nil, nil
+	}
+	return s.RefreshVCSData_(repo)
+}
+
+func (s MockRepositoriesService) ComputeStats(repo RepositorySpec) (Response, error) {
+	if s.ComputeStats_ == nil {
+		return nil, nil
+	}
+	return s.ComputeStats_(repo)
 }
 
 func (s MockRepositoriesService) Create(newRepoSpec NewRepositorySpec) (*repo.Repository, Response, error) {

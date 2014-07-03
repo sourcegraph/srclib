@@ -72,19 +72,59 @@ func TestRepositoriesService_GetOrCreate(t *testing.T) {
 	}
 }
 
-func TestRepositoriesService_Sync(t *testing.T) {
+func TestRepositoriesService_RefreshProfile(t *testing.T) {
 	setup()
 	defer teardown()
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.RepositorySync, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.RepositoryRefreshProfile, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "PUT")
 	})
 
-	_, err := client.Repositories.Sync("r.com/x")
+	_, err := client.Repositories.RefreshProfile(RepositorySpec{URI: "r.com/x"})
 	if err != nil {
-		t.Errorf("Repositories.Sync returned error: %v", err)
+		t.Errorf("Repositories.RefreshProfile returned error: %v", err)
+	}
+
+	if !called {
+		t.Fatal("!called")
+	}
+}
+
+func TestRepositoriesService_RefreshVCSData(t *testing.T) {
+	setup()
+	defer teardown()
+
+	var called bool
+	mux.HandleFunc(urlPath(t, api_router.RepositoryRefreshVCSData, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Repositories.RefreshVCSData(RepositorySpec{URI: "r.com/x"})
+	if err != nil {
+		t.Errorf("Repositories.RefreshVCSData returned error: %v", err)
+	}
+
+	if !called {
+		t.Fatal("!called")
+	}
+}
+
+func TestRepositoriesService_ComputeStats(t *testing.T) {
+	setup()
+	defer teardown()
+
+	var called bool
+	mux.HandleFunc(urlPath(t, api_router.RepositoryComputeStats, map[string]string{"RepoURI": "r.com/x"}), func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Repositories.ComputeStats(RepositorySpec{URI: "r.com/x"})
+	if err != nil {
+		t.Errorf("Repositories.ComputeStats returned error: %v", err)
 	}
 
 	if !called {
