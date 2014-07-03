@@ -48,10 +48,8 @@ RUN virtualenv /venv
 
 # PySonar
 RUN apt-get install -qqy maven
-RUN echo '{{.PySonar2Version}}' &> /dev/null  # Runs a command dependent on pysonar version so we re-fetch it below
-RUN git clone https://github.com/sourcegraph/pysonar2.git /pysonar2
+RUN git clone https://github.com/sourcegraph/pysonar2.git /pysonar2 && cd /pysonar2 && git checkout {{.PySonar2Version}}
 WORKDIR /pysonar2
-RUN git checkout {{.PySonar2Version}}
 RUN mvn -q clean package
 WORKDIR /
 
