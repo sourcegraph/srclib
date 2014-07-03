@@ -24,6 +24,10 @@ var mode = flag.String("test.mode", "test", "[test|keep|gen] 'test' runs test as
 var repoMatch = flag.String("test.repo", "", "only test `srcgraph make` for repos that contain this string")
 
 func TestMakeCmd(t *testing.T) {
+	if testing.Short() {
+		t.Skip("srcgraph make tests take a long time; skipping for -test.short")
+	}
+
 	// Since we exec `srcgraph`, make sure it's up-to-date.
 	if out, err := exec.Command("make", "-C", "..", "srcgraph").CombinedOutput(); err != nil {
 		t.Errorf("Failed to build srcgraph for `srcgraph make` tests: %s.\n\nOutput was:\n%s", err, out)
