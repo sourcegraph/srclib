@@ -90,19 +90,39 @@ func TestPeopleService_GetOrCreateFromGitHub(t *testing.T) {
 	}
 }
 
-func TestPeopleService_Sync(t *testing.T) {
+func TestPeopleService_RefreshProfile(t *testing.T) {
 	setup()
 	defer teardown()
 
 	var called bool
-	mux.HandleFunc(urlPath(t, api_router.PersonSync, map[string]string{"PersonSpec": "a"}), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(urlPath(t, api_router.PersonRefreshProfile, map[string]string{"PersonSpec": "a"}), func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		testMethod(t, r, "PUT")
 	})
 
-	_, err := client.People.Sync(PersonSpec{Login: "a"})
+	_, err := client.People.RefreshProfile(PersonSpec{Login: "a"})
 	if err != nil {
-		t.Errorf("People.Sync returned error: %v", err)
+		t.Errorf("People.RefreshProfile returned error: %v", err)
+	}
+
+	if !called {
+		t.Fatal("!called")
+	}
+}
+
+func TestPeopleService_ComputeStats(t *testing.T) {
+	setup()
+	defer teardown()
+
+	var called bool
+	mux.HandleFunc(urlPath(t, api_router.PersonComputeStats, map[string]string{"PersonSpec": "a"}), func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.People.ComputeStats(PersonSpec{Login: "a"})
+	if err != nil {
+		t.Errorf("People.ComputeStats returned error: %v", err)
 	}
 
 	if !called {
