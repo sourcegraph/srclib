@@ -46,12 +46,12 @@ RUN ln -s $(which {{.Python3Version}}) /usr/bin/python3
 # Set up virtualenv (will contain dependencies)
 RUN virtualenv /venv
 
-# Pysonar
+# PySonar
 RUN apt-get install -qqy maven
-RUN echo '{{.Pysonar2Version}}' &> /dev/null  # Runs a command dependent on pysonar version so we re-fetch it below
+RUN echo '{{.PySonar2Version}}' &> /dev/null  # Runs a command dependent on pysonar version so we re-fetch it below
 RUN git clone https://github.com/sourcegraph/pysonar2.git /pysonar2
 WORKDIR /pysonar2
-RUN git checkout {{.Pysonar2Version}}
+RUN git checkout {{.PySonar2Version}}
 RUN mvn -q clean package
 WORKDIR /
 
@@ -411,7 +411,7 @@ func (p *pythonEnv) pysonarSymPathToSymbolKey(pySymPath string, u unit.SourceUni
 				}, nil
 			}
 		}
-		return nil, fmt.Errorf("Could not find requirement matching Pysonar path %s", pySymPath)
+		return nil, fmt.Errorf("Could not find requirement matching PySonar path %s", pySymPath)
 	}
 }
 
