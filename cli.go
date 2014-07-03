@@ -28,7 +28,7 @@ Usage:
 The commands are:
 `)
 		for _, c := range Subcommands {
-			fmt.Fprintf(os.Stderr, "    %-14s %s\n", c.Name, c.Description)
+			fmt.Fprintf(os.Stderr, "    %-24s %s\n", c.Name, c.Description)
 		}
 		fmt.Fprintln(os.Stderr, `
 Use "`+Name+` command -h" for more information about a command.
@@ -93,6 +93,8 @@ var Subcommands = []Subcommand{
 	{"graph", "analyze a repository's source code for definitions and references", graph_},
 	{"blame", "blame a source unit's source files to determine commit authors", blame},
 	{"authorship", "determine authorship of a source unit's symbols and refs", authorship_},
+	{"person-refresh-profile", "refresh a person's profile", personRefreshProfile},
+	{"person-compute-stats", "update a person's stats", personComputeStats},
 	{"repo-create", "create a repository (API)", repoCreate},
 	{"repo-refresh-profile", "sync repository data", repoRefreshProfile},
 	{"repo-refresh-vcs-data", "fetch repository VCS data", repoRefreshVCSData},
