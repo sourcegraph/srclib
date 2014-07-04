@@ -1,0 +1,13 @@
+module A
+  class B
+    @inclass = "hello"
+
+    def self.classmethod
+      @inclassmethod = "hey"
+    end
+
+    def method
+      @inmethod = "hi"
+    end
+  end
+end

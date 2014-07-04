@@ -1,0 +1,19 @@
+class A
+  def im
+    7
+  end
+end
+
+class AA < A
+
+end
+
+class B
+  def foo
+    a = A.new
+    a.im
+
+    aa = AA.new
+    aa.im
+  end
+end

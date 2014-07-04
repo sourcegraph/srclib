@@ -1,0 +1,9 @@
+module A
+  class B
+  end
+
+  B
+end
+
+A::B
+A

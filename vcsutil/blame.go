@@ -1,6 +1,7 @@
 package vcsutil
 
 import (
+	"os"
 	"path/filepath"
 	"time"
 
@@ -33,6 +34,14 @@ func BlameFiles(dir string, files []string, commitID string, c *config.Repositor
 	commitMap := make(map[string]blame.Commit)
 
 	for _, file := range files {
+		fi, err := os.Stat(file)
+		if err != nil {
+			return nil, err
+		}
+		if fi.IsDir() {
+			continue
+		}
+
 		relFile, err := filepath.Rel(dir, file)
 		if err != nil {
 			return nil, err

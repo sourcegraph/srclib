@@ -1,0 +1,13 @@
+module M
+  class C
+    def im; "im" end
+    def self.cm; "cm" end
+  end
+
+  class D < M::C
+    def initialize
+      self.im
+      D.cm
+    end
+  end
+end

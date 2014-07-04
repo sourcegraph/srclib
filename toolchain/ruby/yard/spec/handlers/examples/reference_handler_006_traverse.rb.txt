@@ -1,0 +1,67 @@
+module M
+  def a=(v);end
+end
+
+{:a => M, M => 3}
+[M, 1]
+[M..M]
+(M..M)
+puts(M)
+puts(M => M)
+[].each do |m|
+  M
+  next(M)
+end
+
+def M.f(a=M)
+  return M
+end
+
+M[M] = M
+M.a = M
+
+if M
+  M
+elsif M
+  M
+else
+  M
+end
+
+begin
+  M
+rescue M => m
+  M
+rescue M
+  M
+else
+  M
+end
+
+while M; end
+
+M unless M
+M if M
+M while M
+M until M
+
+case M
+when M
+  M
+when M
+  M
+else
+  M
+end
+
+M < M
+M += M
+puts(*M)
+puts(**M)
+
+"hello#{M}"
+/#{M}/
+
+M.f
+M.f()
+M.f=3

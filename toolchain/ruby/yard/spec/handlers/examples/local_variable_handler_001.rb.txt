@@ -1,0 +1,17 @@
+somevar = "top level"
+
+module A
+  somevar = "in module"
+
+  class B
+    somevar = "in class"
+
+    class << self
+      somevar = "in singleton class"
+    end
+
+    def method
+      somevar = "in method"
+    end
+  end
+end

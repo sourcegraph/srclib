@@ -1,0 +1,119 @@
+{
+  "CommitMap": {
+    "0b79cc00c5e8096ff5c5749bbf105bb04e5ebc49": {
+      "ID": "0b79cc00c5e8096ff5c5749bbf105bb04e5ebc49",
+      "Author": {
+        "Name": "Quinn Slack",
+        "Email": "qslack@qslack.com"
+      },
+      "Message": "glob the files",
+      "AuthorDate": "2014-07-04T08:43:47Z"
+    },
+    "464b1d2a92586b3ef7690310de7011eff781ca9c": {
+      "ID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
+      "Author": {
+        "Name": "Beyang Liu",
+        "Email": "beyang.liu@gmail.com"
+      },
+      "Message": "initial stuff",
+      "AuthorDate": "2014-04-18T21:12:04Z"
+    }
+  },
+  "HunkMap": {
+    "lib/cases/class.rb": [
+      {
+        "CommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
+        "LineStart": 0,
+        "LineEnd": 28,
+        "CharStart": 0,
+        "CharEnd": 273
+      }
+    ],
+    "lib/cases/core.rb": [
+      {
+        "CommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
+        "LineStart": 0,
+        "LineEnd": 2,
+        "CharStart": 0,
+        "CharEnd": 37
+      }
+    ],
+    "lib/cases/global_var.rb": [
+      {
+        "CommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
+        "LineStart": 0,
+        "LineEnd": 2,
+        "CharStart": 0,
+        "CharEnd": 8
+      }
+    ],
+    "lib/cases/module.rb": [
+      {
+        "CommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
+        "LineStart": 0,
+        "LineEnd": 12,
+        "CharStart": 0,
+        "CharEnd": 60
+      }
+    ],
+    "lib/cases/stdlib.rb": [
+      {
+        "CommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
+        "LineStart": 0,
+        "LineEnd": 3,
+        "CharStart": 0,
+        "CharEnd": 57
+      }
+    ],
+    "lib/cases/top_const.rb": [
+      {
+        "CommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
+        "LineStart": 0,
+        "LineEnd": 2,
+        "CharStart": 0,
+        "CharEnd": 8
+      }
+    ],
+    "lib/cases/top_def.rb": [
+      {
+        "CommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
+        "LineStart": 0,
+        "LineEnd": 4,
+        "CharStart": 0,
+        "CharEnd": 19
+      }
+    ],
+    "lib/ruby_gem.rb": [
+      {
+        "CommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
+        "LineStart": 0,
+        "LineEnd": 64,
+        "CharStart": 0,
+        "CharEnd": 883
+      }
+    ],
+    "ruby_gem.gemspec": [
+      {
+        "CommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
+        "LineStart": 0,
+        "LineEnd": 8,
+        "CharStart": 0,
+        "CharEnd": 285
+      },
+      {
+        "CommitID": "0b79cc00c5e8096ff5c5749bbf105bb04e5ebc49",
+        "LineStart": 8,
+        "LineEnd": 9,
+        "CharStart": 285,
+        "CharEnd": 322
+      },
+      {
+        "CommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
+        "LineStart": 9,
+        "LineEnd": 13,
+        "CharStart": 322,
+        "CharEnd": 415
+      }
+    ]
+  }
+}

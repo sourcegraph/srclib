@@ -1,0 +1,135 @@
+{
+  "Symbols": [
+    {
+      "Path": "A",
+      "TreePath": "TODO",
+      "Kind": "type",
+      "Name": "A",
+      "Callable": false,
+      "File": "lib/gem.rb",
+      "DefStart": 16,
+      "DefEnd": 94,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "class",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "A"
+      }
+    },
+    {
+      "Path": "A/$classmethods/method",
+      "TreePath": "TODO",
+      "Kind": "func",
+      "Name": "method",
+      "Callable": false,
+      "File": "lib/gem.rb",
+      "DefStart": 26,
+      "DefEnd": 90,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "method",
+        "TypeString": "self.method",
+        "Module": "",
+        "RubyPath": "A.method"
+      }
+    },
+    {
+      "Path": "A\u003e_local_0\u003emethod\u003et",
+      "TreePath": "TODO",
+      "Kind": "var",
+      "Name": "t",
+      "Callable": false,
+      "File": "lib/gem.rb",
+      "DefStart": 46,
+      "DefEnd": 76,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "localvariable",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "A\u003e_local_0\u003emethod\u003et"
+      }
+    }
+  ],
+  "Refs": [
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "A/$classmethods/method",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/gem.rb",
+      "Start": 35,
+      "End": 41
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "A\u003e_local_0\u003emethod\u003et",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/gem.rb",
+      "Start": 46,
+      "End": 47
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "A\u003e_local_0\u003emethod\u003et",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/gem.rb",
+      "Start": 83,
+      "End": 84
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "A",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/gem.rb",
+      "Start": 22,
+      "End": 23
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "A",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/gem.rb",
+      "Start": 30,
+      "End": 34
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "",
+      "SymbolUnit": ".",
+      "SymbolPath": "Time/$classmethods/parse",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/gem.rb",
+      "Start": 55,
+      "End": 60
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "",
+      "SymbolUnit": ".",
+      "SymbolPath": "Time",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/gem.rb",
+      "Start": 50,
+      "End": 54
+    }
+  ]
+}
+

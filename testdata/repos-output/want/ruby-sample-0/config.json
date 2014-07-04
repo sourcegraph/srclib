@@ -1,0 +1,27 @@
+{
+  "URI": "github.com/sgtest/ruby-sample-0",
+  "SourceUnits": [
+    {
+      "Description": "A sample Ruby gem for use with Sourcegraph",
+      "Files": [
+        "lib/cases/class.rb",
+        "lib/cases/core.rb",
+        "lib/cases/global_var.rb",
+        "lib/cases/module.rb",
+        "lib/cases/stdlib.rb",
+        "lib/cases/top_const.rb",
+        "lib/cases/top_def.rb",
+        "lib/ruby_gem.rb"
+      ],
+      "GemName": "ruby_gem",
+      "GemSpecFile": "ruby_gem.gemspec",
+      "Homepage": "https://example.com",
+      "RequirePaths": [
+        "lib"
+      ],
+      "Summary": "Sample Ruby Gem",
+      "Type": "rubygem",
+      "Version": "0.0.1"
+    }
+  ]
+}
