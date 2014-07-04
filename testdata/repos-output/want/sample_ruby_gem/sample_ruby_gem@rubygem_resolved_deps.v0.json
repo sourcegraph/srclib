@@ -1,0 +1,12 @@
+[
+  {
+    "FromRepo": "github.com/sgtest/sample_ruby_gem",
+    "FromUnit": "sample_ruby_gem",
+    "FromUnitType": "rubygem",
+    "ToRepo": "github.com/rails/turbolinks",
+    "ToUnit": "turbolinks",
+    "ToUnitType": "rubygem",
+    "ToVersionString": "\u003e= 0",
+    "ToRevSpec": ""
+  }
+]

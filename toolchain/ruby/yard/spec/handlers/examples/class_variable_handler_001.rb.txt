@@ -1,0 +1,9 @@
+module A
+  class B
+    @@inclass = "hello"
+
+    def method
+      @@inmethod = "hi"
+    end
+  end
+end

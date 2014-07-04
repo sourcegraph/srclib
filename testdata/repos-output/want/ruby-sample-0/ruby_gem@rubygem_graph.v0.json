@@ -1,0 +1,1689 @@
+{
+  "Symbols": [
+    {
+      "Path": "$methods/f",
+      "TreePath": "TODO",
+      "Kind": "func",
+      "Name": "f",
+      "Callable": false,
+      "File": "lib/cases/top_def.rb",
+      "DefStart": 0,
+      "DefEnd": 12,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "method",
+        "TypeString": "f(a)",
+        "Module": "",
+        "RubyPath": "#f"
+      }
+    },
+    {
+      "Path": "C",
+      "TreePath": "TODO",
+      "Kind": "const",
+      "Name": "C",
+      "Callable": false,
+      "File": "lib/cases/top_const.rb",
+      "DefStart": 0,
+      "DefEnd": 5,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "constant",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "C"
+      }
+    },
+    {
+      "Path": "C/$classmethods/ccm",
+      "TreePath": "TODO",
+      "Kind": "func",
+      "Name": "ccm",
+      "Callable": false,
+      "File": "lib/cases/class.rb",
+      "DefStart": 10,
+      "DefEnd": 27,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "method",
+        "TypeString": "self.ccm; end",
+        "Module": "",
+        "RubyPath": "C.ccm"
+      }
+    },
+    {
+      "Path": "C/$methods/im",
+      "TreePath": "TODO",
+      "Kind": "func",
+      "Name": "im",
+      "Callable": false,
+      "File": "lib/cases/class.rb",
+      "DefStart": 30,
+      "DefEnd": 41,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "method",
+        "TypeString": "im; end",
+        "Module": "",
+        "RubyPath": "C#im"
+      }
+    },
+    {
+      "Path": "C/$methods/im2",
+      "TreePath": "TODO",
+      "Kind": "func",
+      "Name": "im2",
+      "Callable": false,
+      "File": "lib/cases/class.rb",
+      "DefStart": 44,
+      "DefEnd": 77,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "method",
+        "TypeString": "im2;",
+        "Module": "",
+        "RubyPath": "C#im2"
+      }
+    },
+    {
+      "Path": "C/$methods/ivdef",
+      "TreePath": "TODO",
+      "Kind": "func",
+      "Name": "ivdef",
+      "Callable": false,
+      "File": "lib/cases/class.rb",
+      "DefStart": 100,
+      "DefEnd": 141,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "method",
+        "TypeString": "ivdef",
+        "Module": "",
+        "RubyPath": "C#ivdef"
+      }
+    },
+    {
+      "Path": "C/$methods/ivref",
+      "TreePath": "TODO",
+      "Kind": "func",
+      "Name": "ivref",
+      "Callable": false,
+      "File": "lib/cases/class.rb",
+      "DefStart": 144,
+      "DefEnd": 172,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "method",
+        "TypeString": "ivref",
+        "Module": "",
+        "RubyPath": "C#ivref"
+      }
+    },
+    {
+      "Path": "C/$methods/x",
+      "TreePath": "TODO",
+      "Kind": "func",
+      "Name": "x",
+      "Callable": false,
+      "File": "lib/cases/class.rb",
+      "DefStart": 81,
+      "DefEnd": 97,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "method",
+        "TypeString": "x",
+        "Module": "",
+        "RubyPath": "C#x"
+      }
+    },
+    {
+      "Path": "C/$methods/x=",
+      "TreePath": "TODO",
+      "Kind": "func",
+      "Name": "x=",
+      "Callable": false,
+      "File": "lib/cases/class.rb",
+      "DefStart": 81,
+      "DefEnd": 97,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "method",
+        "TypeString": "x=(value)",
+        "Module": "",
+        "RubyPath": "C#x="
+      }
+    },
+    {
+      "Path": "C/@x",
+      "TreePath": "TODO",
+      "Kind": "var",
+      "Name": "@x",
+      "Callable": false,
+      "File": "lib/cases/class.rb",
+      "DefStart": 114,
+      "DefEnd": 120,
+      "Exported": false,
+      "Data": {
+        "RubyKind": "instancevariable",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "C::@x"
+      }
+    },
+    {
+      "Path": "C/D",
+      "TreePath": "TODO",
+      "Kind": "type",
+      "Name": "D",
+      "Callable": false,
+      "File": "lib/cases/class.rb",
+      "DefStart": 176,
+      "DefEnd": 231,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "class",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "C::D"
+      }
+    },
+    {
+      "Path": "C/D/$classmethods/dcm",
+      "TreePath": "TODO",
+      "Kind": "func",
+      "Name": "dcm",
+      "Callable": false,
+      "File": "lib/cases/class.rb",
+      "DefStart": 190,
+      "DefEnd": 207,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "method",
+        "TypeString": "self.dcm; end",
+        "Module": "",
+        "RubyPath": "C::D.dcm"
+      }
+    },
+    {
+      "Path": "C/D/$methods/im",
+      "TreePath": "TODO",
+      "Kind": "func",
+      "Name": "im",
+      "Callable": false,
+      "File": "lib/cases/class.rb",
+      "DefStart": 214,
+      "DefEnd": 225,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "method",
+        "TypeString": "im; end",
+        "Module": "",
+        "RubyPath": "C::D#im"
+      }
+    },
+    {
+      "Path": "M",
+      "TreePath": "TODO",
+      "Kind": "module",
+      "Name": "M",
+      "Callable": false,
+      "File": "lib/cases/module.rb",
+      "DefStart": 0,
+      "DefEnd": 40,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "module",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "M"
+      }
+    },
+    {
+      "Path": "M/N",
+      "TreePath": "TODO",
+      "Kind": "module",
+      "Name": "N",
+      "Callable": false,
+      "File": "lib/cases/module.rb",
+      "DefStart": 11,
+      "DefEnd": 31,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "module",
+        "TypeString": "",
+        "Module": "M",
+        "RubyPath": "M::N"
+      }
+    },
+    {
+      "Path": "MY_GLOBAL_CONST",
+      "TreePath": "TODO",
+      "Kind": "const",
+      "Name": "MY_GLOBAL_CONST",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 564,
+      "DefEnd": 585,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "constant",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "MY_GLOBAL_CONST"
+      }
+    },
+    {
+      "Path": "MY_SAMPLE",
+      "TreePath": "TODO",
+      "Kind": "const",
+      "Name": "MY_SAMPLE",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 747,
+      "DefEnd": 772,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "constant",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "MY_SAMPLE"
+      }
+    },
+    {
+      "Path": "Sample",
+      "TreePath": "TODO",
+      "Kind": "type",
+      "Name": "Sample",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 0,
+      "DefEnd": 562,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "class",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "Sample"
+      }
+    },
+    {
+      "Path": "Sample/$classmethods/my_array",
+      "TreePath": "TODO",
+      "Kind": "func",
+      "Name": "my_array",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 320,
+      "DefEnd": 363,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "method",
+        "TypeString": "self.my_array",
+        "Module": "",
+        "RubyPath": "Sample.my_array"
+      }
+    },
+    {
+      "Path": "Sample/$classmethods/my_bool",
+      "TreePath": "TODO",
+      "Kind": "func",
+      "Name": "my_bool",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 176,
+      "DefEnd": 207,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "method",
+        "TypeString": "self.my_bool",
+        "Module": "",
+        "RubyPath": "Sample.my_bool"
+      }
+    },
+    {
+      "Path": "Sample/$classmethods/my_hash",
+      "TreePath": "TODO",
+      "Kind": "func",
+      "Name": "my_hash",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 238,
+      "DefEnd": 288,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "method",
+        "TypeString": "self.my_hash",
+        "Module": "",
+        "RubyPath": "Sample.my_hash"
+      }
+    },
+    {
+      "Path": "Sample/$classmethods/my_int",
+      "TreePath": "TODO",
+      "Kind": "func",
+      "Name": "my_int",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 116,
+      "DefEnd": 145,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "method",
+        "TypeString": "self.my_int",
+        "Module": "",
+        "RubyPath": "Sample.my_int"
+      }
+    },
+    {
+      "Path": "Sample/$classmethods/my_string",
+      "TreePath": "TODO",
+      "Kind": "func",
+      "Name": "my_string",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 44,
+      "DefEnd": 86,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "method",
+        "TypeString": "self.my_string",
+        "Module": "",
+        "RubyPath": "Sample.my_string"
+      }
+    },
+    {
+      "Path": "Sample/$methods/initialize",
+      "TreePath": "TODO",
+      "Kind": "func",
+      "Name": "initialize",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 367,
+      "DefEnd": 401,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "method",
+        "TypeString": "initialize(i)",
+        "Module": "",
+        "RubyPath": "Sample#initialize"
+      }
+    },
+    {
+      "Path": "Sample/$methods/my_method",
+      "TreePath": "TODO",
+      "Kind": "func",
+      "Name": "my_method",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 405,
+      "DefEnd": 540,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "method",
+        "TypeString": "my_method(a, b)",
+        "Module": "",
+        "RubyPath": "Sample#my_method"
+      }
+    },
+    {
+      "Path": "Sample/@i",
+      "TreePath": "TODO",
+      "Kind": "var",
+      "Name": "@i",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 389,
+      "DefEnd": 395,
+      "Exported": false,
+      "Data": {
+        "RubyKind": "instancevariable",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "Sample::@i"
+      }
+    },
+    {
+      "Path": "Sample/MY_CONST",
+      "TreePath": "TODO",
+      "Kind": "const",
+      "Name": "MY_CONST",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 544,
+      "DefEnd": 558,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "constant",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "Sample::MY_CONST"
+      }
+    },
+    {
+      "Path": "Sample\u003e_local_0\u003e/$methods/my_method\u003eb",
+      "TreePath": "TODO",
+      "Kind": "var",
+      "Name": "b",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 439,
+      "DefEnd": 449,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "localvariable",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "Sample\u003e_local_0\u003e#my_method\u003eb"
+      }
+    },
+    {
+      "Path": "Sample\u003e_local_0\u003e/$methods/my_method\u003ec",
+      "TreePath": "TODO",
+      "Kind": "var",
+      "Name": "c",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 429,
+      "DefEnd": 434,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "localvariable",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "Sample\u003e_local_0\u003e#my_method\u003ec"
+      }
+    },
+    {
+      "Path": "Sample\u003e_local_0\u003e/$methods/my_method\u003el",
+      "TreePath": "TODO",
+      "Kind": "var",
+      "Name": "l",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 454,
+      "DefEnd": 466,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "localvariable",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "Sample\u003e_local_0\u003e#my_method\u003el"
+      }
+    },
+    {
+      "Path": "file:lib/cases/global_var_rb_local_0\u003ea",
+      "TreePath": "TODO",
+      "Kind": "var",
+      "Name": "a",
+      "Callable": false,
+      "File": "lib/cases/global_var.rb",
+      "DefStart": 0,
+      "DefEnd": 5,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "localvariable",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "file:lib/cases/global_var.rb_local_0\u003ea"
+      }
+    },
+    {
+      "Path": "file:lib/cases/stdlib_rb_local_0\u003eu",
+      "TreePath": "TODO",
+      "Kind": "var",
+      "Name": "u",
+      "Callable": false,
+      "File": "lib/cases/stdlib.rb",
+      "DefStart": 14,
+      "DefEnd": 49,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "localvariable",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "file:lib/cases/stdlib.rb_local_0\u003eu"
+      }
+    },
+    {
+      "Path": "file:lib/ruby_gem_rb_local_0\u003eb64",
+      "TreePath": "TODO",
+      "Kind": "var",
+      "Name": "b64",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 676,
+      "DefEnd": 688,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "localvariable",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "file:lib/ruby_gem.rb_local_0\u003eb64"
+      }
+    },
+    {
+      "Path": "file:lib/ruby_gem_rb_local_0\u003efoo",
+      "TreePath": "TODO",
+      "Kind": "var",
+      "Name": "foo",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 710,
+      "DefEnd": 735,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "localvariable",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "file:lib/ruby_gem.rb_local_0\u003efoo"
+      }
+    },
+    {
+      "Path": "file:lib/ruby_gem_rb_local_0\u003emy_global_var",
+      "TreePath": "TODO",
+      "Kind": "var",
+      "Name": "my_global_var",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 587,
+      "DefEnd": 619,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "localvariable",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "file:lib/ruby_gem.rb_local_0\u003emy_global_var"
+      }
+    },
+    {
+      "Path": "file:lib/ruby_gem_rb_local_0\u003emy_sample",
+      "TreePath": "TODO",
+      "Kind": "var",
+      "Name": "my_sample",
+      "Callable": false,
+      "File": "lib/ruby_gem.rb",
+      "DefStart": 773,
+      "DefEnd": 794,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "localvariable",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "file:lib/ruby_gem.rb_local_0\u003emy_sample"
+      }
+    }
+  ],
+  "Refs": [
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "$methods/f",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/top_def.rb",
+      "Start": 14,
+      "End": 15
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "$methods/f",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/cases/top_def.rb",
+      "Start": 4,
+      "End": 5
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "",
+      "SymbolUnit": ".",
+      "SymbolPath": "Array",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 622,
+      "End": 627
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "",
+      "SymbolUnit": ".",
+      "SymbolPath": "Base64",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 682,
+      "End": 688
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "",
+      "SymbolUnit": ".",
+      "SymbolPath": "BasicObject/$methods/initialize",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 239,
+      "End": 242
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "",
+      "SymbolUnit": ".",
+      "SymbolPath": "BasicObject/$methods/initialize",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 257,
+      "End": 260
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/$classmethods/ccm",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 19,
+      "End": 22
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/$classmethods/ccm",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 248,
+      "End": 251
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/$methods/im2",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 48,
+      "End": 51
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/$methods/im",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 218,
+      "End": 220
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/$methods/im",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 243,
+      "End": 245
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/$methods/im",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 261,
+      "End": 263
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/$methods/im",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 34,
+      "End": 36
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/$methods/im",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 57,
+      "End": 59
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/$methods/im",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 69,
+      "End": 71
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/$methods/ivdef",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 104,
+      "End": 109
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/$methods/ivref",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 148,
+      "End": 153
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/$methods/x",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 165,
+      "End": 166
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/@x",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 114,
+      "End": 116
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/@x",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 158,
+      "End": 160
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/D/$classmethods/dcm",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 199,
+      "End": 202
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/D/$classmethods/dcm",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 269,
+      "End": 272
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/D",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 182,
+      "End": 183
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/D",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 194,
+      "End": 198
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/D",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 255,
+      "End": 256
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C/D",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 267,
+      "End": 268
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 125,
+      "End": 129
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 14,
+      "End": 18
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 237,
+      "End": 238
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 246,
+      "End": 247
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 252,
+      "End": 253
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 264,
+      "End": 265
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 64,
+      "End": 68
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/cases/class.rb",
+      "Start": 6,
+      "End": 7
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/top_const.rb",
+      "Start": 0,
+      "End": 1
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "C",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/top_const.rb",
+      "Start": 6,
+      "End": 7
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "M/N",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/cases/module.rb",
+      "Start": 18,
+      "End": 19
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "M/N",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/module.rb",
+      "Start": 35,
+      "End": 36
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "M/N",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/module.rb",
+      "Start": 47,
+      "End": 48
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "M/N",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/module.rb",
+      "Start": 58,
+      "End": 59
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "MY_GLOBAL_CONST",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 564,
+      "End": 579
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "MY_SAMPLE",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 747,
+      "End": 756
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "MY_SAMPLE",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 785,
+      "End": 794
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "M",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/module.rb",
+      "Start": 24,
+      "End": 25
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "M",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/module.rb",
+      "Start": 42,
+      "End": 43
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "M",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/module.rb",
+      "Start": 44,
+      "End": 45
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "M",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/module.rb",
+      "Start": 49,
+      "End": 52
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "M",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/module.rb",
+      "Start": 53,
+      "End": 56
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "M",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/cases/module.rb",
+      "Start": 7,
+      "End": 8
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample/$classmethods/my_array",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 329,
+      "End": 337
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample/$classmethods/my_bool",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 185,
+      "End": 192
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample/$classmethods/my_hash",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 247,
+      "End": 254
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample/$classmethods/my_hash",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 875,
+      "End": 882
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample/$classmethods/my_int",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 125,
+      "End": 131
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample/$classmethods/my_string",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 53,
+      "End": 62
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample/$methods/initialize",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 371,
+      "End": 381
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample/$methods/initialize",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 766,
+      "End": 769
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample/$methods/my_method",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 409,
+      "End": 418
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample/$methods/my_method",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 805,
+      "End": 814
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample/@i",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 389,
+      "End": 391
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample/@i",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 479,
+      "End": 481
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample/@i",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 527,
+      "End": 529
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample/MY_CONST",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 544,
+      "End": 552
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003eb",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 439,
+      "End": 440
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003eb",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 458,
+      "End": 459
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003eb",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 486,
+      "End": 487
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003eb",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 518,
+      "End": 519
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003ec",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 429,
+      "End": 430
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003el",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 454,
+      "End": 455
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003el",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 502,
+      "End": 503
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 120,
+      "End": 124
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 180,
+      "End": 184
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 242,
+      "End": 246
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 324,
+      "End": 328
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 48,
+      "End": 52
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 6,
+      "End": 12
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 759,
+      "End": 765
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 868,
+      "End": 874
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "",
+      "SymbolUnit": ".",
+      "SymbolPath": "URI/$classmethods/parse",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/stdlib.rb",
+      "Start": 22,
+      "End": 27
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "",
+      "SymbolUnit": ".",
+      "SymbolPath": "URI",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/stdlib.rb",
+      "Start": 18,
+      "End": 21
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:lib/cases/global_var_rb_local_0\u003ea",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/global_var.rb",
+      "Start": 0,
+      "End": 1
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:lib/cases/global_var_rb_local_0\u003ea",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/global_var.rb",
+      "Start": 6,
+      "End": 7
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:lib/cases/stdlib_rb_local_0\u003eu",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/stdlib.rb",
+      "Start": 14,
+      "End": 15
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:lib/cases/stdlib_rb_local_0\u003eu",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/cases/stdlib.rb",
+      "Start": 50,
+      "End": 51
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:lib/ruby_gem_rb_local_0\u003eb64",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 676,
+      "End": 679
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:lib/ruby_gem_rb_local_0\u003eb64",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 716,
+      "End": 719
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:lib/ruby_gem_rb_local_0\u003efoo",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 710,
+      "End": 713
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:lib/ruby_gem_rb_local_0\u003efoo",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 742,
+      "End": 745
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:lib/ruby_gem_rb_local_0\u003emy_global_var",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 587,
+      "End": 600
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:lib/ruby_gem_rb_local_0\u003emy_sample",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 773,
+      "End": 782
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:lib/ruby_gem_rb_local_0\u003emy_sample",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 795,
+      "End": 804
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:lib/ruby_gem_rb_local_0\u003emy_sample",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/ruby_gem.rb",
+      "Start": 839,
+      "End": 848
+    }
+  ],
+  "Docs": [
+    {
+      "Path": "C/$methods/x",
+      "Format": "text/html",
+      "Data": "\u003cdiv class=\"method_body\"\u003e\u003cdiv class=\"docstring\"\u003e\n  \u003cdiv class=\"discussion\"\u003e\n    \n\u003cp\u003eReturns the value of attribute x\u003c/p\u003e\n\n\n  \u003c/div\u003e\n\u003c/div\u003e\n\u003cdiv class=\"tags\"\u003e\n  \n\n\u003c/div\u003e\u003c/div\u003e",
+      "File": "lib/cases/class.rb",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "Path": "C/$methods/x=",
+      "Format": "text/html",
+      "Data": "\u003cdiv class=\"method_body\"\u003e\u003cdiv class=\"docstring\"\u003e\n  \u003cdiv class=\"discussion\"\u003e\n    \n\u003cp\u003eSets the attribute x\u003c/p\u003e\n\n\n  \u003c/div\u003e\n\u003c/div\u003e\n\u003cdiv class=\"tags\"\u003e\n  \u003cp class=\"tag_title\"\u003eParameters:\u003c/p\u003e\n\u003cul class=\"param\"\u003e\n  \n    \u003cli\u003e\n      \n        \u003cspan class='name'\u003evalue\u003c/span\u003e\n      \n      \n        \u003cspan class='type'\u003e\u003c/span\u003e\n      \n      \n      \n        \u0026mdash;\n        \u003cdiv class='inline'\u003e\n\u003cp\u003ethe value to set the attribute x to.\u003c/p\u003e\n\u003c/div\u003e\n      \n    \u003c/li\u003e\n  \n\u003c/ul\u003e\n\n\n\u003c/div\u003e\u003c/div\u003e",
+      "File": "lib/cases/class.rb",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "Path": "Sample/$classmethods/my_array",
+      "Format": "text/html",
+      "Data": "\u003cdiv class=\"method_body\"\u003e\u003cdiv class=\"docstring\"\u003e\n  \u003cdiv class=\"discussion\"\u003e\n    \n\u003cp\u003edoc for Sample.my_array\u003c/p\u003e\n\n\n  \u003c/div\u003e\n\u003c/div\u003e\n\u003cdiv class=\"tags\"\u003e\n  \n\n\u003c/div\u003e\u003c/div\u003e",
+      "File": "lib/ruby_gem.rb",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "Path": "Sample/$classmethods/my_bool",
+      "Format": "text/html",
+      "Data": "\u003cdiv class=\"method_body\"\u003e\u003cdiv class=\"docstring\"\u003e\n  \u003cdiv class=\"discussion\"\u003e\n    \n\u003cp\u003edoc for Sample.my_bool\u003c/p\u003e\n\n\n  \u003c/div\u003e\n\u003c/div\u003e\n\u003cdiv class=\"tags\"\u003e\n  \n\n\u003c/div\u003e\u003c/div\u003e",
+      "File": "lib/ruby_gem.rb",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "Path": "Sample/$classmethods/my_hash",
+      "Format": "text/html",
+      "Data": "\u003cdiv class=\"method_body\"\u003e\u003cdiv class=\"docstring\"\u003e\n  \u003cdiv class=\"discussion\"\u003e\n    \n\u003cp\u003edoc for Sample.my_hash\u003c/p\u003e\n\n\n  \u003c/div\u003e\n\u003c/div\u003e\n\u003cdiv class=\"tags\"\u003e\n  \n\n\u003c/div\u003e\u003c/div\u003e",
+      "File": "lib/ruby_gem.rb",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "Path": "Sample/$classmethods/my_int",
+      "Format": "text/html",
+      "Data": "\u003cdiv class=\"method_body\"\u003e\u003cdiv class=\"docstring\"\u003e\n  \u003cdiv class=\"discussion\"\u003e\n    \n\u003cp\u003edoc for Sample.my_int\u003c/p\u003e\n\n\n  \u003c/div\u003e\n\u003c/div\u003e\n\u003cdiv class=\"tags\"\u003e\n  \n\n\u003c/div\u003e\u003c/div\u003e",
+      "File": "lib/ruby_gem.rb",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "Path": "Sample/$classmethods/my_string",
+      "Format": "text/html",
+      "Data": "\u003cdiv class=\"method_body\"\u003e\u003cdiv class=\"docstring\"\u003e\n  \u003cdiv class=\"discussion\"\u003e\n    \n\u003cp\u003edoc for Sample.my_string\u003c/p\u003e\n\n\n  \u003c/div\u003e\n\u003c/div\u003e\n\u003cdiv class=\"tags\"\u003e\n  \n\n\u003c/div\u003e\u003c/div\u003e",
+      "File": "lib/ruby_gem.rb",
+      "Start": 0,
+      "End": 0
+    }
+  ]
+}
+

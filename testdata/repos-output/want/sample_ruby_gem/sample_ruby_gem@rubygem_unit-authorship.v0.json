@@ -1,0 +1,678 @@
+{
+  "Symbols": {
+    "MY_GLOBAL_CONST": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": true,
+        "Chars": 21,
+        "CharsProportion": 1
+      }
+    ],
+    "MY_SAMPLE": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": true,
+        "Chars": 25,
+        "CharsProportion": 1
+      }
+    ],
+    "MY_URI": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": true,
+        "Chars": 34,
+        "CharsProportion": 1
+      }
+    ],
+    "MY_URI_HOST": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": true,
+        "Chars": 25,
+        "CharsProportion": 1
+      }
+    ],
+    "Sample": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": true,
+        "Chars": 562,
+        "CharsProportion": 1
+      }
+    ],
+    "Sample/$classmethods/my_array": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": true,
+        "Chars": 43,
+        "CharsProportion": 1
+      }
+    ],
+    "Sample/$classmethods/my_bool": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": true,
+        "Chars": 31,
+        "CharsProportion": 1
+      }
+    ],
+    "Sample/$classmethods/my_hash": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": true,
+        "Chars": 50,
+        "CharsProportion": 1
+      }
+    ],
+    "Sample/$classmethods/my_int": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": true,
+        "Chars": 29,
+        "CharsProportion": 1
+      }
+    ],
+    "Sample/$classmethods/my_string": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": true,
+        "Chars": 42,
+        "CharsProportion": 1
+      }
+    ],
+    "Sample/$methods/initialize": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": true,
+        "Chars": 34,
+        "CharsProportion": 1
+      }
+    ],
+    "Sample/$methods/my_method": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": true,
+        "Chars": 135,
+        "CharsProportion": 1
+      }
+    ],
+    "Sample/@i": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": false,
+        "Chars": 6,
+        "CharsProportion": 1
+      }
+    ],
+    "Sample/MY_CONST": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": true,
+        "Chars": 14,
+        "CharsProportion": 1
+      }
+    ],
+    "Sample\u003e_local_0\u003e/$methods/my_method\u003eb": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": true,
+        "Chars": 10,
+        "CharsProportion": 1
+      }
+    ],
+    "Sample\u003e_local_0\u003e/$methods/my_method\u003ec": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": true,
+        "Chars": 5,
+        "CharsProportion": 1
+      }
+    ],
+    "Sample\u003e_local_0\u003e/$methods/my_method\u003el": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": true,
+        "Chars": 12,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/sample_ruby_gem_rb_local_0\u003eip": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-18T08:59:15Z",
+        "LastCommitID": "983392181dc79f8f97bd56ce6374951a77a83160",
+        "Exported": true,
+        "Chars": 28,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/sample_ruby_gem_rb_local_0\u003emy_global_var": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": true,
+        "Chars": 32,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/sample_ruby_gem_rb_local_0\u003emy_sample": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-09-28T06:30:02Z",
+        "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+        "Exported": true,
+        "Chars": 21,
+        "CharsProportion": 1
+      }
+    ]
+  },
+  "Refs": [
+    {
+      "SymbolPath": "MY_GLOBAL_CONST",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 564,
+      "End": 579,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "MY_SAMPLE",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 807,
+      "End": 816,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "MY_SAMPLE",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 845,
+      "End": 854,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "MY_URI",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 666,
+      "End": 672,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "MY_URI",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 715,
+      "End": 721,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "MY_URI_HOST",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 701,
+      "End": 712,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample",
+      "Def": true,
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 6,
+      "End": 12,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 120,
+      "End": 124,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 180,
+      "End": 184,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 242,
+      "End": 246,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 324,
+      "End": 328,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 48,
+      "End": 52,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 819,
+      "End": 825,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 928,
+      "End": 934,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample/$classmethods/my_array",
+      "Def": true,
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 329,
+      "End": 337,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample/$classmethods/my_bool",
+      "Def": true,
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 185,
+      "End": 192,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample/$classmethods/my_hash",
+      "Def": true,
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 247,
+      "End": 254,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample/$classmethods/my_hash",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 935,
+      "End": 942,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample/$classmethods/my_int",
+      "Def": true,
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 125,
+      "End": 131,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample/$classmethods/my_string",
+      "Def": true,
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 53,
+      "End": 62,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample/$methods/initialize",
+      "Def": true,
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 371,
+      "End": 381,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample/$methods/initialize",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 826,
+      "End": 829,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample/$methods/my_method",
+      "Def": true,
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 409,
+      "End": 418,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample/$methods/my_method",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 865,
+      "End": 874,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample/@i",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 389,
+      "End": 391,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample/@i",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 479,
+      "End": 481,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample/@i",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 527,
+      "End": 529,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample/MY_CONST",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 544,
+      "End": 552,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003eb",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 439,
+      "End": 440,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003eb",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 458,
+      "End": 459,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003eb",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 486,
+      "End": 487,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003eb",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 518,
+      "End": 519,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003ec",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 429,
+      "End": 430,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003el",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 454,
+      "End": 455,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003el",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 502,
+      "End": 503,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0\u003eip",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 761,
+      "End": 763,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-18T08:59:15Z",
+      "LastCommitID": "983392181dc79f8f97bd56ce6374951a77a83160"
+    },
+    {
+      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0\u003eip",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 795,
+      "End": 797,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-18T08:59:15Z",
+      "LastCommitID": "983392181dc79f8f97bd56ce6374951a77a83160"
+    },
+    {
+      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0\u003emy_global_var",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 587,
+      "End": 600,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0\u003emy_sample",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 833,
+      "End": 842,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0\u003emy_sample",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 855,
+      "End": 864,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0\u003emy_sample",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 899,
+      "End": 908,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolRepo": "github.com/rack/rack",
+      "SymbolUnit": "rack",
+      "SymbolPath": "URI",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 733,
+      "End": 736,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnit": ".",
+      "SymbolPath": "IPAddr",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 766,
+      "End": 772,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-18T08:59:15Z",
+      "LastCommitID": "983392181dc79f8f97bd56ce6374951a77a83160"
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnit": ".",
+      "SymbolPath": "IPAddr/$methods/initialize",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 773,
+      "End": 776,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-18T08:59:15Z",
+      "LastCommitID": "983392181dc79f8f97bd56ce6374951a77a83160"
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnit": ".",
+      "SymbolPath": "IPAddr/$methods/reverse",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 798,
+      "End": 805,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-18T08:59:15Z",
+      "LastCommitID": "983392181dc79f8f97bd56ce6374951a77a83160"
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnit": ".",
+      "SymbolPath": "URI/LDAP",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 738,
+      "End": 742,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d"
+    }
+  ],
+  "Authors": [
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-18T08:59:15Z",
+      "LastCommitID": "983392181dc79f8f97bd56ce6374951a77a83160",
+      "SymbolCount": 20,
+      "SymbolsProportion": 1,
+      "ExportedSymbolCount": 19,
+      "ExportedSymbolsProportion": 1
+    }
+  ],
+  "ClientsOfOtherUnits": [
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-09-28T06:30:02Z",
+      "LastCommitID": "39f3f1984c59dd57b5c89b67c1831e0ec0cc766d",
+      "SymbolRepo": "github.com/rack/rack",
+      "SymbolUnitType": null,
+      "SymbolUnit": "rack",
+      "RefCount": 1
+    },
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-18T08:59:15Z",
+      "LastCommitID": "983392181dc79f8f97bd56ce6374951a77a83160",
+      "SymbolRepo": "",
+      "SymbolUnitType": null,
+      "SymbolUnit": null,
+      "RefCount": 41
+    },
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-18T08:59:15Z",
+      "LastCommitID": "983392181dc79f8f97bd56ce6374951a77a83160",
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": null,
+      "SymbolUnit": ".",
+      "RefCount": 4
+    }
+  ]
+}

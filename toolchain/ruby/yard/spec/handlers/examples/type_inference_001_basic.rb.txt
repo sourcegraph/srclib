@@ -1,0 +1,13 @@
+Myarrayclass = Array
+Mystringclass = String
+
+Mystring = "a"
+Myfixnum = 123
+Mybool = true
+Myhash = {:a => 3}
+Myarray = [1,2]
+
+module A; module B; end; end
+class C; class D; end; end
+
+mylocalvar = "abc"

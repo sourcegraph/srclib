@@ -1,0 +1,27 @@
+module M1
+  module M2
+    class C1
+      class C2 < C1
+        include M1
+        include ::M1::M2
+        include M2
+      end
+    end
+  end
+
+  module M3
+    include M1
+    include ::M1
+    class C3 < M2::C1::C2
+      include M3
+    end
+  end
+end
+
+M1
+M1::M2
+M1::M2::C1
+M1::M2::C1::C2
+
+M1::M3
+M1::M3::C3

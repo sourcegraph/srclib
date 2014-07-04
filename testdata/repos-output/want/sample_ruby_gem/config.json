@@ -1,0 +1,20 @@
+{
+  "URI": "github.com/sgtest/sample_ruby_gem",
+  "SourceUnits": [
+    {
+      "Description": "A sample Ruby gem for use with Sourcegraph",
+      "Files": [
+        "lib/sample_ruby_gem.rb"
+      ],
+      "GemName": "sample_ruby_gem",
+      "GemSpecFile": "sample_ruby_gem.gemspec",
+      "Homepage": "https://github.com/sourcegraph/sample_ruby_gem",
+      "RequirePaths": [
+        "lib"
+      ],
+      "Summary": "Sample Ruby Gem",
+      "Type": "rubygem",
+      "Version": "0.0.1"
+    }
+  ]
+}
