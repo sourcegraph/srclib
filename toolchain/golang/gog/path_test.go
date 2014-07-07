@@ -29,6 +29,9 @@ func TestPaths(t *testing.T) {
 		{`type I interface { A(); B() }`, []defPath{{"foo", "I"}, {"foo", "I/A"}, {"foo", "I/B"}}, nil},
 		{`type I interface { A(x int); B(x int) }`, []defPath{{"foo", "I/A/x"}, {"foo", "I/B/x"}}, nil},
 		{`type f func(i int); type g func(i int)`, []defPath{{"foo", "$sources[0]/$sources[0]0/i"}, {"foo", "$sources[0]/$sources[0]1/i"}}, nil},
+
+		// Test that the 2 `x`s have unique paths.
+		{`func init() { x:=0;_=x};func init() { x:=0;_=x}`, []defPath{{"foo", "init/x"}, {"foo", "init$1/x"}}, nil},
 	}
 
 	for _, c := range cases {
