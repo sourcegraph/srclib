@@ -16,6 +16,9 @@ import (
 
 func init() {
 	o := map[repo.URI]*config.Repository{
+		"github.com/emicklei/go-restful": &config.Repository{
+			ScanIgnore: []string{"./examples"},
+		},
 		"code.google.com/p/go": &config.Repository{
 			ScanIgnore: []string{"./misc", "./test", "./doc", "./cmd", "./src/cmd"},
 		},
