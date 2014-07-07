@@ -115,12 +115,8 @@ func (s *RepositoryStore) ListCommits() ([]string, error) {
 
 const CachedRepositoryConfigFilename = "config.json"
 
-var dataFilesIgnoreBasenames = map[string]struct{}{
-	CachedRepositoryConfigFilename: struct{}{},
-}
-
 func (s *RepositoryStore) DataFiles(path string) ([]*BuildDataFileInfo, error) {
-	var files []*BuildDataFileInfo
+	files := []*BuildDataFileInfo{}
 	walker := fs.WalkFS(path, s.walkableRWVFS)
 	for walker.Step() {
 		fi := walker.Stat()
@@ -132,10 +128,6 @@ func (s *RepositoryStore) DataFiles(path string) ([]*BuildDataFileInfo, error) {
 		}
 
 		path := strings.TrimPrefix(walker.Path(), "/")
-
-		if _, ignore := dataFilesIgnoreBasenames[filepath.Base(path)]; ignore {
-			continue
-		}
 
 		parts := strings.SplitN(path, "/", 2)
 		if len(parts) != 2 {

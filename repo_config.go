@@ -20,7 +20,10 @@ type RepoContext struct {
 	RepoRootDir string // Root directory containing repository being analyzed
 	VCSType     string // VCS type (git or hg)
 	CommitID    string // CommitID of current working directory
+	CloneURL    string // CloneURL of repo.
 }
+
+func (c *RepoContext) URI() repo.URI { return repo.MakeURI(c.CloneURL) }
 
 func NewRepoContext(targetDir string) (*RepoContext, error) {
 	if !isDir(targetDir) {
@@ -59,6 +62,13 @@ func NewRepoContext(targetDir string) (*RepoContext, error) {
 
 	rc.CommitID = string(currentCommitID)
 
+	// get default URI (if URI is not specified in .sourcegraph file)
+	cloneURL, err := getVCSCloneURL(rc.VCSType, rc.RepoRootDir)
+	if err != nil {
+		return nil, err
+	}
+	rc.CloneURL = cloneURL
+
 	// updateVCSIgnore("." + rc.VCS.ShortName() + "ignore") // TODO: desirable?
 	return rc, nil
 }
@@ -76,15 +86,7 @@ func NewJobContext(targetDir string) (*JobContext, error) {
 	jc := new(JobContext)
 	jc.RepoContext = rc
 
-	// get default URI (if URI is not specified in .sourcegraph file)
-	// TODO(bliu): this seems like it should get pushed into ReadOrComputeRepositoryConfig...
-	cloneURL, err := getVCSCloneURL(rc.VCSType, targetDir)
-	if err != nil {
-		return nil, err
-	}
-	uri := repo.MakeURI(cloneURL)
-
-	jc.Repo, err = ReadOrComputeRepositoryConfig(jc.RepoRootDir, jc.CommitID, uri)
+	jc.Repo, err = ReadOrComputeRepositoryConfig(rc.RepoRootDir, rc.CommitID, rc.URI())
 	if err != nil {
 		return nil, err
 	}
