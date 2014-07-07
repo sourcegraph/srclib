@@ -156,6 +156,7 @@ func (g *Grapher) assignPaths(s *types.Scope, prefix []string, exported, pkgscop
 		}
 	}
 
+	seenChildPrefixes := map[string]struct{}{}
 	for i := 0; i < s.NumChildren(); i++ {
 		c := s.Child(i)
 		childPrefix := prefix
@@ -164,6 +165,19 @@ func (g *Grapher) assignPaths(s *types.Scope, prefix []string, exported, pkgscop
 		if path := g.scopePath(prefix, c); path != nil {
 			childPrefix = append([]string{}, path...)
 			pkgscope, exported = false, false
+		}
+
+		if len(childPrefix) >= 1 {
+			// Ensure all child prefixes are unique. This is an issue when you
+			// have, for example:
+			//  func init() { x:=0;_=x};func init() { x:=0;_=x}
+			// This is valid Go code but if we don't uniquify the two `x`s, they
+			// will have the same paths.
+			cp := strings.Join(childPrefix, "/")
+			if _, seen := seenChildPrefixes[cp]; seen {
+				childPrefix[len(childPrefix)-1] += fmt.Sprintf("$%d", i)
+			}
+			seenChildPrefixes[cp] = struct{}{}
 		}
 
 		g.assignPaths(c, childPrefix, exported, pkgscope)
