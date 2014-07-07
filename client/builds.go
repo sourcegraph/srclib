@@ -124,6 +124,14 @@ type BuildConfig struct {
 	// may begin running this build. If not enqueued, it is up to the client to
 	// run the build and update it accordingly.
 	Queue bool
+
+	// UseCache is whether to use cached build data files. If false, the
+	// .sourcegraph-data directory will be wiped out before the build begins.
+	//
+	// Regardless of the value of UseCache, if the build is successful, the
+	// build data files will be uploaded to the central cache after the build
+	// completes.
+	UseCache bool `db:"use_cache"`
 }
 
 type BuildCreateOptions struct {
