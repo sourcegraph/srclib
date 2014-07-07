@@ -128,9 +128,8 @@ type BuildConfig struct {
 	// UseCache is whether to use cached build data files. If false, the
 	// .sourcegraph-data directory will be wiped out before the build begins.
 	//
-	// Regardless of the value of UseCache, if the build is successful, the
-	// build data files will be uploaded to the central cache after the build
-	// completes.
+	// Regardless of the value of UseCache, the build data files will be
+	// uploaded to the central cache after the build ends.
 	UseCache bool `db:"use_cache"`
 }
 
