@@ -12,6 +12,7 @@ import (
 
 	"github.com/kr/fs"
 	"github.com/sourcegraph/rwvfs"
+	"github.com/sourcegraph/s3vfs"
 )
 
 var BuildDataDirName = ".sourcegraph-data"
@@ -33,10 +34,15 @@ func New(fs rwvfs.FileSystem) *MultiStore {
 
 func (s *MultiStore) RepositoryStore(repoURI repo.URI) (*RepositoryStore, error) {
 	path := filepath.Clean(string(repoURI))
-	err := rwvfs.MkdirAll(s, path)
-	if err != nil {
-		return nil, err
+
+	// No need to mkdir for S3, since S3 doesn't have directories.
+	if _, ok := s.walkableRWVFS.FileSystem.(*s3vfs.S3FS); !ok {
+		err := rwvfs.MkdirAll(s, path)
+		if err != nil {
+			return nil, err
+		}
 	}
+
 	return newRepositoryStore(walkableRWVFS{rwvfs.Sub(s.walkableRWVFS, path)}), nil
 }
 
