@@ -8,6 +8,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"code.google.com/p/rog-go/parallel"
+
 	"github.com/sourcegraph/rwvfs"
 
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
@@ -107,9 +109,15 @@ The options are:
 		log.Fatal(err)
 	}
 
-	for _, file := range localFiles {
-		fetchFile(repoStore, string(repo.URI()), file)
+	par := parallel.NewRun(15)
+	for _, file_ := range localFiles {
+		file := file_
+		par.Do(func() error {
+			fetchFile(repoStore, string(repo.URI()), file)
+			return nil
+		})
 	}
+	par.Wait()
 }
 
 func fetchFile(repoStore *buildstore.RepositoryStore, repoURI string, fi *buildstore.BuildDataFileInfo) {
@@ -188,9 +196,15 @@ The options are:
 		log.Fatal(err)
 	}
 
-	for _, file := range localFiles {
-		uploadFile(repoStore, file, string(repo.URI()))
+	par := parallel.NewRun(15)
+	for _, file_ := range localFiles {
+		file := file_
+		par.Do(func() error {
+			uploadFile(repoStore, file, string(repo.URI()))
+			return nil
+		})
 	}
+	par.Wait()
 }
 
 func uploadFile(repoStore *buildstore.RepositoryStore, file *buildstore.BuildDataFileInfo, repoURI string) {
