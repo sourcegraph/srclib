@@ -24,6 +24,7 @@ const (
 type Client struct {
 	// Services used to communicate with different parts of the Sourcegraph API.
 	DocPages       DocPagesService
+	BuildData      BuildDataService
 	Builds         BuildsService
 	People         PeopleService
 	Repositories   RepositoriesService
@@ -53,6 +54,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c := new(Client)
 	c.httpClient = httpClient
 	c.DocPages = &docPagesService{c}
+	c.BuildData = &buildDataService{c}
 	c.Builds = &buildsService{c}
 	c.People = &peopleService{c}
 	c.Repositories = &repositoriesService{c}
@@ -257,6 +259,7 @@ func addOptions(u *url.URL, opt interface{}) error {
 func NewMockClient() *Client {
 	return &Client{
 		DocPages:       &MockDocPagesService{},
+		BuildData:      &MockBuildDataService{},
 		Builds:         &MockBuildsService{},
 		People:         &MockPeopleService{},
 		Repositories:   &MockRepositoriesService{},
