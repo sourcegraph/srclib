@@ -99,9 +99,14 @@ The options are:
 		log.Fatal(err)
 	}
 
-	localFiles, _, err := apiclient.BuildData.List(client.RepositorySpec{URI: string(repo.URI()), CommitID: repo.CommitID}, nil)
+	localFiles, resp, err := apiclient.BuildData.List(client.RepositorySpec{URI: string(repo.URI()), CommitID: repo.CommitID}, nil)
 	if err != nil {
-		log.Fatal(err)
+		if hresp, ok := resp.(*client.HTTPResponse); hresp != nil && ok && hresp.StatusCode == http.StatusNotFound {
+			log.Println("No remote build data found.")
+			return
+		} else {
+			log.Fatal(err)
+		}
 	}
 
 	repoStore, err := buildstore.NewRepositoryStore(repo.RepoRootDir)
