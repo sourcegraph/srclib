@@ -76,6 +76,10 @@ func (_ dockerRunner) Run(c *Command) ([]byte, error) {
 
 	dockerfile = append(dockerfile, c.PreCmdDockerfile...)
 
+	if c.Dir != "" {
+		dockerfile = append(dockerfile, []byte(fmt.Sprintf("\nWORKDIR %s\n", c.Dir))...)
+	}
+
 	dockerfile = append(dockerfile, []byte(fmt.Sprintf("\nCMD %s", cmdJSON))...)
 	err = ioutil.WriteFile(filepath.Join(tmpDir, "Dockerfile"), []byte(dockerfile), 0700)
 	if err != nil {
@@ -99,9 +103,6 @@ func (_ dockerRunner) Run(c *Command) ([]byte, error) {
 		}
 
 		runOptions := append([]string{"--rm"}, c.RunOptions...)
-		if c.Dir != "" {
-			runOptions = append(runOptions, "--workdir="+c.Dir)
-		}
 		args := append([]string{"run"}, runOptions...)
 		args = append(args, image)
 		runCmd := exec.Command("docker", args...)
