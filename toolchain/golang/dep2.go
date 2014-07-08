@@ -118,6 +118,10 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository) 
 
 	dir, err := gosrc.Get(sourcegraph.AuthenticatingAsNeededHTTPClient, string(importPath), "")
 	if err != nil {
+		if strings.Contains(err.Error(), "Git Repository is empty.") {
+			// Not fatal, just weird.
+			return nil, nil
+		}
 		return nil, fmt.Errorf("unable to fetch information about Go package %q: %s", importPath, err)
 	}
 
