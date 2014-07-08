@@ -35,7 +35,7 @@ on Windows, DOS, Mac, Amiga... If your favorite system isn't
 listed here, it may still be supported, if there's a C compiler for
 it. Ask around on comp.lang.python -- or just try compiling Python
 yourself.`,
-	RootDirectory: ".",
+	RootDirectory: "Lib",
 	Files:         nil, // should be filled in when needed
 }
 
