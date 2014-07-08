@@ -131,6 +131,10 @@ type BuildConfig struct {
 	// Regardless of the value of UseCache, the build data files will be
 	// uploaded to the central cache after the build ends.
 	UseCache bool `db:"use_cache"`
+
+	// Priority of the build in the queue (higher numbers mean the build is
+	// dequeued sooner).
+	Priority int
 }
 
 type BuildCreateOptions struct {
