@@ -17,6 +17,7 @@ func build_(args []string) {
 	import_ := fs.Bool("import", true, "import build data into Sourcegraph app/API when build completes")
 	useCache := fs.Bool("use-cache", true, "use cached build data (if present)")
 	force := fs.Bool("force", true, "force build (even if repository has already been built")
+	priority := fs.Int("priority", 0, "build priority")
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` build [options] [REPO-URI ...]
 
@@ -40,7 +41,7 @@ The options are:
 			client.RepositorySpec{URI: uri, CommitID: *rev},
 			&client.BuildCreateOptions{
 				Force:       *force,
-				BuildConfig: client.BuildConfig{Queue: *queue, Import: *import_, UseCache: *useCache},
+				BuildConfig: client.BuildConfig{Queue: *queue, Import: *import_, UseCache: *useCache, Priority: *priority},
 			},
 		)
 		if err != nil {
