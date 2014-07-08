@@ -36,6 +36,13 @@ func Register(name string, scanner Scanner) {
 	Scanners[name] = scanner
 }
 
+var GlobalScanIgnore = []string{
+	"third_party",
+	"vendor",
+	"bower_components",
+	"node_modules",
+}
+
 // SourceUnits scans dir and its subdirectories for source units, using all
 // registered toolchains that implement Scanner.
 func SourceUnits(dir string, c *config.Repository) ([]unit.SourceUnit, error) {
@@ -64,7 +71,7 @@ func SourceUnits(dir string, c *config.Repository) ([]unit.SourceUnit, error) {
 						break
 					}
 				}
-				if !ignored && dirsContains(c.ScanIgnore, u.RootDir()) {
+				if !ignored && (dirsContains(c.ScanIgnore, u.RootDir()) || dirsContains(GlobalScanIgnore, u.RootDir())) {
 					ignored = true
 				}
 				if !ignored {
