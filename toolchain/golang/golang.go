@@ -43,18 +43,18 @@ type goVersion struct {
 }
 
 var goVersions = map[string]*goVersion{
-	"1.2.1": &goVersion{
-		VersionString:      "go1.2.1",
+	"1.3": &goVersion{
+		VersionString:      "go1.3",
 		RepositoryCloneURL: "https://code.google.com/p/go",
 		RepositoryURI:      "code.google.com/p/go",
 		RepositoryVCS:      vcsurl.Mercurial,
-		VCSRevision:        "go1.2.1",
+		VCSRevision:        "go1.3",
 		BaseImportPath:     "code.google.com/p/go/src/pkg",
 		BasePkgDir:         "src/pkg",
 	},
 }
 
-var defaultGoVersion = goVersions["1.2.1"]
+var defaultGoVersion = goVersions["1.3"]
 
 func (v *goVersion) baseDockerfile() ([]byte, error) {
 	var buf bytes.Buffer
@@ -137,7 +137,7 @@ RUN apt-get update -qq
 RUN apt-get install -qqy curl
 
 # Install Go {{.GoVersion.VersionString}}.
-RUN curl -o /tmp/golang.tgz https://go.googlecode.com/files/{{.GoVersion.VersionString}}.linux-amd64.tar.gz
+RUN curl -Lo /tmp/golang.tgz http://golang.org/dl/{{.GoVersion.VersionString}}.linux-amd64.tar.gz
 RUN tar -xzf /tmp/golang.tgz -C /usr/local
 ENV GOROOT /usr/local/go
 
