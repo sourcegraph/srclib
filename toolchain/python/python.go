@@ -160,10 +160,7 @@ func (l *pythonEnv) pydepDockerfile() ([]byte, error) {
 }
 
 const pydepDockerfileTemplate = `FROM ubuntu:14.04
-RUN apt-get update -qq
-RUN apt-get install -qqy curl
-RUN apt-get install -qqy git
-RUN apt-get install -qqy {{.PythonVersion}}
+RUN apt-get update -qq && apt-get install -qq curl git {{.PythonVersion}}
 RUN ln -s $(which {{.PythonVersion}}) /usr/bin/python
 RUN curl https://raw.githubusercontent.com/pypa/pip/1.5.5/contrib/get-pip.py | python
 
