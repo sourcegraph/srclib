@@ -5,6 +5,7 @@ import (
 	"go/ast"
 	"go/token"
 	"log"
+	"math/rand"
 	"path/filepath"
 	"strings"
 
@@ -68,7 +69,9 @@ func (g *Grapher) scopePath(prefix []string, s *types.Scope) []string {
 func (g *Grapher) scopeLabel(s *types.Scope) (path []string) {
 	node, present := g.scopeNodes[s]
 	if !present {
-		panic("no node found for scope " + s.String())
+		// TODO(sqs): diagnose why this happens. See https://github.com/sourcegraph/sourcegraph.com/issues/163.
+		log.Printf("no node found for scope (giving a dummy label); scope is: %s", s.String())
+		return []string{fmt.Sprintf("ERROR%d", rand.Intn(10000))}
 	}
 
 	switch n := node.(type) {
