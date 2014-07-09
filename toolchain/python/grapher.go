@@ -34,7 +34,7 @@ RUN curl https://raw.githubusercontent.com/pypa/pip/1.5.5/contrib/get-pip.py | p
 RUN pip install virtualenv
 
 # Python development headers and other libs that some libraries require to install on Ubuntu
-RUN apt-get update -qq && apt-get install -qq python-dev libxslt1-dev libxml2-dev
+RUN apt-get update -qq && apt-get install -qq python-dev libxslt1-dev libxml2-dev zlib1g-dev
 
 # install python3 version
 RUN add-apt-repository ppa:fkrull/deadsnakes > /dev/null  # (TODO: sketchy 3rd party ppa)
@@ -58,9 +58,13 @@ RUN pip install git+https://github.com/sourcegraph/pydep.git@{{.PydepVersion}}
 
 var grapherDockerCmdTemplate = template.Must(template.New("").Parse(`
 {{if not .IsStdLib}}
+echo "attempting to install deps from setup.py" 1>&2;
 /venv/bin/pip install {{.SrcDir}} 1>&2;
-/venv/bin/pip install -r {{.SrcDir}}/requirements.txt 1>&2;
-/venv/bin/pip install -r {{.SrcDir}}/test_requirements.txt 1>&2;
+reqsfiles="{{.SrcDir}}/*requirements.txt";
+for r in $reqsfiles; do
+  echo "attempting to install deps from $r" 1>&2;
+  /venv/bin/pip install -r $r 1>&2;
+done
 {{end}}
 
 # Compute requirements
@@ -369,7 +373,7 @@ func (p *pythonEnv) pysonarSymPathToSymbolKey(pySymPath string, u unit.SourceUni
 				}
 			}
 			for _, mod := range req.Modules {
-				modpath := filepath.Join(p.sitePackagesDir(), mod+".py")
+				modpath := filepath.Join(p.sitePackagesDir(), mod) // TODO(bliu): add a test case for top-level module libs
 				if r, err := filepath.Rel(modpath, pySymPath); err == nil && !strings.HasPrefix(r, "..") {
 					foundReq = &req
 					break FindReq

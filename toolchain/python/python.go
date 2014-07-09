@@ -164,5 +164,8 @@ RUN apt-get update -qq && apt-get install -qq curl git {{.PythonVersion}}
 RUN ln -s $(which {{.PythonVersion}}) /usr/bin/python
 RUN curl https://raw.githubusercontent.com/pypa/pip/1.5.5/contrib/get-pip.py | python
 
+# Python development headers and other libs that some libraries require to install on Ubuntu
+RUN apt-get update -qq && apt-get install -qq python-dev libxslt1-dev libxml2-dev zlib1g-dev
+
 RUN pip install git+git://github.com/sourcegraph/pydep.git@{{.PydepVersion}}
 `
