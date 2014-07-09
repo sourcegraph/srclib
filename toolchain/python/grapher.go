@@ -28,18 +28,17 @@ var notInUnitError = errors.New("not in unit")
 var builtinPrefixes = map[string]string{"sys": "sys", "os": "os", "path": "os/path"}
 
 var grapherDockerfileTemplate = template.Must(template.New("").Parse(`FROM dockerfile/java
-RUN apt-get update -qq
-RUN apt-get install -qqy curl
-RUN apt-get install -qqy git
-RUN apt-get install -qqy {{.PythonVersion}}
+RUN apt-get update -qq && apt-get install -qq curl git {{.PythonVersion}}
 RUN ln -s $(which {{.PythonVersion}}) /usr/bin/python
 RUN curl https://raw.githubusercontent.com/pypa/pip/1.5.5/contrib/get-pip.py | python
 RUN pip install virtualenv
 
+# Python development headers and other libs that some libraries require to install on Ubuntu
+RUN apt-get update -qq && apt-get install -qq python-dev libxslt1-dev libxml2-dev
+
 # install python3 version
 RUN add-apt-repository ppa:fkrull/deadsnakes > /dev/null  # (TODO: sketchy 3rd party ppa)
-RUN apt-get update -qq
-RUN apt-get install -qqy {{.Python3Version}}
+RUN apt-get update -qq && apt-get install -qq {{.Python3Version}}
 RUN rm /usr/bin/python3
 RUN ln -s $(which {{.Python3Version}}) /usr/bin/python3
 
@@ -47,7 +46,7 @@ RUN ln -s $(which {{.Python3Version}}) /usr/bin/python3
 RUN virtualenv /venv
 
 # PySonar
-RUN apt-get install -qqy maven
+RUN apt-get update -qq && apt-get install -qq maven
 RUN git clone https://github.com/sourcegraph/pysonar2.git /pysonar2 && cd /pysonar2 && git checkout {{.PySonar2Version}}
 WORKDIR /pysonar2
 RUN mvn -q clean package
@@ -61,6 +60,7 @@ var grapherDockerCmdTemplate = template.Must(template.New("").Parse(`
 {{if not .IsStdLib}}
 /venv/bin/pip install {{.SrcDir}} 1>&2;
 /venv/bin/pip install -r {{.SrcDir}}/requirements.txt 1>&2;
+/venv/bin/pip install -r {{.SrcDir}}/test_requirements.txt 1>&2;
 {{end}}
 
 # Compute requirements
