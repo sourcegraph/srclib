@@ -97,6 +97,16 @@ func (v *npmVersion) BuildScanner(dir string, c *config.Repository) (*container.
 				}
 			}
 
+			// filter out undesirable source files (minified files) from
+			// packages
+			for _, pkg := range pkgs {
+				for i, f := range pkg.LibFiles {
+					if strings.HasSuffix(f, ".min.js") {
+						pkg.LibFiles = append(pkg.LibFiles[:i], pkg.LibFiles[i+1:]...)
+					}
+				}
+			}
+
 			// set other fields
 			for _, pkg := range pkgs2 {
 				var pkgjson struct {
