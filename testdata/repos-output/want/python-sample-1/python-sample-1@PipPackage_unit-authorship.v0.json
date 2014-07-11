@@ -46,6 +46,62 @@
       "SymbolRepo": "github.com/sgtest/python-sample-0",
       "SymbolUnitType": "PipPackage",
       "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "File": "app/app.py",
+      "Start": 20,
+      "End": 24,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-05-10T06:52:01Z",
+      "LastCommitID": "d75909f7fe60aedfa57b315419c4221b96e16dbe"
+    },
+    {
+      "SymbolRepo": "github.com/sgtest/python-sample-0",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "File": "app/app.py",
+      "Start": 7,
+      "End": 11,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-05-10T06:52:01Z",
+      "LastCommitID": "d75909f7fe60aedfa57b315419c4221b96e16dbe"
+    },
+    {
+      "SymbolRepo": "github.com/sgtest/python-sample-0",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "File": "app/app.py",
+      "Start": 12,
+      "End": 14,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-05-10T06:52:01Z",
+      "LastCommitID": "d75909f7fe60aedfa57b315419c4221b96e16dbe"
+    },
+    {
+      "SymbolRepo": "github.com/sgtest/python-sample-0",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "File": "app/app.py",
+      "Start": 25,
+      "End": 27,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-05-10T06:52:01Z",
+      "LastCommitID": "d75909f7fe60aedfa57b315419c4221b96e16dbe"
+    },
+    {
+      "SymbolRepo": "github.com/sgtest/python-sample-0",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
       "SymbolPath": "pkg0/m0/Class0",
       "UnitType": "PipPackage",
       "Unit": "python-sample-1",
@@ -126,7 +182,7 @@
       "SymbolRepo": "github.com/sgtest/python-sample-0",
       "SymbolUnitType": "PipPackage",
       "SymbolUnit": "python-sample-0",
-      "RefCount": 2
+      "RefCount": 6
     }
   ]
 }
