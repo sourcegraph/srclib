@@ -44,7 +44,7 @@ The options are:
 		}
 
 		if *summary || *Verbose {
-			log.Printf("## %s output summary:", unit.MakeID(u))
+			log.Printf("%s output summary:", unit.MakeID(u))
 			log.Printf(" - %d symbols", len(output.Symbols))
 			log.Printf(" - %d refs", len(output.Refs))
 			log.Printf(" - %d docs", len(output.Docs))
