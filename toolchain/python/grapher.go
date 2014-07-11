@@ -54,6 +54,9 @@ WORKDIR /
 
 # PyDep
 RUN pip install git+https://github.com/sourcegraph/pydep.git@{{.PydepVersion}}
+
+# C Module Grapher
+RUN pip install git+https://github.com/sourcegraph/pybuiltingrapher.git@999769cba9700e76898b6b5f75fd1555c3112ced
 `))
 
 var grapherDockerCmdTemplate = template.Must(template.New("").Parse(`
@@ -70,8 +73,10 @@ done
 # Compute requirements
 {{if .IsStdLib}}
 REQDATA='[]'
+CMODULEGRAPH=$(graphstdlib.py "/src");
 {{else}}
 REQDATA=$(pydep-run.py dep {{.SrcDir}});
+CMODULEGRAPH='null'
 {{end}}
 
 # Compute graph
@@ -79,7 +84,7 @@ echo 'Running graphing step...' 1>&2;
 GRAPHDATA=$(java {{.JavaOpts}} -classpath /pysonar2/target/pysonar-2.0-SNAPSHOT.jar org.yinwang.pysonar.JSONDump {{.SrcDir}} '{{.IncludePaths}}' '');
 echo 'Graphing done.' 1>&2;
 
-echo "{ \"graph\": $GRAPHDATA, \"reqs\": $REQDATA }";
+echo "{ \"graph\": $GRAPHDATA, \"reqs\": $REQDATA, \"extensions\": $CMODULEGRAPH }";
 `))
 
 func (p *pythonEnv) grapherDockerfile() []byte {
@@ -200,6 +205,17 @@ func (p *pythonEnv) grapherTransform(o *rawGraphData, u unit.SourceUnit) (*graph
 			return nil, fmt.Errorf("could not convert doc %+v: %s", pdoc, err)
 		}
 		o2.Docs = append(o2.Docs, doc)
+	}
+
+	// Handle the case of C extensions
+	if o.Extensions != nil {
+		// Extension data only includes symbols and docs. Add those to the struct
+		for _, csymbol := range o.Extensions.Symbols {
+			o2.Symbols = append(o2.Symbols, csymbol)
+		}
+		for _, cdoc := range o.Extensions.Docs {
+			o2.Docs = append(o2.Docs, cdoc)
+		}
 	}
 
 	return &o2, nil
@@ -426,6 +442,7 @@ type graphData_ struct {
 type rawGraphData struct {
 	Graph graphData_
 	Reqs  []requirement
+	Extensions *grapher2.Output
 }
 
 type pySym struct {
