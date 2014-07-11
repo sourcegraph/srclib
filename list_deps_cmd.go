@@ -45,7 +45,7 @@ The options are:
 		}
 
 		if *Verbose {
-			log.Printf("## %s", unit.MakeID(u))
+			log.Printf("%s", unit.MakeID(u))
 		}
 
 		allRawDeps = append(allRawDeps, rawDeps...)
