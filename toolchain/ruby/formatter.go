@@ -42,6 +42,10 @@ func (f symbolFormatter) DefKeyword() string {
 func (f symbolFormatter) Kind() string { return f.data.RubyKind }
 
 func (f symbolFormatter) Name(qual graph.Qualification) string {
+	if f.data.isLocalVar() {
+		return f.symbol.Name
+	}
+
 	switch qual {
 	case graph.Unqualified:
 		return f.symbol.Name
@@ -67,11 +71,12 @@ func (f symbolFormatter) NameAndTypeSeparator() string {
 func (f symbolFormatter) Type(qual graph.Qualification) string {
 	var ts string
 	if f.data.RubyKind == "method" {
-		if i := strings.Index(f.data.TypeString, "("); i != -1 {
-			ts = f.data.TypeString[i:]
+		if i := strings.Index(f.data.Signature, "("); i != -1 {
+			ts = f.data.Signature[i:]
 		}
+		ts += " " + f.data.ReturnType
 	} else {
 		ts = f.data.TypeString
 	}
-	return ts
+	return strings.TrimPrefix(ts, "::")
 }
