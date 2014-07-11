@@ -60,6 +60,9 @@ func (f symbolFormatter) Name(qual graph.Qualification) string {
 		containerName = filepath.Base(filepath.Dir(f.symbol.File))
 	} else if strings.HasSuffix(filename, ".py") {
 		containerName = filename[:len(filename)-len(".py")]
+	} else if strings.HasSuffix(filename, ".c") {
+		// Special case for Standard Lib C extensions
+		return dotted(string(f.symbol.TreePath))
 	} else {
 		// Should never reach here, but fall back to TreePath if we do
 		return string(f.symbol.TreePath)
