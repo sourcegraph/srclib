@@ -195,13 +195,17 @@ func (v *npmVersion) BuildResolver(dep *dep2.RawDependency, c *config.Repository
 			if len(resolvedDeps) == 0 {
 				return nil, fmt.Errorf("npm-deptool did not output anything for raw dependency %+v", dep)
 			}
-			if len(resolvedDeps) != 1 {
-				return nil, fmt.Errorf("npm-deptool unexpectedly returned %d deps for raw dependency %+v: deps are %+v", len(resolvedDeps), dep, resolvedDeps)
+
+			var resolvedDep *npmDeptoolOutput
+			for name, v := range resolvedDeps {
+				if name == npmDep.Name {
+					resolvedDep = &v
+					break
+				}
 			}
 
-			var resolvedDep npmDeptoolOutput
-			for _, v := range resolvedDeps {
-				resolvedDep = v
+			if resolvedDep == nil {
+				return nil, fmt.Errorf("npm-deptool did not return info about npm package %q for raw dependency %+v: all %d resolved deps are %+v", npmDep.Name, dep, len(resolvedDeps), resolvedDeps)
 			}
 
 			var toRepoCloneURL, toRevSpec string
