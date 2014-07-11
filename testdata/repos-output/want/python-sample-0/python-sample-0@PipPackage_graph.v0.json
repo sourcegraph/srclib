@@ -643,6 +643,19 @@
       "UnitType": "PipPackage",
       "Unit": "python-sample-0",
       "File": "pkg0/m1.py",
+      "Start": 76,
+      "End": 82
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0",
+      "Def": false,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
       "Start": 99,
       "End": 105
     },
@@ -1053,6 +1066,19 @@
       "SymbolRepo": "",
       "SymbolUnitType": "PipPackage",
       "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0",
+      "Def": false,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 66,
+      "End": 68
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
       "SymbolPath": "pkg0/m1/Class0_0/__init__/self",
       "Def": true,
       "Repo": "",
@@ -1178,6 +1204,32 @@
       "File": "pkg0/m1.py",
       "Start": 241,
       "End": 245
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0",
+      "Def": false,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 51,
+      "End": 55
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0",
+      "Def": false,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 61,
+      "End": 65
     }
   ],
   "Docs": [

@@ -328,12 +328,51 @@
     {
       "SymbolUnitType": "PipPackage",
       "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 51,
+      "End": 55,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 61,
+      "End": 65,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
       "SymbolPath": "pkg0/m0",
       "UnitType": "PipPackage",
       "Unit": "python-sample-0",
       "File": "pkg0/m1.py",
       "Start": 246,
       "End": 248,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 66,
+      "End": 68,
       "AuthorEmail": "beyang.liu@gmail.com",
       "LastCommitDate": "2014-04-10T01:16:55Z",
       "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
@@ -400,6 +439,19 @@
       "File": "pkg0/m1.py",
       "Start": 199,
       "End": 205,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-10T01:16:55Z",
+      "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
+    },
+    {
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0/Class0",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-0",
+      "File": "pkg0/m1.py",
+      "Start": 76,
+      "End": 82,
       "AuthorEmail": "beyang.liu@gmail.com",
       "LastCommitDate": "2014-04-10T01:16:55Z",
       "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630"
@@ -1009,7 +1061,7 @@
       "SymbolRepo": "",
       "SymbolUnitType": "PipPackage",
       "SymbolUnit": "python-sample-0",
-      "RefCount": 50
+      "RefCount": 54
     }
   ]
 }

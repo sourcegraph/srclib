@@ -121,6 +121,58 @@
       "File": "app/app.py",
       "Start": 28,
       "End": 34
+    },
+    {
+      "SymbolRepo": "github.com/sgtest/python-sample-0",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0",
+      "Def": false,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "File": "app/app.py",
+      "Start": 12,
+      "End": 14
+    },
+    {
+      "SymbolRepo": "github.com/sgtest/python-sample-0",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0/m0",
+      "Def": false,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "File": "app/app.py",
+      "Start": 25,
+      "End": 27
+    },
+    {
+      "SymbolRepo": "github.com/sgtest/python-sample-0",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0",
+      "Def": false,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "File": "app/app.py",
+      "Start": 20,
+      "End": 24
+    },
+    {
+      "SymbolRepo": "github.com/sgtest/python-sample-0",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "python-sample-0",
+      "SymbolPath": "pkg0",
+      "Def": false,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "python-sample-1",
+      "File": "app/app.py",
+      "Start": 7,
+      "End": 11
     }
   ]
 }
