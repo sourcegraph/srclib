@@ -46,7 +46,7 @@ func (v *Ruby) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Reposito
 	// Set up YARD
 	fmt.Fprintln(dockerfile, "\n# Set up YARD")
 	fmt.Fprintln(dockerfile, "RUN apt-get install -qy git")
-	fmt.Fprintln(dockerfile, "RUN git clone git://github.com/sourcegraph/yard.git /yard && cd /yard && git checkout 54043a5366d609a39de8b2b9714de9e06e6b6544")
+	fmt.Fprintln(dockerfile, "RUN git clone git://github.com/sourcegraph/yard.git /yard && cd /yard && git checkout a698c45ad570651036aa1d4dbcde191b2fc25e15")
 	fmt.Fprintln(dockerfile, "RUN cd /yard && rvm all do bundle && rvm all do gem install asciidoctor rdoc --no-rdoc --no-ri")
 
 	if !rubyConfig.OmitStdlib {
@@ -106,6 +106,14 @@ func (v *Ruby) convertGraphData(ydoc *yardocCondenseOutput, c *config.Repository
 	}
 
 	seensym := make(map[graph.SymbolKey]graph.Symbol)
+
+	type seenRefKey struct {
+		graph.RefSymbolKey
+		File       string
+		Start, End int
+	}
+	seenref := make(map[seenRefKey]struct{})
+
 	for _, rubyObj := range ydoc.Objects {
 		sym, err := rubyObj.toSymbol()
 		if err != nil {
@@ -147,10 +155,23 @@ func (v *Ruby) convertGraphData(ydoc *yardocCondenseOutput, c *config.Repository
 				File:      rubyObj.File,
 			})
 		}
+
+		// Defs parsed from C code have a name_range (instead of a ref with
+		// decl_ident). Emit those as refs here.
+		if rubyObj.NameStart != 0 || rubyObj.NameEnd != 0 {
+			nameRef := &graph.Ref{
+				SymbolPath: sym.Path,
+				Def:        true,
+				File:       sym.File,
+				Start:      rubyObj.NameStart,
+				End:        rubyObj.NameEnd,
+			}
+			seenref[seenRefKey{nameRef.RefSymbolKey(), nameRef.File, nameRef.Start, nameRef.End}] = struct{}{}
+			o.Refs = append(o.Refs, nameRef)
+		}
 	}
 
 	printedGemResolutionErr := make(map[string]struct{})
-	seenref := make(map[graph.Ref]struct{})
 
 	for _, rubyRef := range ydoc.References {
 		ref, depGemName := rubyRef.toRef()
@@ -177,10 +198,12 @@ func (v *Ruby) convertGraphData(ydoc *yardocCondenseOutput, c *config.Repository
 			// Internal ref to this gem.
 		}
 
-		if _, seen := seenref[*ref]; seen {
+		seenKey := seenRefKey{ref.RefSymbolKey(), ref.File, ref.Start, ref.End}
+		if _, seen := seenref[seenKey]; seen {
+			log.Printf("Already saw ref key %v; skipping.", seenKey)
 			continue
 		}
-		seenref[*ref] = struct{}{}
+		seenref[seenKey] = struct{}{}
 
 		o.Refs = append(o.Refs, ref)
 	}
@@ -189,16 +212,20 @@ func (v *Ruby) convertGraphData(ydoc *yardocCondenseOutput, c *config.Repository
 }
 
 type rubyObject struct {
-	Name      string
-	Path      string
-	Module    string
-	Type      string
-	File      string
-	Exported  bool
-	DefStart  int `json:"def_start"`
-	DefEnd    int `json:"def_end"`
-	Docstring string
-	TypeExpr  string `json:"type_expr"`
+	Name       string
+	Path       string
+	Module     string
+	Type       string
+	File       string
+	Exported   bool
+	DefStart   int `json:"def_start"`
+	DefEnd     int `json:"def_end"`
+	NameStart  int `json:"name_start"`
+	NameEnd    int `json:"name_end"`
+	Docstring  string
+	Signature  string `json:"signature"`
+	TypeString string `json:"type_string"`
+	ReturnType string `json:"return_type"`
 }
 
 type SymbolData struct {
@@ -206,25 +233,34 @@ type SymbolData struct {
 	TypeString string
 	Module     string
 	RubyPath   string
+	Signature  string
+	ReturnType string
+}
+
+func (s *SymbolData) isLocalVar() bool {
+	return strings.Contains(s.RubyPath, ">_local_")
 }
 
 func (s *rubyObject) toSymbol() (*graph.Symbol, error) {
 	sym := &graph.Symbol{
 		SymbolKey: graph.SymbolKey{Path: rubyPathToSymbolPath(s.Path)},
-		TreePath:  "TODO", // TODO(sqs) TODO(ruby): set tree path
+		TreePath:  rubyPathToTreePath(s.Path),
 		Kind:      rubyObjectTypeMap[s.Type],
 		Name:      s.Name,
 		Exported:  s.Exported,
 		File:      s.File,
 		DefStart:  s.DefStart,
 		DefEnd:    s.DefEnd,
+		Test:      strings.Contains(s.File, "_test.rb") || strings.Contains(s.File, "_spec.rb") || strings.Contains(s.File, "test/") || strings.Contains(s.File, "spec/"),
 	}
 
 	d := SymbolData{
 		RubyKind:   s.Type,
-		TypeString: s.TypeExpr,
+		TypeString: s.TypeString,
+		Signature:  s.Signature,
 		Module:     s.Module,
 		RubyPath:   s.Path,
+		ReturnType: s.ReturnType,
 	}
 	var err error
 	sym.Data, err = json.Marshal(d)
@@ -267,4 +303,18 @@ func (r *rubyRef) toRef() (ref *graph.Ref, targetOrigin string) {
 func rubyPathToSymbolPath(path string) graph.SymbolPath {
 	p := strings.Replace(strings.Replace(strings.Replace(strings.Replace(strings.Replace(path, ".rb", "_rb", -1), "::", "/", -1), "#", "/$methods/", -1), ".", "/$classmethods/", -1), ">", "@", -1)
 	return graph.SymbolPath(strings.TrimPrefix(p, "/"))
+}
+
+func rubyPathToTreePath(path string) graph.TreePath {
+	path = strings.Replace(strings.Replace(strings.Replace(strings.Replace(strings.Replace(path, ".rb", "_rb", -1), "::", "/", -1), "#", "/", -1), ".", "/", -1), ">", "/", -1)
+	parts := strings.Split(path, "/")
+	var meaningfulParts []string
+	for _, p := range parts {
+		if strings.HasPrefix(p, "_local_") || p == "" {
+			// Strip out path components that exist solely to make this path
+			// unique and are not semantically meaningful.
+			meaningfulParts = append(meaningfulParts, p)
+		}
+	}
+	return graph.TreePath(strings.Join(meaningfulParts, "/"))
 }
