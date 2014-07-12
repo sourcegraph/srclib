@@ -90,10 +90,8 @@ func (v *goVersion) containerForRepo(dir string, unit unit.SourceUnit, c *config
 		dockerfile = append(dockerfile, []byte(fmt.Sprintf(`
 # Adjust for Go stdlib
 ENV GOROOT /tmp/go
-RUN apt-get update -qqy
-RUN apt-get install -qqy build-essential
-RUN apt-get install -qqy mercurial
-	`))...)
+RUN apt-get update -qq && apt-get install -qq build-essential mercurial
+`))...)
 
 		// Add all dirs needed for make.bash. Exclude dirs that change when
 		// we build, so that we can take advantage of ADD caching and not
@@ -133,8 +131,7 @@ RUN cd /tmp/go/src && ./make.bash
 const containerGOPATH = "/tmp/sg/gopath"
 
 const baseDockerfile = `FROM ubuntu:14.04
-RUN apt-get update -qq
-RUN apt-get install -qqy curl
+RUN apt-get update -qq && apt-get install -qq curl
 
 # Install Go {{.GoVersion.VersionString}}.
 RUN curl -Lo /tmp/golang.tgz http://golang.org/dl/{{.GoVersion.VersionString}}.linux-amd64.tar.gz
