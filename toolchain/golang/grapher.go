@@ -32,7 +32,7 @@ func (v *goVersion) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Rep
 	}
 
 	// Install VCS tools in Docker container.
-	cont.Dockerfile = append(cont.Dockerfile, []byte("RUN apt-get -yq install git mercurial bzr subversion\n")...)
+	cont.Dockerfile = append(cont.Dockerfile, []byte("RUN apt-get update -qq && apt-get -qq install git mercurial bzr subversion\n")...)
 
 	cont.AddFiles = append(cont.AddFiles, [2]string{gogBinPath, "/usr/local/bin/gog"})
 	cont.Cmd = []string{"bash", "-c", fmt.Sprintf("go get -v -t %s; gog %s", pkg.ImportPath, pkg.ImportPath)}
