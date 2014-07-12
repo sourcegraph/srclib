@@ -28,6 +28,10 @@ func TestMakeCmd(t *testing.T) {
 		t.Skip("srcgraph make tests take a long time; skipping for -test.short")
 	}
 
+	if *repoMatch != "" {
+		t.Logf("Testing `srcgraph make` on repositories that contain \"%s\"", *repoMatch)
+	}
+
 	// Since we exec `srcgraph`, make sure it's up-to-date.
 	if out, err := exec.Command("make", "-C", "..", "srcgraph").CombinedOutput(); err != nil {
 		t.Errorf("Failed to build srcgraph for `srcgraph make` tests: %s.\n\nOutput was:\n%s", err, out)
