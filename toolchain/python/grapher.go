@@ -56,7 +56,7 @@ WORKDIR /
 RUN pip install git+https://github.com/sourcegraph/pydep.git@{{.PydepVersion}}
 
 # C Module Grapher
-RUN pip install git+https://github.com/sourcegraph/pybuiltingrapher.git@999769cba9700e76898b6b5f75fd1555c3112ced
+RUN pip install git+https://github.com/sourcegraph/pybuiltingrapher.git@{{.PyBuiltinGrapherVersion}}
 `))
 
 var grapherDockerCmdTemplate = template.Must(template.New("").Parse(`
@@ -73,7 +73,10 @@ done
 # Compute requirements
 {{if .IsStdLib}}
 REQDATA='[]'
+
+echo "Graphing C extensions..." 1>&2;
 CMODULEGRAPH=$(graphstdlib.py "/src");
+
 {{else}}
 REQDATA=$(pydep-run.py dep {{.SrcDir}});
 CMODULEGRAPH='null'
@@ -209,12 +212,18 @@ func (p *pythonEnv) grapherTransform(o *rawGraphData, u unit.SourceUnit) (*graph
 
 	// Handle the case of C extensions
 	if o.Extensions != nil {
-		// Extension data only includes symbols and docs. Add those to the struct
+		// Extension data includes symbols, docs, and self refs. Add those to the struct
+		log.Printf("Integrating C extension Symbols...")
 		for _, csymbol := range o.Extensions.Symbols {
 			o2.Symbols = append(o2.Symbols, csymbol)
 		}
+		log.Printf("Integrating C extension Docs...")
 		for _, cdoc := range o.Extensions.Docs {
 			o2.Docs = append(o2.Docs, cdoc)
+		}
+		log.Printf("Integrating C extension Refs...")
+		for _, cref := range o.Extensions.Refs {
+			o2.Refs = append(o2.Refs, cref)
 		}
 	}
 
