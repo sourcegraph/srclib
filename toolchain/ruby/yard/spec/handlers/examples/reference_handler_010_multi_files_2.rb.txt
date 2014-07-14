@@ -1,9 +1,0 @@
-require_relative './reference_handler_010_multi_files_1.rb'
-
-puts M::C.cm
-puts c = M::C.new
-puts c.im
-
-puts M::D.cm
-puts d = M::D.new
-puts d.im
