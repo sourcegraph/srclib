@@ -316,11 +316,12 @@ func rubyPathToTreePath(path string) graph.TreePath {
 	parts := strings.Split(path, "/")
 	var meaningfulParts []string
 	for _, p := range parts {
-		if strings.HasPrefix(p, "_local_") || p == "" {
+		if strings.HasPrefix(p, "_local_") || p == "" || strings.HasPrefix(p, "$") {
 			// Strip out path components that exist solely to make this path
 			// unique and are not semantically meaningful.
-			meaningfulParts = append(meaningfulParts, p)
+			continue
 		}
+		meaningfulParts = append(meaningfulParts, p)
 	}
 	return graph.TreePath(strings.Join(meaningfulParts, "/"))
 }
