@@ -55,6 +55,9 @@ ENV PATH /usr/local/rvm/bin:$PATH
 RUN rvm requirements
 RUN rvm install {{.Ruby.Version}}
 RUN rvm {{.Ruby.Version}} do gem install bundler --no-ri --no-rdoc
+
+# Lots of gemspecs run git to list files, so it's necessary.
+RUN apt-get install -qqy git
 `
 
 type Config struct {
