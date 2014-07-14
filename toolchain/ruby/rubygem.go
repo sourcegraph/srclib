@@ -36,10 +36,12 @@ type RubyGem struct {
 	// the repository root.
 	GemSpecFile string
 
-	// Files is the Gem::Specification "files" field.
+	// Files is the Gem::Specification "files" field, with all paths relative to
+	// the repository root.
 	Files []string
 
-	// RequirePaths is the Gem::Specification "require_paths" field.
+	// RequirePaths is the Gem::Specification "require_paths" field, with all
+	// paths relative to the repository root.
 	RequirePaths []string
 }
 
