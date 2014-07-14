@@ -173,10 +173,10 @@ type SymbolListOptions struct {
 	Query string `url:",omitempty" json:",omitempty"`
 
 	// Filters
-	RepositoryURI string `url:",omitempty" json:",omitempty"`
-	CommitID      string `url:",omitempty" json:",omitempty"`
-	UnitType      string `url:",omitempty" json:",omitempty"`
-	Unit          string `url:",omitempty" json:",omitempty"`
+	RepositoryURI string   `url:",omitempty" json:",omitempty"`
+	CommitID      string   `url:",omitempty" json:",omitempty"`
+	UnitTypes     []string `url:",omitempty,comma" json:",omitempty"`
+	Unit          string   `url:",omitempty" json:",omitempty"`
 
 	Path string `url:",omitempty" json:",omitempty"`
 

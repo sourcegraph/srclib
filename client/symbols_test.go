@@ -53,6 +53,7 @@ func TestSymbolsService_List(t *testing.T) {
 		testFormValues(t, r, values{
 			"RepositoryURI": "r1",
 			"Sort":          "name",
+			"UnitTypes":     "a,b",
 			"Direction":     "asc",
 			"Kinds":         "a,b",
 			"Exported":      "true",
@@ -67,6 +68,7 @@ func TestSymbolsService_List(t *testing.T) {
 	symbols, _, err := client.Symbols.List(&SymbolListOptions{
 		RepositoryURI: "r1",
 		Sort:          "name",
+		UnitTypes:     []string{"a", "b"},
 		Direction:     "asc",
 		Kinds:         []string{"a", "b"},
 		Exported:      true,

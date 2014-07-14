@@ -2,7 +2,7 @@ package ruby
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/url"
 	"path/filepath"
 	"strings"
@@ -114,7 +114,8 @@ func (v *Ruby) resolveRubyGemDep(gemDep *rubyGemDep, c *config.Repository) (*dep
 	// Look it up on rubygems.org.
 	repoURL, err := ResolveGem(gemDep.Name)
 	if err != nil {
-		return nil, fmt.Errorf("resolving RubyGem dependency %v: %s", gemDep, err)
+		log.Printf("Failed to resolve RubyGem dependency %v: %s (continuing)", gemDep, err)
+		return nil, nil
 	}
 	resolvedTarget.ToRepoCloneURL = repoURL
 
