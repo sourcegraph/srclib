@@ -11,8 +11,8 @@ func TestRubyPathToTreePath(t *testing.T) {
 		rubyPath string
 		treePath graph.TreePath
 	}{
-		{"URI/$classmethods/parse", "URI/parse"},
-		{"C>_local_0>f", "C/f"},
+		{"URI/$classmethods/parse", "./URI/parse"},
+		{"C>_local_0>f", "./C/f"},
 	}
 	for _, test := range tests {
 		treePath := rubyPathToTreePath(test.rubyPath)
