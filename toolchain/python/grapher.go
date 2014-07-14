@@ -56,7 +56,8 @@ WORKDIR /
 RUN pip install git+https://github.com/sourcegraph/pydep.git@{{.PydepVersion}}
 
 # C Module Grapher
-RUN pip install git+https://github.com/sourcegraph/pybuiltingrapher.git@{{.PyBuiltinGrapherVersion}}
+RUN apt-get -qq install python3-pip
+RUN pip3 install git+https://github.com/sourcegraph/pybuiltingrapher.git@{{.PyBuiltinGrapherVersion}}
 `))
 
 var grapherDockerCmdTemplate = template.Must(template.New("").Parse(`
