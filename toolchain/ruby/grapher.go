@@ -46,7 +46,7 @@ func (v *Ruby) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Reposito
 	// Set up YARD
 	fmt.Fprintln(dockerfile, "\n# Set up YARD")
 	fmt.Fprintln(dockerfile, "RUN apt-get install -qy git")
-	fmt.Fprintln(dockerfile, "RUN git clone git://github.com/sourcegraph/yard.git /yard && cd /yard && git checkout b50abb32c99462ae5a7ec8b6c9c26e2a66c2bc2d")
+	fmt.Fprintln(dockerfile, "RUN git clone git://github.com/sourcegraph/yard.git /yard && cd /yard && git checkout b1c48e782551881159811dee40f7729ad82800a0")
 	fmt.Fprintln(dockerfile, "RUN cd /yard && rvm all do bundle && rvm all do gem install asciidoctor rdoc --no-rdoc --no-ri")
 
 	if !rubyConfig.OmitStdlib {
@@ -59,13 +59,14 @@ func (v *Ruby) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Reposito
 	cont := container.Container{
 		Dockerfile: dockerfile.Bytes(),
 		AddDirs:    [][2]string{{dir, containerDir}},
-		Dir:        gemDir,
+		Dir:        containerDir,
 		PreCmdDockerfile: []byte(`
 WORKDIR ` + gemDir + `
 # Remove common binary deps from Gemfile (hacky)
 RUN if [ -e Gemfile ]; then sed -i '/\(pg\|nokigiri\|rake\|mysql\|bcrypt-ruby\|debugger\|debugger-linecache\|debugger-ruby_core_source\|tzinfo\)/d' Gemfile; fi
 RUN if [ -e Gemfile ]; then rvm all do bundle install --no-color; fi
 RUN if [ -e Gemfile ]; then rvm all do /yard/bin/yard bundle --debug; fi
+WORKDIR ` + containerDir + `
 `),
 		Cmd: []string{"bash", "-c", "rvm all do /yard/bin/yard condense -c " + RubyStdlibYARDocDir + " --load-yardoc-files `test -e Gemfile && rvm all do /yard/bin/yard bundle --list | cut -f 2 | paste -sd ,`,/dev/null " + strings.Join(unit.Paths(), " ")},
 	}
@@ -175,6 +176,11 @@ func (v *Ruby) convertGraphData(ydoc *yardocCondenseOutput, c *config.Repository
 
 	for _, rubyRef := range ydoc.References {
 		ref, depGemName := rubyRef.toRef()
+
+		if ref.SymbolPath == "" {
+			log.Printf("Warning: Got ref with empty symbol path: %+v (skipping).", ref)
+			continue
+		}
 
 		// Determine the referenced symbol's repo.
 		if depGemName == StdlibGemNameSentinel {
