@@ -1,5 +1,0 @@
-Array
-
-require 'ipaddr'
-ip = IPAddr.new('1.2.3.4')
-ip.reverse
