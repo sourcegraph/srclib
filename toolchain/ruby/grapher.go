@@ -46,7 +46,7 @@ func (v *Ruby) BuildGrapher(dir string, unit unit.SourceUnit, c *config.Reposito
 	// Set up YARD
 	fmt.Fprintln(dockerfile, "\n# Set up YARD")
 	fmt.Fprintln(dockerfile, "RUN apt-get install -qy git")
-	fmt.Fprintln(dockerfile, "RUN git clone git://github.com/sourcegraph/yard.git /yard && cd /yard && git checkout b1c48e782551881159811dee40f7729ad82800a0")
+	fmt.Fprintln(dockerfile, "RUN git clone git://github.com/sourcegraph/yard.git /yard && cd /yard && git checkout 1d4baa6ba89efe0d946404cbeb7a84adc4e53fbc")
 	fmt.Fprintln(dockerfile, "RUN cd /yard && rvm all do bundle && rvm all do gem install asciidoctor rdoc --no-rdoc --no-ri")
 
 	if !rubyConfig.OmitStdlib {
