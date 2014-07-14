@@ -323,5 +323,5 @@ func rubyPathToTreePath(path string) graph.TreePath {
 		}
 		meaningfulParts = append(meaningfulParts, p)
 	}
-	return graph.TreePath(strings.Join(meaningfulParts, "/"))
+	return "./" + graph.TreePath(strings.Join(meaningfulParts, "/"))
 }
