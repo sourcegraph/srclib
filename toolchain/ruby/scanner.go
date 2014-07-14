@@ -24,14 +24,14 @@ func (v *Ruby) BuildScanner(dir string, c *config.Repository) (*container.Comman
 	cont := container.Container{
 		Dockerfile:       dockerfile,
 		AddDirs:          [][2]string{{dir, containerDir}},
-		PreCmdDockerfile: []byte("\nRUN rvm all do gem install rubygems-find --version 0.0.1 --no-rdoc --no-ri\n"),
+		PreCmdDockerfile: []byte("\nRUN rvm all do gem install rubygems-find --version 0.0.4 --no-rdoc --no-ri\n"),
 		Dir:              containerDir,
 		Cmd:              []string{"rvm", "all", "do", "rubygems-find.rb"},
 	}
 	cmd := container.Command{
 		Container: cont,
 		Transform: func(orig []byte) ([]byte, error) {
-			gems, err := gemspecJSONMapToRubyGems(orig)
+			gems, err := gemspecJSONMapToRubyGems(orig, containerDir)
 			if err != nil {
 				return nil, err
 			}
@@ -61,7 +61,7 @@ func (v *Ruby) UnmarshalSourceUnits(data []byte) ([]unit.SourceUnit, error) {
 }
 
 // gemspecJSONMapToRubyGems parses the JSON returned by rubygems-find.
-func gemspecJSONMapToRubyGems(data []byte) ([]*RubyGem, error) {
+func gemspecJSONMapToRubyGems(data []byte, containerDir string) ([]*RubyGem, error) {
 	var gemsBySpec map[string]json.RawMessage
 	err := json.Unmarshal(data, &gemsBySpec)
 	if err != nil {
@@ -70,7 +70,7 @@ func gemspecJSONMapToRubyGems(data []byte) ([]*RubyGem, error) {
 
 	var gems []*RubyGem
 	for gemspecFile, gemSpecJSON := range gemsBySpec {
-		gem, err := gemspecJSONToRubyGem(gemspecFile, gemSpecJSON)
+		gem, err := gemspecJSONToRubyGem(gemspecFile, gemSpecJSON, containerDir)
 		if err != nil {
 			return nil, err
 		}
@@ -81,7 +81,20 @@ func gemspecJSONMapToRubyGems(data []byte) ([]*RubyGem, error) {
 }
 
 // gemspecJSONToRubyGem parses a single gemspec JSON returned by rubygems-find.
-func gemspecJSONToRubyGem(gemspecFile string, gemspecJSON []byte) (*RubyGem, error) {
+func gemspecJSONToRubyGem(gemspecFile string, gemspecJSON []byte, containerDir string) (*RubyGem, error) {
+	// Make file paths relative to the repository root (i.e., containerDir).
+	gemDir := filepath.Dir(gemspecFile)
+	var err error
+	gemDir, err = filepath.Rel(containerDir, gemDir)
+	if err != nil {
+		return nil, err
+	}
+
+	gemspecFile, err = filepath.Rel(containerDir, gemspecFile)
+	if err != nil {
+		return nil, err
+	}
+
 	var gemSpec struct {
 		Name         string
 		Version      string
@@ -91,7 +104,7 @@ func gemspecJSONToRubyGem(gemspecFile string, gemspecJSON []byte) (*RubyGem, err
 		Files        []string
 		RequirePaths []string `json:"require_paths"`
 	}
-	err := json.Unmarshal(gemspecJSON, &gemSpec)
+	err = json.Unmarshal(gemspecJSON, &gemSpec)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +115,14 @@ func gemspecJSONToRubyGem(gemspecFile string, gemspecJSON []byte) (*RubyGem, err
 		Description_: gemSpec.Description,
 		Homepage:     gemSpec.Homepage,
 		GemSpecFile:  filepath.Clean(gemspecFile),
-		Files:        gemSpec.Files,
-		RequirePaths: gemSpec.RequirePaths,
+		Files:        addPrefixToPaths(gemDir, gemSpec.Files),
+		RequirePaths: addPrefixToPaths(gemDir, gemSpec.RequirePaths),
 	}, nil
+}
+
+func addPrefixToPaths(prefix string, paths []string) []string {
+	for i, p := range paths {
+		paths[i] = filepath.Join(prefix, p)
+	}
+	return paths
 }
