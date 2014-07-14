@@ -2,7 +2,6 @@
   "Symbols": [
     {
       "Path": "MY_GLOBAL_CONST",
-      "TreePath": "TODO",
       "Kind": "const",
       "Name": "MY_GLOBAL_CONST",
       "Callable": false,
@@ -12,14 +11,15 @@
       "Exported": true,
       "Data": {
         "RubyKind": "constant",
-        "TypeString": "",
+        "TypeString": "Fixnum#",
         "Module": "",
-        "RubyPath": "MY_GLOBAL_CONST"
+        "RubyPath": "MY_GLOBAL_CONST",
+        "Signature": "",
+        "ReturnType": ""
       }
     },
     {
       "Path": "MY_SAMPLE",
-      "TreePath": "TODO",
       "Kind": "const",
       "Name": "MY_SAMPLE",
       "Callable": false,
@@ -29,14 +29,15 @@
       "Exported": true,
       "Data": {
         "RubyKind": "constant",
-        "TypeString": "",
+        "TypeString": "Sample#",
         "Module": "",
-        "RubyPath": "MY_SAMPLE"
+        "RubyPath": "MY_SAMPLE",
+        "Signature": "",
+        "ReturnType": ""
       }
     },
     {
       "Path": "MY_URI",
-      "TreePath": "TODO",
       "Kind": "const",
       "Name": "MY_URI",
       "Callable": false,
@@ -48,12 +49,13 @@
         "RubyKind": "constant",
         "TypeString": "",
         "Module": "",
-        "RubyPath": "MY_URI"
+        "RubyPath": "MY_URI",
+        "Signature": "",
+        "ReturnType": ""
       }
     },
     {
       "Path": "MY_URI_HOST",
-      "TreePath": "TODO",
       "Kind": "const",
       "Name": "MY_URI_HOST",
       "Callable": false,
@@ -65,12 +67,13 @@
         "RubyKind": "constant",
         "TypeString": "",
         "Module": "",
-        "RubyPath": "MY_URI_HOST"
+        "RubyPath": "MY_URI_HOST",
+        "Signature": "",
+        "ReturnType": ""
       }
     },
     {
       "Path": "Sample",
-      "TreePath": "TODO",
       "Kind": "type",
       "Name": "Sample",
       "Callable": false,
@@ -80,14 +83,15 @@
       "Exported": true,
       "Data": {
         "RubyKind": "class",
-        "TypeString": "",
+        "TypeString": "Sample",
         "Module": "",
-        "RubyPath": "Sample"
+        "RubyPath": "Sample",
+        "Signature": "",
+        "ReturnType": ""
       }
     },
     {
       "Path": "Sample/$classmethods/my_array",
-      "TreePath": "TODO",
       "Kind": "func",
       "Name": "my_array",
       "Callable": false,
@@ -97,14 +101,15 @@
       "Exported": true,
       "Data": {
         "RubyKind": "method",
-        "TypeString": "self.my_array",
+        "TypeString": "",
         "Module": "",
-        "RubyPath": "Sample.my_array"
+        "RubyPath": "Sample.my_array",
+        "Signature": "self.my_array",
+        "ReturnType": ""
       }
     },
     {
       "Path": "Sample/$classmethods/my_bool",
-      "TreePath": "TODO",
       "Kind": "func",
       "Name": "my_bool",
       "Callable": false,
@@ -114,14 +119,15 @@
       "Exported": true,
       "Data": {
         "RubyKind": "method",
-        "TypeString": "self.my_bool",
+        "TypeString": "",
         "Module": "",
-        "RubyPath": "Sample.my_bool"
+        "RubyPath": "Sample.my_bool",
+        "Signature": "self.my_bool",
+        "ReturnType": ""
       }
     },
     {
       "Path": "Sample/$classmethods/my_hash",
-      "TreePath": "TODO",
       "Kind": "func",
       "Name": "my_hash",
       "Callable": false,
@@ -131,14 +137,15 @@
       "Exported": true,
       "Data": {
         "RubyKind": "method",
-        "TypeString": "self.my_hash",
+        "TypeString": "Sample.my_hash",
         "Module": "",
-        "RubyPath": "Sample.my_hash"
+        "RubyPath": "Sample.my_hash",
+        "Signature": "self.my_hash",
+        "ReturnType": "Hash#"
       }
     },
     {
       "Path": "Sample/$classmethods/my_int",
-      "TreePath": "TODO",
       "Kind": "func",
       "Name": "my_int",
       "Callable": false,
@@ -148,14 +155,15 @@
       "Exported": true,
       "Data": {
         "RubyKind": "method",
-        "TypeString": "self.my_int",
+        "TypeString": "",
         "Module": "",
-        "RubyPath": "Sample.my_int"
+        "RubyPath": "Sample.my_int",
+        "Signature": "self.my_int",
+        "ReturnType": ""
       }
     },
     {
       "Path": "Sample/$classmethods/my_string",
-      "TreePath": "TODO",
       "Kind": "func",
       "Name": "my_string",
       "Callable": false,
@@ -165,14 +173,15 @@
       "Exported": true,
       "Data": {
         "RubyKind": "method",
-        "TypeString": "self.my_string",
+        "TypeString": "",
         "Module": "",
-        "RubyPath": "Sample.my_string"
+        "RubyPath": "Sample.my_string",
+        "Signature": "self.my_string",
+        "ReturnType": ""
       }
     },
     {
       "Path": "Sample/$methods/initialize",
-      "TreePath": "TODO",
       "Kind": "func",
       "Name": "initialize",
       "Callable": false,
@@ -182,14 +191,15 @@
       "Exported": true,
       "Data": {
         "RubyKind": "method",
-        "TypeString": "initialize(i)",
+        "TypeString": "",
         "Module": "",
-        "RubyPath": "Sample#initialize"
+        "RubyPath": "Sample#initialize",
+        "Signature": "initialize(i)",
+        "ReturnType": ""
       }
     },
     {
       "Path": "Sample/$methods/my_method",
-      "TreePath": "TODO",
       "Kind": "func",
       "Name": "my_method",
       "Callable": false,
@@ -199,14 +209,15 @@
       "Exported": true,
       "Data": {
         "RubyKind": "method",
-        "TypeString": "my_method(a, b)",
+        "TypeString": "",
         "Module": "",
-        "RubyPath": "Sample#my_method"
+        "RubyPath": "Sample#my_method",
+        "Signature": "my_method(a, b)",
+        "ReturnType": ""
       }
     },
     {
       "Path": "Sample/@i",
-      "TreePath": "TODO",
       "Kind": "var",
       "Name": "@i",
       "Callable": false,
@@ -218,12 +229,13 @@
         "RubyKind": "instancevariable",
         "TypeString": "",
         "Module": "",
-        "RubyPath": "Sample::@i"
+        "RubyPath": "Sample::@i",
+        "Signature": "",
+        "ReturnType": ""
       }
     },
     {
       "Path": "Sample/MY_CONST",
-      "TreePath": "TODO",
       "Kind": "const",
       "Name": "MY_CONST",
       "Callable": false,
@@ -233,14 +245,54 @@
       "Exported": true,
       "Data": {
         "RubyKind": "constant",
-        "TypeString": "",
+        "TypeString": "Fixnum#",
         "Module": "",
-        "RubyPath": "Sample::MY_CONST"
+        "RubyPath": "Sample::MY_CONST",
+        "Signature": "",
+        "ReturnType": ""
       }
     },
     {
-      "Path": "Sample\u003e_local_0\u003e/$methods/my_method\u003eb",
-      "TreePath": "TODO",
+      "Path": "Sample@_local_0@/$methods/initialize@i",
+      "TreePath": "_local_0/",
+      "Kind": "var",
+      "Name": "i",
+      "Callable": false,
+      "File": "lib/sample_ruby_gem.rb",
+      "DefStart": 382,
+      "DefEnd": 383,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "localvariable",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "Sample\u003e_local_0\u003e#initialize\u003ei",
+        "Signature": "",
+        "ReturnType": ""
+      }
+    },
+    {
+      "Path": "Sample@_local_0@/$methods/my_method@a",
+      "TreePath": "_local_0/",
+      "Kind": "var",
+      "Name": "a",
+      "Callable": false,
+      "File": "lib/sample_ruby_gem.rb",
+      "DefStart": 419,
+      "DefEnd": 420,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "localvariable",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "Sample\u003e_local_0\u003e#my_method\u003ea",
+        "Signature": "",
+        "ReturnType": ""
+      }
+    },
+    {
+      "Path": "Sample@_local_0@/$methods/my_method@b",
+      "TreePath": "_local_0/",
       "Kind": "var",
       "Name": "b",
       "Callable": false,
@@ -250,14 +302,16 @@
       "Exported": true,
       "Data": {
         "RubyKind": "localvariable",
-        "TypeString": "",
+        "TypeString": "String#",
         "Module": "",
-        "RubyPath": "Sample\u003e_local_0\u003e#my_method\u003eb"
+        "RubyPath": "Sample\u003e_local_0\u003e#my_method\u003eb",
+        "Signature": "",
+        "ReturnType": ""
       }
     },
     {
-      "Path": "Sample\u003e_local_0\u003e/$methods/my_method\u003ec",
-      "TreePath": "TODO",
+      "Path": "Sample@_local_0@/$methods/my_method@c",
+      "TreePath": "_local_0/",
       "Kind": "var",
       "Name": "c",
       "Callable": false,
@@ -267,14 +321,16 @@
       "Exported": true,
       "Data": {
         "RubyKind": "localvariable",
-        "TypeString": "",
+        "TypeString": "Fixnum#",
         "Module": "",
-        "RubyPath": "Sample\u003e_local_0\u003e#my_method\u003ec"
+        "RubyPath": "Sample\u003e_local_0\u003e#my_method\u003ec",
+        "Signature": "",
+        "ReturnType": ""
       }
     },
     {
-      "Path": "Sample\u003e_local_0\u003e/$methods/my_method\u003el",
-      "TreePath": "TODO",
+      "Path": "Sample@_local_0@/$methods/my_method@l",
+      "TreePath": "_local_0/",
       "Kind": "var",
       "Name": "l",
       "Callable": false,
@@ -286,12 +342,31 @@
         "RubyKind": "localvariable",
         "TypeString": "",
         "Module": "",
-        "RubyPath": "Sample\u003e_local_0\u003e#my_method\u003el"
+        "RubyPath": "Sample\u003e_local_0\u003e#my_method\u003el",
+        "Signature": "",
+        "ReturnType": ""
       }
     },
     {
-      "Path": "file:lib/sample_ruby_gem_rb_local_0\u003eip",
-      "TreePath": "TODO",
+      "Path": "file:lib/sample_ruby_gem_rb_local_0@@block_local_1@t",
+      "Kind": "var",
+      "Name": "t",
+      "Callable": false,
+      "File": "lib/sample_ruby_gem.rb",
+      "DefStart": 635,
+      "DefEnd": 636,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "localvariable",
+        "TypeString": "",
+        "Module": "",
+        "RubyPath": "file:lib/sample_ruby_gem.rb_local_0\u003e@block_local_1\u003et",
+        "Signature": "",
+        "ReturnType": ""
+      }
+    },
+    {
+      "Path": "file:lib/sample_ruby_gem_rb_local_0@ip",
       "Kind": "var",
       "Name": "ip",
       "Callable": false,
@@ -301,14 +376,15 @@
       "Exported": true,
       "Data": {
         "RubyKind": "localvariable",
-        "TypeString": "",
+        "TypeString": "IPAddr#",
         "Module": "",
-        "RubyPath": "file:lib/sample_ruby_gem.rb_local_0\u003eip"
+        "RubyPath": "file:lib/sample_ruby_gem.rb_local_0\u003eip",
+        "Signature": "",
+        "ReturnType": ""
       }
     },
     {
-      "Path": "file:lib/sample_ruby_gem_rb_local_0\u003emy_global_var",
-      "TreePath": "TODO",
+      "Path": "file:lib/sample_ruby_gem_rb_local_0@my_global_var",
       "Kind": "var",
       "Name": "my_global_var",
       "Callable": false,
@@ -318,14 +394,15 @@
       "Exported": true,
       "Data": {
         "RubyKind": "localvariable",
-        "TypeString": "",
+        "TypeString": "String#",
         "Module": "",
-        "RubyPath": "file:lib/sample_ruby_gem.rb_local_0\u003emy_global_var"
+        "RubyPath": "file:lib/sample_ruby_gem.rb_local_0\u003emy_global_var",
+        "Signature": "",
+        "ReturnType": ""
       }
     },
     {
-      "Path": "file:lib/sample_ruby_gem_rb_local_0\u003emy_sample",
-      "TreePath": "TODO",
+      "Path": "file:lib/sample_ruby_gem_rb_local_0@my_sample",
       "Kind": "var",
       "Name": "my_sample",
       "Callable": false,
@@ -335,16 +412,69 @@
       "Exported": true,
       "Data": {
         "RubyKind": "localvariable",
+        "TypeString": "Sample#",
+        "Module": "",
+        "RubyPath": "file:lib/sample_ruby_gem.rb_local_0\u003emy_sample",
+        "Signature": "",
+        "ReturnType": ""
+      }
+    },
+    {
+      "Path": "file:sample_ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "Kind": "var",
+      "Name": "s",
+      "Callable": false,
+      "File": "sample_ruby_gem.gemspec",
+      "DefStart": 27,
+      "DefEnd": 28,
+      "Exported": true,
+      "Data": {
+        "RubyKind": "localvariable",
         "TypeString": "",
         "Module": "",
-        "RubyPath": "file:lib/sample_ruby_gem.rb_local_0\u003emy_sample"
+        "RubyPath": "file:sample_ruby_gem.gemspec_local_0\u003e@block_local_0\u003es",
+        "Signature": "",
+        "ReturnType": ""
       }
     }
   ],
   "Refs": [
     {
       "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "ruby",
+      "SymbolUnit": ".",
+      "SymbolPath": "Gem/Specification/$methods/initialize",
+      "Def": false,
+      "Repo": "",
+      "File": "sample_ruby_gem.gemspec",
+      "Start": 19,
+      "End": 22
+    },
+    {
+      "SymbolRepo": "github.com/carlhuda/bundler",
       "SymbolUnitType": "",
+      "SymbolUnit": "bundler",
+      "SymbolPath": "Gem/Specification",
+      "Def": false,
+      "Repo": "",
+      "File": "sample_ruby_gem.gemspec",
+      "Start": 5,
+      "End": 18
+    },
+    {
+      "SymbolRepo": "github.com/carlhuda/bundler",
+      "SymbolUnitType": "",
+      "SymbolUnit": "bundler",
+      "SymbolPath": "Gem",
+      "Def": false,
+      "Repo": "",
+      "File": "sample_ruby_gem.gemspec",
+      "Start": 0,
+      "End": 3
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "ruby",
       "SymbolUnit": ".",
       "SymbolPath": "IPAddr/$methods/initialize",
       "Def": false,
@@ -355,7 +485,7 @@
     },
     {
       "SymbolRepo": "github.com/ruby/ruby",
-      "SymbolUnitType": "",
+      "SymbolUnitType": "ruby",
       "SymbolUnit": ".",
       "SymbolPath": "IPAddr/$methods/reverse",
       "Def": false,
@@ -366,7 +496,7 @@
     },
     {
       "SymbolRepo": "github.com/ruby/ruby",
-      "SymbolUnitType": "",
+      "SymbolUnitType": "ruby",
       "SymbolUnit": ".",
       "SymbolPath": "IPAddr",
       "Def": false,
@@ -380,7 +510,7 @@
       "SymbolUnitType": "",
       "SymbolUnit": "",
       "SymbolPath": "MY_GLOBAL_CONST",
-      "Def": false,
+      "Def": true,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
       "Start": 564,
@@ -391,7 +521,7 @@
       "SymbolUnitType": "",
       "SymbolUnit": "",
       "SymbolPath": "MY_SAMPLE",
-      "Def": false,
+      "Def": true,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
       "Start": 807,
@@ -413,7 +543,7 @@
       "SymbolUnitType": "",
       "SymbolUnit": "",
       "SymbolPath": "MY_URI_HOST",
-      "Def": false,
+      "Def": true,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
       "Start": 701,
@@ -424,7 +554,7 @@
       "SymbolUnitType": "",
       "SymbolUnit": "",
       "SymbolPath": "MY_URI",
-      "Def": false,
+      "Def": true,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
       "Start": 666,
@@ -556,7 +686,7 @@
       "SymbolUnitType": "",
       "SymbolUnit": "",
       "SymbolPath": "Sample/@i",
-      "Def": false,
+      "Def": true,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
       "Start": 389,
@@ -589,7 +719,7 @@
       "SymbolUnitType": "",
       "SymbolUnit": "",
       "SymbolPath": "Sample/MY_CONST",
-      "Def": false,
+      "Def": true,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
       "Start": 544,
@@ -599,8 +729,52 @@
       "SymbolRepo": "",
       "SymbolUnitType": "",
       "SymbolUnit": "",
-      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003eb",
+      "SymbolPath": "Sample@_local_0@/$methods/initialize@i",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 371,
+      "End": 372
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample@_local_0@/$methods/initialize@i",
       "Def": false,
+      "Repo": "",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 394,
+      "End": 395
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample@_local_0@/$methods/my_method@a",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 419,
+      "End": 420
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample@_local_0@/$methods/my_method@a",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 510,
+      "End": 511
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Sample@_local_0@/$methods/my_method@b",
+      "Def": true,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
       "Start": 439,
@@ -610,7 +784,7 @@
       "SymbolRepo": "",
       "SymbolUnitType": "",
       "SymbolUnit": "",
-      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003eb",
+      "SymbolPath": "Sample@_local_0@/$methods/my_method@b",
       "Def": false,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
@@ -621,7 +795,7 @@
       "SymbolRepo": "",
       "SymbolUnitType": "",
       "SymbolUnit": "",
-      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003eb",
+      "SymbolPath": "Sample@_local_0@/$methods/my_method@b",
       "Def": false,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
@@ -632,7 +806,7 @@
       "SymbolRepo": "",
       "SymbolUnitType": "",
       "SymbolUnit": "",
-      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003eb",
+      "SymbolPath": "Sample@_local_0@/$methods/my_method@b",
       "Def": false,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
@@ -643,8 +817,8 @@
       "SymbolRepo": "",
       "SymbolUnitType": "",
       "SymbolUnit": "",
-      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003ec",
-      "Def": false,
+      "SymbolPath": "Sample@_local_0@/$methods/my_method@c",
+      "Def": true,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
       "Start": 429,
@@ -654,8 +828,8 @@
       "SymbolRepo": "",
       "SymbolUnitType": "",
       "SymbolUnit": "",
-      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003el",
-      "Def": false,
+      "SymbolPath": "Sample@_local_0@/$methods/my_method@l",
+      "Def": true,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
       "Start": 454,
@@ -665,7 +839,7 @@
       "SymbolRepo": "",
       "SymbolUnitType": "",
       "SymbolUnit": "",
-      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003el",
+      "SymbolPath": "Sample@_local_0@/$methods/my_method@l",
       "Def": false,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
@@ -762,7 +936,7 @@
     },
     {
       "SymbolRepo": "github.com/ruby/ruby",
-      "SymbolUnitType": "",
+      "SymbolUnitType": "ruby",
       "SymbolUnit": ".",
       "SymbolPath": "URI/LDAP",
       "Def": false,
@@ -786,8 +960,30 @@
       "SymbolRepo": "",
       "SymbolUnitType": "",
       "SymbolUnit": "",
-      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0\u003eip",
+      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0@@block_local_1@t",
+      "Def": true,
+      "Repo": "",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 635,
+      "End": 636
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0@@block_local_1@t",
       "Def": false,
+      "Repo": "",
+      "File": "lib/sample_ruby_gem.rb",
+      "Start": 645,
+      "End": 646
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0@ip",
+      "Def": true,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
       "Start": 761,
@@ -797,7 +993,7 @@
       "SymbolRepo": "",
       "SymbolUnitType": "",
       "SymbolUnit": "",
-      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0\u003eip",
+      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0@ip",
       "Def": false,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
@@ -808,8 +1004,8 @@
       "SymbolRepo": "",
       "SymbolUnitType": "",
       "SymbolUnit": "",
-      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0\u003emy_global_var",
-      "Def": false,
+      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0@my_global_var",
+      "Def": true,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
       "Start": 587,
@@ -819,8 +1015,8 @@
       "SymbolRepo": "",
       "SymbolUnitType": "",
       "SymbolUnit": "",
-      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0\u003emy_sample",
-      "Def": false,
+      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0@my_sample",
+      "Def": true,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
       "Start": 833,
@@ -830,7 +1026,7 @@
       "SymbolRepo": "",
       "SymbolUnitType": "",
       "SymbolUnit": "",
-      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0\u003emy_sample",
+      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0@my_sample",
       "Def": false,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
@@ -841,12 +1037,144 @@
       "SymbolRepo": "",
       "SymbolUnitType": "",
       "SymbolUnit": "",
-      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0\u003emy_sample",
+      "SymbolPath": "file:lib/sample_ruby_gem_rb_local_0@my_sample",
       "Def": false,
       "Repo": "",
       "File": "lib/sample_ruby_gem.rb",
       "Start": 899,
       "End": 908
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:sample_ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "Def": false,
+      "Repo": "",
+      "File": "sample_ruby_gem.gemspec",
+      "Start": 125,
+      "End": 126
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:sample_ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "Def": false,
+      "Repo": "",
+      "File": "sample_ruby_gem.gemspec",
+      "Start": 161,
+      "End": 162
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:sample_ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "Def": false,
+      "Repo": "",
+      "File": "sample_ruby_gem.gemspec",
+      "Start": 224,
+      "End": 225
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:sample_ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "Def": false,
+      "Repo": "",
+      "File": "sample_ruby_gem.gemspec",
+      "Start": 258,
+      "End": 259
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:sample_ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "Def": true,
+      "Repo": "",
+      "File": "sample_ruby_gem.gemspec",
+      "Start": 27,
+      "End": 28
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:sample_ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "Def": false,
+      "Repo": "",
+      "File": "sample_ruby_gem.gemspec",
+      "Start": 298,
+      "End": 299
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:sample_ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "Def": false,
+      "Repo": "",
+      "File": "sample_ruby_gem.gemspec",
+      "Start": 32,
+      "End": 33
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:sample_ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "Def": false,
+      "Repo": "",
+      "File": "sample_ruby_gem.gemspec",
+      "Start": 343,
+      "End": 344
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:sample_ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "Def": false,
+      "Repo": "",
+      "File": "sample_ruby_gem.gemspec",
+      "Start": 414,
+      "End": 415
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:sample_ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "Def": false,
+      "Repo": "",
+      "File": "sample_ruby_gem.gemspec",
+      "Start": 438,
+      "End": 439
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:sample_ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "Def": false,
+      "Repo": "",
+      "File": "sample_ruby_gem.gemspec",
+      "Start": 68,
+      "End": 69
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "file:sample_ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "Def": false,
+      "Repo": "",
+      "File": "sample_ruby_gem.gemspec",
+      "Start": 94,
+      "End": 95
     }
   ],
   "Docs": [

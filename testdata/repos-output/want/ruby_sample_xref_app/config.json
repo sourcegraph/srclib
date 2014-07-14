@@ -17,7 +17,7 @@
       "GemSpecFile": "ruby_sample_xref_app.gemspec",
       "Homepage": "https://github.com/sourcegraph/ruby_sample_xref_app",
       "RequirePaths": [
-        "lib/"
+        "lib"
       ],
       "Summary": "Sample Ruby Cross-reference App",
       "Type": "rubygem",

@@ -100,6 +100,56 @@
         "CharsProportion": 1
       }
     ],
+    "Article@_local_0@/$methods/initialize@@block_local_0@name": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "Article@_local_0@/$methods/initialize@@block_local_0@value": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 5,
+        "CharsProportion": 1
+      }
+    ],
+    "Article@_local_0@/$methods/initialize@attributes": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 13,
+        "CharsProportion": 1
+      }
+    ],
+    "Article@_local_1@search@@block_local_0@@block_local_1@query": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 5,
+        "CharsProportion": 1
+      }
+    ],
+    "Article@_local_1@search@@block_local_0@search": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 6,
+        "CharsProportion": 1
+      }
+    ],
     "Goal": [
       {
         "AuthorEmail": "qslack@qslack.com",
@@ -150,7 +200,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_barkick_rb_local_0\u003egtin": [
+    "file:lib/use_barkick_rb_local_0@gtin": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -160,7 +210,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_geocoder_rb_local_0\u003eresults": [
+    "file:lib/use_geocoder_rb_local_0@results": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -170,7 +220,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_groupdate_rb_local_0\u003etime_zone": [
+    "file:lib/use_groupdate_rb_local_0@time_zone": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -180,7 +230,17 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_redis_rb_local_0\u003er": [
+    "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_87@channel": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 7,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_87@subscriptions": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -190,7 +250,77 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_searchkick_rb_local_0\u003eproduct": [
+    "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_88@channel": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 7,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_88@message": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 7,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_89@channel": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 7,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_89@subscriptions": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 13,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_redis_rb_local_0@@block_local_86@on": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 2,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_redis_rb_local_0@r": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 13,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_searchkick_rb_local_0@@block_local_90@product": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 7,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_searchkick_rb_local_0@product": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -200,7 +330,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_searchkick_rb_local_0\u003eproducts": [
+    "file:lib/use_searchkick_rb_local_0@products": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -210,7 +340,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_stripe_rb_local_0\u003echarge": [
+    "file:lib/use_stripe_rb_local_0@charge": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -220,7 +350,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_stripe_rb_local_0\u003ecustomer": [
+    "file:lib/use_stripe_rb_local_0@customer": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -230,7 +360,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_stripe_rb_local_0\u003etoken": [
+    "file:lib/use_stripe_rb_local_0@token": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -240,7 +370,27 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_tire_rb_local_0\u003earticle": [
+    "file:lib/use_tire_rb_local_0@@block_local_12@document": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 8,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_15@document": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 8,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_1@article": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -250,7 +400,187 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_tire_rb_local_0\u003earticles": [
+    "file:lib/use_tire_rb_local_0@@block_local_20@document": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 8,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_23@document": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 8,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_30@document": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 8,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_31@boolean": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 7,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_34@boolean": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 7,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_43@f": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 1,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_48@f": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 1,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_49@f": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 1,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_4@@block_local_5@@block_local_6@document": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 8,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_4@@block_local_5@documents": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 9,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_53@document": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 8,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_54@f": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 1,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_57@document": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 8,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_61@document": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 8,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_65@document": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 8,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_71@document": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 8,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_74@document": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 8,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@@block_local_9@document": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 8,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_tire_rb_local_0@articles": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -260,7 +590,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_tire_rb_local_0\u003eindex": [
+    "file:lib/use_tire_rb_local_0@index": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -270,7 +600,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_tire_rb_local_0\u003ematches": [
+    "file:lib/use_tire_rb_local_0@matches": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -280,7 +610,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_tire_rb_local_0\u003epublished_on_query": [
+    "file:lib/use_tire_rb_local_0@published_on_query": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -290,7 +620,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_tire_rb_local_0\u003eq": [
+    "file:lib/use_tire_rb_local_0@q": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -300,7 +630,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_tire_rb_local_0\u003eresponse": [
+    "file:lib/use_tire_rb_local_0@response": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -310,7 +640,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_tire_rb_local_0\u003es": [
+    "file:lib/use_tire_rb_local_0@s": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -320,7 +650,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_tire_rb_local_0\u003etags_query": [
+    "file:lib/use_tire_rb_local_0@tags_query": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -330,7 +660,27 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_yajl_rb_local_0\u003echunks": [
+    "file:lib/use_yajl_rb_local_0@@block_local_83@hash": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 4,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_yajl_rb_local_0@@block_local_84@chunk": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 5,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/use_yajl_rb_local_0@chunks": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -340,7 +690,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_yajl_rb_local_0\u003ehash": [
+    "file:lib/use_yajl_rb_local_0@hash": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -350,7 +700,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_yajl_rb_local_0\u003eobj": [
+    "file:lib/use_yajl_rb_local_0@obj": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -360,7 +710,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_yajl_rb_local_0\u003etotal_size": [
+    "file:lib/use_yajl_rb_local_0@total_size": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -370,13 +720,23 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/use_yajl_rb_local_0\u003euri": [
+    "file:lib/use_yajl_rb_local_0@uri": [
       {
         "AuthorEmail": "qslack@qslack.com",
         "LastCommitDate": "2013-10-21T01:58:22Z",
         "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
         "Exported": true,
         "Chars": 77,
+        "CharsProportion": 1
+      }
+    ],
+    "file:ruby_sample_xref_app/$classmethods/gemspec_local_0@@block_local_0@s": [
+      {
+        "AuthorEmail": "qslack@qslack.com",
+        "LastCommitDate": "2013-10-21T01:58:22Z",
+        "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+        "Exported": true,
+        "Chars": 1,
         "CharsProportion": 1
       }
     ]
@@ -398,6 +758,15 @@
       "File": "lib/use_tire.rb",
       "Start": 8407,
       "End": 8414,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "Article",
+      "File": "lib/use_tire.rb",
+      "Start": 10946,
+      "End": 10953,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
@@ -430,11 +799,29 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
+      "SymbolPath": "Article",
+      "File": "lib/use_tire.rb",
+      "Start": 8888,
+      "End": 8892,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
       "SymbolPath": "Article/$classmethods/q",
       "Def": true,
       "File": "lib/use_tire.rb",
       "Start": 8481,
       "End": 8482,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "Article/$classmethods/q",
+      "File": "lib/use_tire.rb",
+      "Start": 8893,
+      "End": 8894,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
@@ -455,6 +842,36 @@
       "File": "lib/use_tire.rb",
       "Start": 2820,
       "End": 2830,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "Article/$methods/published_on",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 2799,
+      "End": 2811,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "Article/$methods/tags",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 2792,
+      "End": 2796,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "Article/$methods/title",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 2784,
+      "End": 2789,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
@@ -481,6 +898,7 @@
     },
     {
       "SymbolPath": "Article/@attributes",
+      "Def": true,
       "File": "lib/use_tire.rb",
       "Start": 2852,
       "End": 2863,
@@ -502,6 +920,101 @@
       "File": "lib/use_tire.rb",
       "Start": 3217,
       "End": 3228,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "Article@_local_0@/$methods/initialize@@block_local_0@name",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 2909,
+      "End": 2913,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "Article@_local_0@/$methods/initialize@@block_local_0@name",
+      "File": "lib/use_tire.rb",
+      "Start": 2948,
+      "End": 2952,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "Article@_local_0@/$methods/initialize@@block_local_0@value",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 2914,
+      "End": 2919,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "Article@_local_0@/$methods/initialize@@block_local_0@value",
+      "File": "lib/use_tire.rb",
+      "Start": 2956,
+      "End": 2961,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "Article@_local_0@/$methods/initialize@attributes",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 2831,
+      "End": 2841,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "Article@_local_0@/$methods/initialize@attributes",
+      "File": "lib/use_tire.rb",
+      "Start": 2867,
+      "End": 2877,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "Article@_local_1@search@@block_local_0@@block_local_1@query",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 8791,
+      "End": 8796,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "Article@_local_1@search@@block_local_0@@block_local_1@query",
+      "File": "lib/use_tire.rb",
+      "Start": 8875,
+      "End": 8880,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "Article@_local_1@search@@block_local_0@search",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 8693,
+      "End": 8699,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "Article@_local_1@search@@block_local_0@search",
+      "File": "lib/use_tire.rb",
+      "Start": 8774,
+      "End": 8780,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
@@ -782,97 +1295,8 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_barkick_rb_local_0\u003egtin",
-      "File": "lib/use_barkick.rb",
-      "Start": 111,
-      "End": 115,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_barkick_rb_local_0\u003egtin",
-      "File": "lib/use_barkick.rb",
-      "Start": 146,
-      "End": 150,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_barkick_rb_local_0\u003egtin",
-      "File": "lib/use_barkick.rb",
-      "Start": 180,
-      "End": 184,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_barkick_rb_local_0\u003egtin",
-      "File": "lib/use_barkick.rb",
-      "Start": 19,
-      "End": 23,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_barkick_rb_local_0\u003egtin",
-      "File": "lib/use_barkick.rb",
-      "Start": 205,
-      "End": 209,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_barkick_rb_local_0\u003egtin",
-      "File": "lib/use_barkick.rb",
-      "Start": 234,
-      "End": 238,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_barkick_rb_local_0\u003egtin",
-      "File": "lib/use_barkick.rb",
-      "Start": 266,
-      "End": 270,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_barkick_rb_local_0\u003egtin",
-      "File": "lib/use_barkick.rb",
-      "Start": 290,
-      "End": 294,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_barkick_rb_local_0\u003egtin",
-      "File": "lib/use_barkick.rb",
-      "Start": 314,
-      "End": 318,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_barkick_rb_local_0\u003egtin",
-      "File": "lib/use_barkick.rb",
-      "Start": 338,
-      "End": 342,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_barkick_rb_local_0\u003egtin",
+      "SymbolPath": "file:lib/use_barkick_rb_local_0@gtin",
+      "Def": true,
       "File": "lib/use_barkick.rb",
       "Start": 375,
       "End": 379,
@@ -881,7 +1305,97 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_barkick_rb_local_0\u003egtin",
+      "SymbolPath": "file:lib/use_barkick_rb_local_0@gtin",
+      "File": "lib/use_barkick.rb",
+      "Start": 111,
+      "End": 115,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_barkick_rb_local_0@gtin",
+      "File": "lib/use_barkick.rb",
+      "Start": 146,
+      "End": 150,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_barkick_rb_local_0@gtin",
+      "File": "lib/use_barkick.rb",
+      "Start": 180,
+      "End": 184,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_barkick_rb_local_0@gtin",
+      "File": "lib/use_barkick.rb",
+      "Start": 19,
+      "End": 23,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_barkick_rb_local_0@gtin",
+      "File": "lib/use_barkick.rb",
+      "Start": 205,
+      "End": 209,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_barkick_rb_local_0@gtin",
+      "File": "lib/use_barkick.rb",
+      "Start": 234,
+      "End": 238,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_barkick_rb_local_0@gtin",
+      "File": "lib/use_barkick.rb",
+      "Start": 266,
+      "End": 270,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_barkick_rb_local_0@gtin",
+      "File": "lib/use_barkick.rb",
+      "Start": 290,
+      "End": 294,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_barkick_rb_local_0@gtin",
+      "File": "lib/use_barkick.rb",
+      "Start": 314,
+      "End": 318,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_barkick_rb_local_0@gtin",
+      "File": "lib/use_barkick.rb",
+      "Start": 338,
+      "End": 342,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_barkick_rb_local_0@gtin",
       "File": "lib/use_barkick.rb",
       "Start": 403,
       "End": 407,
@@ -890,7 +1404,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_barkick_rb_local_0\u003egtin",
+      "SymbolPath": "file:lib/use_barkick_rb_local_0@gtin",
       "File": "lib/use_barkick.rb",
       "Start": 51,
       "End": 55,
@@ -899,7 +1413,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_barkick_rb_local_0\u003egtin",
+      "SymbolPath": "file:lib/use_barkick_rb_local_0@gtin",
       "File": "lib/use_barkick.rb",
       "Start": 75,
       "End": 79,
@@ -908,7 +1422,8 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_geocoder_rb_local_0\u003eresults",
+      "SymbolPath": "file:lib/use_geocoder_rb_local_0@results",
+      "Def": true,
       "File": "lib/use_geocoder.rb",
       "Start": 572,
       "End": 579,
@@ -917,7 +1432,8 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_groupdate_rb_local_0\u003etime_zone",
+      "SymbolPath": "file:lib/use_groupdate_rb_local_0@time_zone",
+      "Def": true,
       "File": "lib/use_groupdate.rb",
       "Start": 682,
       "End": 691,
@@ -926,133 +1442,168 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_87@channel",
+      "Def": true,
       "File": "lib/use_redis.rb",
-      "Start": 115,
-      "End": 116,
+      "Start": 777,
+      "End": 784,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_87@channel",
       "File": "lib/use_redis.rb",
-      "Start": 1247,
-      "End": 1248,
+      "Start": 830,
+      "End": 837,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_87@subscriptions",
+      "Def": true,
       "File": "lib/use_redis.rb",
-      "Start": 1264,
-      "End": 1265,
+      "Start": 786,
+      "End": 799,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_87@subscriptions",
       "File": "lib/use_redis.rb",
-      "Start": 1325,
-      "End": 1326,
+      "Start": 842,
+      "End": 855,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_88@channel",
+      "Def": true,
       "File": "lib/use_redis.rb",
-      "Start": 1350,
-      "End": 1351,
+      "Start": 901,
+      "End": 908,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_88@channel",
       "File": "lib/use_redis.rb",
-      "Start": 1375,
-      "End": 1376,
+      "Start": 934,
+      "End": 941,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_88@message",
+      "Def": true,
       "File": "lib/use_redis.rb",
-      "Start": 139,
-      "End": 140,
+      "Start": 910,
+      "End": 917,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_88@message",
       "File": "lib/use_redis.rb",
-      "Start": 1446,
-      "End": 1447,
+      "Start": 946,
+      "End": 953,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_88@message",
       "File": "lib/use_redis.rb",
-      "Start": 1473,
-      "End": 1474,
+      "Start": 983,
+      "End": 990,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_89@channel",
+      "Def": true,
       "File": "lib/use_redis.rb",
-      "Start": 1499,
-      "End": 1500,
+      "Start": 1033,
+      "End": 1040,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_89@channel",
       "File": "lib/use_redis.rb",
-      "Start": 1547,
-      "End": 1548,
+      "Start": 1090,
+      "End": 1097,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_89@subscriptions",
+      "Def": true,
       "File": "lib/use_redis.rb",
-      "Start": 158,
-      "End": 159,
+      "Start": 1042,
+      "End": 1055,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_89@subscriptions",
       "File": "lib/use_redis.rb",
-      "Start": 1592,
-      "End": 1593,
+      "Start": 1102,
+      "End": 1115,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@@block_local_86@on",
+      "Def": true,
       "File": "lib/use_redis.rb",
-      "Start": 1666,
-      "End": 1667,
+      "Start": 752,
+      "End": 754,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@@block_local_86@on",
+      "File": "lib/use_redis.rb",
+      "Start": 1014,
+      "End": 1016,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_redis_rb_local_0@@block_local_86@on",
+      "File": "lib/use_redis.rb",
+      "Start": 760,
+      "End": 762,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_redis_rb_local_0@@block_local_86@on",
+      "File": "lib/use_redis.rb",
+      "Start": 886,
+      "End": 888,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
+      "Def": true,
       "File": "lib/use_redis.rb",
       "Start": 17,
       "End": 18,
@@ -1061,7 +1612,133 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
+      "File": "lib/use_redis.rb",
+      "Start": 115,
+      "End": 116,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
+      "File": "lib/use_redis.rb",
+      "Start": 1247,
+      "End": 1248,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
+      "File": "lib/use_redis.rb",
+      "Start": 1264,
+      "End": 1265,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
+      "File": "lib/use_redis.rb",
+      "Start": 1325,
+      "End": 1326,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
+      "File": "lib/use_redis.rb",
+      "Start": 1350,
+      "End": 1351,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
+      "File": "lib/use_redis.rb",
+      "Start": 1375,
+      "End": 1376,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
+      "File": "lib/use_redis.rb",
+      "Start": 139,
+      "End": 140,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
+      "File": "lib/use_redis.rb",
+      "Start": 1446,
+      "End": 1447,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
+      "File": "lib/use_redis.rb",
+      "Start": 1473,
+      "End": 1474,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
+      "File": "lib/use_redis.rb",
+      "Start": 1499,
+      "End": 1500,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
+      "File": "lib/use_redis.rb",
+      "Start": 1547,
+      "End": 1548,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
+      "File": "lib/use_redis.rb",
+      "Start": 158,
+      "End": 159,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
+      "File": "lib/use_redis.rb",
+      "Start": 1592,
+      "End": 1593,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
+      "File": "lib/use_redis.rb",
+      "Start": 1666,
+      "End": 1667,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
       "File": "lib/use_redis.rb",
       "Start": 178,
       "End": 179,
@@ -1070,7 +1747,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
       "File": "lib/use_redis.rb",
       "Start": 198,
       "End": 199,
@@ -1079,7 +1756,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
       "File": "lib/use_redis.rb",
       "Start": 233,
       "End": 234,
@@ -1088,7 +1765,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
       "File": "lib/use_redis.rb",
       "Start": 253,
       "End": 254,
@@ -1097,7 +1774,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
       "File": "lib/use_redis.rb",
       "Start": 273,
       "End": 274,
@@ -1106,7 +1783,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
       "File": "lib/use_redis.rb",
       "Start": 292,
       "End": 293,
@@ -1115,7 +1792,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
       "File": "lib/use_redis.rb",
       "Start": 32,
       "End": 33,
@@ -1124,7 +1801,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
       "File": "lib/use_redis.rb",
       "Start": 349,
       "End": 350,
@@ -1133,7 +1810,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
       "File": "lib/use_redis.rb",
       "Start": 384,
       "End": 385,
@@ -1142,7 +1819,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
       "File": "lib/use_redis.rb",
       "Start": 422,
       "End": 423,
@@ -1151,7 +1828,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
       "File": "lib/use_redis.rb",
       "Start": 464,
       "End": 465,
@@ -1160,7 +1837,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
       "File": "lib/use_redis.rb",
       "Start": 542,
       "End": 543,
@@ -1169,7 +1846,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
       "File": "lib/use_redis.rb",
       "Start": 633,
       "End": 634,
@@ -1178,7 +1855,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
       "File": "lib/use_redis.rb",
       "Start": 660,
       "End": 661,
@@ -1187,7 +1864,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_redis_rb_local_0\u003er",
+      "SymbolPath": "file:lib/use_redis_rb_local_0@r",
       "File": "lib/use_redis.rb",
       "Start": 72,
       "End": 73,
@@ -1196,7 +1873,27 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_searchkick_rb_local_0\u003eproduct",
+      "SymbolPath": "file:lib/use_searchkick_rb_local_0@@block_local_90@product",
+      "Def": true,
+      "File": "lib/use_searchkick.rb",
+      "Start": 172,
+      "End": 179,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_searchkick_rb_local_0@@block_local_90@product",
+      "File": "lib/use_searchkick.rb",
+      "Start": 188,
+      "End": 195,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_searchkick_rb_local_0@product",
+      "Def": true,
       "File": "lib/use_searchkick.rb",
       "Start": 698,
       "End": 705,
@@ -1205,7 +1902,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_searchkick_rb_local_0\u003eproduct",
+      "SymbolPath": "file:lib/use_searchkick_rb_local_0@product",
       "File": "lib/use_searchkick.rb",
       "Start": 722,
       "End": 729,
@@ -1214,7 +1911,8 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_searchkick_rb_local_0\u003eproducts",
+      "SymbolPath": "file:lib/use_searchkick_rb_local_0@products",
+      "Def": true,
       "File": "lib/use_searchkick.rb",
       "Start": 118,
       "End": 126,
@@ -1223,7 +1921,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_searchkick_rb_local_0\u003eproducts",
+      "SymbolPath": "file:lib/use_searchkick_rb_local_0@products",
       "File": "lib/use_searchkick.rb",
       "Start": 154,
       "End": 162,
@@ -1232,7 +1930,8 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_stripe_rb_local_0\u003echarge",
+      "SymbolPath": "file:lib/use_stripe_rb_local_0@charge",
+      "Def": true,
       "File": "lib/use_stripe.rb",
       "Start": 339,
       "End": 345,
@@ -1241,34 +1940,8 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_stripe_rb_local_0\u003ecustomer",
-      "File": "lib/use_stripe.rb",
-      "Start": 577,
-      "End": 585,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_stripe_rb_local_0\u003ecustomer",
-      "File": "lib/use_stripe.rb",
-      "Start": 727,
-      "End": 735,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_stripe_rb_local_0\u003ecustomer",
-      "File": "lib/use_stripe.rb",
-      "Start": 754,
-      "End": 762,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_stripe_rb_local_0\u003ecustomer",
+      "SymbolPath": "file:lib/use_stripe_rb_local_0@customer",
+      "Def": true,
       "File": "lib/use_stripe.rb",
       "Start": 807,
       "End": 815,
@@ -1277,7 +1950,34 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_stripe_rb_local_0\u003ecustomer",
+      "SymbolPath": "file:lib/use_stripe_rb_local_0@customer",
+      "File": "lib/use_stripe.rb",
+      "Start": 577,
+      "End": 585,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_stripe_rb_local_0@customer",
+      "File": "lib/use_stripe.rb",
+      "Start": 727,
+      "End": 735,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_stripe_rb_local_0@customer",
+      "File": "lib/use_stripe.rb",
+      "Start": 754,
+      "End": 762,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_stripe_rb_local_0@customer",
       "File": "lib/use_stripe.rb",
       "Start": 862,
       "End": 870,
@@ -1286,7 +1986,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_stripe_rb_local_0\u003ecustomer",
+      "SymbolPath": "file:lib/use_stripe_rb_local_0@customer",
       "File": "lib/use_stripe.rb",
       "Start": 877,
       "End": 885,
@@ -1295,7 +1995,8 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_stripe_rb_local_0\u003etoken",
+      "SymbolPath": "file:lib/use_stripe_rb_local_0@token",
+      "Def": true,
       "File": "lib/use_stripe.rb",
       "Start": 235,
       "End": 240,
@@ -1304,7 +2005,64 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003earticle",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_12@document",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 7621,
+      "End": 7629,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_12@document",
+      "File": "lib/use_tire.rb",
+      "Start": 7644,
+      "End": 7652,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_12@document",
+      "File": "lib/use_tire.rb",
+      "Start": 7675,
+      "End": 7683,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_15@document",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 8116,
+      "End": 8124,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_15@document",
+      "File": "lib/use_tire.rb",
+      "Start": 8139,
+      "End": 8147,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_15@document",
+      "File": "lib/use_tire.rb",
+      "Start": 8165,
+      "End": 8173,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_1@article",
+      "Def": true,
       "File": "lib/use_tire.rb",
       "Start": 3431,
       "End": 3438,
@@ -1313,7 +2071,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003earticle",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_1@article",
       "File": "lib/use_tire.rb",
       "Start": 3624,
       "End": 3631,
@@ -1322,7 +2080,485 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003earticles",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_20@document",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 11858,
+      "End": 11866,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_20@document",
+      "File": "lib/use_tire.rb",
+      "Start": 11881,
+      "End": 11889,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_20@document",
+      "File": "lib/use_tire.rb",
+      "Start": 11907,
+      "End": 11915,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_23@document",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 12367,
+      "End": 12375,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_23@document",
+      "File": "lib/use_tire.rb",
+      "Start": 12390,
+      "End": 12398,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_23@document",
+      "File": "lib/use_tire.rb",
+      "Start": 12416,
+      "End": 12424,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_30@document",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 13308,
+      "End": 13316,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_30@document",
+      "File": "lib/use_tire.rb",
+      "Start": 13331,
+      "End": 13339,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_30@document",
+      "File": "lib/use_tire.rb",
+      "Start": 13357,
+      "End": 13365,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_31@boolean",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 13666,
+      "End": 13673,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_31@boolean",
+      "File": "lib/use_tire.rb",
+      "Start": 13677,
+      "End": 13684,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_31@boolean",
+      "File": "lib/use_tire.rb",
+      "Start": 13717,
+      "End": 13724,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_34@boolean",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 13843,
+      "End": 13850,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_34@boolean",
+      "File": "lib/use_tire.rb",
+      "Start": 13854,
+      "End": 13861,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_43@f",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 16264,
+      "End": 16265,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_43@f",
+      "File": "lib/use_tire.rb",
+      "Start": 16277,
+      "End": 16278,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_43@f",
+      "File": "lib/use_tire.rb",
+      "Start": 16300,
+      "End": 16301,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_48@f",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 17179,
+      "End": 17180,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_48@f",
+      "File": "lib/use_tire.rb",
+      "Start": 17192,
+      "End": 17193,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_48@f",
+      "File": "lib/use_tire.rb",
+      "Start": 17215,
+      "End": 17216,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_49@f",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 17599,
+      "End": 17600,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_49@f",
+      "File": "lib/use_tire.rb",
+      "Start": 17612,
+      "End": 17613,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_49@f",
+      "File": "lib/use_tire.rb",
+      "Start": 17635,
+      "End": 17636,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_4@@block_local_5@@block_local_6@document",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 6651,
+      "End": 6659,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_4@@block_local_5@@block_local_6@document",
+      "File": "lib/use_tire.rb",
+      "Start": 6661,
+      "End": 6669,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_4@@block_local_5@documents",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 6500,
+      "End": 6509,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_4@@block_local_5@documents",
+      "File": "lib/use_tire.rb",
+      "Start": 6634,
+      "End": 6643,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_53@document",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 19745,
+      "End": 19753,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_53@document",
+      "File": "lib/use_tire.rb",
+      "Start": 19768,
+      "End": 19776,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_53@document",
+      "File": "lib/use_tire.rb",
+      "Start": 19794,
+      "End": 19802,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_54@f",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 20110,
+      "End": 20111,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_54@f",
+      "File": "lib/use_tire.rb",
+      "Start": 20123,
+      "End": 20124,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_54@f",
+      "File": "lib/use_tire.rb",
+      "Start": 20146,
+      "End": 20147,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_57@document",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 20328,
+      "End": 20336,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_57@document",
+      "File": "lib/use_tire.rb",
+      "Start": 20351,
+      "End": 20359,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_57@document",
+      "File": "lib/use_tire.rb",
+      "Start": 20389,
+      "End": 20397,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_57@document",
+      "File": "lib/use_tire.rb",
+      "Start": 20505,
+      "End": 20513,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_61@document",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 21137,
+      "End": 21145,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_61@document",
+      "File": "lib/use_tire.rb",
+      "Start": 21160,
+      "End": 21168,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_65@document",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 21825,
+      "End": 21833,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_65@document",
+      "File": "lib/use_tire.rb",
+      "Start": 21848,
+      "End": 21856,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_65@document",
+      "File": "lib/use_tire.rb",
+      "Start": 21894,
+      "End": 21902,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_71@document",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 23976,
+      "End": 23984,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_71@document",
+      "File": "lib/use_tire.rb",
+      "Start": 23999,
+      "End": 24007,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_71@document",
+      "File": "lib/use_tire.rb",
+      "Start": 24029,
+      "End": 24037,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_74@document",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 24656,
+      "End": 24664,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_74@document",
+      "File": "lib/use_tire.rb",
+      "Start": 24684,
+      "End": 24692,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_74@document",
+      "File": "lib/use_tire.rb",
+      "Start": 24717,
+      "End": 24725,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_9@document",
+      "Def": true,
+      "File": "lib/use_tire.rb",
+      "Start": 7203,
+      "End": 7211,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_9@document",
+      "File": "lib/use_tire.rb",
+      "Start": 7226,
+      "End": 7234,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@@block_local_9@document",
+      "File": "lib/use_tire.rb",
+      "Start": 7252,
+      "End": 7260,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@articles",
+      "Def": true,
       "File": "lib/use_tire.rb",
       "Start": 5515,
       "End": 5523,
@@ -1331,7 +2567,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003earticles",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@articles",
       "File": "lib/use_tire.rb",
       "Start": 6236,
       "End": 6244,
@@ -1340,7 +2576,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003earticles",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@articles",
       "File": "lib/use_tire.rb",
       "Start": 6487,
       "End": 6495,
@@ -1349,7 +2585,8 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003eindex",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@index",
+      "Def": true,
       "File": "lib/use_tire.rb",
       "Start": 25805,
       "End": 25810,
@@ -1358,7 +2595,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003eindex",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@index",
       "File": "lib/use_tire.rb",
       "Start": 26589,
       "End": 26594,
@@ -1367,7 +2604,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003eindex",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@index",
       "File": "lib/use_tire.rb",
       "Start": 27002,
       "End": 27007,
@@ -1376,7 +2613,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003eindex",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@index",
       "File": "lib/use_tire.rb",
       "Start": 27467,
       "End": 27472,
@@ -1385,7 +2622,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003eindex",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@index",
       "File": "lib/use_tire.rb",
       "Start": 28009,
       "End": 28014,
@@ -1394,7 +2631,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003eindex",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@index",
       "File": "lib/use_tire.rb",
       "Start": 28407,
       "End": 28412,
@@ -1403,43 +2640,8 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003ematches",
-      "File": "lib/use_tire.rb",
-      "Start": 26579,
-      "End": 26586,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003ematches",
-      "File": "lib/use_tire.rb",
-      "Start": 26852,
-      "End": 26859,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003ematches",
-      "File": "lib/use_tire.rb",
-      "Start": 26992,
-      "End": 26999,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003ematches",
-      "File": "lib/use_tire.rb",
-      "Start": 27357,
-      "End": 27364,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003ematches",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@matches",
+      "Def": true,
       "File": "lib/use_tire.rb",
       "Start": 27457,
       "End": 27464,
@@ -1448,7 +2650,43 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003ematches",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@matches",
+      "File": "lib/use_tire.rb",
+      "Start": 26579,
+      "End": 26586,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@matches",
+      "File": "lib/use_tire.rb",
+      "Start": 26852,
+      "End": 26859,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@matches",
+      "File": "lib/use_tire.rb",
+      "Start": 26992,
+      "End": 26999,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@matches",
+      "File": "lib/use_tire.rb",
+      "Start": 27357,
+      "End": 27364,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@matches",
       "File": "lib/use_tire.rb",
       "Start": 27668,
       "End": 27675,
@@ -1457,7 +2695,8 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003epublished_on_query",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@published_on_query",
+      "Def": true,
       "File": "lib/use_tire.rb",
       "Start": 13811,
       "End": 13829,
@@ -1466,7 +2705,17 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003eq",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@published_on_query",
+      "File": "lib/use_tire.rb",
+      "Start": 14167,
+      "End": 14185,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@q",
+      "Def": true,
       "File": "lib/use_tire.rb",
       "Start": 7901,
       "End": 7902,
@@ -1475,25 +2724,17 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003eresponse",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@q",
       "File": "lib/use_tire.rb",
-      "Start": 27998,
-      "End": 28006,
+      "Start": 8013,
+      "End": 8014,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003eresponse",
-      "File": "lib/use_tire.rb",
-      "Start": 28294,
-      "End": 28302,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003eresponse",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@response",
+      "Def": true,
       "File": "lib/use_tire.rb",
       "Start": 28396,
       "End": 28404,
@@ -1502,7 +2743,25 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003eresponse",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@response",
+      "File": "lib/use_tire.rb",
+      "Start": 27998,
+      "End": 28006,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@response",
+      "File": "lib/use_tire.rb",
+      "Start": 28294,
+      "End": 28302,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@response",
       "File": "lib/use_tire.rb",
       "Start": 28792,
       "End": 28800,
@@ -1511,241 +2770,8 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 11308,
-      "End": 11309,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 11839,
-      "End": 11840,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 12028,
-      "End": 12029,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 12348,
-      "End": 12349,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 12734,
-      "End": 12735,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 13289,
-      "End": 13290,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 15499,
-      "End": 15500,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 16126,
-      "End": 16127,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 16155,
-      "End": 16156,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 16221,
-      "End": 16222,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 16467,
-      "End": 16468,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 17128,
-      "End": 17129,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 17549,
-      "End": 17550,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 19256,
-      "End": 19257,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 19726,
-      "End": 19727,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 20067,
-      "End": 20068,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 20247,
-      "End": 20248,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 20309,
-      "End": 20310,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 20827,
-      "End": 20828,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 21118,
-      "End": 21119,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 21261,
-      "End": 21262,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 21806,
-      "End": 21807,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 23667,
-      "End": 23668,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 23957,
-      "End": 23958,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 24344,
-      "End": 24345,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
-      "File": "lib/use_tire.rb",
-      "Start": 24637,
-      "End": 24638,
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
-    },
-    {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "Def": true,
       "File": "lib/use_tire.rb",
       "Start": 24810,
       "End": 24811,
@@ -1754,7 +2780,241 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 11308,
+      "End": 11309,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 11839,
+      "End": 11840,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 12028,
+      "End": 12029,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 12348,
+      "End": 12349,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 12734,
+      "End": 12735,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 13289,
+      "End": 13290,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 15499,
+      "End": 15500,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 16126,
+      "End": 16127,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 16155,
+      "End": 16156,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 16221,
+      "End": 16222,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 16467,
+      "End": 16468,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 17128,
+      "End": 17129,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 17549,
+      "End": 17550,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 19256,
+      "End": 19257,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 19726,
+      "End": 19727,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 20067,
+      "End": 20068,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 20247,
+      "End": 20248,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 20309,
+      "End": 20310,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 20827,
+      "End": 20828,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 21118,
+      "End": 21119,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 21261,
+      "End": 21262,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 21806,
+      "End": 21807,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 23667,
+      "End": 23668,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 23957,
+      "End": 23958,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 24344,
+      "End": 24345,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
+      "File": "lib/use_tire.rb",
+      "Start": 24637,
+      "End": 24638,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
       "File": "lib/use_tire.rb",
       "Start": 7066,
       "End": 7067,
@@ -1763,7 +3023,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
       "File": "lib/use_tire.rb",
       "Start": 7184,
       "End": 7185,
@@ -1772,7 +3032,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
       "File": "lib/use_tire.rb",
       "Start": 7369,
       "End": 7370,
@@ -1781,7 +3041,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
       "File": "lib/use_tire.rb",
       "Start": 7602,
       "End": 7603,
@@ -1790,7 +3050,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
       "File": "lib/use_tire.rb",
       "Start": 7968,
       "End": 7969,
@@ -1799,7 +3059,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
       "File": "lib/use_tire.rb",
       "Start": 8097,
       "End": 8098,
@@ -1808,7 +3068,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
       "File": "lib/use_tire.rb",
       "Start": 9254,
       "End": 9255,
@@ -1817,7 +3077,7 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003es",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@s",
       "File": "lib/use_tire.rb",
       "Start": 9636,
       "End": 9637,
@@ -1826,7 +3086,8 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_tire_rb_local_0\u003etags_query",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@tags_query",
+      "Def": true,
       "File": "lib/use_tire.rb",
       "Start": 13642,
       "End": 13652,
@@ -1835,7 +3096,64 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_yajl_rb_local_0\u003echunks",
+      "SymbolPath": "file:lib/use_tire_rb_local_0@tags_query",
+      "File": "lib/use_tire.rb",
+      "Start": 14019,
+      "End": 14029,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_tire_rb_local_0@tags_query",
+      "File": "lib/use_tire.rb",
+      "Start": 14143,
+      "End": 14153,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_yajl_rb_local_0@@block_local_83@hash",
+      "Def": true,
+      "File": "lib/use_yajl.rb",
+      "Start": 273,
+      "End": 277,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_yajl_rb_local_0@@block_local_84@chunk",
+      "Def": true,
+      "File": "lib/use_yajl.rb",
+      "Start": 865,
+      "End": 870,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_yajl_rb_local_0@@block_local_84@chunk",
+      "File": "lib/use_yajl.rb",
+      "Start": 902,
+      "End": 907,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_yajl_rb_local_0@@block_local_84@chunk",
+      "File": "lib/use_yajl.rb",
+      "Start": 925,
+      "End": 930,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_yajl_rb_local_0@chunks",
+      "Def": true,
       "File": "lib/use_yajl.rb",
       "Start": 808,
       "End": 814,
@@ -1844,16 +3162,17 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_yajl_rb_local_0\u003ehash",
+      "SymbolPath": "file:lib/use_yajl_rb_local_0@chunks",
       "File": "lib/use_yajl.rb",
-      "Start": 123,
-      "End": 127,
+      "Start": 874,
+      "End": 880,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_yajl_rb_local_0\u003ehash",
+      "SymbolPath": "file:lib/use_yajl_rb_local_0@hash",
+      "Def": true,
       "File": "lib/use_yajl.rb",
       "Start": 86,
       "End": 90,
@@ -1862,16 +3181,17 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_yajl_rb_local_0\u003eobj",
+      "SymbolPath": "file:lib/use_yajl_rb_local_0@hash",
       "File": "lib/use_yajl.rb",
-      "Start": 334,
-      "End": 337,
+      "Start": 123,
+      "End": 127,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_yajl_rb_local_0\u003eobj",
+      "SymbolPath": "file:lib/use_yajl_rb_local_0@obj",
+      "Def": true,
       "File": "lib/use_yajl.rb",
       "Start": 936,
       "End": 939,
@@ -1880,7 +3200,17 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_yajl_rb_local_0\u003etotal_size",
+      "SymbolPath": "file:lib/use_yajl_rb_local_0@obj",
+      "File": "lib/use_yajl.rb",
+      "Start": 334,
+      "End": 337,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_yajl_rb_local_0@total_size",
+      "Def": true,
       "File": "lib/use_yajl.rb",
       "Start": 819,
       "End": 829,
@@ -1889,10 +3219,129 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
-      "SymbolPath": "file:lib/use_yajl_rb_local_0\u003euri",
+      "SymbolPath": "file:lib/use_yajl_rb_local_0@total_size",
+      "File": "lib/use_yajl.rb",
+      "Start": 888,
+      "End": 898,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:lib/use_yajl_rb_local_0@uri",
+      "Def": true,
       "File": "lib/use_yajl.rb",
       "Start": 139,
       "End": 142,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:ruby_sample_xref_app/$classmethods/gemspec_local_0@@block_local_0@s",
+      "Def": true,
+      "File": "ruby_sample_xref_app.gemspec",
+      "Start": 27,
+      "End": 28,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:ruby_sample_xref_app/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_sample_xref_app.gemspec",
+      "Start": 130,
+      "End": 131,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:ruby_sample_xref_app/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_sample_xref_app.gemspec",
+      "Start": 182,
+      "End": 183,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:ruby_sample_xref_app/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_sample_xref_app.gemspec",
+      "Start": 245,
+      "End": 246,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:ruby_sample_xref_app/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_sample_xref_app.gemspec",
+      "Start": 279,
+      "End": 280,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:ruby_sample_xref_app/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_sample_xref_app.gemspec",
+      "Start": 319,
+      "End": 320,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T02:16:40Z",
+      "LastCommitID": "e9a22c0d74064b33cc3825d3a2b281cf58d725ea"
+    },
+    {
+      "SymbolPath": "file:ruby_sample_xref_app/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_sample_xref_app.gemspec",
+      "Start": 32,
+      "End": 33,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:ruby_sample_xref_app/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_sample_xref_app.gemspec",
+      "Start": 511,
+      "End": 512,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:ruby_sample_xref_app/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_sample_xref_app.gemspec",
+      "Start": 587,
+      "End": 588,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:ruby_sample_xref_app/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_sample_xref_app.gemspec",
+      "Start": 611,
+      "End": 612,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T02:16:40Z",
+      "LastCommitID": "e9a22c0d74064b33cc3825d3a2b281cf58d725ea"
+    },
+    {
+      "SymbolPath": "file:ruby_sample_xref_app/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_sample_xref_app.gemspec",
+      "Start": 73,
+      "End": 74,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolPath": "file:ruby_sample_xref_app/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_sample_xref_app.gemspec",
+      "Start": 99,
+      "End": 100,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
@@ -2058,6 +3507,17 @@
       "File": "lib/use_barkick.rb",
       "Start": 343,
       "End": 354,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolRepo": "github.com/ankane/barkick",
+      "SymbolUnit": "barkick",
+      "SymbolPath": "GTIN/$methods/base_gtin14",
+      "File": "lib/use_barkick.rb",
+      "Start": 408,
+      "End": 419,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
@@ -2388,6 +3848,27 @@
       "File": "lib/use_yajl.rb",
       "Start": 106,
       "End": 111,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolRepo": "github.com/carlhuda/bundler",
+      "SymbolUnit": "bundler",
+      "SymbolPath": "Gem",
+      "File": "ruby_sample_xref_app.gemspec",
+      "End": 3,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolRepo": "github.com/carlhuda/bundler",
+      "SymbolUnit": "bundler",
+      "SymbolPath": "Gem/Specification",
+      "File": "ruby_sample_xref_app.gemspec",
+      "Start": 5,
+      "End": 18,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
@@ -2857,6 +4338,28 @@
     {
       "SymbolRepo": "github.com/redis/redis-rb",
       "SymbolUnit": "redis",
+      "SymbolPath": "Redis/$methods/decr",
+      "File": "lib/use_redis.rb",
+      "Start": 255,
+      "End": 259,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolRepo": "github.com/redis/redis-rb",
+      "SymbolUnit": "redis",
+      "SymbolPath": "Redis/$methods/decr",
+      "File": "lib/use_redis.rb",
+      "Start": 275,
+      "End": 279,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolRepo": "github.com/redis/redis-rb",
+      "SymbolUnit": "redis",
       "SymbolPath": "Redis/$methods/del",
       "File": "lib/use_redis.rb",
       "Start": 1249,
@@ -2923,6 +4426,28 @@
     {
       "SymbolRepo": "github.com/redis/redis-rb",
       "SymbolUnit": "redis",
+      "SymbolPath": "Redis/$methods/incr",
+      "File": "lib/use_redis.rb",
+      "Start": 180,
+      "End": 184,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolRepo": "github.com/redis/redis-rb",
+      "SymbolUnit": "redis",
+      "SymbolPath": "Redis/$methods/incr",
+      "File": "lib/use_redis.rb",
+      "Start": 200,
+      "End": 204,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolRepo": "github.com/redis/redis-rb",
+      "SymbolUnit": "redis",
       "SymbolPath": "Redis/$methods/initialize",
       "File": "lib/use_redis.rb",
       "Start": 27,
@@ -2938,6 +4463,17 @@
       "File": "lib/use_redis.rb",
       "Start": 544,
       "End": 550,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolRepo": "github.com/redis/redis-rb",
+      "SymbolUnit": "redis",
+      "SymbolPath": "Redis/$methods/lrange",
+      "File": "lib/use_redis.rb",
+      "Start": 662,
+      "End": 668,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
@@ -3131,6 +4667,19 @@
     },
     {
       "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "ruby",
+      "SymbolUnit": ".",
+      "SymbolPath": "Gem/Specification/$methods/initialize",
+      "File": "ruby_sample_xref_app.gemspec",
+      "Start": 19,
+      "End": 22,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "ruby",
       "SymbolUnit": ".",
       "SymbolPath": "URI/$classmethods/parse",
       "File": "lib/use_yajl.rb",
@@ -3256,22 +4805,13 @@
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
-      "SymbolCount": 38,
+      "SymbolCount": 74,
       "SymbolsProportion": 1,
-      "ExportedSymbolCount": 37,
+      "ExportedSymbolCount": 73,
       "ExportedSymbolsProportion": 1
     }
   ],
   "ClientsOfOtherUnits": [
-    {
-      "AuthorEmail": "qslack@qslack.com",
-      "LastCommitDate": "2013-10-21T01:58:22Z",
-      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
-      "SymbolRepo": "",
-      "SymbolUnitType": null,
-      "SymbolUnit": null,
-      "RefCount": 167
-    },
     {
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2013-10-21T01:58:22Z",
@@ -3288,7 +4828,7 @@
       "SymbolRepo": "github.com/ankane/barkick",
       "SymbolUnitType": null,
       "SymbolUnit": "barkick",
-      "RefCount": 18
+      "RefCount": 19
     },
     {
       "AuthorEmail": "qslack@qslack.com",
@@ -3307,6 +4847,15 @@
       "SymbolUnitType": null,
       "SymbolUnit": "yajl-ruby",
       "RefCount": 12
+    },
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
+      "SymbolRepo": "github.com/carlhuda/bundler",
+      "SymbolUnitType": null,
+      "SymbolUnit": "bundler",
+      "RefCount": 2
     },
     {
       "AuthorEmail": "qslack@qslack.com",
@@ -3351,7 +4900,7 @@
       "SymbolRepo": "github.com/redis/redis-rb",
       "SymbolUnitType": null,
       "SymbolUnit": "redis",
-      "RefCount": 26
+      "RefCount": 31
     },
     {
       "AuthorEmail": "qslack@qslack.com",
@@ -3367,9 +4916,9 @@
       "LastCommitDate": "2013-10-21T01:58:22Z",
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb",
       "SymbolRepo": "github.com/ruby/ruby",
-      "SymbolUnitType": null,
+      "SymbolUnitType": "ruby",
       "SymbolUnit": ".",
-      "RefCount": 1
+      "RefCount": 2
     },
     {
       "AuthorEmail": "qslack@qslack.com",
@@ -3379,6 +4928,15 @@
       "SymbolUnitType": null,
       "SymbolUnit": "stripe",
       "RefCount": 10
+    },
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T02:16:40Z",
+      "LastCommitID": "e9a22c0d74064b33cc3825d3a2b281cf58d725ea",
+      "SymbolRepo": "",
+      "SymbolUnitType": null,
+      "SymbolUnit": null,
+      "RefCount": 281
     }
   ]
 }

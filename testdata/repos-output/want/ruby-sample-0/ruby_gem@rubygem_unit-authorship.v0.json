@@ -270,7 +270,27 @@
         "CharsProportion": 1
       }
     ],
-    "Sample\u003e_local_0\u003e/$methods/my_method\u003eb": [
+    "Sample@_local_0@/$methods/initialize@i": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-18T21:12:04Z",
+        "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
+        "Exported": true,
+        "Chars": 1,
+        "CharsProportion": 1
+      }
+    ],
+    "Sample@_local_0@/$methods/my_method@a": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-18T21:12:04Z",
+        "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
+        "Exported": true,
+        "Chars": 1,
+        "CharsProportion": 1
+      }
+    ],
+    "Sample@_local_0@/$methods/my_method@b": [
       {
         "AuthorEmail": "beyang.liu@gmail.com",
         "LastCommitDate": "2014-04-18T21:12:04Z",
@@ -280,7 +300,7 @@
         "CharsProportion": 1
       }
     ],
-    "Sample\u003e_local_0\u003e/$methods/my_method\u003ec": [
+    "Sample@_local_0@/$methods/my_method@c": [
       {
         "AuthorEmail": "beyang.liu@gmail.com",
         "LastCommitDate": "2014-04-18T21:12:04Z",
@@ -290,7 +310,7 @@
         "CharsProportion": 1
       }
     ],
-    "Sample\u003e_local_0\u003e/$methods/my_method\u003el": [
+    "Sample@_local_0@/$methods/my_method@l": [
       {
         "AuthorEmail": "beyang.liu@gmail.com",
         "LastCommitDate": "2014-04-18T21:12:04Z",
@@ -300,7 +320,17 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/cases/global_var_rb_local_0\u003ea": [
+    "file:lib/cases/core_rb_local_0@@block_local_1@n": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-18T21:12:04Z",
+        "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
+        "Exported": true,
+        "Chars": 1,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/cases/global_var_rb_local_0@a": [
       {
         "AuthorEmail": "beyang.liu@gmail.com",
         "LastCommitDate": "2014-04-18T21:12:04Z",
@@ -310,7 +340,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/cases/stdlib_rb_local_0\u003eu": [
+    "file:lib/cases/stdlib_rb_local_0@u": [
       {
         "AuthorEmail": "beyang.liu@gmail.com",
         "LastCommitDate": "2014-04-18T21:12:04Z",
@@ -320,7 +350,27 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/ruby_gem_rb_local_0\u003eb64": [
+    "file:lib/cases/top_def_rb_local_0@/$methods/f@a": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-18T21:12:04Z",
+        "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
+        "Exported": true,
+        "Chars": 1,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/ruby_gem_rb_local_0@@block_local_2@t": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-18T21:12:04Z",
+        "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
+        "Exported": true,
+        "Chars": 1,
+        "CharsProportion": 1
+      }
+    ],
+    "file:lib/ruby_gem_rb_local_0@b64": [
       {
         "AuthorEmail": "beyang.liu@gmail.com",
         "LastCommitDate": "2014-04-18T21:12:04Z",
@@ -330,7 +380,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/ruby_gem_rb_local_0\u003efoo": [
+    "file:lib/ruby_gem_rb_local_0@foo": [
       {
         "AuthorEmail": "beyang.liu@gmail.com",
         "LastCommitDate": "2014-04-18T21:12:04Z",
@@ -340,7 +390,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/ruby_gem_rb_local_0\u003emy_global_var": [
+    "file:lib/ruby_gem_rb_local_0@my_global_var": [
       {
         "AuthorEmail": "beyang.liu@gmail.com",
         "LastCommitDate": "2014-04-18T21:12:04Z",
@@ -350,7 +400,7 @@
         "CharsProportion": 1
       }
     ],
-    "file:lib/ruby_gem_rb_local_0\u003emy_sample": [
+    "file:lib/ruby_gem_rb_local_0@my_sample": [
       {
         "AuthorEmail": "beyang.liu@gmail.com",
         "LastCommitDate": "2014-04-18T21:12:04Z",
@@ -359,9 +409,29 @@
         "Chars": 21,
         "CharsProportion": 1
       }
+    ],
+    "file:ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s": [
+      {
+        "AuthorEmail": "beyang.liu@gmail.com",
+        "LastCommitDate": "2014-04-18T21:12:04Z",
+        "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
+        "Exported": true,
+        "Chars": 1,
+        "CharsProportion": 1
+      }
     ]
   },
   "Refs": [
+    {
+      "SymbolPath": "$methods/f",
+      "Def": true,
+      "File": "lib/cases/top_def.rb",
+      "Start": 2,
+      "End": 3,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
     {
       "SymbolPath": "$methods/f",
       "Def": true,
@@ -387,6 +457,15 @@
       "File": "lib/cases/class.rb",
       "Start": 6,
       "End": 7,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "C",
+      "Def": true,
+      "File": "lib/cases/top_const.rb",
+      "End": 1,
       "AuthorEmail": "beyang.liu@gmail.com",
       "LastCommitDate": "2014-04-18T21:12:04Z",
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
@@ -457,14 +536,6 @@
     {
       "SymbolPath": "C",
       "File": "lib/cases/top_const.rb",
-      "End": 1,
-      "AuthorEmail": "beyang.liu@gmail.com",
-      "LastCommitDate": "2014-04-18T21:12:04Z",
-      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
-    },
-    {
-      "SymbolPath": "C",
-      "File": "lib/cases/top_const.rb",
       "Start": 6,
       "End": 7,
       "AuthorEmail": "beyang.liu@gmail.com",
@@ -522,15 +593,6 @@
     {
       "SymbolPath": "C/$methods/im",
       "File": "lib/cases/class.rb",
-      "Start": 261,
-      "End": 263,
-      "AuthorEmail": "beyang.liu@gmail.com",
-      "LastCommitDate": "2014-04-18T21:12:04Z",
-      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
-    },
-    {
-      "SymbolPath": "C/$methods/im",
-      "File": "lib/cases/class.rb",
       "Start": 57,
       "End": 59,
       "AuthorEmail": "beyang.liu@gmail.com",
@@ -578,6 +640,16 @@
     },
     {
       "SymbolPath": "C/$methods/x",
+      "Def": true,
+      "File": "lib/cases/class.rb",
+      "Start": 96,
+      "End": 97,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "C/$methods/x",
       "File": "lib/cases/class.rb",
       "Start": 165,
       "End": 166,
@@ -586,7 +658,18 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
+      "SymbolPath": "C/$methods/x=",
+      "Def": true,
+      "File": "lib/cases/class.rb",
+      "Start": 104,
+      "End": 106,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
       "SymbolPath": "C/@x",
+      "Def": true,
       "File": "lib/cases/class.rb",
       "Start": 114,
       "End": 116,
@@ -655,6 +738,25 @@
       "File": "lib/cases/class.rb",
       "Start": 269,
       "End": 272,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "C/D/$methods/im",
+      "Def": true,
+      "File": "lib/cases/class.rb",
+      "Start": 218,
+      "End": 220,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "C/D/$methods/im",
+      "File": "lib/cases/class.rb",
+      "Start": 261,
+      "End": 263,
       "AuthorEmail": "beyang.liu@gmail.com",
       "LastCommitDate": "2014-04-18T21:12:04Z",
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
@@ -753,6 +855,7 @@
     },
     {
       "SymbolPath": "MY_GLOBAL_CONST",
+      "Def": true,
       "File": "lib/ruby_gem.rb",
       "Start": 564,
       "End": 579,
@@ -762,6 +865,7 @@
     },
     {
       "SymbolPath": "MY_SAMPLE",
+      "Def": true,
       "File": "lib/ruby_gem.rb",
       "Start": 747,
       "End": 756,
@@ -950,6 +1054,7 @@
     },
     {
       "SymbolPath": "Sample/@i",
+      "Def": true,
       "File": "lib/ruby_gem.rb",
       "Start": 389,
       "End": 391,
@@ -977,6 +1082,7 @@
     },
     {
       "SymbolPath": "Sample/MY_CONST",
+      "Def": true,
       "File": "lib/ruby_gem.rb",
       "Start": 544,
       "End": 552,
@@ -985,7 +1091,46 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003eb",
+      "SymbolPath": "Sample@_local_0@/$methods/initialize@i",
+      "Def": true,
+      "File": "lib/ruby_gem.rb",
+      "Start": 371,
+      "End": 372,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "Sample@_local_0@/$methods/initialize@i",
+      "File": "lib/ruby_gem.rb",
+      "Start": 394,
+      "End": 395,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "Sample@_local_0@/$methods/my_method@a",
+      "Def": true,
+      "File": "lib/ruby_gem.rb",
+      "Start": 419,
+      "End": 420,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "Sample@_local_0@/$methods/my_method@a",
+      "File": "lib/ruby_gem.rb",
+      "Start": 510,
+      "End": 511,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "Sample@_local_0@/$methods/my_method@b",
+      "Def": true,
       "File": "lib/ruby_gem.rb",
       "Start": 439,
       "End": 440,
@@ -994,7 +1139,7 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003eb",
+      "SymbolPath": "Sample@_local_0@/$methods/my_method@b",
       "File": "lib/ruby_gem.rb",
       "Start": 458,
       "End": 459,
@@ -1003,7 +1148,7 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003eb",
+      "SymbolPath": "Sample@_local_0@/$methods/my_method@b",
       "File": "lib/ruby_gem.rb",
       "Start": 486,
       "End": 487,
@@ -1012,7 +1157,7 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003eb",
+      "SymbolPath": "Sample@_local_0@/$methods/my_method@b",
       "File": "lib/ruby_gem.rb",
       "Start": 518,
       "End": 519,
@@ -1021,7 +1166,8 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003ec",
+      "SymbolPath": "Sample@_local_0@/$methods/my_method@c",
+      "Def": true,
       "File": "lib/ruby_gem.rb",
       "Start": 429,
       "End": 430,
@@ -1030,7 +1176,8 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003el",
+      "SymbolPath": "Sample@_local_0@/$methods/my_method@l",
+      "Def": true,
       "File": "lib/ruby_gem.rb",
       "Start": 454,
       "End": 455,
@@ -1039,7 +1186,7 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "Sample\u003e_local_0\u003e/$methods/my_method\u003el",
+      "SymbolPath": "Sample@_local_0@/$methods/my_method@l",
       "File": "lib/ruby_gem.rb",
       "Start": 502,
       "End": 503,
@@ -1048,7 +1195,27 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "file:lib/cases/global_var_rb_local_0\u003ea",
+      "SymbolPath": "file:lib/cases/core_rb_local_0@@block_local_1@n",
+      "Def": true,
+      "File": "lib/cases/core.rb",
+      "Start": 26,
+      "End": 27,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "file:lib/cases/core_rb_local_0@@block_local_1@n",
+      "File": "lib/cases/core.rb",
+      "Start": 29,
+      "End": 30,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "file:lib/cases/global_var_rb_local_0@a",
+      "Def": true,
       "File": "lib/cases/global_var.rb",
       "End": 1,
       "AuthorEmail": "beyang.liu@gmail.com",
@@ -1056,7 +1223,7 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "file:lib/cases/global_var_rb_local_0\u003ea",
+      "SymbolPath": "file:lib/cases/global_var_rb_local_0@a",
       "File": "lib/cases/global_var.rb",
       "Start": 6,
       "End": 7,
@@ -1065,7 +1232,8 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "file:lib/cases/stdlib_rb_local_0\u003eu",
+      "SymbolPath": "file:lib/cases/stdlib_rb_local_0@u",
+      "Def": true,
       "File": "lib/cases/stdlib.rb",
       "Start": 14,
       "End": 15,
@@ -1074,7 +1242,7 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "file:lib/cases/stdlib_rb_local_0\u003eu",
+      "SymbolPath": "file:lib/cases/stdlib_rb_local_0@u",
       "File": "lib/cases/stdlib.rb",
       "Start": 50,
       "End": 51,
@@ -1083,7 +1251,37 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "file:lib/ruby_gem_rb_local_0\u003eb64",
+      "SymbolPath": "file:lib/cases/top_def_rb_local_0@/$methods/f@a",
+      "Def": true,
+      "File": "lib/cases/top_def.rb",
+      "Start": 6,
+      "End": 7,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "file:lib/ruby_gem_rb_local_0@@block_local_2@t",
+      "Def": true,
+      "File": "lib/ruby_gem.rb",
+      "Start": 642,
+      "End": 643,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "file:lib/ruby_gem_rb_local_0@@block_local_2@t",
+      "File": "lib/ruby_gem.rb",
+      "Start": 652,
+      "End": 653,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "file:lib/ruby_gem_rb_local_0@b64",
+      "Def": true,
       "File": "lib/ruby_gem.rb",
       "Start": 676,
       "End": 679,
@@ -1092,7 +1290,7 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "file:lib/ruby_gem_rb_local_0\u003eb64",
+      "SymbolPath": "file:lib/ruby_gem_rb_local_0@b64",
       "File": "lib/ruby_gem.rb",
       "Start": 716,
       "End": 719,
@@ -1101,7 +1299,8 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "file:lib/ruby_gem_rb_local_0\u003efoo",
+      "SymbolPath": "file:lib/ruby_gem_rb_local_0@foo",
+      "Def": true,
       "File": "lib/ruby_gem.rb",
       "Start": 710,
       "End": 713,
@@ -1110,7 +1309,7 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "file:lib/ruby_gem_rb_local_0\u003efoo",
+      "SymbolPath": "file:lib/ruby_gem_rb_local_0@foo",
       "File": "lib/ruby_gem.rb",
       "Start": 742,
       "End": 745,
@@ -1119,7 +1318,8 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "file:lib/ruby_gem_rb_local_0\u003emy_global_var",
+      "SymbolPath": "file:lib/ruby_gem_rb_local_0@my_global_var",
+      "Def": true,
       "File": "lib/ruby_gem.rb",
       "Start": 587,
       "End": 600,
@@ -1128,7 +1328,8 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "file:lib/ruby_gem_rb_local_0\u003emy_sample",
+      "SymbolPath": "file:lib/ruby_gem_rb_local_0@my_sample",
+      "Def": true,
       "File": "lib/ruby_gem.rb",
       "Start": 773,
       "End": 782,
@@ -1137,7 +1338,7 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "file:lib/ruby_gem_rb_local_0\u003emy_sample",
+      "SymbolPath": "file:lib/ruby_gem_rb_local_0@my_sample",
       "File": "lib/ruby_gem.rb",
       "Start": 795,
       "End": 804,
@@ -1146,7 +1347,7 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
-      "SymbolPath": "file:lib/ruby_gem_rb_local_0\u003emy_sample",
+      "SymbolPath": "file:lib/ruby_gem_rb_local_0@my_sample",
       "File": "lib/ruby_gem.rb",
       "Start": 839,
       "End": 848,
@@ -1155,7 +1356,138 @@
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
     },
     {
+      "SymbolPath": "file:ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "Def": true,
+      "File": "ruby_gem.gemspec",
+      "Start": 27,
+      "End": 28,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "file:ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_gem.gemspec",
+      "Start": 118,
+      "End": 119,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "file:ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_gem.gemspec",
+      "Start": 154,
+      "End": 155,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "file:ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_gem.gemspec",
+      "Start": 217,
+      "End": 218,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "file:ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_gem.gemspec",
+      "Start": 251,
+      "End": 252,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "file:ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_gem.gemspec",
+      "Start": 287,
+      "End": 288,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-07-04T08:43:47Z",
+      "LastCommitID": "0b79cc00c5e8096ff5c5749bbf105bb04e5ebc49"
+    },
+    {
+      "SymbolPath": "file:ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_gem.gemspec",
+      "Start": 32,
+      "End": 33,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "file:ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_gem.gemspec",
+      "Start": 324,
+      "End": 325,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "file:ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_gem.gemspec",
+      "Start": 364,
+      "End": 365,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "file:ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_gem.gemspec",
+      "Start": 388,
+      "End": 389,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "file:ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_gem.gemspec",
+      "Start": 61,
+      "End": 62,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolPath": "file:ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "File": "ruby_gem.gemspec",
+      "Start": 87,
+      "End": 88,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolRepo": "github.com/carlhuda/bundler",
+      "SymbolUnit": "bundler",
+      "SymbolPath": "Gem",
+      "File": "ruby_gem.gemspec",
+      "End": 3,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolRepo": "github.com/carlhuda/bundler",
+      "SymbolUnit": "bundler",
+      "SymbolPath": "Gem/Specification",
+      "File": "ruby_gem.gemspec",
+      "Start": 5,
+      "End": 18,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
       "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "ruby",
       "SymbolUnit": ".",
       "SymbolPath": "Array",
       "File": "lib/ruby_gem.rb",
@@ -1167,6 +1499,31 @@
     },
     {
       "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "ruby",
+      "SymbolUnit": ".",
+      "SymbolPath": "Array/$methods/each",
+      "File": "lib/ruby_gem.rb",
+      "Start": 633,
+      "End": 637,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "ruby",
+      "SymbolUnit": ".",
+      "SymbolPath": "Array/$methods/map",
+      "File": "lib/cases/core.rb",
+      "Start": 19,
+      "End": 22,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "ruby",
       "SymbolUnit": ".",
       "SymbolPath": "Base64",
       "File": "lib/ruby_gem.rb",
@@ -1178,6 +1535,7 @@
     },
     {
       "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "ruby",
       "SymbolUnit": ".",
       "SymbolPath": "BasicObject/$methods/initialize",
       "File": "lib/cases/class.rb",
@@ -1189,6 +1547,7 @@
     },
     {
       "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "ruby",
       "SymbolUnit": ".",
       "SymbolPath": "BasicObject/$methods/initialize",
       "File": "lib/cases/class.rb",
@@ -1200,6 +1559,55 @@
     },
     {
       "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "ruby",
+      "SymbolUnit": ".",
+      "SymbolPath": "Dir",
+      "File": "ruby_gem.gemspec",
+      "Start": 303,
+      "End": 306,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-07-04T08:43:47Z",
+      "LastCommitID": "0b79cc00c5e8096ff5c5749bbf105bb04e5ebc49"
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "ruby",
+      "SymbolUnit": ".",
+      "SymbolPath": "Gem/Specification/$methods/initialize",
+      "File": "ruby_gem.gemspec",
+      "Start": 19,
+      "End": 22,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "ruby",
+      "SymbolUnit": ".",
+      "SymbolPath": "String/$methods/length",
+      "File": "lib/cases/core.rb",
+      "Start": 6,
+      "End": 12,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "ruby",
+      "SymbolUnit": ".",
+      "SymbolPath": "String/$methods/length",
+      "File": "lib/ruby_gem.rb",
+      "Start": 460,
+      "End": 466,
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c"
+    },
+    {
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "ruby",
       "SymbolUnit": ".",
       "SymbolPath": "URI",
       "File": "lib/cases/stdlib.rb",
@@ -1211,6 +1619,7 @@
     },
     {
       "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "ruby",
       "SymbolUnit": ".",
       "SymbolPath": "URI/$classmethods/parse",
       "File": "lib/cases/stdlib.rb",
@@ -1226,9 +1635,9 @@
       "AuthorEmail": "beyang.liu@gmail.com",
       "LastCommitDate": "2014-04-18T21:12:04Z",
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
-      "SymbolCount": 36,
+      "SymbolCount": 42,
       "SymbolsProportion": 1,
-      "ExportedSymbolCount": 34,
+      "ExportedSymbolCount": 40,
       "ExportedSymbolsProportion": 1
     }
   ],
@@ -1240,16 +1649,43 @@
       "SymbolRepo": "",
       "SymbolUnitType": null,
       "SymbolUnit": null,
-      "RefCount": 86
+      "RefCount": 110
+    },
+    {
+      "AuthorEmail": "beyang.liu@gmail.com",
+      "LastCommitDate": "2014-04-18T21:12:04Z",
+      "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
+      "SymbolRepo": "github.com/carlhuda/bundler",
+      "SymbolUnitType": null,
+      "SymbolUnit": "bundler",
+      "RefCount": 2
     },
     {
       "AuthorEmail": "beyang.liu@gmail.com",
       "LastCommitDate": "2014-04-18T21:12:04Z",
       "LastCommitID": "464b1d2a92586b3ef7690310de7011eff781ca9c",
       "SymbolRepo": "github.com/ruby/ruby",
-      "SymbolUnitType": null,
+      "SymbolUnitType": "ruby",
       "SymbolUnit": ".",
-      "RefCount": 6
+      "RefCount": 11
+    },
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-07-04T08:43:47Z",
+      "LastCommitID": "0b79cc00c5e8096ff5c5749bbf105bb04e5ebc49",
+      "SymbolRepo": "",
+      "SymbolUnitType": null,
+      "SymbolUnit": null,
+      "RefCount": 1
+    },
+    {
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-07-04T08:43:47Z",
+      "LastCommitID": "0b79cc00c5e8096ff5c5749bbf105bb04e5ebc49",
+      "SymbolRepo": "github.com/ruby/ruby",
+      "SymbolUnitType": "ruby",
+      "SymbolUnit": ".",
+      "RefCount": 1
     }
   ]
 }
