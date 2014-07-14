@@ -74,9 +74,22 @@ func (f symbolFormatter) Type(qual graph.Qualification) string {
 		if i := strings.Index(f.data.Signature, "("); i != -1 {
 			ts = f.data.Signature[i:]
 		}
-		ts += " " + f.data.ReturnType
+		ts += " " + cleanType(f.data.ReturnType)
 	} else {
-		ts = f.data.TypeString
+		ts = cleanType(f.data.TypeString)
 	}
 	return strings.TrimPrefix(ts, "::")
+}
+
+func cleanType(t string) string {
+	t = strings.TrimSuffix(t, "#")
+	switch t {
+	case "NilClass":
+		return "nil"
+	case "TrueClass":
+		return "true"
+	case "FalseClass":
+		return "false"
+	}
+	return t
 }
