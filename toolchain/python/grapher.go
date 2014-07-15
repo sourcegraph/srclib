@@ -215,17 +215,13 @@ func (p *pythonEnv) grapherTransform(o *rawGraphData, u unit.SourceUnit) (*graph
 	if o.Extensions != nil {
 		// Extension data includes symbols, docs, and self refs. Add those to the struct
 		log.Printf("Integrating C extension Symbols...")
-		for _, csymbol := range o.Extensions.Symbols {
-			o2.Symbols = append(o2.Symbols, csymbol)
-		}
+		o2.Symbols = append(o2.Symbols, o.Extensions.Symbols...)
+
 		log.Printf("Integrating C extension Docs...")
-		for _, cdoc := range o.Extensions.Docs {
-			o2.Docs = append(o2.Docs, cdoc)
-		}
+		o2.Docs = append(o2.Docs, o.Extensions.Docs...)
+
 		log.Printf("Integrating C extension Refs...")
-		for _, cref := range o.Extensions.Refs {
-			o2.Refs = append(o2.Refs, cref)
-		}
+		o2.Refs = append(o2.Refs, o.Extensions.Refs...)
 	}
 
 	return &o2, nil
