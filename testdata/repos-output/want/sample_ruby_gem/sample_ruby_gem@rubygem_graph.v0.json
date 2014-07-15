@@ -2,6 +2,7 @@
   "Symbols": [
     {
       "Path": "MY_GLOBAL_CONST",
+      "TreePath": "./MY_GLOBAL_CONST",
       "Kind": "const",
       "Name": "MY_GLOBAL_CONST",
       "Callable": false,
@@ -20,6 +21,7 @@
     },
     {
       "Path": "MY_SAMPLE",
+      "TreePath": "./MY_SAMPLE",
       "Kind": "const",
       "Name": "MY_SAMPLE",
       "Callable": false,
@@ -38,6 +40,7 @@
     },
     {
       "Path": "MY_URI",
+      "TreePath": "./MY_URI",
       "Kind": "const",
       "Name": "MY_URI",
       "Callable": false,
@@ -56,6 +59,7 @@
     },
     {
       "Path": "MY_URI_HOST",
+      "TreePath": "./MY_URI_HOST",
       "Kind": "const",
       "Name": "MY_URI_HOST",
       "Callable": false,
@@ -74,6 +78,7 @@
     },
     {
       "Path": "Sample",
+      "TreePath": "./Sample",
       "Kind": "type",
       "Name": "Sample",
       "Callable": false,
@@ -92,6 +97,7 @@
     },
     {
       "Path": "Sample/$classmethods/my_array",
+      "TreePath": "./Sample/my_array",
       "Kind": "func",
       "Name": "my_array",
       "Callable": false,
@@ -110,6 +116,7 @@
     },
     {
       "Path": "Sample/$classmethods/my_bool",
+      "TreePath": "./Sample/my_bool",
       "Kind": "func",
       "Name": "my_bool",
       "Callable": false,
@@ -128,6 +135,7 @@
     },
     {
       "Path": "Sample/$classmethods/my_hash",
+      "TreePath": "./Sample/my_hash",
       "Kind": "func",
       "Name": "my_hash",
       "Callable": false,
@@ -146,6 +154,7 @@
     },
     {
       "Path": "Sample/$classmethods/my_int",
+      "TreePath": "./Sample/my_int",
       "Kind": "func",
       "Name": "my_int",
       "Callable": false,
@@ -164,6 +173,7 @@
     },
     {
       "Path": "Sample/$classmethods/my_string",
+      "TreePath": "./Sample/my_string",
       "Kind": "func",
       "Name": "my_string",
       "Callable": false,
@@ -182,6 +192,7 @@
     },
     {
       "Path": "Sample/$methods/initialize",
+      "TreePath": "./Sample/initialize",
       "Kind": "func",
       "Name": "initialize",
       "Callable": false,
@@ -200,6 +211,7 @@
     },
     {
       "Path": "Sample/$methods/my_method",
+      "TreePath": "./Sample/my_method",
       "Kind": "func",
       "Name": "my_method",
       "Callable": false,
@@ -218,6 +230,7 @@
     },
     {
       "Path": "Sample/@i",
+      "TreePath": "./Sample/@i",
       "Kind": "var",
       "Name": "@i",
       "Callable": false,
@@ -236,6 +249,7 @@
     },
     {
       "Path": "Sample/MY_CONST",
+      "TreePath": "./Sample/MY_CONST",
       "Kind": "const",
       "Name": "MY_CONST",
       "Callable": false,
@@ -254,7 +268,7 @@
     },
     {
       "Path": "Sample@_local_0@/$methods/initialize@i",
-      "TreePath": "_local_0/",
+      "TreePath": "./Sample/initialize/i",
       "Kind": "var",
       "Name": "i",
       "Callable": false,
@@ -273,7 +287,7 @@
     },
     {
       "Path": "Sample@_local_0@/$methods/my_method@a",
-      "TreePath": "_local_0/",
+      "TreePath": "./Sample/my_method/a",
       "Kind": "var",
       "Name": "a",
       "Callable": false,
@@ -292,7 +306,7 @@
     },
     {
       "Path": "Sample@_local_0@/$methods/my_method@b",
-      "TreePath": "_local_0/",
+      "TreePath": "./Sample/my_method/b",
       "Kind": "var",
       "Name": "b",
       "Callable": false,
@@ -311,7 +325,7 @@
     },
     {
       "Path": "Sample@_local_0@/$methods/my_method@c",
-      "TreePath": "_local_0/",
+      "TreePath": "./Sample/my_method/c",
       "Kind": "var",
       "Name": "c",
       "Callable": false,
@@ -330,7 +344,7 @@
     },
     {
       "Path": "Sample@_local_0@/$methods/my_method@l",
-      "TreePath": "_local_0/",
+      "TreePath": "./Sample/my_method/l",
       "Kind": "var",
       "Name": "l",
       "Callable": false,
@@ -349,6 +363,7 @@
     },
     {
       "Path": "file:lib/sample_ruby_gem_rb_local_0@@block_local_1@t",
+      "TreePath": "./file:lib/sample_ruby_gem_rb_local_0/@block_local_1/t",
       "Kind": "var",
       "Name": "t",
       "Callable": false,
@@ -367,6 +382,7 @@
     },
     {
       "Path": "file:lib/sample_ruby_gem_rb_local_0@ip",
+      "TreePath": "./file:lib/sample_ruby_gem_rb_local_0/ip",
       "Kind": "var",
       "Name": "ip",
       "Callable": false,
@@ -385,6 +401,7 @@
     },
     {
       "Path": "file:lib/sample_ruby_gem_rb_local_0@my_global_var",
+      "TreePath": "./file:lib/sample_ruby_gem_rb_local_0/my_global_var",
       "Kind": "var",
       "Name": "my_global_var",
       "Callable": false,
@@ -403,6 +420,7 @@
     },
     {
       "Path": "file:lib/sample_ruby_gem_rb_local_0@my_sample",
+      "TreePath": "./file:lib/sample_ruby_gem_rb_local_0/my_sample",
       "Kind": "var",
       "Name": "my_sample",
       "Callable": false,
@@ -421,6 +439,7 @@
     },
     {
       "Path": "file:sample_ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "TreePath": "./file:sample_ruby_gem/gemspec_local_0/@block_local_0/s",
       "Kind": "var",
       "Name": "s",
       "Callable": false,

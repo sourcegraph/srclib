@@ -2,6 +2,7 @@
   "Symbols": [
     {
       "Path": "Kernel",
+      "TreePath": "./Kernel",
       "Kind": "module",
       "Name": "Kernel",
       "Callable": false,
@@ -20,6 +21,7 @@
     },
     {
       "Path": "Kernel/$classmethods/URI",
+      "TreePath": "./Kernel/URI",
       "Kind": "func",
       "Name": "URI",
       "Callable": false,
@@ -38,6 +40,7 @@
     },
     {
       "Path": "Kernel/$methods/URI",
+      "TreePath": "./Kernel/URI",
       "Kind": "func",
       "Name": "URI",
       "Callable": false,
@@ -56,7 +59,7 @@
     },
     {
       "Path": "Kernel@_local_0@/$methods/URI@uri",
-      "TreePath": "_local_0/",
+      "TreePath": "./Kernel/URI/uri",
       "Kind": "var",
       "Name": "uri",
       "Callable": false,
@@ -75,6 +78,7 @@
     },
     {
       "Path": "Socket",
+      "TreePath": "./Socket",
       "Kind": "type",
       "Name": "Socket",
       "Callable": false,
@@ -93,6 +97,7 @@
     },
     {
       "Path": "Socket/$classmethods/getaddrinfo",
+      "TreePath": "./Socket/getaddrinfo",
       "Kind": "func",
       "Name": "getaddrinfo",
       "Callable": false,
@@ -111,6 +116,7 @@
     },
     {
       "Path": "Socket/$classmethods/gethostbyaddr",
+      "TreePath": "./Socket/gethostbyaddr",
       "Kind": "func",
       "Name": "gethostbyaddr",
       "Callable": false,
@@ -129,6 +135,7 @@
     },
     {
       "Path": "Socket/$classmethods/gethostbyname",
+      "TreePath": "./Socket/gethostbyname",
       "Kind": "func",
       "Name": "gethostbyname",
       "Callable": false,
@@ -147,6 +154,7 @@
     },
     {
       "Path": "Socket/$classmethods/gethostname",
+      "TreePath": "./Socket/gethostname",
       "Kind": "func",
       "Name": "gethostname",
       "Callable": false,
@@ -165,6 +173,7 @@
     },
     {
       "Path": "Socket/$classmethods/getnameinfo",
+      "TreePath": "./Socket/getnameinfo",
       "Kind": "func",
       "Name": "getnameinfo",
       "Callable": false,
@@ -183,6 +192,7 @@
     },
     {
       "Path": "Socket/$classmethods/getservbyname",
+      "TreePath": "./Socket/getservbyname",
       "Kind": "func",
       "Name": "getservbyname",
       "Callable": false,
@@ -201,6 +211,7 @@
     },
     {
       "Path": "Socket/$classmethods/getservbyport",
+      "TreePath": "./Socket/getservbyport",
       "Kind": "func",
       "Name": "getservbyport",
       "Callable": false,
@@ -219,6 +230,7 @@
     },
     {
       "Path": "Socket/$classmethods/ip_address_list",
+      "TreePath": "./Socket/ip_address_list",
       "Kind": "func",
       "Name": "ip_address_list",
       "Callable": false,
@@ -237,6 +249,7 @@
     },
     {
       "Path": "Socket/$classmethods/pack_sockaddr_in",
+      "TreePath": "./Socket/pack_sockaddr_in",
       "Kind": "func",
       "Name": "pack_sockaddr_in",
       "Callable": false,
@@ -255,6 +268,7 @@
     },
     {
       "Path": "Socket/$classmethods/pack_sockaddr_un",
+      "TreePath": "./Socket/pack_sockaddr_un",
       "Kind": "func",
       "Name": "pack_sockaddr_un",
       "Callable": false,
@@ -273,6 +287,7 @@
     },
     {
       "Path": "Socket/$classmethods/pair",
+      "TreePath": "./Socket/pair",
       "Kind": "func",
       "Name": "pair",
       "Callable": false,
@@ -291,6 +306,7 @@
     },
     {
       "Path": "Socket/$classmethods/sockaddr_in",
+      "TreePath": "./Socket/sockaddr_in",
       "Kind": "func",
       "Name": "sockaddr_in",
       "Callable": false,
@@ -309,6 +325,7 @@
     },
     {
       "Path": "Socket/$classmethods/sockaddr_un",
+      "TreePath": "./Socket/sockaddr_un",
       "Kind": "func",
       "Name": "sockaddr_un",
       "Callable": false,
@@ -327,6 +344,7 @@
     },
     {
       "Path": "Socket/$classmethods/socketpair",
+      "TreePath": "./Socket/socketpair",
       "Kind": "func",
       "Name": "socketpair",
       "Callable": false,
@@ -345,6 +363,7 @@
     },
     {
       "Path": "Socket/$classmethods/unpack_sockaddr_in",
+      "TreePath": "./Socket/unpack_sockaddr_in",
       "Kind": "func",
       "Name": "unpack_sockaddr_in",
       "Callable": false,
@@ -363,6 +382,7 @@
     },
     {
       "Path": "Socket/$classmethods/unpack_sockaddr_un",
+      "TreePath": "./Socket/unpack_sockaddr_un",
       "Kind": "func",
       "Name": "unpack_sockaddr_un",
       "Callable": false,
@@ -381,6 +401,7 @@
     },
     {
       "Path": "Socket/$methods/accept",
+      "TreePath": "./Socket/accept",
       "Kind": "func",
       "Name": "accept",
       "Callable": false,
@@ -399,6 +420,7 @@
     },
     {
       "Path": "Socket/$methods/accept_nonblock",
+      "TreePath": "./Socket/accept_nonblock",
       "Kind": "func",
       "Name": "accept_nonblock",
       "Callable": false,
@@ -417,6 +439,7 @@
     },
     {
       "Path": "Socket/$methods/bind",
+      "TreePath": "./Socket/bind",
       "Kind": "func",
       "Name": "bind",
       "Callable": false,
@@ -435,6 +458,7 @@
     },
     {
       "Path": "Socket/$methods/connect",
+      "TreePath": "./Socket/connect",
       "Kind": "func",
       "Name": "connect",
       "Callable": false,
@@ -453,6 +477,7 @@
     },
     {
       "Path": "Socket/$methods/connect_nonblock",
+      "TreePath": "./Socket/connect_nonblock",
       "Kind": "func",
       "Name": "connect_nonblock",
       "Callable": false,
@@ -471,6 +496,7 @@
     },
     {
       "Path": "Socket/$methods/initialize",
+      "TreePath": "./Socket/initialize",
       "Kind": "func",
       "Name": "initialize",
       "Callable": false,
@@ -489,6 +515,7 @@
     },
     {
       "Path": "Socket/$methods/listen",
+      "TreePath": "./Socket/listen",
       "Kind": "func",
       "Name": "listen",
       "Callable": false,
@@ -507,6 +534,7 @@
     },
     {
       "Path": "Socket/$methods/recvfrom",
+      "TreePath": "./Socket/recvfrom",
       "Kind": "func",
       "Name": "recvfrom",
       "Callable": false,
@@ -525,6 +553,7 @@
     },
     {
       "Path": "Socket/$methods/recvfrom_nonblock",
+      "TreePath": "./Socket/recvfrom_nonblock",
       "Kind": "func",
       "Name": "recvfrom_nonblock",
       "Callable": false,
@@ -543,6 +572,7 @@
     },
     {
       "Path": "Socket/$methods/sysaccept",
+      "TreePath": "./Socket/sysaccept",
       "Kind": "func",
       "Name": "sysaccept",
       "Callable": false,
@@ -561,6 +591,7 @@
     },
     {
       "Path": "String",
+      "TreePath": "./String",
       "Kind": "type",
       "Name": "String",
       "Callable": false,
@@ -579,6 +610,7 @@
     },
     {
       "Path": "String/$classmethods/try_convert",
+      "TreePath": "./String/try_convert",
       "Kind": "func",
       "Name": "try_convert",
       "Callable": false,
@@ -597,6 +629,7 @@
     },
     {
       "Path": "String/$methods/%",
+      "TreePath": "./String/%",
       "Kind": "func",
       "Name": "%",
       "Callable": false,
@@ -615,6 +648,7 @@
     },
     {
       "Path": "String/$methods/*",
+      "TreePath": "./String/*",
       "Kind": "func",
       "Name": "*",
       "Callable": false,
@@ -633,6 +667,7 @@
     },
     {
       "Path": "String/$methods/+",
+      "TreePath": "./String/+",
       "Kind": "func",
       "Name": "+",
       "Callable": false,
@@ -651,6 +686,7 @@
     },
     {
       "Path": "String/$methods/==",
+      "TreePath": "./String/==",
       "Kind": "func",
       "Name": "==",
       "Callable": false,
@@ -669,6 +705,7 @@
     },
     {
       "Path": "String/$methods/===",
+      "TreePath": "./String/===",
       "Kind": "func",
       "Name": "===",
       "Callable": false,
@@ -687,6 +724,7 @@
     },
     {
       "Path": "String/$methods/=~",
+      "TreePath": "./String/=~",
       "Kind": "func",
       "Name": "=~",
       "Callable": false,
@@ -705,6 +743,7 @@
     },
     {
       "Path": "String/$methods/[]",
+      "TreePath": "./String/[]",
       "Kind": "func",
       "Name": "[]",
       "Callable": false,
@@ -723,6 +762,7 @@
     },
     {
       "Path": "String/$methods/[]=",
+      "TreePath": "./String/[]=",
       "Kind": "func",
       "Name": "[]=",
       "Callable": false,
@@ -741,6 +781,7 @@
     },
     {
       "Path": "String/$methods/\u003c=@",
+      "TreePath": "./String/\u003c=",
       "Kind": "func",
       "Name": "\u003c=\u003e",
       "Callable": false,
@@ -759,6 +800,7 @@
     },
     {
       "Path": "String/$methods/\u003c\u003c",
+      "TreePath": "./String/\u003c\u003c",
       "Kind": "func",
       "Name": "\u003c\u003c",
       "Callable": false,
@@ -777,6 +819,7 @@
     },
     {
       "Path": "String/$methods/ascii_only?",
+      "TreePath": "./String/ascii_only?",
       "Kind": "func",
       "Name": "ascii_only?",
       "Callable": false,
@@ -795,6 +838,7 @@
     },
     {
       "Path": "String/$methods/b",
+      "TreePath": "./String/b",
       "Kind": "func",
       "Name": "b",
       "Callable": false,
@@ -813,6 +857,7 @@
     },
     {
       "Path": "String/$methods/bytes",
+      "TreePath": "./String/bytes",
       "Kind": "func",
       "Name": "bytes",
       "Callable": false,
@@ -831,6 +876,7 @@
     },
     {
       "Path": "String/$methods/bytesize",
+      "TreePath": "./String/bytesize",
       "Kind": "func",
       "Name": "bytesize",
       "Callable": false,
@@ -849,6 +895,7 @@
     },
     {
       "Path": "String/$methods/byteslice",
+      "TreePath": "./String/byteslice",
       "Kind": "func",
       "Name": "byteslice",
       "Callable": false,
@@ -867,6 +914,7 @@
     },
     {
       "Path": "String/$methods/capitalize!",
+      "TreePath": "./String/capitalize!",
       "Kind": "func",
       "Name": "capitalize!",
       "Callable": false,
@@ -885,6 +933,7 @@
     },
     {
       "Path": "String/$methods/capitalize",
+      "TreePath": "./String/capitalize",
       "Kind": "func",
       "Name": "capitalize",
       "Callable": false,
@@ -903,6 +952,7 @@
     },
     {
       "Path": "String/$methods/casecmp",
+      "TreePath": "./String/casecmp",
       "Kind": "func",
       "Name": "casecmp",
       "Callable": false,
@@ -921,6 +971,7 @@
     },
     {
       "Path": "String/$methods/center",
+      "TreePath": "./String/center",
       "Kind": "func",
       "Name": "center",
       "Callable": false,
@@ -939,6 +990,7 @@
     },
     {
       "Path": "String/$methods/chars",
+      "TreePath": "./String/chars",
       "Kind": "func",
       "Name": "chars",
       "Callable": false,
@@ -957,6 +1009,7 @@
     },
     {
       "Path": "String/$methods/chomp!",
+      "TreePath": "./String/chomp!",
       "Kind": "func",
       "Name": "chomp!",
       "Callable": false,
@@ -975,6 +1028,7 @@
     },
     {
       "Path": "String/$methods/chomp",
+      "TreePath": "./String/chomp",
       "Kind": "func",
       "Name": "chomp",
       "Callable": false,
@@ -993,6 +1047,7 @@
     },
     {
       "Path": "String/$methods/chop!",
+      "TreePath": "./String/chop!",
       "Kind": "func",
       "Name": "chop!",
       "Callable": false,
@@ -1011,6 +1066,7 @@
     },
     {
       "Path": "String/$methods/chop",
+      "TreePath": "./String/chop",
       "Kind": "func",
       "Name": "chop",
       "Callable": false,
@@ -1029,6 +1085,7 @@
     },
     {
       "Path": "String/$methods/chr",
+      "TreePath": "./String/chr",
       "Kind": "func",
       "Name": "chr",
       "Callable": false,
@@ -1047,6 +1104,7 @@
     },
     {
       "Path": "String/$methods/clear",
+      "TreePath": "./String/clear",
       "Kind": "func",
       "Name": "clear",
       "Callable": false,
@@ -1065,6 +1123,7 @@
     },
     {
       "Path": "String/$methods/codepoints",
+      "TreePath": "./String/codepoints",
       "Kind": "func",
       "Name": "codepoints",
       "Callable": false,
@@ -1083,6 +1142,7 @@
     },
     {
       "Path": "String/$methods/concat",
+      "TreePath": "./String/concat",
       "Kind": "func",
       "Name": "concat",
       "Callable": false,
@@ -1101,6 +1161,7 @@
     },
     {
       "Path": "String/$methods/count",
+      "TreePath": "./String/count",
       "Kind": "func",
       "Name": "count",
       "Callable": false,
@@ -1119,6 +1180,7 @@
     },
     {
       "Path": "String/$methods/crypt",
+      "TreePath": "./String/crypt",
       "Kind": "func",
       "Name": "crypt",
       "Callable": false,
@@ -1137,6 +1199,7 @@
     },
     {
       "Path": "String/$methods/delete!",
+      "TreePath": "./String/delete!",
       "Kind": "func",
       "Name": "delete!",
       "Callable": false,
@@ -1155,6 +1218,7 @@
     },
     {
       "Path": "String/$methods/delete",
+      "TreePath": "./String/delete",
       "Kind": "func",
       "Name": "delete",
       "Callable": false,
@@ -1173,6 +1237,7 @@
     },
     {
       "Path": "String/$methods/downcase!",
+      "TreePath": "./String/downcase!",
       "Kind": "func",
       "Name": "downcase!",
       "Callable": false,
@@ -1191,6 +1256,7 @@
     },
     {
       "Path": "String/$methods/downcase",
+      "TreePath": "./String/downcase",
       "Kind": "func",
       "Name": "downcase",
       "Callable": false,
@@ -1209,6 +1275,7 @@
     },
     {
       "Path": "String/$methods/dump",
+      "TreePath": "./String/dump",
       "Kind": "func",
       "Name": "dump",
       "Callable": false,
@@ -1227,6 +1294,7 @@
     },
     {
       "Path": "String/$methods/each_byte",
+      "TreePath": "./String/each_byte",
       "Kind": "func",
       "Name": "each_byte",
       "Callable": false,
@@ -1245,6 +1313,7 @@
     },
     {
       "Path": "String/$methods/each_char",
+      "TreePath": "./String/each_char",
       "Kind": "func",
       "Name": "each_char",
       "Callable": false,
@@ -1263,6 +1332,7 @@
     },
     {
       "Path": "String/$methods/each_codepoint",
+      "TreePath": "./String/each_codepoint",
       "Kind": "func",
       "Name": "each_codepoint",
       "Callable": false,
@@ -1281,6 +1351,7 @@
     },
     {
       "Path": "String/$methods/each_line",
+      "TreePath": "./String/each_line",
       "Kind": "func",
       "Name": "each_line",
       "Callable": false,
@@ -1299,6 +1370,7 @@
     },
     {
       "Path": "String/$methods/empty?",
+      "TreePath": "./String/empty?",
       "Kind": "func",
       "Name": "empty?",
       "Callable": false,
@@ -1317,6 +1389,7 @@
     },
     {
       "Path": "String/$methods/encoding",
+      "TreePath": "./String/encoding",
       "Kind": "func",
       "Name": "encoding",
       "Callable": false,
@@ -1335,6 +1408,7 @@
     },
     {
       "Path": "String/$methods/end_with?",
+      "TreePath": "./String/end_with?",
       "Kind": "func",
       "Name": "end_with?",
       "Callable": false,
@@ -1353,6 +1427,7 @@
     },
     {
       "Path": "String/$methods/eql?",
+      "TreePath": "./String/eql?",
       "Kind": "func",
       "Name": "eql?",
       "Callable": false,
@@ -1371,6 +1446,7 @@
     },
     {
       "Path": "String/$methods/force_encoding",
+      "TreePath": "./String/force_encoding",
       "Kind": "func",
       "Name": "force_encoding",
       "Callable": false,
@@ -1389,6 +1465,7 @@
     },
     {
       "Path": "String/$methods/freeze",
+      "TreePath": "./String/freeze",
       "Kind": "func",
       "Name": "freeze",
       "Callable": false,
@@ -1407,6 +1484,7 @@
     },
     {
       "Path": "String/$methods/getbyte",
+      "TreePath": "./String/getbyte",
       "Kind": "func",
       "Name": "getbyte",
       "Callable": false,
@@ -1425,6 +1503,7 @@
     },
     {
       "Path": "String/$methods/gsub!",
+      "TreePath": "./String/gsub!",
       "Kind": "func",
       "Name": "gsub!",
       "Callable": false,
@@ -1443,6 +1522,7 @@
     },
     {
       "Path": "String/$methods/gsub",
+      "TreePath": "./String/gsub",
       "Kind": "func",
       "Name": "gsub",
       "Callable": false,
@@ -1461,6 +1541,7 @@
     },
     {
       "Path": "String/$methods/hash",
+      "TreePath": "./String/hash",
       "Kind": "func",
       "Name": "hash",
       "Callable": false,
@@ -1479,6 +1560,7 @@
     },
     {
       "Path": "String/$methods/hex",
+      "TreePath": "./String/hex",
       "Kind": "func",
       "Name": "hex",
       "Callable": false,
@@ -1497,6 +1579,7 @@
     },
     {
       "Path": "String/$methods/include?",
+      "TreePath": "./String/include?",
       "Kind": "func",
       "Name": "include?",
       "Callable": false,
@@ -1515,6 +1598,7 @@
     },
     {
       "Path": "String/$methods/index",
+      "TreePath": "./String/index",
       "Kind": "func",
       "Name": "index",
       "Callable": false,
@@ -1533,6 +1617,7 @@
     },
     {
       "Path": "String/$methods/initialize",
+      "TreePath": "./String/initialize",
       "Kind": "func",
       "Name": "initialize",
       "Callable": false,
@@ -1551,6 +1636,7 @@
     },
     {
       "Path": "String/$methods/initialize_copy",
+      "TreePath": "./String/initialize_copy",
       "Kind": "func",
       "Name": "initialize_copy",
       "Callable": false,
@@ -1569,6 +1655,7 @@
     },
     {
       "Path": "String/$methods/insert",
+      "TreePath": "./String/insert",
       "Kind": "func",
       "Name": "insert",
       "Callable": false,
@@ -1587,6 +1674,7 @@
     },
     {
       "Path": "String/$methods/inspect",
+      "TreePath": "./String/inspect",
       "Kind": "func",
       "Name": "inspect",
       "Callable": false,
@@ -1605,6 +1693,7 @@
     },
     {
       "Path": "String/$methods/intern",
+      "TreePath": "./String/intern",
       "Kind": "func",
       "Name": "intern",
       "Callable": false,
@@ -1623,6 +1712,7 @@
     },
     {
       "Path": "String/$methods/length",
+      "TreePath": "./String/length",
       "Kind": "func",
       "Name": "length",
       "Callable": false,
@@ -1641,6 +1731,7 @@
     },
     {
       "Path": "String/$methods/lines",
+      "TreePath": "./String/lines",
       "Kind": "func",
       "Name": "lines",
       "Callable": false,
@@ -1659,6 +1750,7 @@
     },
     {
       "Path": "String/$methods/ljust",
+      "TreePath": "./String/ljust",
       "Kind": "func",
       "Name": "ljust",
       "Callable": false,
@@ -1677,6 +1769,7 @@
     },
     {
       "Path": "String/$methods/lstrip!",
+      "TreePath": "./String/lstrip!",
       "Kind": "func",
       "Name": "lstrip!",
       "Callable": false,
@@ -1695,6 +1788,7 @@
     },
     {
       "Path": "String/$methods/lstrip",
+      "TreePath": "./String/lstrip",
       "Kind": "func",
       "Name": "lstrip",
       "Callable": false,
@@ -1713,6 +1807,7 @@
     },
     {
       "Path": "String/$methods/match",
+      "TreePath": "./String/match",
       "Kind": "func",
       "Name": "match",
       "Callable": false,
@@ -1731,6 +1826,7 @@
     },
     {
       "Path": "String/$methods/next!",
+      "TreePath": "./String/next!",
       "Kind": "func",
       "Name": "next!",
       "Callable": false,
@@ -1749,6 +1845,7 @@
     },
     {
       "Path": "String/$methods/next",
+      "TreePath": "./String/next",
       "Kind": "func",
       "Name": "next",
       "Callable": false,
@@ -1767,6 +1864,7 @@
     },
     {
       "Path": "String/$methods/oct",
+      "TreePath": "./String/oct",
       "Kind": "func",
       "Name": "oct",
       "Callable": false,
@@ -1785,6 +1883,7 @@
     },
     {
       "Path": "String/$methods/ord",
+      "TreePath": "./String/ord",
       "Kind": "func",
       "Name": "ord",
       "Callable": false,
@@ -1803,6 +1902,7 @@
     },
     {
       "Path": "String/$methods/partition",
+      "TreePath": "./String/partition",
       "Kind": "func",
       "Name": "partition",
       "Callable": false,
@@ -1821,6 +1921,7 @@
     },
     {
       "Path": "String/$methods/prepend",
+      "TreePath": "./String/prepend",
       "Kind": "func",
       "Name": "prepend",
       "Callable": false,
@@ -1839,6 +1940,7 @@
     },
     {
       "Path": "String/$methods/replace",
+      "TreePath": "./String/replace",
       "Kind": "func",
       "Name": "replace",
       "Callable": false,
@@ -1857,6 +1959,7 @@
     },
     {
       "Path": "String/$methods/reverse!",
+      "TreePath": "./String/reverse!",
       "Kind": "func",
       "Name": "reverse!",
       "Callable": false,
@@ -1875,6 +1978,7 @@
     },
     {
       "Path": "String/$methods/reverse",
+      "TreePath": "./String/reverse",
       "Kind": "func",
       "Name": "reverse",
       "Callable": false,
@@ -1893,6 +1997,7 @@
     },
     {
       "Path": "String/$methods/rindex",
+      "TreePath": "./String/rindex",
       "Kind": "func",
       "Name": "rindex",
       "Callable": false,
@@ -1911,6 +2016,7 @@
     },
     {
       "Path": "String/$methods/rjust",
+      "TreePath": "./String/rjust",
       "Kind": "func",
       "Name": "rjust",
       "Callable": false,
@@ -1929,6 +2035,7 @@
     },
     {
       "Path": "String/$methods/rpartition",
+      "TreePath": "./String/rpartition",
       "Kind": "func",
       "Name": "rpartition",
       "Callable": false,
@@ -1947,6 +2054,7 @@
     },
     {
       "Path": "String/$methods/rstrip!",
+      "TreePath": "./String/rstrip!",
       "Kind": "func",
       "Name": "rstrip!",
       "Callable": false,
@@ -1965,6 +2073,7 @@
     },
     {
       "Path": "String/$methods/rstrip",
+      "TreePath": "./String/rstrip",
       "Kind": "func",
       "Name": "rstrip",
       "Callable": false,
@@ -1983,6 +2092,7 @@
     },
     {
       "Path": "String/$methods/scan",
+      "TreePath": "./String/scan",
       "Kind": "func",
       "Name": "scan",
       "Callable": false,
@@ -2001,6 +2111,7 @@
     },
     {
       "Path": "String/$methods/scrub!",
+      "TreePath": "./String/scrub!",
       "Kind": "func",
       "Name": "scrub!",
       "Callable": false,
@@ -2019,6 +2130,7 @@
     },
     {
       "Path": "String/$methods/scrub",
+      "TreePath": "./String/scrub",
       "Kind": "func",
       "Name": "scrub",
       "Callable": false,
@@ -2037,6 +2149,7 @@
     },
     {
       "Path": "String/$methods/setbyte",
+      "TreePath": "./String/setbyte",
       "Kind": "func",
       "Name": "setbyte",
       "Callable": false,
@@ -2055,6 +2168,7 @@
     },
     {
       "Path": "String/$methods/size",
+      "TreePath": "./String/size",
       "Kind": "func",
       "Name": "size",
       "Callable": false,
@@ -2073,6 +2187,7 @@
     },
     {
       "Path": "String/$methods/slice!",
+      "TreePath": "./String/slice!",
       "Kind": "func",
       "Name": "slice!",
       "Callable": false,
@@ -2091,6 +2206,7 @@
     },
     {
       "Path": "String/$methods/slice",
+      "TreePath": "./String/slice",
       "Kind": "func",
       "Name": "slice",
       "Callable": false,
@@ -2109,6 +2225,7 @@
     },
     {
       "Path": "String/$methods/split",
+      "TreePath": "./String/split",
       "Kind": "func",
       "Name": "split",
       "Callable": false,
@@ -2127,6 +2244,7 @@
     },
     {
       "Path": "String/$methods/squeeze!",
+      "TreePath": "./String/squeeze!",
       "Kind": "func",
       "Name": "squeeze!",
       "Callable": false,
@@ -2145,6 +2263,7 @@
     },
     {
       "Path": "String/$methods/squeeze",
+      "TreePath": "./String/squeeze",
       "Kind": "func",
       "Name": "squeeze",
       "Callable": false,
@@ -2163,6 +2282,7 @@
     },
     {
       "Path": "String/$methods/start_with?",
+      "TreePath": "./String/start_with?",
       "Kind": "func",
       "Name": "start_with?",
       "Callable": false,
@@ -2181,6 +2301,7 @@
     },
     {
       "Path": "String/$methods/strip!",
+      "TreePath": "./String/strip!",
       "Kind": "func",
       "Name": "strip!",
       "Callable": false,
@@ -2199,6 +2320,7 @@
     },
     {
       "Path": "String/$methods/strip",
+      "TreePath": "./String/strip",
       "Kind": "func",
       "Name": "strip",
       "Callable": false,
@@ -2217,6 +2339,7 @@
     },
     {
       "Path": "String/$methods/sub!",
+      "TreePath": "./String/sub!",
       "Kind": "func",
       "Name": "sub!",
       "Callable": false,
@@ -2235,6 +2358,7 @@
     },
     {
       "Path": "String/$methods/sub",
+      "TreePath": "./String/sub",
       "Kind": "func",
       "Name": "sub",
       "Callable": false,
@@ -2253,6 +2377,7 @@
     },
     {
       "Path": "String/$methods/succ!",
+      "TreePath": "./String/succ!",
       "Kind": "func",
       "Name": "succ!",
       "Callable": false,
@@ -2271,6 +2396,7 @@
     },
     {
       "Path": "String/$methods/succ",
+      "TreePath": "./String/succ",
       "Kind": "func",
       "Name": "succ",
       "Callable": false,
@@ -2289,6 +2415,7 @@
     },
     {
       "Path": "String/$methods/sum",
+      "TreePath": "./String/sum",
       "Kind": "func",
       "Name": "sum",
       "Callable": false,
@@ -2307,6 +2434,7 @@
     },
     {
       "Path": "String/$methods/swapcase!",
+      "TreePath": "./String/swapcase!",
       "Kind": "func",
       "Name": "swapcase!",
       "Callable": false,
@@ -2325,6 +2453,7 @@
     },
     {
       "Path": "String/$methods/swapcase",
+      "TreePath": "./String/swapcase",
       "Kind": "func",
       "Name": "swapcase",
       "Callable": false,
@@ -2343,6 +2472,7 @@
     },
     {
       "Path": "String/$methods/to_f",
+      "TreePath": "./String/to_f",
       "Kind": "func",
       "Name": "to_f",
       "Callable": false,
@@ -2361,6 +2491,7 @@
     },
     {
       "Path": "String/$methods/to_i",
+      "TreePath": "./String/to_i",
       "Kind": "func",
       "Name": "to_i",
       "Callable": false,
@@ -2379,6 +2510,7 @@
     },
     {
       "Path": "String/$methods/to_s",
+      "TreePath": "./String/to_s",
       "Kind": "func",
       "Name": "to_s",
       "Callable": false,
@@ -2397,6 +2529,7 @@
     },
     {
       "Path": "String/$methods/to_str",
+      "TreePath": "./String/to_str",
       "Kind": "func",
       "Name": "to_str",
       "Callable": false,
@@ -2415,6 +2548,7 @@
     },
     {
       "Path": "String/$methods/to_sym",
+      "TreePath": "./String/to_sym",
       "Kind": "func",
       "Name": "to_sym",
       "Callable": false,
@@ -2433,6 +2567,7 @@
     },
     {
       "Path": "String/$methods/tr!",
+      "TreePath": "./String/tr!",
       "Kind": "func",
       "Name": "tr!",
       "Callable": false,
@@ -2451,6 +2586,7 @@
     },
     {
       "Path": "String/$methods/tr",
+      "TreePath": "./String/tr",
       "Kind": "func",
       "Name": "tr",
       "Callable": false,
@@ -2469,6 +2605,7 @@
     },
     {
       "Path": "String/$methods/tr_s!",
+      "TreePath": "./String/tr_s!",
       "Kind": "func",
       "Name": "tr_s!",
       "Callable": false,
@@ -2487,6 +2624,7 @@
     },
     {
       "Path": "String/$methods/tr_s",
+      "TreePath": "./String/tr_s",
       "Kind": "func",
       "Name": "tr_s",
       "Callable": false,
@@ -2505,6 +2643,7 @@
     },
     {
       "Path": "String/$methods/upcase!",
+      "TreePath": "./String/upcase!",
       "Kind": "func",
       "Name": "upcase!",
       "Callable": false,
@@ -2523,6 +2662,7 @@
     },
     {
       "Path": "String/$methods/upcase",
+      "TreePath": "./String/upcase",
       "Kind": "func",
       "Name": "upcase",
       "Callable": false,
@@ -2541,6 +2681,7 @@
     },
     {
       "Path": "String/$methods/upto",
+      "TreePath": "./String/upto",
       "Kind": "func",
       "Name": "upto",
       "Callable": false,
@@ -2559,6 +2700,7 @@
     },
     {
       "Path": "String/$methods/valid_encoding?",
+      "TreePath": "./String/valid_encoding?",
       "Kind": "func",
       "Name": "valid_encoding?",
       "Callable": false,
@@ -2577,6 +2719,7 @@
     },
     {
       "Path": "Symbol",
+      "TreePath": "./Symbol",
       "Kind": "type",
       "Name": "Symbol",
       "Callable": false,
@@ -2595,6 +2738,7 @@
     },
     {
       "Path": "Symbol/$classmethods/all_symbols",
+      "TreePath": "./Symbol/all_symbols",
       "Kind": "func",
       "Name": "all_symbols",
       "Callable": false,
@@ -2613,6 +2757,7 @@
     },
     {
       "Path": "Symbol/$classmethods/find",
+      "TreePath": "./Symbol/find",
       "Kind": "func",
       "Name": "find",
       "Callable": false,
@@ -2631,6 +2776,7 @@
     },
     {
       "Path": "Symbol/$methods/==",
+      "TreePath": "./Symbol/==",
       "Kind": "func",
       "Name": "==",
       "Callable": false,
@@ -2649,6 +2795,7 @@
     },
     {
       "Path": "Symbol/$methods/===",
+      "TreePath": "./Symbol/===",
       "Kind": "func",
       "Name": "===",
       "Callable": false,
@@ -2667,6 +2814,7 @@
     },
     {
       "Path": "Symbol/$methods/=~",
+      "TreePath": "./Symbol/=~",
       "Kind": "func",
       "Name": "=~",
       "Callable": false,
@@ -2685,6 +2833,7 @@
     },
     {
       "Path": "Symbol/$methods/[]",
+      "TreePath": "./Symbol/[]",
       "Kind": "func",
       "Name": "[]",
       "Callable": false,
@@ -2703,6 +2852,7 @@
     },
     {
       "Path": "Symbol/$methods/\u003c=@",
+      "TreePath": "./Symbol/\u003c=",
       "Kind": "func",
       "Name": "\u003c=\u003e",
       "Callable": false,
@@ -2721,6 +2871,7 @@
     },
     {
       "Path": "Symbol/$methods/capitalize",
+      "TreePath": "./Symbol/capitalize",
       "Kind": "func",
       "Name": "capitalize",
       "Callable": false,
@@ -2739,6 +2890,7 @@
     },
     {
       "Path": "Symbol/$methods/casecmp",
+      "TreePath": "./Symbol/casecmp",
       "Kind": "func",
       "Name": "casecmp",
       "Callable": false,
@@ -2757,6 +2909,7 @@
     },
     {
       "Path": "Symbol/$methods/downcase",
+      "TreePath": "./Symbol/downcase",
       "Kind": "func",
       "Name": "downcase",
       "Callable": false,
@@ -2775,6 +2928,7 @@
     },
     {
       "Path": "Symbol/$methods/empty?",
+      "TreePath": "./Symbol/empty?",
       "Kind": "func",
       "Name": "empty?",
       "Callable": false,
@@ -2793,6 +2947,7 @@
     },
     {
       "Path": "Symbol/$methods/encoding",
+      "TreePath": "./Symbol/encoding",
       "Kind": "func",
       "Name": "encoding",
       "Callable": false,
@@ -2811,6 +2966,7 @@
     },
     {
       "Path": "Symbol/$methods/id2name",
+      "TreePath": "./Symbol/id2name",
       "Kind": "func",
       "Name": "id2name",
       "Callable": false,
@@ -2829,6 +2985,7 @@
     },
     {
       "Path": "Symbol/$methods/inspect",
+      "TreePath": "./Symbol/inspect",
       "Kind": "func",
       "Name": "inspect",
       "Callable": false,
@@ -2847,6 +3004,7 @@
     },
     {
       "Path": "Symbol/$methods/intern",
+      "TreePath": "./Symbol/intern",
       "Kind": "func",
       "Name": "intern",
       "Callable": false,
@@ -2865,6 +3023,7 @@
     },
     {
       "Path": "Symbol/$methods/length",
+      "TreePath": "./Symbol/length",
       "Kind": "func",
       "Name": "length",
       "Callable": false,
@@ -2883,6 +3042,7 @@
     },
     {
       "Path": "Symbol/$methods/match",
+      "TreePath": "./Symbol/match",
       "Kind": "func",
       "Name": "match",
       "Callable": false,
@@ -2901,6 +3061,7 @@
     },
     {
       "Path": "Symbol/$methods/next",
+      "TreePath": "./Symbol/next",
       "Kind": "func",
       "Name": "next",
       "Callable": false,
@@ -2919,6 +3080,7 @@
     },
     {
       "Path": "Symbol/$methods/size",
+      "TreePath": "./Symbol/size",
       "Kind": "func",
       "Name": "size",
       "Callable": false,
@@ -2937,6 +3099,7 @@
     },
     {
       "Path": "Symbol/$methods/slice",
+      "TreePath": "./Symbol/slice",
       "Kind": "func",
       "Name": "slice",
       "Callable": false,
@@ -2955,6 +3118,7 @@
     },
     {
       "Path": "Symbol/$methods/succ",
+      "TreePath": "./Symbol/succ",
       "Kind": "func",
       "Name": "succ",
       "Callable": false,
@@ -2973,6 +3137,7 @@
     },
     {
       "Path": "Symbol/$methods/swapcase",
+      "TreePath": "./Symbol/swapcase",
       "Kind": "func",
       "Name": "swapcase",
       "Callable": false,
@@ -2991,6 +3156,7 @@
     },
     {
       "Path": "Symbol/$methods/to_proc",
+      "TreePath": "./Symbol/to_proc",
       "Kind": "func",
       "Name": "to_proc",
       "Callable": false,
@@ -3009,6 +3175,7 @@
     },
     {
       "Path": "Symbol/$methods/to_s",
+      "TreePath": "./Symbol/to_s",
       "Kind": "func",
       "Name": "to_s",
       "Callable": false,
@@ -3027,6 +3194,7 @@
     },
     {
       "Path": "Symbol/$methods/to_sym",
+      "TreePath": "./Symbol/to_sym",
       "Kind": "func",
       "Name": "to_sym",
       "Callable": false,
@@ -3045,6 +3213,7 @@
     },
     {
       "Path": "Symbol/$methods/upcase",
+      "TreePath": "./Symbol/upcase",
       "Kind": "func",
       "Name": "upcase",
       "Callable": false,
@@ -3063,6 +3232,7 @@
     },
     {
       "Path": "Time",
+      "TreePath": "./Time",
       "Kind": "type",
       "Name": "Time",
       "Callable": false,
@@ -3081,6 +3251,7 @@
     },
     {
       "Path": "Time/$classmethods/at",
+      "TreePath": "./Time/at",
       "Kind": "func",
       "Name": "at",
       "Callable": false,
@@ -3099,6 +3270,7 @@
     },
     {
       "Path": "Time/$classmethods/gm",
+      "TreePath": "./Time/gm",
       "Kind": "func",
       "Name": "gm",
       "Callable": false,
@@ -3117,6 +3289,7 @@
     },
     {
       "Path": "Time/$classmethods/local",
+      "TreePath": "./Time/local",
       "Kind": "func",
       "Name": "local",
       "Callable": false,
@@ -3135,6 +3308,7 @@
     },
     {
       "Path": "Time/$classmethods/mktime",
+      "TreePath": "./Time/mktime",
       "Kind": "func",
       "Name": "mktime",
       "Callable": false,
@@ -3153,6 +3327,7 @@
     },
     {
       "Path": "Time/$classmethods/now",
+      "TreePath": "./Time/now",
       "Kind": "func",
       "Name": "now",
       "Callable": false,
@@ -3171,6 +3346,7 @@
     },
     {
       "Path": "Time/$classmethods/utc",
+      "TreePath": "./Time/utc",
       "Kind": "func",
       "Name": "utc",
       "Callable": false,
@@ -3189,6 +3365,7 @@
     },
     {
       "Path": "Time/$methods/+",
+      "TreePath": "./Time/+",
       "Kind": "func",
       "Name": "+",
       "Callable": false,
@@ -3207,6 +3384,7 @@
     },
     {
       "Path": "Time/$methods/-",
+      "TreePath": "./Time/-",
       "Kind": "func",
       "Name": "-",
       "Callable": false,
@@ -3225,6 +3403,7 @@
     },
     {
       "Path": "Time/$methods/\u003c=@",
+      "TreePath": "./Time/\u003c=",
       "Kind": "func",
       "Name": "\u003c=\u003e",
       "Callable": false,
@@ -3243,6 +3422,7 @@
     },
     {
       "Path": "Time/$methods/_dump",
+      "TreePath": "./Time/_dump",
       "Kind": "func",
       "Name": "_dump",
       "Callable": false,
@@ -3261,6 +3441,7 @@
     },
     {
       "Path": "Time/$methods/asctime",
+      "TreePath": "./Time/asctime",
       "Kind": "func",
       "Name": "asctime",
       "Callable": false,
@@ -3279,6 +3460,7 @@
     },
     {
       "Path": "Time/$methods/ctime",
+      "TreePath": "./Time/ctime",
       "Kind": "func",
       "Name": "ctime",
       "Callable": false,
@@ -3297,6 +3479,7 @@
     },
     {
       "Path": "Time/$methods/day",
+      "TreePath": "./Time/day",
       "Kind": "func",
       "Name": "day",
       "Callable": false,
@@ -3315,6 +3498,7 @@
     },
     {
       "Path": "Time/$methods/dst?",
+      "TreePath": "./Time/dst?",
       "Kind": "func",
       "Name": "dst?",
       "Callable": false,
@@ -3333,6 +3517,7 @@
     },
     {
       "Path": "Time/$methods/eql?",
+      "TreePath": "./Time/eql?",
       "Kind": "func",
       "Name": "eql?",
       "Callable": false,
@@ -3351,6 +3536,7 @@
     },
     {
       "Path": "Time/$methods/friday?",
+      "TreePath": "./Time/friday?",
       "Kind": "func",
       "Name": "friday?",
       "Callable": false,
@@ -3369,6 +3555,7 @@
     },
     {
       "Path": "Time/$methods/getgm",
+      "TreePath": "./Time/getgm",
       "Kind": "func",
       "Name": "getgm",
       "Callable": false,
@@ -3387,6 +3574,7 @@
     },
     {
       "Path": "Time/$methods/getlocal",
+      "TreePath": "./Time/getlocal",
       "Kind": "func",
       "Name": "getlocal",
       "Callable": false,
@@ -3405,6 +3593,7 @@
     },
     {
       "Path": "Time/$methods/getutc",
+      "TreePath": "./Time/getutc",
       "Kind": "func",
       "Name": "getutc",
       "Callable": false,
@@ -3423,6 +3612,7 @@
     },
     {
       "Path": "Time/$methods/gmt?",
+      "TreePath": "./Time/gmt?",
       "Kind": "func",
       "Name": "gmt?",
       "Callable": false,
@@ -3441,6 +3631,7 @@
     },
     {
       "Path": "Time/$methods/gmt_offset",
+      "TreePath": "./Time/gmt_offset",
       "Kind": "func",
       "Name": "gmt_offset",
       "Callable": false,
@@ -3459,6 +3650,7 @@
     },
     {
       "Path": "Time/$methods/gmtime",
+      "TreePath": "./Time/gmtime",
       "Kind": "func",
       "Name": "gmtime",
       "Callable": false,
@@ -3477,6 +3669,7 @@
     },
     {
       "Path": "Time/$methods/gmtoff",
+      "TreePath": "./Time/gmtoff",
       "Kind": "func",
       "Name": "gmtoff",
       "Callable": false,
@@ -3495,6 +3688,7 @@
     },
     {
       "Path": "Time/$methods/hash",
+      "TreePath": "./Time/hash",
       "Kind": "func",
       "Name": "hash",
       "Callable": false,
@@ -3513,6 +3707,7 @@
     },
     {
       "Path": "Time/$methods/hour",
+      "TreePath": "./Time/hour",
       "Kind": "func",
       "Name": "hour",
       "Callable": false,
@@ -3531,6 +3726,7 @@
     },
     {
       "Path": "Time/$methods/initialize",
+      "TreePath": "./Time/initialize",
       "Kind": "func",
       "Name": "initialize",
       "Callable": false,
@@ -3549,6 +3745,7 @@
     },
     {
       "Path": "Time/$methods/initialize_copy",
+      "TreePath": "./Time/initialize_copy",
       "Kind": "func",
       "Name": "initialize_copy",
       "Callable": false,
@@ -3567,6 +3764,7 @@
     },
     {
       "Path": "Time/$methods/inspect",
+      "TreePath": "./Time/inspect",
       "Kind": "func",
       "Name": "inspect",
       "Callable": false,
@@ -3585,6 +3783,7 @@
     },
     {
       "Path": "Time/$methods/isdst",
+      "TreePath": "./Time/isdst",
       "Kind": "func",
       "Name": "isdst",
       "Callable": false,
@@ -3603,6 +3802,7 @@
     },
     {
       "Path": "Time/$methods/localtime",
+      "TreePath": "./Time/localtime",
       "Kind": "func",
       "Name": "localtime",
       "Callable": false,
@@ -3621,6 +3821,7 @@
     },
     {
       "Path": "Time/$methods/marshal_dump",
+      "TreePath": "./Time/marshal_dump",
       "Kind": "func",
       "Name": "marshal_dump",
       "Callable": false,
@@ -3639,6 +3840,7 @@
     },
     {
       "Path": "Time/$methods/marshal_load",
+      "TreePath": "./Time/marshal_load",
       "Kind": "func",
       "Name": "marshal_load",
       "Callable": false,
@@ -3657,6 +3859,7 @@
     },
     {
       "Path": "Time/$methods/mday",
+      "TreePath": "./Time/mday",
       "Kind": "func",
       "Name": "mday",
       "Callable": false,
@@ -3675,6 +3878,7 @@
     },
     {
       "Path": "Time/$methods/min",
+      "TreePath": "./Time/min",
       "Kind": "func",
       "Name": "min",
       "Callable": false,
@@ -3693,6 +3897,7 @@
     },
     {
       "Path": "Time/$methods/mon",
+      "TreePath": "./Time/mon",
       "Kind": "func",
       "Name": "mon",
       "Callable": false,
@@ -3711,6 +3916,7 @@
     },
     {
       "Path": "Time/$methods/monday?",
+      "TreePath": "./Time/monday?",
       "Kind": "func",
       "Name": "monday?",
       "Callable": false,
@@ -3729,6 +3935,7 @@
     },
     {
       "Path": "Time/$methods/month",
+      "TreePath": "./Time/month",
       "Kind": "func",
       "Name": "month",
       "Callable": false,
@@ -3747,6 +3954,7 @@
     },
     {
       "Path": "Time/$methods/nsec",
+      "TreePath": "./Time/nsec",
       "Kind": "func",
       "Name": "nsec",
       "Callable": false,
@@ -3765,6 +3973,7 @@
     },
     {
       "Path": "Time/$methods/round",
+      "TreePath": "./Time/round",
       "Kind": "func",
       "Name": "round",
       "Callable": false,
@@ -3783,6 +3992,7 @@
     },
     {
       "Path": "Time/$methods/saturday?",
+      "TreePath": "./Time/saturday?",
       "Kind": "func",
       "Name": "saturday?",
       "Callable": false,
@@ -3801,6 +4011,7 @@
     },
     {
       "Path": "Time/$methods/sec",
+      "TreePath": "./Time/sec",
       "Kind": "func",
       "Name": "sec",
       "Callable": false,
@@ -3819,6 +4030,7 @@
     },
     {
       "Path": "Time/$methods/strftime",
+      "TreePath": "./Time/strftime",
       "Kind": "func",
       "Name": "strftime",
       "Callable": false,
@@ -3837,6 +4049,7 @@
     },
     {
       "Path": "Time/$methods/subsec",
+      "TreePath": "./Time/subsec",
       "Kind": "func",
       "Name": "subsec",
       "Callable": false,
@@ -3855,6 +4068,7 @@
     },
     {
       "Path": "Time/$methods/succ",
+      "TreePath": "./Time/succ",
       "Kind": "func",
       "Name": "succ",
       "Callable": false,
@@ -3873,6 +4087,7 @@
     },
     {
       "Path": "Time/$methods/sunday?",
+      "TreePath": "./Time/sunday?",
       "Kind": "func",
       "Name": "sunday?",
       "Callable": false,
@@ -3891,6 +4106,7 @@
     },
     {
       "Path": "Time/$methods/thursday?",
+      "TreePath": "./Time/thursday?",
       "Kind": "func",
       "Name": "thursday?",
       "Callable": false,
@@ -3909,6 +4125,7 @@
     },
     {
       "Path": "Time/$methods/to_a",
+      "TreePath": "./Time/to_a",
       "Kind": "func",
       "Name": "to_a",
       "Callable": false,
@@ -3927,6 +4144,7 @@
     },
     {
       "Path": "Time/$methods/to_f",
+      "TreePath": "./Time/to_f",
       "Kind": "func",
       "Name": "to_f",
       "Callable": false,
@@ -3945,6 +4163,7 @@
     },
     {
       "Path": "Time/$methods/to_i",
+      "TreePath": "./Time/to_i",
       "Kind": "func",
       "Name": "to_i",
       "Callable": false,
@@ -3963,6 +4182,7 @@
     },
     {
       "Path": "Time/$methods/to_r",
+      "TreePath": "./Time/to_r",
       "Kind": "func",
       "Name": "to_r",
       "Callable": false,
@@ -3981,6 +4201,7 @@
     },
     {
       "Path": "Time/$methods/to_s",
+      "TreePath": "./Time/to_s",
       "Kind": "func",
       "Name": "to_s",
       "Callable": false,
@@ -3999,6 +4220,7 @@
     },
     {
       "Path": "Time/$methods/tuesday?",
+      "TreePath": "./Time/tuesday?",
       "Kind": "func",
       "Name": "tuesday?",
       "Callable": false,
@@ -4017,6 +4239,7 @@
     },
     {
       "Path": "Time/$methods/tv_nsec",
+      "TreePath": "./Time/tv_nsec",
       "Kind": "func",
       "Name": "tv_nsec",
       "Callable": false,
@@ -4035,6 +4258,7 @@
     },
     {
       "Path": "Time/$methods/tv_sec",
+      "TreePath": "./Time/tv_sec",
       "Kind": "func",
       "Name": "tv_sec",
       "Callable": false,
@@ -4053,6 +4277,7 @@
     },
     {
       "Path": "Time/$methods/tv_usec",
+      "TreePath": "./Time/tv_usec",
       "Kind": "func",
       "Name": "tv_usec",
       "Callable": false,
@@ -4071,6 +4296,7 @@
     },
     {
       "Path": "Time/$methods/usec",
+      "TreePath": "./Time/usec",
       "Kind": "func",
       "Name": "usec",
       "Callable": false,
@@ -4089,6 +4315,7 @@
     },
     {
       "Path": "Time/$methods/utc",
+      "TreePath": "./Time/utc",
       "Kind": "func",
       "Name": "utc",
       "Callable": false,
@@ -4107,6 +4334,7 @@
     },
     {
       "Path": "Time/$methods/utc?",
+      "TreePath": "./Time/utc?",
       "Kind": "func",
       "Name": "utc?",
       "Callable": false,
@@ -4125,6 +4353,7 @@
     },
     {
       "Path": "Time/$methods/utc_offset",
+      "TreePath": "./Time/utc_offset",
       "Kind": "func",
       "Name": "utc_offset",
       "Callable": false,
@@ -4143,6 +4372,7 @@
     },
     {
       "Path": "Time/$methods/wday",
+      "TreePath": "./Time/wday",
       "Kind": "func",
       "Name": "wday",
       "Callable": false,
@@ -4161,6 +4391,7 @@
     },
     {
       "Path": "Time/$methods/wednesday?",
+      "TreePath": "./Time/wednesday?",
       "Kind": "func",
       "Name": "wednesday?",
       "Callable": false,
@@ -4179,6 +4410,7 @@
     },
     {
       "Path": "Time/$methods/yday",
+      "TreePath": "./Time/yday",
       "Kind": "func",
       "Name": "yday",
       "Callable": false,
@@ -4197,6 +4429,7 @@
     },
     {
       "Path": "Time/$methods/year",
+      "TreePath": "./Time/year",
       "Kind": "func",
       "Name": "year",
       "Callable": false,
@@ -4215,6 +4448,7 @@
     },
     {
       "Path": "Time/$methods/zone",
+      "TreePath": "./Time/zone",
       "Kind": "func",
       "Name": "zone",
       "Callable": false,
@@ -4233,6 +4467,7 @@
     },
     {
       "Path": "URI",
+      "TreePath": "./URI",
       "Kind": "module",
       "Name": "URI",
       "Callable": false,
@@ -4251,6 +4486,7 @@
     },
     {
       "Path": "URI/$classmethods/decode_www_form",
+      "TreePath": "./URI/decode_www_form",
       "Kind": "func",
       "Name": "decode_www_form",
       "Callable": false,
@@ -4269,6 +4505,7 @@
     },
     {
       "Path": "URI/$classmethods/decode_www_form_component",
+      "TreePath": "./URI/decode_www_form_component",
       "Kind": "func",
       "Name": "decode_www_form_component",
       "Callable": false,
@@ -4287,6 +4524,7 @@
     },
     {
       "Path": "URI/$classmethods/encode_www_form",
+      "TreePath": "./URI/encode_www_form",
       "Kind": "func",
       "Name": "encode_www_form",
       "Callable": false,
@@ -4305,6 +4543,7 @@
     },
     {
       "Path": "URI/$classmethods/encode_www_form_component",
+      "TreePath": "./URI/encode_www_form_component",
       "Kind": "func",
       "Name": "encode_www_form_component",
       "Callable": false,
@@ -4323,6 +4562,7 @@
     },
     {
       "Path": "URI/$classmethods/extract",
+      "TreePath": "./URI/extract",
       "Kind": "func",
       "Name": "extract",
       "Callable": false,
@@ -4341,6 +4581,7 @@
     },
     {
       "Path": "URI/$classmethods/get_encoding",
+      "TreePath": "./URI/get_encoding",
       "Kind": "func",
       "Name": "get_encoding",
       "Callable": false,
@@ -4359,6 +4600,7 @@
     },
     {
       "Path": "URI/$classmethods/join",
+      "TreePath": "./URI/join",
       "Kind": "func",
       "Name": "join",
       "Callable": false,
@@ -4377,6 +4619,7 @@
     },
     {
       "Path": "URI/$classmethods/parse",
+      "TreePath": "./URI/parse",
       "Kind": "func",
       "Name": "parse",
       "Callable": false,
@@ -4395,6 +4638,7 @@
     },
     {
       "Path": "URI/$classmethods/regexp",
+      "TreePath": "./URI/regexp",
       "Kind": "func",
       "Name": "regexp",
       "Callable": false,
@@ -4413,6 +4657,7 @@
     },
     {
       "Path": "URI/$classmethods/scheme_list",
+      "TreePath": "./URI/scheme_list",
       "Kind": "func",
       "Name": "scheme_list",
       "Callable": false,
@@ -4431,6 +4676,7 @@
     },
     {
       "Path": "URI/$classmethods/split",
+      "TreePath": "./URI/split",
       "Kind": "func",
       "Name": "split",
       "Callable": false,
@@ -4449,6 +4695,7 @@
     },
     {
       "Path": "URI/@@schemes",
+      "TreePath": "./URI/@@schemes",
       "Kind": "var",
       "Name": "@@schemes",
       "Callable": false,
@@ -4467,6 +4714,7 @@
     },
     {
       "Path": "URI/BadURIError",
+      "TreePath": "./URI/BadURIError",
       "Kind": "type",
       "Name": "BadURIError",
       "Callable": false,
@@ -4485,6 +4733,7 @@
     },
     {
       "Path": "URI/DEFAULT_PARSER",
+      "TreePath": "./URI/DEFAULT_PARSER",
       "Kind": "const",
       "Name": "DEFAULT_PARSER",
       "Callable": false,
@@ -4503,6 +4752,7 @@
     },
     {
       "Path": "URI/Error",
+      "TreePath": "./URI/Error",
       "Kind": "type",
       "Name": "Error",
       "Callable": false,
@@ -4521,6 +4771,7 @@
     },
     {
       "Path": "URI/Escape",
+      "TreePath": "./URI/Escape",
       "Kind": "module",
       "Name": "Escape",
       "Callable": false,
@@ -4539,6 +4790,7 @@
     },
     {
       "Path": "URI/Escape/$methods/decode",
+      "TreePath": "./URI/Escape/decode",
       "Kind": "func",
       "Name": "decode",
       "Callable": false,
@@ -4557,6 +4809,7 @@
     },
     {
       "Path": "URI/Escape/$methods/encode",
+      "TreePath": "./URI/Escape/encode",
       "Kind": "func",
       "Name": "encode",
       "Callable": false,
@@ -4575,6 +4828,7 @@
     },
     {
       "Path": "URI/Escape/$methods/escape",
+      "TreePath": "./URI/Escape/escape",
       "Kind": "func",
       "Name": "escape",
       "Callable": false,
@@ -4593,6 +4847,7 @@
     },
     {
       "Path": "URI/Escape/$methods/unescape",
+      "TreePath": "./URI/Escape/unescape",
       "Kind": "func",
       "Name": "unescape",
       "Callable": false,
@@ -4611,7 +4866,7 @@
     },
     {
       "Path": "URI/Escape@_local_0@/$methods/escape@arg",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Escape/escape/arg",
       "Kind": "var",
       "Name": "arg",
       "Callable": false,
@@ -4630,7 +4885,7 @@
     },
     {
       "Path": "URI/Escape@_local_0@/$methods/unescape@arg",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Escape/unescape/arg",
       "Kind": "var",
       "Name": "arg",
       "Callable": false,
@@ -4649,6 +4904,7 @@
     },
     {
       "Path": "URI/FTP",
+      "TreePath": "./URI/FTP",
       "Kind": "type",
       "Name": "FTP",
       "Callable": false,
@@ -4667,6 +4923,7 @@
     },
     {
       "Path": "URI/FTP/$classmethods/build",
+      "TreePath": "./URI/FTP/build",
       "Kind": "func",
       "Name": "build",
       "Callable": false,
@@ -4685,6 +4942,7 @@
     },
     {
       "Path": "URI/FTP/$classmethods/new2",
+      "TreePath": "./URI/FTP/new2",
       "Kind": "func",
       "Name": "new2",
       "Callable": false,
@@ -4703,6 +4961,7 @@
     },
     {
       "Path": "URI/FTP/$methods/check_typecode",
+      "TreePath": "./URI/FTP/check_typecode",
       "Kind": "func",
       "Name": "check_typecode",
       "Callable": false,
@@ -4721,6 +4980,7 @@
     },
     {
       "Path": "URI/FTP/$methods/initialize",
+      "TreePath": "./URI/FTP/initialize",
       "Kind": "func",
       "Name": "initialize",
       "Callable": false,
@@ -4739,6 +4999,7 @@
     },
     {
       "Path": "URI/FTP/$methods/merge",
+      "TreePath": "./URI/FTP/merge",
       "Kind": "func",
       "Name": "merge",
       "Callable": false,
@@ -4757,6 +5018,7 @@
     },
     {
       "Path": "URI/FTP/$methods/path",
+      "TreePath": "./URI/FTP/path",
       "Kind": "func",
       "Name": "path",
       "Callable": false,
@@ -4775,6 +5037,7 @@
     },
     {
       "Path": "URI/FTP/$methods/set_path",
+      "TreePath": "./URI/FTP/set_path",
       "Kind": "func",
       "Name": "set_path",
       "Callable": false,
@@ -4793,6 +5056,7 @@
     },
     {
       "Path": "URI/FTP/$methods/set_typecode",
+      "TreePath": "./URI/FTP/set_typecode",
       "Kind": "func",
       "Name": "set_typecode",
       "Callable": false,
@@ -4811,6 +5075,7 @@
     },
     {
       "Path": "URI/FTP/$methods/to_s",
+      "TreePath": "./URI/FTP/to_s",
       "Kind": "func",
       "Name": "to_s",
       "Callable": false,
@@ -4829,6 +5094,7 @@
     },
     {
       "Path": "URI/FTP/$methods/typecode",
+      "TreePath": "./URI/FTP/typecode",
       "Kind": "func",
       "Name": "typecode",
       "Callable": false,
@@ -4847,6 +5113,7 @@
     },
     {
       "Path": "URI/FTP/$methods/typecode=",
+      "TreePath": "./URI/FTP/typecode=",
       "Kind": "func",
       "Name": "typecode=",
       "Callable": false,
@@ -4865,6 +5132,7 @@
     },
     {
       "Path": "URI/FTP/@path",
+      "TreePath": "./URI/FTP/@path",
       "Kind": "var",
       "Name": "@path",
       "Callable": false,
@@ -4883,6 +5151,7 @@
     },
     {
       "Path": "URI/FTP/@typecode",
+      "TreePath": "./URI/FTP/@typecode",
       "Kind": "var",
       "Name": "@typecode",
       "Callable": false,
@@ -4901,6 +5170,7 @@
     },
     {
       "Path": "URI/FTP/COMPONENT",
+      "TreePath": "./URI/FTP/COMPONENT",
       "Kind": "const",
       "Name": "COMPONENT",
       "Callable": false,
@@ -4919,6 +5189,7 @@
     },
     {
       "Path": "URI/FTP/DEFAULT_PORT",
+      "TreePath": "./URI/FTP/DEFAULT_PORT",
       "Kind": "const",
       "Name": "DEFAULT_PORT",
       "Callable": false,
@@ -4937,6 +5208,7 @@
     },
     {
       "Path": "URI/FTP/TYPECODE",
+      "TreePath": "./URI/FTP/TYPECODE",
       "Kind": "const",
       "Name": "TYPECODE",
       "Callable": false,
@@ -4955,6 +5227,7 @@
     },
     {
       "Path": "URI/FTP/TYPECODE_PREFIX",
+      "TreePath": "./URI/FTP/TYPECODE_PREFIX",
       "Kind": "const",
       "Name": "TYPECODE_PREFIX",
       "Callable": false,
@@ -4973,7 +5246,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/check_typecode@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/check_typecode/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -4992,7 +5265,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/initialize@arg_check",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/initialize/arg_check",
       "Kind": "var",
       "Name": "arg_check",
       "Callable": false,
@@ -5011,7 +5284,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/initialize@fragment",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/initialize/fragment",
       "Kind": "var",
       "Name": "fragment",
       "Callable": false,
@@ -5030,7 +5303,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/initialize@host",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/initialize/host",
       "Kind": "var",
       "Name": "host",
       "Callable": false,
@@ -5049,7 +5322,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/initialize@opaque",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/initialize/opaque",
       "Kind": "var",
       "Name": "opaque",
       "Callable": false,
@@ -5068,7 +5341,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/initialize@parser",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/initialize/parser",
       "Kind": "var",
       "Name": "parser",
       "Callable": false,
@@ -5087,7 +5360,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/initialize@path",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/initialize/path",
       "Kind": "var",
       "Name": "path",
       "Callable": false,
@@ -5106,7 +5379,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/initialize@port",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/initialize/port",
       "Kind": "var",
       "Name": "port",
       "Callable": false,
@@ -5125,7 +5398,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/initialize@query",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/initialize/query",
       "Kind": "var",
       "Name": "query",
       "Callable": false,
@@ -5144,7 +5417,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/initialize@registry",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/initialize/registry",
       "Kind": "var",
       "Name": "registry",
       "Callable": false,
@@ -5163,7 +5436,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/initialize@scheme",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/initialize/scheme",
       "Kind": "var",
       "Name": "scheme",
       "Callable": false,
@@ -5182,7 +5455,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/initialize@tmp",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/initialize/tmp",
       "Kind": "var",
       "Name": "tmp",
       "Callable": false,
@@ -5201,7 +5474,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/initialize@typecode",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/initialize/typecode",
       "Kind": "var",
       "Name": "typecode",
       "Callable": false,
@@ -5220,7 +5493,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/initialize@userinfo",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/initialize/userinfo",
       "Kind": "var",
       "Name": "userinfo",
       "Callable": false,
@@ -5239,7 +5512,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/merge@oth",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/merge/oth",
       "Kind": "var",
       "Name": "oth",
       "Callable": false,
@@ -5258,7 +5531,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/merge@tmp",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/merge/tmp",
       "Kind": "var",
       "Name": "tmp",
       "Callable": false,
@@ -5277,7 +5550,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/set_path@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/set_path/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -5296,7 +5569,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/set_typecode@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/set_typecode/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -5315,7 +5588,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/to_s@save_path",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/to_s/save_path",
       "Kind": "var",
       "Name": "save_path",
       "Callable": false,
@@ -5334,7 +5607,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/to_s@str",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/to_s/str",
       "Kind": "var",
       "Name": "str",
       "Callable": false,
@@ -5353,7 +5626,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@/$methods/typecode=@typecode",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/FTP/typecode=/typecode",
       "Kind": "var",
       "Name": "typecode",
       "Callable": false,
@@ -5372,7 +5645,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@build@args",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/FTP/build/args",
       "Kind": "var",
       "Name": "args",
       "Callable": false,
@@ -5391,7 +5664,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@build@tmp",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/FTP/build/tmp",
       "Kind": "var",
       "Name": "tmp",
       "Callable": false,
@@ -5410,7 +5683,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@new2@arg_check",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/FTP/new2/arg_check",
       "Kind": "var",
       "Name": "arg_check",
       "Callable": false,
@@ -5429,7 +5702,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@new2@host",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/FTP/new2/host",
       "Kind": "var",
       "Name": "host",
       "Callable": false,
@@ -5448,7 +5721,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@new2@password",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/FTP/new2/password",
       "Kind": "var",
       "Name": "password",
       "Callable": false,
@@ -5467,7 +5740,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@new2@path",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/FTP/new2/path",
       "Kind": "var",
       "Name": "path",
       "Callable": false,
@@ -5486,7 +5759,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@new2@port",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/FTP/new2/port",
       "Kind": "var",
       "Name": "port",
       "Callable": false,
@@ -5505,7 +5778,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@new2@typecode",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/FTP/new2/typecode",
       "Kind": "var",
       "Name": "typecode",
       "Callable": false,
@@ -5524,7 +5797,7 @@
     },
     {
       "Path": "URI/FTP@_local_0@new2@user",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/FTP/new2/user",
       "Kind": "var",
       "Name": "user",
       "Callable": false,
@@ -5543,6 +5816,7 @@
     },
     {
       "Path": "URI/Generic",
+      "TreePath": "./URI/Generic",
       "Kind": "type",
       "Name": "Generic",
       "Callable": false,
@@ -5561,6 +5835,7 @@
     },
     {
       "Path": "URI/Generic/$classmethods/build",
+      "TreePath": "./URI/Generic/build",
       "Kind": "func",
       "Name": "build",
       "Callable": false,
@@ -5579,6 +5854,7 @@
     },
     {
       "Path": "URI/Generic/$classmethods/build2",
+      "TreePath": "./URI/Generic/build2",
       "Kind": "func",
       "Name": "build2",
       "Callable": false,
@@ -5597,6 +5873,7 @@
     },
     {
       "Path": "URI/Generic/$classmethods/component",
+      "TreePath": "./URI/Generic/component",
       "Kind": "func",
       "Name": "component",
       "Callable": false,
@@ -5615,6 +5892,7 @@
     },
     {
       "Path": "URI/Generic/$classmethods/default_port",
+      "TreePath": "./URI/Generic/default_port",
       "Kind": "func",
       "Name": "default_port",
       "Callable": false,
@@ -5633,6 +5911,7 @@
     },
     {
       "Path": "URI/Generic/$classmethods/use_registry",
+      "TreePath": "./URI/Generic/use_registry",
       "Kind": "func",
       "Name": "use_registry",
       "Callable": false,
@@ -5651,6 +5930,7 @@
     },
     {
       "Path": "URI/Generic/$methods/+",
+      "TreePath": "./URI/Generic/+",
       "Kind": "func",
       "Name": "+",
       "Callable": false,
@@ -5669,6 +5949,7 @@
     },
     {
       "Path": "URI/Generic/$methods/-",
+      "TreePath": "./URI/Generic/-",
       "Kind": "func",
       "Name": "-",
       "Callable": false,
@@ -5687,6 +5968,7 @@
     },
     {
       "Path": "URI/Generic/$methods/==",
+      "TreePath": "./URI/Generic/==",
       "Kind": "func",
       "Name": "==",
       "Callable": false,
@@ -5705,6 +5987,7 @@
     },
     {
       "Path": "URI/Generic/$methods/absolute",
+      "TreePath": "./URI/Generic/absolute",
       "Kind": "func",
       "Name": "absolute",
       "Callable": false,
@@ -5723,6 +6006,7 @@
     },
     {
       "Path": "URI/Generic/$methods/absolute?",
+      "TreePath": "./URI/Generic/absolute?",
       "Kind": "func",
       "Name": "absolute?",
       "Callable": false,
@@ -5741,6 +6025,7 @@
     },
     {
       "Path": "URI/Generic/$methods/check_host",
+      "TreePath": "./URI/Generic/check_host",
       "Kind": "func",
       "Name": "check_host",
       "Callable": false,
@@ -5759,6 +6044,7 @@
     },
     {
       "Path": "URI/Generic/$methods/check_opaque",
+      "TreePath": "./URI/Generic/check_opaque",
       "Kind": "func",
       "Name": "check_opaque",
       "Callable": false,
@@ -5777,6 +6063,7 @@
     },
     {
       "Path": "URI/Generic/$methods/check_password",
+      "TreePath": "./URI/Generic/check_password",
       "Kind": "func",
       "Name": "check_password",
       "Callable": false,
@@ -5795,6 +6082,7 @@
     },
     {
       "Path": "URI/Generic/$methods/check_path",
+      "TreePath": "./URI/Generic/check_path",
       "Kind": "func",
       "Name": "check_path",
       "Callable": false,
@@ -5813,6 +6101,7 @@
     },
     {
       "Path": "URI/Generic/$methods/check_port",
+      "TreePath": "./URI/Generic/check_port",
       "Kind": "func",
       "Name": "check_port",
       "Callable": false,
@@ -5831,6 +6120,7 @@
     },
     {
       "Path": "URI/Generic/$methods/check_registry",
+      "TreePath": "./URI/Generic/check_registry",
       "Kind": "func",
       "Name": "check_registry",
       "Callable": false,
@@ -5849,6 +6139,7 @@
     },
     {
       "Path": "URI/Generic/$methods/check_scheme",
+      "TreePath": "./URI/Generic/check_scheme",
       "Kind": "func",
       "Name": "check_scheme",
       "Callable": false,
@@ -5867,6 +6158,7 @@
     },
     {
       "Path": "URI/Generic/$methods/check_user",
+      "TreePath": "./URI/Generic/check_user",
       "Kind": "func",
       "Name": "check_user",
       "Callable": false,
@@ -5885,6 +6177,7 @@
     },
     {
       "Path": "URI/Generic/$methods/check_userinfo",
+      "TreePath": "./URI/Generic/check_userinfo",
       "Kind": "func",
       "Name": "check_userinfo",
       "Callable": false,
@@ -5903,6 +6196,7 @@
     },
     {
       "Path": "URI/Generic/$methods/coerce",
+      "TreePath": "./URI/Generic/coerce",
       "Kind": "func",
       "Name": "coerce",
       "Callable": false,
@@ -5921,6 +6215,7 @@
     },
     {
       "Path": "URI/Generic/$methods/component",
+      "TreePath": "./URI/Generic/component",
       "Kind": "func",
       "Name": "component",
       "Callable": false,
@@ -5939,6 +6234,7 @@
     },
     {
       "Path": "URI/Generic/$methods/component_ary",
+      "TreePath": "./URI/Generic/component_ary",
       "Kind": "func",
       "Name": "component_ary",
       "Callable": false,
@@ -5957,6 +6253,7 @@
     },
     {
       "Path": "URI/Generic/$methods/default_port",
+      "TreePath": "./URI/Generic/default_port",
       "Kind": "func",
       "Name": "default_port",
       "Callable": false,
@@ -5975,6 +6272,7 @@
     },
     {
       "Path": "URI/Generic/$methods/eql?",
+      "TreePath": "./URI/Generic/eql?",
       "Kind": "func",
       "Name": "eql?",
       "Callable": false,
@@ -5993,6 +6291,7 @@
     },
     {
       "Path": "URI/Generic/$methods/escape_userpass",
+      "TreePath": "./URI/Generic/escape_userpass",
       "Kind": "func",
       "Name": "escape_userpass",
       "Callable": false,
@@ -6011,6 +6310,7 @@
     },
     {
       "Path": "URI/Generic/$methods/find_proxy",
+      "TreePath": "./URI/Generic/find_proxy",
       "Kind": "func",
       "Name": "find_proxy",
       "Callable": false,
@@ -6029,6 +6329,7 @@
     },
     {
       "Path": "URI/Generic/$methods/fragment",
+      "TreePath": "./URI/Generic/fragment",
       "Kind": "func",
       "Name": "fragment",
       "Callable": false,
@@ -6047,6 +6348,7 @@
     },
     {
       "Path": "URI/Generic/$methods/fragment=",
+      "TreePath": "./URI/Generic/fragment=",
       "Kind": "func",
       "Name": "fragment=",
       "Callable": false,
@@ -6065,6 +6367,7 @@
     },
     {
       "Path": "URI/Generic/$methods/hash",
+      "TreePath": "./URI/Generic/hash",
       "Kind": "func",
       "Name": "hash",
       "Callable": false,
@@ -6083,6 +6386,7 @@
     },
     {
       "Path": "URI/Generic/$methods/hierarchical?",
+      "TreePath": "./URI/Generic/hierarchical?",
       "Kind": "func",
       "Name": "hierarchical?",
       "Callable": false,
@@ -6101,6 +6405,7 @@
     },
     {
       "Path": "URI/Generic/$methods/host",
+      "TreePath": "./URI/Generic/host",
       "Kind": "func",
       "Name": "host",
       "Callable": false,
@@ -6119,6 +6424,7 @@
     },
     {
       "Path": "URI/Generic/$methods/host=",
+      "TreePath": "./URI/Generic/host=",
       "Kind": "func",
       "Name": "host=",
       "Callable": false,
@@ -6137,6 +6443,7 @@
     },
     {
       "Path": "URI/Generic/$methods/hostname",
+      "TreePath": "./URI/Generic/hostname",
       "Kind": "func",
       "Name": "hostname",
       "Callable": false,
@@ -6155,6 +6462,7 @@
     },
     {
       "Path": "URI/Generic/$methods/hostname=",
+      "TreePath": "./URI/Generic/hostname=",
       "Kind": "func",
       "Name": "hostname=",
       "Callable": false,
@@ -6173,6 +6481,7 @@
     },
     {
       "Path": "URI/Generic/$methods/initialize",
+      "TreePath": "./URI/Generic/initialize",
       "Kind": "func",
       "Name": "initialize",
       "Callable": false,
@@ -6191,6 +6500,7 @@
     },
     {
       "Path": "URI/Generic/$methods/inspect",
+      "TreePath": "./URI/Generic/inspect",
       "Kind": "func",
       "Name": "inspect",
       "Callable": false,
@@ -6209,6 +6519,7 @@
     },
     {
       "Path": "URI/Generic/$methods/merge!",
+      "TreePath": "./URI/Generic/merge!",
       "Kind": "func",
       "Name": "merge!",
       "Callable": false,
@@ -6227,6 +6538,7 @@
     },
     {
       "Path": "URI/Generic/$methods/merge",
+      "TreePath": "./URI/Generic/merge",
       "Kind": "func",
       "Name": "merge",
       "Callable": false,
@@ -6245,6 +6557,7 @@
     },
     {
       "Path": "URI/Generic/$methods/merge0",
+      "TreePath": "./URI/Generic/merge0",
       "Kind": "func",
       "Name": "merge0",
       "Callable": false,
@@ -6263,6 +6576,7 @@
     },
     {
       "Path": "URI/Generic/$methods/merge_path",
+      "TreePath": "./URI/Generic/merge_path",
       "Kind": "func",
       "Name": "merge_path",
       "Callable": false,
@@ -6281,6 +6595,7 @@
     },
     {
       "Path": "URI/Generic/$methods/normalize!",
+      "TreePath": "./URI/Generic/normalize!",
       "Kind": "func",
       "Name": "normalize!",
       "Callable": false,
@@ -6299,6 +6614,7 @@
     },
     {
       "Path": "URI/Generic/$methods/normalize",
+      "TreePath": "./URI/Generic/normalize",
       "Kind": "func",
       "Name": "normalize",
       "Callable": false,
@@ -6317,6 +6633,7 @@
     },
     {
       "Path": "URI/Generic/$methods/opaque",
+      "TreePath": "./URI/Generic/opaque",
       "Kind": "func",
       "Name": "opaque",
       "Callable": false,
@@ -6335,6 +6652,7 @@
     },
     {
       "Path": "URI/Generic/$methods/opaque=",
+      "TreePath": "./URI/Generic/opaque=",
       "Kind": "func",
       "Name": "opaque=",
       "Callable": false,
@@ -6353,6 +6671,7 @@
     },
     {
       "Path": "URI/Generic/$methods/parser",
+      "TreePath": "./URI/Generic/parser",
       "Kind": "func",
       "Name": "parser",
       "Callable": false,
@@ -6371,6 +6690,7 @@
     },
     {
       "Path": "URI/Generic/$methods/password",
+      "TreePath": "./URI/Generic/password",
       "Kind": "func",
       "Name": "password",
       "Callable": false,
@@ -6389,6 +6709,7 @@
     },
     {
       "Path": "URI/Generic/$methods/password=",
+      "TreePath": "./URI/Generic/password=",
       "Kind": "func",
       "Name": "password=",
       "Callable": false,
@@ -6407,6 +6728,7 @@
     },
     {
       "Path": "URI/Generic/$methods/path",
+      "TreePath": "./URI/Generic/path",
       "Kind": "func",
       "Name": "path",
       "Callable": false,
@@ -6425,6 +6747,7 @@
     },
     {
       "Path": "URI/Generic/$methods/path=",
+      "TreePath": "./URI/Generic/path=",
       "Kind": "func",
       "Name": "path=",
       "Callable": false,
@@ -6443,6 +6766,7 @@
     },
     {
       "Path": "URI/Generic/$methods/path_query",
+      "TreePath": "./URI/Generic/path_query",
       "Kind": "func",
       "Name": "path_query",
       "Callable": false,
@@ -6461,6 +6785,7 @@
     },
     {
       "Path": "URI/Generic/$methods/port",
+      "TreePath": "./URI/Generic/port",
       "Kind": "func",
       "Name": "port",
       "Callable": false,
@@ -6479,6 +6804,7 @@
     },
     {
       "Path": "URI/Generic/$methods/port=",
+      "TreePath": "./URI/Generic/port=",
       "Kind": "func",
       "Name": "port=",
       "Callable": false,
@@ -6497,6 +6823,7 @@
     },
     {
       "Path": "URI/Generic/$methods/query",
+      "TreePath": "./URI/Generic/query",
       "Kind": "func",
       "Name": "query",
       "Callable": false,
@@ -6515,6 +6842,7 @@
     },
     {
       "Path": "URI/Generic/$methods/query=",
+      "TreePath": "./URI/Generic/query=",
       "Kind": "func",
       "Name": "query=",
       "Callable": false,
@@ -6533,6 +6861,7 @@
     },
     {
       "Path": "URI/Generic/$methods/registry",
+      "TreePath": "./URI/Generic/registry",
       "Kind": "func",
       "Name": "registry",
       "Callable": false,
@@ -6551,6 +6880,7 @@
     },
     {
       "Path": "URI/Generic/$methods/registry=",
+      "TreePath": "./URI/Generic/registry=",
       "Kind": "func",
       "Name": "registry=",
       "Callable": false,
@@ -6569,6 +6899,7 @@
     },
     {
       "Path": "URI/Generic/$methods/relative?",
+      "TreePath": "./URI/Generic/relative?",
       "Kind": "func",
       "Name": "relative?",
       "Callable": false,
@@ -6587,6 +6918,7 @@
     },
     {
       "Path": "URI/Generic/$methods/replace!",
+      "TreePath": "./URI/Generic/replace!",
       "Kind": "func",
       "Name": "replace!",
       "Callable": false,
@@ -6605,6 +6937,7 @@
     },
     {
       "Path": "URI/Generic/$methods/route_from",
+      "TreePath": "./URI/Generic/route_from",
       "Kind": "func",
       "Name": "route_from",
       "Callable": false,
@@ -6623,6 +6956,7 @@
     },
     {
       "Path": "URI/Generic/$methods/route_from0",
+      "TreePath": "./URI/Generic/route_from0",
       "Kind": "func",
       "Name": "route_from0",
       "Callable": false,
@@ -6641,6 +6975,7 @@
     },
     {
       "Path": "URI/Generic/$methods/route_from_path",
+      "TreePath": "./URI/Generic/route_from_path",
       "Kind": "func",
       "Name": "route_from_path",
       "Callable": false,
@@ -6659,6 +6994,7 @@
     },
     {
       "Path": "URI/Generic/$methods/route_to",
+      "TreePath": "./URI/Generic/route_to",
       "Kind": "func",
       "Name": "route_to",
       "Callable": false,
@@ -6677,6 +7013,7 @@
     },
     {
       "Path": "URI/Generic/$methods/scheme",
+      "TreePath": "./URI/Generic/scheme",
       "Kind": "func",
       "Name": "scheme",
       "Callable": false,
@@ -6695,6 +7032,7 @@
     },
     {
       "Path": "URI/Generic/$methods/scheme=",
+      "TreePath": "./URI/Generic/scheme=",
       "Kind": "func",
       "Name": "scheme=",
       "Callable": false,
@@ -6713,6 +7051,7 @@
     },
     {
       "Path": "URI/Generic/$methods/select",
+      "TreePath": "./URI/Generic/select",
       "Kind": "func",
       "Name": "select",
       "Callable": false,
@@ -6731,6 +7070,7 @@
     },
     {
       "Path": "URI/Generic/$methods/set_host",
+      "TreePath": "./URI/Generic/set_host",
       "Kind": "func",
       "Name": "set_host",
       "Callable": false,
@@ -6749,6 +7089,7 @@
     },
     {
       "Path": "URI/Generic/$methods/set_opaque",
+      "TreePath": "./URI/Generic/set_opaque",
       "Kind": "func",
       "Name": "set_opaque",
       "Callable": false,
@@ -6767,6 +7108,7 @@
     },
     {
       "Path": "URI/Generic/$methods/set_password",
+      "TreePath": "./URI/Generic/set_password",
       "Kind": "func",
       "Name": "set_password",
       "Callable": false,
@@ -6785,6 +7127,7 @@
     },
     {
       "Path": "URI/Generic/$methods/set_path",
+      "TreePath": "./URI/Generic/set_path",
       "Kind": "func",
       "Name": "set_path",
       "Callable": false,
@@ -6803,6 +7146,7 @@
     },
     {
       "Path": "URI/Generic/$methods/set_port",
+      "TreePath": "./URI/Generic/set_port",
       "Kind": "func",
       "Name": "set_port",
       "Callable": false,
@@ -6821,6 +7165,7 @@
     },
     {
       "Path": "URI/Generic/$methods/set_registry",
+      "TreePath": "./URI/Generic/set_registry",
       "Kind": "func",
       "Name": "set_registry",
       "Callable": false,
@@ -6839,6 +7184,7 @@
     },
     {
       "Path": "URI/Generic/$methods/set_scheme",
+      "TreePath": "./URI/Generic/set_scheme",
       "Kind": "func",
       "Name": "set_scheme",
       "Callable": false,
@@ -6857,6 +7203,7 @@
     },
     {
       "Path": "URI/Generic/$methods/set_user",
+      "TreePath": "./URI/Generic/set_user",
       "Kind": "func",
       "Name": "set_user",
       "Callable": false,
@@ -6875,6 +7222,7 @@
     },
     {
       "Path": "URI/Generic/$methods/set_userinfo",
+      "TreePath": "./URI/Generic/set_userinfo",
       "Kind": "func",
       "Name": "set_userinfo",
       "Callable": false,
@@ -6893,6 +7241,7 @@
     },
     {
       "Path": "URI/Generic/$methods/split_path",
+      "TreePath": "./URI/Generic/split_path",
       "Kind": "func",
       "Name": "split_path",
       "Callable": false,
@@ -6911,6 +7260,7 @@
     },
     {
       "Path": "URI/Generic/$methods/split_userinfo",
+      "TreePath": "./URI/Generic/split_userinfo",
       "Kind": "func",
       "Name": "split_userinfo",
       "Callable": false,
@@ -6929,6 +7279,7 @@
     },
     {
       "Path": "URI/Generic/$methods/to_s",
+      "TreePath": "./URI/Generic/to_s",
       "Kind": "func",
       "Name": "to_s",
       "Callable": false,
@@ -6947,6 +7298,7 @@
     },
     {
       "Path": "URI/Generic/$methods/user",
+      "TreePath": "./URI/Generic/user",
       "Kind": "func",
       "Name": "user",
       "Callable": false,
@@ -6965,6 +7317,7 @@
     },
     {
       "Path": "URI/Generic/$methods/user=",
+      "TreePath": "./URI/Generic/user=",
       "Kind": "func",
       "Name": "user=",
       "Callable": false,
@@ -6983,6 +7336,7 @@
     },
     {
       "Path": "URI/Generic/$methods/userinfo",
+      "TreePath": "./URI/Generic/userinfo",
       "Kind": "func",
       "Name": "userinfo",
       "Callable": false,
@@ -7001,6 +7355,7 @@
     },
     {
       "Path": "URI/Generic/$methods/userinfo=",
+      "TreePath": "./URI/Generic/userinfo=",
       "Kind": "func",
       "Name": "userinfo=",
       "Callable": false,
@@ -7019,6 +7374,7 @@
     },
     {
       "Path": "URI/Generic/@@to_s",
+      "TreePath": "./URI/Generic/@@to_s",
       "Kind": "var",
       "Name": "@@to_s",
       "Callable": false,
@@ -7037,6 +7393,7 @@
     },
     {
       "Path": "URI/Generic/@fragment",
+      "TreePath": "./URI/Generic/@fragment",
       "Kind": "var",
       "Name": "@fragment",
       "Callable": false,
@@ -7055,6 +7412,7 @@
     },
     {
       "Path": "URI/Generic/@host",
+      "TreePath": "./URI/Generic/@host",
       "Kind": "var",
       "Name": "@host",
       "Callable": false,
@@ -7073,6 +7431,7 @@
     },
     {
       "Path": "URI/Generic/@opaque",
+      "TreePath": "./URI/Generic/@opaque",
       "Kind": "var",
       "Name": "@opaque",
       "Callable": false,
@@ -7091,6 +7450,7 @@
     },
     {
       "Path": "URI/Generic/@parser",
+      "TreePath": "./URI/Generic/@parser",
       "Kind": "var",
       "Name": "@parser",
       "Callable": false,
@@ -7109,6 +7469,7 @@
     },
     {
       "Path": "URI/Generic/@password",
+      "TreePath": "./URI/Generic/@password",
       "Kind": "var",
       "Name": "@password",
       "Callable": false,
@@ -7127,6 +7488,7 @@
     },
     {
       "Path": "URI/Generic/@path",
+      "TreePath": "./URI/Generic/@path",
       "Kind": "var",
       "Name": "@path",
       "Callable": false,
@@ -7145,6 +7507,7 @@
     },
     {
       "Path": "URI/Generic/@port",
+      "TreePath": "./URI/Generic/@port",
       "Kind": "var",
       "Name": "@port",
       "Callable": false,
@@ -7163,6 +7526,7 @@
     },
     {
       "Path": "URI/Generic/@query",
+      "TreePath": "./URI/Generic/@query",
       "Kind": "var",
       "Name": "@query",
       "Callable": false,
@@ -7181,6 +7545,7 @@
     },
     {
       "Path": "URI/Generic/@scheme",
+      "TreePath": "./URI/Generic/@scheme",
       "Kind": "var",
       "Name": "@scheme",
       "Callable": false,
@@ -7199,6 +7564,7 @@
     },
     {
       "Path": "URI/Generic/@user",
+      "TreePath": "./URI/Generic/@user",
       "Kind": "var",
       "Name": "@user",
       "Callable": false,
@@ -7217,6 +7583,7 @@
     },
     {
       "Path": "URI/Generic/COMPONENT",
+      "TreePath": "./URI/Generic/COMPONENT",
       "Kind": "const",
       "Name": "COMPONENT",
       "Callable": false,
@@ -7235,6 +7602,7 @@
     },
     {
       "Path": "URI/Generic/DEFAULT_PORT",
+      "TreePath": "./URI/Generic/DEFAULT_PORT",
       "Kind": "const",
       "Name": "DEFAULT_PORT",
       "Callable": false,
@@ -7253,6 +7621,7 @@
     },
     {
       "Path": "URI/Generic/USE_REGISTRY",
+      "TreePath": "./URI/Generic/USE_REGISTRY",
       "Kind": "const",
       "Name": "USE_REGISTRY",
       "Callable": false,
@@ -7271,7 +7640,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/==@oth",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/==/oth",
       "Kind": "var",
       "Name": "oth",
       "Callable": false,
@@ -7290,7 +7659,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/check_host@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/check_host/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -7309,7 +7678,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/check_opaque@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/check_opaque/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -7328,7 +7697,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/check_password@user",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/check_password/user",
       "Kind": "var",
       "Name": "user",
       "Callable": false,
@@ -7347,7 +7716,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/check_password@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/check_password/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -7366,7 +7735,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/check_path@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/check_path/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -7385,7 +7754,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/check_port@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/check_port/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -7404,7 +7773,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/check_registry@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/check_registry/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -7423,7 +7792,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/check_scheme@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/check_scheme/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -7442,7 +7811,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/check_user@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/check_user/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -7461,7 +7830,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/check_userinfo@password",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/check_userinfo/password",
       "Kind": "var",
       "Name": "password",
       "Callable": false,
@@ -7480,7 +7849,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/check_userinfo@user",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/check_userinfo/user",
       "Kind": "var",
       "Name": "user",
       "Callable": false,
@@ -7499,7 +7868,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/coerce@oth",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/coerce/oth",
       "Kind": "var",
       "Name": "oth",
       "Callable": false,
@@ -7518,7 +7887,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/component_ary@@block_local_0@x",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/component_ary/@block_local_0/x",
       "Kind": "var",
       "Name": "x",
       "Callable": false,
@@ -7537,7 +7906,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/eql?@oth",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/eql?/oth",
       "Kind": "var",
       "Name": "oth",
       "Callable": false,
@@ -7556,7 +7925,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/escape_userpass@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/escape_userpass/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -7575,7 +7944,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/find_proxy@@block_local_0@k",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/find_proxy/@block_local_0/k",
       "Kind": "var",
       "Name": "k",
       "Callable": false,
@@ -7594,7 +7963,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/find_proxy@@block_local_0@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/find_proxy/@block_local_0/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -7613,7 +7982,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/find_proxy@@block_local_1@host",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/find_proxy/@block_local_1/host",
       "Kind": "var",
       "Name": "host",
       "Callable": false,
@@ -7632,7 +8001,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/find_proxy@@block_local_1@port",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/find_proxy/@block_local_1/port",
       "Kind": "var",
       "Name": "port",
       "Callable": false,
@@ -7651,7 +8020,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/find_proxy@addr",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/find_proxy/addr",
       "Kind": "var",
       "Name": "addr",
       "Callable": false,
@@ -7670,7 +8039,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/find_proxy@name",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/find_proxy/name",
       "Kind": "var",
       "Name": "name",
       "Callable": false,
@@ -7689,7 +8058,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/find_proxy@no_proxy",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/find_proxy/no_proxy",
       "Kind": "var",
       "Name": "no_proxy",
       "Callable": false,
@@ -7708,7 +8077,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/find_proxy@pairs",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/find_proxy/pairs",
       "Kind": "var",
       "Name": "pairs",
       "Callable": false,
@@ -7727,7 +8096,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/find_proxy@proxy_uri",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/find_proxy/proxy_uri",
       "Kind": "var",
       "Name": "proxy_uri",
       "Callable": false,
@@ -7746,7 +8115,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/fragment=@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/fragment=/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -7765,7 +8134,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/fragment=@x",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/fragment=/x",
       "Kind": "var",
       "Name": "x",
       "Callable": false,
@@ -7784,7 +8153,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/host=@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/host=/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -7803,7 +8172,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/hostname=@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/hostname=/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -7822,7 +8191,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/hostname@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/hostname/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -7841,7 +8210,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/initialize@arg_check",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/initialize/arg_check",
       "Kind": "var",
       "Name": "arg_check",
       "Callable": false,
@@ -7860,7 +8229,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/initialize@fragment",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/initialize/fragment",
       "Kind": "var",
       "Name": "fragment",
       "Callable": false,
@@ -7879,7 +8248,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/initialize@host",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/initialize/host",
       "Kind": "var",
       "Name": "host",
       "Callable": false,
@@ -7898,7 +8267,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/initialize@opaque",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/initialize/opaque",
       "Kind": "var",
       "Name": "opaque",
       "Callable": false,
@@ -7917,7 +8286,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/initialize@parser",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/initialize/parser",
       "Kind": "var",
       "Name": "parser",
       "Callable": false,
@@ -7936,7 +8305,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/initialize@path",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/initialize/path",
       "Kind": "var",
       "Name": "path",
       "Callable": false,
@@ -7955,7 +8324,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/initialize@port",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/initialize/port",
       "Kind": "var",
       "Name": "port",
       "Callable": false,
@@ -7974,7 +8343,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/initialize@query",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/initialize/query",
       "Kind": "var",
       "Name": "query",
       "Callable": false,
@@ -7993,7 +8362,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/initialize@registry",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/initialize/registry",
       "Kind": "var",
       "Name": "registry",
       "Callable": false,
@@ -8012,7 +8381,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/initialize@scheme",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/initialize/scheme",
       "Kind": "var",
       "Name": "scheme",
       "Callable": false,
@@ -8031,7 +8400,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/initialize@userinfo",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/initialize/userinfo",
       "Kind": "var",
       "Name": "userinfo",
       "Callable": false,
@@ -8050,7 +8419,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/merge!@oth",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/merge!/oth",
       "Kind": "var",
       "Name": "oth",
       "Callable": false,
@@ -8069,7 +8438,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/merge!@t",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/merge!/t",
       "Kind": "var",
       "Name": "t",
       "Callable": false,
@@ -8088,7 +8457,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/merge0@oth",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/merge0/oth",
       "Kind": "var",
       "Name": "oth",
       "Callable": false,
@@ -8107,7 +8476,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/merge@authority",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/merge/authority",
       "Kind": "var",
       "Name": "authority",
       "Callable": false,
@@ -8126,7 +8495,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/merge@oth",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/merge/oth",
       "Kind": "var",
       "Name": "oth",
       "Callable": false,
@@ -8145,7 +8514,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/merge_path@@block_local_0@x",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/merge_path/@block_local_0/x",
       "Kind": "var",
       "Name": "x",
       "Callable": false,
@@ -8164,7 +8533,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/merge_path@@block_local_1@t",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/merge_path/@block_local_1/t",
       "Kind": "var",
       "Name": "t",
       "Callable": false,
@@ -8183,7 +8552,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/merge_path@add_trailer_slash",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/merge_path/add_trailer_slash",
       "Kind": "var",
       "Name": "add_trailer_slash",
       "Callable": false,
@@ -8202,7 +8571,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/merge_path@base",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/merge_path/base",
       "Kind": "var",
       "Name": "base",
       "Callable": false,
@@ -8221,7 +8590,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/merge_path@base_path",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/merge_path/base_path",
       "Kind": "var",
       "Name": "base_path",
       "Callable": false,
@@ -8240,7 +8609,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/merge_path@first",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/merge_path/first",
       "Kind": "var",
       "Name": "first",
       "Callable": false,
@@ -8259,7 +8628,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/merge_path@i",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/merge_path/i",
       "Kind": "var",
       "Name": "i",
       "Callable": false,
@@ -8278,7 +8647,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/merge_path@rel",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/merge_path/rel",
       "Kind": "var",
       "Name": "rel",
       "Callable": false,
@@ -8297,7 +8666,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/merge_path@rel_path",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/merge_path/rel_path",
       "Kind": "var",
       "Name": "rel_path",
       "Callable": false,
@@ -8316,7 +8685,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/merge_path@tmp",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/merge_path/tmp",
       "Kind": "var",
       "Name": "tmp",
       "Callable": false,
@@ -8335,7 +8704,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/merge_path@x",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/merge_path/x",
       "Kind": "var",
       "Name": "x",
       "Callable": false,
@@ -8354,7 +8723,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/normalize@uri",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/normalize/uri",
       "Kind": "var",
       "Name": "uri",
       "Callable": false,
@@ -8373,7 +8742,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/opaque=@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/opaque=/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -8392,7 +8761,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/password=@password",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/password=/password",
       "Kind": "var",
       "Name": "password",
       "Callable": false,
@@ -8411,7 +8780,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/path=@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/path=/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -8430,7 +8799,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/path_query@str",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/path_query/str",
       "Kind": "var",
       "Name": "str",
       "Callable": false,
@@ -8449,7 +8818,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/port=@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/port=/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -8468,7 +8837,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/query=@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/query=/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -8487,7 +8856,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/query=@x",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/query=/x",
       "Kind": "var",
       "Name": "x",
       "Callable": false,
@@ -8506,7 +8875,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/registry=@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/registry=/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -8525,7 +8894,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/replace!@@block_local_0@c",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/replace!/@block_local_0/c",
       "Kind": "var",
       "Name": "c",
       "Callable": false,
@@ -8544,7 +8913,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/replace!@oth",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/replace!/oth",
       "Kind": "var",
       "Name": "oth",
       "Callable": false,
@@ -8563,7 +8932,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/route_from0@oth",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/route_from0/oth",
       "Kind": "var",
       "Name": "oth",
       "Callable": false,
@@ -8582,7 +8951,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/route_from0@rel",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/route_from0/rel",
       "Kind": "var",
       "Name": "rel",
       "Callable": false,
@@ -8601,7 +8970,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/route_from@oth",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/route_from/oth",
       "Kind": "var",
       "Name": "oth",
       "Callable": false,
@@ -8620,7 +8989,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/route_from_path@dst",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/route_from_path/dst",
       "Kind": "var",
       "Name": "dst",
       "Callable": false,
@@ -8639,7 +9008,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/route_from_path@dst_path",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/route_from_path/dst_path",
       "Kind": "var",
       "Name": "dst_path",
       "Callable": false,
@@ -8658,7 +9027,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/route_from_path@src",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/route_from_path/src",
       "Kind": "var",
       "Name": "src",
       "Callable": false,
@@ -8677,7 +9046,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/route_from_path@src_path",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/route_from_path/src_path",
       "Kind": "var",
       "Name": "src_path",
       "Callable": false,
@@ -8696,7 +9065,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/route_from_path@tmp",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/route_from_path/tmp",
       "Kind": "var",
       "Name": "tmp",
       "Callable": false,
@@ -8715,7 +9084,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/route_to@oth",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/route_to/oth",
       "Kind": "var",
       "Name": "oth",
       "Callable": false,
@@ -8734,7 +9103,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/scheme=@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/scheme=/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -8753,7 +9122,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/select@@block_local_0@c",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/select/@block_local_0/c",
       "Kind": "var",
       "Name": "c",
       "Callable": false,
@@ -8772,7 +9141,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/select@components",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/select/components",
       "Kind": "var",
       "Name": "components",
       "Callable": false,
@@ -8791,7 +9160,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/set_host@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/set_host/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -8810,7 +9179,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/set_opaque@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/set_opaque/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -8829,7 +9198,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/set_password@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/set_password/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -8848,7 +9217,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/set_path@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/set_path/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -8867,7 +9236,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/set_port@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/set_port/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -8886,7 +9255,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/set_registry@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/set_registry/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -8905,7 +9274,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/set_scheme@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/set_scheme/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -8924,7 +9293,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/set_user@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/set_user/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -8943,7 +9312,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/set_userinfo@password",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/set_userinfo/password",
       "Kind": "var",
       "Name": "password",
       "Callable": false,
@@ -8962,7 +9331,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/set_userinfo@user",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/set_userinfo/user",
       "Kind": "var",
       "Name": "user",
       "Callable": false,
@@ -8981,7 +9350,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/split_path@path",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/split_path/path",
       "Kind": "var",
       "Name": "path",
       "Callable": false,
@@ -9000,7 +9369,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/split_userinfo@ui",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/split_userinfo/ui",
       "Kind": "var",
       "Name": "ui",
       "Callable": false,
@@ -9019,7 +9388,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/to_s@str",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/to_s/str",
       "Kind": "var",
       "Name": "str",
       "Callable": false,
@@ -9038,7 +9407,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/user=@user",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/user=/user",
       "Kind": "var",
       "Name": "user",
       "Callable": false,
@@ -9057,7 +9426,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@/$methods/userinfo=@userinfo",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Generic/userinfo=/userinfo",
       "Kind": "var",
       "Name": "userinfo",
       "Callable": false,
@@ -9076,7 +9445,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@build2@@block_local_0@key",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/Generic/build2/@block_local_0/key",
       "Kind": "var",
       "Name": "key",
       "Callable": false,
@@ -9095,7 +9464,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@build2@@block_local_0@value",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/Generic/build2/@block_local_0/value",
       "Kind": "var",
       "Name": "value",
       "Callable": false,
@@ -9114,7 +9483,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@build2@args",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/Generic/build2/args",
       "Kind": "var",
       "Name": "args",
       "Callable": false,
@@ -9133,7 +9502,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@build2@tmp",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/Generic/build2/tmp",
       "Kind": "var",
       "Name": "tmp",
       "Callable": false,
@@ -9152,7 +9521,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@build@@block_local_0@c",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/Generic/build/@block_local_0/c",
       "Kind": "var",
       "Name": "c",
       "Callable": false,
@@ -9171,7 +9540,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@build@args",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/Generic/build/args",
       "Kind": "var",
       "Name": "args",
       "Callable": false,
@@ -9190,7 +9559,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@build@component",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/Generic/build/component",
       "Kind": "var",
       "Name": "component",
       "Callable": false,
@@ -9209,7 +9578,7 @@
     },
     {
       "Path": "URI/Generic@_local_0@build@tmp",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/Generic/build/tmp",
       "Kind": "var",
       "Name": "tmp",
       "Callable": false,
@@ -9228,6 +9597,7 @@
     },
     {
       "Path": "URI/HTML5ASCIIINCOMPAT",
+      "TreePath": "./URI/HTML5ASCIIINCOMPAT",
       "Kind": "const",
       "Name": "HTML5ASCIIINCOMPAT",
       "Callable": false,
@@ -9246,6 +9616,7 @@
     },
     {
       "Path": "URI/HTTP",
+      "TreePath": "./URI/HTTP",
       "Kind": "type",
       "Name": "HTTP",
       "Callable": false,
@@ -9264,6 +9635,7 @@
     },
     {
       "Path": "URI/HTTP/$classmethods/build",
+      "TreePath": "./URI/HTTP/build",
       "Kind": "func",
       "Name": "build",
       "Callable": false,
@@ -9282,6 +9654,7 @@
     },
     {
       "Path": "URI/HTTP/$methods/initialize",
+      "TreePath": "./URI/HTTP/initialize",
       "Kind": "func",
       "Name": "initialize",
       "Callable": false,
@@ -9300,6 +9673,7 @@
     },
     {
       "Path": "URI/HTTP/$methods/request_uri",
+      "TreePath": "./URI/HTTP/request_uri",
       "Kind": "func",
       "Name": "request_uri",
       "Callable": false,
@@ -9318,6 +9692,7 @@
     },
     {
       "Path": "URI/HTTP/COMPONENT",
+      "TreePath": "./URI/HTTP/COMPONENT",
       "Kind": "const",
       "Name": "COMPONENT",
       "Callable": false,
@@ -9336,6 +9711,7 @@
     },
     {
       "Path": "URI/HTTP/DEFAULT_PORT",
+      "TreePath": "./URI/HTTP/DEFAULT_PORT",
       "Kind": "const",
       "Name": "DEFAULT_PORT",
       "Callable": false,
@@ -9354,7 +9730,7 @@
     },
     {
       "Path": "URI/HTTP@_local_0@/$methods/initialize@arg",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/HTTP/initialize/arg",
       "Kind": "var",
       "Name": "arg",
       "Callable": false,
@@ -9373,7 +9749,7 @@
     },
     {
       "Path": "URI/HTTP@_local_0@/$methods/request_uri@r",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/HTTP/request_uri/r",
       "Kind": "var",
       "Name": "r",
       "Callable": false,
@@ -9392,7 +9768,7 @@
     },
     {
       "Path": "URI/HTTP@_local_0@build@args",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/HTTP/build/args",
       "Kind": "var",
       "Name": "args",
       "Callable": false,
@@ -9411,7 +9787,7 @@
     },
     {
       "Path": "URI/HTTP@_local_0@build@tmp",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/HTTP/build/tmp",
       "Kind": "var",
       "Name": "tmp",
       "Callable": false,
@@ -9430,6 +9806,7 @@
     },
     {
       "Path": "URI/HTTPS",
+      "TreePath": "./URI/HTTPS",
       "Kind": "type",
       "Name": "HTTPS",
       "Callable": false,
@@ -9448,6 +9825,7 @@
     },
     {
       "Path": "URI/HTTPS/DEFAULT_PORT",
+      "TreePath": "./URI/HTTPS/DEFAULT_PORT",
       "Kind": "const",
       "Name": "DEFAULT_PORT",
       "Callable": false,
@@ -9466,6 +9844,7 @@
     },
     {
       "Path": "URI/InvalidComponentError",
+      "TreePath": "./URI/InvalidComponentError",
       "Kind": "type",
       "Name": "InvalidComponentError",
       "Callable": false,
@@ -9484,6 +9863,7 @@
     },
     {
       "Path": "URI/InvalidURIError",
+      "TreePath": "./URI/InvalidURIError",
       "Kind": "type",
       "Name": "InvalidURIError",
       "Callable": false,
@@ -9502,6 +9882,7 @@
     },
     {
       "Path": "URI/LDAP",
+      "TreePath": "./URI/LDAP",
       "Kind": "type",
       "Name": "LDAP",
       "Callable": false,
@@ -9520,6 +9901,7 @@
     },
     {
       "Path": "URI/LDAP/$classmethods/build",
+      "TreePath": "./URI/LDAP/build",
       "Kind": "func",
       "Name": "build",
       "Callable": false,
@@ -9538,6 +9920,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/attributes",
+      "TreePath": "./URI/LDAP/attributes",
       "Kind": "func",
       "Name": "attributes",
       "Callable": false,
@@ -9556,6 +9939,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/attributes=",
+      "TreePath": "./URI/LDAP/attributes=",
       "Kind": "func",
       "Name": "attributes=",
       "Callable": false,
@@ -9574,6 +9958,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/build_path_query",
+      "TreePath": "./URI/LDAP/build_path_query",
       "Kind": "func",
       "Name": "build_path_query",
       "Callable": false,
@@ -9592,6 +9977,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/dn",
+      "TreePath": "./URI/LDAP/dn",
       "Kind": "func",
       "Name": "dn",
       "Callable": false,
@@ -9610,6 +9996,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/dn=",
+      "TreePath": "./URI/LDAP/dn=",
       "Kind": "func",
       "Name": "dn=",
       "Callable": false,
@@ -9628,6 +10015,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/extensions",
+      "TreePath": "./URI/LDAP/extensions",
       "Kind": "func",
       "Name": "extensions",
       "Callable": false,
@@ -9646,6 +10034,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/extensions=",
+      "TreePath": "./URI/LDAP/extensions=",
       "Kind": "func",
       "Name": "extensions=",
       "Callable": false,
@@ -9664,6 +10053,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/filter",
+      "TreePath": "./URI/LDAP/filter",
       "Kind": "func",
       "Name": "filter",
       "Callable": false,
@@ -9682,6 +10072,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/filter=",
+      "TreePath": "./URI/LDAP/filter=",
       "Kind": "func",
       "Name": "filter=",
       "Callable": false,
@@ -9700,6 +10091,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/hierarchical?",
+      "TreePath": "./URI/LDAP/hierarchical?",
       "Kind": "func",
       "Name": "hierarchical?",
       "Callable": false,
@@ -9718,6 +10110,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/initialize",
+      "TreePath": "./URI/LDAP/initialize",
       "Kind": "func",
       "Name": "initialize",
       "Callable": false,
@@ -9736,6 +10129,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/parse_dn",
+      "TreePath": "./URI/LDAP/parse_dn",
       "Kind": "func",
       "Name": "parse_dn",
       "Callable": false,
@@ -9754,6 +10148,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/parse_query",
+      "TreePath": "./URI/LDAP/parse_query",
       "Kind": "func",
       "Name": "parse_query",
       "Callable": false,
@@ -9772,6 +10167,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/scope",
+      "TreePath": "./URI/LDAP/scope",
       "Kind": "func",
       "Name": "scope",
       "Callable": false,
@@ -9790,6 +10186,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/scope=",
+      "TreePath": "./URI/LDAP/scope=",
       "Kind": "func",
       "Name": "scope=",
       "Callable": false,
@@ -9808,6 +10205,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/set_attributes",
+      "TreePath": "./URI/LDAP/set_attributes",
       "Kind": "func",
       "Name": "set_attributes",
       "Callable": false,
@@ -9826,6 +10224,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/set_dn",
+      "TreePath": "./URI/LDAP/set_dn",
       "Kind": "func",
       "Name": "set_dn",
       "Callable": false,
@@ -9844,6 +10243,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/set_extensions",
+      "TreePath": "./URI/LDAP/set_extensions",
       "Kind": "func",
       "Name": "set_extensions",
       "Callable": false,
@@ -9862,6 +10262,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/set_filter",
+      "TreePath": "./URI/LDAP/set_filter",
       "Kind": "func",
       "Name": "set_filter",
       "Callable": false,
@@ -9880,6 +10281,7 @@
     },
     {
       "Path": "URI/LDAP/$methods/set_scope",
+      "TreePath": "./URI/LDAP/set_scope",
       "Kind": "func",
       "Name": "set_scope",
       "Callable": false,
@@ -9898,6 +10300,7 @@
     },
     {
       "Path": "URI/LDAP/@attributes",
+      "TreePath": "./URI/LDAP/@attributes",
       "Kind": "var",
       "Name": "@attributes",
       "Callable": false,
@@ -9916,6 +10319,7 @@
     },
     {
       "Path": "URI/LDAP/@dn",
+      "TreePath": "./URI/LDAP/@dn",
       "Kind": "var",
       "Name": "@dn",
       "Callable": false,
@@ -9934,6 +10338,7 @@
     },
     {
       "Path": "URI/LDAP/@extensions",
+      "TreePath": "./URI/LDAP/@extensions",
       "Kind": "var",
       "Name": "@extensions",
       "Callable": false,
@@ -9952,6 +10357,7 @@
     },
     {
       "Path": "URI/LDAP/@filter",
+      "TreePath": "./URI/LDAP/@filter",
       "Kind": "var",
       "Name": "@filter",
       "Callable": false,
@@ -9970,6 +10376,7 @@
     },
     {
       "Path": "URI/LDAP/@path",
+      "TreePath": "./URI/LDAP/@path",
       "Kind": "var",
       "Name": "@path",
       "Callable": false,
@@ -9988,6 +10395,7 @@
     },
     {
       "Path": "URI/LDAP/@query",
+      "TreePath": "./URI/LDAP/@query",
       "Kind": "var",
       "Name": "@query",
       "Callable": false,
@@ -10006,6 +10414,7 @@
     },
     {
       "Path": "URI/LDAP/@scope",
+      "TreePath": "./URI/LDAP/@scope",
       "Kind": "var",
       "Name": "@scope",
       "Callable": false,
@@ -10024,6 +10433,7 @@
     },
     {
       "Path": "URI/LDAP/COMPONENT",
+      "TreePath": "./URI/LDAP/COMPONENT",
       "Kind": "const",
       "Name": "COMPONENT",
       "Callable": false,
@@ -10042,6 +10452,7 @@
     },
     {
       "Path": "URI/LDAP/DEFAULT_PORT",
+      "TreePath": "./URI/LDAP/DEFAULT_PORT",
       "Kind": "const",
       "Name": "DEFAULT_PORT",
       "Callable": false,
@@ -10060,6 +10471,7 @@
     },
     {
       "Path": "URI/LDAP/SCOPE",
+      "TreePath": "./URI/LDAP/SCOPE",
       "Kind": "const",
       "Name": "SCOPE",
       "Callable": false,
@@ -10078,6 +10490,7 @@
     },
     {
       "Path": "URI/LDAP/SCOPE_BASE",
+      "TreePath": "./URI/LDAP/SCOPE_BASE",
       "Kind": "const",
       "Name": "SCOPE_BASE",
       "Callable": false,
@@ -10087,7 +10500,7 @@
       "Exported": true,
       "Data": {
         "RubyKind": "constant",
-        "TypeString": "",
+        "TypeString": "String#",
         "Module": "URI",
         "RubyPath": "URI::LDAP::SCOPE_BASE",
         "Signature": "",
@@ -10096,6 +10509,7 @@
     },
     {
       "Path": "URI/LDAP/SCOPE_ONE",
+      "TreePath": "./URI/LDAP/SCOPE_ONE",
       "Kind": "const",
       "Name": "SCOPE_ONE",
       "Callable": false,
@@ -10105,7 +10519,7 @@
       "Exported": true,
       "Data": {
         "RubyKind": "constant",
-        "TypeString": "",
+        "TypeString": "String#",
         "Module": "URI",
         "RubyPath": "URI::LDAP::SCOPE_ONE",
         "Signature": "",
@@ -10114,6 +10528,7 @@
     },
     {
       "Path": "URI/LDAP/SCOPE_SUB",
+      "TreePath": "./URI/LDAP/SCOPE_SUB",
       "Kind": "const",
       "Name": "SCOPE_SUB",
       "Callable": false,
@@ -10123,7 +10538,7 @@
       "Exported": true,
       "Data": {
         "RubyKind": "constant",
-        "TypeString": "",
+        "TypeString": "String#",
         "Module": "URI",
         "RubyPath": "URI::LDAP::SCOPE_SUB",
         "Signature": "",
@@ -10132,7 +10547,7 @@
     },
     {
       "Path": "URI/LDAP@_local_0@/$methods/attributes=@val",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/LDAP/attributes=/val",
       "Kind": "var",
       "Name": "val",
       "Callable": false,
@@ -10151,7 +10566,7 @@
     },
     {
       "Path": "URI/LDAP@_local_0@/$methods/build_path_query@@block_local_0@x",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/LDAP/build_path_query/@block_local_0/x",
       "Kind": "var",
       "Name": "x",
       "Callable": false,
@@ -10170,7 +10585,7 @@
     },
     {
       "Path": "URI/LDAP@_local_0@/$methods/build_path_query@query",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/LDAP/build_path_query/query",
       "Kind": "var",
       "Name": "query",
       "Callable": false,
@@ -10189,7 +10604,7 @@
     },
     {
       "Path": "URI/LDAP@_local_0@/$methods/dn=@val",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/LDAP/dn=/val",
       "Kind": "var",
       "Name": "val",
       "Callable": false,
@@ -10208,7 +10623,7 @@
     },
     {
       "Path": "URI/LDAP@_local_0@/$methods/extensions=@val",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/LDAP/extensions=/val",
       "Kind": "var",
       "Name": "val",
       "Callable": false,
@@ -10227,7 +10642,7 @@
     },
     {
       "Path": "URI/LDAP@_local_0@/$methods/filter=@val",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/LDAP/filter=/val",
       "Kind": "var",
       "Name": "val",
       "Callable": false,
@@ -10246,7 +10661,7 @@
     },
     {
       "Path": "URI/LDAP@_local_0@/$methods/initialize@arg",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/LDAP/initialize/arg",
       "Kind": "var",
       "Name": "arg",
       "Callable": false,
@@ -10265,7 +10680,7 @@
     },
     {
       "Path": "URI/LDAP@_local_0@/$methods/scope=@val",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/LDAP/scope=/val",
       "Kind": "var",
       "Name": "val",
       "Callable": false,
@@ -10284,7 +10699,7 @@
     },
     {
       "Path": "URI/LDAP@_local_0@/$methods/set_attributes@val",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/LDAP/set_attributes/val",
       "Kind": "var",
       "Name": "val",
       "Callable": false,
@@ -10303,7 +10718,7 @@
     },
     {
       "Path": "URI/LDAP@_local_0@/$methods/set_dn@val",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/LDAP/set_dn/val",
       "Kind": "var",
       "Name": "val",
       "Callable": false,
@@ -10322,7 +10737,7 @@
     },
     {
       "Path": "URI/LDAP@_local_0@/$methods/set_extensions@val",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/LDAP/set_extensions/val",
       "Kind": "var",
       "Name": "val",
       "Callable": false,
@@ -10341,7 +10756,7 @@
     },
     {
       "Path": "URI/LDAP@_local_0@/$methods/set_filter@val",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/LDAP/set_filter/val",
       "Kind": "var",
       "Name": "val",
       "Callable": false,
@@ -10360,7 +10775,7 @@
     },
     {
       "Path": "URI/LDAP@_local_0@/$methods/set_scope@val",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/LDAP/set_scope/val",
       "Kind": "var",
       "Name": "val",
       "Callable": false,
@@ -10379,7 +10794,7 @@
     },
     {
       "Path": "URI/LDAP@_local_0@build@@block_local_0@x",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/LDAP/build/@block_local_0/x",
       "Kind": "var",
       "Name": "x",
       "Callable": false,
@@ -10398,7 +10813,7 @@
     },
     {
       "Path": "URI/LDAP@_local_0@build@args",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/LDAP/build/args",
       "Kind": "var",
       "Name": "args",
       "Callable": false,
@@ -10417,7 +10832,7 @@
     },
     {
       "Path": "URI/LDAP@_local_0@build@query",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/LDAP/build/query",
       "Kind": "var",
       "Name": "query",
       "Callable": false,
@@ -10436,7 +10851,7 @@
     },
     {
       "Path": "URI/LDAP@_local_0@build@tmp",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/LDAP/build/tmp",
       "Kind": "var",
       "Name": "tmp",
       "Callable": false,
@@ -10455,6 +10870,7 @@
     },
     {
       "Path": "URI/LDAPS",
+      "TreePath": "./URI/LDAPS",
       "Kind": "type",
       "Name": "LDAPS",
       "Callable": false,
@@ -10473,6 +10889,7 @@
     },
     {
       "Path": "URI/LDAPS/DEFAULT_PORT",
+      "TreePath": "./URI/LDAPS/DEFAULT_PORT",
       "Kind": "const",
       "Name": "DEFAULT_PORT",
       "Callable": false,
@@ -10491,6 +10908,7 @@
     },
     {
       "Path": "URI/MailTo",
+      "TreePath": "./URI/MailTo",
       "Kind": "type",
       "Name": "MailTo",
       "Callable": false,
@@ -10509,6 +10927,7 @@
     },
     {
       "Path": "URI/MailTo/$classmethods/build",
+      "TreePath": "./URI/MailTo/build",
       "Kind": "func",
       "Name": "build",
       "Callable": false,
@@ -10527,6 +10946,7 @@
     },
     {
       "Path": "URI/MailTo/$methods/check_headers",
+      "TreePath": "./URI/MailTo/check_headers",
       "Kind": "func",
       "Name": "check_headers",
       "Callable": false,
@@ -10545,6 +10965,7 @@
     },
     {
       "Path": "URI/MailTo/$methods/check_to",
+      "TreePath": "./URI/MailTo/check_to",
       "Kind": "func",
       "Name": "check_to",
       "Callable": false,
@@ -10563,6 +10984,7 @@
     },
     {
       "Path": "URI/MailTo/$methods/headers",
+      "TreePath": "./URI/MailTo/headers",
       "Kind": "func",
       "Name": "headers",
       "Callable": false,
@@ -10581,6 +11003,7 @@
     },
     {
       "Path": "URI/MailTo/$methods/headers=",
+      "TreePath": "./URI/MailTo/headers=",
       "Kind": "func",
       "Name": "headers=",
       "Callable": false,
@@ -10599,6 +11022,7 @@
     },
     {
       "Path": "URI/MailTo/$methods/initialize",
+      "TreePath": "./URI/MailTo/initialize",
       "Kind": "func",
       "Name": "initialize",
       "Callable": false,
@@ -10617,6 +11041,7 @@
     },
     {
       "Path": "URI/MailTo/$methods/set_headers",
+      "TreePath": "./URI/MailTo/set_headers",
       "Kind": "func",
       "Name": "set_headers",
       "Callable": false,
@@ -10635,6 +11060,7 @@
     },
     {
       "Path": "URI/MailTo/$methods/set_to",
+      "TreePath": "./URI/MailTo/set_to",
       "Kind": "func",
       "Name": "set_to",
       "Callable": false,
@@ -10653,6 +11079,7 @@
     },
     {
       "Path": "URI/MailTo/$methods/to",
+      "TreePath": "./URI/MailTo/to",
       "Kind": "func",
       "Name": "to",
       "Callable": false,
@@ -10671,6 +11098,7 @@
     },
     {
       "Path": "URI/MailTo/$methods/to=",
+      "TreePath": "./URI/MailTo/to=",
       "Kind": "func",
       "Name": "to=",
       "Callable": false,
@@ -10689,6 +11117,7 @@
     },
     {
       "Path": "URI/MailTo/$methods/to_mailtext",
+      "TreePath": "./URI/MailTo/to_mailtext",
       "Kind": "func",
       "Name": "to_mailtext",
       "Callable": false,
@@ -10707,6 +11136,7 @@
     },
     {
       "Path": "URI/MailTo/$methods/to_rfc822text",
+      "TreePath": "./URI/MailTo/to_rfc822text",
       "Kind": "func",
       "Name": "to_rfc822text",
       "Callable": false,
@@ -10725,6 +11155,7 @@
     },
     {
       "Path": "URI/MailTo/$methods/to_s",
+      "TreePath": "./URI/MailTo/to_s",
       "Kind": "func",
       "Name": "to_s",
       "Callable": false,
@@ -10743,6 +11174,7 @@
     },
     {
       "Path": "URI/MailTo/@headers",
+      "TreePath": "./URI/MailTo/@headers",
       "Kind": "var",
       "Name": "@headers",
       "Callable": false,
@@ -10761,6 +11193,7 @@
     },
     {
       "Path": "URI/MailTo/@to",
+      "TreePath": "./URI/MailTo/@to",
       "Kind": "var",
       "Name": "@to",
       "Callable": false,
@@ -10779,6 +11212,7 @@
     },
     {
       "Path": "URI/MailTo/COMPONENT",
+      "TreePath": "./URI/MailTo/COMPONENT",
       "Kind": "const",
       "Name": "COMPONENT",
       "Callable": false,
@@ -10797,6 +11231,7 @@
     },
     {
       "Path": "URI/MailTo/DEFAULT_PORT",
+      "TreePath": "./URI/MailTo/DEFAULT_PORT",
       "Kind": "const",
       "Name": "DEFAULT_PORT",
       "Callable": false,
@@ -10815,6 +11250,7 @@
     },
     {
       "Path": "URI/MailTo/EMAIL_REGEXP",
+      "TreePath": "./URI/MailTo/EMAIL_REGEXP",
       "Kind": "const",
       "Name": "EMAIL_REGEXP",
       "Callable": false,
@@ -10833,6 +11269,7 @@
     },
     {
       "Path": "URI/MailTo/HEADER_REGEXP",
+      "TreePath": "./URI/MailTo/HEADER_REGEXP",
       "Kind": "const",
       "Name": "HEADER_REGEXP",
       "Callable": false,
@@ -10851,7 +11288,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@/$methods/check_headers@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/MailTo/check_headers/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -10870,7 +11307,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@/$methods/check_to@@block_local_0@addr",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/MailTo/check_to/@block_local_0/addr",
       "Kind": "var",
       "Name": "addr",
       "Callable": false,
@@ -10889,7 +11326,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@/$methods/check_to@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/MailTo/check_to/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -10908,7 +11345,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@/$methods/headers=@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/MailTo/headers=/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -10927,7 +11364,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@/$methods/initialize@arg",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/MailTo/initialize/arg",
       "Kind": "var",
       "Name": "arg",
       "Callable": false,
@@ -10946,7 +11383,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@/$methods/set_headers@@block_local_0@x",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/MailTo/set_headers/@block_local_0/x",
       "Kind": "var",
       "Name": "x",
       "Callable": false,
@@ -10965,7 +11402,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@/$methods/set_headers@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/MailTo/set_headers/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -10984,7 +11421,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@/$methods/set_to@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/MailTo/set_to/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -11003,7 +11440,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@/$methods/to=@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/MailTo/to=/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -11022,7 +11459,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@/$methods/to_mailtext@@block_local_0@body",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/MailTo/to_mailtext/@block_local_0/body",
       "Kind": "var",
       "Name": "body",
       "Callable": false,
@@ -11041,7 +11478,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@/$methods/to_mailtext@@block_local_0@x",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/MailTo/to_mailtext/@block_local_0/x",
       "Kind": "var",
       "Name": "x",
       "Callable": false,
@@ -11060,7 +11497,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@/$methods/to_mailtext@body",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/MailTo/to_mailtext/body",
       "Kind": "var",
       "Name": "body",
       "Callable": false,
@@ -11079,7 +11516,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@/$methods/to_mailtext@head",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/MailTo/to_mailtext/head",
       "Kind": "var",
       "Name": "head",
       "Callable": false,
@@ -11098,7 +11535,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@/$methods/to_mailtext@to",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/MailTo/to_mailtext/to",
       "Kind": "var",
       "Name": "to",
       "Callable": false,
@@ -11117,7 +11554,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@/$methods/to_s@@block_local_0@x",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/MailTo/to_s/@block_local_0/x",
       "Kind": "var",
       "Name": "x",
       "Callable": false,
@@ -11136,7 +11573,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@build@@block_local_0@x",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/MailTo/build/@block_local_0/x",
       "Kind": "var",
       "Name": "x",
       "Callable": false,
@@ -11155,7 +11592,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@build@@block_local_1@h",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/MailTo/build/@block_local_1/h",
       "Kind": "var",
       "Name": "h",
       "Callable": false,
@@ -11174,7 +11611,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@build@@block_local_1@v",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/MailTo/build/@block_local_1/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -11193,7 +11630,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@build@args",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/MailTo/build/args",
       "Kind": "var",
       "Name": "args",
       "Callable": false,
@@ -11212,7 +11649,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@build@query",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/MailTo/build/query",
       "Kind": "var",
       "Name": "query",
       "Callable": false,
@@ -11231,7 +11668,7 @@
     },
     {
       "Path": "URI/MailTo@_local_0@build@tmp",
-      "TreePath": "_local_0",
+      "TreePath": "./URI/MailTo/build/tmp",
       "Kind": "var",
       "Name": "tmp",
       "Callable": false,
@@ -11250,6 +11687,7 @@
     },
     {
       "Path": "URI/Parser",
+      "TreePath": "./URI/Parser",
       "Kind": "const",
       "Name": "Parser",
       "Callable": false,
@@ -11268,6 +11706,7 @@
     },
     {
       "Path": "URI/REGEXP",
+      "TreePath": "./URI/REGEXP",
       "Kind": "const",
       "Name": "REGEXP",
       "Callable": false,
@@ -11286,6 +11725,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser",
+      "TreePath": "./URI/RFC2396_Parser",
       "Kind": "type",
       "Name": "RFC2396_Parser",
       "Callable": false,
@@ -11304,6 +11744,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser/$methods/convert_to_uri",
+      "TreePath": "./URI/RFC2396_Parser/convert_to_uri",
       "Kind": "func",
       "Name": "convert_to_uri",
       "Callable": false,
@@ -11322,6 +11763,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser/$methods/escape",
+      "TreePath": "./URI/RFC2396_Parser/escape",
       "Kind": "func",
       "Name": "escape",
       "Callable": false,
@@ -11340,6 +11782,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser/$methods/extract",
+      "TreePath": "./URI/RFC2396_Parser/extract",
       "Kind": "func",
       "Name": "extract",
       "Callable": false,
@@ -11358,6 +11801,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser/$methods/initialize",
+      "TreePath": "./URI/RFC2396_Parser/initialize",
       "Kind": "func",
       "Name": "initialize",
       "Callable": false,
@@ -11376,6 +11820,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser/$methods/initialize_pattern",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern",
       "Kind": "func",
       "Name": "initialize_pattern",
       "Callable": false,
@@ -11394,6 +11839,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser/$methods/initialize_regexp",
+      "TreePath": "./URI/RFC2396_Parser/initialize_regexp",
       "Kind": "func",
       "Name": "initialize_regexp",
       "Callable": false,
@@ -11412,6 +11858,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser/$methods/inspect",
+      "TreePath": "./URI/RFC2396_Parser/inspect",
       "Kind": "func",
       "Name": "inspect",
       "Callable": false,
@@ -11430,6 +11877,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser/$methods/join",
+      "TreePath": "./URI/RFC2396_Parser/join",
       "Kind": "func",
       "Name": "join",
       "Callable": false,
@@ -11448,6 +11896,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser/$methods/make_regexp",
+      "TreePath": "./URI/RFC2396_Parser/make_regexp",
       "Kind": "func",
       "Name": "make_regexp",
       "Callable": false,
@@ -11466,6 +11915,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser/$methods/parse",
+      "TreePath": "./URI/RFC2396_Parser/parse",
       "Kind": "func",
       "Name": "parse",
       "Callable": false,
@@ -11484,6 +11934,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser/$methods/pattern",
+      "TreePath": "./URI/RFC2396_Parser/pattern",
       "Kind": "func",
       "Name": "pattern",
       "Callable": false,
@@ -11502,6 +11953,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser/$methods/regexp",
+      "TreePath": "./URI/RFC2396_Parser/regexp",
       "Kind": "func",
       "Name": "regexp",
       "Callable": false,
@@ -11520,6 +11972,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser/$methods/split",
+      "TreePath": "./URI/RFC2396_Parser/split",
       "Kind": "func",
       "Name": "split",
       "Callable": false,
@@ -11538,6 +11991,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser/$methods/unescape",
+      "TreePath": "./URI/RFC2396_Parser/unescape",
       "Kind": "func",
       "Name": "unescape",
       "Callable": false,
@@ -11556,6 +12010,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser/@@to_s",
+      "TreePath": "./URI/RFC2396_Parser/@@to_s",
       "Kind": "var",
       "Name": "@@to_s",
       "Callable": false,
@@ -11574,6 +12029,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser/@pattern",
+      "TreePath": "./URI/RFC2396_Parser/@pattern",
       "Kind": "var",
       "Name": "@pattern",
       "Callable": false,
@@ -11592,6 +12048,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser/@regexp",
+      "TreePath": "./URI/RFC2396_Parser/@regexp",
       "Kind": "var",
       "Name": "@regexp",
       "Callable": false,
@@ -11610,7 +12067,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/convert_to_uri@uri",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/convert_to_uri/uri",
       "Kind": "var",
       "Name": "uri",
       "Callable": false,
@@ -11629,7 +12086,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/escape@@block_local_0@@block_local_1@uc",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/escape/@block_local_0/@block_local_1/uc",
       "Kind": "var",
       "Name": "uc",
       "Callable": false,
@@ -11648,7 +12105,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/escape@@block_local_0@tmp",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/escape/@block_local_0/tmp",
       "Kind": "var",
       "Name": "tmp",
       "Callable": false,
@@ -11667,7 +12124,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/escape@@block_local_0@us",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/escape/@block_local_0/us",
       "Kind": "var",
       "Name": "us",
       "Callable": false,
@@ -11686,7 +12143,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/escape@str",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/escape/str",
       "Kind": "var",
       "Name": "str",
       "Callable": false,
@@ -11705,7 +12162,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/escape@unsafe",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/escape/unsafe",
       "Kind": "var",
       "Name": "unsafe",
       "Callable": false,
@@ -11724,7 +12181,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/extract@result",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/extract/result",
       "Kind": "var",
       "Name": "result",
       "Callable": false,
@@ -11743,7 +12200,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/extract@schemes",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/extract/schemes",
       "Kind": "var",
       "Name": "schemes",
       "Callable": false,
@@ -11762,7 +12219,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/extract@str",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/extract/str",
       "Kind": "var",
       "Name": "str",
       "Callable": false,
@@ -11781,7 +12238,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize@@block_local_0@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize/@block_local_0/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -11800,7 +12257,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize@@block_local_1@v",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize/@block_local_1/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -11819,7 +12276,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize@opts",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize/opts",
       "Kind": "var",
       "Name": "opts",
       "Callable": false,
@@ -11838,7 +12295,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@abs_path",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/abs_path",
       "Kind": "var",
       "Name": "abs_path",
       "Callable": false,
@@ -11857,7 +12314,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@abs_uri",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/abs_uri",
       "Kind": "var",
       "Name": "abs_uri",
       "Callable": false,
@@ -11876,7 +12333,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@authority",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/authority",
       "Kind": "var",
       "Name": "authority",
       "Callable": false,
@@ -11895,7 +12352,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@escaped",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/escaped",
       "Kind": "var",
       "Name": "escaped",
       "Callable": false,
@@ -11914,7 +12371,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@fragment",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/fragment",
       "Kind": "var",
       "Name": "fragment",
       "Callable": false,
@@ -11933,7 +12390,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@hex4",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/hex4",
       "Kind": "var",
       "Name": "hex4",
       "Callable": false,
@@ -11952,7 +12409,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@hexseq1",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/hexseq1",
       "Kind": "var",
       "Name": "hexseq1",
       "Callable": false,
@@ -11971,7 +12428,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@hexseq2",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/hexseq2",
       "Kind": "var",
       "Name": "hexseq2",
       "Callable": false,
@@ -11990,7 +12447,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@hier_part",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/hier_part",
       "Kind": "var",
       "Name": "hier_part",
       "Callable": false,
@@ -12009,7 +12466,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@host",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/host",
       "Kind": "var",
       "Name": "host",
       "Callable": false,
@@ -12028,7 +12485,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@hostname",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/hostname",
       "Kind": "var",
       "Name": "hostname",
       "Callable": false,
@@ -12047,7 +12504,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@hostport",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/hostport",
       "Kind": "var",
       "Name": "hostport",
       "Callable": false,
@@ -12066,7 +12523,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@ipv4addr",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/ipv4addr",
       "Kind": "var",
       "Name": "ipv4addr",
       "Callable": false,
@@ -12085,7 +12542,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@ipv6addr",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/ipv6addr",
       "Kind": "var",
       "Name": "ipv6addr",
       "Callable": false,
@@ -12104,7 +12561,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@ipv6ref",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/ipv6ref",
       "Kind": "var",
       "Name": "ipv6ref",
       "Callable": false,
@@ -12123,7 +12580,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@lastpart",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/lastpart",
       "Kind": "var",
       "Name": "lastpart",
       "Callable": false,
@@ -12142,7 +12599,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@net_path",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/net_path",
       "Kind": "var",
       "Name": "net_path",
       "Callable": false,
@@ -12161,7 +12618,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@opaque_part",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/opaque_part",
       "Kind": "var",
       "Name": "opaque_part",
       "Callable": false,
@@ -12180,7 +12637,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@opts",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/opts",
       "Kind": "var",
       "Name": "opts",
       "Callable": false,
@@ -12199,7 +12656,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@param",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/param",
       "Kind": "var",
       "Name": "param",
       "Callable": false,
@@ -12218,7 +12675,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@path_segments",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/path_segments",
       "Kind": "var",
       "Name": "path_segments",
       "Callable": false,
@@ -12237,7 +12694,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@pchar",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/pchar",
       "Kind": "var",
       "Name": "pchar",
       "Callable": false,
@@ -12256,7 +12713,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@port",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/port",
       "Kind": "var",
       "Name": "port",
       "Callable": false,
@@ -12275,7 +12732,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@query",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/query",
       "Kind": "var",
       "Name": "query",
       "Callable": false,
@@ -12294,7 +12751,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@reg_name",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/reg_name",
       "Kind": "var",
       "Name": "reg_name",
       "Callable": false,
@@ -12313,7 +12770,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@rel_path",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/rel_path",
       "Kind": "var",
       "Name": "rel_path",
       "Callable": false,
@@ -12332,7 +12789,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@rel_segment",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/rel_segment",
       "Kind": "var",
       "Name": "rel_segment",
       "Callable": false,
@@ -12351,7 +12808,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@rel_uri",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/rel_uri",
       "Kind": "var",
       "Name": "rel_uri",
       "Callable": false,
@@ -12370,7 +12827,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@reserved",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/reserved",
       "Kind": "var",
       "Name": "reserved",
       "Callable": false,
@@ -12389,7 +12846,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@ret",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/ret",
       "Kind": "var",
       "Name": "ret",
       "Callable": false,
@@ -12408,7 +12865,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@scheme",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/scheme",
       "Kind": "var",
       "Name": "scheme",
       "Callable": false,
@@ -12427,7 +12884,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@segment",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/segment",
       "Kind": "var",
       "Name": "segment",
       "Callable": false,
@@ -12446,7 +12903,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@server",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/server",
       "Kind": "var",
       "Name": "server",
       "Callable": false,
@@ -12465,7 +12922,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@unreserved",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/unreserved",
       "Kind": "var",
       "Name": "unreserved",
       "Callable": false,
@@ -12484,7 +12941,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@uric",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/uric",
       "Kind": "var",
       "Name": "uric",
       "Callable": false,
@@ -12503,7 +12960,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@uric_no_slash",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/uric_no_slash",
       "Kind": "var",
       "Name": "uric_no_slash",
       "Callable": false,
@@ -12522,7 +12979,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_pattern@userinfo",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_pattern/userinfo",
       "Kind": "var",
       "Name": "userinfo",
       "Callable": false,
@@ -12541,7 +12998,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_regexp@pattern",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_regexp/pattern",
       "Kind": "var",
       "Name": "pattern",
       "Callable": false,
@@ -12560,7 +13017,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/initialize_regexp@ret",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/initialize_regexp/ret",
       "Kind": "var",
       "Name": "ret",
       "Callable": false,
@@ -12579,7 +13036,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/join@uris",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/join/uris",
       "Kind": "var",
       "Name": "uris",
       "Callable": false,
@@ -12598,7 +13055,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/make_regexp@schemes",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/make_regexp/schemes",
       "Kind": "var",
       "Name": "schemes",
       "Callable": false,
@@ -12617,7 +13074,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/parse@uri",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/parse/uri",
       "Kind": "var",
       "Name": "uri",
       "Callable": false,
@@ -12636,7 +13093,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/split@opaque",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/split/opaque",
       "Kind": "var",
       "Name": "opaque",
       "Callable": false,
@@ -12655,7 +13112,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/split@path",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/split/path",
       "Kind": "var",
       "Name": "path",
       "Callable": false,
@@ -12674,7 +13131,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/split@ret",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/split/ret",
       "Kind": "var",
       "Name": "ret",
       "Callable": false,
@@ -12693,7 +13150,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/split@scheme",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/split/scheme",
       "Kind": "var",
       "Name": "scheme",
       "Callable": false,
@@ -12712,7 +13169,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/split@uri",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/split/uri",
       "Kind": "var",
       "Name": "uri",
       "Callable": false,
@@ -12731,7 +13188,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/unescape@escaped",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/unescape/escaped",
       "Kind": "var",
       "Name": "escaped",
       "Callable": false,
@@ -12750,7 +13207,7 @@
     },
     {
       "Path": "URI/RFC2396_Parser@_local_0@/$methods/unescape@str",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC2396_Parser/unescape/str",
       "Kind": "var",
       "Name": "str",
       "Callable": false,
@@ -12769,6 +13226,7 @@
     },
     {
       "Path": "URI/RFC2396_REGEXP",
+      "TreePath": "./URI/RFC2396_REGEXP",
       "Kind": "module",
       "Name": "RFC2396_REGEXP",
       "Callable": false,
@@ -12787,6 +13245,7 @@
     },
     {
       "Path": "URI/RFC2396_REGEXP/PATTERN",
+      "TreePath": "./URI/RFC2396_REGEXP/PATTERN",
       "Kind": "module",
       "Name": "PATTERN",
       "Callable": false,
@@ -12805,6 +13264,7 @@
     },
     {
       "Path": "URI/RFC2396_REGEXP/PATTERN/ALNUM",
+      "TreePath": "./URI/RFC2396_REGEXP/PATTERN/ALNUM",
       "Kind": "const",
       "Name": "ALNUM",
       "Callable": false,
@@ -12823,6 +13283,7 @@
     },
     {
       "Path": "URI/RFC2396_REGEXP/PATTERN/ALPHA",
+      "TreePath": "./URI/RFC2396_REGEXP/PATTERN/ALPHA",
       "Kind": "const",
       "Name": "ALPHA",
       "Callable": false,
@@ -12841,6 +13302,7 @@
     },
     {
       "Path": "URI/RFC2396_REGEXP/PATTERN/DOMLABEL",
+      "TreePath": "./URI/RFC2396_REGEXP/PATTERN/DOMLABEL",
       "Kind": "const",
       "Name": "DOMLABEL",
       "Callable": false,
@@ -12859,6 +13321,7 @@
     },
     {
       "Path": "URI/RFC2396_REGEXP/PATTERN/ESCAPED",
+      "TreePath": "./URI/RFC2396_REGEXP/PATTERN/ESCAPED",
       "Kind": "const",
       "Name": "ESCAPED",
       "Callable": false,
@@ -12877,6 +13340,7 @@
     },
     {
       "Path": "URI/RFC2396_REGEXP/PATTERN/HEX",
+      "TreePath": "./URI/RFC2396_REGEXP/PATTERN/HEX",
       "Kind": "const",
       "Name": "HEX",
       "Callable": false,
@@ -12895,6 +13359,7 @@
     },
     {
       "Path": "URI/RFC2396_REGEXP/PATTERN/HOSTNAME",
+      "TreePath": "./URI/RFC2396_REGEXP/PATTERN/HOSTNAME",
       "Kind": "const",
       "Name": "HOSTNAME",
       "Callable": false,
@@ -12913,6 +13378,7 @@
     },
     {
       "Path": "URI/RFC2396_REGEXP/PATTERN/RESERVED",
+      "TreePath": "./URI/RFC2396_REGEXP/PATTERN/RESERVED",
       "Kind": "const",
       "Name": "RESERVED",
       "Callable": false,
@@ -12931,6 +13397,7 @@
     },
     {
       "Path": "URI/RFC2396_REGEXP/PATTERN/TOPLABEL",
+      "TreePath": "./URI/RFC2396_REGEXP/PATTERN/TOPLABEL",
       "Kind": "const",
       "Name": "TOPLABEL",
       "Callable": false,
@@ -12949,6 +13416,7 @@
     },
     {
       "Path": "URI/RFC2396_REGEXP/PATTERN/UNRESERVED",
+      "TreePath": "./URI/RFC2396_REGEXP/PATTERN/UNRESERVED",
       "Kind": "const",
       "Name": "UNRESERVED",
       "Callable": false,
@@ -12967,6 +13435,7 @@
     },
     {
       "Path": "URI/RFC3986_PARSER",
+      "TreePath": "./URI/RFC3986_PARSER",
       "Kind": "const",
       "Name": "RFC3986_PARSER",
       "Callable": false,
@@ -12985,6 +13454,7 @@
     },
     {
       "Path": "URI/RFC3986_Parser",
+      "TreePath": "./URI/RFC3986_Parser",
       "Kind": "type",
       "Name": "RFC3986_Parser",
       "Callable": false,
@@ -13003,6 +13473,7 @@
     },
     {
       "Path": "URI/RFC3986_Parser/$methods/convert_to_uri",
+      "TreePath": "./URI/RFC3986_Parser/convert_to_uri",
       "Kind": "func",
       "Name": "convert_to_uri",
       "Callable": false,
@@ -13021,6 +13492,7 @@
     },
     {
       "Path": "URI/RFC3986_Parser/$methods/inspect",
+      "TreePath": "./URI/RFC3986_Parser/inspect",
       "Kind": "func",
       "Name": "inspect",
       "Callable": false,
@@ -13039,6 +13511,7 @@
     },
     {
       "Path": "URI/RFC3986_Parser/$methods/join",
+      "TreePath": "./URI/RFC3986_Parser/join",
       "Kind": "func",
       "Name": "join",
       "Callable": false,
@@ -13057,6 +13530,7 @@
     },
     {
       "Path": "URI/RFC3986_Parser/$methods/parse",
+      "TreePath": "./URI/RFC3986_Parser/parse",
       "Kind": "func",
       "Name": "parse",
       "Callable": false,
@@ -13075,6 +13549,7 @@
     },
     {
       "Path": "URI/RFC3986_Parser/$methods/regexp",
+      "TreePath": "./URI/RFC3986_Parser/regexp",
       "Kind": "func",
       "Name": "regexp",
       "Callable": false,
@@ -13093,6 +13568,7 @@
     },
     {
       "Path": "URI/RFC3986_Parser/$methods/split",
+      "TreePath": "./URI/RFC3986_Parser/split",
       "Kind": "func",
       "Name": "split",
       "Callable": false,
@@ -13111,6 +13587,7 @@
     },
     {
       "Path": "URI/RFC3986_Parser/@@to_s",
+      "TreePath": "./URI/RFC3986_Parser/@@to_s",
       "Kind": "var",
       "Name": "@@to_s",
       "Callable": false,
@@ -13129,6 +13606,7 @@
     },
     {
       "Path": "URI/RFC3986_Parser/RFC3986_URI",
+      "TreePath": "./URI/RFC3986_Parser/RFC3986_URI",
       "Kind": "const",
       "Name": "RFC3986_URI",
       "Callable": false,
@@ -13147,6 +13625,7 @@
     },
     {
       "Path": "URI/RFC3986_Parser/RFC3986_relative_ref",
+      "TreePath": "./URI/RFC3986_Parser/RFC3986_relative_ref",
       "Kind": "const",
       "Name": "RFC3986_relative_ref",
       "Callable": false,
@@ -13165,7 +13644,7 @@
     },
     {
       "Path": "URI/RFC3986_Parser@_local_0@/$methods/convert_to_uri@uri",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC3986_Parser/convert_to_uri/uri",
       "Kind": "var",
       "Name": "uri",
       "Callable": false,
@@ -13184,7 +13663,7 @@
     },
     {
       "Path": "URI/RFC3986_Parser@_local_0@/$methods/join@uris",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC3986_Parser/join/uris",
       "Kind": "var",
       "Name": "uris",
       "Callable": false,
@@ -13203,7 +13682,7 @@
     },
     {
       "Path": "URI/RFC3986_Parser@_local_0@/$methods/parse@uri",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC3986_Parser/parse/uri",
       "Kind": "var",
       "Name": "uri",
       "Callable": false,
@@ -13222,7 +13701,7 @@
     },
     {
       "Path": "URI/RFC3986_Parser@_local_0@/$methods/split@ary",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC3986_Parser/split/ary",
       "Kind": "var",
       "Name": "ary",
       "Callable": false,
@@ -13241,7 +13720,7 @@
     },
     {
       "Path": "URI/RFC3986_Parser@_local_0@/$methods/split@m",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC3986_Parser/split/m",
       "Kind": "var",
       "Name": "m",
       "Callable": false,
@@ -13260,7 +13739,7 @@
     },
     {
       "Path": "URI/RFC3986_Parser@_local_0@/$methods/split@uri",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/RFC3986_Parser/split/uri",
       "Kind": "var",
       "Name": "uri",
       "Callable": false,
@@ -13279,6 +13758,7 @@
     },
     {
       "Path": "URI/TBLDECWWWCOMP_",
+      "TreePath": "./URI/TBLDECWWWCOMP_",
       "Kind": "const",
       "Name": "TBLDECWWWCOMP_",
       "Callable": false,
@@ -13297,6 +13777,7 @@
     },
     {
       "Path": "URI/TBLENCWWWCOMP_",
+      "TreePath": "./URI/TBLENCWWWCOMP_",
       "Kind": "const",
       "Name": "TBLENCWWWCOMP_",
       "Callable": false,
@@ -13315,6 +13796,7 @@
     },
     {
       "Path": "URI/Util",
+      "TreePath": "./URI/Util",
       "Kind": "module",
       "Name": "Util",
       "Callable": false,
@@ -13333,6 +13815,7 @@
     },
     {
       "Path": "URI/Util/$classmethods/make_components_hash",
+      "TreePath": "./URI/Util/make_components_hash",
       "Kind": "func",
       "Name": "make_components_hash",
       "Callable": false,
@@ -13351,6 +13834,7 @@
     },
     {
       "Path": "URI/Util/$methods/make_components_hash",
+      "TreePath": "./URI/Util/make_components_hash",
       "Kind": "func",
       "Name": "make_components_hash",
       "Callable": false,
@@ -13369,7 +13853,7 @@
     },
     {
       "Path": "URI/Util@_local_0@/$methods/make_components_hash@@block_local_0@i",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Util/make_components_hash/@block_local_0/i",
       "Kind": "var",
       "Name": "i",
       "Callable": false,
@@ -13388,7 +13872,7 @@
     },
     {
       "Path": "URI/Util@_local_0@/$methods/make_components_hash@@block_local_1@key",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Util/make_components_hash/@block_local_1/key",
       "Kind": "var",
       "Name": "key",
       "Callable": false,
@@ -13407,7 +13891,7 @@
     },
     {
       "Path": "URI/Util@_local_0@/$methods/make_components_hash@@block_local_1@value",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Util/make_components_hash/@block_local_1/value",
       "Kind": "var",
       "Name": "value",
       "Callable": false,
@@ -13426,7 +13910,7 @@
     },
     {
       "Path": "URI/Util@_local_0@/$methods/make_components_hash@array_hash",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Util/make_components_hash/array_hash",
       "Kind": "var",
       "Name": "array_hash",
       "Callable": false,
@@ -13445,7 +13929,7 @@
     },
     {
       "Path": "URI/Util@_local_0@/$methods/make_components_hash@klass",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Util/make_components_hash/klass",
       "Kind": "var",
       "Name": "klass",
       "Callable": false,
@@ -13464,7 +13948,7 @@
     },
     {
       "Path": "URI/Util@_local_0@/$methods/make_components_hash@tmp",
-      "TreePath": "_local_0/",
+      "TreePath": "./URI/Util/make_components_hash/tmp",
       "Kind": "var",
       "Name": "tmp",
       "Callable": false,
@@ -13483,6 +13967,7 @@
     },
     {
       "Path": "URI/VERSION",
+      "TreePath": "./URI/VERSION",
       "Kind": "const",
       "Name": "VERSION",
       "Callable": false,
@@ -13501,6 +13986,7 @@
     },
     {
       "Path": "URI/VERSION_CODE",
+      "TreePath": "./URI/VERSION_CODE",
       "Kind": "const",
       "Name": "VERSION_CODE",
       "Callable": false,
@@ -13519,6 +14005,7 @@
     },
     {
       "Path": "URI/WEB_ENCODINGS_",
+      "TreePath": "./URI/WEB_ENCODINGS_",
       "Kind": "const",
       "Name": "WEB_ENCODINGS_",
       "Callable": false,
@@ -13537,7 +14024,7 @@
     },
     {
       "Path": "URI@_local_10@@block_local_4@n",
-      "TreePath": "_local_10",
+      "TreePath": "./URI/@block_local_4/n",
       "Kind": "var",
       "Name": "n",
       "Callable": false,
@@ -13556,7 +14043,7 @@
     },
     {
       "Path": "URI@_local_9@@block_local_0@str",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/@block_local_0/str",
       "Kind": "var",
       "Name": "str",
       "Callable": false,
@@ -13575,7 +14062,7 @@
     },
     {
       "Path": "URI@_local_9@@block_local_0@sym",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/@block_local_0/sym",
       "Kind": "var",
       "Name": "sym",
       "Callable": false,
@@ -13594,7 +14081,7 @@
     },
     {
       "Path": "URI@_local_9@@block_local_1@str",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/@block_local_1/str",
       "Kind": "var",
       "Name": "str",
       "Callable": false,
@@ -13613,7 +14100,7 @@
     },
     {
       "Path": "URI@_local_9@@block_local_1@sym",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/@block_local_1/sym",
       "Kind": "var",
       "Name": "sym",
       "Callable": false,
@@ -13632,7 +14119,7 @@
     },
     {
       "Path": "URI@_local_9@@block_local_2@i",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/@block_local_2/i",
       "Kind": "var",
       "Name": "i",
       "Callable": false,
@@ -13651,7 +14138,7 @@
     },
     {
       "Path": "URI@_local_9@@block_local_3@i",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/@block_local_3/i",
       "Kind": "var",
       "Name": "i",
       "Callable": false,
@@ -13670,7 +14157,7 @@
     },
     {
       "Path": "URI@_local_9@decode_www_form@@block_local_0@e",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/decode_www_form/@block_local_0/e",
       "Kind": "var",
       "Name": "e",
       "Callable": false,
@@ -13689,7 +14176,7 @@
     },
     {
       "Path": "URI@_local_9@decode_www_form@@block_local_0@enc",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/decode_www_form/@block_local_0/enc",
       "Kind": "var",
       "Name": "enc",
       "Callable": false,
@@ -13708,7 +14195,7 @@
     },
     {
       "Path": "URI@_local_9@decode_www_form@@block_local_0@isindex",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/decode_www_form/@block_local_0/isindex",
       "Kind": "var",
       "Name": "isindex",
       "Callable": false,
@@ -13727,7 +14214,7 @@
     },
     {
       "Path": "URI@_local_9@decode_www_form@@block_local_0@key",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/decode_www_form/@block_local_0/key",
       "Kind": "var",
       "Name": "key",
       "Callable": false,
@@ -13746,7 +14233,7 @@
     },
     {
       "Path": "URI@_local_9@decode_www_form@@block_local_0@string",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/decode_www_form/@block_local_0/string",
       "Kind": "var",
       "Name": "string",
       "Callable": false,
@@ -13765,7 +14252,7 @@
     },
     {
       "Path": "URI@_local_9@decode_www_form@@block_local_0@use__charset_",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/decode_www_form/@block_local_0/use__charset_",
       "Kind": "var",
       "Name": "use__charset_",
       "Callable": false,
@@ -13784,7 +14271,7 @@
     },
     {
       "Path": "URI@_local_9@decode_www_form@@block_local_0@val",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/decode_www_form/@block_local_0/val",
       "Kind": "var",
       "Name": "val",
       "Callable": false,
@@ -13803,7 +14290,7 @@
     },
     {
       "Path": "URI@_local_9@decode_www_form@@block_local_1@k",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/decode_www_form/@block_local_1/k",
       "Kind": "var",
       "Name": "k",
       "Callable": false,
@@ -13822,7 +14309,7 @@
     },
     {
       "Path": "URI@_local_9@decode_www_form@@block_local_1@v",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/decode_www_form/@block_local_1/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -13841,7 +14328,7 @@
     },
     {
       "Path": "URI@_local_9@decode_www_form@ary",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/decode_www_form/ary",
       "Kind": "var",
       "Name": "ary",
       "Callable": false,
@@ -13860,7 +14347,7 @@
     },
     {
       "Path": "URI@_local_9@decode_www_form@enc",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/decode_www_form/enc",
       "Kind": "var",
       "Name": "enc",
       "Callable": false,
@@ -13879,7 +14366,7 @@
     },
     {
       "Path": "URI@_local_9@decode_www_form@isindex:",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/decode_www_form/isindex:",
       "Kind": "var",
       "Name": "isindex:",
       "Callable": false,
@@ -13898,7 +14385,7 @@
     },
     {
       "Path": "URI@_local_9@decode_www_form@separator:",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/decode_www_form/separator:",
       "Kind": "var",
       "Name": "separator:",
       "Callable": false,
@@ -13917,7 +14404,7 @@
     },
     {
       "Path": "URI@_local_9@decode_www_form@str",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/decode_www_form/str",
       "Kind": "var",
       "Name": "str",
       "Callable": false,
@@ -13936,7 +14423,7 @@
     },
     {
       "Path": "URI@_local_9@decode_www_form@use__charset_:",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/decode_www_form/use__charset_:",
       "Kind": "var",
       "Name": "use__charset_:",
       "Callable": false,
@@ -13955,7 +14442,7 @@
     },
     {
       "Path": "URI@_local_9@decode_www_form_component@enc",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/decode_www_form_component/enc",
       "Kind": "var",
       "Name": "enc",
       "Callable": false,
@@ -13974,7 +14461,7 @@
     },
     {
       "Path": "URI@_local_9@decode_www_form_component@str",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/decode_www_form_component/str",
       "Kind": "var",
       "Name": "str",
       "Callable": false,
@@ -13993,7 +14480,7 @@
     },
     {
       "Path": "URI@_local_9@encode_www_form@@block_local_0@@block_local_1@str",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/encode_www_form/@block_local_0/@block_local_1/str",
       "Kind": "var",
       "Name": "str",
       "Callable": false,
@@ -14012,7 +14499,7 @@
     },
     {
       "Path": "URI@_local_9@encode_www_form@@block_local_0@@block_local_1@w",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/encode_www_form/@block_local_0/@block_local_1/w",
       "Kind": "var",
       "Name": "w",
       "Callable": false,
@@ -14031,7 +14518,7 @@
     },
     {
       "Path": "URI@_local_9@encode_www_form@@block_local_0@k",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/encode_www_form/@block_local_0/k",
       "Kind": "var",
       "Name": "k",
       "Callable": false,
@@ -14050,7 +14537,7 @@
     },
     {
       "Path": "URI@_local_9@encode_www_form@@block_local_0@str",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/encode_www_form/@block_local_0/str",
       "Kind": "var",
       "Name": "str",
       "Callable": false,
@@ -14069,7 +14556,7 @@
     },
     {
       "Path": "URI@_local_9@encode_www_form@@block_local_0@v",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/encode_www_form/@block_local_0/v",
       "Kind": "var",
       "Name": "v",
       "Callable": false,
@@ -14088,7 +14575,7 @@
     },
     {
       "Path": "URI@_local_9@encode_www_form@enc",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/encode_www_form/enc",
       "Kind": "var",
       "Name": "enc",
       "Callable": false,
@@ -14107,7 +14594,7 @@
     },
     {
       "Path": "URI@_local_9@encode_www_form@enum",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/encode_www_form/enum",
       "Kind": "var",
       "Name": "enum",
       "Callable": false,
@@ -14126,7 +14613,7 @@
     },
     {
       "Path": "URI@_local_9@encode_www_form_component@enc",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/encode_www_form_component/enc",
       "Kind": "var",
       "Name": "enc",
       "Callable": false,
@@ -14145,7 +14632,7 @@
     },
     {
       "Path": "URI@_local_9@encode_www_form_component@str",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/encode_www_form_component/str",
       "Kind": "var",
       "Name": "str",
       "Callable": false,
@@ -14164,7 +14651,7 @@
     },
     {
       "Path": "URI@_local_9@extract@block",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/extract/block",
       "Kind": "var",
       "Name": "block",
       "Callable": false,
@@ -14183,7 +14670,7 @@
     },
     {
       "Path": "URI@_local_9@extract@schemes",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/extract/schemes",
       "Kind": "var",
       "Name": "schemes",
       "Callable": false,
@@ -14202,7 +14689,7 @@
     },
     {
       "Path": "URI@_local_9@extract@str",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/extract/str",
       "Kind": "var",
       "Name": "str",
       "Callable": false,
@@ -14221,7 +14708,7 @@
     },
     {
       "Path": "URI@_local_9@get_encoding@label",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/get_encoding/label",
       "Kind": "var",
       "Name": "label",
       "Callable": false,
@@ -14240,7 +14727,7 @@
     },
     {
       "Path": "URI@_local_9@join@str",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/join/str",
       "Kind": "var",
       "Name": "str",
       "Callable": false,
@@ -14259,7 +14746,7 @@
     },
     {
       "Path": "URI@_local_9@parse@uri",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/parse/uri",
       "Kind": "var",
       "Name": "uri",
       "Callable": false,
@@ -14278,7 +14765,7 @@
     },
     {
       "Path": "URI@_local_9@regexp@schemes",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/regexp/schemes",
       "Kind": "var",
       "Name": "schemes",
       "Callable": false,
@@ -14297,7 +14784,7 @@
     },
     {
       "Path": "URI@_local_9@split@uri",
-      "TreePath": "_local_9",
+      "TreePath": "./URI/split/uri",
       "Kind": "var",
       "Name": "uri",
       "Callable": false,
