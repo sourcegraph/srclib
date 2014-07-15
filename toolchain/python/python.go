@@ -14,6 +14,17 @@ const (
 	stdLibRepo = repo.URI("hg.python.org/cpython")
 )
 
+const (
+	extensionsTestRepo = repo.URI("github.com/sgtest/python-extensions-test")
+)
+
+var extensionsTestUnit = &DistPackage{
+	ProjectName: "PythonExtensionsTest",
+	ProjectDescription: "Test C extension graphing.",
+	RootDirectory: "Lib",
+	Files: nil,
+}
+
 // Taken from hg.python.org/cpython's setup.py
 var stdLibUnit = &DistPackage{
 	ProjectName: "Python",
