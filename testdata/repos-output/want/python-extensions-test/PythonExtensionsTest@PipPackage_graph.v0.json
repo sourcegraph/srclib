@@ -1,0 +1,2809 @@
+{
+  "Symbols": [
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath",
+      "TreePath": "cmath",
+      "Kind": "module",
+      "Name": "cmath",
+      "Callable": false,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 30922,
+      "DefEnd": 31088,
+      "Exported": true,
+      "Data": {
+        "Kind": "module",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/acos",
+      "TreePath": "cmath/acos",
+      "Kind": "func",
+      "Name": "acos",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 29616,
+      "DefEnd": 29665,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/acosh",
+      "TreePath": "cmath/acosh",
+      "Kind": "func",
+      "Name": "acosh",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 29671,
+      "DefEnd": 29721,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/asin",
+      "TreePath": "cmath/asin",
+      "Kind": "func",
+      "Name": "asin",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 29727,
+      "DefEnd": 29776,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/asinh",
+      "TreePath": "cmath/asinh",
+      "Kind": "func",
+      "Name": "asinh",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 29782,
+      "DefEnd": 29832,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/atan",
+      "TreePath": "cmath/atan",
+      "Kind": "func",
+      "Name": "atan",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 29838,
+      "DefEnd": 29887,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/atanh",
+      "TreePath": "cmath/atanh",
+      "Kind": "func",
+      "Name": "atanh",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 29893,
+      "DefEnd": 29943,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/cos",
+      "TreePath": "cmath/cos",
+      "Kind": "func",
+      "Name": "cos",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 29949,
+      "DefEnd": 29997,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/cosh",
+      "TreePath": "cmath/cosh",
+      "Kind": "func",
+      "Name": "cosh",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 30003,
+      "DefEnd": 30052,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/e",
+      "TreePath": "cmath/e",
+      "Kind": "var",
+      "Name": "e",
+      "Callable": false,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 31316,
+      "DefEnd": 31374,
+      "Exported": true,
+      "Data": {
+        "Kind": "scope",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/exp",
+      "TreePath": "cmath/exp",
+      "Kind": "func",
+      "Name": "exp",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 30058,
+      "DefEnd": 30106,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/isfinite",
+      "TreePath": "cmath/isfinite",
+      "Kind": "func",
+      "Name": "isfinite",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 30112,
+      "DefEnd": 30174,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/isinf",
+      "TreePath": "cmath/isinf",
+      "Kind": "func",
+      "Name": "isinf",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 30180,
+      "DefEnd": 30234,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/isnan",
+      "TreePath": "cmath/isnan",
+      "Kind": "func",
+      "Name": "isnan",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 30240,
+      "DefEnd": 30294,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/log",
+      "TreePath": "cmath/log",
+      "Kind": "func",
+      "Name": "log",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 30300,
+      "DefEnd": 30352,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/log10",
+      "TreePath": "cmath/log10",
+      "Kind": "func",
+      "Name": "log10",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 30358,
+      "DefEnd": 30408,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/phase",
+      "TreePath": "cmath/phase",
+      "Kind": "func",
+      "Name": "phase",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 30414,
+      "DefEnd": 30468,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/pi",
+      "TreePath": "cmath/pi",
+      "Kind": "var",
+      "Name": "pi",
+      "Callable": false,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 0,
+      "DefEnd": 0,
+      "Exported": true,
+      "Data": {
+        "Kind": "scope",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/polar",
+      "TreePath": "cmath/polar",
+      "Kind": "func",
+      "Name": "polar",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 30474,
+      "DefEnd": 30528,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/rect",
+      "TreePath": "cmath/rect",
+      "Kind": "func",
+      "Name": "rect",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 30534,
+      "DefEnd": 30587,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/sin",
+      "TreePath": "cmath/sin",
+      "Kind": "func",
+      "Name": "sin",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 30593,
+      "DefEnd": 30641,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/sinh",
+      "TreePath": "cmath/sinh",
+      "Kind": "func",
+      "Name": "sinh",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 30647,
+      "DefEnd": 30696,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/sqrt",
+      "TreePath": "cmath/sqrt",
+      "Kind": "func",
+      "Name": "sqrt",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 30702,
+      "DefEnd": 30751,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/tan",
+      "TreePath": "cmath/tan",
+      "Kind": "func",
+      "Name": "tan",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 30757,
+      "DefEnd": 30805,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/tanh",
+      "TreePath": "cmath/tanh",
+      "Kind": "func",
+      "Name": "tanh",
+      "Callable": true,
+      "File": "Modules/cmathmodule.c",
+      "DefStart": 30811,
+      "DefEnd": 30860,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math",
+      "TreePath": "math",
+      "Kind": "module",
+      "Name": "math",
+      "Callable": false,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 65146,
+      "DefEnd": 65309,
+      "Exported": true,
+      "Data": {
+        "Kind": "module",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/acos",
+      "TreePath": "math/acos",
+      "Kind": "func",
+      "Name": "acos",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 61892,
+      "DefEnd": 61958,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/acosh",
+      "TreePath": "math/acosh",
+      "Kind": "func",
+      "Name": "acosh",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 61964,
+      "DefEnd": 62031,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/asin",
+      "TreePath": "math/asin",
+      "Kind": "func",
+      "Name": "asin",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 62037,
+      "DefEnd": 62103,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/asinh",
+      "TreePath": "math/asinh",
+      "Kind": "func",
+      "Name": "asinh",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 62109,
+      "DefEnd": 62176,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/atan",
+      "TreePath": "math/atan",
+      "Kind": "func",
+      "Name": "atan",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 62182,
+      "DefEnd": 62248,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/atan2",
+      "TreePath": "math/atan2",
+      "Kind": "func",
+      "Name": "atan2",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 62254,
+      "DefEnd": 62321,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/atanh",
+      "TreePath": "math/atanh",
+      "Kind": "func",
+      "Name": "atanh",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 62327,
+      "DefEnd": 62394,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/ceil",
+      "TreePath": "math/ceil",
+      "Kind": "func",
+      "Name": "ceil",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 62400,
+      "DefEnd": 62466,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/copysign",
+      "TreePath": "math/copysign",
+      "Kind": "func",
+      "Name": "copysign",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 62472,
+      "DefEnd": 62542,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/cos",
+      "TreePath": "math/cos",
+      "Kind": "func",
+      "Name": "cos",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 62548,
+      "DefEnd": 62613,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/cosh",
+      "TreePath": "math/cosh",
+      "Kind": "func",
+      "Name": "cosh",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 62619,
+      "DefEnd": 62685,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/degrees",
+      "TreePath": "math/degrees",
+      "Kind": "func",
+      "Name": "degrees",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 62691,
+      "DefEnd": 62760,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/e",
+      "TreePath": "math/e",
+      "Kind": "var",
+      "Name": "e",
+      "Callable": false,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 65513,
+      "DefEnd": 65571,
+      "Exported": true,
+      "Data": {
+        "Kind": "scope",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/erf",
+      "TreePath": "math/erf",
+      "Kind": "func",
+      "Name": "erf",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 62766,
+      "DefEnd": 62831,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/erfc",
+      "TreePath": "math/erfc",
+      "Kind": "func",
+      "Name": "erfc",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 62837,
+      "DefEnd": 62903,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/exp",
+      "TreePath": "math/exp",
+      "Kind": "func",
+      "Name": "exp",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 62909,
+      "DefEnd": 62974,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/expm1",
+      "TreePath": "math/expm1",
+      "Kind": "func",
+      "Name": "expm1",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 62980,
+      "DefEnd": 63047,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/fabs",
+      "TreePath": "math/fabs",
+      "Kind": "func",
+      "Name": "fabs",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 63053,
+      "DefEnd": 63119,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/factorial",
+      "TreePath": "math/factorial",
+      "Kind": "func",
+      "Name": "factorial",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 63125,
+      "DefEnd": 63196,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/floor",
+      "TreePath": "math/floor",
+      "Kind": "func",
+      "Name": "floor",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 63202,
+      "DefEnd": 63269,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/fmod",
+      "TreePath": "math/fmod",
+      "Kind": "func",
+      "Name": "fmod",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 63275,
+      "DefEnd": 63341,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/frexp",
+      "TreePath": "math/frexp",
+      "Kind": "func",
+      "Name": "frexp",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 63347,
+      "DefEnd": 63414,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/fsum",
+      "TreePath": "math/fsum",
+      "Kind": "func",
+      "Name": "fsum",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 63420,
+      "DefEnd": 63486,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/gamma",
+      "TreePath": "math/gamma",
+      "Kind": "func",
+      "Name": "gamma",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 63492,
+      "DefEnd": 63559,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/hypot",
+      "TreePath": "math/hypot",
+      "Kind": "func",
+      "Name": "hypot",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 63565,
+      "DefEnd": 63632,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/isfinite",
+      "TreePath": "math/isfinite",
+      "Kind": "func",
+      "Name": "isfinite",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 63638,
+      "DefEnd": 63708,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/isinf",
+      "TreePath": "math/isinf",
+      "Kind": "func",
+      "Name": "isinf",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 63714,
+      "DefEnd": 63781,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/isnan",
+      "TreePath": "math/isnan",
+      "Kind": "func",
+      "Name": "isnan",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 63787,
+      "DefEnd": 63854,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/ldexp",
+      "TreePath": "math/ldexp",
+      "Kind": "func",
+      "Name": "ldexp",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 63860,
+      "DefEnd": 63927,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/lgamma",
+      "TreePath": "math/lgamma",
+      "Kind": "func",
+      "Name": "lgamma",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 63933,
+      "DefEnd": 64001,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/log",
+      "TreePath": "math/log",
+      "Kind": "func",
+      "Name": "log",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 64007,
+      "DefEnd": 64072,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/log10",
+      "TreePath": "math/log10",
+      "Kind": "func",
+      "Name": "log10",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 64151,
+      "DefEnd": 64218,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/log1p",
+      "TreePath": "math/log1p",
+      "Kind": "func",
+      "Name": "log1p",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 64078,
+      "DefEnd": 64145,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/log2",
+      "TreePath": "math/log2",
+      "Kind": "func",
+      "Name": "log2",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 64224,
+      "DefEnd": 64290,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/modf",
+      "TreePath": "math/modf",
+      "Kind": "func",
+      "Name": "modf",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 64296,
+      "DefEnd": 64362,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/pi",
+      "TreePath": "math/pi",
+      "Kind": "var",
+      "Name": "pi",
+      "Callable": false,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 65448,
+      "DefEnd": 65508,
+      "Exported": true,
+      "Data": {
+        "Kind": "scope",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/pow",
+      "TreePath": "math/pow",
+      "Kind": "func",
+      "Name": "pow",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 64368,
+      "DefEnd": 64433,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/radians",
+      "TreePath": "math/radians",
+      "Kind": "func",
+      "Name": "radians",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 64439,
+      "DefEnd": 64508,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/sin",
+      "TreePath": "math/sin",
+      "Kind": "func",
+      "Name": "sin",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 64514,
+      "DefEnd": 64579,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/sinh",
+      "TreePath": "math/sinh",
+      "Kind": "func",
+      "Name": "sinh",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 64585,
+      "DefEnd": 64651,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/sqrt",
+      "TreePath": "math/sqrt",
+      "Kind": "func",
+      "Name": "sqrt",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 64657,
+      "DefEnd": 64723,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/tan",
+      "TreePath": "math/tan",
+      "Kind": "func",
+      "Name": "tan",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 64729,
+      "DefEnd": 64794,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/tanh",
+      "TreePath": "math/tanh",
+      "Kind": "func",
+      "Name": "tanh",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 64800,
+      "DefEnd": 64866,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/trunc",
+      "TreePath": "math/trunc",
+      "Kind": "func",
+      "Name": "trunc",
+      "Callable": true,
+      "File": "Modules/mathmodule.c",
+      "DefStart": 64872,
+      "DefEnd": 64939,
+      "Exported": true,
+      "Data": {
+        "Kind": "function",
+        "FuncSignature": ""
+      }
+    }
+  ],
+  "Refs": [
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/acos",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 29616,
+      "End": 29665
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/acosh",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 29671,
+      "End": 29721
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/asin",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 29727,
+      "End": 29776
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/asinh",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 29782,
+      "End": 29832
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/atan",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 29838,
+      "End": 29887
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/atanh",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 29893,
+      "End": 29943
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/cos",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 29949,
+      "End": 29997
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/cosh",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 30003,
+      "End": 30052
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/e",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 31316,
+      "End": 31374
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/exp",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 30058,
+      "End": 30106
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/isfinite",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 30112,
+      "End": 30174
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/isinf",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 30180,
+      "End": 30234
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/isnan",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 30240,
+      "End": 30294
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/log10",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 30358,
+      "End": 30408
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/log",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 30300,
+      "End": 30352
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/phase",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 30414,
+      "End": 30468
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/pi",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/polar",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 30474,
+      "End": 30528
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/rect",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 30534,
+      "End": 30587
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/sin",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 30593,
+      "End": 30641
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/sinh",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 30647,
+      "End": 30696
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/sqrt",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 30702,
+      "End": 30751
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/tan",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 30757,
+      "End": 30805
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath/tanh",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 30811,
+      "End": 30860
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "cmath",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/cmathmodule.c",
+      "Start": 30922,
+      "End": 31088
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/acos",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 61892,
+      "End": 61958
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/acosh",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 61964,
+      "End": 62031
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/asin",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 62037,
+      "End": 62103
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/asinh",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 62109,
+      "End": 62176
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/atan2",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 62254,
+      "End": 62321
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/atan",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 62182,
+      "End": 62248
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/atanh",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 62327,
+      "End": 62394
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/ceil",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 62400,
+      "End": 62466
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/copysign",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 62472,
+      "End": 62542
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/cos",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 62548,
+      "End": 62613
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/cosh",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 62619,
+      "End": 62685
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/degrees",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 62691,
+      "End": 62760
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/e",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 65513,
+      "End": 65571
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/erf",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 62766,
+      "End": 62831
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/erfc",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 62837,
+      "End": 62903
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/exp",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 62909,
+      "End": 62974
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/expm1",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 62980,
+      "End": 63047
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/fabs",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 63053,
+      "End": 63119
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/factorial",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 63125,
+      "End": 63196
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/floor",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 63202,
+      "End": 63269
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/fmod",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 63275,
+      "End": 63341
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/frexp",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 63347,
+      "End": 63414
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/fsum",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 63420,
+      "End": 63486
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/gamma",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 63492,
+      "End": 63559
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/hypot",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 63565,
+      "End": 63632
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/isfinite",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 63638,
+      "End": 63708
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/isinf",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 63714,
+      "End": 63781
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/isnan",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 63787,
+      "End": 63854
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/ldexp",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 63860,
+      "End": 63927
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/lgamma",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 63933,
+      "End": 64001
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/log10",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 64151,
+      "End": 64218
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/log1p",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 64078,
+      "End": 64145
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/log2",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 64224,
+      "End": 64290
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/log",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 64007,
+      "End": 64072
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/modf",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 64296,
+      "End": 64362
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/pi",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 65448,
+      "End": 65508
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/pow",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 64368,
+      "End": 64433
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/radians",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 64439,
+      "End": 64508
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/sin",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 64514,
+      "End": 64579
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/sinh",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 64585,
+      "End": 64651
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/sqrt",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 64657,
+      "End": 64723
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/tan",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 64729,
+      "End": 64794
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/tanh",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 64800,
+      "End": 64866
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math/trunc",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 64872,
+      "End": 64939
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "PipPackage",
+      "SymbolUnit": "Python",
+      "SymbolPath": "math",
+      "Def": true,
+      "Repo": "",
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "File": "Modules/mathmodule.c",
+      "Start": 65146,
+      "End": 65309
+    }
+  ],
+  "Docs": [
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath",
+      "Format": "text/plain",
+      "Data": "This module is always available. It provides access to mathematical\nfunctions for complex numbers.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/acos",
+      "Format": "text/plain",
+      "Data": "acos(x)\n\nReturn the arc cosine of x.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/acosh",
+      "Format": "text/plain",
+      "Data": "acosh(x)\n\nReturn the hyperbolic arccosine of x.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/asin",
+      "Format": "text/plain",
+      "Data": "asin(x)\n\nReturn the arc sine of x.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/asinh",
+      "Format": "text/plain",
+      "Data": "asinh(x)\n\nReturn the hyperbolic arc sine of x.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/atan",
+      "Format": "text/plain",
+      "Data": "atan(x)\n\nReturn the arc tangent of x.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/atanh",
+      "Format": "text/plain",
+      "Data": "atanh(x)\n\nReturn the hyperbolic arc tangent of x.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/cos",
+      "Format": "text/plain",
+      "Data": "cos(x)\n\nReturn the cosine of x.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/cosh",
+      "Format": "text/plain",
+      "Data": "cosh(x)\n\nReturn the hyperbolic cosine of x.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/e",
+      "Format": "text/plain",
+      "Data": "float(x) -\u003e floating point number\n\nConvert a string or number to a floating point number, if possible.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/exp",
+      "Format": "text/plain",
+      "Data": "exp(x)\n\nReturn the exponential value e**x.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/isfinite",
+      "Format": "text/plain",
+      "Data": "isfinite(z) -\u003e bool\nReturn True if both the real and imaginary parts of z are finite, else False.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/isinf",
+      "Format": "text/plain",
+      "Data": "isinf(z) -\u003e bool\nChecks if the real or imaginary part of z is infinite.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/isnan",
+      "Format": "text/plain",
+      "Data": "isnan(z) -\u003e bool\nChecks if the real or imaginary part of z not a number (NaN)",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/log",
+      "Format": "text/plain",
+      "Data": "log(x[, base]) -\u003e the logarithm of x to the given base.\nIf the base not specified, returns the natural logarithm (base e) of x.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/log10",
+      "Format": "text/plain",
+      "Data": "log10(x)\n\nReturn the base-10 logarithm of x.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/phase",
+      "Format": "text/plain",
+      "Data": "phase(z) -\u003e float\n\nReturn argument, also known as the phase angle, of a complex.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/pi",
+      "Format": "text/plain",
+      "Data": "float(x) -\u003e floating point number\n\nConvert a string or number to a floating point number, if possible.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/polar",
+      "Format": "text/plain",
+      "Data": "polar(z) -\u003e r: float, phi: float\n\nConvert a complex from rectangular coordinates to polar coordinates. r is\nthe distance from 0 and phi the phase angle.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/rect",
+      "Format": "text/plain",
+      "Data": "rect(r, phi) -\u003e z: complex\n\nConvert from polar coordinates to rectangular coordinates.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/sin",
+      "Format": "text/plain",
+      "Data": "sin(x)\n\nReturn the sine of x.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/sinh",
+      "Format": "text/plain",
+      "Data": "sinh(x)\n\nReturn the hyperbolic sine of x.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/sqrt",
+      "Format": "text/plain",
+      "Data": "sqrt(x)\n\nReturn the square root of x.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/tan",
+      "Format": "text/plain",
+      "Data": "tan(x)\n\nReturn the tangent of x.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "cmath/tanh",
+      "Format": "text/plain",
+      "Data": "tanh(x)\n\nReturn the hyperbolic tangent of x.",
+      "File": "Modules/cmathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math",
+      "Format": "text/plain",
+      "Data": "This module is always available.  It provides access to the\nmathematical functions defined by the C standard.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/acos",
+      "Format": "text/plain",
+      "Data": "acos(x)\n\nReturn the arc cosine (measured in radians) of x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/acosh",
+      "Format": "text/plain",
+      "Data": "acosh(x)\n\nReturn the hyperbolic arc cosine (measured in radians) of x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/asin",
+      "Format": "text/plain",
+      "Data": "asin(x)\n\nReturn the arc sine (measured in radians) of x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/asinh",
+      "Format": "text/plain",
+      "Data": "asinh(x)\n\nReturn the hyperbolic arc sine (measured in radians) of x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/atan",
+      "Format": "text/plain",
+      "Data": "atan(x)\n\nReturn the arc tangent (measured in radians) of x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/atan2",
+      "Format": "text/plain",
+      "Data": "atan2(y, x)\n\nReturn the arc tangent (measured in radians) of y/x.\nUnlike atan(y/x), the signs of both x and y are considered.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/atanh",
+      "Format": "text/plain",
+      "Data": "atanh(x)\n\nReturn the hyperbolic arc tangent (measured in radians) of x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/ceil",
+      "Format": "text/plain",
+      "Data": "ceil(x)\n\nReturn the ceiling of x as an int.\nThis is the smallest integral value \u003e= x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/copysign",
+      "Format": "text/plain",
+      "Data": "copysign(x, y)\n\nReturn a float with the magnitude (absolute value) of x but the sign \nof y. On platforms that support signed zeros, copysign(1.0, -0.0) \nreturns -1.0.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/cos",
+      "Format": "text/plain",
+      "Data": "cos(x)\n\nReturn the cosine of x (measured in radians).",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/cosh",
+      "Format": "text/plain",
+      "Data": "cosh(x)\n\nReturn the hyperbolic cosine of x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/degrees",
+      "Format": "text/plain",
+      "Data": "degrees(x)\n\nConvert angle x from radians to degrees.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/e",
+      "Format": "text/plain",
+      "Data": "float(x) -\u003e floating point number\n\nConvert a string or number to a floating point number, if possible.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/erf",
+      "Format": "text/plain",
+      "Data": "erf(x)\n\nError function at x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/erfc",
+      "Format": "text/plain",
+      "Data": "erfc(x)\n\nComplementary error function at x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/exp",
+      "Format": "text/plain",
+      "Data": "exp(x)\n\nReturn e raised to the power of x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/expm1",
+      "Format": "text/plain",
+      "Data": "expm1(x)\n\nReturn exp(x)-1.\nThis function avoids the loss of precision involved in the direct evaluation of exp(x)-1 for small x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/fabs",
+      "Format": "text/plain",
+      "Data": "fabs(x)\n\nReturn the absolute value of the float x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/factorial",
+      "Format": "text/plain",
+      "Data": "factorial(x) -\u003e Integral\n\nFind x!. Raise a ValueError if x is negative or non-integral.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/floor",
+      "Format": "text/plain",
+      "Data": "floor(x)\n\nReturn the floor of x as an int.\nThis is the largest integral value \u003c= x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/fmod",
+      "Format": "text/plain",
+      "Data": "fmod(x, y)\n\nReturn fmod(x, y), according to platform C.  x % y may differ.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/frexp",
+      "Format": "text/plain",
+      "Data": "frexp(x)\n\nReturn the mantissa and exponent of x, as pair (m, e).\nm is a float and e is an int, such that x = m * 2.**e.\nIf x is 0, m and e are both 0.  Else 0.5 \u003c= abs(m) \u003c 1.0.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/fsum",
+      "Format": "text/plain",
+      "Data": "fsum(iterable)\n\nReturn an accurate floating point sum of values in the iterable.\nAssumes IEEE-754 floating point arithmetic.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/gamma",
+      "Format": "text/plain",
+      "Data": "gamma(x)\n\nGamma function at x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/hypot",
+      "Format": "text/plain",
+      "Data": "hypot(x, y)\n\nReturn the Euclidean distance, sqrt(x*x + y*y).",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/isfinite",
+      "Format": "text/plain",
+      "Data": "isfinite(x) -\u003e bool\n\nReturn True if x is neither an infinity nor a NaN, and False otherwise.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/isinf",
+      "Format": "text/plain",
+      "Data": "isinf(x) -\u003e bool\n\nReturn True if x is a positive or negative infinity, and False otherwise.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/isnan",
+      "Format": "text/plain",
+      "Data": "isnan(x) -\u003e bool\n\nReturn True if x is a NaN (not a number), and False otherwise.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/ldexp",
+      "Format": "text/plain",
+      "Data": "ldexp(x, i)\n\nReturn x * (2**i).",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/lgamma",
+      "Format": "text/plain",
+      "Data": "lgamma(x)\n\nNatural logarithm of absolute value of Gamma function at x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/log",
+      "Format": "text/plain",
+      "Data": "log(x[, base])\n\nReturn the logarithm of x to the given base.\nIf the base not specified, returns the natural logarithm (base e) of x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/log10",
+      "Format": "text/plain",
+      "Data": "log10(x)\n\nReturn the base 10 logarithm of x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/log1p",
+      "Format": "text/plain",
+      "Data": "log1p(x)\n\nReturn the natural logarithm of 1+x (base e).\nThe result is computed in a way which is accurate for x near zero.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/log2",
+      "Format": "text/plain",
+      "Data": "log2(x)\n\nReturn the base 2 logarithm of x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/modf",
+      "Format": "text/plain",
+      "Data": "modf(x)\n\nReturn the fractional and integer parts of x.  Both results carry the sign\nof x and are floats.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/pi",
+      "Format": "text/plain",
+      "Data": "float(x) -\u003e floating point number\n\nConvert a string or number to a floating point number, if possible.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/pow",
+      "Format": "text/plain",
+      "Data": "pow(x, y)\n\nReturn x**y (x to the power of y).",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/radians",
+      "Format": "text/plain",
+      "Data": "radians(x)\n\nConvert angle x from degrees to radians.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/sin",
+      "Format": "text/plain",
+      "Data": "sin(x)\n\nReturn the sine of x (measured in radians).",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/sinh",
+      "Format": "text/plain",
+      "Data": "sinh(x)\n\nReturn the hyperbolic sine of x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/sqrt",
+      "Format": "text/plain",
+      "Data": "sqrt(x)\n\nReturn the square root of x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/tan",
+      "Format": "text/plain",
+      "Data": "tan(x)\n\nReturn the tangent of x (measured in radians).",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/tanh",
+      "Format": "text/plain",
+      "Data": "tanh(x)\n\nReturn the hyperbolic tangent of x.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    },
+    {
+      "UnitType": "PipPackage",
+      "Unit": "Python",
+      "Path": "math/trunc",
+      "Format": "text/plain",
+      "Data": "trunc(x:Real) -\u003e Integral\n\nTruncates x to the nearest Integral toward 0. Uses the __trunc__ magic method.",
+      "File": "Modules/mathmodule.c",
+      "Start": 0,
+      "End": 0
+    }
+  ]
+}
+

@@ -133,7 +133,7 @@ func (p *pythonEnv) BuildGrapher(dir string, u unit.SourceUnit, c *config.Reposi
 		Container: container.Container{
 			RunOptions: []string{"-v", dir + ":" + srcRoot},
 			Dockerfile: p.grapherDockerfile(),
-			Cmd:        p.grapherCmd(u, c.URI == stdLibRepo),
+			Cmd:        p.grapherCmd(u, c.URI == stdLibRepo || c.URI == extensionsTestRepo),
 		},
 		Transform: func(orig []byte) ([]byte, error) {
 			var o rawGraphData
