@@ -2,6 +2,7 @@
   "Symbols": [
     {
       "Path": "A",
+      "TreePath": "./A",
       "Kind": "type",
       "Name": "A",
       "Callable": false,
@@ -20,6 +21,7 @@
     },
     {
       "Path": "A/$classmethods/method",
+      "TreePath": "./A/method",
       "Kind": "func",
       "Name": "method",
       "Callable": false,
@@ -38,7 +40,7 @@
     },
     {
       "Path": "A@_local_0@method@t",
-      "TreePath": "_local_0",
+      "TreePath": "./A/method/t",
       "Kind": "var",
       "Name": "t",
       "Callable": false,
@@ -57,6 +59,7 @@
     },
     {
       "Path": "file:ruby_gem1/$classmethods/gemspec_local_0@@block_local_0@s",
+      "TreePath": "./file:ruby_gem1/gemspec_local_0/@block_local_0/s",
       "Kind": "var",
       "Name": "s",
       "Callable": false,
