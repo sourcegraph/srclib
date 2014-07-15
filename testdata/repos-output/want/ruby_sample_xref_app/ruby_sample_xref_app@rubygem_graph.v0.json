@@ -2,6 +2,7 @@
   "Symbols": [
     {
       "Path": "Article",
+      "TreePath": "./Article",
       "Kind": "type",
       "Name": "Article",
       "Callable": false,
@@ -20,6 +21,7 @@
     },
     {
       "Path": "Article/$classmethods/q",
+      "TreePath": "./Article/q",
       "Kind": "func",
       "Name": "q",
       "Callable": false,
@@ -38,6 +40,7 @@
     },
     {
       "Path": "Article/$classmethods/search",
+      "TreePath": "./Article/search",
       "Kind": "func",
       "Name": "search",
       "Callable": false,
@@ -56,6 +59,7 @@
     },
     {
       "Path": "Article/$methods/initialize",
+      "TreePath": "./Article/initialize",
       "Kind": "func",
       "Name": "initialize",
       "Callable": false,
@@ -74,6 +78,7 @@
     },
     {
       "Path": "Article/$methods/published_on",
+      "TreePath": "./Article/published_on",
       "Kind": "func",
       "Name": "published_on",
       "Callable": false,
@@ -92,6 +97,7 @@
     },
     {
       "Path": "Article/$methods/tags",
+      "TreePath": "./Article/tags",
       "Kind": "func",
       "Name": "tags",
       "Callable": false,
@@ -110,6 +116,7 @@
     },
     {
       "Path": "Article/$methods/title",
+      "TreePath": "./Article/title",
       "Kind": "func",
       "Name": "title",
       "Callable": false,
@@ -128,6 +135,7 @@
     },
     {
       "Path": "Article/$methods/to_indexed_json",
+      "TreePath": "./Article/to_indexed_json",
       "Kind": "func",
       "Name": "to_indexed_json",
       "Callable": false,
@@ -146,6 +154,7 @@
     },
     {
       "Path": "Article/$methods/type",
+      "TreePath": "./Article/type",
       "Kind": "func",
       "Name": "type",
       "Callable": false,
@@ -164,6 +173,7 @@
     },
     {
       "Path": "Article/@attributes",
+      "TreePath": "./Article/@attributes",
       "Kind": "var",
       "Name": "@attributes",
       "Callable": false,
@@ -182,7 +192,7 @@
     },
     {
       "Path": "Article@_local_0@/$methods/initialize@@block_local_0@name",
-      "TreePath": "_local_0/",
+      "TreePath": "./Article/initialize/@block_local_0/name",
       "Kind": "var",
       "Name": "name",
       "Callable": false,
@@ -201,7 +211,7 @@
     },
     {
       "Path": "Article@_local_0@/$methods/initialize@@block_local_0@value",
-      "TreePath": "_local_0/",
+      "TreePath": "./Article/initialize/@block_local_0/value",
       "Kind": "var",
       "Name": "value",
       "Callable": false,
@@ -220,7 +230,7 @@
     },
     {
       "Path": "Article@_local_0@/$methods/initialize@attributes",
-      "TreePath": "_local_0/",
+      "TreePath": "./Article/initialize/attributes",
       "Kind": "var",
       "Name": "attributes",
       "Callable": false,
@@ -239,7 +249,7 @@
     },
     {
       "Path": "Article@_local_1@search@@block_local_0@@block_local_1@query",
-      "TreePath": "_local_1",
+      "TreePath": "./Article/search/@block_local_0/@block_local_1/query",
       "Kind": "var",
       "Name": "query",
       "Callable": false,
@@ -258,7 +268,7 @@
     },
     {
       "Path": "Article@_local_1@search@@block_local_0@search",
-      "TreePath": "_local_1",
+      "TreePath": "./Article/search/@block_local_0/search",
       "Kind": "var",
       "Name": "search",
       "Callable": false,
@@ -277,6 +287,7 @@
     },
     {
       "Path": "Goal",
+      "TreePath": "./Goal",
       "Kind": "type",
       "Name": "Goal",
       "Callable": false,
@@ -295,6 +306,7 @@
     },
     {
       "Path": "Product",
+      "TreePath": "./Product",
       "Kind": "type",
       "Name": "Product",
       "Callable": false,
@@ -313,6 +325,7 @@
     },
     {
       "Path": "Product2",
+      "TreePath": "./Product2",
       "Kind": "type",
       "Name": "Product2",
       "Callable": false,
@@ -331,6 +344,7 @@
     },
     {
       "Path": "Task",
+      "TreePath": "./Task",
       "Kind": "type",
       "Name": "Task",
       "Callable": false,
@@ -349,6 +363,7 @@
     },
     {
       "Path": "User",
+      "TreePath": "./User",
       "Kind": "type",
       "Name": "User",
       "Callable": false,
@@ -367,6 +382,7 @@
     },
     {
       "Path": "file:lib/use_barkick_rb_local_0@gtin",
+      "TreePath": "./file:lib/use_barkick_rb_local_0/gtin",
       "Kind": "var",
       "Name": "gtin",
       "Callable": false,
@@ -385,6 +401,7 @@
     },
     {
       "Path": "file:lib/use_geocoder_rb_local_0@results",
+      "TreePath": "./file:lib/use_geocoder_rb_local_0/results",
       "Kind": "var",
       "Name": "results",
       "Callable": false,
@@ -403,6 +420,7 @@
     },
     {
       "Path": "file:lib/use_groupdate_rb_local_0@time_zone",
+      "TreePath": "./file:lib/use_groupdate_rb_local_0/time_zone",
       "Kind": "var",
       "Name": "time_zone",
       "Callable": false,
@@ -421,6 +439,7 @@
     },
     {
       "Path": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_87@channel",
+      "TreePath": "./file:lib/use_redis_rb_local_0/@block_local_86/@block_local_87/channel",
       "Kind": "var",
       "Name": "channel",
       "Callable": false,
@@ -439,6 +458,7 @@
     },
     {
       "Path": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_87@subscriptions",
+      "TreePath": "./file:lib/use_redis_rb_local_0/@block_local_86/@block_local_87/subscriptions",
       "Kind": "var",
       "Name": "subscriptions",
       "Callable": false,
@@ -457,6 +477,7 @@
     },
     {
       "Path": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_88@channel",
+      "TreePath": "./file:lib/use_redis_rb_local_0/@block_local_86/@block_local_88/channel",
       "Kind": "var",
       "Name": "channel",
       "Callable": false,
@@ -475,6 +496,7 @@
     },
     {
       "Path": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_88@message",
+      "TreePath": "./file:lib/use_redis_rb_local_0/@block_local_86/@block_local_88/message",
       "Kind": "var",
       "Name": "message",
       "Callable": false,
@@ -493,6 +515,7 @@
     },
     {
       "Path": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_89@channel",
+      "TreePath": "./file:lib/use_redis_rb_local_0/@block_local_86/@block_local_89/channel",
       "Kind": "var",
       "Name": "channel",
       "Callable": false,
@@ -511,6 +534,7 @@
     },
     {
       "Path": "file:lib/use_redis_rb_local_0@@block_local_86@@block_local_89@subscriptions",
+      "TreePath": "./file:lib/use_redis_rb_local_0/@block_local_86/@block_local_89/subscriptions",
       "Kind": "var",
       "Name": "subscriptions",
       "Callable": false,
@@ -529,6 +553,7 @@
     },
     {
       "Path": "file:lib/use_redis_rb_local_0@@block_local_86@on",
+      "TreePath": "./file:lib/use_redis_rb_local_0/@block_local_86/on",
       "Kind": "var",
       "Name": "on",
       "Callable": false,
@@ -547,6 +572,7 @@
     },
     {
       "Path": "file:lib/use_redis_rb_local_0@r",
+      "TreePath": "./file:lib/use_redis_rb_local_0/r",
       "Kind": "var",
       "Name": "r",
       "Callable": false,
@@ -565,6 +591,7 @@
     },
     {
       "Path": "file:lib/use_searchkick_rb_local_0@@block_local_90@product",
+      "TreePath": "./file:lib/use_searchkick_rb_local_0/@block_local_90/product",
       "Kind": "var",
       "Name": "product",
       "Callable": false,
@@ -583,6 +610,7 @@
     },
     {
       "Path": "file:lib/use_searchkick_rb_local_0@product",
+      "TreePath": "./file:lib/use_searchkick_rb_local_0/product",
       "Kind": "var",
       "Name": "product",
       "Callable": false,
@@ -601,6 +629,7 @@
     },
     {
       "Path": "file:lib/use_searchkick_rb_local_0@products",
+      "TreePath": "./file:lib/use_searchkick_rb_local_0/products",
       "Kind": "var",
       "Name": "products",
       "Callable": false,
@@ -619,6 +648,7 @@
     },
     {
       "Path": "file:lib/use_stripe_rb_local_0@charge",
+      "TreePath": "./file:lib/use_stripe_rb_local_0/charge",
       "Kind": "var",
       "Name": "charge",
       "Callable": false,
@@ -637,6 +667,7 @@
     },
     {
       "Path": "file:lib/use_stripe_rb_local_0@customer",
+      "TreePath": "./file:lib/use_stripe_rb_local_0/customer",
       "Kind": "var",
       "Name": "customer",
       "Callable": false,
@@ -655,6 +686,7 @@
     },
     {
       "Path": "file:lib/use_stripe_rb_local_0@token",
+      "TreePath": "./file:lib/use_stripe_rb_local_0/token",
       "Kind": "var",
       "Name": "token",
       "Callable": false,
@@ -673,6 +705,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_12@document",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_12/document",
       "Kind": "var",
       "Name": "document",
       "Callable": false,
@@ -691,6 +724,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_15@document",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_15/document",
       "Kind": "var",
       "Name": "document",
       "Callable": false,
@@ -709,6 +743,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_1@article",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_1/article",
       "Kind": "var",
       "Name": "article",
       "Callable": false,
@@ -727,6 +762,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_20@document",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_20/document",
       "Kind": "var",
       "Name": "document",
       "Callable": false,
@@ -745,6 +781,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_23@document",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_23/document",
       "Kind": "var",
       "Name": "document",
       "Callable": false,
@@ -763,6 +800,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_30@document",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_30/document",
       "Kind": "var",
       "Name": "document",
       "Callable": false,
@@ -781,6 +819,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_31@boolean",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_31/boolean",
       "Kind": "var",
       "Name": "boolean",
       "Callable": false,
@@ -799,6 +838,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_34@boolean",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_34/boolean",
       "Kind": "var",
       "Name": "boolean",
       "Callable": false,
@@ -817,6 +857,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_43@f",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_43/f",
       "Kind": "var",
       "Name": "f",
       "Callable": false,
@@ -835,6 +876,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_48@f",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_48/f",
       "Kind": "var",
       "Name": "f",
       "Callable": false,
@@ -853,6 +895,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_49@f",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_49/f",
       "Kind": "var",
       "Name": "f",
       "Callable": false,
@@ -871,6 +914,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_4@@block_local_5@@block_local_6@document",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_4/@block_local_5/@block_local_6/document",
       "Kind": "var",
       "Name": "document",
       "Callable": false,
@@ -889,6 +933,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_4@@block_local_5@documents",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_4/@block_local_5/documents",
       "Kind": "var",
       "Name": "documents",
       "Callable": false,
@@ -907,6 +952,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_53@document",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_53/document",
       "Kind": "var",
       "Name": "document",
       "Callable": false,
@@ -925,6 +971,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_54@f",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_54/f",
       "Kind": "var",
       "Name": "f",
       "Callable": false,
@@ -943,6 +990,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_57@document",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_57/document",
       "Kind": "var",
       "Name": "document",
       "Callable": false,
@@ -961,6 +1009,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_61@document",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_61/document",
       "Kind": "var",
       "Name": "document",
       "Callable": false,
@@ -979,6 +1028,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_65@document",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_65/document",
       "Kind": "var",
       "Name": "document",
       "Callable": false,
@@ -997,6 +1047,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_71@document",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_71/document",
       "Kind": "var",
       "Name": "document",
       "Callable": false,
@@ -1015,6 +1066,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_74@document",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_74/document",
       "Kind": "var",
       "Name": "document",
       "Callable": false,
@@ -1033,6 +1085,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@@block_local_9@document",
+      "TreePath": "./file:lib/use_tire_rb_local_0/@block_local_9/document",
       "Kind": "var",
       "Name": "document",
       "Callable": false,
@@ -1051,6 +1104,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@articles",
+      "TreePath": "./file:lib/use_tire_rb_local_0/articles",
       "Kind": "var",
       "Name": "articles",
       "Callable": false,
@@ -1069,6 +1123,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@index",
+      "TreePath": "./file:lib/use_tire_rb_local_0/index",
       "Kind": "var",
       "Name": "index",
       "Callable": false,
@@ -1087,6 +1142,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@matches",
+      "TreePath": "./file:lib/use_tire_rb_local_0/matches",
       "Kind": "var",
       "Name": "matches",
       "Callable": false,
@@ -1105,6 +1161,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@published_on_query",
+      "TreePath": "./file:lib/use_tire_rb_local_0/published_on_query",
       "Kind": "var",
       "Name": "published_on_query",
       "Callable": false,
@@ -1123,6 +1180,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@q",
+      "TreePath": "./file:lib/use_tire_rb_local_0/q",
       "Kind": "var",
       "Name": "q",
       "Callable": false,
@@ -1141,6 +1199,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@response",
+      "TreePath": "./file:lib/use_tire_rb_local_0/response",
       "Kind": "var",
       "Name": "response",
       "Callable": false,
@@ -1159,6 +1218,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@s",
+      "TreePath": "./file:lib/use_tire_rb_local_0/s",
       "Kind": "var",
       "Name": "s",
       "Callable": false,
@@ -1177,6 +1237,7 @@
     },
     {
       "Path": "file:lib/use_tire_rb_local_0@tags_query",
+      "TreePath": "./file:lib/use_tire_rb_local_0/tags_query",
       "Kind": "var",
       "Name": "tags_query",
       "Callable": false,
@@ -1195,6 +1256,7 @@
     },
     {
       "Path": "file:lib/use_yajl_rb_local_0@@block_local_83@hash",
+      "TreePath": "./file:lib/use_yajl_rb_local_0/@block_local_83/hash",
       "Kind": "var",
       "Name": "hash",
       "Callable": false,
@@ -1213,6 +1275,7 @@
     },
     {
       "Path": "file:lib/use_yajl_rb_local_0@@block_local_84@chunk",
+      "TreePath": "./file:lib/use_yajl_rb_local_0/@block_local_84/chunk",
       "Kind": "var",
       "Name": "chunk",
       "Callable": false,
@@ -1231,6 +1294,7 @@
     },
     {
       "Path": "file:lib/use_yajl_rb_local_0@chunks",
+      "TreePath": "./file:lib/use_yajl_rb_local_0/chunks",
       "Kind": "var",
       "Name": "chunks",
       "Callable": false,
@@ -1249,6 +1313,7 @@
     },
     {
       "Path": "file:lib/use_yajl_rb_local_0@hash",
+      "TreePath": "./file:lib/use_yajl_rb_local_0/hash",
       "Kind": "var",
       "Name": "hash",
       "Callable": false,
@@ -1267,6 +1332,7 @@
     },
     {
       "Path": "file:lib/use_yajl_rb_local_0@obj",
+      "TreePath": "./file:lib/use_yajl_rb_local_0/obj",
       "Kind": "var",
       "Name": "obj",
       "Callable": false,
@@ -1285,6 +1351,7 @@
     },
     {
       "Path": "file:lib/use_yajl_rb_local_0@total_size",
+      "TreePath": "./file:lib/use_yajl_rb_local_0/total_size",
       "Kind": "var",
       "Name": "total_size",
       "Callable": false,
@@ -1303,6 +1370,7 @@
     },
     {
       "Path": "file:lib/use_yajl_rb_local_0@uri",
+      "TreePath": "./file:lib/use_yajl_rb_local_0/uri",
       "Kind": "var",
       "Name": "uri",
       "Callable": false,
@@ -1321,6 +1389,7 @@
     },
     {
       "Path": "file:ruby_sample_xref_app/$classmethods/gemspec_local_0@@block_local_0@s",
+      "TreePath": "./file:ruby_sample_xref_app/gemspec_local_0/@block_local_0/s",
       "Kind": "var",
       "Name": "s",
       "Callable": false,

@@ -2,6 +2,7 @@
   "Symbols": [
     {
       "Path": "$methods/f",
+      "TreePath": "./f",
       "Kind": "func",
       "Name": "f",
       "Callable": false,
@@ -20,6 +21,7 @@
     },
     {
       "Path": "C",
+      "TreePath": "./C",
       "Kind": "const",
       "Name": "C",
       "Callable": false,
@@ -38,6 +40,7 @@
     },
     {
       "Path": "C/$classmethods/ccm",
+      "TreePath": "./C/ccm",
       "Kind": "func",
       "Name": "ccm",
       "Callable": false,
@@ -56,6 +59,7 @@
     },
     {
       "Path": "C/$methods/im",
+      "TreePath": "./C/im",
       "Kind": "func",
       "Name": "im",
       "Callable": false,
@@ -74,6 +78,7 @@
     },
     {
       "Path": "C/$methods/im2",
+      "TreePath": "./C/im2",
       "Kind": "func",
       "Name": "im2",
       "Callable": false,
@@ -92,6 +97,7 @@
     },
     {
       "Path": "C/$methods/ivdef",
+      "TreePath": "./C/ivdef",
       "Kind": "func",
       "Name": "ivdef",
       "Callable": false,
@@ -110,6 +116,7 @@
     },
     {
       "Path": "C/$methods/ivref",
+      "TreePath": "./C/ivref",
       "Kind": "func",
       "Name": "ivref",
       "Callable": false,
@@ -128,6 +135,7 @@
     },
     {
       "Path": "C/$methods/x",
+      "TreePath": "./C/x",
       "Kind": "func",
       "Name": "x",
       "Callable": false,
@@ -146,6 +154,7 @@
     },
     {
       "Path": "C/$methods/x=",
+      "TreePath": "./C/x=",
       "Kind": "func",
       "Name": "x=",
       "Callable": false,
@@ -164,6 +173,7 @@
     },
     {
       "Path": "C/@x",
+      "TreePath": "./C/@x",
       "Kind": "var",
       "Name": "@x",
       "Callable": false,
@@ -182,6 +192,7 @@
     },
     {
       "Path": "C/D",
+      "TreePath": "./C/D",
       "Kind": "type",
       "Name": "D",
       "Callable": false,
@@ -200,6 +211,7 @@
     },
     {
       "Path": "C/D/$classmethods/dcm",
+      "TreePath": "./C/D/dcm",
       "Kind": "func",
       "Name": "dcm",
       "Callable": false,
@@ -218,6 +230,7 @@
     },
     {
       "Path": "C/D/$methods/im",
+      "TreePath": "./C/D/im",
       "Kind": "func",
       "Name": "im",
       "Callable": false,
@@ -236,6 +249,7 @@
     },
     {
       "Path": "M",
+      "TreePath": "./M",
       "Kind": "module",
       "Name": "M",
       "Callable": false,
@@ -254,6 +268,7 @@
     },
     {
       "Path": "M/N",
+      "TreePath": "./M/N",
       "Kind": "module",
       "Name": "N",
       "Callable": false,
@@ -272,6 +287,7 @@
     },
     {
       "Path": "MY_GLOBAL_CONST",
+      "TreePath": "./MY_GLOBAL_CONST",
       "Kind": "const",
       "Name": "MY_GLOBAL_CONST",
       "Callable": false,
@@ -290,6 +306,7 @@
     },
     {
       "Path": "MY_SAMPLE",
+      "TreePath": "./MY_SAMPLE",
       "Kind": "const",
       "Name": "MY_SAMPLE",
       "Callable": false,
@@ -308,6 +325,7 @@
     },
     {
       "Path": "Sample",
+      "TreePath": "./Sample",
       "Kind": "type",
       "Name": "Sample",
       "Callable": false,
@@ -326,6 +344,7 @@
     },
     {
       "Path": "Sample/$classmethods/my_array",
+      "TreePath": "./Sample/my_array",
       "Kind": "func",
       "Name": "my_array",
       "Callable": false,
@@ -344,6 +363,7 @@
     },
     {
       "Path": "Sample/$classmethods/my_bool",
+      "TreePath": "./Sample/my_bool",
       "Kind": "func",
       "Name": "my_bool",
       "Callable": false,
@@ -362,6 +382,7 @@
     },
     {
       "Path": "Sample/$classmethods/my_hash",
+      "TreePath": "./Sample/my_hash",
       "Kind": "func",
       "Name": "my_hash",
       "Callable": false,
@@ -380,6 +401,7 @@
     },
     {
       "Path": "Sample/$classmethods/my_int",
+      "TreePath": "./Sample/my_int",
       "Kind": "func",
       "Name": "my_int",
       "Callable": false,
@@ -398,6 +420,7 @@
     },
     {
       "Path": "Sample/$classmethods/my_string",
+      "TreePath": "./Sample/my_string",
       "Kind": "func",
       "Name": "my_string",
       "Callable": false,
@@ -416,6 +439,7 @@
     },
     {
       "Path": "Sample/$methods/initialize",
+      "TreePath": "./Sample/initialize",
       "Kind": "func",
       "Name": "initialize",
       "Callable": false,
@@ -434,6 +458,7 @@
     },
     {
       "Path": "Sample/$methods/my_method",
+      "TreePath": "./Sample/my_method",
       "Kind": "func",
       "Name": "my_method",
       "Callable": false,
@@ -452,6 +477,7 @@
     },
     {
       "Path": "Sample/@i",
+      "TreePath": "./Sample/@i",
       "Kind": "var",
       "Name": "@i",
       "Callable": false,
@@ -470,6 +496,7 @@
     },
     {
       "Path": "Sample/MY_CONST",
+      "TreePath": "./Sample/MY_CONST",
       "Kind": "const",
       "Name": "MY_CONST",
       "Callable": false,
@@ -488,7 +515,7 @@
     },
     {
       "Path": "Sample@_local_0@/$methods/initialize@i",
-      "TreePath": "_local_0/",
+      "TreePath": "./Sample/initialize/i",
       "Kind": "var",
       "Name": "i",
       "Callable": false,
@@ -507,7 +534,7 @@
     },
     {
       "Path": "Sample@_local_0@/$methods/my_method@a",
-      "TreePath": "_local_0/",
+      "TreePath": "./Sample/my_method/a",
       "Kind": "var",
       "Name": "a",
       "Callable": false,
@@ -526,7 +553,7 @@
     },
     {
       "Path": "Sample@_local_0@/$methods/my_method@b",
-      "TreePath": "_local_0/",
+      "TreePath": "./Sample/my_method/b",
       "Kind": "var",
       "Name": "b",
       "Callable": false,
@@ -545,7 +572,7 @@
     },
     {
       "Path": "Sample@_local_0@/$methods/my_method@c",
-      "TreePath": "_local_0/",
+      "TreePath": "./Sample/my_method/c",
       "Kind": "var",
       "Name": "c",
       "Callable": false,
@@ -564,7 +591,7 @@
     },
     {
       "Path": "Sample@_local_0@/$methods/my_method@l",
-      "TreePath": "_local_0/",
+      "TreePath": "./Sample/my_method/l",
       "Kind": "var",
       "Name": "l",
       "Callable": false,
@@ -583,6 +610,7 @@
     },
     {
       "Path": "file:lib/cases/core_rb_local_0@@block_local_1@n",
+      "TreePath": "./file:lib/cases/core_rb_local_0/@block_local_1/n",
       "Kind": "var",
       "Name": "n",
       "Callable": false,
@@ -601,6 +629,7 @@
     },
     {
       "Path": "file:lib/cases/global_var_rb_local_0@a",
+      "TreePath": "./file:lib/cases/global_var_rb_local_0/a",
       "Kind": "var",
       "Name": "a",
       "Callable": false,
@@ -619,6 +648,7 @@
     },
     {
       "Path": "file:lib/cases/stdlib_rb_local_0@u",
+      "TreePath": "./file:lib/cases/stdlib_rb_local_0/u",
       "Kind": "var",
       "Name": "u",
       "Callable": false,
@@ -637,6 +667,7 @@
     },
     {
       "Path": "file:lib/cases/top_def_rb_local_0@/$methods/f@a",
+      "TreePath": "./file:lib/cases/top_def_rb_local_0/f/a",
       "Kind": "var",
       "Name": "a",
       "Callable": false,
@@ -655,6 +686,7 @@
     },
     {
       "Path": "file:lib/ruby_gem_rb_local_0@@block_local_2@t",
+      "TreePath": "./file:lib/ruby_gem_rb_local_0/@block_local_2/t",
       "Kind": "var",
       "Name": "t",
       "Callable": false,
@@ -673,6 +705,7 @@
     },
     {
       "Path": "file:lib/ruby_gem_rb_local_0@b64",
+      "TreePath": "./file:lib/ruby_gem_rb_local_0/b64",
       "Kind": "var",
       "Name": "b64",
       "Callable": false,
@@ -691,6 +724,7 @@
     },
     {
       "Path": "file:lib/ruby_gem_rb_local_0@foo",
+      "TreePath": "./file:lib/ruby_gem_rb_local_0/foo",
       "Kind": "var",
       "Name": "foo",
       "Callable": false,
@@ -709,6 +743,7 @@
     },
     {
       "Path": "file:lib/ruby_gem_rb_local_0@my_global_var",
+      "TreePath": "./file:lib/ruby_gem_rb_local_0/my_global_var",
       "Kind": "var",
       "Name": "my_global_var",
       "Callable": false,
@@ -727,6 +762,7 @@
     },
     {
       "Path": "file:lib/ruby_gem_rb_local_0@my_sample",
+      "TreePath": "./file:lib/ruby_gem_rb_local_0/my_sample",
       "Kind": "var",
       "Name": "my_sample",
       "Callable": false,
@@ -745,6 +781,7 @@
     },
     {
       "Path": "file:ruby_gem/$classmethods/gemspec_local_0@@block_local_0@s",
+      "TreePath": "./file:ruby_gem/gemspec_local_0/@block_local_0/s",
       "Kind": "var",
       "Name": "s",
       "Callable": false,
