@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/golang/gddo/gosrc"
-	"sourcegraph.com/sourcegraph"
 	"github.com/sourcegraph/srclib/config"
 	"github.com/sourcegraph/srclib/container"
 	"github.com/sourcegraph/srclib/dep2"
@@ -116,7 +115,9 @@ func (v *goVersion) resolveGoImportDep(importPath string, c *config.Repository) 
 
 	log.Printf("Resolving Go dep: %s", importPath)
 
-	dir, err := gosrc.Get(sourcegraph.AuthenticatingAsNeededHTTPClient, string(importPath), "")
+	// TODO(sqs): use AuthenticatingAsNeededHTTPClient to avoid hitting
+	// unauthenticated rate limit
+	dir, err := gosrc.Get(nil, string(importPath), "")
 	if err != nil {
 		if strings.Contains(err.Error(), "Git Repository is empty.") {
 			// Not fatal, just weird.
