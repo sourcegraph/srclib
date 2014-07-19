@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"os"
 
-	"sourcegraph.com/sourcegraph/conf"
 	client "github.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"github.com/sourcegraph/srclib/task2"
 )
@@ -42,12 +41,9 @@ The options are:
 
 var Verbose = flag.Bool("v", false, "show verbose output")
 var Dir = flag.String("dir", ".", "directory to work in")
+var baseURLStr = flag.String("url", "https://sourcegraph.com", "base URL of Sourcegraph instance")
 
 var apiclient = client.NewClient(nil)
-
-func init() {
-	apiclient.BaseURL = conf.BaseURL.ResolveReference(&url.URL{Path: "/api/"})
-}
 
 func Main() {
 	flag.Parse()
@@ -58,6 +54,12 @@ func Main() {
 	log.SetFlags(0)
 	log.SetPrefix("")
 	defer task2.FlushAll()
+
+	baseURL, err := url.Parse(*baseURLStr)
+	if err != nil {
+		log.Fatal(err)
+	}
+	apiclient.BaseURL = baseURL.ResolveReference(&url.URL{Path: "/api/"})
 
 	subcmd := flag.Arg(0)
 	extraArgs := flag.Args()[1:]
