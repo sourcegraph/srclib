@@ -10,7 +10,7 @@ import (
 
 	"strings"
 
-	"sourcegraph.com/sourcegraph/Godeps/_workspace/src/github.com/kr/pretty"
+	"github.com/kr/pretty"
 	"sourcegraph.com/sourcegraph/api_router"
 	"sourcegraph.com/sourcegraph/srcgraph/person"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
