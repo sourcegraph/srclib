@@ -1,13 +1,13 @@
 // Package all_toolchains imports and registers all known toolchains as a side
 // effect of being imported. It should be imported
 // for side effects only (`import _
-// "sourcegraph.com/sourcegraph/srcgraph/toolchain/all_toolchains"`).
+// "github.com/sourcegraph/srclib/toolchain/all_toolchains"`).
 package all_toolchains
 
 import (
-	_ "sourcegraph.com/sourcegraph/srcgraph/config/overrides"
-	_ "sourcegraph.com/sourcegraph/srcgraph/toolchain/golang"
-	_ "sourcegraph.com/sourcegraph/srcgraph/toolchain/javascript"
-	_ "sourcegraph.com/sourcegraph/srcgraph/toolchain/python"
-	_ "sourcegraph.com/sourcegraph/srcgraph/toolchain/ruby"
+	_ "github.com/sourcegraph/srclib/config/overrides"
+	_ "github.com/sourcegraph/srclib/toolchain/golang"
+	_ "github.com/sourcegraph/srclib/toolchain/javascript"
+	_ "github.com/sourcegraph/srclib/toolchain/python"
+	_ "github.com/sourcegraph/srclib/toolchain/ruby"
 )

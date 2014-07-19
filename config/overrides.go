@@ -3,7 +3,7 @@ package config
 import (
 	"strings"
 
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
+	"github.com/sourcegraph/srclib/repo"
 )
 
 // AddOverride overrides the configuration for the repository. It must be called

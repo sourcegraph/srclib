@@ -5,8 +5,8 @@ import (
 
 	"strings"
 
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"github.com/sourcegraph/srclib/repo"
+	"github.com/sourcegraph/srclib/unit"
 )
 
 const rubygemUnitType = "rubygem"

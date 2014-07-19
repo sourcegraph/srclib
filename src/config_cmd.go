@@ -1,4 +1,4 @@
-package srcgraph
+package src
 
 import (
 	"flag"

@@ -1,4 +1,4 @@
-package srcgraph
+package src
 
 import (
 	"flag"
@@ -8,15 +8,15 @@ import (
 	"reflect"
 
 	"github.com/kr/text"
-	"sourcegraph.com/sourcegraph/srcgraph/build"
-	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
-	"sourcegraph.com/sourcegraph/srcgraph/config"
-	"sourcegraph.com/sourcegraph/srcgraph/dep2"
-	"sourcegraph.com/sourcegraph/srcgraph/graph"
-	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
-	"sourcegraph.com/sourcegraph/srcgraph/scan"
-	"sourcegraph.com/sourcegraph/srcgraph/toolchain"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"github.com/sourcegraph/srclib/build"
+	"github.com/sourcegraph/srclib/buildstore"
+	"github.com/sourcegraph/srclib/config"
+	"github.com/sourcegraph/srclib/dep2"
+	"github.com/sourcegraph/srclib/graph"
+	"github.com/sourcegraph/srclib/grapher2"
+	"github.com/sourcegraph/srclib/scan"
+	"github.com/sourcegraph/srclib/toolchain"
+	"github.com/sourcegraph/srclib/unit"
 )
 
 func info(args []string) {

@@ -1,4 +1,4 @@
-package srcgraph
+package src
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 
-	"sourcegraph.com/sourcegraph/srcgraph/dep2"
+	"github.com/sourcegraph/srclib/dep2"
 )
 
 func resolveDeps(args []string) {

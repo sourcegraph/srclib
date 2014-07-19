@@ -1,4 +1,4 @@
-package srcgraph
+package src
 
 import (
 	"flag"
@@ -6,9 +6,9 @@ import (
 	"log"
 	"os"
 
-	"sourcegraph.com/sourcegraph/srcgraph/authorship"
-	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
-	"sourcegraph.com/sourcegraph/srcgraph/vcsutil"
+	"github.com/sourcegraph/srclib/authorship"
+	"github.com/sourcegraph/srclib/grapher2"
+	"github.com/sourcegraph/srclib/vcsutil"
 )
 
 func authorship_(args []string) {

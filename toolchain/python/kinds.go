@@ -1,6 +1,6 @@
 package python
 
-import "sourcegraph.com/sourcegraph/srcgraph/graph"
+import "github.com/sourcegraph/srclib/graph"
 
 const (
 	Package = "package"

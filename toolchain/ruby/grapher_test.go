@@ -3,7 +3,7 @@ package ruby
 import (
 	"testing"
 
-	"sourcegraph.com/sourcegraph/srcgraph/graph"
+	"github.com/sourcegraph/srclib/graph"
 )
 
 func TestRubyPathToTreePath(t *testing.T) {

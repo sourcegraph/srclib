@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"github.com/sourcegraph/srclib/unit"
 
 	"github.com/kr/pretty"
 )

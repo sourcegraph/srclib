@@ -1,8 +1,8 @@
 package graph
 
 import (
-	"sourcegraph.com/sourcegraph/srcgraph/db_common"
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
+	"github.com/sourcegraph/srclib/db_common"
+	"github.com/sourcegraph/srclib/repo"
 )
 
 // Docstring

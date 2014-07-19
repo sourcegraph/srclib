@@ -7,7 +7,7 @@ import (
 	"io"
 
 	"github.com/sourcegraph/go-nnz/nnz"
-	"sourcegraph.com/sourcegraph/srcgraph/db_common"
+	"github.com/sourcegraph/srclib/db_common"
 )
 
 // User represents a user.

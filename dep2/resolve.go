@@ -6,9 +6,9 @@ import (
 
 	"sort"
 
-	"sourcegraph.com/sourcegraph/srcgraph/config"
-	"sourcegraph.com/sourcegraph/srcgraph/container"
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
+	"github.com/sourcegraph/srclib/config"
+	"github.com/sourcegraph/srclib/container"
+	"github.com/sourcegraph/srclib/repo"
 )
 
 // Resolvers maps RawDependency.TargetType strings to their registered

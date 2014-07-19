@@ -1,6 +1,6 @@
 package ruby
 
-import "sourcegraph.com/sourcegraph/srcgraph/unit"
+import "github.com/sourcegraph/srclib/unit"
 
 const rubyLibUnitType = "ruby"
 

@@ -1,12 +1,12 @@
-package srcgraph
+package src
 
 import (
 	"flag"
 	"fmt"
 	"log"
 	"os"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
-	"sourcegraph.com/sourcegraph/srcgraph/vcsutil"
+	"github.com/sourcegraph/srclib/unit"
+	"github.com/sourcegraph/srclib/vcsutil"
 )
 
 func blame(args []string) {

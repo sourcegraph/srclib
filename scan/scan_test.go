@@ -4,9 +4,9 @@ import (
 	"reflect"
 	"testing"
 
-	"sourcegraph.com/sourcegraph/srcgraph/config"
-	"sourcegraph.com/sourcegraph/srcgraph/container"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"github.com/sourcegraph/srclib/config"
+	"github.com/sourcegraph/srclib/container"
+	"github.com/sourcegraph/srclib/unit"
 )
 
 type DummyPackage struct {

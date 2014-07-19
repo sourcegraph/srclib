@@ -6,7 +6,7 @@ import (
 
 	"strings"
 
-	"sourcegraph.com/sourcegraph/srcgraph/graph"
+	"github.com/sourcegraph/srclib/graph"
 )
 
 func init() {

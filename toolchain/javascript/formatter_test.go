@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/jmoiron/sqlx/types"
-	"sourcegraph.com/sourcegraph/srcgraph/graph"
+	"github.com/sourcegraph/srclib/graph"
 )
 
 func symbolDataJSON(si symbolData) types.JsonText {

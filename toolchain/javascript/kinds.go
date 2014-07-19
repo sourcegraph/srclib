@@ -3,7 +3,7 @@ package javascript
 import (
 	"strings"
 
-	"sourcegraph.com/sourcegraph/srcgraph/graph"
+	"github.com/sourcegraph/srclib/graph"
 )
 
 const (

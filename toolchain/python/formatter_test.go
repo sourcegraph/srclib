@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/jmoiron/sqlx/types"
-	"sourcegraph.com/sourcegraph/srcgraph/graph"
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
+	"github.com/sourcegraph/srclib/graph"
+	"github.com/sourcegraph/srclib/repo"
 )
 
 func TestSymbolFormatter_Name(t *testing.T) {

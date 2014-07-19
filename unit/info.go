@@ -1,7 +1,7 @@
 package unit
 
 import (
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
+	"github.com/sourcegraph/srclib/repo"
 )
 
 // Info is implemented by source units that want to provide additional

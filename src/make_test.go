@@ -1,4 +1,4 @@
-package srcgraph
+package src
 
 import (
 	"bytes"
@@ -12,8 +12,8 @@ import (
 	"strings"
 	"sync"
 
-	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
-	"sourcegraph.com/sourcegraph/srcgraph/util2"
+	"github.com/sourcegraph/srclib/buildstore"
+	"github.com/sourcegraph/srclib/util2"
 
 	"testing"
 

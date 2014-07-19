@@ -1,4 +1,4 @@
-package srcgraph
+package src
 
 import (
 	"encoding/json"
@@ -10,10 +10,10 @@ import (
 	"strings"
 
 	"github.com/sourcegraph/go-vcs/vcs"
-	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
-	"sourcegraph.com/sourcegraph/srcgraph/config"
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
-	"sourcegraph.com/sourcegraph/srcgraph/scan"
+	"github.com/sourcegraph/srclib/buildstore"
+	"github.com/sourcegraph/srclib/config"
+	"github.com/sourcegraph/srclib/repo"
+	"github.com/sourcegraph/srclib/scan"
 )
 
 type RepoContext struct {

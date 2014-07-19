@@ -8,9 +8,9 @@ import (
 	"sync"
 
 	"code.google.com/p/rog-go/parallel"
-	"sourcegraph.com/sourcegraph/srcgraph/config"
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"github.com/sourcegraph/srclib/config"
+	"github.com/sourcegraph/srclib/repo"
+	"github.com/sourcegraph/srclib/unit"
 )
 
 // Scanner implementations scan for source units in a repository.

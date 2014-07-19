@@ -1,4 +1,4 @@
-package srcgraph
+package src
 
 import (
 	"flag"
@@ -7,7 +7,7 @@ import (
 	"os"
 
 	client "github.com/sourcegraph/go-sourcegraph/sourcegraph"
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
+	"github.com/sourcegraph/srclib/repo"
 )
 
 func repoCreate(args []string) {

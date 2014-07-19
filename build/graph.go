@@ -5,11 +5,11 @@ import (
 	"path/filepath"
 
 	"github.com/sourcegraph/makex"
-	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
-	"sourcegraph.com/sourcegraph/srcgraph/config"
-	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
-	_ "sourcegraph.com/sourcegraph/srcgraph/toolchain/all_toolchains"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"github.com/sourcegraph/srclib/buildstore"
+	"github.com/sourcegraph/srclib/config"
+	"github.com/sourcegraph/srclib/grapher2"
+	_ "github.com/sourcegraph/srclib/toolchain/all_toolchains"
+	"github.com/sourcegraph/srclib/unit"
 )
 
 func init() {

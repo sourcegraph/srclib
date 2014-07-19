@@ -1,4 +1,4 @@
-package srcgraph
+package src
 
 import (
 	"bytes"
@@ -13,8 +13,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"github.com/sourcegraph/srclib/buildstore"
+	"github.com/sourcegraph/srclib/unit"
 )
 
 func isDir(dir string) bool {

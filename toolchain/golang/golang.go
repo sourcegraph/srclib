@@ -9,13 +9,13 @@ import (
 	"text/template"
 
 	"github.com/sourcegraph/go-vcsurl"
-	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
-	"sourcegraph.com/sourcegraph/srcgraph/config"
-	"sourcegraph.com/sourcegraph/srcgraph/container"
-	"sourcegraph.com/sourcegraph/srcgraph/dep2"
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
-	"sourcegraph.com/sourcegraph/srcgraph/toolchain"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"github.com/sourcegraph/srclib/buildstore"
+	"github.com/sourcegraph/srclib/config"
+	"github.com/sourcegraph/srclib/container"
+	"github.com/sourcegraph/srclib/dep2"
+	"github.com/sourcegraph/srclib/repo"
+	"github.com/sourcegraph/srclib/toolchain"
+	"github.com/sourcegraph/srclib/unit"
 )
 
 func init() {

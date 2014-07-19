@@ -6,8 +6,8 @@ import (
 
 	"strings"
 
-	"sourcegraph.com/sourcegraph/srcgraph/graph"
-	"sourcegraph.com/sourcegraph/srcgraph/toolchain/golang/gog"
+	"github.com/sourcegraph/srclib/graph"
+	"github.com/sourcegraph/srclib/toolchain/golang/gog"
 )
 
 func init() {

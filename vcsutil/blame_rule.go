@@ -6,10 +6,10 @@ import (
 
 	"github.com/sourcegraph/makex"
 
-	"sourcegraph.com/sourcegraph/srcgraph/build"
-	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
-	"sourcegraph.com/sourcegraph/srcgraph/config"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"github.com/sourcegraph/srclib/build"
+	"github.com/sourcegraph/srclib/buildstore"
+	"github.com/sourcegraph/srclib/config"
+	"github.com/sourcegraph/srclib/unit"
 )
 
 func init() {

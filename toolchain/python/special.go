@@ -1,9 +1,9 @@
 package python
 
 import (
-	"sourcegraph.com/sourcegraph/srcgraph/dep2"
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"github.com/sourcegraph/srclib/dep2"
+	"github.com/sourcegraph/srclib/repo"
+	"github.com/sourcegraph/srclib/unit"
 )
 
 type repoUnit struct {

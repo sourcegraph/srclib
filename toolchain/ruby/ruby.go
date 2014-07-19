@@ -6,9 +6,9 @@ import (
 
 	"sync"
 
-	"sourcegraph.com/sourcegraph/srcgraph/config"
-	"sourcegraph.com/sourcegraph/srcgraph/dep2"
-	"sourcegraph.com/sourcegraph/srcgraph/toolchain"
+	"github.com/sourcegraph/srclib/config"
+	"github.com/sourcegraph/srclib/dep2"
+	"github.com/sourcegraph/srclib/toolchain"
 )
 
 func init() {
