@@ -1,4 +1,4 @@
-package srcgraph
+package src
 
 import (
 	"flag"
@@ -9,7 +9,7 @@ import (
 
 	"sourcegraph.com/sourcegraph/conf"
 	client "github.com/sourcegraph/go-sourcegraph/sourcegraph"
-	"sourcegraph.com/sourcegraph/srcgraph/task2"
+	"github.com/sourcegraph/srclib/task2"
 )
 
 var (

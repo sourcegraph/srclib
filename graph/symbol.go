@@ -8,7 +8,7 @@ import (
 	"strconv"
 
 	"github.com/jmoiron/sqlx/types"
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
+	"github.com/sourcegraph/srclib/repo"
 )
 
 type (

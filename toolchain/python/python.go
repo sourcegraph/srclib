@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
-	"sourcegraph.com/sourcegraph/srcgraph/toolchain"
+	"github.com/sourcegraph/srclib/repo"
+	"github.com/sourcegraph/srclib/toolchain"
 )
 
 const (

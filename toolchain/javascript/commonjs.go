@@ -3,8 +3,8 @@ package javascript
 import (
 	"encoding/json"
 
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"github.com/sourcegraph/srclib/repo"
+	"github.com/sourcegraph/srclib/unit"
 )
 
 const commonJSPackageUnitType = "CommonJSPackage"

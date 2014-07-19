@@ -5,9 +5,9 @@ import (
 	"reflect"
 	"testing"
 
-	"sourcegraph.com/sourcegraph/srcgraph/graph"
-	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"github.com/sourcegraph/srclib/graph"
+	"github.com/sourcegraph/srclib/grapher2"
+	"github.com/sourcegraph/srclib/unit"
 )
 
 func Test_GrapherTransform(t *testing.T) {

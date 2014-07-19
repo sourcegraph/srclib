@@ -1,4 +1,4 @@
-package srcgraph
+package src
 
 import (
 	"flag"
@@ -12,7 +12,7 @@ import (
 
 	"github.com/sourcegraph/rwvfs"
 
-	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
+	"github.com/sourcegraph/srclib/buildstore"
 	client "github.com/sourcegraph/go-sourcegraph/sourcegraph"
 )
 

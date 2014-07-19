@@ -1,6 +1,6 @@
 package python
 
-import "sourcegraph.com/sourcegraph/srcgraph/config"
+import "github.com/sourcegraph/srclib/config"
 
 func init() {
 	config.Register("python", &Config{})

@@ -1,4 +1,4 @@
-package srcgraph
+package src
 
 import (
 	"flag"
@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 
 	"github.com/sourcegraph/makex"
-	"sourcegraph.com/sourcegraph/srcgraph/build"
-	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
+	"github.com/sourcegraph/srclib/build"
+	"github.com/sourcegraph/srclib/buildstore"
 )
 
 var testBuildDataDirName = buildstore.BuildDataDirName + "-exp"

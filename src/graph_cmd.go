@@ -1,4 +1,4 @@
-package srcgraph
+package src
 
 import (
 	"flag"
@@ -6,8 +6,8 @@ import (
 	"log"
 	"os"
 
-	"sourcegraph.com/sourcegraph/srcgraph/grapher2"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"github.com/sourcegraph/srclib/grapher2"
+	"github.com/sourcegraph/srclib/unit"
 )
 
 func graph_(args []string) {

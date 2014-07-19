@@ -1,4 +1,4 @@
-package srcgraph
+package src
 
 import (
 	"flag"
@@ -6,8 +6,8 @@ import (
 	"log"
 	"os"
 
-	"sourcegraph.com/sourcegraph/srcgraph/dep2"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"github.com/sourcegraph/srclib/dep2"
+	"github.com/sourcegraph/srclib/unit"
 )
 
 func listDeps(args []string) {

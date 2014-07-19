@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"sourcegraph.com/sourcegraph/srcgraph/toolchain/golang/gog"
+	"github.com/sourcegraph/srclib/toolchain/golang/gog"
 )
 
 var buildTags = flag.String("tags", "", "a list of build tags to consider satisfied")

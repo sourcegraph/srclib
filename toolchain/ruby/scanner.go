@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"path/filepath"
 
-	"sourcegraph.com/sourcegraph/srcgraph/config"
-	"sourcegraph.com/sourcegraph/srcgraph/container"
-	"sourcegraph.com/sourcegraph/srcgraph/scan"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"github.com/sourcegraph/srclib/config"
+	"github.com/sourcegraph/srclib/container"
+	"github.com/sourcegraph/srclib/scan"
+	"github.com/sourcegraph/srclib/unit"
 )
 
 func init() {

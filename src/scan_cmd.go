@@ -1,4 +1,4 @@
-package srcgraph
+package src
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"github.com/sourcegraph/srclib/unit"
 )
 
 func scan_(args []string) {

@@ -1,6 +1,6 @@
 package graph
 
-import "sourcegraph.com/sourcegraph/srcgraph/repo"
+import "github.com/sourcegraph/srclib/repo"
 
 // GoInterfaceMethod represents a Go interface method defined by an Go interface
 // symbol or implemented by a Go type symbol. It is used for finding all

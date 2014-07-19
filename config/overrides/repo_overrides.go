@@ -7,12 +7,12 @@
 package overrides
 
 import (
-	"sourcegraph.com/sourcegraph/srcgraph/config"
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
-	"sourcegraph.com/sourcegraph/srcgraph/toolchain/javascript"
-	"sourcegraph.com/sourcegraph/srcgraph/toolchain/python"
-	"sourcegraph.com/sourcegraph/srcgraph/toolchain/ruby"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"github.com/sourcegraph/srclib/config"
+	"github.com/sourcegraph/srclib/repo"
+	"github.com/sourcegraph/srclib/toolchain/javascript"
+	"github.com/sourcegraph/srclib/toolchain/python"
+	"github.com/sourcegraph/srclib/toolchain/ruby"
+	"github.com/sourcegraph/srclib/unit"
 )
 
 func init() {

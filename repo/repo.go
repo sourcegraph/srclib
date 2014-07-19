@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/sourcegraph/go-nnz/nnz"
-	"sourcegraph.com/sourcegraph/srcgraph/person"
+	"github.com/sourcegraph/srclib/person"
 )
 
 // RID is the numeric primary key for a repository.

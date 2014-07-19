@@ -12,8 +12,8 @@ import (
 
 	"github.com/sourcegraph/srcscan"
 	"sourcegraph.com/sourcegraph/dep"
-	"sourcegraph.com/sourcegraph/srcgraph/graph"
-	"sourcegraph.com/sourcegraph/srcgraph/repo"
+	"github.com/sourcegraph/srclib/graph"
+	"github.com/sourcegraph/srclib/repo"
 	"sourcegraph.com/sourcegraph/util"
 )
 

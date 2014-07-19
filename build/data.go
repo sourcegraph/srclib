@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
-	"sourcegraph.com/sourcegraph/srcgraph/unit"
+	"github.com/sourcegraph/srclib/buildstore"
+	"github.com/sourcegraph/srclib/unit"
 )
 
 func RepositoryCommitDataFilename(emptyData interface{}) string {
