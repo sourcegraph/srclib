@@ -20,15 +20,7 @@
     }
   },
   "HunkMap": {
-    "app/__init__.py": [
-      {
-        "CommitID": "d75909f7fe60aedfa57b315419c4221b96e16dbe",
-        "LineStart": 0,
-        "LineEnd": 0,
-        "CharStart": 0,
-        "CharEnd": 24
-      }
-    ],
+    "app/__init__.py": null,
     "app/app.py": [
       {
         "CommitID": "d75909f7fe60aedfa57b315419c4221b96e16dbe",
