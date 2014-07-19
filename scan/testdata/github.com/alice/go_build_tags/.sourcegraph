@@ -1,2 +1,0 @@
-[env.go]
-build_tags = ["foo"]

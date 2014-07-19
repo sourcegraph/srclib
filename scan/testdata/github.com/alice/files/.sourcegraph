@@ -1,3 +1,0 @@
-[[source_unit]]
-type = "GoPackage"
-files = ["include.go"]
