@@ -8540,6 +8540,15 @@
       "LastCommitID": "5508c653b7dd60bb17ff80433673bc56dc42ce3c"
     },
     {
+      "SymbolPath": "String/$methods/each_byte",
+      "File": "lib/uri/rfc2396_parser.rb",
+      "Start": 8703,
+      "End": 8712,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-07-04T10:14:46Z",
+      "LastCommitID": "5508c653b7dd60bb17ff80433673bc56dc42ce3c"
+    },
+    {
       "SymbolPath": "String/$methods/each_char",
       "Def": true,
       "File": "string.c",
@@ -8625,6 +8634,15 @@
       "File": "string.c",
       "Start": 105994,
       "End": 105999,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-07-04T10:14:46Z",
+      "LastCommitID": "5508c653b7dd60bb17ff80433673bc56dc42ce3c"
+    },
+    {
+      "SymbolPath": "String/$methods/gsub!",
+      "File": "lib/uri/common.rb",
+      "Start": 12210,
+      "End": 12215,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2014-07-04T10:14:46Z",
       "LastCommitID": "5508c653b7dd60bb17ff80433673bc56dc42ce3c"
@@ -8815,6 +8833,24 @@
       "File": "string.c",
       "Start": 181938,
       "End": 181941,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-07-04T10:14:46Z",
+      "LastCommitID": "5508c653b7dd60bb17ff80433673bc56dc42ce3c"
+    },
+    {
+      "SymbolPath": "String/$methods/ord",
+      "File": "lib/uri/generic.rb",
+      "Start": 20029,
+      "End": 20032,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2014-07-04T10:14:46Z",
+      "LastCommitID": "5508c653b7dd60bb17ff80433673bc56dc42ce3c"
+    },
+    {
+      "SymbolPath": "String/$methods/ord",
+      "File": "lib/uri/generic.rb",
+      "Start": 22262,
+      "End": 22265,
       "AuthorEmail": "qslack@qslack.com",
       "LastCommitDate": "2014-07-04T10:14:46Z",
       "LastCommitID": "5508c653b7dd60bb17ff80433673bc56dc42ce3c"
@@ -27328,7 +27364,7 @@
       "SymbolRepo": "",
       "SymbolUnitType": null,
       "SymbolUnit": null,
-      "RefCount": 2088
+      "RefCount": 2092
     }
   ]
 }

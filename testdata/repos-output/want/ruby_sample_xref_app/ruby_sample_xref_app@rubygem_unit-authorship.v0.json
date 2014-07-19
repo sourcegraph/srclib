@@ -847,6 +847,15 @@
       "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
     },
     {
+      "SymbolPath": "Article/$methods/initialize",
+      "File": "lib/use_tire.rb",
+      "Start": 3449,
+      "End": 3452,
+      "AuthorEmail": "qslack@qslack.com",
+      "LastCommitDate": "2013-10-21T01:58:22Z",
+      "LastCommitID": "07254ba7404c09dc719e3c96647e8729ed8a0feb"
+    },
+    {
       "SymbolPath": "Article/$methods/published_on",
       "Def": true,
       "File": "lib/use_tire.rb",
@@ -4936,7 +4945,7 @@
       "SymbolRepo": "",
       "SymbolUnitType": null,
       "SymbolUnit": null,
-      "RefCount": 281
+      "RefCount": 282
     }
   ]
 }

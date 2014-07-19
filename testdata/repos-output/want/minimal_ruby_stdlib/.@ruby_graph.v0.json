@@ -4553,7 +4553,7 @@
       "Exported": true,
       "Data": {
         "RubyKind": "method",
-        "TypeString": "",
+        "TypeString": "URI.encode_www_form_component",
         "Module": "URI",
         "RubyPath": "URI.encode_www_form_component",
         "Signature": "self.encode_www_form_component(str, enc=nil)",
@@ -4591,11 +4591,11 @@
       "Exported": true,
       "Data": {
         "RubyKind": "method",
-        "TypeString": "",
+        "TypeString": "URI.get_encoding",
         "Module": "URI",
         "RubyPath": "URI.get_encoding",
         "Signature": "self.get_encoding(label)",
-        "ReturnType": ""
+        "ReturnType": "NilClass#"
       }
     },
     {
@@ -12115,7 +12115,7 @@
       "Exported": true,
       "Data": {
         "RubyKind": "localvariable",
-        "TypeString": "",
+        "TypeString": "String#",
         "Module": "URI",
         "RubyPath": "URI::RFC2396_Parser\u003e_local_0\u003e#escape\u003e@block_local_0\u003etmp",
         "Signature": "",
@@ -12134,7 +12134,7 @@
       "Exported": true,
       "Data": {
         "RubyKind": "localvariable",
-        "TypeString": "",
+        "TypeString": "String#",
         "Module": "URI",
         "RubyPath": "URI::RFC2396_Parser\u003e_local_0\u003e#escape\u003e@block_local_0\u003eus",
         "Signature": "",
@@ -14167,7 +14167,7 @@
       "Exported": true,
       "Data": {
         "RubyKind": "localvariable",
-        "TypeString": "",
+        "TypeString": "NilClass#",
         "Module": "URI",
         "RubyPath": "URI\u003e_local_9\u003edecode_www_form\u003e@block_local_0\u003ee",
         "Signature": "",
@@ -14186,7 +14186,7 @@
       "Exported": true,
       "Data": {
         "RubyKind": "localvariable",
-        "TypeString": "",
+        "TypeString": "NilClass#",
         "Module": "URI",
         "RubyPath": "URI\u003e_local_9\u003edecode_www_form\u003e@block_local_0\u003eenc",
         "Signature": "",
@@ -14205,7 +14205,7 @@
       "Exported": true,
       "Data": {
         "RubyKind": "localvariable",
-        "TypeString": "",
+        "TypeString": "FalseClass#",
         "Module": "URI",
         "RubyPath": "URI\u003e_local_9\u003edecode_www_form\u003e@block_local_0\u003eisindex",
         "Signature": "",
@@ -14224,7 +14224,7 @@
       "Exported": true,
       "Data": {
         "RubyKind": "localvariable",
-        "TypeString": "",
+        "TypeString": "String#",
         "Module": "URI",
         "RubyPath": "URI\u003e_local_9\u003edecode_www_form\u003e@block_local_0\u003ekey",
         "Signature": "",
@@ -14262,7 +14262,7 @@
       "Exported": true,
       "Data": {
         "RubyKind": "localvariable",
-        "TypeString": "",
+        "TypeString": "FalseClass#",
         "Module": "URI",
         "RubyPath": "URI\u003e_local_9\u003edecode_www_form\u003e@block_local_0\u003euse__charset_",
         "Signature": "",
@@ -14281,7 +14281,7 @@
       "Exported": true,
       "Data": {
         "RubyKind": "localvariable",
-        "TypeString": "",
+        "TypeString": "String#",
         "Module": "URI",
         "RubyPath": "URI\u003e_local_9\u003edecode_www_form\u003e@block_local_0\u003eval",
         "Signature": "",
@@ -15633,6 +15633,17 @@
       "SymbolUnitType": "",
       "SymbolUnit": "",
       "SymbolPath": "String/$methods/each_byte",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/uri/rfc2396_parser.rb",
+      "Start": 8703,
+      "End": 8712
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "String/$methods/each_byte",
       "Def": true,
       "Repo": "",
       "File": "string.c",
@@ -15726,6 +15737,17 @@
       "File": "string.c",
       "Start": 109688,
       "End": 109695
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "String/$methods/gsub!",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/uri/common.rb",
+      "Start": 12210,
+      "End": 12215
     },
     {
       "SymbolRepo": "",
@@ -15935,6 +15957,28 @@
       "File": "string.c",
       "Start": 180086,
       "End": 180089
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "String/$methods/ord",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/uri/generic.rb",
+      "Start": 20029,
+      "End": 20032
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "String/$methods/ord",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/uri/generic.rb",
+      "Start": 22262,
+      "End": 22265
     },
     {
       "SymbolRepo": "",
