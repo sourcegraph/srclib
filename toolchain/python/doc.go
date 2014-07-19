@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"sourcegraph.com/sourcegraph/doc"
+	"github.com/sourcegraph/srclib/doc"
 )
 
 var rstDirectiveRegex = regexp.MustCompile(`\.\. [a-zA-Z]+:: `)
