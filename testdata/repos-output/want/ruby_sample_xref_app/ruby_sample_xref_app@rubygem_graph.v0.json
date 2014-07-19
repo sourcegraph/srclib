@@ -12,7 +12,7 @@
       "Exported": true,
       "Data": {
         "RubyKind": "class",
-        "TypeString": "",
+        "TypeString": "Article",
         "Module": "",
         "RubyPath": "Article",
         "Signature": "",
@@ -753,7 +753,7 @@
       "Exported": true,
       "Data": {
         "RubyKind": "localvariable",
-        "TypeString": "",
+        "TypeString": "Article#",
         "Module": "",
         "RubyPath": "file:lib/use_tire.rb_local_0\u003e@block_local_1\u003earticle",
         "Signature": "",
@@ -1583,6 +1583,17 @@
       "File": "lib/use_tire.rb",
       "Start": 2820,
       "End": 2830
+    },
+    {
+      "SymbolRepo": "",
+      "SymbolUnitType": "",
+      "SymbolUnit": "",
+      "SymbolPath": "Article/$methods/initialize",
+      "Def": false,
+      "Repo": "",
+      "File": "lib/use_tire.rb",
+      "Start": 3449,
+      "End": 3452
     },
     {
       "SymbolRepo": "",
