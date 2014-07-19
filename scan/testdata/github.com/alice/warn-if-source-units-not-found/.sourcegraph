@@ -1,5 +1,0 @@
-[[source_unit]]
-dir = "doesntexist"
-
-[[source_unit]]
-type = "DoesntExist"
