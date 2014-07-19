@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"sourcegraph.com/sourcegraph/conf"
-	"sourcegraph.com/sourcegraph/srcgraph/client"
+	client "github.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"sourcegraph.com/sourcegraph/srcgraph/task2"
 )
 

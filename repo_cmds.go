@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"sourcegraph.com/sourcegraph/srcgraph/client"
+	client "github.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"sourcegraph.com/sourcegraph/srcgraph/repo"
 )
 

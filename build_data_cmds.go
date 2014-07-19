@@ -13,7 +13,7 @@ import (
 	"github.com/sourcegraph/rwvfs"
 
 	"sourcegraph.com/sourcegraph/srcgraph/buildstore"
-	"sourcegraph.com/sourcegraph/srcgraph/client"
+	client "github.com/sourcegraph/go-sourcegraph/sourcegraph"
 )
 
 func dataCmd(args []string) {

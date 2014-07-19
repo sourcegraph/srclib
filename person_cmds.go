@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"sourcegraph.com/sourcegraph/srcgraph/client"
+	client "github.com/sourcegraph/go-sourcegraph/sourcegraph"
 )
 
 const PersonSpecHelp = `Specify UIDs as '$n' (use \$n to shell-escape), as in '$123' for UID 123.`
