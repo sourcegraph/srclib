@@ -1,15 +1,5 @@
 {
   "Symbols": {
-    "app": [
-      {
-        "AuthorEmail": "beyang.liu@gmail.com",
-        "LastCommitDate": "2014-05-10T06:52:01Z",
-        "LastCommitID": "d75909f7fe60aedfa57b315419c4221b96e16dbe",
-        "Exported": true,
-        "Chars": 1,
-        "CharsProportion": 1
-      }
-    ],
     "app/app": [
       {
         "AuthorEmail": "beyang.liu@gmail.com",
@@ -159,9 +149,9 @@
       "AuthorEmail": "beyang.liu@gmail.com",
       "LastCommitDate": "2014-06-18T23:49:22Z",
       "LastCommitID": "7903b0746678790682fdc3ec026b62e39bd4d318",
-      "SymbolCount": 4,
+      "SymbolCount": 3,
       "SymbolsProportion": 1,
-      "ExportedSymbolCount": 3,
+      "ExportedSymbolCount": 2,
       "ExportedSymbolsProportion": 1
     }
   ],

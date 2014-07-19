@@ -1,15 +1,5 @@
 {
   "Symbols": {
-    "pkg0": [
-      {
-        "AuthorEmail": "beyang.liu@gmail.com",
-        "LastCommitDate": "2014-04-10T01:16:55Z",
-        "LastCommitID": "32e0923598cfbdb37b402ac6f310e819fd2c6630",
-        "Exported": true,
-        "Chars": 1,
-        "CharsProportion": 1
-      }
-    ],
     "pkg0/m0": [
       {
         "AuthorEmail": "beyang.liu@gmail.com",
@@ -1047,9 +1037,9 @@
       "AuthorEmail": "beyang.liu@gmail.com",
       "LastCommitDate": "2014-04-10T01:24:27Z",
       "LastCommitID": "353aa7e690cb569ef14712500977c8a5b8fe1ab3",
-      "SymbolCount": 31,
+      "SymbolCount": 30,
       "SymbolsProportion": 1,
-      "ExportedSymbolCount": 12,
+      "ExportedSymbolCount": 11,
       "ExportedSymbolsProportion": 1
     }
   ],
