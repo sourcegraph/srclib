@@ -41,50 +41,48 @@ value is a colon-separated string of paths. If it is empty, `~/.srclib` is used.
 If DIR is a directory listed in SRCLIBPATH, the directory
 "DIR/github.com/foo/bar" defines a tool named "github.com/foo/bar".
 
+Tool directories may contain a Srclibtool file describing and configuring the
+tool. Tools with a Srclibtool file will appear in the list printed by `src
+tools`. However, a Srclibtool file is not required to run the tool.
+
 TODO(sqs): Add a way to enumerate all available tools. Add a notion of a
 toolchain that groups/describes the tools within it.
 
 
 # Running tools
 
-There are 2 ways to run srclib tools:
+There are 2 modes of execution for srclib tools:
 
-1. Inside a Docker container: to produce analysis independent of your local
+1. As a normal **installed program** on your system: to produce analysis
+   that relies on locally installed compiler/interpreter and dependency
+   versions. (Used when you'll consume the analysis results locally, such as
+   during editing of local code.)
+   
+   A directly runnable tool is any program in your `PATH` named `src-tool-*`.
+   These programs must already be installed in your system.
+1. Inside a **Docker container**: to produce analysis independent of your local
    configuration and versions. (Used when other people or services will reuse
    the analysis results, such as on [Sourcegraph](https://sourcegraph.com).)
-1. Directly, as a normal program on your system: to produce analysis that relies
-   on locally installed compiler/interpreter and dependency versions. (Used when
-   you'll consume the analysis results locally, such as during editing of local
-   code.)
    
-Tools may support either or both of these execution methods.
+   A Docker-containerized tool is a directory (under SRCLIBPATH) that contains a
+   Dockerfile. There is no installation necessary for these tools; the `src` tool
+   knows how to build and run their Docker container.
+   
+Tools may support either or both of these execution modes.
 
-## Docker-containerized tools
+To run a tool, run:
 
-A tool whose directory (under SRCLIBPATH) contains a Dockerfile can be run
-within a Docker container built using that Dockerfile.
+```
+src tool TOOL [ARG...]
+```
 
-## Directly runnable tools
+The `TOOL` argument can be either the
+last part of an installed program's name (e.g., `foo` in `src-tool-foo`), or the
+name of a Dockerized tool in your SRCLIBPATH (e.g.,
+`github.com/alice/srclib-python`).
 
-A tool whose directory (under SRCLIBPATH) contains a Dockerfile with an
-`ENTRYPOINT` instruction can be run directly.
 
-When running directly, it's assumed that your local machine already has been
-configured such that the Dockerfile's `ENTRYPOINT` will also invoke the correct
-program locally. If this is not the case, you may override the entrypoint with
-the `X-SRCLIB-DIRECT-ENTRYPOINT` directive. (Docker ignores unrecognized
-directives such as this one.) It's recommended to create your Dockerfiles so
-that their `ENTRYPOINT` is also the command that you'd run locally to invoke the
-tool.
-
-TODO(sqs): Implement `X-SRCLIB-DIRECT-ENTRYPOINT`.
-
-Note: Using the Dockerfile to determine how to run the tool directly is a
-short-term hack. We'll probably come up with a better solution.
-
-## Example
-
-See [srclib-sample](https://github.com/sourcegraph/srclib-sample).
+See [srclib-sample](https://github.com/sourcegraph/srclib-sample) an example.
 
 
 # Tool specifications

@@ -16,7 +16,7 @@ type DummyPackage struct {
 func (_ DummyPackage) ID() string      { return "foo" }
 func (_ DummyPackage) Name() string    { return "foo" }
 func (_ DummyPackage) RootDir() string { return "foo" }
-func (p DummyPackage) Paths() []string { return []string{p.Dir} }
+func (p DummyPackage) Files() []string { return []string{p.Dir} }
 
 type DummyScanner struct{}
 

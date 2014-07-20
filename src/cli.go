@@ -87,6 +87,7 @@ type Subcommand struct {
 }
 
 var Subcommands = []Subcommand{
+	{"tools", "list available tools", toolsCmd},
 	{"tool", "run a tool", toolCmd},
 	{"make", "make a repository", make_},
 	{"makefile", "print the Makefile and exit", makefile},

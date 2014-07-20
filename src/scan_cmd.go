@@ -29,7 +29,7 @@ The options are:
 
 	for _, u := range context.Repo.SourceUnits {
 		fmt.Printf("## %s\n", u.ID())
-		for _, p := range u.Paths {
+		for _, p := range u.Files {
 			fmt.Printf("  %s\n", p)
 		}
 		if *Verbose {

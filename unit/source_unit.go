@@ -20,8 +20,8 @@ type SourceUnit struct {
 	// Type is the type of source unit this represents, such as "GoPackage".
 	Type string
 
-	// Paths is all of the files that make up this source unit.
-	Paths []string
+	// Files is all of the files that make up this source unit.
+	Files []string
 
 	// Info is an optional field that contains additional information used to
 	// display the source unit

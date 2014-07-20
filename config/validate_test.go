@@ -17,7 +17,7 @@ type DummyPackage struct {
 func (_ DummyPackage) ID() string      { return "dummy" }
 func (_ DummyPackage) Name() string    { return "dummy" }
 func (_ DummyPackage) RootDir() string { return "dummy" }
-func (p DummyPackage) Paths() []string { return []string{p.Dir} }
+func (p DummyPackage) Files() []string { return []string{p.Dir} }
 
 func unregisterSourceUnitType(name string) {
 	delete(unit.TypeNames, reflect.TypeOf(unit.Types[name]))

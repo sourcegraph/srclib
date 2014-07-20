@@ -58,7 +58,7 @@ func (r *ListSourceUnitDepsRule) Target() string {
 }
 
 func (r *ListSourceUnitDepsRule) Prereqs() []string {
-	return r.unit.Paths
+	return r.unit.Files
 }
 
 func (r *ListSourceUnitDepsRule) Recipes() []string {
