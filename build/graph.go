@@ -33,7 +33,7 @@ func (r *GraphUnitRule) Target() string {
 	return filepath.Join(r.dataDir, SourceUnitDataFilename(&grapher2.Output{}, r.Unit))
 }
 
-func (r *GraphUnitRule) Prereqs() []string { return r.Unit.Paths }
+func (r *GraphUnitRule) Prereqs() []string { return r.Unit.Files }
 
 func (r *GraphUnitRule) Recipes() []string {
 	return []string{

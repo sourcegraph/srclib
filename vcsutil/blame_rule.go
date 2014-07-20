@@ -35,7 +35,7 @@ func (r *BlameSourceUnitRule) Target() string {
 	return filepath.Join(r.dataDir, build.SourceUnitDataFilename(&BlameOutput{}, r.Unit))
 }
 
-func (r *BlameSourceUnitRule) Prereqs() []string { return r.Unit.Paths }
+func (r *BlameSourceUnitRule) Prereqs() []string { return r.Unit.Files }
 
 func (r *BlameSourceUnitRule) Recipes() []string {
 	return []string{

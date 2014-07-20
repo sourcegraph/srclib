@@ -7,7 +7,7 @@ import (
 
 func (c *Repository) validate() error {
 	for _, u := range c.SourceUnits {
-		for _, p := range u.Paths {
+		for _, p := range u.Files {
 			p = filepath.Clean(p)
 			if filepath.IsAbs(p) {
 				return ErrInvalidFilePath

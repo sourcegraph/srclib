@@ -36,16 +36,16 @@ The options are:
 			continue
 		}
 
-		files, err := unit.ExpandPaths(context.RepoRootDir, u.Files)
+		paths, err := unit.ExpandFiles(context.RepoRootDir, u.Files)
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		var out *vcsutil.BlameOutput
-		if files == nil {
+		if paths == nil {
 			out, err = vcsutil.BlameRepository(context.RepoRootDir, context.CommitID, context.Repo)
 		} else {
-			out, err = vcsutil.BlameFiles(context.RepoRootDir, files, context.CommitID, context.Repo)
+			out, err = vcsutil.BlameFiles(context.RepoRootDir, paths, context.CommitID, context.Repo)
 		}
 		if err != nil {
 			log.Fatal(err)
