@@ -81,8 +81,17 @@ last part of an installed program's name (e.g., `foo` in `src-tool-foo`), or the
 name of a Dockerized tool in your SRCLIBPATH (e.g.,
 `github.com/alice/srclib-python`).
 
+For example:
 
-See [srclib-sample](https://github.com/sourcegraph/srclib-sample) an example.
+```
+# To run a tool directly named src-tool-python that's installed in your PATH:
+src tool python
+
+# To run a tool (inside a Docker container) whose repository
+# github.com/alice/srclib-python/scan is in your SRCLIBPATH at
+# ~/.srclib/github.com/alice/srclib-python/scan:
+src tool github.com/alice/srclib-python/scan
+```
 
 
 # Tool specifications
