@@ -66,6 +66,7 @@ func Main() {
 	extraArgs := flag.Args()[1:]
 	if subcmd == "help" {
 		help(extraArgs)
+		return
 	} else {
 		for _, c := range Subcommands {
 			if c.Name == subcmd {
@@ -88,6 +89,7 @@ type Subcommand struct {
 
 var Subcommands = []Subcommand{
 	{"tools", "list available tools", toolsCmd},
+	{"ops", "list operations provided by available tools", opsCmd},
 	{"tool", "run a tool", toolCmd},
 	{"make", "make a repository", make_},
 	{"makefile", "print the Makefile and exit", makefile},
@@ -115,10 +117,11 @@ var Subcommands = []Subcommand{
 
 func help(args []string) {
 	fs := flag.NewFlagSet("help", flag.ExitOnError)
+	quiet := fs.Bool("q", false, "quiet (only show subcommand names)")
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: `+Name+` help command
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` help [command]
 
-Shows information about a `+Name+` command.
+Shows information about a `+Name+` command (if specified).
 
 The options are:
 `)
@@ -127,15 +130,25 @@ The options are:
 	}
 	fs.Parse(args)
 
-	if fs.NArg() != 1 {
-		fs.Usage()
-	}
-
-	subcmd := fs.Arg(0)
-	for _, c := range Subcommands {
-		if c.Name == subcmd {
-			c.Run([]string{"-h"})
-			return
+	switch fs.NArg() {
+	case 0:
+		if !*quiet {
+			flag.Usage()
 		}
+		for _, c := range Subcommands {
+			fmt.Println(c.Name)
+		}
+
+	case 1:
+		subcmd := fs.Arg(0)
+		for _, c := range Subcommands {
+			if c.Name == subcmd {
+				c.Run([]string{"-h"})
+				return
+			}
+		}
+
+	default:
+		fs.Usage()
 	}
 }

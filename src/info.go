@@ -8,7 +8,7 @@ import (
 
 	"github.com/sourcegraph/srclib/build"
 	"github.com/sourcegraph/srclib/buildstore"
-	"github.com/sourcegraph/srclib/toolchain"
+	"github.com/sourcegraph/srclib/tool"
 )
 
 func info(args []string) {
@@ -34,7 +34,7 @@ The options are:
 	log.Println("https://sourcegraph.com/sourcegraph/srclib")
 	log.Println()
 
-	log.Printf("SRCLIBPATH=%q", toolchain.SrclibPath)
+	log.Printf("SRCLIBPATH=%q", tool.SrclibPath)
 	log.Println()
 
 	log.Printf("Build data types (%d)", len(buildstore.DataTypes))

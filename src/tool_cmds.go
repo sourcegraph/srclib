@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/sourcegraph/srclib/toolchain"
+	"github.com/sourcegraph/srclib/tool"
 )
 
 func toolsCmd(args []string) {
@@ -31,7 +31,7 @@ The options are:
 		fs.Usage()
 	}
 
-	tools, err := toolchain.FindAll()
+	tools, err := tool.List()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -45,6 +45,60 @@ The options are:
 			fmt.Println(t.Name())
 		} else {
 			fmt.Printf(fmtStr, t.Name(), t.Type())
+		}
+	}
+}
+
+func opsCmd(args []string) {
+	fs := flag.NewFlagSet("ops", flag.ExitOnError)
+	quiet := fs.Bool("q", false, "quiet (only show op names, no tool names)")
+	common := fs.Bool("common", false, "show all ops (even common subcommands like 'version' and 'help')")
+	toolName := fs.String("tool", "", "only show this tool's ops")
+	fs.Usage = func() {
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` ops [opts]
+
+Prints all available operations that can be performed using the available tools.
+
+Operations provided by tools without a Srclibtool file can still be run, but
+they won't be appear in this list.
+
+The options are:
+`)
+		fs.PrintDefaults()
+		os.Exit(1)
+	}
+	fs.Parse(args)
+
+	if fs.NArg() != 0 {
+		fs.Usage()
+	}
+
+	tools, err := tool.List()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmtStr := "%-12s  %-60s\n"
+	if !*quiet {
+		fmt.Printf(fmtStr, "OP", "TOOL")
+	}
+	for _, t := range tools {
+		if *toolName != "" && t.Name() != *toolName {
+			continue
+		}
+		ops, err := t.Operations()
+		if err != nil {
+			log.Fatal(err)
+		}
+		for _, op := range ops {
+			if _, isCommon := tool.CommonOps[op]; isCommon && !*common {
+				continue
+			}
+			if *quiet {
+				fmt.Println(op)
+			} else {
+				fmt.Printf(fmtStr, op, t.Name())
+			}
 		}
 	}
 }
@@ -69,7 +123,7 @@ The options are:
 
 	toolName, toolArgs := fs.Arg(0), fs.Args()[1:]
 
-	tool, err := toolchain.Lookup(toolName)
+	tool, err := tool.Lookup(toolName)
 	if err != nil {
 		log.Fatal(err)
 	}
