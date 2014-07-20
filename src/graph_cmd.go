@@ -1,3 +1,5 @@
+// +build off
+
 package src
 
 import (
@@ -7,7 +9,6 @@ import (
 	"os"
 
 	"github.com/sourcegraph/srclib/grapher2"
-	"github.com/sourcegraph/srclib/unit"
 )
 
 func graph_(args []string) {
@@ -44,7 +45,7 @@ The options are:
 		}
 
 		if *summary || *Verbose {
-			log.Printf("%s output summary:", unit.MakeID(u))
+			log.Printf("%s output summary:", u.ID())
 			log.Printf(" - %d symbols", len(output.Symbols))
 			log.Printf(" - %d refs", len(output.Refs))
 			log.Printf(" - %d docs", len(output.Docs))

@@ -45,13 +45,13 @@ func cmdOutput(c ...string) string {
 	return strings.TrimSpace(string(out))
 }
 
-func SourceUnitMatchesArgs(specified []string, u unit.SourceUnit) bool {
+func SourceUnitMatchesArgs(specified []string, u *unit.SourceUnit) bool {
 	var match bool
 	if len(specified) == 0 {
 		match = true
 	} else {
 		for _, unitSpec := range specified {
-			if string(unit.MakeID(u)) == unitSpec || u.Name() == unitSpec {
+			if string(u.ID()) == unitSpec || u.Name == unitSpec {
 				match = true
 				break
 			}

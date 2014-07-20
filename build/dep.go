@@ -34,7 +34,7 @@ func makeDepRules(c *config.Repository, dataDir string, existing []makex.Rule) (
 
 type ResolveDepsRule struct {
 	dataDir       string
-	Unit          unit.SourceUnit
+	Unit          *unit.SourceUnit
 	RawDepsOutput string
 }
 
@@ -50,7 +50,7 @@ func (r *ResolveDepsRule) Recipes() []string {
 
 type ListSourceUnitDepsRule struct {
 	dataDir string
-	unit    unit.SourceUnit
+	unit    *unit.SourceUnit
 }
 
 func (r *ListSourceUnitDepsRule) Target() string {
@@ -58,12 +58,12 @@ func (r *ListSourceUnitDepsRule) Target() string {
 }
 
 func (r *ListSourceUnitDepsRule) Prereqs() []string {
-	return r.unit.Paths()
+	return r.unit.Paths
 }
 
 func (r *ListSourceUnitDepsRule) Recipes() []string {
 	return []string{
 		"mkdir -p `dirname $@`",
-		fmt.Sprintf("srcgraph -v list-deps -json %q 1> $@", unit.MakeID(r.unit)),
+		fmt.Sprintf("srcgraph -v list-deps -json %q 1> $@", r.unit.ID()),
 	}
 }

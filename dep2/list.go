@@ -127,7 +127,7 @@ func List(dir string, u unit.SourceUnit, c *config.Repository) ([]*RawDependency
 			}
 
 			for _, d := range deps2 {
-				d.FromUnit, d.FromUnitType = u.Name(), unit.Type(u)
+				d.FromUnit, d.FromUnitType = u.Name, u.Type
 			}
 
 			deps.Lock()

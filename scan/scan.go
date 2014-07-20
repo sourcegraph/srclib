@@ -17,23 +17,7 @@ import (
 type Scanner interface {
 	// Scan returns a list of source units that exist in dir and its
 	// subdirectories. Paths in the source units should be relative to dir.
-	Scan(dir string, c *config.Repository) ([]unit.SourceUnit, error)
-}
-
-// Scanners holds all registered scanners.
-var Scanners = make(map[string]Scanner)
-
-// Register adds a scanner to the list of scanners used to detect source units.
-// If Register is called twice with the same name or if scanner is nil, it
-// panics
-func Register(name string, scanner Scanner) {
-	if _, dup := Scanners[name]; dup {
-		panic("scan: Register called twice for name " + name)
-	}
-	if scanner == nil {
-		panic("scan: Register scanner is nil")
-	}
-	Scanners[name] = scanner
+	Scan(dir string, c *config.Repository) ([]*unit.SourceUnit, error)
 }
 
 var GlobalScanIgnore = []string{
@@ -45,13 +29,13 @@ var GlobalScanIgnore = []string{
 
 // SourceUnits scans dir and its subdirectories for source units, using all
 // registered toolchains that implement Scanner.
-func SourceUnits(dir string, c *config.Repository) ([]unit.SourceUnit, error) {
+func SourceUnits(dir string, c *config.Repository) ([]*unit.SourceUnit, error) {
 	var units struct {
-		u []unit.SourceUnit
+		u []*unit.SourceUnit
 		sync.Mutex
 	}
 	run := parallel.NewRun(runtime.GOMAXPROCS(0))
-	for name_, s_ := range Scanners {
+	for name_, s_ := range []Scanner{} {
 		name, s := name_, s_
 		run.Do(func() error {
 			log.Printf("Scanning %s using %q scanner...", c.URI, name)
@@ -62,18 +46,18 @@ func SourceUnits(dir string, c *config.Repository) ([]unit.SourceUnit, error) {
 			}
 
 			// Ignore source units per the config (ScanIgnore and ScanIgnoreUnitTypes).
-			var units3 []unit.SourceUnit
+			var units3 []*unit.SourceUnit
 			for _, u := range units2 {
 				ignored := false
 				for _, ignoreType := range c.ScanIgnoreUnitTypes {
-					if unit.Type(u) == ignoreType {
+					if u.Type == ignoreType {
 						ignored = true
 						break
 					}
 				}
-				if !ignored && (dirsContains(c.ScanIgnore, u.RootDir()) || dirsContains(GlobalScanIgnore, u.RootDir())) {
-					ignored = true
-				}
+				// TODO(sqs): reimplement some way of respecting c.ScanIgnore
+				// and GlobalScanIgnore (SourceUnit no longer has RootDir()
+				// method).
 				if !ignored {
 					units3 = append(units3, u)
 				}
@@ -106,8 +90,19 @@ func ReadDirConfigAndScan(dir string, repoURI repo.URI) (*config.Repository, err
 	if err != nil {
 		return nil, err
 	}
+
+	existingUnitIDs := make(map[unit.ID]struct{}, len(units))
 	for _, u := range units {
-		c.SourceUnits.AddIfNotExists(u)
+		existingUnitIDs[u.ID()] = struct{}{}
+	}
+
+	for _, u := range units {
+		// Don't add this source unit if one with the same ID already exists.
+		// That indicates that it was overridden and should not be automatically
+		// added.
+		if _, exists := existingUnitIDs[u.ID()]; !exists {
+			c.SourceUnits = append(c.SourceUnits, u)
+		}
 	}
 
 	return c, nil
