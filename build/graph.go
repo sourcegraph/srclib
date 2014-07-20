@@ -8,7 +8,6 @@ import (
 	"github.com/sourcegraph/srclib/buildstore"
 	"github.com/sourcegraph/srclib/config"
 	"github.com/sourcegraph/srclib/grapher2"
-	_ "github.com/sourcegraph/srclib/toolchain/all_toolchains"
 	"github.com/sourcegraph/srclib/unit"
 )
 
@@ -27,18 +26,18 @@ func makeGraphRules(c *config.Repository, dataDir string, existing []makex.Rule)
 
 type GraphUnitRule struct {
 	dataDir string
-	Unit    unit.SourceUnit
+	Unit    *unit.SourceUnit
 }
 
 func (r *GraphUnitRule) Target() string {
 	return filepath.Join(r.dataDir, SourceUnitDataFilename(&grapher2.Output{}, r.Unit))
 }
 
-func (r *GraphUnitRule) Prereqs() []string { return r.Unit.Paths() }
+func (r *GraphUnitRule) Prereqs() []string { return r.Unit.Paths }
 
 func (r *GraphUnitRule) Recipes() []string {
 	return []string{
 		"mkdir -p `dirname $@`",
-		fmt.Sprintf("srcgraph -v graph -json %q 1> $@", unit.MakeID(r.Unit)),
+		fmt.Sprintf("srcgraph -v graph -json %q 1> $@", r.Unit.ID()),
 	}
 }

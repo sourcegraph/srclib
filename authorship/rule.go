@@ -34,18 +34,18 @@ func makeAuthorshipRules(c *config.Repository, dataDir string, existing []makex.
 	for _, rule := range existing {
 		switch rule := rule.(type) {
 		case *build.GraphUnitRule:
-			graphRules[unit.MakeID(rule.Unit)] = rule
+			graphRules[rule.Unit.ID()] = rule
 		case *vcsutil.BlameSourceUnitRule:
-			blameRules[unit.MakeID(rule.Unit)] = rule
+			blameRules[rule.Unit.ID()] = rule
 		}
 	}
 
 	var rules []makex.Rule
 	for unitID, gr := range graphRules {
 		// find unit
-		var u unit.SourceUnit
+		var u *unit.SourceUnit
 		for _, u2 := range c.SourceUnits {
-			if unit.MakeID(u2) == unitID {
+			if u2.ID() == unitID {
 				u = u2
 				break
 			}
@@ -56,7 +56,7 @@ func makeAuthorshipRules(c *config.Repository, dataDir string, existing []makex.
 
 		br, present := blameRules[unitID]
 		if !present {
-			return nil, fmt.Errorf("no blame rule found corresponding to graph rule for unit ID %q", unit.MakeID(u))
+			return nil, fmt.Errorf("no blame rule found corresponding to graph rule for unit ID %q", u.ID())
 		}
 
 		rule := &ComputeUnitAuthorshipRule{
@@ -74,7 +74,7 @@ func makeAuthorshipRules(c *config.Repository, dataDir string, existing []makex.
 
 type ComputeUnitAuthorshipRule struct {
 	dataDir     string
-	Unit        unit.SourceUnit
+	Unit        *unit.SourceUnit
 	BlameOutput string
 	GraphOutput string
 }

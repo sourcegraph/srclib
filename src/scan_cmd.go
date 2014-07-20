@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"github.com/sourcegraph/srclib/unit"
 )
 
 func scan_(args []string) {
@@ -29,8 +28,8 @@ The options are:
 	}
 
 	for _, u := range context.Repo.SourceUnits {
-		fmt.Printf("## %s\n", unit.MakeID(u))
-		for _, p := range u.Paths() {
+		fmt.Printf("## %s\n", u.ID())
+		for _, p := range u.Paths {
 			fmt.Printf("  %s\n", p)
 		}
 		if *Verbose {

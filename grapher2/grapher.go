@@ -18,7 +18,7 @@ import (
 )
 
 type Grapher interface {
-	Graph(dir string, unit unit.SourceUnit, c *config.Repository) (*Output, error)
+	Graph(dir string, unit *unit.SourceUnit, c *config.Repository) (*Output, error)
 }
 
 type Output struct {
@@ -28,14 +28,14 @@ type Output struct {
 }
 
 type GrapherBuilder interface {
-	BuildGrapher(dir string, unit unit.SourceUnit, c *config.Repository) (*container.Command, error)
+	BuildGrapher(dir string, unit *unit.SourceUnit, c *config.Repository) (*container.Command, error)
 }
 
 type DockerGrapher struct {
 	GrapherBuilder
 }
 
-func (g DockerGrapher) Graph(dir string, unit unit.SourceUnit, c *config.Repository) (*Output, error) {
+func (g DockerGrapher) Graph(dir string, unit *unit.SourceUnit, c *config.Repository) (*Output, error) {
 	cmd, err := g.BuildGrapher(dir, unit, c)
 	if err != nil {
 		return nil, err
@@ -71,7 +71,7 @@ func (g DockerGrapher) Graph(dir string, unit unit.SourceUnit, c *config.Reposit
 
 // Graph uses the registered grapher (if any) to graph the source unit (whose repository is cloned to
 // dir).
-func Graph(dir string, u unit.SourceUnit, c *config.Repository) (*Output, error) {
+func Graph(dir string, u *unit.SourceUnit, c *config.Repository) (*Output, error) {
 	g, registered := Graphers[ptrTo(u)]
 	if !registered {
 		return nil, fmt.Errorf("no grapher registered for source unit %T", u)
@@ -84,7 +84,7 @@ func Graph(dir string, u unit.SourceUnit, c *config.Repository) (*Output, error)
 
 	// If the grapher is known to output Unicode character offsets instead of
 	// byte offsets, then convert all offsets to byte offsets.
-	if ut := unit.Type(u); ut != "GoPackage" {
+	if u.Type != "GoPackage" {
 		ensureOffsetsAreByteOffsets(dir, o)
 	}
 

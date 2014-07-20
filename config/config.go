@@ -36,9 +36,9 @@ var (
 )
 
 type Repository struct {
-	URI         repo.URI         `json:",omitempty"`
-	SourceUnits unit.SourceUnits `json:",omitempty"`
-	ScanIgnore  []string         `json:",omitempty"`
+	URI         repo.URI           `json:",omitempty"`
+	SourceUnits []*unit.SourceUnit `json:",omitempty"`
+	ScanIgnore  []string           `json:",omitempty"`
 
 	// ScanIgnoreUnitTypes is a list of source unit type names (e.g.,
 	// "GoPackage") that should be ignored if found by the scanner.

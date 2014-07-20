@@ -12,6 +12,7 @@ import (
 )
 
 var (
+	Version   = "0.0.1"
 	Name      = "srcgraph"
 	ExtraHelp = ""
 )
@@ -86,13 +87,14 @@ type Subcommand struct {
 }
 
 var Subcommands = []Subcommand{
+	{"tool", "run a tool", toolCmd},
 	{"make", "make a repository", make_},
 	{"makefile", "print the Makefile and exit", makefile},
 	{"scan", "scan a repository for source units", scan_},
 	{"config", "validate and print a repository's configuration", config_},
-	{"list-deps", "list a repository's raw (unresolved) dependencies", listDeps},
-	{"resolve-deps", "resolve a repository's raw dependencies", resolveDeps},
-	{"graph", "analyze a repository's source code for definitions and references", graph_},
+	// {"list-deps", "list a repository's raw (unresolved) dependencies", listDeps},
+	// {"resolve-deps", "resolve a repository's raw dependencies", resolveDeps},
+	// {"graph", "analyze a repository's source code for definitions and references", graph_},
 	{"blame", "blame a source unit's source files to determine commit authors", blame},
 	{"authorship", "determine authorship of a source unit's symbols and refs", authorship_},
 	{"data", "list repository data", dataCmd},

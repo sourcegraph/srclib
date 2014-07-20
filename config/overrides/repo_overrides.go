@@ -1,3 +1,6 @@
+// +build off
+// TODO(sqs): reenable
+
 // Package overrides defines overridden configurations for repositories that
 // need special handling. It should be imported for side effects by all main
 // packages that perform analysis work.

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+
 	"github.com/sourcegraph/srclib/unit"
 	"github.com/sourcegraph/srclib/vcsutil"
 )
@@ -35,7 +36,7 @@ The options are:
 			continue
 		}
 
-		paths, err := unit.ExpandPaths(context.RepoRootDir, u.Paths())
+		paths, err := unit.ExpandPaths(context.RepoRootDir, u.Paths)
 		if err != nil {
 			log.Fatal(err)
 		}

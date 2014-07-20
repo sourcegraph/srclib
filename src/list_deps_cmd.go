@@ -1,3 +1,5 @@
+// +build off
+
 package src
 
 import (
@@ -7,7 +9,6 @@ import (
 	"os"
 
 	"github.com/sourcegraph/srclib/dep2"
-	"github.com/sourcegraph/srclib/unit"
 )
 
 func listDeps(args []string) {
@@ -45,7 +46,7 @@ The options are:
 		}
 
 		if *Verbose {
-			log.Printf("%s", unit.MakeID(u))
+			log.Printf("%s", u.ID())
 		}
 
 		allRawDeps = append(allRawDeps, rawDeps...)
