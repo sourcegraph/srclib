@@ -69,7 +69,7 @@ func NewRepoContext(targetDir string) (*RepoContext, error) {
 	}
 	rc.CloneURL = cloneURL
 
-	// updateVCSIgnore("." + rc.VCS.ShortName() + "ignore") // TODO: desirable?
+	updateVCSIgnore("." + rc.VCSType + "ignore")
 	return rc, nil
 }
 

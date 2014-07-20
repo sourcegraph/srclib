@@ -1,7 +1,9 @@
-package toolchain
+package tool
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -47,6 +49,10 @@ type Tool interface {
 	// references to the working directory are consistent.
 	Command(dir string) (*exec.Cmd, error)
 
+	// Operations lists the subcommands that this tool implements, such as
+	// "scan".
+	Operations() ([]string, error)
+
 	// Type is either "installed program" or "Docker container"
 	Type() string
 }
@@ -63,11 +69,26 @@ type ProgramTool struct {
 
 func (t *ProgramTool) Name() string { return t.name }
 func (t *ProgramTool) Type() string { return "installed program" }
+
 func (t *ProgramTool) Build() error { return nil }
+
 func (t *ProgramTool) Command(dir string) (*exec.Cmd, error) {
 	cmd := exec.Command(t.Program)
 	cmd.Dir = dir
 	return cmd, nil
+}
+func (t *ProgramTool) Operations() ([]string, error) {
+	cmd, err := t.Command("")
+	if err != nil {
+		return nil, err
+	}
+	cmd.Args = append(cmd.Args, "help", "-q")
+	cmd.Stderr = os.Stderr
+	out, err := cmd.Output()
+	if err != nil {
+		return nil, err
+	}
+	return strings.Split(strings.TrimSpace(string(out)), "\n"), nil
 }
 
 // DockerTool is a Docker container that wraps a program.
@@ -90,15 +111,17 @@ type DockerTool struct {
 
 func (t *DockerTool) Name() string { return t.name }
 func (t *DockerTool) Type() string { return "Docker container" }
+
 func (t *DockerTool) Build() error {
 	t.ImageName = strings.Replace(t.name, "/", "-", -1)
 
-	cmd := exec.Command("docker", "build", "-t", t.ImageName, t.Dir)
+	cmd := exec.Command("docker", "build", "-t", t.ImageName, ".")
+	cmd.Dir = t.Dir
 	cmd.Stdout = os.Stderr
 	cmd.Stderr = os.Stderr
 
 	if err := cmd.Run(); err != nil {
-		return err
+		return fmt.Errorf("%s (command was: %v)", err, cmd.Args)
 	}
 	t.built = true
 	return nil
@@ -115,65 +138,55 @@ func (t *DockerTool) Command(dir string) (*exec.Cmd, error) {
 	return cmd, nil
 }
 
-// Lookup finds the tool program by name.
-//
-// The search order is PATH (for programs named `src-tool-$name`) then
-// SRCLIBPATH.
-func Lookup(name string) (Tool, error) {
-	prog, err := LookupInPATH(name)
+func (t *DockerTool) Operations() ([]string, error) {
+	tf := filepath.Join(t.Dir, "Srclibtool")
+	data, err := ioutil.ReadFile(tf)
 	if err != nil {
-		if err, ok := err.(*exec.Error); !ok || !os.IsNotExist(err.Err) {
-			return nil, err
+		return nil, err
+	}
+
+	var ops []string
+	for _, line := range bytes.Split(data, []byte("\n")) {
+		if bytes.HasPrefix(line, []byte("OP ")) {
+			ops = append(ops, string(bytes.TrimSpace(line[len("OP "):])))
 		}
 	}
-	if prog != "" {
-		return &ProgramTool{
-			name:    name,
-			Program: prog,
-		}, nil
-	}
-
-	dir, err := LookupInSRCLIBPATH(name)
-	if err != nil {
-		return nil, err
-	}
-
-	df := filepath.Join(dir, "Dockerfile")
-	if _, err := os.Stat(df); err != nil {
-		return nil, err
-	}
-	return &DockerTool{
-		name:       name,
-		Dir:        dir,
-		Dockerfile: df,
-	}, nil
+	return ops, nil
 }
 
-// LookupInSRCLIBPATH finds the named tool in the SRCLIBPATH.
-//
-// TODO(sqs): make this look up tools in the PATH, and add a param for setting
-// whether direct or dockerized tools are preferred.
-func LookupInSRCLIBPATH(name string) (string, error) {
-	matches, err := lookInPaths(name, SrclibPath)
-	if err != nil {
-		return "", err
-	}
-	if len(matches) == 0 {
-		return "", fmt.Errorf("no tool %q found in SRCLIBPATH %q", name, SrclibPath)
-	}
-	return matches[0], nil
+// Location is a place where tools can be stored (for example, in the PATH or
+// the SRCLIBPATH).
+type Location interface {
+	Lookup(name string) (Tool, error)
+	List() ([]Tool, error)
 }
 
-func LookupInPATH(name string) (string, error) {
+var (
+	InstalledTools  = installedTools{}
+	SrclibPathTools = srclibPathTools{}
+)
+
+type installedTools struct{}
+
+// Lookup finds the named tool (adding a `src-tool-` prefix to the name if not
+// already present) in the PATH.
+func (l *installedTools) Lookup(name string) (Tool, error) {
 	if !strings.HasPrefix(name, "src-tool-") {
 		name = "src-tool-" + name
 	}
-	return exec.LookPath(name)
+	prog, err := exec.LookPath(name)
+	if err != nil {
+		return nil, err
+	}
+	return &ProgramTool{
+		name:    name,
+		Program: prog,
+	}, nil
 }
 
-// FindAllInPATH finds all programs in the PATH whose names match `src-tool-*`
-// and returns their full paths.
-func FindAllInPATH() ([]Tool, error) {
+// List finds all installed tools in the PATH whose names match `src-tool-*` and
+// returns their full paths.
+func (l *installedTools) List() ([]Tool, error) {
 	matches, err := lookInPaths("src-tool-*", os.Getenv("PATH"))
 	if err != nil {
 		return nil, err
@@ -194,45 +207,32 @@ func FindAllInPATH() ([]Tool, error) {
 	return tools, nil
 }
 
-// lookInPaths returns all executables in paths (a colon-separated
-// list of directories) matching the glob pattern.
-func lookInPaths(pattern string, paths string) ([]string, error) {
-	var found []string
-	seen := map[string]struct{}{}
-	for _, dir := range strings.Split(paths, ":") {
-		if dir == "" {
-			dir = "."
-		}
-		matches, err := filepath.Glob(dir + "/" + pattern)
-		if err != nil {
-			return nil, err
-		}
-		for _, m := range matches {
-			if _, seen := seen[m]; seen {
-				continue
-			}
-			seen[m] = struct{}{}
-			found = append(found, m)
-		}
-	}
-	return found, nil
-}
+type srclibPathTools struct{}
 
-func FindAll() ([]Tool, error) {
-	progs, err := FindAllInPATH()
+// Lookup finds the named tool in the SRCLIBPATH.
+func (l *srclibPathTools) Lookup(name string) (Tool, error) {
+	matches, err := lookInPaths(name, SrclibPath)
 	if err != nil {
 		return nil, err
 	}
-
-	srcs, err := FindAllInSRCLIBPATH()
-	if err != nil {
-		return nil, err
+	if len(matches) == 0 {
+		return nil, fmt.Errorf("no tool %q found in SRCLIBPATH %q", name, SrclibPath)
 	}
 
-	return append(progs, srcs...), nil
+	dir := matches[0]
+	df := filepath.Join(dir, "Dockerfile")
+	if _, err := os.Stat(df); err != nil {
+		return nil, err
+	}
+	return &DockerTool{
+		name:       name,
+		Dir:        dir,
+		Dockerfile: df,
+	}, nil
 }
 
-func FindAllInSRCLIBPATH() ([]Tool, error) {
+// List implements Location.
+func (l *srclibPathTools) List() ([]Tool, error) {
 	var found []Tool
 	seen := map[string]struct{}{}
 
@@ -273,9 +273,74 @@ func FindAllInSRCLIBPATH() ([]Tool, error) {
 					continue
 				}
 				seen[name] = struct{}{}
-				found = append(found, &DockerTool{name: name, Dir: path, Dockerfile: filepath.Join(path, "Dockerfile")})
+				toolDir := filepath.Dir(path)
+				found = append(found, &DockerTool{name: name, Dir: toolDir, Dockerfile: filepath.Join(toolDir, "Dockerfile")})
 			}
 		}
 	}
 	return found, nil
+}
+
+// Lookup finds the tool program by name.
+//
+// The search order is PATH (for programs named `src-tool-$name`) then
+// SRCLIBPATH.
+func Lookup(name string) (Tool, error) {
+	tool, err := InstalledTools.Lookup(name)
+	if err != nil {
+		if err, ok := err.(*exec.Error); !ok || !os.IsNotExist(err.Err) {
+			return nil, err
+		}
+	}
+	if tool != nil {
+		return tool, nil
+	}
+
+	return SrclibPathTools.Lookup(name)
+}
+
+// List finds all tools in the PATH and SRCLIBPATH.
+func List() ([]Tool, error) {
+	tools1, err := InstalledTools.List()
+	if err != nil {
+		return nil, err
+	}
+
+	tools2, err := SrclibPathTools.List()
+	if err != nil {
+		return nil, err
+	}
+
+	return append(tools1, tools2...), nil
+}
+
+// lookInPaths returns all executables in paths (a colon-separated
+// list of directories) matching the glob pattern.
+func lookInPaths(pattern string, paths string) ([]string, error) {
+	var found []string
+	seen := map[string]struct{}{}
+	for _, dir := range strings.Split(paths, ":") {
+		if dir == "" {
+			dir = "."
+		}
+		matches, err := filepath.Glob(dir + "/" + pattern)
+		if err != nil {
+			return nil, err
+		}
+		for _, m := range matches {
+			if _, seen := seen[m]; seen {
+				continue
+			}
+			seen[m] = struct{}{}
+			found = append(found, m)
+		}
+	}
+	return found, nil
+}
+
+// CommonOps is a list of ops (subcommands) that all tools must implement.
+var CommonOps = map[string]struct{}{
+	"version": struct{}{},
+	"help":    struct{}{},
+	"info":    struct{}{},
 }

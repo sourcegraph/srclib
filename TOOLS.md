@@ -1,34 +1,38 @@
-# srclib toolchains
+# srclib tools
 
-A toolchain is a git repository that adds functionality to srclib by
-implementing any of the following tools.
+A tool is a program that implements some of the following functionality (as
+individual subcommands) for analyzing software projects and source code:
 
-* Scanner: runs before all other tools and finds all *source units* of the
+* Scanning: runs before all other tools and finds all *source units* of the
   language (e.g., Python packages, Ruby gems, etc.) in a directory tree.
   Scanners also determine which other tools to call on each source unit.
-* Dependency lister: enumerates all dependencies specified by the language's
+* Dependency listing: enumerates all dependencies specified by the language's
   source units in their raw form (e.g., as the name and version of an npm or pip
   package).
-* Dependency resolver: resolves raw dependencies to git/hg clone URIs,
+* Dependency resolution: resolves raw dependencies to git/hg clone URIs,
   subdirectories, and commit IDs if possible (e.g., `foo@0.2.1` to
   github.com/alice/foo commit ID abcd123).
-* Grapher: performs type checking/inference and static analysis (called
+* Graphing: performs type checking/inference and static analysis (called
   "graphing") on the language's source units and dumps data about all
   definitions and references.
 
-A toolchain is distributed as a git repository and is identified by its "clone
-URI", such as "github.com/alice/srclib-python".
+Tools may contain any number of subcommands. For example, a tool could implement
+only a Go scanner, and the scanner would specify that the Go packages it finds
+should be graphed by a tool in a different repository. Or a single tool could
+implement the entire set of Go source analysis operations.
 
-Toolchain repositories may contain any number of tools. For example, a
-repository could implement only a Python scanner, and the scanner would specify
-that the Python packages it finds should be graphed by a tool in a different
-repository.
+Srclib ships with a default set of tools for some popular programming languages.
+Repository authors and srclib users may install third-party tools to add
+features or override the default tools.
 
-Each tool in a toolchain is identified by the toolchain path plus the tool's
-path within that repository, such as "github.com/alice/srclib-python/scan".
+A tool is defined by a directory that contains a file named Srclibtool, which
+describes the tool and its capabilities. A tool is identified by its
+repository's clone URI (e.g., "github.com/alice/srclib-go") joined with the
+tool's path within that repository, such as
+"github.com/alice/srclib-python/scan".
 
-Repository authors can choose which toolchains and tools to use in their
-project's `.sourcegraph` file. If none are specified, the defaults apply.
+Repository authors can choose which tools to use in their project's
+`.sourcegraph` file. If none are specified, the defaults apply.
 
 TODO(sqs): Should we call the config file `.sourcegraph` or something else?
 
@@ -43,10 +47,8 @@ If DIR is a directory listed in SRCLIBPATH, the directory
 
 Tool directories may contain a Srclibtool file describing and configuring the
 tool. Tools with a Srclibtool file will appear in the list printed by `src
-tools`. However, a Srclibtool file is not required to run the tool.
-
-TODO(sqs): Add a way to enumerate all available tools. Add a notion of a
-toolchain that groups/describes the tools within it.
+tools`. However, a Srclibtool file is not required to run the tool; it may still
+be specified manually.
 
 
 # Running tools
@@ -89,8 +91,8 @@ src tool python
 
 # To run a tool (inside a Docker container) whose repository
 # github.com/alice/srclib-python/scan is in your SRCLIBPATH at
-# ~/.srclib/github.com/alice/srclib-python/scan:
-src tool github.com/alice/srclib-python/scan
+# ~/.srclib/github.com/alice/srclib-python:
+src tool github.com/alice/srclib-python
 ```
 
 
@@ -119,6 +121,7 @@ All tools must implement the following commands:
 
 | Command           | Description  | Output                          |
 | `info`            | Show info    | Human-readable info (free-form) |
+| `caps`            | 
 
 ## Scanner protocol
 
@@ -126,4 +129,3 @@ Scanners must implement the following commands:
 
 | Command                      | Description                                    | JSON output (Go type) |
 | `scan DIR`                   | Discover source units in DIR (and its subdirs) | scan.Output           |
-
