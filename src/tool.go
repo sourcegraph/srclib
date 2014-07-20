@@ -36,11 +36,15 @@ The options are:
 		log.Fatal(err)
 	}
 
+	fmtStr := "%-60s  %s\n"
+	if !*quiet {
+		fmt.Printf(fmtStr, "NAME", "TYPE")
+	}
 	for _, t := range tools {
 		if *quiet {
 			fmt.Println(t.Name())
 		} else {
-			fmt.Printf("%-60s  %s\n", t.Name(), t.Type())
+			fmt.Printf(fmtStr, t.Name(), t.Type())
 		}
 	}
 }
