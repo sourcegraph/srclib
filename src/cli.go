@@ -88,8 +88,6 @@ type Subcommand struct {
 }
 
 var Subcommands = []Subcommand{
-	{"tools", "list available tools", toolsCmd},
-	{"ops", "list operations provided by available tools", opsCmd},
 	{"tool", "run a tool", toolCmd},
 	{"make", "make a repository", make_},
 	{"makefile", "print the Makefile and exit", makefile},
@@ -111,7 +109,7 @@ var Subcommands = []Subcommand{
 	{"repo-compute-stats", "update and print repository stats", repoComputeStats},
 	{"build", "create a new build for a repository (API)", build_},
 	{"build-queue", "display the build queue (API)", buildQueue},
-	{"info", "show info about enabled capabilities", info},
+	{"info", "show info about enabled capabilities", infoCmd},
 	{"help", "show help about a command", nil},
 }
 
