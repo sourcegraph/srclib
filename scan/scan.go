@@ -128,7 +128,7 @@ func ReadRepositoryAndScan(dir string, repoURI repo.URI) (*config.Repository, er
 	}
 
 	existingUnitIDs := make(map[unit.ID]struct{}, len(units))
-	for _, u := range units {
+	for _, u := range c.SourceUnits {
 		existingUnitIDs[u.ID()] = struct{}{}
 	}
 

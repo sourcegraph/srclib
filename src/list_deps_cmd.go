@@ -29,18 +29,18 @@ The options are:
 	fs.Parse(args)
 	sourceUnitSpecs := fs.Args()
 
-	context, err := NewJobContext(*Dir)
+	repoConf, err := OpenAndConfigureRepo(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	allRawDeps := []*dep2.RawDependency{}
-	for _, u := range context.Repo.SourceUnits {
+	for _, u := range repoConf.Config.SourceUnits {
 		if !SourceUnitMatchesArgs(sourceUnitSpecs, u) {
 			continue
 		}
 
-		rawDeps, err := dep2.List(context.RepoRootDir, u, context.Repo)
+		rawDeps, err := dep2.List(repoConf.RootDir, u, repoConf.Config)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -58,7 +58,7 @@ The options are:
 
 			if *resolve {
 				log.Printf("# resolves to:")
-				resolvedDep, err := dep2.Resolve(rawDep, context.Repo)
+				resolvedDep, err := dep2.Resolve(rawDep, repoConf.Config)
 				if err != nil {
 					log.Fatal(err)
 				}

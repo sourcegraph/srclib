@@ -45,12 +45,12 @@ The options are:
 	fs.Parse(args)
 	goals := fs.Args()
 
-	context, err := NewJobContext(*Dir)
+	repoConf, err := OpenAndConfigureRepo(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	mk, mf, err := NewMaker(goals, context, conf)
+	mk, mf, err := NewMaker(goals, repoConf, conf)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -80,16 +80,16 @@ The options are:
 	}
 }
 
-func NewMaker(goals []string, context *JobContext, conf *makex.Config) (*makex.Maker, *makex.Makefile, error) {
-	if err := WriteRepositoryConfig(context.RepoRootDir, context.CommitID, context.Repo, false); err != nil {
+func NewMaker(goals []string, repoConf *ConfiguredRepo, conf *makex.Config) (*makex.Maker, *makex.Makefile, error) {
+	if err := WriteRepositoryConfig(repoConf.RootDir, repoConf.CommitID, repoConf.Config, false); err != nil {
 		return nil, nil, fmt.Errorf("unable to write repository config file due to error %s", err)
 	}
 
-	repoStore, err := buildstore.NewRepositoryStore(context.RepoRootDir)
+	repoStore, err := buildstore.NewRepositoryStore(repoConf.RootDir)
 	if err != nil {
 		return nil, nil, err
 	}
-	buildDir, err := buildstore.BuildDir(repoStore, context.CommitID)
+	buildDir, err := buildstore.BuildDir(repoStore, repoConf.CommitID)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -97,12 +97,12 @@ func NewMaker(goals []string, context *JobContext, conf *makex.Config) (*makex.M
 	// absolute paths. This makes the Makefile more portable between hosts. (And
 	// makex uses vfs, which restricts it to accessing only files under a
 	// certain path.)
-	buildDir, err = filepath.Rel(context.RepoRootDir, buildDir)
+	buildDir, err = filepath.Rel(repoConf.RootDir, buildDir)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	mf, err := build.CreateMakefile(buildDir, context.Repo)
+	mf, err := build.CreateMakefile(buildDir, repoConf.Config)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -115,7 +115,7 @@ func NewMaker(goals []string, context *JobContext, conf *makex.Config) (*makex.M
 
 	// Change to the directory that make prereqs are relative to, so that makex
 	// can properly compute the DAG.
-	if err := os.Chdir(context.RepoRootDir); err != nil {
+	if err := os.Chdir(repoConf.RootDir); err != nil {
 		return nil, nil, err
 	}
 

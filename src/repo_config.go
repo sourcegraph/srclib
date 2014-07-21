@@ -16,35 +16,35 @@ import (
 	"github.com/sourcegraph/srclib/scan"
 )
 
-type RepoContext struct {
-	RepoRootDir string // Root directory containing repository being analyzed
-	VCSType     string // VCS type (git or hg)
-	CommitID    string // CommitID of current working directory
-	CloneURL    string // CloneURL of repo.
+type Repo struct {
+	RootDir  string // Root directory containing repository being analyzed
+	VCSType  string // VCS type (git or hg)
+	CommitID string // CommitID of current working directory
+	CloneURL string // CloneURL of repo.
 }
 
-func (c *RepoContext) URI() repo.URI { return repo.MakeURI(c.CloneURL) }
+func (c *Repo) URI() repo.URI { return repo.MakeURI(c.CloneURL) }
 
-func NewRepoContext(targetDir string) (*RepoContext, error) {
-	if !isDir(targetDir) {
-		return nil, fmt.Errorf("directory not exist: %q", targetDir)
+func OpenRepo(dir string) (*Repo, error) {
+	if !isDir(dir) {
+		return nil, fmt.Errorf("no such directory: %q", dir)
 	}
 
 	// VCS and root directory
-	rc := new(RepoContext)
+	rc := new(Repo)
 	for _, vcsType := range []string{"git", "hg"} {
-		if d, err := getRepoRootDir(vcsType, targetDir); err == nil {
+		if d, err := getRootDir(vcsType, dir); err == nil {
 			rc.VCSType = vcsType
-			rc.RepoRootDir = d
+			rc.RootDir = d
 			break
 		}
 	}
-	if rc.RepoRootDir == "" {
-		return nil, fmt.Errorf("warning: failed to detect repository root dir for %q", targetDir)
+	if rc.RootDir == "" {
+		return nil, fmt.Errorf("failed to detect repository root dir for %q", dir)
 	}
 
 	// Determine current working tree commit ID.
-	repo, err := vcs.Open(rc.VCSType, rc.RepoRootDir)
+	repo, err := vcs.Open(rc.VCSType, rc.RootDir)
 	if err != nil {
 		return nil, err
 	}
@@ -62,8 +62,8 @@ func NewRepoContext(targetDir string) (*RepoContext, error) {
 
 	rc.CommitID = string(currentCommitID)
 
-	// get default URI (if URI is not specified in .sourcegraph file)
-	cloneURL, err := getVCSCloneURL(rc.VCSType, rc.RepoRootDir)
+	// Get repo URI from clone URL.
+	cloneURL, err := getVCSCloneURL(rc.VCSType, rc.RootDir)
 	if err != nil {
 		return nil, err
 	}
@@ -73,20 +73,20 @@ func NewRepoContext(targetDir string) (*RepoContext, error) {
 	return rc, nil
 }
 
-type JobContext struct {
-	*RepoContext
-	Repo *config.Repository // Repository-level configuration, read from .sourcegraph-data/config.json
+type ConfiguredRepo struct {
+	*Repo
+	Config *config.Repository // Repository-level configuration, read from .sourcegraph-data/config.json
 }
 
-func NewJobContext(targetDir string) (*JobContext, error) {
-	rc, err := NewRepoContext(targetDir)
+func OpenAndConfigureRepo(targetDir string) (*ConfiguredRepo, error) {
+	rc, err := OpenRepo(targetDir)
 	if err != nil {
 		return nil, err
 	}
-	jc := new(JobContext)
-	jc.RepoContext = rc
+	jc := new(ConfiguredRepo)
+	jc.Repo = rc
 
-	jc.Repo, err = ReadOrComputeRepositoryConfig(rc.RepoRootDir, rc.CommitID, rc.URI())
+	jc.Config, err = ReadOrComputeRepositoryConfig(rc.RootDir, rc.CommitID, rc.URI())
 	if err != nil {
 		return nil, err
 	}
@@ -105,6 +105,7 @@ func ReadOrComputeRepositoryConfig(repoDir string, commitID string, repoURI repo
 		if err != nil {
 			return nil, err
 		}
+		defer f.Close()
 		var c config.Repository
 		err = json.NewDecoder(f).Decode(&c)
 		if err != nil {
@@ -153,7 +154,7 @@ func getConfigFile(repoDir, commitID string) (string, error) {
 	return filepath.Join(rootDataDir, repoStore.CommitPath(commitID), buildstore.CachedRepositoryConfigFilename), nil
 }
 
-func getRepoRootDir(vcsType string, dir string) (string, error) {
+func getRootDir(vcsType string, dir string) (string, error) {
 	var cmd *exec.Cmd
 	switch vcsType {
 	case "git":

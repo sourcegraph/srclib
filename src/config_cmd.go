@@ -21,10 +21,10 @@ The options are:
 	}
 	fs.Parse(args)
 
-	context, err := NewJobContext(*Dir)
+	repoConf, err := OpenAndConfigureRepo(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	PrintJSON(context.Repo, "")
+	PrintJSON(repoConf.Config, "")
 }

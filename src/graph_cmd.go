@@ -29,17 +29,17 @@ The options are:
 	fs.Parse(args)
 	sourceUnitSpecs := fs.Args()
 
-	context, err := NewJobContext(*Dir)
+	repoConf, err := OpenAndConfigureRepo(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for _, u := range context.Repo.SourceUnits {
+	for _, u := range repoConf.Config.SourceUnits {
 		if !SourceUnitMatchesArgs(sourceUnitSpecs, u) {
 			continue
 		}
 
-		output, err := grapher2.Graph(context.RepoRootDir, u, context.Repo)
+		output, err := grapher2.Graph(repoConf.RootDir, u, repoConf.Config)
 		if err != nil {
 			log.Fatal(err)
 		}
