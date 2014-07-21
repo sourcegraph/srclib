@@ -22,16 +22,13 @@ The options are:
 	}
 	fs.Parse(args)
 
-	context, err := NewJobContext(*Dir)
+	repoConf, err := OpenAndConfigureRepo(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for _, u := range context.Repo.SourceUnits {
+	for _, u := range repoConf.Config.SourceUnits {
 		fmt.Printf("## %s\n", u.ID())
-		for _, p := range u.Files {
-			fmt.Printf("  %s\n", p)
-		}
 		if *Verbose {
 			jsonStr, err := json.MarshalIndent(u, "\t", "  ")
 			if err != nil {

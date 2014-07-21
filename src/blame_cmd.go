@@ -26,26 +26,26 @@ The options are:
 	fs.Parse(args)
 	sourceUnitSpecs := fs.Args()
 
-	context, err := NewJobContext(*Dir)
+	repoConf, err := OpenAndConfigureRepo(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for _, u := range context.Repo.SourceUnits {
+	for _, u := range repoConf.Config.SourceUnits {
 		if !SourceUnitMatchesArgs(sourceUnitSpecs, u) {
 			continue
 		}
 
-		files, err := unit.ExpandPaths(context.RepoRootDir, u.Files)
+		files, err := unit.ExpandPaths(repoConf.RootDir, u.Files)
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		var out *vcsutil.BlameOutput
 		if files == nil {
-			out, err = vcsutil.BlameRepository(context.RepoRootDir, context.CommitID, context.Repo)
+			out, err = vcsutil.BlameRepository(repoConf.RootDir, repoConf.CommitID, repoConf.Config)
 		} else {
-			out, err = vcsutil.BlameFiles(context.RepoRootDir, files, context.CommitID, context.Repo)
+			out, err = vcsutil.BlameFiles(repoConf.RootDir, files, repoConf.CommitID, repoConf.Config)
 		}
 		if err != nil {
 			log.Fatal(err)

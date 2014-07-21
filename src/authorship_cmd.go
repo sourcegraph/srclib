@@ -30,7 +30,7 @@ The options are:
 	}
 	blameFile, graphFile := fs.Arg(0), fs.Arg(1)
 
-	context, err := NewJobContext(*Dir)
+	repoConf, err := OpenAndConfigureRepo(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -41,7 +41,7 @@ The options are:
 	var g *grapher2.Output
 	readJSONFile(graphFile, &g)
 
-	out, err := authorship.ComputeSourceUnit(g, b, context.Repo)
+	out, err := authorship.ComputeSourceUnit(g, b, repoConf.Config)
 	if err != nil {
 		log.Fatal(err)
 	}

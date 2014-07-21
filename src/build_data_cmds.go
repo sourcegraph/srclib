@@ -35,7 +35,7 @@ The options are:
 		fs.Usage()
 	}
 
-	repo, err := NewRepoContext(*Dir)
+	repo, err := OpenRepo(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -60,7 +60,7 @@ The options are:
 		log.Println("============================")
 	}
 
-	repoStore, err := buildstore.NewRepositoryStore(repo.RepoRootDir)
+	repoStore, err := buildstore.NewRepositoryStore(repo.RootDir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -94,7 +94,7 @@ The options are:
 		fs.Usage()
 	}
 
-	repo, err := NewRepoContext(*Dir)
+	repo, err := OpenRepo(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -109,7 +109,7 @@ The options are:
 		}
 	}
 
-	repoStore, err := buildstore.NewRepositoryStore(repo.RepoRootDir)
+	repoStore, err := buildstore.NewRepositoryStore(repo.RootDir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -186,12 +186,12 @@ The options are:
 		fs.Usage()
 	}
 
-	repo, err := NewRepoContext(*Dir)
+	repo, err := OpenRepo(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	repoStore, err := buildstore.NewRepositoryStore(repo.RepoRootDir)
+	repoStore, err := buildstore.NewRepositoryStore(repo.RootDir)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -31,7 +31,7 @@ The options are:
 	inputs := OpenInputFiles(fs.Args())
 	defer CloseAll(inputs)
 
-	context, err := NewJobContext(*Dir)
+	repoConf, err := OpenAndConfigureRepo(*Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -50,7 +50,7 @@ The options are:
 		allRawDeps = append(allRawDeps, rawDeps...)
 	}
 
-	resolvedDeps, err := dep2.ResolveAll(allRawDeps, context.Repo)
+	resolvedDeps, err := dep2.ResolveAll(allRawDeps, repoConf.Config)
 	if err != nil {
 		log.Fatal(err)
 	}
