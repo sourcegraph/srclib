@@ -113,7 +113,7 @@ func ReadOrComputeRepositoryConfig(repoDir string, commitID string, repoURI repo
 		return &c, nil
 	} else {
 		// Compute
-		return scan.ReadDirConfigAndScan(repoDir, repoURI)
+		return scan.ReadRepositoryAndScan(repoDir, repoURI)
 	}
 }
 

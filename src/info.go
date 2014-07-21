@@ -14,7 +14,7 @@ import (
 func infoCmd(args []string) {
 	fs := flag.NewFlagSet("info", flag.ExitOnError)
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: `+Name+` info [tools|ops]
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` info [tools|handlers]
 
 Shows information about enabled capabilities in this tool as well as system
 information.
@@ -32,8 +32,8 @@ The options are:
 		switch what {
 		case "tools":
 			toolsCmd(extraArgs)
-		case "ops":
-			opsCmd(extraArgs)
+		case "handlers":
+			handlersCmd(extraArgs)
 		default:
 			log.Fatalf("No info on %q.", what)
 		}
@@ -52,8 +52,8 @@ The options are:
 	log.Println()
 	log.Println()
 
-	log.Println("OPS ============================================================================")
-	opsCmd(nil)
+	log.Println("HANDLERS ============================================================================")
+	handlersCmd(nil)
 
 	log.Println()
 	log.Printf("Build data types (%d)", len(buildstore.DataTypes))
@@ -108,17 +108,17 @@ The options are:
 	}
 }
 
-func opsCmd(args []string) {
-	fs := flag.NewFlagSet("ops", flag.ExitOnError)
-	quiet := fs.Bool("q", false, "quiet (only show op names, no tool names)")
-	common := fs.Bool("common", false, "show all ops (even common subcommands like 'version' and 'help')")
-	toolName := fs.String("tool", "", "only show this tool's ops")
+func handlersCmd(args []string) {
+	fs := flag.NewFlagSet("handlers", flag.ExitOnError)
+	quiet := fs.Bool("q", false, "quiet (only show handler names, no tool names)")
+	common := fs.Bool("common", false, "show all handlers (even common subcommands like 'version' and 'help')")
+	toolName := fs.String("tool", "", "only show this tool's handlers")
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: `+Name+` ops [opts]
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` handlers [opts]
 
-Prints all available operations that can be performed using the available tools.
+Prints all handlers implemented by the available tools.
 
-Operations provided by tools without a Srclibtool file can still be run, but
+Handlers provided by tools without a Srclibtool file can still be run, but
 they won't be appear in this list.
 
 The options are:
@@ -139,24 +139,24 @@ The options are:
 
 	fmtStr := "%-12s  %-60s\n"
 	if !*quiet {
-		fmt.Printf(fmtStr, "OP", "TOOL")
+		fmt.Printf(fmtStr, "HANDLER", "TOOL")
 	}
 	for _, t := range tools {
 		if *toolName != "" && t.Name() != *toolName {
 			continue
 		}
-		ops, err := t.Operations()
+		handlers, err := t.Handlers()
 		if err != nil {
 			log.Fatal(err)
 		}
-		for _, op := range ops {
-			if _, isCommon := tool.CommonOps[op]; isCommon && !*common {
+		for _, h := range handlers {
+			if _, isCommon := tool.CommonSubcommands[h]; isCommon && !*common {
 				continue
 			}
 			if *quiet {
-				fmt.Println(op)
+				fmt.Println(h)
 			} else {
-				fmt.Printf(fmtStr, op, t.Name())
+				fmt.Printf(fmtStr, h, t.Name())
 			}
 		}
 	}

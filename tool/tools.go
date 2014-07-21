@@ -10,7 +10,9 @@ import (
 	"os/user"
 	"path/filepath"
 	"strings"
+	"sync"
 
+	"github.com/fsouza/go-dockerclient"
 	"github.com/kr/fs"
 )
 
@@ -41,6 +43,10 @@ type Tool interface {
 	// builds the Docker image.
 	Build() error
 
+	// IsBuilt returns whether the tool is built and can be executed (using
+	// Command).
+	IsBuilt() (bool, error)
+
 	// Command returns an *exec.Cmd that will execute this tool, where dir is
 	// the working directory of the command.
 	//
@@ -49,9 +55,8 @@ type Tool interface {
 	// references to the working directory are consistent.
 	Command(dir string) (*exec.Cmd, error)
 
-	// Operations lists the subcommands that this tool implements, such as
-	// "scan".
-	Operations() ([]string, error)
+	// Handlers lists the subcommands that this tool implements, such as "scan".
+	Handlers() ([]string, error)
 
 	// Type is either "installed program" or "Docker container"
 	Type() string
@@ -70,14 +75,16 @@ type ProgramTool struct {
 func (t *ProgramTool) Name() string { return t.name }
 func (t *ProgramTool) Type() string { return "installed program" }
 
-func (t *ProgramTool) Build() error { return nil }
+func (t *ProgramTool) IsBuilt() (bool, error) { return true, nil }
+func (t *ProgramTool) Build() error           { return nil }
 
 func (t *ProgramTool) Command(dir string) (*exec.Cmd, error) {
 	cmd := exec.Command(t.Program)
 	cmd.Dir = dir
 	return cmd, nil
 }
-func (t *ProgramTool) Operations() ([]string, error) {
+
+func (t *ProgramTool) Handlers() ([]string, error) {
 	cmd, err := t.Command("")
 	if err != nil {
 		return nil, err
@@ -105,16 +112,55 @@ type DockerTool struct {
 	// ImageName of the Docker image
 	ImageName string
 
-	// built is whether Build() has completed successfully.
-	built bool
+	docker   *docker.Client
+	dockerMu sync.Mutex
+}
+
+func newDockerTool(name, dir string) *DockerTool {
+	return &DockerTool{
+		name:       name,
+		Dir:        dir,
+		Dockerfile: filepath.Join(dir, "Dockerfile"),
+		ImageName:  strings.Replace(name, "/", "-", -1),
+	}
+}
+
+func (t *DockerTool) dockerClient() (*docker.Client, error) {
+	t.dockerMu.Lock()
+	defer t.dockerMu.Unlock()
+
+	if t.docker == nil {
+		dockerEndpoint := os.Getenv("DOCKER_HOST")
+		if dockerEndpoint == "" {
+			dockerEndpoint = "unix:///var/run/docker.sock"
+		}
+		dc, err := docker.NewClient(dockerEndpoint)
+		if err != nil {
+			return nil, err
+		}
+		t.docker = dc
+	}
+
+	return t.docker, nil
 }
 
 func (t *DockerTool) Name() string { return t.name }
 func (t *DockerTool) Type() string { return "Docker container" }
 
-func (t *DockerTool) Build() error {
-	t.ImageName = strings.Replace(t.name, "/", "-", -1)
+func (t *DockerTool) IsBuilt() (bool, error) {
+	dc, err := t.dockerClient()
+	if err != nil {
+		return false, err
+	}
 
+	_, err = dc.InspectImage(t.ImageName)
+	if err == docker.ErrNoSuchImage {
+		return false, nil
+	}
+	return err == nil, err
+}
+
+func (t *DockerTool) Build() error {
 	cmd := exec.Command("docker", "build", "-t", t.ImageName, ".")
 	cmd.Dir = t.Dir
 	cmd.Stdout = os.Stderr
@@ -123,12 +169,13 @@ func (t *DockerTool) Build() error {
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("%s (command was: %v)", err, cmd.Args)
 	}
-	t.built = true
 	return nil
 }
 
 func (t *DockerTool) Command(dir string) (*exec.Cmd, error) {
-	if !t.built {
+	if built, err := t.IsBuilt(); err != nil {
+		return nil, err
+	} else if !built {
 		if err := t.Build(); err != nil {
 			return nil, err
 		}
@@ -138,20 +185,20 @@ func (t *DockerTool) Command(dir string) (*exec.Cmd, error) {
 	return cmd, nil
 }
 
-func (t *DockerTool) Operations() ([]string, error) {
+func (t *DockerTool) Handlers() ([]string, error) {
 	tf := filepath.Join(t.Dir, "Srclibtool")
 	data, err := ioutil.ReadFile(tf)
 	if err != nil {
 		return nil, err
 	}
 
-	var ops []string
+	var handlers []string
 	for _, line := range bytes.Split(data, []byte("\n")) {
-		if bytes.HasPrefix(line, []byte("OP ")) {
-			ops = append(ops, string(bytes.TrimSpace(line[len("OP "):])))
+		if bytes.HasPrefix(line, []byte("HANDLER ")) {
+			handlers = append(handlers, string(bytes.TrimSpace(line[len("HANDLER "):])))
 		}
 	}
-	return ops, nil
+	return handlers, nil
 }
 
 // Location is a place where tools can be stored (for example, in the PATH or
@@ -220,15 +267,10 @@ func (l *srclibPathTools) Lookup(name string) (Tool, error) {
 	}
 
 	dir := matches[0]
-	df := filepath.Join(dir, "Dockerfile")
-	if _, err := os.Stat(df); err != nil {
+	if _, err := os.Stat(filepath.Join(dir, "Dockerfile")); err != nil {
 		return nil, err
 	}
-	return &DockerTool{
-		name:       name,
-		Dir:        dir,
-		Dockerfile: df,
-	}, nil
+	return newDockerTool(name, dir), nil
 }
 
 // List implements Location.
@@ -273,8 +315,7 @@ func (l *srclibPathTools) List() ([]Tool, error) {
 					continue
 				}
 				seen[name] = struct{}{}
-				toolDir := filepath.Dir(path)
-				found = append(found, &DockerTool{name: name, Dir: toolDir, Dockerfile: filepath.Join(toolDir, "Dockerfile")})
+				found = append(found, newDockerTool(name, filepath.Dir(path)))
 			}
 		}
 	}
@@ -338,8 +379,26 @@ func lookInPaths(pattern string, paths string) ([]string, error) {
 	return found, nil
 }
 
-// CommonOps is a list of ops (subcommands) that all tools must implement.
-var CommonOps = map[string]struct{}{
+// FilterByHandler returns tools that have the specified handler.
+func FilterByHandler(tools []Tool, handler string) ([]Tool, error) {
+	var hs []Tool
+	for _, tool := range tools {
+		ths, err := tool.Handlers()
+		if err != nil {
+			return nil, err
+		}
+		for _, h := range ths {
+			if h == handler {
+				hs = append(hs, tool)
+				break
+			}
+		}
+	}
+	return hs, nil
+}
+
+// CommonSubcommands is a list of subcommands that all tools must implement.
+var CommonSubcommands = map[string]struct{}{
 	"version": struct{}{},
 	"help":    struct{}{},
 	"info":    struct{}{},

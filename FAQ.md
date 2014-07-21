@@ -79,3 +79,45 @@ So, we just say that programs installed in your PATH whose names match
 `src-tool-*` are srclib tools. It's very easy to configure every build system to
 install programs in this way, and it's easy to use the tools as standalone
 programs.
+
+
+## Misc.
+
+These are old Q&A that are no longer directly relevant. I've kept them here in
+case they might be useful.
+
+TODO(sqs): remove these before release.
+
+#### Why might we want to use Docker's `ADD` in some cases and volumes in another?
+
+There are performance tradeoffs for using volumes vs. `ADD`:
+
+* `ADD` requires sending the whole build context to the server and copying it to
+  disk, which is slow and IO-intensive. But it allows us to use `RUN` to perform
+  expensive operations that use the `ADD`ed data and modify the container's
+  filesystem (such as `npm install` to install dependencies). These `RUN`
+  commands are cached, so if multiple handlers need to run the same commands,
+  they'll only have to be executed once.
+* Volumes don't require sending build context or even copying it at all, so they
+  are much faster to build. They also let us simply run the Docker image with
+  the files we want instead of having to create another Dockerfile to `ADD`
+  those files. However, if multiple handlers run the same expensive commands,
+  and if those commands depend on the project's files, then using volumes
+  requires us to run them each time (we can't use the Docker build cache).
+
+
+#### Why can't a tool's handlers use different Docker images from each other?
+
+The Docker image built for a tool should be capable of running all of the tool's
+functionality. It would add a lot of complexity to either:
+
+* allow tools to contain multiple Dockerfiles (some of which would probably be
+  `FROM` others); or
+* allow handlers to generate new Dockerfiles (and then build them with `docker
+build - < context.tar`) or run sub-Docker containers.
+
+If a handler truly can't reuse the scanner's Dockerfile, then move it to a
+separate tool.
+
+TODO(sqs): Consider adding templating to the root Dockerfile so we can
+substitute simple parameters, like `{{.PythonVersion}}`.

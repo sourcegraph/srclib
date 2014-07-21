@@ -11,8 +11,9 @@ import (
 
 func toolCmd(args []string) {
 	fs := flag.NewFlagSet("tool", flag.ExitOnError)
+	forceRebuild := fs.Bool("b", false, "force rebuild of Docker image")
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: `+Name+` tool TOOL [ARG...]
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` tool [OPT] TOOL [ARG...]
 
 Run a srclib tool with the specified arguments.
 
@@ -37,6 +38,12 @@ The options are:
 	dir, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if *forceRebuild {
+		if err := tool.Build(); err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	cmd, err := tool.Command(dir)

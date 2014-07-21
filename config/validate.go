@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func (c *Repository) validate() error {
+func (c *Tree) validate() error {
 	for _, u := range c.SourceUnits {
 		for _, p := range u.Files {
 			p = filepath.Clean(p)

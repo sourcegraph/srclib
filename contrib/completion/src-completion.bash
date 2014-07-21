@@ -15,8 +15,8 @@ function _src() {
             case "${COMP_WORDS[COMP_CWORD-2]}" in
                 tool)
                     tool="${COMP_WORDS[COMP_CWORD-1]}"
-                    ops=$(src info ops -q -common -tool="$tool")
-                    COMPREPLY=($(compgen -W "${ops}" -- ${cur}))
+                    handlers=$(src info handlers -q -common -tool="$tool")
+                    COMPREPLY=($(compgen -W "${handlers}" -- ${cur}))
                     ;;
             esac
     esac

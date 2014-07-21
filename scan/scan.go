@@ -1,7 +1,9 @@
 package scan
 
 import (
+	"encoding/json"
 	"log"
+	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -10,14 +12,35 @@ import (
 	"code.google.com/p/rog-go/parallel"
 	"github.com/sourcegraph/srclib/config"
 	"github.com/sourcegraph/srclib/repo"
+	"github.com/sourcegraph/srclib/tool"
 	"github.com/sourcegraph/srclib/unit"
 )
 
-// Scanner implementations scan for source units in a repository.
-type Scanner interface {
-	// Scan returns a list of source units that exist in dir and its
-	// subdirectories. Paths in the source units should be relative to dir.
-	Scan(dir string, c *config.Repository) ([]*unit.SourceUnit, error)
+// Scan returns a list of source units that exist in dir and its
+// subdirectories. Paths in the source units should be relative to dir.
+func Scan(dir string, tool tool.Tool) ([]*unit.SourceUnit, error) {
+	cmd, err := tool.Command(dir)
+	if err != nil {
+		return nil, err
+	}
+	cmd.Args = append(cmd.Args, "scan")
+	cmd.Stderr = os.Stderr
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := cmd.Start(); err != nil {
+		log.Fatal(err)
+	}
+
+	var units []*unit.SourceUnit
+	if err := json.NewDecoder(stdout).Decode(&units); err != nil {
+		return nil, err
+	}
+	if err := cmd.Wait(); err != nil {
+		log.Fatal(err)
+	}
+	return units, nil
 }
 
 var GlobalScanIgnore = []string{
@@ -30,18 +53,27 @@ var GlobalScanIgnore = []string{
 // SourceUnits scans dir and its subdirectories for source units, using all
 // registered toolchains that implement Scanner.
 func SourceUnits(dir string, c *config.Repository) ([]*unit.SourceUnit, error) {
+	tools, err := tool.SrclibPathTools.List()
+	if err != nil {
+		return nil, err
+	}
+	scanners, err := tool.FilterByHandler(tools, "scan")
+	if err != nil {
+		return nil, err
+	}
+
 	var units struct {
 		u []*unit.SourceUnit
 		sync.Mutex
 	}
 	run := parallel.NewRun(runtime.GOMAXPROCS(0))
-	for name_, s_ := range []Scanner{} {
-		name, s := name_, s_
+	for _, s_ := range scanners {
+		s := s_
 		run.Do(func() error {
-			log.Printf("Scanning %s using %q scanner...", c.URI, name)
-			units2, err := s.Scan(dir, c)
+			log.Printf("Scanning %s using %q scanner...", c.URI, s.Name())
+			units2, err := Scan(dir, s)
 			if err != nil {
-				log.Printf("Failed to scan %s using %q scanner: %s.", c.URI, name, err)
+				log.Printf("Failed to scan %s using %q scanner: %s.", c.URI, s.Name(), err)
 				return err
 			}
 
@@ -49,12 +81,14 @@ func SourceUnits(dir string, c *config.Repository) ([]*unit.SourceUnit, error) {
 			var units3 []*unit.SourceUnit
 			for _, u := range units2 {
 				ignored := false
-				for _, ignoreType := range c.ScanIgnoreUnitTypes {
-					if u.Type == ignoreType {
-						ignored = true
-						break
-					}
-				}
+				// for _, ignoreType := range c.ScanIgnoreUnitTypes {
+				// 	if u.Type == ignoreType {
+				// 		ignored = true
+				// 		break
+				// 	}
+				// }
+				// TODO(sqs): reimplement ScanIgnoreUnitTypes
+
 				// TODO(sqs): reimplement some way of respecting c.ScanIgnore
 				// and GlobalScanIgnore (SourceUnit no longer has RootDir()
 				// method).
@@ -63,7 +97,7 @@ func SourceUnits(dir string, c *config.Repository) ([]*unit.SourceUnit, error) {
 				}
 			}
 
-			log.Printf("Finished scanning %s using %q scanner. %d source units found (after ignoring %d).", c.URI, name, len(units3), len(units2)-len(units3))
+			log.Printf("Finished scanning %s using %q scanner. %d source units found (after ignoring %d).", c.URI, s.Name(), len(units3), len(units2)-len(units3))
 
 			units.Lock()
 			defer units.Unlock()
@@ -71,17 +105,19 @@ func SourceUnits(dir string, c *config.Repository) ([]*unit.SourceUnit, error) {
 			return nil
 		})
 	}
-	err := run.Wait()
-	log.Printf("Scanning %s found %d source units total.", c.URI, len(units.u))
+	if err := run.Wait(); err != nil {
+		return nil, err
+	}
 
-	return units.u, err
+	log.Printf("Scanning %s found %d source units total.", c.URI, len(units.u))
+	return units.u, nil
 }
 
-// ReadDirConfigAndScan runs config.ReadDir to load the repository configuration
-// for the repository in dir and adds all scanned source units to the
-// configuration.
-func ReadDirConfigAndScan(dir string, repoURI repo.URI) (*config.Repository, error) {
-	c, err := config.ReadDir(dir, repoURI)
+// ReadRepositoryAndScan runs config.ReadRepository to load the repository
+// configuration for the repository in dir and adds all scanned source units to
+// the configuration.
+func ReadRepositoryAndScan(dir string, repoURI repo.URI) (*config.Repository, error) {
+	c, err := config.ReadRepository(dir, repoURI)
 	if err != nil {
 		return nil, err
 	}
