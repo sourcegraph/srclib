@@ -1,7 +1,8 @@
 # srclib tools
 
-A tool is a program that implements some of the following functionality (as
-individual subcommands) for analyzing software projects and source code:
+A srclib tool is a program that implements any of the following functionality
+for analyzing projects and source code, according to the specification defined
+in this document:
 
 * Scanning: runs before all other tools and finds all *source units* of the
   language (e.g., Python packages, Ruby gems, etc.) in a directory tree.
@@ -16,39 +17,36 @@ individual subcommands) for analyzing software projects and source code:
   "graphing") on the language's source units and dumps data about all
   definitions and references.
 
-Tools may contain any number of subcommands. For example, a tool could implement
-only a Go scanner, and the scanner would specify that the Go packages it finds
-should be graphed by a tool in a different repository. Or a single tool could
-implement the entire set of Go source analysis operations.
+Tools may contain any number of these as subcommands, which are called
+*handlers*. For example, a tool could implement only a Go scanner, and the
+scanner would specify that the Go packages it finds should be graphed by a tool
+in a different repository. Or a single tool could implement the entire set of Go
+source analysis operations.
 
-Srclib ships with a default set of tools for some popular programming languages.
+srclib ships with a default set of tools for some popular programming languages.
 Repository authors and srclib users may install third-party tools to add
 features or override the default tools.
 
 A tool is defined by a directory that contains a file named Srclibtool, which
-describes the tool and its capabilities. A tool is identified by its
-repository's clone URI (e.g., "github.com/alice/srclib-go") joined with the
-tool's path within that repository, such as
-"github.com/alice/srclib-python/scan".
+describes the tool and its handlers. A tool is identified by its repository's
+clone URI (e.g., "github.com/alice/srclib-go") joined with the tool's path
+within that repository, such as "github.com/alice/srclib-python/scan".
 
-Repository authors can choose which tools to use in their project's
-`.sourcegraph` file. If none are specified, the defaults apply.
-
-TODO(sqs): Should we call the config file `.sourcegraph` or something else?
+Repository authors can choose which tools to use in their project's Srcfile. If
+none are specified, the defaults apply.
 
 
 # Tool discovery
 
 The SRCLIBPATH environment variable lists places to look for srclib tools. The
-value is a colon-separated string of paths. If it is empty, `~/.srclib` is used.
+value is a colon-separated string of paths. If it is empty, `$HOME/.srclib` is
+used.
 
 If DIR is a directory listed in SRCLIBPATH, the directory
 "DIR/github.com/foo/bar" defines a tool named "github.com/foo/bar".
 
-Tool directories may contain a Srclibtool file describing and configuring the
-tool. Tools with a Srclibtool file will appear in the list printed by `src
-tools`. However, a Srclibtool file is not required to run the tool; it may still
-be specified manually.
+Tool directories must contain a Srclibtool file describing and configuring the
+tool. To see all available tools, run `src tools`.
 
 
 # Running tools
@@ -61,14 +59,13 @@ There are 2 modes of execution for srclib tools:
    during editing of local code.)
    
    A directly runnable tool is any program in your `PATH` named `src-tool-*`.
-   These programs must already be installed in your system.
 1. Inside a **Docker container**: to produce analysis independent of your local
    configuration and versions. (Used when other people or services will reuse
    the analysis results, such as on [Sourcegraph](https://sourcegraph.com).)
    
    A Docker-containerized tool is a directory (under SRCLIBPATH) that contains a
-   Dockerfile. There is no installation necessary for these tools; the `src` tool
-   knows how to build and run their Docker container.
+   Srclibtool and a Dockerfile. There is no installation necessary for these
+   tools; the `src` tool knows how to build and run their Docker container.
    
 Tools may support either or both of these execution modes.
 
@@ -90,38 +87,29 @@ For example:
 src tool python
 
 # To run a tool (inside a Docker container) whose repository
-# github.com/alice/srclib-python/scan is in your SRCLIBPATH at
-# ~/.srclib/github.com/alice/srclib-python:
+# github.com/alice/srclib-python/scan is in your SRCLIBPATH
+# (e.g., at ~/.srclib/github.com/alice/srclib-python):
 src tool github.com/alice/srclib-python
 ```
 
 
-# Tool specifications
+# Tool & handler specifications
 
-The current list of tool types is:
-
-* scanner
-* dependency lister
-* dependency resolver
-* grapher
-
-Each type of tool implements a protocol: a defined set of commands and input
-arguments, and a defined output format. All tools must also implement a set of
-common commands.
+Each tool must implement a set of common commands. Each handler subcommand that
+a tool provides must also implement the protocol for that handler type.
 
 Commands and arguments are passed as command-line arguments to the tool, and
 output is written to stdout.
 
 The tool protocol is the same whether the tool is run directly or inside a
-Docker container (assuming it supports both methods).
+Docker container.
 
-## Common protocol
+## Common tool protocol
 
 All tools must implement the following commands:
 
 | Command           | Description  | Output                          |
 | `info`            | Show info    | Human-readable info (free-form) |
-| `caps`            | 
 
 ## Scanner protocol
 
@@ -129,3 +117,9 @@ Scanners must implement the following commands:
 
 | Command                      | Description                                    | JSON output (Go type) |
 | `scan DIR`                   | Discover source units in DIR (and its subdirs) | scan.Output           |
+
+
+# Open questions
+
+* How does the `src` tool determine the which handlers a program tool
+  implements? (E.g., `$TOOL handlers` subcommand that lists them.)
