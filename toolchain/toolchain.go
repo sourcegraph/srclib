@@ -138,9 +138,13 @@ type programToolchain struct {
 	program string
 }
 
+// IsBuilt always returns true for programs.
 func (t *programToolchain) IsBuilt() (bool, error) { return true, nil }
-func (t *programToolchain) Build() error           { return nil }
 
+// Build is a no-op for programs.
+func (t *programToolchain) Build() error { return nil }
+
+// Command returns an *exec.Cmd that executes this program.
 func (t *programToolchain) Command() (*exec.Cmd, error) {
 	cmd := exec.Command(t.program)
 	return cmd, nil
@@ -182,6 +186,8 @@ func newDockerToolchain(path, dir, dockerfile, hostVolumeDir string) (*dockerToo
 	}, nil
 }
 
+// IsBuilt returns whether a Docker image (but perhaps not the most recent one)
+// exists that was built from this toolchain's Dockerfile.
 func (t *dockerToolchain) IsBuilt() (bool, error) {
 	_, err := t.docker.InspectImage(t.imageName)
 	if err == docker.ErrNoSuchImage {
@@ -190,6 +196,7 @@ func (t *dockerToolchain) IsBuilt() (bool, error) {
 	return err == nil, err
 }
 
+// Build builds the Docker image for this toolchain from its Dockerfile.
 func (t *dockerToolchain) Build() error {
 	cmd := exec.Command("docker", "build", "-t", t.imageName, ".")
 	cmd.Dir = t.dir
@@ -202,6 +209,8 @@ func (t *dockerToolchain) Build() error {
 	return nil
 }
 
+// Command returns an *exec.Cmd suitable for executing a command using the
+// Docker image's entrypoint.
 func (t *dockerToolchain) Command() (*exec.Cmd, error) {
 	if built, err := t.IsBuilt(); err != nil {
 		return nil, err
