@@ -77,7 +77,7 @@ func TestList_docker(t *testing.T) {
 		// ok (no Dockerfile)
 		"c/c/Srclibtoolchain": struct{}{},
 	}
-	for f, _ := range files {
+	for f := range files {
 		if err := os.MkdirAll(filepath.Join(tmpdir, filepath.Dir(f)), 0700); err != nil {
 			t.Fatal(err)
 		}

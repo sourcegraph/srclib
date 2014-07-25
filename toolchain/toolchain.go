@@ -70,8 +70,11 @@ func (t *Info) Tools() ([]*ToolInfo, error) {
 type Mode uint
 
 const (
-	AsProgram         Mode = 1 << iota // use program toolchains
-	AsDockerContainer                  // use Docker container toolchains
+	// AsProgram enables the use of program toolchains.
+	AsProgram Mode = 1 << iota
+
+	// AsDockerContainer enables the use of Docker container toolchains.
+	AsDockerContainer
 )
 
 func (m Mode) String() string {
