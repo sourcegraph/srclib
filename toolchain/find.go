@@ -25,7 +25,7 @@ func init() {
 			log.Fatal(err)
 		}
 		if user.HomeDir == "" {
-			log.Fatal("Fatal: No SRCLIBPATH and current user %q has no home directory.", user.Username)
+			log.Fatalf("Fatal: No SRCLIBPATH and current user %q has no home directory.", user.Username)
 		}
 		SrclibPath = filepath.Join(user.HomeDir, ".srclib")
 	}
