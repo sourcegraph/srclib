@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/sourcegraph/srclib/repo"
+	"github.com/sourcegraph/srclib/toolchain"
 	"github.com/sourcegraph/srclib/unit"
 )
 
@@ -30,12 +31,32 @@ type Repository struct {
 type Tree struct {
 	SourceUnits []*unit.SourceUnit `json:",omitempty"`
 
-	Handlers map[string][]string
+	// Scanners to use when scanning this tree for source units. TODO(sqs):
+	// merge this into Tools?
+	Scanners []*toolchain.ToolRef
+
+	Tools map[string][]string
 
 	// Config is a map from unit spec (i.e., UnitType:UnitName) to an arbitrary
 	// property map. It is used to pass extra configuration settings to all of
 	// the handlers for matching source units.
 	Config map[string]map[string]string
+}
+
+func (c *Tree) ScannersOrDefault() ([]*toolchain.ToolRef, error) {
+	if c.Scanners != nil {
+		return c.Scanners, nil
+	}
+
+	scanners, err := toolchain.ListTools("scan")
+	if err != nil {
+		return nil, err
+	}
+	trs := make([]*toolchain.ToolRef, len(scanners))
+	for i, s := range scanners {
+		trs[i] = s.Ref()
+	}
+	return trs, nil
 }
 
 // ReadRepository parses and validates the configuration for a repository. If no

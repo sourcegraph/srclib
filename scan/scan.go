@@ -1,9 +1,8 @@
 package scan
 
 import (
-	"encoding/json"
 	"log"
-	"os"
+
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -12,36 +11,9 @@ import (
 	"code.google.com/p/rog-go/parallel"
 	"github.com/sourcegraph/srclib/config"
 	"github.com/sourcegraph/srclib/repo"
-	"github.com/sourcegraph/srclib/tool"
+	"github.com/sourcegraph/srclib/toolchain"
 	"github.com/sourcegraph/srclib/unit"
 )
-
-// Scan returns a list of source units that exist in dir and its
-// subdirectories. Paths in the source units should be relative to dir.
-func Scan(dir string, tool tool.Tool) ([]*unit.SourceUnit, error) {
-	cmd, err := tool.Command(dir)
-	if err != nil {
-		return nil, err
-	}
-	cmd.Args = append(cmd.Args, "scan")
-	cmd.Stderr = os.Stderr
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		log.Fatal(err)
-	}
-	if err := cmd.Start(); err != nil {
-		log.Fatal(err)
-	}
-
-	var units []*unit.SourceUnit
-	if err := json.NewDecoder(stdout).Decode(&units); err != nil {
-		return nil, err
-	}
-	if err := cmd.Wait(); err != nil {
-		log.Fatal(err)
-	}
-	return units, nil
-}
 
 var GlobalScanIgnore = []string{
 	"third_party",
@@ -53,11 +25,7 @@ var GlobalScanIgnore = []string{
 // SourceUnits scans dir and its subdirectories for source units, using all
 // registered toolchains that implement Scanner.
 func SourceUnits(dir string, c *config.Repository) ([]*unit.SourceUnit, error) {
-	tools, err := tool.SrclibPathTools.List()
-	if err != nil {
-		return nil, err
-	}
-	scanners, err := tool.FilterByHandler(tools, "scan")
+	scanners, err := c.ScannersOrDefault()
 	if err != nil {
 		return nil, err
 	}
@@ -67,13 +35,18 @@ func SourceUnits(dir string, c *config.Repository) ([]*unit.SourceUnit, error) {
 		sync.Mutex
 	}
 	run := parallel.NewRun(runtime.GOMAXPROCS(0))
-	for _, s_ := range scanners {
-		s := s_
+	for _, sref_ := range scanners {
+		// TODO(sqs): how to specify whether to use program or docker tool here?
+		sref := sref_
+		s, err := toolchain.OpenTool(sref.Toolchain, sref.Subcmd, toolchain.AsProgram|toolchain.AsDockerContainer)
+		if err != nil {
+			return nil, err
+		}
 		run.Do(func() error {
-			log.Printf("Scanning %s using %q scanner...", c.URI, s.Name())
-			units2, err := Scan(dir, s)
-			if err != nil {
-				log.Printf("Failed to scan %s using %q scanner: %s.", c.URI, s.Name(), err)
+			log.Printf("Scanning %s using %q scanner...", c.URI, sref)
+			var units2 []*unit.SourceUnit
+			if err := s.Run(nil, &units2); err != nil {
+				log.Printf("Failed to scan %s using %q scanner: %s.", c.URI, sref, err)
 				return err
 			}
 
@@ -97,7 +70,7 @@ func SourceUnits(dir string, c *config.Repository) ([]*unit.SourceUnit, error) {
 				}
 			}
 
-			log.Printf("Finished scanning %s using %q scanner. %d source units found (after ignoring %d).", c.URI, s.Name(), len(units3), len(units2)-len(units3))
+			log.Printf("Finished scanning %s using %q scanner. %d source units found (after ignoring %d).", c.URI, sref, len(units3), len(units2)-len(units3))
 
 			units.Lock()
 			defer units.Unlock()

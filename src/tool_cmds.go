@@ -5,15 +5,17 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 
-	"github.com/sourcegraph/srclib/tool"
+	"github.com/sourcegraph/srclib/toolchain"
 )
 
 func toolCmd(args []string) {
 	fs := flag.NewFlagSet("tool", flag.ExitOnError)
 	forceRebuild := fs.Bool("b", false, "force rebuild of Docker image")
+	exeMethods := fs.String("m", defaultExeMethods, "permitted execution methods")
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: `+Name+` tool [OPT] TOOL [ARG...]
+		fmt.Fprintln(os.Stderr, `usage: `+Name+` tool [OPT] TOOLCHAIN TOOL [ARG...]
 
 Run a srclib tool with the specified arguments.
 
@@ -28,28 +30,45 @@ The options are:
 		fs.Usage()
 	}
 
-	toolName, toolArgs := fs.Arg(0), fs.Args()[1:]
+	var toolSubcmd string
+	var toolArgs []string
 
-	tool, err := tool.Lookup(toolName)
+	toolchainPath := fs.Arg(0)
+	if fs.NArg() > 1 {
+		a := fs.Arg(1)
+		if len(a) > 0 && a[0] != '-' {
+			toolSubcmd = a
+			toolArgs = fs.Args()[2:]
+		} else {
+			toolArgs = fs.Args()[1:]
+		}
+	}
+	mode := parseExeMethods(*exeMethods)
+
+	tc, err := toolchain.Open(toolchainPath, mode)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	dir, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	if *forceRebuild {
-		if err := tool.Build(); err != nil {
+		if err := tc.Build(); err != nil {
 			log.Fatal(err)
 		}
 	}
 
-	cmd, err := tool.Command(dir)
+	var cmder interface {
+		Command() (*exec.Cmd, error)
+	}
+	if toolSubcmd != "" {
+		cmder, err = toolchain.OpenTool(toolchainPath, toolSubcmd, mode)
+	} else {
+		cmder = tc
+	}
+
+	cmd, err := cmder.Command()
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	cmd.Args = append(cmd.Args, toolArgs...)
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
