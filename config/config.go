@@ -43,6 +43,8 @@ type Tree struct {
 	Config map[string]map[string]string
 }
 
+// DefaultScanners are the scanners used for a Tree if none are manually
+// specified in a Srcfile.
 var DefaultScanners = []*toolchain.ToolRef{
 	{"github.com/sourcegraph/srclib-go", "scan"},
 }
