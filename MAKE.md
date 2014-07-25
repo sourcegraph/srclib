@@ -17,14 +17,13 @@ manual configuration file (if present) and the scanners available in the
 SRCLIBPATH.
 
 1. Read the manual configuration in Srcfile, if present.
-1. Determine which scanners to run, based on the list of available scanners and
+1. Determine which scanners to run, based on the list of default scanners and
    the Srcfile.
 1. Run each scanner to produce lists of discovered source units and handlers
    to run on them.
 1. Merge the manually specified source units and handlers with the output from
    the scanners. (Manually specified source units take precedence.)
-1. Eliminate source units and handlers that are SKIPped in the Srcfile.
-1. Cache the final configuration (source units, handlers, and global config).
+1. Eliminate source units and handlers that are skipped in the Srcfile.
 
 The final product of the configuration phase is the final configuration file.
 
