@@ -8,15 +8,15 @@ function _src() {
             COMPREPLY=($(compgen -W "${subcmds}" -- ${cur}))
             ;;
         tool)
-            tools=$(src info tools -q)
-            COMPREPLY=($(compgen -W "${tools}" -- ${cur}))
+            toolchains=$(src info toolchains -q)
+            COMPREPLY=($(compgen -W "${toolchains}" -- ${cur}))
             ;;
         *)
             case "${COMP_WORDS[COMP_CWORD-2]}" in
                 tool)
-                    tool="${COMP_WORDS[COMP_CWORD-1]}"
-                    handlers=$(src info handlers -q -common -tool="$tool")
-                    COMPREPLY=($(compgen -W "${handlers}" -- ${cur}))
+                    toolchain="${COMP_WORDS[COMP_CWORD-1]}"
+                    tools=$(src info tools -q -common -toolchain="$toolchain")
+                    COMPREPLY=($(compgen -W "${tools}" -- ${cur}))
                     ;;
             esac
     esac
