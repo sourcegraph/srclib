@@ -3,8 +3,16 @@
 #### Why are there 2 different execution schemes for tools: running directly as
      a program and running inside a Docker container?
 
-Sometimes you want repeatable builds that aren't dependent on what's on your
-local system, and sometimes you do.
+Running `src` as a normal program means that it'll pick up context from your
+local system, such as interpreter/compiler versions, dependencies, etc. This is
+desirable when you're using `src` to analyze code that you're editing locally,
+and when you don't want the analysis output to be reproducible by other people.
+
+Running `src` inside Docker means that analysis occurs in a reproducible
+environment, with fixed versions of interpreters/compilers and dependencies.
+This is desirable when you want to share analysis output with others, such as
+when you're uploading it to an external service (like
+[Sourcegraph](https://sourcegraph.com)).
 
 
 #### Why can tools exist in 2 places, the PATH and SRCLIBPATH?
