@@ -33,20 +33,20 @@ func TestMakeCmd(t *testing.T) {
 	}
 
 	// Since we exec `srcgraph`, make sure it's up-to-date.
-	if out, err := exec.Command("make", "-C", "..", "srcgraph").CombinedOutput(); err != nil {
-		t.Errorf("Failed to build srcgraph for `srcgraph make` tests: %s.\n\nOutput was:\n%s", err, out)
+	if out, err := exec.Command("make", "-C", "..", "src").CombinedOutput(); err != nil {
+		t.Errorf("Failed to build src program for `src make` tests: %s.\n\nOutput was:\n%s", err, out)
 		return
 	}
 
-	cmd := exec.Command("git", "submodule", "update", "--init", "srcgraph/testdata/repos")
+	cmd := exec.Command("git", "submodule", "update", "--init", "testdata/repos")
 	cmd.Dir = ".."
 	if out, err := cmd.CombinedOutput(); err != nil {
 		t.Errorf("Failed to update or init git submodules: %s.\n\nOutput was:\n%s", err, out)
 		return
 	}
 
-	const testReposDir = "testdata/repos"
-	fis, err := ioutil.ReadDir("testdata/repos")
+	const testReposDir = "../testdata/repos"
+	fis, err := ioutil.ReadDir("../testdata/repos")
 	if err != nil {
 		t.Fatal(err)
 	}
