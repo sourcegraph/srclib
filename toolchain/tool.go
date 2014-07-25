@@ -69,8 +69,13 @@ func OpenTool(toolchain, subcmd string, mode Mode) (Tool, error) {
 	return &tool{tc, subcmd}, nil
 }
 
+// A Tool is a subcommand of a Toolchain that performs an single operation, such
+// as one type of analysis on a source unit.
 type Tool interface {
+	// Command returns an *exec.Cmd suitable for running this tool.
 	Command() (*exec.Cmd, error)
+
+	// Run executes this tool with args and parses the JSON response into resp.
 	Run(arg []string, resp interface{}) error
 }
 
