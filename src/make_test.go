@@ -21,18 +21,18 @@ import (
 )
 
 var mode = flag.String("test.mode", "test", "[test|keep|gen] 'test' runs test as normal; keep keeps around generated test files for inspection after tests complete; 'gen' generates new expected test data")
-var repoMatch = flag.String("test.repo", "", "only test `srcgraph make` for repos that contain this string")
+var repoMatch = flag.String("test.repo", "", "only test `src make` for repos that contain this string")
 
 func TestMakeCmd(t *testing.T) {
 	if testing.Short() {
-		t.Skip("srcgraph make tests take a long time; skipping for -test.short")
+		t.Skip("src make tests take a long time; skipping for -test.short")
 	}
 
 	if *repoMatch != "" {
-		t.Logf("Testing `srcgraph make` on repositories that contain \"%s\"", *repoMatch)
+		t.Logf("Testing `src make` on repositories that contain \"%s\"", *repoMatch)
 	}
 
-	// Since we exec `srcgraph`, make sure it's up-to-date.
+	// Since we exec `src`, make sure it's up-to-date.
 	if out, err := exec.Command("make", "-C", "..", "src").CombinedOutput(); err != nil {
 		t.Errorf("Failed to build src program for `src make` tests: %s.\n\nOutput was:\n%s", err, out)
 		return
@@ -111,7 +111,7 @@ func testMakeCmd(t *testing.T, repoDir string) {
 		}
 	}()
 
-	// Run `srcgraph make`.
+	// Run `src make`.
 	var w io.Writer
 	var buf bytes.Buffer
 	if testing.Verbose() {
@@ -119,7 +119,7 @@ func testMakeCmd(t *testing.T, repoDir string) {
 	} else {
 		w = &buf
 	}
-	cmd := exec.Command("srcgraph", "-v", "make")
+	cmd := exec.Command("src", "-v", "make")
 	cmd.Stderr, cmd.Stdout = w, w
 	cmd.Dir = repoDir
 
