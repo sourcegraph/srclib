@@ -25,17 +25,12 @@ var GlobalScanIgnore = []string{
 // SourceUnits scans dir and its subdirectories for source units, using all
 // registered toolchains that implement Scanner.
 func SourceUnits(dir string, c *config.Repository) ([]*unit.SourceUnit, error) {
-	scanners, err := c.ScannersOrDefault()
-	if err != nil {
-		return nil, err
-	}
-
 	var units struct {
 		u []*unit.SourceUnit
 		sync.Mutex
 	}
 	run := parallel.NewRun(runtime.GOMAXPROCS(0))
-	for _, sref_ := range scanners {
+	for _, sref_ := range c.Scanners {
 		// TODO(sqs): how to specify whether to use program or docker tool here?
 		sref := sref_
 		s, err := toolchain.OpenTool(sref.Toolchain, sref.Subcmd, toolchain.AsProgram|toolchain.AsDockerContainer)

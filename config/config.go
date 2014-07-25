@@ -31,8 +31,8 @@ type Repository struct {
 type Tree struct {
 	SourceUnits []*unit.SourceUnit `json:",omitempty"`
 
-	// Scanners to use when scanning this tree for source units. TODO(sqs):
-	// merge this into Tools?
+	// Scanners to use when scanning this tree for source units. If not set,
+	// this defaults to DefaultScanners.
 	Scanners []*toolchain.ToolRef
 
 	Tools map[string][]string
@@ -43,20 +43,8 @@ type Tree struct {
 	Config map[string]map[string]string
 }
 
-func (c *Tree) ScannersOrDefault() ([]*toolchain.ToolRef, error) {
-	if c.Scanners != nil {
-		return c.Scanners, nil
-	}
-
-	scanners, err := toolchain.ListTools("scan")
-	if err != nil {
-		return nil, err
-	}
-	trs := make([]*toolchain.ToolRef, len(scanners))
-	for i, s := range scanners {
-		trs[i] = s.Ref()
-	}
-	return trs, nil
+var DefaultScanners = []*toolchain.ToolRef{
+	{"github.com/sourcegraph/srclib-go", "scan"},
 }
 
 // ReadRepository parses and validates the configuration for a repository. If no
@@ -108,5 +96,8 @@ func (c *Repository) finish(repoURI repo.URI) (*Repository, error) {
 		return nil, err
 	}
 	c.URI = repoURI
+	if c.Scanners == nil {
+		c.Scanners = DefaultScanners
+	}
 	return c, nil
 }
