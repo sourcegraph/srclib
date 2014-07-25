@@ -7,13 +7,13 @@ function _src() {
             subcmds=$(src help -q)
             COMPREPLY=($(compgen -W "${subcmds}" -- ${cur}))
             ;;
-        tool)
+        tool|test)
             toolchains=$(src info toolchains -q)
             COMPREPLY=($(compgen -W "${toolchains}" -- ${cur}))
             ;;
         *)
             case "${COMP_WORDS[COMP_CWORD-2]}" in
-                tool)
+                tool|test)
                     toolchain="${COMP_WORDS[COMP_CWORD-1]}"
                     tools=$(src info tools -q -common -toolchain="$toolchain")
                     COMPREPLY=($(compgen -W "${tools}" -- ${cur}))
