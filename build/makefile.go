@@ -55,7 +55,7 @@ func CreateMakefile(buildDataDir string, c *config.Repository) (*makex.Makefile,
 	// behavior by default and does not heed .DELETE_ON_ERROR.
 	allRules = append(allRules, &makex.BasicRule{TargetFile: ".DELETE_ON_ERROR"})
 
-	mf := &makex.Makefile{allRules}
+	mf := &makex.Makefile{Rules: allRules}
 
 	return mf, nil
 }
