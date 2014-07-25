@@ -1,7 +1,6 @@
 # Frequently asked questions
 
-#### Why are there 2 different execution schemes for tools: running directly as
-     a program and running inside a Docker container?
+#### Why are there 2 different execution schemes for tools: running directly as a program and running inside a Docker container?
 
 Running `src` as a normal program means that it'll pick up context from your
 local system, such as interpreter/compiler versions, dependencies, etc. This is
