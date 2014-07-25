@@ -171,7 +171,7 @@ func (pf *printFormatter) Format(f fmt.State, c rune) {
 	var qual Qualification
 	if prec, ok := f.Precision(); ok {
 		if prec < 0 || prec >= len(qualLevels) {
-			fmt.Fprint(f, "%%!%c(invalid qual %d)", c, prec)
+			fmt.Fprintf(f, "%%!%c(invalid qual %d)", c, prec)
 			return
 		}
 		qual = qualLevels[prec]

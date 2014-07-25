@@ -89,8 +89,9 @@ func FlushAll() {
 	closersMu.Lock()
 	defer closersMu.Unlock()
 	var w sync.WaitGroup
-	for _, c := range closers {
+	for _, c_ := range closers {
 		w.Add(1)
+		c := c_
 		go func() {
 			defer w.Done()
 			c.Close()
