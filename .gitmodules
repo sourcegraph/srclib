@@ -1,0 +1,33 @@
+[submodule "testdata/repos/go-sample-0"]
+	path = testdata/repos/go-sample-0
+	url = git@github.com:sgtest/go-sample-0.git
+[submodule "testdata/repos/javascript-nodejs-sample-0"]
+	path = testdata/repos/javascript-nodejs-sample-0
+	url = git@github.com:sgtest/javascript-nodejs-sample-0.git
+[submodule "testdata/repos/javascript-nodejs-xrefs-0"]
+	path = testdata/repos/javascript-nodejs-xrefs-0
+	url = git@github.com:sgtest/javascript-nodejs-xrefs-0.git
+[submodule "testdata/repos/minimal_ruby_stdlib"]
+	path = testdata/repos/minimal_ruby_stdlib
+	url = git@github.com:sgtest/minimal_ruby_stdlib.git
+[submodule "testdata/repos/python-extensions-test"]
+	path = testdata/repos/python-extensions-test
+	url = git@github.com:sgtest/python-extensions-test.git
+[submodule "testdata/repos/python-sample-0"]
+	path = testdata/repos/python-sample-0
+	url = git@github.com:sgtest/python-sample-0.git
+[submodule "testdata/repos/python-sample-1"]
+	path = testdata/repos/python-sample-1
+	url = git@github.com:sgtest/python-sample-1.git
+[submodule "testdata/repos/ruby-sample-0"]
+	path = testdata/repos/ruby-sample-0
+	url = git@github.com:sgtest/ruby-sample-0.git
+[submodule "testdata/repos/ruby-sample-1"]
+	path = testdata/repos/ruby-sample-1
+	url = git@github.com:sgtest/ruby-sample-1.git
+[submodule "testdata/repos/ruby_sample_xref_app"]
+	path = testdata/repos/ruby_sample_xref_app
+	url = git@github.com:sgtest/ruby_sample_xref_app.git
+[submodule "testdata/repos/sample_ruby_gem"]
+	path = testdata/repos/sample_ruby_gem
+	url = git@github.com:sgtest/sample_ruby_gem.git
