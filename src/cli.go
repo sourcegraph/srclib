@@ -109,6 +109,7 @@ var Subcommands = []Subcommand{
 	{"repo-compute-stats", "update and print repository stats", repoComputeStats},
 	{"build", "create a new build for a repository (API)", build_},
 	{"build-queue", "display the build queue (API)", buildQueue},
+	{"test", "run tests", testCmd},
 	{"info", "show info about enabled capabilities", infoCmd},
 	{"help", "show help about a command", nil},
 }
