@@ -92,6 +92,8 @@ func (c *ConfigCmd) Execute(args []string) error {
 		log.Fatal(err)
 	}
 
+	// TODO(sqs): merge the Srcfile's source units with the ones we scanned;
+	// don't just clobber them.
 	cfg.SourceUnits = units
 
 	if c.Output.Output == "json" {
