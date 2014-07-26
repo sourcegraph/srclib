@@ -36,7 +36,7 @@ func init() {
 func Lookup(path string) (*Info, error) {
 	path = filepath.Clean(path)
 
-	matches, err := lookInPaths(filepath.Join(path, "Srclibtoolchain"), SrclibPath)
+	matches, err := lookInPaths(filepath.Join(path, ConfigFilename), SrclibPath)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func Lookup(path string) (*Info, error) {
 	if len(matches) > 1 {
 		return nil, fmt.Errorf("shadowed toolchain path %q (toolchains: %v)", path, matches)
 	}
-	return newInfo(path, filepath.Dir(matches[0]), "Srclibtoolchain")
+	return newInfo(path, filepath.Dir(matches[0]), ConfigFilename)
 }
 
 // List finds all toolchains in the SRCLIBPATH.
@@ -80,7 +80,7 @@ func List() ([]*Info, error) {
 				// the path to them through the original entry in SrclibPath
 				dirs = append(dirs, path+"/")
 				origDirs[path+"/"] = dir
-			} else if fi.Mode().IsRegular() && strings.ToLower(name) == "srclibtoolchain" {
+			} else if fi.Mode().IsRegular() && strings.ToLower(name) == strings.ToLower(ConfigFilename) {
 				var base string
 				if orig, present := origDirs[dir]; present {
 					base = orig
@@ -106,7 +106,7 @@ func List() ([]*Info, error) {
 	return found, nil
 }
 
-func newInfo(toolchainPath, dir, srclibtoolchain string) (*Info, error) {
+func newInfo(toolchainPath, dir, configFile string) (*Info, error) {
 	dockerfile := "Dockerfile"
 	if _, err := os.Stat(filepath.Join(dir, dockerfile)); os.IsNotExist(err) {
 		dockerfile = ""
@@ -124,11 +124,11 @@ func newInfo(toolchainPath, dir, srclibtoolchain string) (*Info, error) {
 	}
 
 	return &Info{
-		Path:                toolchainPath,
-		Dir:                 dir,
-		SrclibtoolchainFile: srclibtoolchain,
-		Program:             prog,
-		Dockerfile:          dockerfile,
+		Path:       toolchainPath,
+		Dir:        dir,
+		ConfigFile: configFile,
+		Program:    prog,
+		Dockerfile: dockerfile,
 	}, nil
 }
 
