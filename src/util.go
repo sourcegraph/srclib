@@ -130,8 +130,7 @@ func readJSONFile(file string, v interface{}) {
 	}
 }
 
-const defaultExeMethods = "program,docker"
-
+// TODO(sqs): make this a go-flags type
 func parseExeMethods(v string) toolchain.Mode {
 	methods := strings.Split(v, ",")
 	var mode toolchain.Mode

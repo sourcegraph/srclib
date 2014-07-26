@@ -45,7 +45,7 @@ The options are:
 	fs.Parse(args)
 	goals := fs.Args()
 
-	repoConf, err := OpenAndConfigureRepo(*Dir)
+	repoConf, err := OpenAndConfigureRepo(Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -55,7 +55,7 @@ The options are:
 		log.Fatal(err)
 	}
 
-	if *Verbose || *showOnly {
+	if gopt.Verbose || *showOnly {
 		data, err := makex.Marshal(mf)
 		if err != nil {
 			log.Fatal(err)

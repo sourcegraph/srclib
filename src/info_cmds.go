@@ -1,10 +1,8 @@
 package src
 
 import (
-	"flag"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/sourcegraph/srclib/build"
@@ -12,49 +10,47 @@ import (
 	"github.com/sourcegraph/srclib/toolchain"
 )
 
-func infoCmd(args []string) {
-	fs := flag.NewFlagSet("info", flag.ExitOnError)
-	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: `+Name+` info [toolchains|tools]
-
-Shows information about enabled capabilities in this tool as well as system
-information.
-
-The options are:
-`)
-		fs.PrintDefaults()
-		os.Exit(1)
-	}
-	fs.Parse(args)
-
-	if fs.NArg() > 0 {
-		extraArgs := fs.Args()[1:]
-		what := fs.Arg(0)
-		switch what {
-		case "toolchains":
-			toolchainsCmd(extraArgs)
-		case "tools":
-			toolsCmd(extraArgs)
-		default:
-			log.Fatalf("No info on %q.", what)
-		}
-		return
+func init() {
+	c, err := parser.AddCommand("info",
+		"show info about enabled capabilities",
+		"Shows information about enabled capabilities in this tool as well as system information.",
+		&infoCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
 	}
 
+	c.SubcommandsOptional = true
+
+	_, err = c.AddCommand("toolchains",
+		"list available toolchains",
+		"Prints all available toolchains that contain a Srclibtoolchain file.",
+		&infoToolchainsCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = c.AddCommand("tools",
+		"list available tools",
+		"Prints all available tools in toolchains.",
+		&infoToolsCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+type InfoCmd struct{}
+
+var infoCmd InfoCmd
+
+func (c *InfoCmd) Execute(args []string) error {
 	log.Printf("srclib version %s\n", Version)
 	log.Println("https://sourcegraph.com/sourcegraph/srclib")
 	log.Println()
 
 	log.Printf("SRCLIBPATH=%q", toolchain.SrclibPath)
-
-	log.Println()
-	log.Println("TOOLCHAINS =======================================================================")
-	toolchainsCmd(nil)
-	log.Println()
-	log.Println()
-
-	log.Println("TOOLS ============================================================================")
-	toolsCmd(nil)
 
 	log.Println()
 	log.Printf("Build data types (%d)", len(buildstore.DataTypes))
@@ -67,44 +63,31 @@ The options are:
 	for name, _ := range build.RuleMakers {
 		log.Printf(" - %s", name)
 	}
+
+	return nil
 }
 
-func toolchainsCmd(args []string) {
-	fs := flag.NewFlagSet("toolchains", flag.ExitOnError)
-	quiet := fs.Bool("q", false, "quiet (only show names/URIs)")
-	json := fs.Bool("json", false, "print output as JSON")
-	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: `+Name+` toolchains
+type InfoToolchainsCmd struct {
+	Quiet bool `short:"q"`
+	JSON  bool `long:"json" description:"print output as JSON"`
+}
 
-Prints all available toolchains that contain a Srclibtoolchain file.
+var infoToolchainsCmd InfoToolchainsCmd
 
-Toolchains without a Srclibtoolchain file can still be run, but they won't be appear in
-this list.
-
-The options are:
-`)
-		fs.PrintDefaults()
-		os.Exit(1)
-	}
-	fs.Parse(args)
-
-	if fs.NArg() != 0 {
-		fs.Usage()
-	}
-
+func (c *InfoToolchainsCmd) Execute(args []string) error {
 	toolchains, err := toolchain.List()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	fmtStr := "%-60s  %s\n"
-	if !*quiet && !*json {
+	if !c.Quiet && !c.JSON {
 		fmt.Printf(fmtStr, "PATH", "TYPE")
 	}
 	for _, t := range toolchains {
-		if *quiet {
+		if c.Quiet {
 			fmt.Println(t.Path)
-		} else if *json {
+		} else if c.JSON {
 			PrintJSON(t, "")
 		} else {
 			var exes []string
@@ -117,41 +100,31 @@ The options are:
 			fmt.Printf(fmtStr, t.Path, strings.Join(exes, ", "))
 		}
 	}
+
+	return nil
 }
 
-func toolsCmd(args []string) {
-	fs := flag.NewFlagSet("tools", flag.ExitOnError)
-	quiet := fs.Bool("q", false, "quiet (only show tool subcommands, no toolchain names; use with -toolchain)")
-	common := fs.Bool("common", false, "show all subcommands (even non-tool subcommands like 'version' and 'help')")
-	json := fs.Bool("json", false, "print output as JSON")
-	toolchainPath := fs.String("toolchain", "", "only show this toolchain's tools")
-	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: `+Name+` tools [opts]
+type InfoToolsCmd struct {
+	Quiet         bool   `short:"q" description:"quiet (only show tool subcommands, no toolchain names; use with -toolchain)"`
+	JSON          bool   `long:"json" description:"print output as JSON"`
+	ToolchainPath string `long:"toolchain" description:"show only this toolchain's tools" value-name:"PATH"`
+	Common        bool   `long:"common" description:"show all subcommands (even non-tool subcommands like 'version' and 'help')"`
+}
 
-Prints all tools implemented by the available toolchains.
+var infoToolsCmd InfoToolsCmd
 
-The options are:
-`)
-		fs.PrintDefaults()
-		os.Exit(1)
-	}
-	fs.Parse(args)
-
-	if fs.NArg() != 0 {
-		fs.Usage()
-	}
-
-	toolchains, err := toolchain.List()
+func (c *InfoToolsCmd) Execute(args []string) error {
+	tools, err := toolchain.List()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	fmtStr := "%-12s  %-60s\n"
-	if !*quiet && !*json {
+	if !c.Quiet && !c.JSON {
 		fmt.Printf(fmtStr, "TOOL", "TOOLCHAIN")
 	}
-	for _, t := range toolchains {
-		if *toolchainPath != "" && t.Path != *toolchainPath {
+	for _, t := range tools {
+		if c.ToolchainPath != "" && t.Path != c.ToolchainPath {
 			continue
 		}
 		tools, err := t.Tools()
@@ -159,16 +132,18 @@ The options are:
 			log.Fatal(err)
 		}
 		for _, t := range tools {
-			if _, isCommon := toolchain.CommonSubcommands[t.Subcmd]; isCommon && !*common {
+			if _, isCommon := toolchain.CommonSubcommands[t.Subcmd]; isCommon && c.Common {
 				continue
 			}
-			if *quiet {
+			if c.Quiet {
 				fmt.Println(t.Subcmd)
-			} else if *json {
+			} else if c.JSON {
 				PrintJSON(t, "")
 			} else {
 				fmt.Printf(fmtStr, t.Subcmd, t.Toolchain.Path)
 			}
 		}
 	}
+
+	return nil
 }

@@ -30,7 +30,7 @@ The options are:
 	}
 	blameFile, graphFile := fs.Arg(0), fs.Arg(1)
 
-	repoConf, err := OpenAndConfigureRepo(*Dir)
+	repoConf, err := OpenAndConfigureRepo(Dir)
 	if err != nil {
 		log.Fatal(err)
 	}

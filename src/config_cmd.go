@@ -21,7 +21,7 @@ The options are:
 	}
 	fs.Parse(args)
 
-	repoConf, err := OpenAndConfigureRepo(*Dir)
+	repoConf, err := OpenAndConfigureRepo(Dir)
 	if err != nil {
 		log.Fatal(err)
 	}

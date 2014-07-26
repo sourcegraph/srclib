@@ -31,14 +31,14 @@ The options are:
 	inputs := OpenInputFiles(fs.Args())
 	defer CloseAll(inputs)
 
-	repoConf, err := OpenAndConfigureRepo(*Dir)
+	repoConf, err := OpenAndConfigureRepo(Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	var allRawDeps []*dep2.RawDependency
 	for name, input := range inputs {
-		if *Verbose {
+		if gopt.Verbose {
 			log.Printf("Reading raw deps from %q", name)
 		}
 		var rawDeps []*dep2.RawDependency

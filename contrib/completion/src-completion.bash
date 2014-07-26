@@ -1,26 +1,11 @@
 #!/bin/bash
 
-function _src() {
-    cur="${COMP_WORDS[COMP_CWORD]}"
-    case "${COMP_WORDS[COMP_CWORD-1]}" in
-        "src")
-            subcmds=$(src help -q)
-            COMPREPLY=($(compgen -W "${subcmds}" -- ${cur}))
-            ;;
-        tool|test)
-            toolchains=$(src info toolchains -q)
-            COMPREPLY=($(compgen -W "${toolchains}" -- ${cur}))
-            ;;
-        *)
-            case "${COMP_WORDS[COMP_CWORD-2]}" in
-                tool|test)
-                    toolchain="${COMP_WORDS[COMP_CWORD-1]}"
-                    tools=$(src info tools -q -common -toolchain="$toolchain")
-                    COMPREPLY=($(compgen -W "${tools}" -- ${cur}))
-                    ;;
-            esac
-    esac
-    return 0
+_src() {
+	args=("${COMP_WORDS[@]:1:$COMP_CWORD}")
+
+	local IFS=$'\n'
+	COMPREPLY=($(GO_FLAGS_COMPLETION=1 ${COMP_WORDS[0]} __complete -- "${args[@]}"))
+	return 1
 }
 
 complete -F _src src
