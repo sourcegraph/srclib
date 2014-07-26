@@ -3,6 +3,7 @@ package src
 import (
 	"fmt"
 
+	"os"
 	"os/exec"
 	"strings"
 
@@ -20,8 +21,8 @@ type Repo struct {
 func (c *Repo) URI() repo.URI { return repo.MakeURI(c.CloneURL) }
 
 func OpenRepo(dir string) (*Repo, error) {
-	if !isDir(dir) {
-		return nil, fmt.Errorf("no such directory: %q", dir)
+	if fi, err := os.Stat(dir); err != nil || !fi.Mode().IsDir() {
+		return nil, fmt.Errorf("not a directory: %q", dir)
 	}
 
 	// VCS and root directory
