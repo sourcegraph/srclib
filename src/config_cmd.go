@@ -112,8 +112,8 @@ func (c *ConfigCmd) Execute(args []string) error {
 		fmt.Println()
 
 		fmt.Printf("CONFIG (%d)\n", len(cfg.Config))
-		for k, v := range sortedMap(cfg.Config) {
-			fmt.Printf(" - %s: %q\n", k, v)
+		for _, kv := range sortedMap(cfg.Config) {
+			fmt.Printf(" - %s: %q\n", kv[0], kv[1])
 		}
 	}
 
