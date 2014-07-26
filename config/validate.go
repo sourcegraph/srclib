@@ -1,8 +1,15 @@
 package config
 
 import (
+	"errors"
 	"path/filepath"
 	"strings"
+)
+
+var (
+	// ErrInvalidFilePath indicates that a file path outside of the tree or
+	// repository root directory was specified in the config.
+	ErrInvalidFilePath = errors.New("invalid file path specified in config (above config root dir or source unit dir)")
 )
 
 func (c *Tree) validate() error {

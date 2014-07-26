@@ -54,12 +54,16 @@ The "scan" command always scans the current directory and its subdirectories. It
 	if err != nil {
 		log.Fatal(err)
 	}
+	_ = cfg
 	configGroup, err := scanCmd.AddGroup("configuration (not passed to tools)", "", &configOpt)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defaultScanners := make([]string, len(cfg.Scanners))
-	for i, sref := range cfg.Scanners {
+	defaultScanners := make([]string, len(config.SrclibPathConfig.DefaultScanners))
+	// TODO(sqs): change this back to using the repository's
+	// Srcfile-defined scanners (if any) (and then the cfg var up above will not
+	// need the `_ = cfg`)
+	for i, sref := range config.SrclibPathConfig.DefaultScanners {
 		sstr, err := sref.MarshalFlag()
 		if err != nil {
 			log.Fatal(err)
