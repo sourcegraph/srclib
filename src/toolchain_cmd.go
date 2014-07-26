@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	c, err := parser.AddCommand("toolchain",
+	c, err := CLI.AddCommand("toolchain",
 		"manage toolchains",
 		"Manage srclib toolchains.",
 		&toolchainCmd,
@@ -75,12 +75,11 @@ func (t ToolchainPath) Complete(match string) []flags.Completion {
 	return comps
 }
 
-type toolchainExecOpt struct {
-	ExeMethods   string `short:"m" long:"methods" default:"program,docker" description:"permitted execution methods" value-name:"METHODS"`
-	ForceRebuild bool   `short:"b" long:"rebuild" description:"force rebuild of Docker image"`
+type ToolchainExecOpt struct {
+	ExeMethods string `short:"m" long:"methods" default:"program,docker" description:"permitted execution methods" value-name:"METHODS"`
 }
 
-func (o *toolchainExecOpt) toolchainMode() toolchain.Mode {
+func (o *ToolchainExecOpt) ToolchainMode() toolchain.Mode {
 	// TODO(sqs): make this a go-flags type
 	methods := strings.Split(o.ExeMethods, ",")
 	var mode toolchain.Mode

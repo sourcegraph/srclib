@@ -7,9 +7,7 @@ import (
 	"strings"
 
 	"github.com/sourcegraph/go-vcs/vcs"
-	"github.com/sourcegraph/srclib/config"
 	"github.com/sourcegraph/srclib/repo"
-	"github.com/sourcegraph/srclib/scan"
 )
 
 type Repo struct {
@@ -67,27 +65,6 @@ func OpenRepo(dir string) (*Repo, error) {
 
 	updateVCSIgnore("." + rc.VCSType + "ignore")
 	return rc, nil
-}
-
-type ConfiguredRepo struct {
-	*Repo
-	Config *config.Repository // Repository-level configuration, read from .sourcegraph-data/config.json
-}
-
-func OpenAndConfigureRepo(targetDir string) (*ConfiguredRepo, error) {
-	rc, err := OpenRepo(targetDir)
-	if err != nil {
-		return nil, err
-	}
-	jc := new(ConfiguredRepo)
-	jc.Repo = rc
-
-	jc.Config, err = scan.ReadRepositoryAndScan(rc.RootDir, rc.URI())
-	if err != nil {
-		return nil, err
-	}
-
-	return jc, nil
 }
 
 func getRootDir(vcsType string, dir string) (string, error) {

@@ -1,0 +1,54 @@
+package src
+
+import (
+	"reflect"
+	"testing"
+)
+
+func TestMarshalArgs(t *testing.T) {
+	tests := []struct {
+		group    interface{}
+		wantArgs []string
+	}{
+		{
+			group: &struct {
+				Foo string `short:"f"`
+			}{Foo: "bar"},
+			wantArgs: []string{"-f", "bar"},
+		},
+		{
+			group: &struct {
+				Foo string `long:"foo"`
+			}{Foo: "bar"},
+			wantArgs: []string{"--foo", "bar"},
+		},
+		{
+			group: &struct {
+				Foo string `short:"f"`
+			}{Foo: "bar baz"},
+			wantArgs: []string{"-f", "bar baz"},
+		},
+		{
+			group: &struct {
+				Foo string `long:"foo"`
+			}{Foo: "bar baz"},
+			wantArgs: []string{"--foo", "bar baz"},
+		},
+	}
+	for _, test := range tests {
+		group, err := CLI.AddGroup("", "", test.group)
+		if err != nil {
+			t.Error(err)
+			continue
+		}
+		args, err := MarshalArgs(group)
+		if err != nil {
+			t.Error(err)
+			continue
+		}
+
+		if !reflect.DeepEqual(args, test.wantArgs) {
+			t.Errorf("got args %v, want %v", args, test.wantArgs)
+		}
+	}
+}
