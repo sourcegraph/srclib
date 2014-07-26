@@ -77,13 +77,13 @@ func (t ToolName) Complete(match string) []flags.Completion {
 		log.Println(err)
 		return nil
 	}
-	tools, err := tc.Tools()
+	c, err := tc.ReadConfig()
 	if err != nil {
 		log.Println(err)
 		return nil
 	}
 	var comps []flags.Completion
-	for _, tt := range tools {
+	for _, tt := range c.Tools {
 		if strings.HasPrefix(tt.Subcmd, match) {
 			comps = append(comps, flags.Completion{Item: tt.Subcmd})
 		}

@@ -128,8 +128,10 @@ func (c *ToolchainListCmd) Execute(args []string) error {
 }
 
 type ToolchainListToolsCmd struct {
-	Args struct {
-		Toolchains []ToolchainPath `name:"TOOLCHAINS" description:"list tools in these toolchains only"`
+	Op             string `short:"p" long:"op" description:"only list tools that perform these operations only" value-name:"OP"`
+	SourceUnitType string `short:"u" long:"source-unit-type" description:"only list tools that operate on this source unit type" value-name:"TYPE"`
+	Args           struct {
+		Toolchains []ToolchainPath `name:"TOOLCHAINS" description:"only list tools in these toolchains"`
 	} `positional-args:"yes" required:"yes"`
 }
 
@@ -141,8 +143,8 @@ func (c *ToolchainListToolsCmd) Execute(args []string) error {
 		log.Fatal(err)
 	}
 
-	fmtStr := "%-18s  %-15s  %-40s\n"
-	fmt.Printf(fmtStr, "TOOL", "OP", "TOOLCHAIN")
+	fmtStr := "%-40s  %-18s  %-15s  %-25s\n"
+	fmt.Printf(fmtStr, "TOOLCHAIN", "TOOL", "OP", "SOURCE UNIT TYPES")
 	for _, tc := range tcs {
 		if len(c.Args.Toolchains) > 0 {
 			found := false
@@ -157,12 +159,28 @@ func (c *ToolchainListToolsCmd) Execute(args []string) error {
 			}
 		}
 
-		tools, err := tc.Tools()
+		cfg, err := tc.ReadConfig()
 		if err != nil {
 			log.Fatal(err)
 		}
-		for _, t := range tools {
-			fmt.Printf(fmtStr, t.Subcmd, t.Op, tc.Path)
+		for _, t := range cfg.Tools {
+			if c.Op != "" && c.Op != t.Op {
+				continue
+			}
+			if c.SourceUnitType != "" {
+				found := false
+				for _, u := range t.SourceUnitTypes {
+					if c.SourceUnitType == u {
+						found = true
+						break
+					}
+				}
+				if !found {
+					continue
+				}
+			}
+
+			fmt.Printf(fmtStr, tc.Path, t.Subcmd, t.Op, strings.Join(t.SourceUnitTypes, " "))
 		}
 	}
 	return nil

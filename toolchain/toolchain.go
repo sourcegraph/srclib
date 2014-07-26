@@ -35,7 +35,9 @@ type Info struct {
 	Dockerfile string `json:",omitempty"`
 }
 
-func (t *Info) Config() (*Config, error) {
+// ReadConfig reads and parses the Srclibtoolchain config file for the
+// toolchain.
+func (t *Info) ReadConfig() (*Config, error) {
 	f, err := os.Open(filepath.Join(t.Dir, t.ConfigFile))
 	if err != nil {
 		return nil, err
@@ -47,23 +49,6 @@ func (t *Info) Config() (*Config, error) {
 		return nil, err
 	}
 	return c, nil
-}
-
-// Tools lists the tools that this toolchain implements (as subcommands).
-func (t *Info) Tools() ([]*ToolInfo, error) {
-	c, err := t.Config()
-	if err != nil {
-		return nil, err
-	}
-
-	var tools []*ToolInfo
-	for _, tool := range c.Tools {
-		tools = append(tools, &ToolInfo{
-			Subcmd: tool,
-			Op:     tool,
-		})
-	}
-	return tools, nil
 }
 
 // A Mode value is a set of flags (or 0) that control how toolchains are used.
