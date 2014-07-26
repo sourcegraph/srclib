@@ -44,15 +44,15 @@ type ConfigCmd struct {
 	} `group:"output"`
 
 	Args struct {
-		Dir string `name:"DIR" default:"." description:"root directory of tree to configure"`
+		Dir Directory `name:"DIR" default:"." description:"root directory of tree to configure"`
 	} `positional-args:"yes"`
 }
 
 var configCmd ConfigCmd
 
 func (c *ConfigCmd) Execute(args []string) error {
-	if c.Args.Dir == "" {
-		c.Args.Dir = "."
+	if c.Args.Dir != "" {
+		log.Fatalf("Currently, only configuring the current directory tree is supported (i.e., no DIR argument). You provided %q.\n\nTo configure that directory, `cd %s` in your shell and rerun this command.", c.Args.Dir, c.Args.Dir)
 	}
 
 	if c.Subdir != "." {
@@ -63,7 +63,7 @@ func (c *ConfigCmd) Execute(args []string) error {
 		log.Fatalf("Configuration is currently only supported at the root (top-level directory) of a repository, not in a subdirectory (%q).", c.Subdir)
 	}
 
-	cfg, err := config.ReadRepository(c.Args.Dir, repo.URI(c.Repo))
+	cfg, err := config.ReadRepository(string(c.Args.Dir), repo.URI(c.Repo))
 	if err != nil {
 		log.Fatal(err)
 	}
