@@ -37,6 +37,11 @@ func init() {
 		log.Fatal(err)
 	}
 
+	_, err = scanCmd.AddGroup("output options (not passed to tools)", "", &outputOpt)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Set default scanners.
 	cfg, err := config.ReadRepository(".", "")
 	if err != nil {
@@ -62,6 +67,9 @@ var (
 	execOpt   src.ToolchainExecOpt
 	configOpt struct {
 		Scanners []toolchain.ToolRef `short:"t" long:"tool" description:"(list) scanner tools to run" value-name:"TOOLREF"`
+	}
+	outputOpt struct {
+		Output string `short:"o" long:"output" description:"output format" default:"text" value-name:"text|json"`
 	}
 )
 
@@ -98,12 +106,20 @@ func (c *Command) Execute(args []string) error {
 
 	log.Printf("Scanning %s: found %d source units total.", c.Repo, len(units.u))
 
-	out, err := json.MarshalIndent(units.u, "", "  ")
-	if err != nil {
-		return err
+	if outputOpt.Output == "json" {
+		out, err := json.MarshalIndent(units.u, "", "  ")
+		if err != nil {
+			return err
+		}
+		os.Stdout.Write(out)
+		fmt.Println()
+	} else {
+		fmtStr := "%-16s  %s\n"
+		fmt.Printf(fmtStr, "TYPE", "NAME")
+		for _, u := range units.u {
+			fmt.Printf(fmtStr, u.Type, u.Name)
+		}
 	}
-	os.Stdout.Write(out)
-	fmt.Println()
 
 	return nil
 }
