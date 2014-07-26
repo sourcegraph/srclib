@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/jessevdk/go-flags"
+	"github.com/sqs/go-flags"
 	client "github.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"github.com/sourcegraph/srclib/task2"
 )

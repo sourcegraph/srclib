@@ -81,9 +81,7 @@ The options are:
 }
 
 func NewMaker(goals []string, repoConf *ConfiguredRepo, conf *makex.Config) (*makex.Maker, *makex.Makefile, error) {
-	if err := WriteRepositoryConfig(repoConf.RootDir, repoConf.CommitID, repoConf.Config, false); err != nil {
-		return nil, nil, fmt.Errorf("unable to write repository config file due to error %s", err)
-	}
+	// TODO(sqs): write repository config? was here before srclib
 
 	repoStore, err := buildstore.NewRepositoryStore(repoConf.RootDir)
 	if err != nil {
