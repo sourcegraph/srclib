@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"path/filepath"
 	"strings"
+
+	"github.com/sourcegraph/srclib/toolchain"
 )
 
 type SourceUnit struct {
@@ -25,12 +27,15 @@ type SourceUnit struct {
 
 	// Info is an optional field that contains additional information used to
 	// display the source unit
-	Info *Info
+	Info *Info `json:",omitempty"`
 
 	// Data is additional data dumped by the scanner about this source unit. It
 	// typically holds information that the scanner wants to make available to
 	// other components in the toolchain (grapher, dep resolver, etc.).
-	Data interface{}
+	Data interface{} `json:",omitempty"`
+
+	// Scanner is the tool that produced this source unit.
+	Scanner toolchain.ToolRef `json:",omitempty"`
 }
 
 // idSeparator joins a source unit's name and type in its ID string.

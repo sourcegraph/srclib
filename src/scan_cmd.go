@@ -23,7 +23,8 @@ func init() {
 }
 
 type ScanCmd struct {
-	Repo string `long:"repo" description:"repository URI" value-name:"URI"`
+	Repo   string `long:"repo" description:"repository URI" value-name:"URI"`
+	Subdir string `long:"subdir" description:"subdirectory in repository" value-name:"DIR"`
 }
 
 var scanCmd ScanCmd
