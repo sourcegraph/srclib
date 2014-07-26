@@ -118,10 +118,6 @@ All toolchains must implement the following subcommands:
 In addition to the `info` subcommand, each of a toolchain's tools are exposed as a subcommand.
 
 
-## Scan tool
+## Scanner tool
 
-A toolchain that provides scanning functionality must implement the following subcommand:
-
-| Command                      | Description                                    | JSON output (Go type) |
-| ---------------------------- | ---------------------------------------------- | --------------------- |
-| `scan DIR`                   | Discover source units in DIR (and its subdirs) | scan.Output           |
+See `srcgraph scan -h`.

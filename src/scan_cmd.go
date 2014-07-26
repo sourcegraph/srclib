@@ -1,19 +1,27 @@
 package src
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/sourcegraph/srclib/repo"
+	"github.com/sourcegraph/srclib/scan"
 )
 
-func scan_(args []string) {
+func scanCmd(args []string) {
+	repo_, err := OpenRepo(*Dir)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	fs := flag.NewFlagSet("scan", flag.ExitOnError)
+	repoURI := fs.String("repo", string(repo_.URI()), "repository URI")
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` scan [options]
 
-Scans a repository for source units.
+Scans for source units in the directory tree rooted at the current directory.
 
 The options are:
 `)
@@ -22,19 +30,12 @@ The options are:
 	}
 	fs.Parse(args)
 
-	repoConf, err := OpenAndConfigureRepo(*Dir)
+	c, err := scan.ReadRepositoryAndScan(*Dir, repo.URI(*repoURI))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for _, u := range repoConf.Config.SourceUnits {
-		fmt.Printf("## %s\n", u.ID())
-		if *Verbose {
-			jsonStr, err := json.MarshalIndent(u, "\t", "  ")
-			if err != nil {
-				log.Fatal(err)
-			}
-			fmt.Println(string(jsonStr))
-		}
+	for _, u := range c.SourceUnits {
+		fmt.Println(u.ID())
 	}
 }

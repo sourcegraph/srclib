@@ -91,7 +91,7 @@ var Subcommands = []Subcommand{
 	{"tool", "run a tool", toolCmd},
 	{"make", "make a repository", make_},
 	{"makefile", "print the Makefile and exit", makefile},
-	{"scan", "scan a repository for source units", scan_},
+	{"scan", "scan a repository for source units", scanCmd},
 	{"config", "validate and print a repository's configuration", config_},
 	// {"list-deps", "list a repository's raw (unresolved) dependencies", listDeps},
 	// {"resolve-deps", "resolve a repository's raw dependencies", resolveDeps},
