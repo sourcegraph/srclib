@@ -10,7 +10,6 @@ import (
 
 	"code.google.com/p/rog-go/parallel"
 	"github.com/sourcegraph/srclib/config"
-	"github.com/sourcegraph/srclib/container"
 	"github.com/sourcegraph/srclib/unit"
 )
 
@@ -76,37 +75,6 @@ type RawDependency struct {
 
 type Lister interface {
 	List(dir string, unit unit.SourceUnit, c *config.Repository) ([]*RawDependency, error)
-}
-
-type ListerBuilder interface {
-	BuildLister(dir string, unit unit.SourceUnit, c *config.Repository) (*container.Command, error)
-}
-
-type DockerLister struct {
-	ListerBuilder
-}
-
-func (l DockerLister) List(dir string, unit unit.SourceUnit, c *config.Repository) ([]*RawDependency, error) {
-	cmd, err := l.BuildLister(dir, unit, c)
-	if err != nil {
-		return nil, err
-	}
-	if cmd == nil {
-		return nil, nil
-	}
-
-	data, err := cmd.Run()
-	if err != nil {
-		return nil, err
-	}
-
-	var deps []*RawDependency
-	err = json.Unmarshal(data, &deps)
-	if err != nil {
-		return nil, err
-	}
-
-	return deps, nil
 }
 
 // List lists all dependencies of the source unit (whose repository is cloned to

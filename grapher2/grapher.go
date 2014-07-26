@@ -1,7 +1,6 @@
 package grapher2
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -12,7 +11,6 @@ import (
 	"github.com/sqs/fileset"
 
 	"github.com/sourcegraph/srclib/config"
-	"github.com/sourcegraph/srclib/container"
 	"github.com/sourcegraph/srclib/graph"
 	"github.com/sourcegraph/srclib/unit"
 )
@@ -27,47 +25,7 @@ type Output struct {
 	Docs    []*graph.Doc    `json:",omitempty"`
 }
 
-type GrapherBuilder interface {
-	BuildGrapher(dir string, unit *unit.SourceUnit, c *config.Repository) (*container.Command, error)
-}
-
-type DockerGrapher struct {
-	GrapherBuilder
-}
-
-func (g DockerGrapher) Graph(dir string, unit *unit.SourceUnit, c *config.Repository) (*Output, error) {
-	cmd, err := g.BuildGrapher(dir, unit, c)
-	if err != nil {
-		return nil, err
-	}
-
-	if cmd == nil {
-		// No container command returned; don't do anything.
-		return &Output{}, nil
-	}
-
-	data, err := cmd.Run()
-	if err != nil {
-		return nil, err
-	}
-
-	var output *Output
-	err = json.Unmarshal(data, &output)
-	if err != nil {
-		return nil, err
-	}
-
-	// Basic uniqueness checks.
-	seenSymbolPaths := make(map[graph.SymbolPath]*graph.Symbol, len(output.Symbols))
-	for _, s := range output.Symbols {
-		if s0, seen := seenSymbolPaths[s.Path]; seen {
-			return nil, fmt.Errorf("duplicate path in symbols output: %q\nsymbol 1: %+v\nsymbol 2: %+v", s.Path, s0, s)
-		}
-		seenSymbolPaths[s.Path] = s
-	}
-
-	return output, nil
-}
+// TODO(sqs): add grapher validation of output
 
 // Graph uses the registered grapher (if any) to graph the source unit (whose repository is cloned to
 // dir).
@@ -84,6 +42,8 @@ func Graph(dir string, u *unit.SourceUnit, c *config.Repository) (*Output, error
 
 	// If the grapher is known to output Unicode character offsets instead of
 	// byte offsets, then convert all offsets to byte offsets.
+	//
+	// TODO(sqs): handle this less hackily
 	if u.Type != "GoPackage" {
 		ensureOffsetsAreByteOffsets(dir, o)
 	}
