@@ -7,7 +7,6 @@ import (
 	"sort"
 
 	"github.com/sourcegraph/srclib/config"
-	"github.com/sourcegraph/srclib/container"
 	"github.com/sourcegraph/srclib/repo"
 )
 
@@ -30,37 +29,6 @@ func RegisterResolver(targetType string, resolver Resolver) {
 
 type Resolver interface {
 	Resolve(dep *RawDependency, c *config.Repository) (*ResolvedTarget, error)
-}
-
-type ResolverBuilder interface {
-	BuildResolver(dep *RawDependency, c *config.Repository) (*container.Command, error)
-}
-
-type DockerResolver struct {
-	ResolverBuilder
-}
-
-func (l DockerResolver) Resolve(dep *RawDependency, c *config.Repository) (*ResolvedTarget, error) {
-	cmd, err := l.BuildResolver(dep, c)
-	if err != nil {
-		return nil, err
-	}
-	if cmd == nil {
-		return nil, nil
-	}
-
-	data, err := cmd.Run()
-	if err != nil {
-		return nil, err
-	}
-
-	var resolv *ResolvedTarget
-	err = json.Unmarshal(data, &resolv)
-	if err != nil {
-		return nil, err
-	}
-
-	return resolv, nil
 }
 
 // ResolvedTarget represents a resolved dependency target.

@@ -1,3 +1,4 @@
+// TODO(sqs): remove this file
 package grapher2
 
 import (
