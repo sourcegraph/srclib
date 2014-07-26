@@ -128,8 +128,7 @@ func (c *ToolchainListCmd) Execute(args []string) error {
 }
 
 type ToolchainListToolsCmd struct {
-	Common bool `long:"common" description:"show all subcommands (even non-tool subcommands like 'version' and 'help')"`
-	Args   struct {
+	Args struct {
 		Toolchains []ToolchainPath `name:"TOOLCHAINS" description:"list tools in these toolchains only"`
 	} `positional-args:"yes" required:"yes"`
 }
@@ -163,9 +162,6 @@ func (c *ToolchainListToolsCmd) Execute(args []string) error {
 			log.Fatal(err)
 		}
 		for _, t := range tools {
-			if _, isCommon := toolchain.CommonSubcommands[t.Subcmd]; isCommon && c.Common {
-				continue
-			}
 			fmt.Printf(fmtStr, t.Subcmd, t.Op, t.Toolchain.Path)
 		}
 	}

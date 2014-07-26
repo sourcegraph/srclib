@@ -225,11 +225,3 @@ func (t *dockerToolchain) Command() (*exec.Cmd, error) {
 	cmd := exec.Command("docker", "run", "--volume="+t.hostVolumeDir+":/src:ro", t.imageName)
 	return cmd, nil
 }
-
-// CommonSubcommands is a list of subcommands that all toolchains must
-// implement.
-var CommonSubcommands = map[string]struct{}{
-	"version": struct{}{},
-	"help":    struct{}{},
-	"info":    struct{}{},
-}
