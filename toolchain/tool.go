@@ -38,18 +38,12 @@ func (t ToolRef) MarshalFlag() (string, error) {
 
 // ToolInfo describes a tool in a toolchain.
 type ToolInfo struct {
-	// Toolchain is the toolchain that contains this tool as a subcommand.
-	Toolchain *Info
-
 	// Subcmd is the subcommand name of this tool.
 	Subcmd string
 
 	// Op is the operation that this tool performs.
 	Op string
 }
-
-// Ref returns the ToolRef that refers to this tool.
-func (t *ToolInfo) Ref() *ToolRef { return &ToolRef{t.Toolchain.Path, t.Subcmd} }
 
 // ListTools lists all tools in all available toolchains (returned by List). If
 // op is non-empty, only tools that perform that operation are returned.

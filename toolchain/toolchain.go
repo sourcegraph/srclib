@@ -59,9 +59,8 @@ func (t *Info) Tools() ([]*ToolInfo, error) {
 	var tools []*ToolInfo
 	for _, tool := range c.Tools {
 		tools = append(tools, &ToolInfo{
-			Toolchain: t,
-			Subcmd:    tool,
-			Op:        tool,
+			Subcmd: tool,
+			Op:     tool,
 		})
 	}
 	return tools, nil
