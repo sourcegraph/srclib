@@ -23,7 +23,14 @@ func init() {
 	var err error
 	scanCmd, err = src.CLI.AddCommand("scan",
 		"scan for source units",
-		"Scans for source units in the directory tree rooted at the current directory.",
+		`Scans for source units in the directory tree rooted at the current directory.
+
+The default values for --repo, --subdir, and --tool are determined by detecting the current repository and reading its Srcfile config (if any).
+
+The source units produced by this "scan" command are not necessarily the final set of source units for this tree. If the Srcfile specifies that certain source units be skipped, then those will be eliminated *after* this command is run but before the final configuration is produced. To obtain the final list of source units for a repository, run the "config" command.
+
+The "scan" command always scans the current directory and its subdirectories. It is not possible to pass it another directory to use as the root for scanning. (This is to make the implementation simpler, especially with mounting a Docker volume.)
+`,
 		&Command{},
 	)
 	if err != nil {
@@ -66,7 +73,7 @@ var (
 	scanCmd   *flags.Command
 	execOpt   src.ToolchainExecOpt
 	configOpt struct {
-		Scanners []toolchain.ToolRef `short:"t" long:"tool" description:"(list) scanner tools to run" value-name:"TOOLREF"`
+		Scanners []toolchain.ToolRef `short:"t" long:"tool" description:"(list) scanner tools to run" value-name:"TOOLREF.."`
 	}
 	outputOpt struct {
 		Output string `short:"o" long:"output" description:"output format" default:"text" value-name:"text|json"`
