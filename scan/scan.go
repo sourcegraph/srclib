@@ -1,8 +1,10 @@
 package scan
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 
 	"path/filepath"
 	"runtime"
@@ -96,9 +98,12 @@ func (c *Command) Execute(args []string) error {
 
 	log.Printf("Scanning %s: found %d source units total.", c.Repo, len(units.u))
 
-	for _, u := range units.u {
-		fmt.Println(u.ID())
+	out, err := json.MarshalIndent(units.u, "", "  ")
+	if err != nil {
+		return err
 	}
+	os.Stdout.Write(out)
+	fmt.Println()
 
 	return nil
 }
