@@ -1,7 +1,9 @@
 package src
 
 import (
+	"fmt"
 	"log"
+	"sort"
 
 	"github.com/sourcegraph/srclib/config"
 	"github.com/sourcegraph/srclib/repo"
@@ -92,8 +94,42 @@ func (c *ConfigCmd) Execute(args []string) error {
 
 	cfg.SourceUnits = units
 
-	// TODO(sqs): make this do stuff
-	PrintJSON(cfg, "")
+	if c.Output.Output == "json" {
+		PrintJSON(cfg, "")
+	} else {
+		fmt.Printf("SCANNERS (%d)\n", len(cfg.Scanners))
+		for _, s := range cfg.Scanners {
+			fmt.Printf(" - %s\n", s)
+		}
+		fmt.Println()
+
+		fmt.Printf("SOURCE UNITS (%d)\n", len(cfg.SourceUnits))
+		for _, u := range cfg.SourceUnits {
+			fmt.Printf(" - %s: %s\n", u.Type, u.Name)
+		}
+		fmt.Println()
+
+		fmt.Printf("CONFIG (%d)\n", len(cfg.Config))
+		for k, v := range sortedMap(cfg.Config) {
+			fmt.Printf(" - %s: %q\n", k, v)
+		}
+	}
 
 	return nil
+}
+
+func sortedMap(m map[string]string) [][2]string {
+	keys := make([]string, len(m))
+	i := 0
+	for k := range m {
+		keys[i] = k
+		i++
+	}
+	sort.Strings(keys)
+
+	sorted := make([][2]string, len(keys))
+	for i, k := range keys {
+		sorted[i] = [2]string{k, m[k]}
+	}
+	return sorted
 }
