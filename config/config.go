@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/sourcegraph/srclib/repo"
+	"github.com/sourcegraph/srclib/toolchain"
 	"github.com/sourcegraph/srclib/unit"
 )
 
@@ -28,6 +29,9 @@ type Tree struct {
 	// SourceUnits is a list of source units in the repository, either specified
 	// manually in the Srcfile or discovered automatically by the scanner.
 	SourceUnits []*unit.SourceUnit `json:",omitempty"`
+
+	// Scanners to use to scan for source units in this tree.
+	Scanners []*toolchain.ToolRef `json:",omitempty"`
 
 	// TODO(sqs): Add some type of field that lets the Srcfile and the scanners
 	// have input into which tools get used during the execution phase. Right
@@ -67,4 +71,9 @@ func (c *Repository) finish(repoURI repo.URI) (*Repository, error) {
 	}
 	c.URI = repoURI
 	return c, nil
+}
+
+type Command struct {
+	Repo   string `long:"repo" description:"repository URI" value-name:"URI"`
+	Subdir string `long:"subdir" description:"subdirectory in repository" value-name:"DIR"`
 }

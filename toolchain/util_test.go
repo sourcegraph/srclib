@@ -1,4 +1,4 @@
-package src
+package toolchain
 
 import (
 	"reflect"
@@ -36,12 +36,7 @@ func TestMarshalArgs(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		group, err := CLI.AddGroup("", "", test.group)
-		if err != nil {
-			t.Error(err)
-			continue
-		}
-		args, err := MarshalArgs(group)
+		args, err := MarshalArgs(test.group)
 		if err != nil {
 			t.Error(err)
 			continue

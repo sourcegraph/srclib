@@ -6,8 +6,6 @@ import (
 	"net/url"
 	"path/filepath"
 	"strings"
-
-	"github.com/sourcegraph/srclib/toolchain"
 )
 
 type SourceUnit struct {
@@ -33,9 +31,6 @@ type SourceUnit struct {
 	// typically holds information that the scanner wants to make available to
 	// other components in the toolchain (grapher, dep resolver, etc.).
 	Data interface{} `json:",omitempty"`
-
-	// Scanner is the tool that produced this source unit.
-	Scanner toolchain.ToolRef `json:",omitempty"`
 }
 
 // idSeparator joins a source unit's name and type in its ID string.

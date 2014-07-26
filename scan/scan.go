@@ -1,221 +1,56 @@
 package scan
 
 import (
-	"encoding/json"
-	"fmt"
-	"log"
-	"os"
-
-	"path/filepath"
 	"runtime"
-	"strings"
 	"sync"
 
 	"code.google.com/p/rog-go/parallel"
 	"github.com/sourcegraph/srclib/config"
-	"github.com/sourcegraph/srclib/src"
 	"github.com/sourcegraph/srclib/toolchain"
 	"github.com/sourcegraph/srclib/unit"
-	"github.com/sqs/go-flags"
-)
-
-func init() {
-	var err error
-	scanCmd, err = src.CLI.AddCommand("scan",
-		"scan for source units",
-		`Scans for source units in the directory tree rooted at the current directory.
-
-The default values for --repo, --subdir, and --tool are determined by detecting the current repository and reading its Srcfile config (if any).
-
-The source units produced by this "scan" command are not necessarily the final set of source units for this tree. If the Srcfile specifies that certain source units be skipped, then those will be eliminated *after* this command is run but before the final configuration is produced. To obtain the final list of source units for a repository, run the "config" command.
-
-The "scan" command always scans the current directory and its subdirectories. It is not possible to pass it another directory to use as the root for scanning. (This is to make the implementation simpler, especially with mounting a Docker volume.)
-`,
-		&Command{},
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	src.SetRepoOptDefaults(scanCmd)
-
-	_, err = scanCmd.AddGroup("execution options (not passed to tools)", "", &execOpt)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = scanCmd.AddGroup("output options (not passed to tools)", "", &outputOpt)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Set default scanners.
-	cfg, err := config.ReadRepository(".", "")
-	if err != nil {
-		log.Fatal(err)
-	}
-	_ = cfg
-	configGroup, err := scanCmd.AddGroup("configuration (not passed to tools)", "", &configOpt)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defaultScanners := make([]string, len(config.SrclibPathConfig.DefaultScanners))
-	// TODO(sqs): change this back to using the repository's
-	// Srcfile-defined scanners (if any) (and then the cfg var up above will not
-	// need the `_ = cfg`)
-	for i, sref := range config.SrclibPathConfig.DefaultScanners {
-		sstr, err := sref.MarshalFlag()
-		if err != nil {
-			log.Fatal(err)
-		}
-		defaultScanners[i] = sstr
-	}
-	src.SetOptionDefaultValue(configGroup, "tool", defaultScanners...)
-}
-
-var (
-	scanCmd   *flags.Command
-	execOpt   src.ToolchainExecOpt
-	configOpt struct {
-		Scanners []toolchain.ToolRef `short:"t" long:"tool" description:"(list) scanner tools to run" value-name:"TOOLREF.."`
-	}
-	outputOpt struct {
-		Output string `short:"o" long:"output" description:"output format" default:"text" value-name:"text|json"`
-	}
 )
 
 type Command struct {
-	Repo   string `long:"repo" description:"repository URI" value-name:"URI"`
-	Subdir string `long:"subdir" description:"subdirectory in repository" value-name:"DIR"`
+	config.Command
 }
 
-func (c *Command) Execute(args []string) error {
-	var units struct {
-		u []*unit.SourceUnit
-		sync.Mutex
-	}
+func ScanMulti(scanners []toolchain.Tool, cmd Command) ([]*unit.SourceUnit, error) {
+	var (
+		units []*unit.SourceUnit
+		mu    sync.Mutex
+	)
+
 	run := parallel.NewRun(runtime.GOMAXPROCS(0))
-	for _, tool_ := range configOpt.Scanners {
-		// TODO(sqs): how to specify whether to use program or docker tool here?
-		tool := tool_
+	for _, scanner_ := range scanners {
+		scanner := scanner_
 		run.Do(func() error {
-			log.Printf("Scanning %s using %q scanner...", c.Repo, tool)
-			units2, err := Scan(tool, c)
+			units2, err := Scan(scanner, cmd)
 			if err != nil {
 				return err
 			}
 
-			units.Lock()
-			defer units.Unlock()
-			units.u = append(units.u, units2...)
+			mu.Lock()
+			defer mu.Unlock()
+			units = append(units, units2...)
 			return nil
 		})
 	}
 	if err := run.Wait(); err != nil {
-		return err
-	}
-
-	log.Printf("Scanning %s: found %d source units total.", c.Repo, len(units.u))
-
-	if outputOpt.Output == "json" {
-		out, err := json.MarshalIndent(units.u, "", "  ")
-		if err != nil {
-			return err
-		}
-		os.Stdout.Write(out)
-		fmt.Println()
-	} else {
-		fmtStr := "%-16s  %s\n"
-		fmt.Printf(fmtStr, "TYPE", "NAME")
-		for _, u := range units.u {
-			fmt.Printf(fmtStr, u.Type, u.Name)
-		}
-	}
-
-	return nil
-}
-
-func Scan(tool toolchain.ToolRef, cmd *Command) ([]*unit.SourceUnit, error) {
-	s, err := toolchain.OpenTool(tool.Toolchain, tool.Subcmd, execOpt.ToolchainMode())
-	if err != nil {
 		return nil, err
 	}
+	return units, nil
+}
 
-	args, err := src.MarshalArgs(scanCmd.Group)
+func Scan(scanner toolchain.Tool, cmd Command) ([]*unit.SourceUnit, error) {
+	args, err := toolchain.MarshalArgs(&cmd)
 	if err != nil {
 		return nil, err
 	}
 
 	var units []*unit.SourceUnit
-	if err := s.Run(args, &units); err != nil {
-		log.Printf("Failed to scan using %q scanner: %s.", tool, err)
+	if err := scanner.Run(args, &units); err != nil {
 		return nil, err
 	}
 
-	for _, u := range units {
-		u.Scanner = tool
-	}
-
-	log.Printf("Finished scanning using %q scanner: %d source units found.", tool, len(units))
 	return units, nil
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// TODO(sqs): everything below here is legacy/unused
-////////////////////////////////////////////////////////////////////////////////
-
-// ReadRepositoryAndScan runs config.ReadRepository to load the repository
-// configuration for the repository in dir and adds all scanned source units to
-// the configuration.
-// func ReadRepositoryAndScan(dir string, repoURI repo.URI) (*config.Repository, error) {
-// 	c, err := config.ReadRepository(dir, repoURI)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	units, err := SourceUnits(dir, c)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	existingUnitIDs := make(map[unit.ID]struct{}, len(units))
-// 	for _, u := range c.SourceUnits {
-// 		existingUnitIDs[u.ID()] = struct{}{}
-// 	}
-
-// 	for _, u := range units {
-// 		// Don't add this source unit if one with the same ID already exists.
-// 		// That indicates that it was overridden and should not be automatically
-// 		// added.
-// 		if _, exists := existingUnitIDs[u.ID()]; !exists {
-// 			c.SourceUnits = append(c.SourceUnits, u)
-// 		}
-// 	}
-
-// 	return c, nil
-// }
-
-// dirsContains returns true if maybeChildDir is equal to any of dirs or their
-// recursive subdirectories, by purely lexical processing.
-func dirsContains(dirs []string, maybeChildDir string) bool {
-	for _, dir := range dirs {
-		if dirContains(dir, maybeChildDir) {
-			return true
-		}
-	}
-	return false
-}
-
-// dirContains returns true if maybeChildDir is dir or one of dir's recursive
-// subdirectories, by purely lexical processing.
-func dirContains(dir, maybeChildDir string) bool {
-	dir, maybeChildDir = filepath.Clean(dir), filepath.Clean(maybeChildDir)
-	return dir == maybeChildDir || strings.HasPrefix(maybeChildDir, dir+string(filepath.Separator))
-}
-
-var GlobalScanIgnore = []string{
-	"third_party",
-	"vendor",
-	"bower_components",
-	"node_modules",
 }
