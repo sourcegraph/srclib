@@ -14,7 +14,6 @@ import (
 	"strings"
 
 	"github.com/sourcegraph/srclib/buildstore"
-	"github.com/sourcegraph/srclib/toolchain"
 	"github.com/sourcegraph/srclib/unit"
 )
 
@@ -128,19 +127,4 @@ func readJSONFile(file string, v interface{}) {
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-// TODO(sqs): make this a go-flags type
-func parseExeMethods(v string) toolchain.Mode {
-	methods := strings.Split(v, ",")
-	var mode toolchain.Mode
-	for _, method := range methods {
-		if method == "program" {
-			mode |= toolchain.AsProgram
-		}
-		if method == "docker" {
-			mode |= toolchain.AsDockerContainer
-		}
-	}
-	return mode
 }

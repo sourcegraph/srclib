@@ -1,21 +1,25 @@
 package src
 
 import (
-	"flag"
 	"fmt"
 	"log"
-	"os"
 
+	"github.com/sourcegraph/srclib/config"
 	"github.com/sourcegraph/srclib/repo"
 	"github.com/sourcegraph/srclib/scan"
 )
 
 func init() {
-	parser.AddCommand("scan",
+	c, err := parser.AddCommand("scan",
 		"scan for source units",
-		"Long description",
+		"Scans for source units in the directory tree rooted at the current directory.",
 		&scanCmd,
 	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	setRepoOptDefaults(c)
 }
 
 type ScanCmd struct {
@@ -25,35 +29,19 @@ type ScanCmd struct {
 var scanCmd ScanCmd
 
 func (c *ScanCmd) Execute(args []string) error {
-	return nil
-}
-
-func scanCmd2(args []string) {
-	repo_, err := OpenRepo(Dir)
+	cfg, err := config.ReadRepository(Dir, repo.URI(c.Repo))
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
-	fs := flag.NewFlagSet("scan", flag.ExitOnError)
-	repoURI := fs.String("repo", string(repo_.URI()), "repository URI")
-	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: `+Name+` scan [options]
-
-Scans for source units in the directory tree rooted at the current directory.
-
-The options are:
-`)
-		fs.PrintDefaults()
-		os.Exit(1)
-	}
-	fs.Parse(args)
-
-	c, err := scan.ReadRepositoryAndScan(Dir, repo.URI(*repoURI))
+	units, err := scan.SourceUnits(Dir, cfg)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
-	for _, u := range c.SourceUnits {
+	for _, u := range units {
 		fmt.Println(u.ID())
 	}
+
+	return nil
 }

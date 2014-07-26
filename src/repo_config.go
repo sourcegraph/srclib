@@ -1,16 +1,12 @@
 package src
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"os"
+
 	"os/exec"
-	"path/filepath"
 	"strings"
 
 	"github.com/sourcegraph/go-vcs/vcs"
-	"github.com/sourcegraph/srclib/buildstore"
 	"github.com/sourcegraph/srclib/config"
 	"github.com/sourcegraph/srclib/repo"
 	"github.com/sourcegraph/srclib/scan"
@@ -86,72 +82,12 @@ func OpenAndConfigureRepo(targetDir string) (*ConfiguredRepo, error) {
 	jc := new(ConfiguredRepo)
 	jc.Repo = rc
 
-	jc.Config, err = ReadOrComputeRepositoryConfig(rc.RootDir, rc.CommitID, rc.URI())
+	jc.Config, err = scan.ReadRepositoryAndScan(rc.RootDir, rc.URI())
 	if err != nil {
 		return nil, err
 	}
 
 	return jc, nil
-}
-
-func ReadOrComputeRepositoryConfig(repoDir string, commitID string, repoURI repo.URI) (*config.Repository, error) {
-	configFile, err := getConfigFile(repoDir, commitID)
-	if err != nil {
-		return nil, err
-	}
-	if isFile(configFile) {
-		// Read
-		f, err := os.Open(configFile)
-		if err != nil {
-			return nil, err
-		}
-		defer f.Close()
-		var c config.Repository
-		err = json.NewDecoder(f).Decode(&c)
-		if err != nil {
-			return nil, err
-		}
-		return &c, nil
-	} else {
-		// Compute
-		return scan.ReadRepositoryAndScan(repoDir, repoURI)
-	}
-}
-
-func WriteRepositoryConfig(repoDir string, commitID string, c *config.Repository, overwrite bool) error {
-	configFile, err := getConfigFile(repoDir, commitID)
-	if err != nil {
-		return err
-	}
-	if isFile(configFile) && !overwrite {
-		return nil
-	}
-
-	err = os.MkdirAll(filepath.Dir(configFile), 0700)
-	if err != nil && !os.IsExist(err) {
-		return err
-	}
-	b, err := json.MarshalIndent(c, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	return ioutil.WriteFile(configFile, b, 0700)
-}
-
-func getConfigFile(repoDir, commitID string) (string, error) {
-	if repoDir == "" {
-		return "", fmt.Errorf("no repository root directory")
-	}
-	repoStore, err := buildstore.NewRepositoryStore(repoDir)
-	if err != nil {
-		return "", err
-	}
-	rootDataDir, err := buildstore.RootDir(repoStore)
-	if err != nil {
-		return "", err
-	}
-	return filepath.Join(rootDataDir, repoStore.CommitPath(commitID), buildstore.CachedRepositoryConfigFilename), nil
 }
 
 func getRootDir(vcsType string, dir string) (string, error) {

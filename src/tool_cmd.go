@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/jessevdk/go-flags"
+	"github.com/sqs/go-flags"
 	"github.com/sourcegraph/srclib/toolchain"
 )
 
@@ -23,8 +23,7 @@ func init() {
 }
 
 type ToolCmd struct {
-	ExeMethods   string `short:"m" long:"methods" default:"program,docker" description:"permitted execution methods" value-name:"METHODS"`
-	ForceRebuild bool   `short:"b" long:"rebuild" description:"force rebuild of Docker image"`
+	toolchainExecOpt
 
 	Args struct {
 		Toolchain ToolchainPath `name:"TOOLCHAIN" description:"toolchain path of the toolchain to run"`
@@ -36,9 +35,7 @@ type ToolCmd struct {
 var toolCmd ToolCmd
 
 func (c *ToolCmd) Execute(args []string) error {
-	mode := parseExeMethods(c.ExeMethods)
-
-	tc, err := toolchain.Open(string(c.Args.Toolchain), mode)
+	tc, err := toolchain.Open(string(c.Args.Toolchain), c.toolchainMode())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -52,7 +49,7 @@ func (c *ToolCmd) Execute(args []string) error {
 		Command() (*exec.Cmd, error)
 	}
 	if c.Args.Tool != "" {
-		cmder, err = toolchain.OpenTool(string(c.Args.Toolchain), string(c.Args.Tool), mode)
+		cmder, err = toolchain.OpenTool(string(c.Args.Toolchain), string(c.Args.Tool), c.toolchainMode())
 	} else {
 		cmder = tc
 	}
@@ -73,23 +70,6 @@ func (c *ToolCmd) Execute(args []string) error {
 	}
 
 	return nil
-}
-
-type ToolchainPath string
-
-func (t ToolchainPath) Complete(match string) []flags.Completion {
-	toolchains, err := toolchain.List()
-	if err != nil {
-		log.Println(err)
-		return nil
-	}
-	var comps []flags.Completion
-	for _, tc := range toolchains {
-		if strings.HasPrefix(tc.Path, match) {
-			comps = append(comps, flags.Completion{Item: tc.Path})
-		}
-	}
-	return comps
 }
 
 type ToolName string
