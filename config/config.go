@@ -37,6 +37,10 @@ type Tree struct {
 	// have input into which tools get used during the execution phase. Right
 	// now, we're going to try just using the system defaults (srclib-*) and
 	// then add more flexibility when we are more familiar with the system.
+
+	// Config is an arbitrary key-value property map. Each property is passed to
+	// every tool.
+	Config map[string]string
 }
 
 // ReadRepository parses and validates the configuration for a repository. If no
