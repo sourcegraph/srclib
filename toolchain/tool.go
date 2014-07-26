@@ -39,10 +39,26 @@ func (t ToolRef) MarshalFlag() (string, error) {
 // ToolInfo describes a tool in a toolchain.
 type ToolInfo struct {
 	// Subcmd is the subcommand name of this tool.
+	//
+	// By convention, this is the same as Op in toolchains that only have one
+	// tool that performs this operation (e.g., a toolchain's "graph" subcommand
+	// performs the "graph" operation).
 	Subcmd string
 
-	// Op is the operation that this tool performs.
+	// Op is the operation that this tool performs (e.g., "scan", "graph",
+	// "deplist", etc.).
 	Op string
+
+	// SourceUnitTypes is a list of source unit types (e.g., "GoPackage") that
+	// this tool can operate on.
+	//
+	// If this tool doesn't operate on source units (for example, it operates on
+	// directories or repositories, such as the "blame" tools), then this will
+	// be empty.
+	//
+	// TODO(sqs): determine how repository- or directory-level tools will be
+	// defined.
+	SourceUnitTypes []string `json:",omitempty"`
 }
 
 // ListTools lists all tools in all available toolchains (returned by List). If
@@ -55,12 +71,12 @@ func ListTools(op string) ([]*ToolInfo, error) {
 
 	var tools []*ToolInfo
 	for _, tc := range tcs {
-		tcTools, err := tc.Tools()
+		c, err := tc.ReadConfig()
 		if err != nil {
 			return nil, err
 		}
 
-		for _, tool := range tcTools {
+		for _, tool := range c.Tools {
 			if op == "" || tool.Op == op {
 				tools = append(tools, tool)
 			}
