@@ -10,8 +10,26 @@ import (
 	"github.com/sourcegraph/srclib/scan"
 )
 
-func scanCmd(args []string) {
-	repo_, err := OpenRepo(*Dir)
+func init() {
+	parser.AddCommand("scan",
+		"scan for source units",
+		"Long description",
+		&scanCmd,
+	)
+}
+
+type ScanCmd struct {
+	Repo string `long:"repo" description:"repository URI" value-name:"URI"`
+}
+
+var scanCmd ScanCmd
+
+func (c *ScanCmd) Execute(args []string) error {
+	return nil
+}
+
+func scanCmd2(args []string) {
+	repo_, err := OpenRepo(Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -30,7 +48,7 @@ The options are:
 	}
 	fs.Parse(args)
 
-	c, err := scan.ReadRepositoryAndScan(*Dir, repo.URI(*repoURI))
+	c, err := scan.ReadRepositoryAndScan(Dir, repo.URI(*repoURI))
 	if err != nil {
 		log.Fatal(err)
 	}

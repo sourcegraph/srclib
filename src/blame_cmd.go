@@ -26,7 +26,7 @@ The options are:
 	fs.Parse(args)
 	sourceUnitSpecs := fs.Args()
 
-	repoConf, err := OpenAndConfigureRepo(*Dir)
+	repoConf, err := OpenAndConfigureRepo(Dir)
 	if err != nil {
 		log.Fatal(err)
 	}

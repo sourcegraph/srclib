@@ -39,7 +39,7 @@ The options are:
 			log.Fatalf("Error creating repository with %q: %s", urlStr, err)
 		}
 		log.Printf("%-45s Repository #%d", repo.URI, repo.RID)
-		if *Verbose {
+		if gopt.Verbose {
 			PrintJSON(repo, "")
 			log.Println()
 		}

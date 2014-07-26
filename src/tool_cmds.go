@@ -1,55 +1,48 @@
 package src
 
 import (
-	"flag"
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 
+	"github.com/jessevdk/go-flags"
 	"github.com/sourcegraph/srclib/toolchain"
 )
 
-func toolCmd(args []string) {
-	fs := flag.NewFlagSet("tool", flag.ExitOnError)
-	forceRebuild := fs.Bool("b", false, "force rebuild of Docker image")
-	exeMethods := fs.String("m", defaultExeMethods, "permitted execution methods")
-	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: `+Name+` tool [OPT] TOOLCHAIN TOOL [ARG...]
-
-Run a srclib tool with the specified arguments.
-
-The options are:
-`)
-		fs.PrintDefaults()
-		os.Exit(1)
-	}
-	fs.Parse(args)
-
-	if fs.NArg() == 0 {
-		fs.Usage()
-	}
-
-	var toolSubcmd string
-	var toolArgs []string
-
-	toolchainPath := fs.Arg(0)
-	if fs.NArg() > 1 {
-		a := fs.Arg(1)
-		if len(a) > 0 && a[0] != '-' {
-			toolSubcmd = a
-			toolArgs = fs.Args()[2:]
-		} else {
-			toolArgs = fs.Args()[1:]
-		}
-	}
-	mode := parseExeMethods(*exeMethods)
-
-	tc, err := toolchain.Open(toolchainPath, mode)
+func init() {
+	c, err := parser.AddCommand("tool",
+		"run a tool",
+		"Run a srclib tool with the specified arguments.",
+		&toolCmd,
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
-	if *forceRebuild {
+	c.ArgsRequired = true
+}
+
+type ToolCmd struct {
+	ExeMethods   string `short:"m" long:"methods" default:"program,docker" description:"permitted execution methods" value-name:"METHODS"`
+	ForceRebuild bool   `short:"b" long:"rebuild" description:"force rebuild of Docker image"`
+
+	Args struct {
+		Toolchain ToolchainPath `name:"TOOLCHAIN" description:"toolchain path of the toolchain to run"`
+		Tool      ToolName      `name:"TOOL" description:"tool subcommand name to run (in TOOLCHAIN)"`
+		ToolArgs  []string      `name:"ARGS" description:"args to pass to TOOL"`
+	} `positional-args:"yes" required:"yes"`
+}
+
+var toolCmd ToolCmd
+
+func (c *ToolCmd) Execute(args []string) error {
+	mode := parseExeMethods(c.ExeMethods)
+
+	tc, err := toolchain.Open(string(c.Args.Toolchain), mode)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if c.ForceRebuild {
 		if err := tc.Build(); err != nil {
 			log.Fatal(err)
 		}
@@ -58,8 +51,8 @@ The options are:
 	var cmder interface {
 		Command() (*exec.Cmd, error)
 	}
-	if toolSubcmd != "" {
-		cmder, err = toolchain.OpenTool(toolchainPath, toolSubcmd, mode)
+	if c.Args.Tool != "" {
+		cmder, err = toolchain.OpenTool(string(c.Args.Toolchain), string(c.Args.Tool), mode)
 	} else {
 		cmder = tc
 	}
@@ -69,13 +62,56 @@ The options are:
 		log.Fatal(err)
 	}
 
-	cmd.Args = append(cmd.Args, toolArgs...)
+	cmd.Args = append(cmd.Args, c.Args.ToolArgs...)
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
-	if *Verbose {
+	if gopt.Verbose {
 		log.Printf("Running tool: %v", cmd.Args)
 	}
 	if err := cmd.Run(); err != nil {
 		log.Fatal(err)
 	}
+
+	return nil
+}
+
+type ToolchainPath string
+
+func (t ToolchainPath) Complete(match string) []flags.Completion {
+	toolchains, err := toolchain.List()
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	var comps []flags.Completion
+	for _, tc := range toolchains {
+		if strings.HasPrefix(tc.Path, match) {
+			comps = append(comps, flags.Completion{Item: tc.Path})
+		}
+	}
+	return comps
+}
+
+type ToolName string
+
+func (t ToolName) Complete(match string) []flags.Completion {
+	// Assume toolchain is the last arg.
+	toolchainPath := os.Args[len(os.Args)-2]
+	tc, err := toolchain.Lookup(toolchainPath)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	tools, err := tc.Tools()
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	var comps []flags.Completion
+	for _, tt := range tools {
+		if strings.HasPrefix(tt.Subcmd, match) {
+			comps = append(comps, flags.Completion{Item: tt.Subcmd})
+		}
+	}
+	return comps
 }

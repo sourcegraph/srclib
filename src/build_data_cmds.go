@@ -35,7 +35,7 @@ The options are:
 		fs.Usage()
 	}
 
-	repo, err := OpenRepo(*Dir)
+	repo, err := OpenRepo(Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -94,7 +94,7 @@ The options are:
 		fs.Usage()
 	}
 
-	repo, err := OpenRepo(*Dir)
+	repo, err := OpenRepo(Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -135,7 +135,7 @@ func fetchFile(repoStore *buildstore.RepositoryStore, repoURI string, fi *builds
 	}
 
 	kb := float64(fi.Size) / 1024
-	if *Verbose {
+	if gopt.Verbose {
 		log.Printf("Fetching %s (%.1fkb)", path, kb)
 	}
 
@@ -144,7 +144,7 @@ func fetchFile(repoStore *buildstore.RepositoryStore, repoURI string, fi *builds
 		log.Fatal(err)
 	}
 
-	if *Verbose {
+	if gopt.Verbose {
 		log.Printf("Fetched %s (%.1fkb)", path, kb)
 	}
 
@@ -164,7 +164,7 @@ func fetchFile(repoStore *buildstore.RepositoryStore, repoURI string, fi *builds
 		log.Fatal(err)
 	}
 
-	if *Verbose {
+	if gopt.Verbose {
 		log.Printf("Saved %s", path)
 	}
 }
@@ -186,7 +186,7 @@ The options are:
 		fs.Usage()
 	}
 
-	repo, err := OpenRepo(*Dir)
+	repo, err := OpenRepo(Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -223,14 +223,14 @@ func uploadFile(repoStore *buildstore.RepositoryStore, file *buildstore.BuildDat
 
 	fi, err := repoStore.Stat(path)
 	if err != nil || !fi.Mode().IsRegular() {
-		if *Verbose {
+		if gopt.Verbose {
 			log.Printf("upload: skipping nonexistent file %s", path)
 		}
 		return
 	}
 
 	kb := float64(fi.Size()) / 1024
-	if *Verbose {
+	if gopt.Verbose {
 		log.Printf("Uploading %s (%.1fkb)", path, kb)
 	}
 
@@ -244,7 +244,7 @@ func uploadFile(repoStore *buildstore.RepositoryStore, file *buildstore.BuildDat
 		log.Fatal(err)
 	}
 
-	if *Verbose {
+	if gopt.Verbose {
 		log.Printf("Uploaded %s (%.1fkb)", path, kb)
 	}
 }

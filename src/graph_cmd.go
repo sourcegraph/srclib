@@ -29,7 +29,7 @@ The options are:
 	fs.Parse(args)
 	sourceUnitSpecs := fs.Args()
 
-	repoConf, err := OpenAndConfigureRepo(*Dir)
+	repoConf, err := OpenAndConfigureRepo(Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -44,7 +44,7 @@ The options are:
 			log.Fatal(err)
 		}
 
-		if *summary || *Verbose {
+		if *summary || gopt.Verbose {
 			log.Printf("%s output summary:", u.ID())
 			log.Printf(" - %d symbols", len(output.Symbols))
 			log.Printf(" - %d refs", len(output.Refs))

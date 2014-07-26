@@ -86,7 +86,7 @@ The options are:
 		}
 	}
 
-	if *Verbose {
+	if gopt.Verbose {
 		log.Printf("Testing trees: %v", trees)
 	}
 
