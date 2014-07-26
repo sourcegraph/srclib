@@ -1,9 +1,8 @@
 package toolchain
 
 import (
-	"bytes"
+	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -11,12 +10,6 @@ import (
 
 	"github.com/fsouza/go-dockerclient"
 )
-
-// srclibtoolchain represents a toolchain's Srclibtoolchain file.
-type srclibtoolchain struct {
-	// TODO(sqs): Right now, we just care about the existence of this file. When
-	// we actually want to parse its fields, add them here.
-}
 
 // Info describes a toolchain.
 type Info struct {
@@ -29,9 +22,8 @@ type Info struct {
 	// Dir is the filesystem directory that defines this toolchain.
 	Dir string
 
-	// SrclibtoolchainFile is the path to the Srclibtoolchain file, relative to
-	// Dir.
-	SrclibtoolchainFile string
+	// ConfigFile is the path to the Srclibtoolchain file, relative to Dir.
+	ConfigFile string
 
 	// Program is the path to the executable program (relative to Dir) to run to
 	// invoke this toolchain, for the program execution method.
@@ -43,25 +35,34 @@ type Info struct {
 	Dockerfile string `json:",omitempty"`
 }
 
+func (t *Info) Config() (*Config, error) {
+	f, err := os.Open(filepath.Join(t.Dir, t.ConfigFile))
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	var c *Config
+	if err := json.NewDecoder(f).Decode(&c); err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
 // Tools lists the tools that this toolchain implements (as subcommands).
 func (t *Info) Tools() ([]*ToolInfo, error) {
-	data, err := ioutil.ReadFile(filepath.Join(t.Dir, t.SrclibtoolchainFile))
+	c, err := t.Config()
 	if err != nil {
 		return nil, err
 	}
 
 	var tools []*ToolInfo
-	for _, line := range bytes.Split(data, []byte("\n")) {
-		if bytes.HasPrefix(line, []byte("TOOL ")) {
-			subcmd := string(bytes.TrimSpace(line[len("TOOL "):]))
-			// TODO(sqs): assumes that tool subcmd == tool op, which is not true
-			// in general.
-			tools = append(tools, &ToolInfo{
-				Toolchain: t,
-				Subcmd:    subcmd,
-				Op:        subcmd,
-			})
-		}
+	for _, tool := range c.Tools {
+		tools = append(tools, &ToolInfo{
+			Toolchain: t,
+			Subcmd:    tool,
+			Op:        tool,
+		})
 	}
 	return tools, nil
 }
