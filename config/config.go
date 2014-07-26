@@ -40,7 +40,7 @@ type Tree struct {
 
 	// Config is an arbitrary key-value property map. Each property is passed to
 	// every tool.
-	Config map[string]string
+	Config map[string]string `json:",omitempty"`
 }
 
 // ReadRepository parses and validates the configuration for a repository. If no
