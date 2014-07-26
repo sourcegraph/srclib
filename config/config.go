@@ -35,8 +35,6 @@ type Tree struct {
 	// this defaults to DefaultScanners.
 	Scanners []*toolchain.ToolRef
 
-	Tools map[string][]string
-
 	// Config is a map from unit spec (i.e., UnitType:UnitName) to an arbitrary
 	// property map. It is used to pass extra configuration settings to all of
 	// the handlers for matching source units.
