@@ -19,6 +19,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	c.Aliases = []string{"tc"}
 
 	_, err = c.AddCommand("list",
 		"list available toolchains",
@@ -161,7 +162,7 @@ func (c *ToolchainListToolsCmd) Execute(args []string) error {
 			log.Fatal(err)
 		}
 		for _, t := range tools {
-			fmt.Printf(fmtStr, t.Subcmd, t.Op, t.Toolchain.Path)
+			fmt.Printf(fmtStr, t.Subcmd, t.Op, tc.Path)
 		}
 	}
 	return nil
