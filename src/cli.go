@@ -4,9 +4,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/sqs/go-flags"
 	client "github.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"github.com/sourcegraph/srclib/task2"
+	"github.com/sqs/go-flags"
 )
 
 var (
@@ -30,7 +30,18 @@ func init() {
 // TODO(sqs): add base URL flag for apiclient
 var apiclient = client.NewClient(nil)
 
-var Dir = "."
+var (
+	Dir    = "."
+	absDir string
+)
+
+func init() {
+	var err error
+	absDir, err = os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 
 func Main() {
 	log.SetFlags(0)
