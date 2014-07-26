@@ -2,9 +2,12 @@ package toolchain
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 // A ToolRef identifies a tool inside a specific toolchain. It can be used to
@@ -17,7 +20,21 @@ type ToolRef struct {
 	Subcmd string
 }
 
-func (t *ToolRef) String() string { return fmt.Sprintf("%s %s", t.Toolchain, t.Subcmd) }
+func (t ToolRef) String() string { return fmt.Sprintf("%s %s", t.Toolchain, t.Subcmd) }
+
+func (t *ToolRef) UnmarshalFlag(value string) error {
+	parts := strings.Split(value, ":")
+	if len(parts) != 2 {
+		return errors.New("expected format 'TOOLCHAIN:TOOL' (separated by 1 colon)")
+	}
+	t.Toolchain = parts[0]
+	t.Subcmd = parts[1]
+	return nil
+}
+
+func (t ToolRef) MarshalFlag() (string, error) {
+	return t.Toolchain + ":" + t.Subcmd, nil
+}
 
 // ToolInfo describes a tool in a toolchain.
 type ToolInfo struct {
@@ -100,6 +117,8 @@ func (t *tool) Run(arg []string, resp interface{}) error {
 		return err
 	}
 	cmd.Args = append(cmd.Args, arg...)
+
+	log.Printf("Run: %v", cmd.Args)
 
 	cmd.Stderr = os.Stderr
 	stdout, err := cmd.StdoutPipe()

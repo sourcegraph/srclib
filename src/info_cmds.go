@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	_, err := parser.AddCommand("info",
+	_, err := CLI.AddCommand("info",
 		"show info about enabled capabilities",
 		"Shows information about enabled capabilities in this tool as well as system information.",
 		&infoCmd,

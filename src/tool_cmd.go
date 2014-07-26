@@ -6,12 +6,12 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/sqs/go-flags"
 	"github.com/sourcegraph/srclib/toolchain"
+	"github.com/sqs/go-flags"
 )
 
 func init() {
-	c, err := parser.AddCommand("tool",
+	c, err := CLI.AddCommand("tool",
 		"run a tool",
 		"Run a srclib tool with the specified arguments.",
 		&toolCmd,
@@ -23,7 +23,7 @@ func init() {
 }
 
 type ToolCmd struct {
-	toolchainExecOpt
+	ToolchainExecOpt
 
 	Args struct {
 		Toolchain ToolchainPath `name:"TOOLCHAIN" description:"toolchain path of the toolchain to run"`
@@ -35,21 +35,16 @@ type ToolCmd struct {
 var toolCmd ToolCmd
 
 func (c *ToolCmd) Execute(args []string) error {
-	tc, err := toolchain.Open(string(c.Args.Toolchain), c.toolchainMode())
+	tc, err := toolchain.Open(string(c.Args.Toolchain), c.ToolchainMode())
 	if err != nil {
 		log.Fatal(err)
-	}
-	if c.ForceRebuild {
-		if err := tc.Build(); err != nil {
-			log.Fatal(err)
-		}
 	}
 
 	var cmder interface {
 		Command() (*exec.Cmd, error)
 	}
 	if c.Args.Tool != "" {
-		cmder, err = toolchain.OpenTool(string(c.Args.Toolchain), string(c.Args.Tool), c.toolchainMode())
+		cmder, err = toolchain.OpenTool(string(c.Args.Toolchain), string(c.Args.Tool), c.ToolchainMode())
 	} else {
 		cmder = tc
 	}
