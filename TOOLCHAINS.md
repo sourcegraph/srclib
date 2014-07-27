@@ -84,7 +84,9 @@ There are 2 modes of execution for srclib tools:
    Dockerfile. There is no installation necessary for these tools; the `src`
    program knows how to build and run their Docker container.
    
-Tools may support either or both of these execution modes.
+Tools may support either or both of these execution modes. Their behavior should
+be the same, if possible, regardless of the execution mode. (TODO(sqs): Clarify
+this. What does "should be the same" mean?)
 
 Toolchains are not typically invoked directly by users; the `src` program invokes
 them as part of higher-level commands. However, it is possible to invoke them
