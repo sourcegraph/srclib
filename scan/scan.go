@@ -6,6 +6,7 @@ import (
 
 	"code.google.com/p/rog-go/parallel"
 	"github.com/sourcegraph/srclib/config"
+	"github.com/sourcegraph/srclib/repo"
 	"github.com/sourcegraph/srclib/toolchain"
 	"github.com/sourcegraph/srclib/unit"
 )
@@ -50,6 +51,10 @@ func Scan(scanner toolchain.Tool, opt Options) ([]*unit.SourceUnit, error) {
 	var units []*unit.SourceUnit
 	if err := scanner.Run(args, nil, &units); err != nil {
 		return nil, err
+	}
+
+	for _, u := range units {
+		u.Repo = repo.URI(opt.Repo)
 	}
 
 	return units, nil

@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/sourcegraph/srclib/buildstore"
+	"github.com/sourcegraph/srclib/repo"
 	"github.com/sourcegraph/srclib/toolchain"
 )
 
@@ -22,6 +23,9 @@ type SourceUnit struct {
 
 	// Type is the type of source unit this represents, such as "GoPackage".
 	Type string
+
+	// Repo is the URI of the repository containing this source unit, if any.
+	Repo repo.URI
 
 	// Globs is a list of patterns that match files that make up this source
 	// unit. It is used to detect when the source unit definition is out of date
