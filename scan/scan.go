@@ -10,11 +10,11 @@ import (
 	"github.com/sourcegraph/srclib/unit"
 )
 
-type Command struct {
-	config.Command
+type Options struct {
+	config.Options
 }
 
-func ScanMulti(scanners []toolchain.Tool, cmd Command) ([]*unit.SourceUnit, error) {
+func ScanMulti(scanners []toolchain.Tool, opt Options) ([]*unit.SourceUnit, error) {
 	var (
 		units []*unit.SourceUnit
 		mu    sync.Mutex
@@ -24,7 +24,7 @@ func ScanMulti(scanners []toolchain.Tool, cmd Command) ([]*unit.SourceUnit, erro
 	for _, scanner_ := range scanners {
 		scanner := scanner_
 		run.Do(func() error {
-			units2, err := Scan(scanner, cmd)
+			units2, err := Scan(scanner, opt)
 			if err != nil {
 				return err
 			}
@@ -41,8 +41,8 @@ func ScanMulti(scanners []toolchain.Tool, cmd Command) ([]*unit.SourceUnit, erro
 	return units, nil
 }
 
-func Scan(scanner toolchain.Tool, cmd Command) ([]*unit.SourceUnit, error) {
-	args, err := toolchain.MarshalArgs(&cmd)
+func Scan(scanner toolchain.Tool, opt Options) ([]*unit.SourceUnit, error) {
+	args, err := toolchain.MarshalArgs(&opt)
 	if err != nil {
 		return nil, err
 	}

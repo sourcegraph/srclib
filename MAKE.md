@@ -19,7 +19,7 @@ scanners it invokes.
 
 1. Read the manual configuration in Srcfile, if present.
 1. Determine which scanners to run, based on the list of default scanners and
-   the Srcfile.
+   the Srcfile. (The config up to this point is called the **initial config**.)
 1. Run each scanner to produce a list of discovered source units.
 1. Merge the manually specified source units with the output from the scanners.
    (Manually specified source units take precedence.)

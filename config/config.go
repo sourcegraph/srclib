@@ -77,7 +77,7 @@ func (c *Repository) finish(repoURI repo.URI) (*Repository, error) {
 	return c, nil
 }
 
-type Command struct {
+type Options struct {
 	Repo   string `long:"repo" description:"repository URI" value-name:"URI"`
 	Subdir string `long:"subdir" description:"subdirectory in repository" value-name:"DIR"`
 }
