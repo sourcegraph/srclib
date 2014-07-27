@@ -54,8 +54,12 @@ type SourceUnit struct {
 	Data interface{} `json:",omitempty"`
 
 	// Config is an arbitrary key-value property map. The Config map from the
-	// tree config is copied verbatim to each source unit.
+	// tree config is copied verbatim to each source unit. It can be used to
+	// pass options from the Srcfile to tools.
 	Config map[string]string `json:",omitempty"`
+
+	// TODO(sqs): add a way to specify the toolchains and tools to use for
+	// various tasks on this source unit
 }
 
 func init() {

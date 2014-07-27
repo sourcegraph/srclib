@@ -12,8 +12,7 @@ import (
 	"github.com/sourcegraph/srclib/config"
 	"github.com/sourcegraph/srclib/plan"
 	"github.com/sourcegraph/srclib/repo"
-	"github.com/sourcegraph/srclib/scan"
-	"github.com/sourcegraph/srclib/toolchain"
+
 	"github.com/sourcegraph/srclib/unit"
 )
 
@@ -42,10 +41,44 @@ The default values for --repo and --subdir are determined by detecting the curre
 	SetRepoOptDefaults(c)
 }
 
+// getInitialConfig gets the initial config (i.e., the config that comes solely
+// from the Srcfile, if any, and the external user config, before running the
+// scanners).
+func getInitialConfig(opt config.Options, dir Directory) (*config.Repository, error) {
+	if dir != "" && dir != "." {
+		log.Fatalf("Currently, only configuring the current directory tree is supported (i.e., no DIR argument). You provided %q.\n\nTo configure that directory, `cd %s` in your shell and rerun this command.", dir, dir)
+	}
+
+	if opt.Subdir != "." {
+		// TODO(sqs): if we have overridden a repo, then we specify the
+		// overridden config from the root dir of the repo. so, if you try to
+		// configure from a subdir in an overridden repo, the config will be
+		// wrong. disable this for now.
+		log.Fatalf("Configuration is currently only supported at the root (top-level directory) of a repository, not in a subdirectory (%q).", opt.Subdir)
+	}
+
+	cfg, err := config.ReadRepository(string(dir), repo.URI(opt.Repo))
+	if err != nil {
+		return nil, err
+	}
+
+	if cfg.SourceUnits != nil {
+		// TODO(sqs): support specifying source units in the Srcfile
+		log.Fatal("specifying source units in the Srcfile is not currently supported.")
+	}
+
+	if cfg.Scanners == nil {
+		cfg.Scanners = config.SrclibPathConfig.DefaultScanners
+	}
+
+	return cfg, nil
+}
+
 type ConfigCmd struct {
-	config.Command
+	config.Options
 
 	ToolchainExecOpt `group:"execution"`
+	BuildCacheOpt    `group:"build cache"`
 
 	Output struct {
 		Output string `short:"o" long:"output" description:"output format" default:"text" value-name:"text|json"`
@@ -59,50 +92,20 @@ type ConfigCmd struct {
 var configCmd ConfigCmd
 
 func (c *ConfigCmd) Execute(args []string) error {
-	if c.Args.Dir != "" {
-		log.Fatalf("Currently, only configuring the current directory tree is supported (i.e., no DIR argument). You provided %q.\n\nTo configure that directory, `cd %s` in your shell and rerun this command.", c.Args.Dir, c.Args.Dir)
+	if c.Args.Dir == "" {
+		c.Args.Dir = "."
 	}
 
-	if c.Subdir != "." {
-		// TODO(sqs): if we have overridden a repo, then we specify the
-		// overridden config from the root dir of the repo. so, if you try to
-		// configure from a subdir in an overridden repo, the config will be
-		// wrong. disable this for now.
-		log.Fatalf("Configuration is currently only supported at the root (top-level directory) of a repository, not in a subdirectory (%q).", c.Subdir)
-	}
-
-	cfg, err := config.ReadRepository(string(c.Args.Dir), repo.URI(c.Repo))
+	cfg, err := getInitialConfig(c.Options, c.Args.Dir)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
-	if cfg.SourceUnits != nil {
-		log.Fatal("Specifying source units in the Srcfile is not currently supported.")
+	if err := scanIntoConfig(cfg, c.Options, c.ToolchainExecOpt); err != nil {
+		return err
 	}
 
-	if cfg.Scanners == nil {
-		cfg.Scanners = config.SrclibPathConfig.DefaultScanners
-	}
-
-	scanners := make([]toolchain.Tool, len(cfg.Scanners))
-	for i, scannerRef := range cfg.Scanners {
-		scanner, err := toolchain.OpenTool(scannerRef.Toolchain, scannerRef.Subcmd, c.ToolchainMode())
-		if err != nil {
-			return err
-		}
-		scanners[i] = scanner
-	}
-
-	units, err := scan.ScanMulti(scanners, scan.Command{c.Command})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// TODO(sqs): merge the Srcfile's source units with the ones we scanned;
-	// don't just clobber them.
-	cfg.SourceUnits = units
-
-	currentRepo, err := OpenRepo(Dir)
+	currentRepo, err := OpenRepo(string(c.Args.Dir))
 	if err != nil {
 		return err
 	}
@@ -123,20 +126,22 @@ func (c *ConfigCmd) Execute(args []string) error {
 	// or maybe a custom stale checker is better than just using file mtimes for
 	// all the files (maybe just use setup.py as a prereq? but then how will we
 	// update SourceUnit.Files list? SourceUnit.Globs could help here...)
-	for _, u := range units {
-		filename := buildStore.FilePath(currentRepo.CommitID, plan.SourceUnitDataFilename(unit.SourceUnit{}, u))
-		if err := rwvfs.MkdirAll(buildStore, filepath.Dir(filename)); err != nil {
-			return err
-		}
-		f, err := buildStore.Create(filename)
-		if err != nil {
-			return err
-		}
-		if err := json.NewEncoder(f).Encode(u); err != nil {
-			return err
-		}
-		if err := f.Close(); err != nil {
-			log.Fatal(err)
+	if !c.NoCacheWrite {
+		for _, u := range cfg.SourceUnits {
+			filename := buildStore.FilePath(currentRepo.CommitID, plan.SourceUnitDataFilename(unit.SourceUnit{}, u))
+			if err := rwvfs.MkdirAll(buildStore, filepath.Dir(filename)); err != nil {
+				return err
+			}
+			f, err := buildStore.Create(filename)
+			if err != nil {
+				return err
+			}
+			if err := json.NewEncoder(f).Encode(u); err != nil {
+				return err
+			}
+			if err := f.Close(); err != nil {
+				log.Fatal(err)
+			}
 		}
 	}
 
@@ -155,7 +160,7 @@ func (c *ConfigCmd) Execute(args []string) error {
 		}
 		fmt.Println()
 
-		fmt.Printf("CONFIG (%d)\n", len(cfg.Config))
+		fmt.Printf("CONFIG PROPERTIES (%d)\n", len(cfg.Config))
 		for _, kv := range sortedMap(cfg.Config) {
 			fmt.Printf(" - %s: %q\n", kv[0], kv[1])
 		}
