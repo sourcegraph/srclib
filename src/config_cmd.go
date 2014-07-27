@@ -14,6 +14,7 @@ import (
 	"github.com/sourcegraph/srclib/repo"
 	"github.com/sourcegraph/srclib/scan"
 	"github.com/sourcegraph/srclib/toolchain"
+	"github.com/sourcegraph/srclib/unit"
 )
 
 func init() {
@@ -47,8 +48,7 @@ type ConfigCmd struct {
 	ToolchainExecOpt `group:"execution"`
 
 	Output struct {
-		Output  string `short:"o" long:"output" description:"output format" default:"text" value-name:"text|json"`
-		NoCache bool   `long:"no-cache" description:"don't cache generated config"`
+		Output string `short:"o" long:"output" description:"output format" default:"text" value-name:"text|json"`
 	} `group:"output"`
 
 	Args struct {
@@ -102,16 +102,29 @@ func (c *ConfigCmd) Execute(args []string) error {
 	// don't just clobber them.
 	cfg.SourceUnits = units
 
-	if !c.Output.NoCache {
-		currentRepo, err := OpenRepo(Dir)
-		if err != nil {
-			return err
-		}
-		buildStore, err := buildstore.NewRepositoryStore(currentRepo.RootDir)
-		if err != nil {
-			return err
-		}
-		filename := buildStore.FilePath(currentRepo.CommitID, plan.RepositoryCommitDataFilename(cfg))
+	currentRepo, err := OpenRepo(Dir)
+	if err != nil {
+		return err
+	}
+	buildStore, err := buildstore.NewRepositoryStore(currentRepo.RootDir)
+	if err != nil {
+		return err
+	}
+
+	// Write source units to build cache.
+	//
+	// TODO(sqs): create Makefile.config that makes it more standard to recreate
+	// these when the source unit defns change (and to determine when the source
+	// unit defns change), with targets like:
+	//
+	// UNITNAME/UNITTYPE.unit.v0.json: setup.py mylib/foo.py
+	//   src config --unit=UNITNAME@UNITTYPE
+	//
+	// or maybe a custom stale checker is better than just using file mtimes for
+	// all the files (maybe just use setup.py as a prereq? but then how will we
+	// update SourceUnit.Files list? SourceUnit.Globs could help here...)
+	for _, u := range units {
+		filename := buildStore.FilePath(currentRepo.CommitID, plan.SourceUnitDataFilename(unit.SourceUnit{}, u))
 		if err := rwvfs.MkdirAll(buildStore, filepath.Dir(filename)); err != nil {
 			return err
 		}
@@ -119,9 +132,11 @@ func (c *ConfigCmd) Execute(args []string) error {
 		if err != nil {
 			return err
 		}
-		defer f.Close()
-		if err := json.NewEncoder(f).Encode(cfg); err != nil {
+		if err := json.NewEncoder(f).Encode(u); err != nil {
 			return err
+		}
+		if err := f.Close(); err != nil {
+			log.Fatal(err)
 		}
 	}
 

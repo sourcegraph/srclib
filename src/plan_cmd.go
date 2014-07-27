@@ -1,19 +1,18 @@
 package src
 
 import (
-	"bytes"
 	"encoding/json"
-	"io"
-	"io/ioutil"
 	"log"
 	"os"
-	"os/exec"
 	"path/filepath"
+	"strings"
 
+	"github.com/kr/fs"
 	"github.com/sourcegraph/makex"
 	"github.com/sourcegraph/srclib/buildstore"
-	"github.com/sourcegraph/srclib/config"
+	"github.com/sourcegraph/srclib/dep2"
 	"github.com/sourcegraph/srclib/plan"
+	"github.com/sourcegraph/srclib/unit"
 	"github.com/sqs/go-flags"
 )
 
@@ -42,32 +41,7 @@ type PlanCmd struct {
 var planCmd PlanCmd
 
 func (c *PlanCmd) Execute(args []string) error {
-	var input io.ReadCloser
-	if c.Args.ConfigFile == "" {
-		// If no config, then run config ourselves with the default options.
-		configCmd := exec.Command("src", "config", "--output", "json", "--no-cache")
-		configCmd.Stderr = os.Stderr
-		out, err := configCmd.Output()
-		if err != nil {
-			return err
-		}
-		input = ioutil.NopCloser(bytes.NewReader(out))
-	} else if c.Args.ConfigFile == "-" {
-		input = os.Stdin
-	} else {
-		f, err := os.Open(string(c.Args.ConfigFile))
-		if err != nil {
-			return err
-		}
-		input = f
-	}
-	var cfg *config.Repository
-	if err := json.NewDecoder(input).Decode(&cfg); err != nil {
-		input.Close()
-		return err
-	}
-	input.Close()
-
+	// Get all .srclib-cache/**/*.unit.v0.json files.
 	currentRepo, err := OpenRepo(Dir)
 	if err != nil {
 		return err
@@ -76,18 +50,50 @@ func (c *PlanCmd) Execute(args []string) error {
 	if err != nil {
 		return err
 	}
+	var unitFiles []string
+	unitSuffix := buildstore.DataTypeSuffix(unit.SourceUnit{})
+	w := fs.WalkFS(buildStore.CommitPath(currentRepo.CommitID), buildStore)
+	for w.Step() {
+		if strings.HasSuffix(w.Path(), unitSuffix) {
+			unitFiles = append(unitFiles, w.Path())
+		}
+	}
+
 	buildDataDir, err := buildstore.BuildDir(buildStore, currentRepo.CommitID)
 	if err != nil {
 		return err
 	}
 	buildDataDir, _ = filepath.Rel(absDir, buildDataDir)
 
-	mf, err := plan.CreateMakefile(buildDataDir, cfg)
-	if err != nil {
-		return err
-	}
+	var mf makex.Makefile
+	var allTargets []string
+	for _, unitFile := range unitFiles {
+		f, err := buildStore.Open(unitFile)
+		if err != nil {
+			return err
+		}
+		var u *unit.SourceUnit
+		if err := json.NewDecoder(f).Decode(&u); err != nil {
+			return err
+		}
+		if err := f.Close(); err != nil {
+			return err
+		}
 
-	mfData, err := makex.Marshal(mf)
+		target := filepath.Join(buildDataDir, plan.SourceUnitDataFilename([]*dep2.ResolvedDep{}, u))
+		allTargets = append(allTargets, target)
+		mf.Rules = append(mf.Rules, &makex.BasicRule{
+			TargetFile:  target,
+			PrereqFiles: []string{filepath.Join(filepath.Dir(buildDataDir), unitFile)},
+			RecipeCmds:  []string{"src tool github.com/sourcegraph/srclib-go depresolve < $^ 1> $@"},
+		})
+	}
+	mf.Rules = append(mf.Rules, &makex.BasicRule{
+		TargetFile:  "all",
+		PrereqFiles: allTargets,
+	})
+
+	mfData, err := makex.Marshal(&mf)
 	if err != nil {
 		log.Fatal(err)
 	}

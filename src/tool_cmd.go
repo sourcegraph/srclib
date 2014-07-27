@@ -57,6 +57,7 @@ func (c *ToolCmd) Execute(args []string) error {
 	cmd.Args = append(cmd.Args, c.Args.ToolArgs...)
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
+	cmd.Stdin = os.Stdin
 	if gopt.Verbose {
 		log.Printf("Running tool: %v", cmd.Args)
 	}

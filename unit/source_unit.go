@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"path/filepath"
 	"strings"
+
+	"github.com/sourcegraph/srclib/buildstore"
 )
 
 type SourceUnit struct {
@@ -19,6 +21,13 @@ type SourceUnit struct {
 
 	// Type is the type of source unit this represents, such as "GoPackage".
 	Type string
+
+	// Globs is a list of patterns that match files that make up this source
+	// unit. It is used to detect when the source unit definition is out of date
+	// (e.g., when a file matches the glob but is not in the Files list).
+	//
+	// TODO(sqs): implement this in the Makefiles
+	Globs []string
 
 	// Files is all of the files that make up this source unit.
 	Files []string
@@ -43,6 +52,14 @@ type SourceUnit struct {
 	// typically holds information that the scanner wants to make available to
 	// other components in the toolchain (grapher, dep resolver, etc.).
 	Data interface{} `json:",omitempty"`
+
+	// Config is an arbitrary key-value property map. The Config map from the
+	// tree config is copied verbatim to each source unit.
+	Config map[string]string `json:",omitempty"`
+}
+
+func init() {
+	buildstore.RegisterDataType("unit.v0", SourceUnit{})
 }
 
 // idSeparator joins a source unit's name and type in its ID string.
