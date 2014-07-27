@@ -7,18 +7,9 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 
 	"github.com/sourcegraph/makex"
-	"github.com/sourcegraph/srclib/build"
-	"github.com/sourcegraph/srclib/buildstore"
 )
-
-var testBuildDataDirName = buildstore.BuildDataDirName + "-exp"
-
-func makefile(args []string) {
-	make_(append(args, "-mf"))
-}
 
 func make_(args []string) {
 	fs := flag.NewFlagSet("make", flag.ExitOnError)
@@ -83,29 +74,8 @@ The options are:
 }
 
 func NewMaker(goals []string, repoConf *ConfiguredRepo, conf *makex.Config) (*makex.Maker, *makex.Makefile, error) {
-	// TODO(sqs): write repository config? was here before srclib
 
-	repoStore, err := buildstore.NewRepositoryStore(repoConf.RootDir)
-	if err != nil {
-		return nil, nil, err
-	}
-	buildDir, err := buildstore.BuildDir(repoStore, repoConf.CommitID)
-	if err != nil {
-		return nil, nil, err
-	}
-	// Use a relative base path for the Makefile so that we aren't tied to
-	// absolute paths. This makes the Makefile more portable between hosts. (And
-	// makex uses vfs, which restricts it to accessing only files under a
-	// certain path.)
-	buildDir, err = filepath.Rel(repoConf.RootDir, buildDir)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	mf, err := build.CreateMakefile(buildDir, repoConf.Config)
-	if err != nil {
-		return nil, nil, err
-	}
+	// TMP moved stuff that was here to (*PlanCmd).Execute
 
 	if len(goals) == 0 {
 		if defaultRule := mf.DefaultRule(); defaultRule != nil {

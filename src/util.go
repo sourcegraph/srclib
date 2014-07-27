@@ -91,7 +91,7 @@ func CloseAll(files map[string]io.ReadCloser) {
 	}
 }
 
-// updateVCSIgnore adds .sourcegraph-data/ to the user's .${VCS}ignore file in
+// updateVCSIgnore adds .srclib-cache/ to the user's .${VCS}ignore file in
 // their home directory.
 func updateVCSIgnore(name string) {
 	u, err := user.Current()
@@ -110,7 +110,7 @@ func updateVCSIgnore(name string) {
 		return
 	}
 
-	data = append(data, []byte("\n\n# Sourcegraph build data\n"+entry+"\n")...)
+	data = append(data, []byte("\n\n# srclib build cache\n"+entry+"\n")...)
 	err = ioutil.WriteFile(path, data, 0700)
 	if err != nil {
 		log.Fatal(err)

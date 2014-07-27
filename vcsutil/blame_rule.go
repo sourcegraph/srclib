@@ -1,3 +1,7 @@
+//+build off
+
+// TMP reenable this
+
 package vcsutil
 
 import (
@@ -6,14 +10,14 @@ import (
 
 	"github.com/sourcegraph/makex"
 
-	"github.com/sourcegraph/srclib/build"
 	"github.com/sourcegraph/srclib/buildstore"
 	"github.com/sourcegraph/srclib/config"
+	"github.com/sourcegraph/srclib/plan"
 	"github.com/sourcegraph/srclib/unit"
 )
 
 func init() {
-	build.RegisterRuleMaker("blame", makeBlameRules)
+	plan.RegisterRuleMaker("blame", makeBlameRules)
 	buildstore.RegisterDataType("blame.v0", &BlameOutput{})
 }
 
@@ -32,7 +36,7 @@ type BlameSourceUnitRule struct {
 }
 
 func (r *BlameSourceUnitRule) Target() string {
-	return filepath.Join(r.dataDir, build.SourceUnitDataFilename(&BlameOutput{}, r.Unit))
+	return filepath.Join(r.dataDir, plan.SourceUnitDataFilename(&BlameOutput{}, r.Unit))
 }
 
 func (r *BlameSourceUnitRule) Prereqs() []string { return r.Unit.Files }

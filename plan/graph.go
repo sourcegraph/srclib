@@ -1,4 +1,6 @@
-package build
+//+build off
+
+package plan
 
 import (
 	"fmt"

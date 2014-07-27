@@ -15,7 +15,7 @@ import (
 	"github.com/sourcegraph/s3vfs"
 )
 
-var BuildDataDirName = ".sourcegraph-data"
+var BuildDataDirName = ".srclib-cache"
 
 var (
 	// localDirs stores the OS filesystem path that each local repository store
@@ -118,8 +118,6 @@ func (s *RepositoryStore) ListCommits() ([]string, error) {
 	}
 	return commits, nil
 }
-
-const CachedRepositoryConfigFilename = "config.json"
 
 func (s *RepositoryStore) DataFiles(path string) ([]*BuildDataFileInfo, error) {
 	files := []*BuildDataFileInfo{}

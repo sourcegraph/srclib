@@ -1,11 +1,16 @@
 package src
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
+	"path/filepath"
 	"sort"
 
+	"github.com/sourcegraph/rwvfs"
+	"github.com/sourcegraph/srclib/buildstore"
 	"github.com/sourcegraph/srclib/config"
+	"github.com/sourcegraph/srclib/plan"
 	"github.com/sourcegraph/srclib/repo"
 	"github.com/sourcegraph/srclib/scan"
 	"github.com/sourcegraph/srclib/toolchain"
@@ -42,7 +47,8 @@ type ConfigCmd struct {
 	ToolchainExecOpt `group:"execution"`
 
 	Output struct {
-		Output string `short:"o" long:"output" description:"output format" default:"text" value-name:"text|json"`
+		Output  string `short:"o" long:"output" description:"output format" default:"text" value-name:"text|json"`
+		NoCache bool   `long:"no-cache" description:"don't cache generated config"`
 	} `group:"output"`
 
 	Args struct {
@@ -95,6 +101,29 @@ func (c *ConfigCmd) Execute(args []string) error {
 	// TODO(sqs): merge the Srcfile's source units with the ones we scanned;
 	// don't just clobber them.
 	cfg.SourceUnits = units
+
+	if !c.Output.NoCache {
+		currentRepo, err := OpenRepo(Dir)
+		if err != nil {
+			return err
+		}
+		buildStore, err := buildstore.NewRepositoryStore(currentRepo.RootDir)
+		if err != nil {
+			return err
+		}
+		filename := buildStore.FilePath(currentRepo.CommitID, plan.RepositoryCommitDataFilename(cfg))
+		if err := rwvfs.MkdirAll(buildStore, filepath.Dir(filename)); err != nil {
+			return err
+		}
+		f, err := buildStore.Create(filename)
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+		if err := json.NewEncoder(f).Encode(cfg); err != nil {
+			return err
+		}
+	}
 
 	if c.Output.Output == "json" {
 		PrintJSON(cfg, "")

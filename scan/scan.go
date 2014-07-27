@@ -48,7 +48,7 @@ func Scan(scanner toolchain.Tool, cmd Command) ([]*unit.SourceUnit, error) {
 	}
 
 	var units []*unit.SourceUnit
-	if err := scanner.Run(args, &units); err != nil {
+	if err := scanner.Run(args, nil, &units); err != nil {
 		return nil, err
 	}
 

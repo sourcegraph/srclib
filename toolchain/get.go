@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"github.com/sourcegraph/srclib"
 )
 
 // Get downloads the toolchain named by the toolchain path (if it does not
@@ -18,7 +20,7 @@ func Get(path string) (*Info, error) {
 		return tc, err
 	}
 
-	dir := strings.SplitN(SrclibPath, ":", 2)[0]
+	dir := strings.SplitN(srclib.Path, ":", 2)[0]
 	cmd := exec.Command("git", "clone", "https://"+path+".git", filepath.Join(dir, path))
 	cmd.Stdout, cmd.Stderr = os.Stderr, os.Stderr
 	if err := cmd.Run(); err != nil {

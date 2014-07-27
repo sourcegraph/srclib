@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/sourcegraph/srclib"
 	"github.com/sourcegraph/srclib/toolchain"
 )
 
@@ -29,7 +30,7 @@ var SrclibPathConfig External
 const srclibconfigFile = ".srclibconfig"
 
 func init() {
-	dir := strings.SplitN(toolchain.SrclibPath, ":", 2)[0]
+	dir := strings.SplitN(srclib.Path, ":", 2)[0]
 	configFile := filepath.Join(dir, srclibconfigFile)
 	f, err := os.Open(configFile)
 	if os.IsNotExist(err) {

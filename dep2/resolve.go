@@ -1,34 +1,49 @@
 package dep2
 
 import (
-	"encoding/json"
-	"fmt"
+	"path/filepath"
 
-	"sort"
-
+	"github.com/sourcegraph/makex"
+	"github.com/sourcegraph/srclib/buildstore"
 	"github.com/sourcegraph/srclib/config"
-	"github.com/sourcegraph/srclib/repo"
+	"github.com/sourcegraph/srclib/plan"
+	"github.com/sourcegraph/srclib/toolchain"
+	"github.com/sourcegraph/srclib/unit"
 )
 
-// Resolvers maps RawDependency.TargetType strings to their registered
-// RawDependency.Target resolver.
-var Resolvers = make(map[string]Resolver)
-
-// Register adds a dependency resolver for the given RawDependency.TargetType.
-// If Register is called twice with the same type, or if resolver is nil, it
-// panics.
-func RegisterResolver(targetType string, resolver Resolver) {
-	if _, registered := Resolvers[targetType]; registered {
-		panic("dep2: RegisterResolver called twice for target type " + targetType)
-	}
-	if resolver == nil {
-		panic("dep2: RegisterResolver resolver is nil")
-	}
-	Resolvers[targetType] = resolver
+func init() {
+	plan.RegisterRuleMaker("depresolve", makeDepRules)
+	buildstore.RegisterDataType("depresolve.v0", []*ResolvedDep{})
 }
 
-type Resolver interface {
-	Resolve(dep *RawDependency, c *config.Repository) (*ResolvedTarget, error)
+func makeDepRules(c *config.Repository, dataDir string, existing []makex.Rule) ([]makex.Rule, error) {
+	if len(c.SourceUnits) == 0 {
+		return nil, nil
+	}
+
+	var rules []makex.Rule
+	for _, u := range c.SourceUnits {
+		rules = append(rules, &ResolveDepsRule{dataDir, u})
+	}
+
+	return rules, nil
+}
+
+type ResolveDepsRule struct {
+	dataDir string
+	Unit    *unit.SourceUnit
+}
+
+func (r *ResolveDepsRule) Target() string {
+	return filepath.Join(r.dataDir, plan.SourceUnitDataFilename([]*ResolvedDep{}, r.Unit))
+}
+
+func (r *ResolveDepsRule) Prereqs() []string {
+	return []string{filepath.Join(r.dataDir, plan.RepositoryCommitDataFilename(&config.Repository{}))}
+}
+
+func (r *ResolveDepsRule) Recipes() []string {
+	return []string{"src tool github.com/sourcegraph/srclib-go depresolve < $^ 1> $@"}
 }
 
 // ResolvedTarget represents a resolved dependency target.
@@ -57,56 +72,70 @@ type ResolvedTarget struct {
 	ToRevSpec string
 }
 
-// Resolve resolves a raw dependency using the registered resolver for the
-// RawDependency's TargetType.
-func Resolve(dep *RawDependency, c *config.Repository) (*ResolvedTarget, error) {
-	r, registered := Resolvers[dep.TargetType]
-	if !registered {
-		return nil, fmt.Errorf("no resolver registered for raw dependency target type %q", dep.TargetType)
-	}
-
-	return r.Resolve(dep, c)
+// Resolution is the result of dependency resolution: either a successfully
+// resolved target or an error.
+type Resolution struct {
+	Target *ResolvedTarget `json:",omitempty"`
+	Error  string          `json:",omitempty"`
 }
 
-func ResolveAll(rawDeps []*RawDependency, c *config.Repository) ([]*ResolvedDep, error) {
-	var resolved []*ResolvedDep
-	for _, rawDep := range rawDeps {
-		rt, err := Resolve(rawDep, c)
-		if err != nil {
-			return nil, err
-		}
-		if rt == nil {
-			continue
-		}
+// Command for dep resolution has no options.
+type Command struct{}
 
-		var toRepo repo.URI
-		if rt.ToRepoCloneURL == "" {
-			// empty clone URL means the current repository
-			toRepo = c.URI
-		} else {
-			toRepo = repo.MakeURI(rt.ToRepoCloneURL)
-		}
-
-		// TODO!(sqs): return repo clone URLs as well, so we can add new repositories
-		rd := &ResolvedDep{
-			FromRepo:        c.URI,
-			FromUnit:        rawDep.FromUnit,
-			FromUnitType:    rawDep.FromUnitType,
-			ToRepo:          toRepo,
-			ToUnit:          rt.ToUnit,
-			ToUnitType:      rt.ToUnitType,
-			ToVersionString: rt.ToVersionString,
-			ToRevSpec:       rt.ToRevSpec,
-		}
-		resolved = append(resolved, rd)
+// ResolveDeps resolves dependencies
+func ResolveDeps(resolver toolchain.Tool, cmd Command, unit *unit.SourceUnit) ([]*Resolution, error) {
+	args, err := toolchain.MarshalArgs(&cmd)
+	if err != nil {
+		return nil, err
 	}
-	sort.Sort(resolvedDeps(resolved))
-	return resolved, nil
+
+	var res []*Resolution
+	if err := resolver.Run(args, unit, &res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }
 
-type resolvedDeps []*ResolvedDep
+// func ResolveAll(rawDeps []*RawDependency, c *config.Repository) ([]*ResolvedDep, error) {
+// 	var resolved []*ResolvedDep
+// 	for _, rawDep := range rawDeps {
+// 		rt, err := Resolve(rawDep, c)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 		if rt == nil {
+// 			continue
+// 		}
 
-func (d *ResolvedDep) sortKey() string    { b, _ := json.Marshal(d); return string(b) }
-func (l resolvedDeps) Len() int           { return len(l) }
-func (l resolvedDeps) Swap(i, j int)      { l[i], l[j] = l[j], l[i] }
-func (l resolvedDeps) Less(i, j int) bool { return l[i].sortKey() < l[j].sortKey() }
+// 		var toRepo repo.URI
+// 		if rt.ToRepoCloneURL == "" {
+// 			// empty clone URL means the current repository
+// 			toRepo = c.URI
+// 		} else {
+// 			toRepo = repo.MakeURI(rt.ToRepoCloneURL)
+// 		}
+
+// 		// TODO!(sqs): return repo clone URLs as well, so we can add new repositories
+// 		rd := &ResolvedDep{
+// 			FromRepo:        c.URI,
+// 			FromUnit:        rawDep.FromUnit,
+// 			FromUnitType:    rawDep.FromUnitType,
+// 			ToRepo:          toRepo,
+// 			ToUnit:          rt.ToUnit,
+// 			ToUnitType:      rt.ToUnitType,
+// 			ToVersionString: rt.ToVersionString,
+// 			ToRevSpec:       rt.ToRevSpec,
+// 		}
+// 		resolved = append(resolved, rd)
+// 	}
+// 	sort.Sort(resolvedDeps(resolved))
+// 	return resolved, nil
+// }
+
+// type resolvedDeps []*ResolvedDep
+
+// func (d *ResolvedDep) sortKey() string    { b, _ := json.Marshal(d); return string(b) }
+// func (l resolvedDeps) Len() int           { return len(l) }
+// func (l resolvedDeps) Swap(i, j int)      { l[i], l[j] = l[j], l[i] }
+// func (l resolvedDeps) Less(i, j int) bool { return l[i].sortKey() < l[j].sortKey() }

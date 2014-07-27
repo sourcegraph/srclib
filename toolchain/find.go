@@ -2,41 +2,21 @@ package toolchain
 
 import (
 	"fmt"
-	"log"
 	"os"
-	"os/user"
 	"path/filepath"
 	"sort"
 	"strings"
 
 	"github.com/kr/fs"
+	"github.com/sourcegraph/srclib"
 )
-
-// SrclibPath is a colon-separated list of directories that lists places to look
-// for srclib toolchains. It is initialized from the SRCLIBPATH environment
-// variable; if empty, it defaults to $HOME/.srclib.
-var SrclibPath string
-
-func init() {
-	SrclibPath = os.Getenv("SRCLIBPATH")
-	if SrclibPath == "" {
-		user, err := user.Current()
-		if err != nil {
-			log.Fatal(err)
-		}
-		if user.HomeDir == "" {
-			log.Fatalf("Fatal: No SRCLIBPATH and current user %q has no home directory.", user.Username)
-		}
-		SrclibPath = filepath.Join(user.HomeDir, ".srclib")
-	}
-}
 
 // Lookup finds a toolchain by path in the SRCLIBPATH. For each DIR in
 // SRCLIBPATH, it checks for the existence of DIR/PATH/Srclibtoolchain.
 func Lookup(path string) (*Info, error) {
 	path = filepath.Clean(path)
 
-	matches, err := lookInPaths(filepath.Join(path, ConfigFilename), SrclibPath)
+	matches, err := lookInPaths(filepath.Join(path, ConfigFilename), srclib.Path)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +35,7 @@ func List() ([]*Info, error) {
 	var found []*Info
 	seen := map[string]string{}
 
-	dirs := strings.Split(SrclibPath, ":")
+	dirs := strings.Split(srclib.Path, ":")
 
 	// maps symlinked trees to their original path
 	origDirs := map[string]string{}
@@ -77,7 +57,7 @@ func List() ([]*Info, error) {
 				w.SkipDir()
 			} else if fi.Mode()&os.ModeSymlink != 0 {
 				// traverse symlinks but refer to symlinked trees' toolchains using
-				// the path to them through the original entry in SrclibPath
+				// the path to them through the original entry in SRCLIBPATH
 				dirs = append(dirs, path+"/")
 				origDirs[path+"/"] = dir
 			} else if fi.Mode().IsRegular() && strings.ToLower(name) == strings.ToLower(ConfigFilename) {
