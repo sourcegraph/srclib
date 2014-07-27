@@ -75,8 +75,14 @@ type ResolvedTarget struct {
 // Resolution is the result of dependency resolution: either a successfully
 // resolved target or an error.
 type Resolution struct {
+	// Raw is the original raw dep that this was resolution was attempted on.
+	Raw interface{}
+
+	// Target is the resolved dependency, if resolution succeeds.
 	Target *ResolvedTarget `json:",omitempty"`
-	Error  string          `json:",omitempty"`
+
+	// Error is the resolution error, if any.
+	Error string `json:",omitempty"`
 }
 
 // Command for dep resolution has no options.

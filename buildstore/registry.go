@@ -47,12 +47,18 @@ func RegisterDataType(name string, emptyInstance interface{}) {
 }
 
 func DataTypeSuffix(data interface{}) string {
-	typ := reflect.TypeOf(data)
-	name, registered := DataTypeNames[typ]
-	if !registered {
-		panic("buildstore: data type not registered: " + typ.String())
+	var suffix string
+	if s, ok := data.(string); ok {
+		suffix = s
+	} else {
+		typ := reflect.TypeOf(data)
+		name, registered := DataTypeNames[typ]
+		if !registered {
+			panic("buildstore: data type not registered: " + typ.String())
+		}
+		suffix = name
 	}
-	return name + ".json"
+	return suffix + ".json"
 }
 
 // DataType returns the data type name and empty instance (previously registered

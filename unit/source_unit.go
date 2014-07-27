@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/sourcegraph/srclib/buildstore"
+	"github.com/sourcegraph/srclib/toolchain"
 )
 
 type SourceUnit struct {
@@ -57,6 +58,12 @@ type SourceUnit struct {
 	// tree config is copied verbatim to each source unit. It can be used to
 	// pass options from the Srcfile to tools.
 	Config map[string]string `json:",omitempty"`
+
+	// Ops enumerates the operations that should be performed on this source
+	// unit. Each key is the name of an operation, and the value is the tool to
+	// use to perform that operation. If the value is nil, the tool is chosen
+	// automatically according to the user's configuration.
+	Ops map[string]*toolchain.ToolRef
 
 	// TODO(sqs): add a way to specify the toolchains and tools to use for
 	// various tasks on this source unit

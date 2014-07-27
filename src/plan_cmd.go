@@ -2,18 +2,18 @@ package src
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
-	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/kr/fs"
 	"github.com/sourcegraph/makex"
 	"github.com/sourcegraph/srclib/buildstore"
-	"github.com/sourcegraph/srclib/dep2"
+	"github.com/sourcegraph/srclib/toolchain"
+
 	"github.com/sourcegraph/srclib/plan"
 	"github.com/sourcegraph/srclib/unit"
-	"github.com/sqs/go-flags"
 )
 
 func init() {
@@ -21,7 +21,7 @@ func init() {
 		"generate a Makefile to process a project",
 		`Generate a Makefile to process a repository or directory tree.
 
-If CONFIG-FILE is "-", it is read from stdin. If no CONFIG-FILE is given, "src config --output json" is executed in the current directory and its output is used as the configuration.
+Requires that "src config" has already been run.
 `,
 		&planCmd,
 	)
@@ -34,15 +34,19 @@ If CONFIG-FILE is "-", it is read from stdin. If no CONFIG-FILE is given, "src c
 
 type PlanCmd struct {
 	Args struct {
-		ConfigFile flags.Filename `name:"CONFIG-FILE" description:"project config JSON file produced by 'src config' (unset means stdin)"`
+		Dir Directory `name:"DIR" default:"." description:"root directory of tree to plan"`
 	} `positional-args:"yes"`
 }
 
 var planCmd PlanCmd
 
 func (c *PlanCmd) Execute(args []string) error {
+	if c.Args.Dir == "" {
+		c.Args.Dir = "."
+	}
+
 	// Get all .srclib-cache/**/*.unit.v0.json files.
-	currentRepo, err := OpenRepo(Dir)
+	currentRepo, err := OpenRepo(string(c.Args.Dir))
 	if err != nil {
 		return err
 	}
@@ -80,13 +84,28 @@ func (c *PlanCmd) Execute(args []string) error {
 			return err
 		}
 
-		target := filepath.Join(buildDataDir, plan.SourceUnitDataFilename([]*dep2.ResolvedDep{}, u))
-		allTargets = append(allTargets, target)
-		mf.Rules = append(mf.Rules, &makex.BasicRule{
-			TargetFile:  target,
-			PrereqFiles: []string{filepath.Join(filepath.Dir(buildDataDir), unitFile)},
-			RecipeCmds:  []string{"src tool github.com/sourcegraph/srclib-go depresolve < $^ 1> $@"},
-		})
+		// TODO(sqs): make the "graph" target depend on the "depresolve" target
+		// to avoid duplicating work
+		for op, toolRef := range u.Ops {
+			// TODO(sqs): actually discover which tools to use
+			if toolRef == nil {
+				switch op {
+				case "graph":
+					toolRef = &toolchain.ToolRef{Toolchain: "github.com/sourcegraph/srclib-go", Subcmd: "graph"}
+				case "depresolve":
+					toolRef = &toolchain.ToolRef{Toolchain: "github.com/sourcegraph/srclib-go", Subcmd: "depresolve"}
+				default:
+					return fmt.Errorf("no tool found for op %q on unit type %q", op, u.Type)
+				}
+			}
+			target := filepath.Join(buildDataDir, plan.SourceUnitDataFilename(op, u))
+			allTargets = append(allTargets, target)
+			mf.Rules = append(mf.Rules, &makex.BasicRule{
+				TargetFile:  target,
+				PrereqFiles: []string{filepath.Join(filepath.Dir(buildDataDir), unitFile)},
+				RecipeCmds:  []string{fmt.Sprintf("src tool %q %q < $^ 1> $@", toolRef.Toolchain, toolRef.Subcmd)},
+			})
+		}
 	}
 	mf.Rules = append(mf.Rules, &makex.BasicRule{
 		TargetFile:  "all",
@@ -97,7 +116,19 @@ func (c *PlanCmd) Execute(args []string) error {
 	if err != nil {
 		log.Fatal(err)
 	}
-	os.Stdout.Write(mfData)
+	mfFile := buildStore.FilePath(currentRepo.CommitID, "Makefile")
+	f, err := buildStore.Create(mfFile)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	if _, err := f.Write(mfData); err != nil {
+		return err
+	}
+
+	if gopt.Verbose {
+		log.Printf("Wrote plan: %s", filepath.Join(buildDataDir, "..", mfFile))
+	}
 
 	return nil
 }
