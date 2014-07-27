@@ -118,6 +118,52 @@ All toolchains must implement the following subcommands:
 In addition to the `info` subcommand, each of a toolchain's tools are exposed as a subcommand.
 
 
-## Scanner tool
+## scan (scanners)
 
-See `srcgraph scan -h`.
+Tools that perform the `scan` operation are called **scanners**. They scan a
+directory tree and produce a JSON array of source units (in Go,
+`[]*unit.SourceUnit`) they encounter.
+
+**Arguments:** none; scanners scan the tree rooted at the current directory (typically the root directory of a repository)
+**Options:**
+* `--repo URI`: the URI of the repository that contains the directory tree being
+  scanned
+* `--subdir DIR`: the path of the current directory (in which the scanner is
+  run), relative to the root directory of the repository being scanned (this is
+  typically the root, `"."`, as it is most useful to scan the entire
+  repository)
+**stdout:** `[]*unit.SourceUnit`
+
+See the `scan.Scan` function for an implementation of the calling side of this
+protocol.
+
+Scanners sometimes need the option values to produce the correct paths. (E.g.,
+the Go scanner requires these to generate the right import paths when running in
+Docker, since the system GOPATH is not available in the container.)
+
+## dep (dependency resolvers)
+
+Tools that perform the `dep` operation are called **dependency resolvers**. They
+resolve "raw" dependencies, such as the name and version of a dependency
+package, into a full specification of the dependency's target.
+
+**Arguments:** none
+**stdin:** JSON object representation of a source unit (`*unit.SourceUnit`)
+**Options:** none
+**stdout:** `[]*dep2.Resolution` JSON array with each item corresponding to the same-index entry in the source unit's `Dependencies` field
+
+See the `dep2.ResolveDeps` function for an implementation of the calling side of this
+protocol.
+
+## graph (graphers)
+
+Tools that perform the `graph` operation are called **graphers**. Depending on
+the programming language of the source code they analyze, they perform a
+combination of parsing, static analysis, semantic analysis, and type inference.
+Graphers perform these operations on a source unit and have read access to all
+of the source unit's files.
+
+**Arguments:** none
+**stdin:** JSON object representation of a source unit (`*unit.SourceUnit`)
+**Options:** none
+**stdout:** JSON graph output (`grapher2.Output`)

@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"reflect"
 	"testing"
+
+	"github.com/sourcegraph/srclib"
 )
 
 func TestList_program(t *testing.T) {
@@ -16,9 +18,9 @@ func TestList_program(t *testing.T) {
 	defer os.RemoveAll(tmpdir)
 
 	defer func(orig string) {
-		SrclibPath = orig
-	}(SrclibPath)
-	SrclibPath = tmpdir
+		srclib.Path = orig
+	}(srclib.Path)
+	srclib.Path = tmpdir
 
 	files := map[string]os.FileMode{
 		// ok
@@ -63,9 +65,9 @@ func TestList_docker(t *testing.T) {
 	defer os.RemoveAll(tmpdir)
 
 	defer func(orig string) {
-		SrclibPath = orig
-	}(SrclibPath)
-	SrclibPath = tmpdir
+		srclib.Path = orig
+	}(srclib.Path)
+	srclib.Path = tmpdir
 
 	files := map[string]struct{}{
 		// ok

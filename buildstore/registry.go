@@ -52,7 +52,6 @@ func DataTypeSuffix(data interface{}) string {
 	if !registered {
 		panic("buildstore: data type not registered: " + typ.String())
 	}
-
 	return name + ".json"
 }
 

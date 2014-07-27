@@ -3,9 +3,9 @@ package src
 import (
 	"log"
 
-	"github.com/sourcegraph/srclib/build"
+	"github.com/sourcegraph/srclib"
 	"github.com/sourcegraph/srclib/buildstore"
-	"github.com/sourcegraph/srclib/toolchain"
+	"github.com/sourcegraph/srclib/plan"
 )
 
 func init() {
@@ -28,7 +28,7 @@ func (c *InfoCmd) Execute(args []string) error {
 	log.Println("https://sourcegraph.com/sourcegraph/srclib")
 	log.Println()
 
-	log.Printf("SRCLIBPATH=%q", toolchain.SrclibPath)
+	log.Printf("SRCLIBPATH=%q", srclib.Path)
 
 	log.Println()
 	log.Printf("Build data types (%d)", len(buildstore.DataTypes))
@@ -37,8 +37,8 @@ func (c *InfoCmd) Execute(args []string) error {
 	}
 	log.Println()
 
-	log.Printf("Build rule makers (%d)", len(build.RuleMakers))
-	for name, _ := range build.RuleMakers {
+	log.Printf("Build rule makers (%d)", len(plan.RuleMakers))
+	for name, _ := range plan.RuleMakers {
 		log.Printf(" - %s", name)
 	}
 

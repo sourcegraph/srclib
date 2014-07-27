@@ -23,6 +23,18 @@ type SourceUnit struct {
 	// Files is all of the files that make up this source unit.
 	Files []string
 
+	// Dependencies is a list of dependencies that this source unit has. The
+	// schema for these dependencies is internal to the scanner that produced
+	// this source unit. The dependency resolver is expected to know how to
+	// interpret this schema.
+	//
+	// The dependency information stored in this field should be able to be very
+	// quickly determined by the scanner. The scanner should not perform any
+	// dependency resolution on these entries. This is because the scanner is
+	// run frequently and should execute very quickly, and dependency resolution
+	// is often slow (requiring network access, etc.).
+	Dependencies []interface{} `json:",omitempty"`
+
 	// Info is an optional field that contains additional information used to
 	// display the source unit
 	Info *Info `json:",omitempty"`
@@ -38,7 +50,7 @@ var idSeparator = "@"
 
 // ID returns an opaque identifier for this source unit that is guaranteed to be
 // unique among all other source units in the same repository.
-func (u *SourceUnit) ID() ID {
+func (u SourceUnit) ID() ID {
 	return ID(fmt.Sprintf("%s%s%s", url.QueryEscape(u.Name), idSeparator, u.Type))
 }
 

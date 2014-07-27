@@ -1,3 +1,5 @@
+//+build off
+
 package authorship
 
 import (
@@ -5,16 +7,16 @@ import (
 	"path/filepath"
 
 	"github.com/sourcegraph/makex"
-	"github.com/sourcegraph/srclib/build"
 	"github.com/sourcegraph/srclib/buildstore"
 	"github.com/sourcegraph/srclib/config"
 	"github.com/sourcegraph/srclib/graph"
+	"github.com/sourcegraph/srclib/plan"
 	"github.com/sourcegraph/srclib/unit"
 	"github.com/sourcegraph/srclib/vcsutil"
 )
 
 func init() {
-	build.RegisterRuleMaker("authorship", makeAuthorshipRules)
+	plan.RegisterRuleMaker("authorship", makeAuthorshipRules)
 	buildstore.RegisterDataType("unit-authorship.v0", &SourceUnitOutput{})
 }
 
@@ -30,10 +32,10 @@ type SourceUnitOutput struct {
 func makeAuthorshipRules(c *config.Repository, dataDir string, existing []makex.Rule) ([]makex.Rule, error) {
 	// determine authorship for each source unit individually, but we have to
 	// wait until graphing AND blaming completes.
-	graphRules, blameRules := make(map[unit.ID]*build.GraphUnitRule), make(map[unit.ID]*vcsutil.BlameSourceUnitRule)
+	graphRules, blameRules := make(map[unit.ID]*plan.GraphUnitRule), make(map[unit.ID]*vcsutil.BlameSourceUnitRule)
 	for _, rule := range existing {
 		switch rule := rule.(type) {
-		case *build.GraphUnitRule:
+		case *plan.GraphUnitRule:
 			graphRules[rule.Unit.ID()] = rule
 		case *vcsutil.BlameSourceUnitRule:
 			blameRules[rule.Unit.ID()] = rule
@@ -80,7 +82,7 @@ type ComputeUnitAuthorshipRule struct {
 }
 
 func (r *ComputeUnitAuthorshipRule) Target() string {
-	return filepath.Join(r.dataDir, build.SourceUnitDataFilename(&SourceUnitOutput{}, r.Unit))
+	return filepath.Join(r.dataDir, plan.SourceUnitDataFilename(&SourceUnitOutput{}, r.Unit))
 }
 
 func (r *ComputeUnitAuthorshipRule) Prereqs() []string { return []string{r.BlameOutput, r.GraphOutput} }

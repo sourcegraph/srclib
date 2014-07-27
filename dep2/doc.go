@@ -44,4 +44,6 @@
 // RawDependencies only yield a single call to Resolve. This saves even more
 // work when finding dependencies for all of a repository's history (because
 // most commits likely won't add or update dependency declarations).
+//
+// TODO(sqs): update these docs after we removed deplist
 package dep2

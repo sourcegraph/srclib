@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
+	"io"
 	"os"
 	"os/exec"
 	"strings"
@@ -102,8 +102,9 @@ type Tool interface {
 	// Command returns an *exec.Cmd suitable for running this tool.
 	Command() (*exec.Cmd, error)
 
-	// Run executes this tool with args and parses the JSON response into resp.
-	Run(arg []string, resp interface{}) error
+	// Run executes this tool with args (sending the JSON-serialization of input
+	// on stdin, if input is non-nil) and parses the JSON response into resp.
+	Run(arg []string, input, resp interface{}) error
 }
 
 type tool struct {
@@ -121,22 +122,35 @@ func (t *tool) Command() (*exec.Cmd, error) {
 	return cmd, nil
 }
 
-func (t *tool) Run(arg []string, resp interface{}) error {
+// TODO(sqs): is it possible for an early return to leave the subprocess running?
+func (t *tool) Run(arg []string, input, resp interface{}) error {
 	cmd, err := t.Command()
 	if err != nil {
 		return err
 	}
 	cmd.Args = append(cmd.Args, arg...)
-
-	log.Printf("Run: %v", cmd.Args)
-
 	cmd.Stderr = os.Stderr
+
+	var stdin io.WriteCloser
+	if input != nil {
+		stdin, err = cmd.StdinPipe()
+		if err != nil {
+			return err
+		}
+	}
+
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		return err
 	}
 	if err := cmd.Start(); err != nil {
 		return err
+	}
+
+	if input != nil {
+		if err := json.NewEncoder(stdin).Encode(input); err != nil {
+			return err
+		}
 	}
 
 	if err := json.NewDecoder(stdout).Decode(resp); err != nil {

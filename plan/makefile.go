@@ -1,4 +1,4 @@
-package build
+package plan
 
 import (
 	"fmt"
@@ -17,7 +17,7 @@ var (
 
 // RegisterRuleMaker adds a function that creates a list of build rules for a
 // repository. If RegisterRuleMaker is called twice with the same target or
-// target name, if name or r are nil, it panics.
+// target name, if name is empty, or if r is nil, it panics.
 func RegisterRuleMaker(name string, r RuleMaker) {
 	if _, dup := RuleMakers[name]; dup {
 		panic("build: Register called twice for target lister " + name)
