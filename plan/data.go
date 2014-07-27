@@ -13,5 +13,5 @@ func RepositoryCommitDataFilename(emptyData interface{}) string {
 }
 
 func SourceUnitDataFilename(emptyData interface{}, u *unit.SourceUnit) string {
-	return filepath.Clean(fmt.Sprintf("%s_%s", u.ID(), buildstore.DataTypeSuffix(emptyData)))
+	return filepath.Clean(fmt.Sprintf("%s/%s.%s", u.Name, u.Type, buildstore.DataTypeSuffix(emptyData)))
 }

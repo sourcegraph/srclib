@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/sourcegraph/srclib/buildstore"
 	"github.com/sourcegraph/srclib/repo"
 	"github.com/sourcegraph/srclib/toolchain"
 	"github.com/sourcegraph/srclib/unit"
@@ -42,10 +41,6 @@ type Tree struct {
 	// Config is an arbitrary key-value property map. Each property is passed to
 	// every tool.
 	Config map[string]string `json:",omitempty"`
-}
-
-func init() {
-	buildstore.RegisterDataType("config.v0", &Repository{})
 }
 
 // ReadRepository parses and validates the configuration for a repository. If no
