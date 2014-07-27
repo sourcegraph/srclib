@@ -207,6 +207,6 @@ func (t *dockerToolchain) Command() (*exec.Cmd, error) {
 			return nil, err
 		}
 	}
-	cmd := exec.Command("docker", "run", "--volume="+t.hostVolumeDir+":/src:ro", t.imageName)
+	cmd := exec.Command("docker", "run", "-i", "--volume="+t.hostVolumeDir+":/src:ro", t.imageName)
 	return cmd, nil
 }

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -138,6 +139,8 @@ func (t *tool) Run(arg []string, input, resp interface{}) error {
 			return err
 		}
 	}
+
+	log.Printf("Running: %v", cmd.Args)
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
