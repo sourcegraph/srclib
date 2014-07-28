@@ -1,4 +1,4 @@
-// Package dep2 defines an interface for listing raw dependencies and resolving
+// Package dep defines an interface for listing raw dependencies and resolving
 // them, and registering handlers to perform these tasks.
 //
 // Toolchains should register two handlers to list and resolve dependencies:
@@ -19,21 +19,21 @@
 //   package my_toolchain
 //
 //   func init() {
-//     dep2.RegisterLister(PythonPackage{}, pip)
-//     dep2.RegisterResolver("pip-package", pip)
+//     dep.RegisterLister(PythonPackage{}, pip)
+//     dep.RegisterResolver("pip-package", pip)
 //   }
 //
 //   type pip struct {}
 //
-//   func (p *pip) List(dir string, unit unit.SourceUnit, c *config.Repository) ([]*dep2.RawDependency, error) {
+//   func (p *pip) List(dir string, unit unit.SourceUnit, c *config.Repository) ([]*dep.RawDependency, error) {
 //     // return each line in requirements.txt, perhaps (or do something more robust in Docker)
 //     // return something like:
-//     return []*dep2.RawDependency{{TargetType: "pip-package", Target: "Django==1.6"}}, nil
+//     return []*dep.RawDependency{{TargetType: "pip-package", Target: "Django==1.6"}}, nil
 //   }
 //
-//   func (p *pip) Resolve(rawDep *dep2.RawDependency, c *config.Repository) (*dep2.ResolvedTarget, error) {
+//   func (p *pip) Resolve(rawDep *dep.RawDependency, c *config.Repository) (*dep.ResolvedTarget, error) {
 //     // query pypi.python.org or use cheerio, and then return something like:
-//     return &dep2.ResolvedTarget{
+//     return &dep.ResolvedTarget{
 //       ToRepoCloneURL: "git://github.com/django/django.git",
 //     }, nil
 //   }
@@ -46,4 +46,4 @@
 // most commits likely won't add or update dependency declarations).
 //
 // TODO(sqs): update these docs after we removed deplist
-package dep2
+package dep

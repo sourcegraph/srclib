@@ -8,7 +8,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/sourcegraph/srclib/dep2"
+	"github.com/sourcegraph/srclib/dep"
 )
 
 func listDeps(args []string) {
@@ -34,13 +34,13 @@ The options are:
 		log.Fatal(err)
 	}
 
-	allRawDeps := []*dep2.RawDependency{}
+	allRawDeps := []*dep.RawDependency{}
 	for _, u := range repoConf.Config.SourceUnits {
 		if !SourceUnitMatchesArgs(sourceUnitSpecs, u) {
 			continue
 		}
 
-		rawDeps, err := dep2.List(repoConf.RootDir, u, repoConf.Config)
+		rawDeps, err := dep.List(repoConf.RootDir, u, repoConf.Config)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -58,7 +58,7 @@ The options are:
 
 			if *resolve {
 				log.Printf("# resolves to:")
-				resolvedDep, err := dep2.Resolve(rawDep, repoConf.Config)
+				resolvedDep, err := dep.Resolve(rawDep, repoConf.Config)
 				if err != nil {
 					log.Fatal(err)
 				}
