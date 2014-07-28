@@ -9,7 +9,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/sourcegraph/srclib/dep2"
+	"github.com/sourcegraph/srclib/dep"
 )
 
 func resolveDeps(args []string) {
@@ -36,12 +36,12 @@ The options are:
 		log.Fatal(err)
 	}
 
-	var allRawDeps []*dep2.RawDependency
+	var allRawDeps []*dep.RawDependency
 	for name, input := range inputs {
 		if gopt.Verbose {
 			log.Printf("Reading raw deps from %q", name)
 		}
-		var rawDeps []*dep2.RawDependency
+		var rawDeps []*dep.RawDependency
 		err := json.NewDecoder(input).Decode(&rawDeps)
 		if err != nil {
 			log.Fatalf("%s: %s", name, err)
@@ -50,12 +50,12 @@ The options are:
 		allRawDeps = append(allRawDeps, rawDeps...)
 	}
 
-	resolvedDeps, err := dep2.ResolveAll(allRawDeps, repoConf.Config)
+	resolvedDeps, err := dep.ResolveAll(allRawDeps, repoConf.Config)
 	if err != nil {
 		log.Fatal(err)
 	}
 	if resolvedDeps == nil {
-		resolvedDeps = []*dep2.ResolvedDep{}
+		resolvedDeps = []*dep.ResolvedDep{}
 	}
 
 	if *jsonOutput {

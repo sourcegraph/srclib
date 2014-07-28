@@ -1,4 +1,4 @@
-package dep2
+package dep
 
 import "github.com/sourcegraph/srclib/repo"
 
