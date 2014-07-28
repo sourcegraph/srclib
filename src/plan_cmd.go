@@ -9,6 +9,7 @@ import (
 
 	"github.com/kr/fs"
 	"github.com/sourcegraph/makex"
+	"github.com/sourcegraph/rwvfs"
 	"github.com/sourcegraph/srclib/buildstore"
 	"github.com/sourcegraph/srclib/toolchain"
 
@@ -61,6 +62,10 @@ func (c *PlanCmd) Execute(args []string) error {
 		if strings.HasSuffix(w.Path(), unitSuffix) {
 			unitFiles = append(unitFiles, w.Path())
 		}
+	}
+
+	if len(unitFiles) == 0 {
+		return fmt.Errorf("no source unit files found. Did you run `src config`?")
 	}
 
 	buildDataDir, err := buildstore.BuildDir(buildStore, currentRepo.CommitID)
@@ -117,6 +122,9 @@ func (c *PlanCmd) Execute(args []string) error {
 		log.Fatal(err)
 	}
 	mfFile := buildStore.FilePath(currentRepo.CommitID, "Makefile")
+	if err := rwvfs.MkdirAll(buildStore, filepath.Dir(mfFile)); err != nil {
+		return err
+	}
 	f, err := buildStore.Create(mfFile)
 	if err != nil {
 		return err
@@ -126,9 +134,7 @@ func (c *PlanCmd) Execute(args []string) error {
 		return err
 	}
 
-	if gopt.Verbose {
-		log.Printf("Wrote plan: %s", filepath.Join(buildDataDir, "..", mfFile))
-	}
+	log.Printf("Wrote %s", filepath.Join(buildDataDir, "..", mfFile))
 
 	return nil
 }
