@@ -9,13 +9,13 @@ import (
 	"github.com/sourcegraph/makex"
 	"github.com/sourcegraph/srclib/buildstore"
 	"github.com/sourcegraph/srclib/config"
-	"github.com/sourcegraph/srclib/grapher2"
+	"github.com/sourcegraph/srclib/grapher"
 	"github.com/sourcegraph/srclib/unit"
 )
 
 func init() {
 	RegisterRuleMaker("graph", makeGraphRules)
-	buildstore.RegisterDataType("graph.v0", &grapher2.Output{})
+	buildstore.RegisterDataType("graph.v0", &grapher.Output{})
 }
 
 func makeGraphRules(c *config.Repository, dataDir string, existing []makex.Rule) ([]makex.Rule, error) {
@@ -32,7 +32,7 @@ type GraphUnitRule struct {
 }
 
 func (r *GraphUnitRule) Target() string {
-	return filepath.Join(r.dataDir, SourceUnitDataFilename(&grapher2.Output{}, r.Unit))
+	return filepath.Join(r.dataDir, SourceUnitDataFilename(&grapher.Output{}, r.Unit))
 }
 
 func (r *GraphUnitRule) Prereqs() []string { return r.Unit.Files }

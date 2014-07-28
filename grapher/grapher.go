@@ -1,4 +1,4 @@
-package grapher2
+package grapher
 
 import (
 	"fmt"
