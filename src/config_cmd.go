@@ -101,7 +101,7 @@ func (c *ConfigCmd) Execute(args []string) error {
 		return err
 	}
 
-	if err := scanIntoConfig(cfg, c.Options, c.ToolchainExecOpt); err != nil {
+	if err := scanUnitsIntoConfig(cfg, c.Options, c.ToolchainExecOpt); err != nil {
 		return err
 	}
 
