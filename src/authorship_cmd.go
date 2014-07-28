@@ -9,7 +9,7 @@ import (
 	"os"
 
 	"github.com/sourcegraph/srclib/authorship"
-	"github.com/sourcegraph/srclib/grapher2"
+	"github.com/sourcegraph/srclib/grapher"
 	"github.com/sourcegraph/srclib/vcsutil"
 )
 
@@ -40,7 +40,7 @@ The options are:
 	var b *vcsutil.BlameOutput
 	readJSONFile(blameFile, &b)
 
-	var g *grapher2.Output
+	var g *grapher.Output
 	readJSONFile(graphFile, &g)
 
 	out, err := authorship.ComputeSourceUnit(g, b, repoConf.Config)

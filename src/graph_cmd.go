@@ -8,7 +8,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/sourcegraph/srclib/grapher2"
+	"github.com/sourcegraph/srclib/grapher"
 )
 
 func graph_(args []string) {
@@ -39,7 +39,7 @@ The options are:
 			continue
 		}
 
-		output, err := grapher2.Graph(repoConf.RootDir, u, repoConf.Config)
+		output, err := grapher.Graph(repoConf.RootDir, u, repoConf.Config)
 		if err != nil {
 			log.Fatal(err)
 		}

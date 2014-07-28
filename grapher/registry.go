@@ -1,5 +1,5 @@
 // TODO(sqs): remove this file
-package grapher2
+package grapher
 
 import (
 	"reflect"
