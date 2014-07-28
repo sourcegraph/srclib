@@ -109,3 +109,9 @@ func sortedOutput(o *Output) *Output {
 	sort.Sort(graph.Docs(o.Docs))
 	return o
 }
+
+// NormalizeData sorts data.
+func NormalizeData(o *Output) error {
+	sortedOutput(o)
+	return nil
+}

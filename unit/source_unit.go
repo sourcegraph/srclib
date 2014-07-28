@@ -73,6 +73,17 @@ type SourceUnit struct {
 	// various tasks on this source unit
 }
 
+// OpsSorted returns the keys of the Ops map in sorted order.
+func (u *SourceUnit) OpsSorted() []string {
+	ops := make([]string, len(u.Ops))
+	i := 0
+	for op := range u.Ops {
+		ops[i] = op
+		i++
+	}
+	return ops
+}
+
 func init() {
 	buildstore.RegisterDataType("unit.v0", SourceUnit{})
 }

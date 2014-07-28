@@ -1,3 +1,5 @@
+//+build off
+
 package src
 
 import (
@@ -12,8 +14,8 @@ import (
 
 	"github.com/sourcegraph/rwvfs"
 
-	"github.com/sourcegraph/srclib/buildstore"
 	client "github.com/sourcegraph/go-sourcegraph/sourcegraph"
+	"github.com/sourcegraph/srclib/buildstore"
 )
 
 func dataCmd(args []string) {

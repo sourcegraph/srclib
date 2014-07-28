@@ -31,7 +31,6 @@ func init() {
 var apiclient = client.NewClient(nil)
 
 var (
-	Dir    = "."
 	absDir string
 )
 

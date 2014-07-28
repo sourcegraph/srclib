@@ -1,93 +1,92 @@
-//+build off
-
 package src
 
 import (
-	"flag"
-	"fmt"
 	"log"
 	"os"
+	"os/exec"
+	"path/filepath"
 
-	"github.com/sourcegraph/makex"
+	"github.com/sourcegraph/srclib/buildstore"
+	"github.com/sourcegraph/srclib/config"
 )
 
-func make_(args []string) {
-	fs := flag.NewFlagSet("make", flag.ExitOnError)
-	showOnly := fs.Bool("mf", false, "print generated makefile and exit")
-	conf := &makex.Default
-	makex.Flags(fs, conf, "")
-	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, `usage: `+Name+` make [options] [target...]
-
-Generates and executes a Makefile that processes a repository, creating graph of
-definitions, references, and dependencies in a repository's code at a specific
-revision.
-
-Run "`+Name+` makefile" to print the generated Makefile and exit.
-
-This command uses makex to execute the Makefile, but the Makefile is also
-compatible with GNU make. You can use the "`+Name+` makefile" command to
-generate a Makefile to use with GNU make, if you'd like.
-
-The options are:
-	   `)
-		fs.PrintDefaults()
-		fmt.Fprintln(os.Stderr)
-		os.Exit(1)
-	}
-	fs.Parse(args)
-	goals := fs.Args()
-
-	repoConf, err := OpenAndConfigureRepo(Dir)
+func init() {
+	c, err := CLI.AddCommand("make",
+		"build a tree (config, plan, and execute)",
+		`Configures a tree, plans the execution, and executes all analysis steps.`,
+		&makeCmd,
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	mk, mf, err := NewMaker(goals, repoConf, conf)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if gopt.Verbose || *showOnly {
-		data, err := makex.Marshal(mf)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println(string(data))
-		if *showOnly {
-			return
-		}
-	}
-
-	if conf.DryRun {
-		err := mk.DryRun(os.Stdout)
-		if err != nil {
-			log.Fatal(err)
-		}
-		return
-	}
-
-	err = mk.Run()
-	if err != nil {
-		log.Fatal(err)
-	}
+	SetRepoOptDefaults(c)
 }
 
-func NewMaker(goals []string, repoConf *ConfiguredRepo, conf *makex.Config) (*makex.Maker, *makex.Makefile, error) {
+type MakeCmd struct {
+	config.Options
 
-	// TMP moved stuff that was here to (*PlanCmd).Execute
+	ToolchainExecOpt `group:"execution"`
+	BuildCacheOpt    `group:"build cache"`
 
-	if len(goals) == 0 {
-		if defaultRule := mf.DefaultRule(); defaultRule != nil {
-			goals = []string{defaultRule.Target()}
+	Dir Directory `short:"C" long:"directory" description:"change to DIR before doing anything" value-name:"DIR"`
+
+	Args struct {
+		Targets []string `name:"TARGETS..." description:"Makefile targets to build (default: all)"`
+	} `positional-args:"yes"`
+}
+
+var makeCmd MakeCmd
+
+func (c *MakeCmd) Execute(args []string) error {
+	if c.Dir != "" {
+		if err := os.Chdir(string(c.Dir)); err != nil {
+			return err
 		}
 	}
 
-	// Change to the directory that make prereqs are relative to, so that makex
-	// can properly compute the DAG.
-	if err := os.Chdir(repoConf.RootDir); err != nil {
-		return nil, nil, err
+	if len(c.Args.Targets) == 0 {
+		c.Args.Targets = []string{"all"}
 	}
 
-	return conf.NewMaker(mf, goals...), mf, nil
+	// config
+	configCmd := &ConfigCmd{
+		Options:          c.Options,
+		ToolchainExecOpt: c.ToolchainExecOpt,
+		BuildCacheOpt:    c.BuildCacheOpt,
+	}
+	if err := configCmd.Execute(nil); err != nil {
+		return err
+	}
+
+	// plan
+	planCmd := &PlanCmd{}
+	if err := planCmd.Execute(nil); err != nil {
+		return err
+	}
+
+	// execute
+	// TODO(sqs): use makex and makefile returned by planCmd
+	currentRepo, err := OpenRepo(".")
+	if err != nil {
+		return err
+	}
+	buildStore, err := buildstore.NewRepositoryStore(currentRepo.RootDir)
+	if err != nil {
+		return err
+	}
+	buildRoot, err := buildstore.RootDir(buildStore)
+	if err != nil {
+		return err
+	}
+	mfFile := filepath.Join(buildRoot, buildStore.FilePath(currentRepo.CommitID, "Makefile"))
+	makeCmd := exec.Command("make", "-f", mfFile)
+	makeCmd.Args = append(makeCmd.Args, c.Args.Targets...)
+	makeCmd.Stdout = os.Stderr
+	makeCmd.Stderr = os.Stderr
+	if err := makeCmd.Run(); err != nil {
+		return err
+	}
+
+	return nil
 }
