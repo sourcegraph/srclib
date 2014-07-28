@@ -1,7 +1,9 @@
 page_title: Grapher Output
 
 # Grapher Output
-The scanner should invoke the grapher with enough information about the source unit. The output of the grapher should be saved in a file with the name {UnitName}@{UnitType}_graph.{SchemaVersion}.json
+The scanner should invoke the grapher with enough information about the source unit.
+The output of the grapher should be printed to standard out, upon which the src
+tool will redirect it to the properly named file.
 
 ## Output Schema
 The output is a single JSON object with three fields that represent lists of Definitions, References, and Documentation data respectively.

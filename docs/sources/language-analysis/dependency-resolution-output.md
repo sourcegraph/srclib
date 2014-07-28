@@ -2,7 +2,7 @@ page_title: Dependency Resolution Output
 
 # Dependency Resolution Output
 
-The output of the dependency resolution tool should be saved in a file with the name {UnitName}@{UnitType}_deps.{SchemaVersion}.json
+The output of the dependency resolution tool should be printed to standard output.
 
 ## Output Schema
 The schema of the dependency resolution output should be an array of `DependencyTarget` objects,

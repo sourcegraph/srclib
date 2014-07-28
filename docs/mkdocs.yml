@@ -29,3 +29,10 @@ pages:
 
 # API
 - ['api/overview.md', 'API', 'Overview']
+
+# SRC
+- ['src/data-model.md', 'Src', 'Data Model']
+- ['src/make.md', 'Src', 'Make']
+- ['src/srcfile.md', 'Src', 'Srcfile']
+- ['src/toolchains.md', 'Src', 'Toolchains']
+- ['src/faq.md', 'Src', 'FAQ']
