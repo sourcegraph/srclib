@@ -1,0 +1,31 @@
+site_name: Srclib Documentation
+site_description: Documentation for the srclib toolchain.
+
+docs_dir: sources
+
+repo_url: https://github.com/sourcegraph/srclib/
+
+dev_addr: '0.0.0.0:8000'
+
+pages:
+
+- ['index.md', 'Home']
+
+# Introduction:
+- ['introduction/about.md', 'Introduction', 'About']
+- ['introduction/high-level-overview.md', 'Introduction', 'High Level Overview']
+
+# Installation
+- ['installation/editor-plugins.md', 'Installation', 'Editor Plugins']
+
+# Language Analysis
+- ['language-analysis/overview.md', 'Language Analysis', 'Overview']
+- ['language-analysis/scanner-output.md', 'Language Analysis', 'Scanner Output']
+- ['language-analysis/grapher-output.md', 'Language Analysis', 'Grapher Output']
+- ['language-analysis/dependency-resolution-output.md', 'Language Analysis', 'Dependency Resolution Output']
+- ['language-analysis/formatter.md', 'Language Analysis', 'Formatter Output']
+- ['language-analysis/openquestions.md', 'Language Analysis', 'Open Questions']
+- ['language-analysis/faq.md', 'Language Analysis', 'FAQ']
+
+# API
+- ['api/overview.md', 'API', 'Overview']
