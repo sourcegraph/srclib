@@ -126,19 +126,20 @@ func (c *PlanCmd) Execute(args []string) error {
 		// to avoid duplicating work
 		for _, op := range u.OpsSorted() {
 			var normalizeDataCmd string
+
 			toolRef := u.Ops[op]
-			// TODO(sqs): actually discover which tools to use
 			if toolRef == nil {
-				switch op {
-				case "graph":
-					toolRef = &toolchain.ToolRef{Toolchain: "github.com/sourcegraph/srclib-go", Subcmd: "graph"}
-					normalizeDataCmd = "| src internal normalize-graph-data"
-				case "depresolve":
-					toolRef = &toolchain.ToolRef{Toolchain: "github.com/sourcegraph/srclib-go", Subcmd: "depresolve"}
-				default:
-					return fmt.Errorf("no tool found for op %q on unit type %q", op, u.Type)
+				choice, err := toolchain.ChooseTool(op, u.Type)
+				if err != nil {
+					return err
 				}
+				toolRef = choice
 			}
+
+			if op == "graph" {
+				normalizeDataCmd = "| src internal normalize-graph-data"
+			}
+
 			target := filepath.Join(buildDataDir, plan.SourceUnitDataFilename(op, u))
 			allTargets = append(allTargets, target)
 			mf.Rules = append(mf.Rules, &makex.BasicRule{
