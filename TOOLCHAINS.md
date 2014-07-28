@@ -169,3 +169,8 @@ of the source unit's files.
 **stdin:** JSON object representation of a source unit (`*unit.SourceUnit`)
 **Options:** none
 **stdout:** JSON graph output (`grapher2.Output`)
+
+TODO(sqs): Can we provide the output of `dep` to the `graph` tool? Usually
+graphers have to resolve all of the same deps that `dep` would have to. But
+we're already providing a full JSON object on stdin, so making it an array or
+sending another object would slightly complicate things.
