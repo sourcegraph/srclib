@@ -1,4 +1,4 @@
-package util2
+package util
 
 import (
 	"fmt"

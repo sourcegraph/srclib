@@ -14,7 +14,7 @@ import (
 
 	"github.com/aybabtme/color/brush"
 	"github.com/sourcegraph/srclib/buildstore"
-	"github.com/sourcegraph/srclib/util2"
+	"github.com/sourcegraph/srclib/util"
 )
 
 func init() {
@@ -181,7 +181,7 @@ func checkResults(output bytes.Buffer, treeDir, actualDir, expectedDir string) e
 		if len(out) > 0 {
 			fmt.Println(brush.Red(treeName + " FAIL"))
 			fmt.Println(output.String())
-			fmt.Println(string(util2.ColorizeDiff(out)))
+			fmt.Println(string(util.ColorizeDiff(out)))
 		}
 		return fmt.Errorf("Output for %s differed from expected.", treeName)
 	} else {
