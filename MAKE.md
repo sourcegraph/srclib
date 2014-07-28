@@ -11,7 +11,7 @@ When you run `src make` in a source directory, it executes tasks in 3 phases:
 1. Plan
 1. Execute
 
-![src make build process](./src-make-build-process.svg "src make build process")
+![src make build process](https://rawgit.com/sourcegraph/srclib/master/src-make-build-process.svg "src make build process")
 
 
 ## Phase 1. Configure
