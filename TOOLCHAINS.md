@@ -83,6 +83,9 @@ There are 2 modes of execution for srclib tools:
    A Docker-containerized tool is a directory (under SRCLIBPATH) that contains a
    Dockerfile. There is no installation necessary for these tools; the `src`
    program knows how to build and run their Docker container.
+
+   When the Docker container runs, the project's source code is always
+   volume-mounted at `/src` (in the container).
    
 Tools may support either or both of these execution modes. Their behavior should
 be the same, if possible, regardless of the execution mode. (TODO(sqs): Clarify
