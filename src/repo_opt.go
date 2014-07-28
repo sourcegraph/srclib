@@ -8,7 +8,7 @@ import (
 )
 
 func SetRepoOptDefaults(c *flags.Command) {
-	currentRepo, err := OpenRepo(Dir)
+	currentRepo, err := OpenRepo(".")
 	if err != nil {
 		log.Println(err)
 		return
