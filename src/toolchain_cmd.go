@@ -56,7 +56,6 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
 
 type ToolchainPath string
