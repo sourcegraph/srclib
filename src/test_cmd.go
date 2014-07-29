@@ -98,6 +98,10 @@ func (c *TestCmd) Execute(args []string) error {
 		}
 	}
 
+	if c.GenerateExpected {
+		log.Fatal("\nSuccessfully wrote expected test output files. Exiting with nonzero return code so you won't mistakenly interpret a 0 return code as a test success. Run without --gen to actually run the test.")
+	}
+
 	return nil
 }
 
@@ -167,7 +171,8 @@ func testTree(treeDir, expectedDir, actualDir string, generate bool) error {
 	}
 
 	if generate {
-		return fmt.Errorf("Successfully generated expected output for %s in %s. (Triggering an error so you won't mistakenly interpret a 0 return code as a test success. Run without -gen to actually run the test.)", treeName, expectedDir)
+		log.Printf("Successfully generated expected output for %s in %s.", treeName, expectedDir)
+		return nil
 	}
 	return checkResults(buf, treeDir, actualDir, expectedDir)
 }
