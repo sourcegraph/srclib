@@ -5,10 +5,10 @@ browsable HTML static site, hosted at [srclib.org](http://srclib.org/).
 **[MkDocs](http://www.mkdocs.org/)**, installable through pip, is used to generate the
 HTML.
 
-Run `pip install mkdocs` command to install MkDocs.
+Run `pip install mkdocs` to install MkDocs.
 
-When testing documentation, you can type `mkdocs serve` to start the server, or `mkdocs build` to generate
-the site into a directory labelled `site`.
+When testing documentation, you can type `mkdocs serve` to start the server,
+or `mkdocs build` to build the HTML into the `site` directory.
 
 ## Editing
 Markdown files are located in the `sources` directory, with subdirectories intended to correspond
