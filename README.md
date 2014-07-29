@@ -1,23 +1,24 @@
 # srclib [![Build Status](https://travis-ci.org/sourcegraph/srclib.png?branch=master)](https://travis-ci.org/sourcegraph/srclib)
 
-**srclib** is a source code analysis library. It provides standardized
-tools, interfaces and data formats for generating, representing and querying
+**srclib** is a source code analysis library. It provides standardized tools,
+interfaces and data formats for generating, representing and querying
 information about source code in software projects.
 
-Right now, most people write code in editors that don't give them as much
-programming assistance as is possible. That's because creating an editor plugin
-and language analyzer for your favorite language and editor combo is a lot of
-work. And when you're done, your plugin only supports a single language and
-editor, and maybe only half the features you wanted (such as doc lookups and
+**Why?** Right now, most people write code in editors that don't give them as
+much programming assistance as is possible. That's because creating an editor
+plugin and language analyzer for your favorite language and editor combo is a
+lot of work. And when you're done, your plugin only supports a single language
+and editor, and maybe only half the features you wanted (such as doc lookups and
 "find usages"). Because there are no standard cross-language and cross-editor
 APIs and formats, it is difficult to reuse your plugin for other languages or
 editors.
 
 We call this the **M-by-N-by-O problem**: given *M* editors, *N* languages, and
-*O* features, we need to write (on the order of) *M*&times;*N*&times;*O*
-plugins to get good tooling in every situation.
+*O* features, we need to write (on the order of) *M*&times;*N*&times;*O* plugins
+to get good tooling in every case. That number gets large quickly, and it's why
+we suffer from poor developer tools.
 
-srclib solves this problem in 2 by:
+srclib solves this problem in 2 ways by:
 * Publishing standard formats and APIs for source analyzers and editor plugins
   to use. This means that improvements in a srclib language analyzer benefit
   users in any editor, and improvements in a srclib editor plugin benefit
