@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/sourcegraph/srclib/buildstore"
@@ -83,6 +84,7 @@ func (u *SourceUnit) OpsSorted() []string {
 		ops[i] = op
 		i++
 	}
+	sort.Strings(ops)
 	return ops
 }
 
