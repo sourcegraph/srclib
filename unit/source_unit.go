@@ -25,6 +25,8 @@ type SourceUnit struct {
 	Type string
 
 	// Repo is the URI of the repository containing this source unit, if any.
+	//
+	// During scanning, it is set by the `src` tool, not by the scanner tool.
 	Repo repo.URI
 
 	// Globs is a list of patterns that match files that make up this source
