@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/kr/fs"
+	"github.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"github.com/sourcegraph/srclib/buildstore"
 	"github.com/sourcegraph/srclib/graph"
 	"github.com/sourcegraph/srclib/grapher"
@@ -45,6 +46,8 @@ func (c *APICmd) Execute(args []string) error { return nil }
 type APIDescribeCmd struct {
 	File      string `long:"file" required:"yes" value-name:"FILE"`
 	StartByte int    `long:"start-byte" required:"yes" value-name:"BYTE"`
+
+	Examples bool `long:"examples" describe:"show examples from Sourcegraph.com"`
 }
 
 var apiDescribeCmd APIDescribeCmd
@@ -98,15 +101,16 @@ func (c *APIDescribeCmd) Execute(args []string) error {
 		}
 	}
 
-	if len(units) > 0 {
-		ids := make([]string, len(units))
-		for i, u := range units {
-			ids[i] = string(u.ID())
+	if gopt.Verbose {
+		if len(units) > 0 {
+			ids := make([]string, len(units))
+			for i, u := range units {
+				ids[i] = string(u.ID())
+			}
+			log.Printf("Position %s:%d is in %d source units %v.", c.File, c.StartByte, len(units), ids)
+		} else {
+			log.Printf("Position %s:%d is not in any source units.", c.File, c.StartByte)
 		}
-		log.Printf("Position %s:%d is in %d source units %v.", c.File, c.StartByte, len(units), ids)
-	} else {
-		log.Printf("Position %s:%d is not in any source units.", c.File, c.StartByte)
-		return nil
 	}
 
 	// Find the ref(s) at the character position.
@@ -126,13 +130,21 @@ OuterLoop:
 		for _, ref2 := range g.Refs {
 			if c.File == ref2.File && c.StartByte >= ref2.Start && c.StartByte <= ref2.End {
 				ref = ref2
+				if ref.SymbolUnit == "" {
+					ref.SymbolUnit = u.Name
+				}
+				if ref.SymbolUnitType == "" {
+					ref.SymbolUnitType = u.Type
+				}
 				break OuterLoop
 			}
 		}
 	}
 
 	if ref == nil {
-		log.Printf("No ref found at %s:%d.", c.File, c.StartByte)
+		if gopt.Verbose {
+			log.Printf("No ref found at %s:%d.", c.File, c.StartByte)
+		}
 		return nil
 	}
 
@@ -140,7 +152,50 @@ OuterLoop:
 		ref.SymbolRepo = repo.URI()
 	}
 
-	if err := json.NewEncoder(os.Stdout).Encode(ref); err != nil {
+	// Now find the def for this ref.
+	defInCurrentRepo := ref.SymbolRepo == repo.URI()
+	var def *sourcegraph.Symbol
+	if defInCurrentRepo {
+		// Def is in the current repo.
+		var g grapher.Output
+		graphFile := buildStore.FilePath(repo.CommitID, plan.SourceUnitDataFilename("graph", &unit.SourceUnit{Name: ref.SymbolUnit, Type: ref.SymbolUnitType}))
+		f, err := buildStore.Open(graphFile)
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+		if err := json.NewDecoder(f).Decode(&g); err != nil {
+			return fmt.Errorf("%s: %s", graphFile, err)
+		}
+		for _, def2 := range g.Symbols {
+			if def2.Path == ref.SymbolPath {
+				def = &sourcegraph.Symbol{Symbol: *def2}
+				break
+			}
+		}
+		if def != nil {
+			for _, doc := range g.Docs {
+				if doc.Path == ref.SymbolPath {
+					def.DocHTML = doc.Data
+				}
+			}
+		}
+	} else {
+		// Def is not in the current repo. Look it up using the Sourcegraph API.
+		apiclient := sourcegraph.NewClient(nil)
+		var err error
+		def, _, err = apiclient.Symbols.Get(sourcegraph.SymbolSpec{
+			Repo:     string(ref.SymbolRepo),
+			UnitType: ref.SymbolUnitType,
+			Unit:     ref.SymbolUnit,
+			Path:     string(ref.SymbolPath),
+		}, &sourcegraph.SymbolGetOptions{Doc: true})
+		if err != nil {
+			return err
+		}
+	}
+
+	if err := json.NewEncoder(os.Stdout).Encode(def); err != nil {
 		return err
 	}
 	return nil
