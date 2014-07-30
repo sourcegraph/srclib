@@ -1,13 +1,13 @@
 package src
 
 import (
+	"bytes"
 	"fmt"
 
 	"os"
 	"os/exec"
 	"strings"
 
-	"github.com/sourcegraph/go-vcs/vcs"
 	"github.com/sourcegraph/srclib/repo"
 )
 
@@ -38,24 +38,11 @@ func OpenRepo(dir string) (*Repo, error) {
 		return nil, fmt.Errorf("failed to detect repository root dir for %q", dir)
 	}
 
-	// Determine current working tree commit ID.
-	repo, err := vcs.Open(rc.VCSType, rc.RootDir)
+	var err error
+	rc.CommitID, err = resolveWorkingTreeRevision(rc.VCSType, rc.RootDir)
 	if err != nil {
 		return nil, err
 	}
-	var currentRevSpec string
-	switch rc.VCSType {
-	case "git":
-		currentRevSpec = "HEAD"
-	case "hg":
-		currentRevSpec = "tip"
-	}
-	currentCommitID, err := repo.ResolveRevision(currentRevSpec)
-	if err != nil {
-		return nil, err
-	}
-
-	rc.CommitID = string(currentCommitID)
 
 	// Get repo URI from clone URL.
 	cloneURL, err := getVCSCloneURL(rc.VCSType, rc.RootDir)
@@ -66,6 +53,24 @@ func OpenRepo(dir string) (*Repo, error) {
 
 	updateVCSIgnore("." + rc.VCSType + "ignore")
 	return rc, nil
+}
+
+func resolveWorkingTreeRevision(vcsType string, dir string) (string, error) {
+	var cmd *exec.Cmd
+	switch vcsType {
+	case "git":
+		cmd = exec.Command("git", "rev-parse", "HEAD")
+	case "hg":
+		cmd = exec.Command("hg", "identify", "--debug", "-i", "--rev=tip")
+	default:
+		return "", fmt.Errorf("unknown vcs type: %q", vcsType)
+	}
+
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return "", fmt.Errorf("exec %v failed: %s. Output was:\n\n%s", cmd.Args, err, out)
+	}
+	return string(bytes.TrimSpace(out)), nil
 }
 
 func getRootDir(vcsType string, dir string) (string, error) {
