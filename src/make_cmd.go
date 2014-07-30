@@ -1,6 +1,7 @@
 package src
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -12,8 +13,8 @@ import (
 
 func init() {
 	c, err := CLI.AddCommand("make",
-		"build a tree (config, plan, and execute)",
-		`Configures a tree, plans the execution, and executes all analysis steps.`,
+		"execute planned Makefile",
+		`Executes the Makefile created by the "src plan" command.`,
 		&makeCmd,
 	)
 	if err != nil {
@@ -49,22 +50,6 @@ func (c *MakeCmd) Execute(args []string) error {
 		c.Args.Targets = []string{"all"}
 	}
 
-	// config
-	configCmd := &ConfigCmd{
-		Options:          c.Options,
-		ToolchainExecOpt: c.ToolchainExecOpt,
-		BuildCacheOpt:    c.BuildCacheOpt,
-	}
-	if err := configCmd.Execute(nil); err != nil {
-		return err
-	}
-
-	// plan
-	planCmd := &PlanCmd{}
-	if err := planCmd.Execute(nil); err != nil {
-		return err
-	}
-
 	// execute
 	// TODO(sqs): use makex and makefile returned by planCmd
 	currentRepo, err := OpenRepo(".")
@@ -82,10 +67,8 @@ func (c *MakeCmd) Execute(args []string) error {
 	mfFile := filepath.Join(buildRoot, buildStore.FilePath(currentRepo.CommitID, "Makefile"))
 	makeCmd := exec.Command("make", "-f", mfFile)
 	makeCmd.Args = append(makeCmd.Args, c.Args.Targets...)
-	makeCmd.Stdout = os.Stderr
-	makeCmd.Stderr = os.Stderr
-	if err := makeCmd.Run(); err != nil {
-		return err
+	if out, err := makeCmd.CombinedOutput(); err != nil {
+		return fmt.Errorf("make failed: %s.\n\nOutput was:\n%s", err, out)
 	}
 
 	return nil

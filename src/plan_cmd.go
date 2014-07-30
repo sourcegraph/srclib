@@ -36,6 +36,8 @@ Requires that "src config" has already been run.
 }
 
 type PlanCmd struct {
+	ToolchainExecOpt ToolchainExecOpt
+
 	Args struct {
 		Dir Directory `name:"DIR" default:"." description:"root directory of tree to plan"`
 	} `positional-args:"yes"`
@@ -106,6 +108,11 @@ func (c *PlanCmd) Execute(args []string) error {
 		log.Printf("Found %d source unit definition files: %v", len(unitFiles), unitFiles)
 	}
 
+	toolchainExecOptArgs, err := toolchain.MarshalArgs(&c.ToolchainExecOpt)
+	if err != nil {
+		return err
+	}
+
 	var mf makex.Makefile
 	var allTargets []string
 	sort.Strings(unitFiles)
@@ -145,7 +152,7 @@ func (c *PlanCmd) Execute(args []string) error {
 			mf.Rules = append(mf.Rules, &makex.BasicRule{
 				TargetFile:  target,
 				PrereqFiles: []string{filepath.Join(filepath.Dir(buildDataDir), unitFile)},
-				RecipeCmds:  []string{fmt.Sprintf("src tool -m docker %q %q < $^ %s 1> $@", toolRef.Toolchain, toolRef.Subcmd, normalizeDataCmd)},
+				RecipeCmds:  []string{fmt.Sprintf("src tool %s %q %q < $^ %s 1> $@", strings.Join(toolchainExecOptArgs, " "), toolRef.Toolchain, toolRef.Subcmd, normalizeDataCmd)},
 			})
 		}
 	}

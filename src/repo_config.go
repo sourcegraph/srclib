@@ -65,6 +65,7 @@ func resolveWorkingTreeRevision(vcsType string, dir string) (string, error) {
 	default:
 		return "", fmt.Errorf("unknown vcs type: %q", vcsType)
 	}
+	cmd.Dir = dir
 
 	out, err := cmd.CombinedOutput()
 	if err != nil {
