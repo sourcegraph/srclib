@@ -10,7 +10,7 @@ and examples for your code and updating it on
 Download one of the pre-built binaries (TODO), or install from source:
 
 ```bash
-$ go get github.com/sourcegraph/srclib/cmd/src
+$ go get sourcegraph.com/sourcegraph/srclib/cmd/src
 ```
 
 

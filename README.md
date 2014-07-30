@@ -28,10 +28,10 @@ srclib solves this problem in 2 ways by:
   [Sourcegraph.com](https://sourcegraph.com).
 
 Currently, srclib supports:
-* **Languages:** [Go](https://github.com/sourcegraph/srclib-go),
-  [Python](https://github.com/sourcegraph/srclib-python),
-  [JavaScript](https://github.com/sourcegraph/srclib-javascript), and
-  [Ruby](https://github.com/sourcegraph/srclib-ruby)
+* **Languages:** [Go](https://sourcegraph.com/sourcegraph/srclib-go),
+  [Python](https://sourcegraph.com/sourcegraph/srclib-python),
+  [JavaScript](https://sourcegraph.com/sourcegraph/srclib-javascript), and
+  [Ruby](https://sourcegraph.com/sourcegraph/srclib-ruby)
 * **Integrations:** [Sourcegraph.com](https://sourcegraph.com) and
   [emacs-sourcegraph-mode](https://github.com/sourcegraph/emacs-sourcegraph-mode)
 * **Features:** jump-to-definition, find usages, type inference, documentation

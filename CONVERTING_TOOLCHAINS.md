@@ -82,7 +82,7 @@ install:
 development so you don't have to remember the `go build` command.)
 
 This means you should move all non-main-package code to a subpackage, such as
-`github.com/sourcegraph/srclib-mylang/mylang`.
+`sourcegraph.com/sourcegraph/srclib-mylang/mylang`.
 
 ## 3. Create a Srclibtoolchain to describe the toolchain
 
@@ -125,10 +125,10 @@ This file tells the `src` tool about your toolchain.
 
 The SRCLIBPATH is where `src` discovers toolchains. It defaults to `~/.srclib`.
 
-Assuming you've checked out the toolchain repository to `$HOME/src/github.com/sourcegraph/srclib-mylang`, run the following to add that toolchain to your SRCLIBPATH:
+Assuming you've checked out the toolchain repository to `$HOME/src/sourcegraph.com/sourcegraph/srclib-mylang`, run the following to add that toolchain to your SRCLIBPATH:
 
 ```
-ln -s $HOME/src/github.com/sourcegraph/srclib-mylang $HOME/.srclib/github.com/sourcegraph/srclib-mylang
+ln -s $HOME/src/sourcegraph.com/sourcegraph/srclib-mylang $HOME/.srclib/sourcegraph.com/sourcegraph/srclib-mylang
 ```
 
 Now `src toolchain list` should display your toolchain, and `src toolchain
@@ -139,7 +139,7 @@ list-tools` should display the tools you defined in the Srclibtoolchain.
 We need the main package to produce a binary that responds to a specific set of
 subcommands (`scan`, `depresolve`, `graph`) and flags (see TOOLCHAINS.md for
 details). The srclib-go repository's
-[cli.go](https://github.com/sourcegraph/srclib-go/blob/master/cli.go) is a good
+[cli.go](https://sourcegraph.com/sourcegraph/srclib-go/blob/master/cli.go) is a good
 template to use to create a program that adheres to this spec.
 
 The quickest way to test whether your program works is to just have it emit a
@@ -156,7 +156,7 @@ run your toolchain? Are there any errors?
 In the root directory of the srclib-mylang repository, create a Dockerfile that
 installs the necessary dependencies to run your toolchain and sets the toolchain
 as the Docker container's entrypoint. See the srclib-go toolchain's
-[Dockerfile](https://github.com/sourcegraph/srclib-go/blob/master/Dockerfile)
+[Dockerfile](https://sourcegraph.com/sourcegraph/srclib-go/blob/master/Dockerfile)
 for an example.
 
 When `src` runs your Docker container, it will always mount the project's source
@@ -165,7 +165,7 @@ code at `/src`.
 If you've created your Dockerfile correctly, then the following should build the image:
 
 ```
-src toolchain build github.com/sourcegraph/srclib-mylang
+src toolchain build sourcegraph.com/sourcegraph/srclib-mylang
 ```
 
 Then running `src toolchain list` should show that this toolchain is Docker-capable.
@@ -183,7 +183,7 @@ If you just made the tools print a constant JSON string, now go and implement th
 Because the Dockerfile simply wraps your program, when you add the functionality
 to the program, your Dockerized toolchain will also have it. However, be sure to
 rebuild the Docker image when the program changes, by running `src toolchain
-build github.com/sourcegraph/srclib-mylang`.
+build sourcegraph.com/sourcegraph/srclib-mylang`.
 
 ## 9. Create a test case
 
