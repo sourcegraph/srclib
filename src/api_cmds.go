@@ -7,10 +7,12 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/kr/fs"
 	"github.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"github.com/sourcegraph/srclib/buildstore"
+	"github.com/sourcegraph/srclib/config"
 	"github.com/sourcegraph/srclib/graph"
 	"github.com/sourcegraph/srclib/grapher"
 	"github.com/sourcegraph/srclib/plan"
@@ -63,8 +65,47 @@ func (c *APIDescribeCmd) Execute(args []string) error {
 		return err
 	}
 
+	if err := os.Chdir(repo.RootDir); err != nil {
+		return err
+	}
+
 	buildStore, err := buildstore.NewRepositoryStore(repo.RootDir)
 	if err != nil {
+		return err
+	}
+
+	configOpt := config.Options{
+		Repo:   string(repo.URI()),
+		Subdir: ".",
+	}
+	toolchainExecOpt := ToolchainExecOpt{ExeMethods: "program"}
+
+	// Config & plan repository if not yet built.
+	if _, err := buildStore.Stat(buildStore.CommitPath(repo.CommitID)); os.IsNotExist(err) {
+		configCmd := &ConfigCmd{
+			Options:          configOpt,
+			ToolchainExecOpt: toolchainExecOpt,
+		}
+		if err := configCmd.Execute(nil); err != nil {
+			return err
+		}
+
+		planCmd := &PlanCmd{
+			ToolchainExecOpt: toolchainExecOpt,
+		}
+		if err := planCmd.Execute(nil); err != nil {
+			return err
+		}
+	}
+
+	// Always re-make.
+	//
+	// TODO(sqs): optimize this
+	makeCmd := &MakeCmd{
+		Options:          configOpt,
+		ToolchainExecOpt: toolchainExecOpt,
+	}
+	if err := makeCmd.Execute(nil); err != nil {
 		return err
 	}
 
@@ -195,25 +236,39 @@ OuterLoop:
 		Unit:     ref.SymbolUnit,
 		Path:     string(ref.SymbolPath),
 	}
+
+	var wg sync.WaitGroup
+
 	if resp.Def == nil {
-		// Def is not in the current repo. Try looking it up using the Sourcegraph API.
-		apiclient := sourcegraph.NewClient(nil)
-		var err error
-		resp.Def, _, err = apiclient.Symbols.Get(spec, &sourcegraph.SymbolGetOptions{Doc: true})
-		if err != nil {
-			return err
-		}
+		// Def is not in the current repo. Try looking it up using the
+		// Sourcegraph API.
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			var err error
+			resp.Def, _, err = apiclient.Symbols.Get(spec, &sourcegraph.SymbolGetOptions{Doc: true})
+			if err != nil && gopt.Verbose {
+				log.Printf("Couldn't fetch definition %v: %s.", spec, err)
+			}
+		}()
 	}
 
-	if resp.Def != nil {
-		resp.Examples, _, err = apiclient.Symbols.ListExamples(spec, &sourcegraph.SymbolListExamplesOptions{
-			Formatted:   true,
-			ListOptions: sourcegraph.ListOptions{PerPage: 4},
-		})
-		if err != nil {
-			return err
-		}
+	if fetchExamples := true; fetchExamples {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			var err error
+			resp.Examples, _, err = apiclient.Symbols.ListExamples(spec, &sourcegraph.SymbolListExamplesOptions{
+				Formatted:   true,
+				ListOptions: sourcegraph.ListOptions{PerPage: 4},
+			})
+			if err != nil && gopt.Verbose {
+				log.Printf("Couldn't fetch examples for %v: %s.", spec, err)
+			}
+		}()
 	}
+
+	wg.Wait()
 
 	if err := json.NewEncoder(os.Stdout).Encode(resp); err != nil {
 		return err

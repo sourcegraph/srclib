@@ -2,6 +2,7 @@ package toolchain
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/sqs/go-flags"
 )
@@ -17,7 +18,14 @@ func MarshalArgs(v interface{}) ([]string, error) {
 
 	var args []string
 	for _, opt := range group.Options() {
-		args = append(args, opt.String())
+		flagStr := opt.String()
+
+		// handle flags with both short and long (just get the long)
+		if i := strings.Index(flagStr, ", --"); i != -1 {
+			flagStr = flagStr[i+2:]
+		}
+
+		args = append(args, flagStr)
 
 		v := opt.Value()
 		if m, ok := v.(flags.Marshaler); ok {
