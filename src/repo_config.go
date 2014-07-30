@@ -8,7 +8,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/sourcegraph/srclib/repo"
+	"sourcegraph.com/sourcegraph/srclib/repo"
 )
 
 type Repo struct {

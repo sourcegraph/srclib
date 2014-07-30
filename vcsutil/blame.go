@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/sourcegraph/go-blame/blame"
-	"github.com/sourcegraph/srclib/config"
+	"sourcegraph.com/sourcegraph/srclib/config"
 )
 
 type BlameOutput struct {

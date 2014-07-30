@@ -8,7 +8,7 @@ import (
 
 	"strings"
 
-	"github.com/sourcegraph/srclib/repo"
+	"sourcegraph.com/sourcegraph/srclib/repo"
 
 	"github.com/kr/fs"
 	"github.com/sourcegraph/rwvfs"

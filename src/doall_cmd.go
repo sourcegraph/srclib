@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/sourcegraph/srclib/config"
+	"sourcegraph.com/sourcegraph/srclib/config"
 )
 
 func init() {

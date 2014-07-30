@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/sourcegraph/srclib"
+	"sourcegraph.com/sourcegraph/srclib"
 )
 
 func TestList_program(t *testing.T) {

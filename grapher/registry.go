@@ -4,7 +4,7 @@ package grapher
 import (
 	"reflect"
 
-	"github.com/sourcegraph/srclib/unit"
+	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
 // Graphers holds all registered graphers.

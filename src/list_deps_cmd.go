@@ -8,7 +8,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/sourcegraph/srclib/dep"
+	"sourcegraph.com/sourcegraph/srclib/dep"
 )
 
 func listDeps(args []string) {

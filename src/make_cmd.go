@@ -7,8 +7,8 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/sourcegraph/srclib/buildstore"
-	"github.com/sourcegraph/srclib/config"
+	"sourcegraph.com/sourcegraph/srclib/buildstore"
+	"sourcegraph.com/sourcegraph/srclib/config"
 )
 
 func init() {

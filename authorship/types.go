@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/sourcegraph/go-nnz/nnz"
-	"github.com/sourcegraph/srclib/graph"
-	"github.com/sourcegraph/srclib/repo"
+	"sourcegraph.com/sourcegraph/srclib/graph"
+	"sourcegraph.com/sourcegraph/srclib/repo"
 )
 
 type AuthorshipInfo struct {

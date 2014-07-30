@@ -8,8 +8,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/sourcegraph/srclib/unit"
-	"github.com/sourcegraph/srclib/vcsutil"
+	"sourcegraph.com/sourcegraph/srclib/unit"
+	"sourcegraph.com/sourcegraph/srclib/vcsutil"
 )
 
 func blame(args []string) {

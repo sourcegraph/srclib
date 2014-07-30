@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/kr/fs"
-	"github.com/sourcegraph/srclib"
+	"sourcegraph.com/sourcegraph/srclib"
 )
 
 // Lookup finds a toolchain by path in the SRCLIBPATH. For each DIR in

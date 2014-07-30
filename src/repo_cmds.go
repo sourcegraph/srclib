@@ -7,7 +7,7 @@ import (
 	"os"
 
 	client "github.com/sourcegraph/go-sourcegraph/sourcegraph"
-	"github.com/sourcegraph/srclib/repo"
+	"sourcegraph.com/sourcegraph/srclib/repo"
 )
 
 func repoCreate(args []string) {

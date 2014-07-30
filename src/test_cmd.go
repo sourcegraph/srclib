@@ -13,8 +13,8 @@ import (
 	"testing"
 
 	"github.com/aybabtme/color/brush"
-	"github.com/sourcegraph/srclib/buildstore"
-	"github.com/sourcegraph/srclib/util"
+	"sourcegraph.com/sourcegraph/srclib/buildstore"
+	"sourcegraph.com/sourcegraph/srclib/util"
 )
 
 func init() {

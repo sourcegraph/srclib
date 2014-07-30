@@ -3,7 +3,7 @@ package unit
 import (
 	"github.com/jmoiron/sqlx/types"
 
-	"github.com/sourcegraph/srclib/repo"
+	"sourcegraph.com/sourcegraph/srclib/repo"
 )
 
 // A RepoSourceUnit is the "concrete" form of SourceUnit that includes

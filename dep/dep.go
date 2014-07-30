@@ -1,6 +1,6 @@
 package dep
 
-import "github.com/sourcegraph/srclib/repo"
+import "sourcegraph.com/sourcegraph/srclib/repo"
 
 type ResolvedDep struct {
 	// FromRepo is the repository from which this dependency originates.

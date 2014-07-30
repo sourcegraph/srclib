@@ -5,9 +5,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/sourcegraph/srclib/repo"
-	"github.com/sourcegraph/srclib/toolchain"
-	"github.com/sourcegraph/srclib/unit"
+	"sourcegraph.com/sourcegraph/srclib/repo"
+	"sourcegraph.com/sourcegraph/srclib/toolchain"
+	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
 // Filename is the name of the file that configures a directory tree or

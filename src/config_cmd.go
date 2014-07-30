@@ -8,12 +8,12 @@ import (
 	"sort"
 
 	"github.com/sourcegraph/rwvfs"
-	"github.com/sourcegraph/srclib/buildstore"
-	"github.com/sourcegraph/srclib/config"
-	"github.com/sourcegraph/srclib/plan"
-	"github.com/sourcegraph/srclib/repo"
+	"sourcegraph.com/sourcegraph/srclib/buildstore"
+	"sourcegraph.com/sourcegraph/srclib/config"
+	"sourcegraph.com/sourcegraph/srclib/plan"
+	"sourcegraph.com/sourcegraph/srclib/repo"
 
-	"github.com/sourcegraph/srclib/unit"
+	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
 func init() {

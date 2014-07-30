@@ -10,10 +10,10 @@ import (
 
 	"github.com/sqs/fileset"
 
-	"github.com/sourcegraph/srclib/config"
-	"github.com/sourcegraph/srclib/graph"
-	"github.com/sourcegraph/srclib/repo"
-	"github.com/sourcegraph/srclib/unit"
+	"sourcegraph.com/sourcegraph/srclib/config"
+	"sourcegraph.com/sourcegraph/srclib/graph"
+	"sourcegraph.com/sourcegraph/srclib/repo"
+	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
 type Grapher interface {

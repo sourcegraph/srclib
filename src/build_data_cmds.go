@@ -15,7 +15,7 @@ import (
 	"github.com/sourcegraph/rwvfs"
 
 	client "github.com/sourcegraph/go-sourcegraph/sourcegraph"
-	"github.com/sourcegraph/srclib/buildstore"
+	"sourcegraph.com/sourcegraph/srclib/buildstore"
 )
 
 func dataCmd(args []string) {

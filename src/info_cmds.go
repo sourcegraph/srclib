@@ -3,9 +3,9 @@ package src
 import (
 	"log"
 
-	"github.com/sourcegraph/srclib"
-	"github.com/sourcegraph/srclib/buildstore"
-	"github.com/sourcegraph/srclib/plan"
+	"sourcegraph.com/sourcegraph/srclib"
+	"sourcegraph.com/sourcegraph/srclib/buildstore"
+	"sourcegraph.com/sourcegraph/srclib/plan"
 )
 
 func init() {

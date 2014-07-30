@@ -13,8 +13,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/sourcegraph/srclib/buildstore"
-	"github.com/sourcegraph/srclib/unit"
+	"sourcegraph.com/sourcegraph/srclib/buildstore"
+	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
 func isDir(dir string) bool {
