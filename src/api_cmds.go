@@ -152,9 +152,13 @@ OuterLoop:
 		ref.SymbolRepo = repo.URI()
 	}
 
+	var resp struct {
+		Def      *sourcegraph.Symbol
+		Examples []*sourcegraph.Example
+	}
+
 	// Now find the def for this ref.
 	defInCurrentRepo := ref.SymbolRepo == repo.URI()
-	var def *sourcegraph.Symbol
 	if defInCurrentRepo {
 		// Def is in the current repo.
 		var g grapher.Output
@@ -169,14 +173,14 @@ OuterLoop:
 		}
 		for _, def2 := range g.Symbols {
 			if def2.Path == ref.SymbolPath {
-				def = &sourcegraph.Symbol{Symbol: *def2}
+				resp.Def = &sourcegraph.Symbol{Symbol: *def2}
 				break
 			}
 		}
-		if def != nil {
+		if resp.Def != nil {
 			for _, doc := range g.Docs {
 				if doc.Path == ref.SymbolPath {
-					def.DocHTML = doc.Data
+					resp.Def.DocHTML = doc.Data
 				}
 			}
 		}
@@ -184,18 +188,27 @@ OuterLoop:
 		// Def is not in the current repo. Look it up using the Sourcegraph API.
 		apiclient := sourcegraph.NewClient(nil)
 		var err error
-		def, _, err = apiclient.Symbols.Get(sourcegraph.SymbolSpec{
+		spec := sourcegraph.SymbolSpec{
 			Repo:     string(ref.SymbolRepo),
 			UnitType: ref.SymbolUnitType,
 			Unit:     ref.SymbolUnit,
 			Path:     string(ref.SymbolPath),
-		}, &sourcegraph.SymbolGetOptions{Doc: true})
+		}
+		resp.Def, _, err = apiclient.Symbols.Get(spec, &sourcegraph.SymbolGetOptions{Doc: true})
+		if err != nil {
+			return err
+		}
+
+		resp.Examples, _, err = apiclient.Symbols.ListExamples(spec, &sourcegraph.SymbolListExamplesOptions{
+			Formatted:   true,
+			ListOptions: sourcegraph.ListOptions{PerPage: 2},
+		})
 		if err != nil {
 			return err
 		}
 	}
 
-	if err := json.NewEncoder(os.Stdout).Encode(def); err != nil {
+	if err := json.NewEncoder(os.Stdout).Encode(resp); err != nil {
 		return err
 	}
 	return nil
