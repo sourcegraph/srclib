@@ -12,6 +12,7 @@ import (
 
 	"github.com/sourcegraph/srclib/config"
 	"github.com/sourcegraph/srclib/graph"
+	"github.com/sourcegraph/srclib/repo"
 	"github.com/sourcegraph/srclib/unit"
 )
 
@@ -112,6 +113,12 @@ func sortedOutput(o *Output) *Output {
 
 // NormalizeData sorts data.
 func NormalizeData(o *Output) error {
+	for _, ref := range o.Refs {
+		if ref.SymbolRepo != "" {
+			ref.SymbolRepo = repo.MakeURI(string(ref.SymbolRepo))
+		}
+	}
+
 	sortedOutput(o)
 	return nil
 }
