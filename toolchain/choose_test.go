@@ -12,7 +12,7 @@ func TestChooseTool(t *testing.T) {
 		op, unitType string
 		want         *ToolRef
 		wantErr      error
-	}{{}}
+	}{}
 	for _, test := range tests {
 		tool, err := chooseTool(test.op, test.unitType, test.toolchains)
 		if err != nil {
