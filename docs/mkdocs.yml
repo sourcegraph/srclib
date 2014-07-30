@@ -7,21 +7,23 @@ repo_url: https://github.com/sourcegraph/srclib/
 
 dev_addr: '0.0.0.0:8000'
 
+theme_dir: ./theme/
+
 pages:
 
-- ['index.md', 'Home']
+- ['gettingstarted.md', 'Getting Started']
 
 # Installation
 - ['installation/editor-plugins.md', 'Installation', 'Editor Plugins']
-- ['installation/src.md', 'Installation', 'Src']
+- ['installation/src.md', 'Installation', 'src']
 
 # SRC
-- ['src/overview.md', 'Src', 'Overview']
-- ['src/data-model.md', 'Src', 'Data Model']
-- ['src/make.md', 'Src', 'Make']
-- ['src/srcfile.md', 'Src', 'Srcfile']
-- ['src/toolchains.md', 'Src', 'Toolchains']
-- ['src/faq.md', 'Src', 'FAQ']
+- ['src/overview.md', 'src', 'Overview']
+- ['src/data-model.md', 'src', 'Data Model']
+- ['src/make.md', 'src', 'Make']
+- ['src/srcfile.md', 'src', 'Srcfile']
+- ['src/toolchains.md', 'src', 'Toolchains']
+- ['src/faq.md', 'src', 'FAQ']
 
 # Language Analysis
 - ['language-analysis/overview.md', 'Language Analysis', 'Overview']
@@ -34,3 +36,5 @@ pages:
 
 # API
 - ['api/overview.md', 'API', 'Overview']
+
+theme: yeti
