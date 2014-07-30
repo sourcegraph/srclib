@@ -1,5 +1,9 @@
 # srclib [![Build Status](https://travis-ci.org/sourcegraph/srclib.png?branch=master)](https://travis-ci.org/sourcegraph/srclib)
 
+*Note: srclib is alpha.
+[Post an issue](https://github.com/sourcegraph/srclib/issues) if you have any
+questions or difficulties running and hacking on it.*
+
 **srclib** is a source code analysis library. It provides standardized tools,
 interfaces and data formats for generating, representing and querying
 information about source code in software projects.
