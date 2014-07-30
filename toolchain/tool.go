@@ -91,7 +91,7 @@ func ListTools(op string) ([]*ToolInfo, error) {
 func OpenTool(toolchain, subcmd string, mode Mode) (Tool, error) {
 	tc, err := Open(toolchain, mode)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to open tool (%s %s): %s", toolchain, subcmd, err)
 	}
 
 	return &tool{tc, subcmd}, nil
