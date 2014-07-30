@@ -95,7 +95,8 @@ editor integration. Language toolchains are programs that adhere to a spec and
 otherwise perform entirely language-specific analysis, and tooolchains may be
 easily installed and modified by users.
 
-For toolchains, we have a work-in-progress spec describing how to build them. (TODO add link)
+For toolchains, we have a work-in-progress spec describing how to build them
+(see TOOLCHAINS.md).
 
 For editor plugins, run `src api describe --help` to see the command API, and
 check out
