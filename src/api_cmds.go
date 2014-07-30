@@ -186,6 +186,7 @@ OuterLoop:
 		if gopt.Verbose {
 			log.Printf("No ref found at %s:%d.", c.File, c.StartByte)
 		}
+		fmt.Println(`{}`)
 		return nil
 	}
 
