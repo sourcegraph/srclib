@@ -184,6 +184,9 @@ OuterLoop:
 				}
 			}
 		}
+		if resp.Def == nil && gopt.Verbose {
+			log.Printf("No definition found with path %q in unit %q type %q.", ref.SymbolPath, ref.SymbolUnit, ref.SymbolUnitType)
+		}
 	} else {
 		// Def is not in the current repo. Look it up using the Sourcegraph API.
 		apiclient := sourcegraph.NewClient(nil)
