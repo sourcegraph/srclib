@@ -14,7 +14,7 @@ import (
 
 	"github.com/sourcegraph/rwvfs"
 
-	client "github.com/sourcegraph/go-sourcegraph/sourcegraph"
+	client "sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 )
 

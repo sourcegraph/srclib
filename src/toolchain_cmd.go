@@ -6,8 +6,8 @@ import (
 
 	"strings"
 
-	"sourcegraph.com/sourcegraph/srclib/toolchain"
 	"github.com/sqs/go-flags"
+	"sourcegraph.com/sourcegraph/srclib/toolchain"
 )
 
 func init() {

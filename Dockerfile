@@ -12,7 +12,7 @@ RUN go install sourcegraph.com/sourcegraph/srclib/cmd/src
 RUN go get -v sourcegraph.com/sourcegraph/srclib-go
 RUN cd /srclib/src/sourcegraph.com/sourcegraph/srclib && git clone https://sourcegraph.com/sourcegraph/srclib-javascript
 
-RUN mkdir -p /root/.srclib/github.com/sourcegraph
+RUN mkdir -p /root/.srclib/sourcegraph.com/sourcegraph
 RUN ln -rs /srclib/src/sourcegraph.com/sourcegraph/srclib-go /root/.srclib/sourcegraph.com/sourcegraph/srclib-go
 RUN ln -rs /srclib/src/sourcegraph.com/sourcegraph/srclib-javascript /root/.srclib/sourcegraph.com/sourcegraph/srclib-javascript
 

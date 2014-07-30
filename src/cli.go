@@ -4,9 +4,9 @@ import (
 	"log"
 	"os"
 
-	client "github.com/sourcegraph/go-sourcegraph/sourcegraph"
-	"sourcegraph.com/sourcegraph/srclib/task2"
 	"github.com/sqs/go-flags"
+	client "sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
+	"sourcegraph.com/sourcegraph/srclib/task2"
 )
 
 var (
