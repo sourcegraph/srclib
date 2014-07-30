@@ -4,11 +4,11 @@
 package config
 
 import (
-	"github.com/sourcegraph/srclib/repo"
-	"github.com/sourcegraph/srclib/toolchain/javascript"
-	"github.com/sourcegraph/srclib/toolchain/python"
-	"github.com/sourcegraph/srclib/toolchain/ruby"
-	"github.com/sourcegraph/srclib/unit"
+	"sourcegraph.com/sourcegraph/srclib/repo"
+	"sourcegraph.com/sourcegraph/srclib/toolchain/javascript"
+	"sourcegraph.com/sourcegraph/srclib/toolchain/python"
+	"sourcegraph.com/sourcegraph/srclib/toolchain/ruby"
+	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
 var overrides = map[repo.URI]*Repository{

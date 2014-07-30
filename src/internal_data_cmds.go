@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/sourcegraph/srclib/grapher"
+	"sourcegraph.com/sourcegraph/srclib/grapher"
 )
 
 func init() {

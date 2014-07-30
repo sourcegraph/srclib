@@ -8,9 +8,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/sourcegraph/srclib/buildstore"
-	"github.com/sourcegraph/srclib/repo"
-	"github.com/sourcegraph/srclib/toolchain"
+	"sourcegraph.com/sourcegraph/srclib/buildstore"
+	"sourcegraph.com/sourcegraph/srclib/repo"
+	"sourcegraph.com/sourcegraph/srclib/toolchain"
 )
 
 type SourceUnit struct {

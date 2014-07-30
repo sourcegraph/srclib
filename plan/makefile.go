@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/sourcegraph/makex"
-	"github.com/sourcegraph/srclib/config"
+	"sourcegraph.com/sourcegraph/srclib/config"
 )
 
 type RuleMaker func(c *config.Repository, dataDir string, existing []makex.Rule) ([]makex.Rule, error)

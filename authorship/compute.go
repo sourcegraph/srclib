@@ -9,11 +9,11 @@ import (
 
 	"github.com/sourcegraph/go-nnz/nnz"
 
-	"github.com/sourcegraph/srclib/config"
-	"github.com/sourcegraph/srclib/graph"
-	"github.com/sourcegraph/srclib/grapher"
-	"github.com/sourcegraph/srclib/repo"
-	"github.com/sourcegraph/srclib/vcsutil"
+	"sourcegraph.com/sourcegraph/srclib/config"
+	"sourcegraph.com/sourcegraph/srclib/graph"
+	"sourcegraph.com/sourcegraph/srclib/grapher"
+	"sourcegraph.com/sourcegraph/srclib/repo"
+	"sourcegraph.com/sourcegraph/srclib/vcsutil"
 )
 
 func ComputeSourceUnit(g *grapher.Output, b *vcsutil.BlameOutput, c *config.Repository) (*SourceUnitOutput, error) {

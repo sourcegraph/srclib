@@ -7,14 +7,14 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/sourcegraph/srclib"
-	"github.com/sourcegraph/srclib/toolchain"
+	"sourcegraph.com/sourcegraph/srclib"
+	"sourcegraph.com/sourcegraph/srclib/toolchain"
 )
 
 // DefaultScanners are the scanners used for a Tree if none are manually
 // specified in a Srcfile.
 var DefaultScanners = []*toolchain.ToolRef{
-	{"github.com/sourcegraph/srclib-go", "scan"},
+	{"sourcegraph.com/sourcegraph/srclib-go", "scan"},
 }
 
 // An External configuration file, represented by this struct, can set system-

@@ -1,9 +1,9 @@
 package main
 
 import (
-	_ "github.com/sourcegraph/srclib/dep"
-	_ "github.com/sourcegraph/srclib/scan"
-	"github.com/sourcegraph/srclib/src"
+	_ "sourcegraph.com/sourcegraph/srclib/dep"
+	_ "sourcegraph.com/sourcegraph/srclib/scan"
+	"sourcegraph.com/sourcegraph/srclib/src"
 )
 
 func main() {

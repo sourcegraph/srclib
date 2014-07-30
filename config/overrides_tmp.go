@@ -1,6 +1,6 @@
 package config
 
-import "github.com/sourcegraph/srclib/repo"
+import "sourcegraph.com/sourcegraph/srclib/repo"
 
 // TODO(sqs): remove this when we reenable overrides.go
 

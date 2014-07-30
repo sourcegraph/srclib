@@ -3,7 +3,7 @@ package config
 import (
 	"testing"
 
-	"github.com/sourcegraph/srclib/unit"
+	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
 func TestTree_validate(t *testing.T) {

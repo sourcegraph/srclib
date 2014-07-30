@@ -8,9 +8,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/sourcegraph/srclib/authorship"
-	"github.com/sourcegraph/srclib/grapher"
-	"github.com/sourcegraph/srclib/vcsutil"
+	"sourcegraph.com/sourcegraph/srclib/authorship"
+	"sourcegraph.com/sourcegraph/srclib/grapher"
+	"sourcegraph.com/sourcegraph/srclib/vcsutil"
 )
 
 func authorship_(args []string) {

@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 
 	"github.com/sourcegraph/makex"
-	"github.com/sourcegraph/srclib/buildstore"
-	"github.com/sourcegraph/srclib/config"
-	"github.com/sourcegraph/srclib/grapher"
-	"github.com/sourcegraph/srclib/unit"
+	"sourcegraph.com/sourcegraph/srclib/buildstore"
+	"sourcegraph.com/sourcegraph/srclib/config"
+	"sourcegraph.com/sourcegraph/srclib/grapher"
+	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
 func init() {

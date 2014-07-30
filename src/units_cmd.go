@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/sourcegraph/srclib/config"
-	"github.com/sourcegraph/srclib/scan"
-	"github.com/sourcegraph/srclib/toolchain"
+	"sourcegraph.com/sourcegraph/srclib/config"
+	"sourcegraph.com/sourcegraph/srclib/scan"
+	"sourcegraph.com/sourcegraph/srclib/toolchain"
 )
 
 func init() {

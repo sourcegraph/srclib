@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/sourcegraph/srclib"
+	"sourcegraph.com/sourcegraph/srclib"
 )
 
 // Get downloads the toolchain named by the toolchain path (if it does not

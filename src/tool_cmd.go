@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/sourcegraph/srclib/toolchain"
+	"sourcegraph.com/sourcegraph/srclib/toolchain"
 	"github.com/sqs/go-flags"
 )
 

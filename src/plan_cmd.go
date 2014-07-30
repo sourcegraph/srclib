@@ -12,11 +12,11 @@ import (
 	"github.com/kr/fs"
 	"github.com/sourcegraph/makex"
 	"github.com/sourcegraph/rwvfs"
-	"github.com/sourcegraph/srclib/buildstore"
-	"github.com/sourcegraph/srclib/toolchain"
+	"sourcegraph.com/sourcegraph/srclib/buildstore"
+	"sourcegraph.com/sourcegraph/srclib/toolchain"
 
-	"github.com/sourcegraph/srclib/plan"
-	"github.com/sourcegraph/srclib/unit"
+	"sourcegraph.com/sourcegraph/srclib/plan"
+	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
 func init() {
