@@ -14,7 +14,7 @@ import (
 // DefaultScanners are the scanners used for a Tree if none are manually
 // specified in a Srcfile.
 var DefaultScanners = []*toolchain.ToolRef{
-	{"sourcegraph.com/sourcegraph/srclib-go", "scan"},
+	{"sourcegraph.com/sourcegraph/srclib-javascript", "scan-commonjs"},
 }
 
 // An External configuration file, represented by this struct, can set system-
