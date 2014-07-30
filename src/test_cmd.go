@@ -162,7 +162,7 @@ func testTree(treeDir, expectedDir, actualDir string, generate bool) error {
 	} else {
 		w = &buf
 	}
-	cmd := exec.Command("src", "-v", "make", "-m", "docker")
+	cmd := exec.Command("src", "-v", "do-all", "-m", "docker")
 	cmd.Dir = treeDir
 	cmd.Stderr, cmd.Stdout = w, w
 
