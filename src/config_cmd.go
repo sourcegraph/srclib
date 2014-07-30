@@ -59,7 +59,7 @@ func getInitialConfig(opt config.Options, dir Directory) (*config.Repository, er
 
 	cfg, err := config.ReadRepository(string(dir), repo.URI(opt.Repo))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to read repository at %s: %s", dir, err)
 	}
 
 	if cfg.SourceUnits != nil {
@@ -102,12 +102,12 @@ func (c *ConfigCmd) Execute(args []string) error {
 	}
 
 	if err := scanUnitsIntoConfig(cfg, c.Options, c.ToolchainExecOpt); err != nil {
-		return err
+		return fmt.Errorf("failed to scan for source units: %s", err)
 	}
 
 	currentRepo, err := OpenRepo(string(c.Args.Dir))
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to open repo: %s", err)
 	}
 	buildStore, err := buildstore.NewRepositoryStore(currentRepo.RootDir)
 	if err != nil {
