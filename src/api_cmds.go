@@ -187,24 +187,28 @@ OuterLoop:
 		if resp.Def == nil && gopt.Verbose {
 			log.Printf("No definition found with path %q in unit %q type %q.", ref.SymbolPath, ref.SymbolUnit, ref.SymbolUnitType)
 		}
-	} else {
-		// Def is not in the current repo. Look it up using the Sourcegraph API.
+	}
+
+	spec := sourcegraph.SymbolSpec{
+		Repo:     string(ref.SymbolRepo),
+		UnitType: ref.SymbolUnitType,
+		Unit:     ref.SymbolUnit,
+		Path:     string(ref.SymbolPath),
+	}
+	if resp.Def == nil {
+		// Def is not in the current repo. Try looking it up using the Sourcegraph API.
 		apiclient := sourcegraph.NewClient(nil)
 		var err error
-		spec := sourcegraph.SymbolSpec{
-			Repo:     string(ref.SymbolRepo),
-			UnitType: ref.SymbolUnitType,
-			Unit:     ref.SymbolUnit,
-			Path:     string(ref.SymbolPath),
-		}
 		resp.Def, _, err = apiclient.Symbols.Get(spec, &sourcegraph.SymbolGetOptions{Doc: true})
 		if err != nil {
 			return err
 		}
+	}
 
+	if resp.Def != nil {
 		resp.Examples, _, err = apiclient.Symbols.ListExamples(spec, &sourcegraph.SymbolListExamplesOptions{
 			Formatted:   true,
-			ListOptions: sourcegraph.ListOptions{PerPage: 2},
+			ListOptions: sourcegraph.ListOptions{PerPage: 4},
 		})
 		if err != nil {
 			return err
