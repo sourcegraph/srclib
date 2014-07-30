@@ -143,15 +143,17 @@ func (c *PlanCmd) Execute(args []string) error {
 				toolRef = choice
 			}
 
+			prereqFiles := []string{filepath.Join(filepath.Dir(buildDataDir), unitFile)}
 			if op == "graph" {
 				normalizeDataCmd = "| src internal normalize-graph-data"
+				prereqFiles = append(prereqFiles, u.Files...)
 			}
 
 			target := filepath.Join(buildDataDir, plan.SourceUnitDataFilename(op, u))
 			allTargets = append(allTargets, target)
 			mf.Rules = append(mf.Rules, &makex.BasicRule{
 				TargetFile:  target,
-				PrereqFiles: []string{filepath.Join(filepath.Dir(buildDataDir), unitFile)},
+				PrereqFiles: prereqFiles,
 				RecipeCmds:  []string{fmt.Sprintf("src tool %s %q %q < $^ %s 1> $@", strings.Join(toolchainExecOptArgs, " "), toolRef.Toolchain, toolRef.Subcmd, normalizeDataCmd)},
 			})
 		}
