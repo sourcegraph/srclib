@@ -28,29 +28,79 @@ srclib solves this problem in 2 ways by:
   [Sourcegraph.com](https://sourcegraph.com).
 
 Currently, srclib supports:
-* **Languages:** [Go](https://sourcegraph.com/sourcegraph/srclib-go),
-  [Python](https://sourcegraph.com/sourcegraph/srclib-python),
-  [JavaScript](https://sourcegraph.com/sourcegraph/srclib-javascript), and
-  [Ruby](https://sourcegraph.com/sourcegraph/srclib-ruby)
+* **Languages:** [Go](https://sourcegraph.com/sourcegraph/srclib-go) and [JavaScript](https://sourcegraph.com/sourcegraph/srclib-javascript) (coming very soon: [Python](https://sourcegraph.com/sourcegraph/srclib-python) and [Ruby](https://sourcegraph.com/sourcegraph/srclib-ruby))
 * **Integrations:** [Sourcegraph.com](https://sourcegraph.com) and
   [emacs-sourcegraph-mode](https://sourcegraph.com/sourcegraph/emacs-sourcegraph-mode)
 * **Features:** jump-to-definition, find usages, type inference, documentation
   generation, and dependency resolution
 
+Want to extend srclib to support more languages, features, or editors? During
+this alpha period, we will work closely with you to help you.
+[Post an issue](https://github.com/sourcegraph/srclib/issues) to let us know
+what you're building to get started.
+
+
 ## Usage
 
-Most people will use srclib indirectly, through editor plugins or
-[Sourcegraph.com](https://sourcegraph.com). Visit
-[srclib.org](http://srclib.org) for editor plugin installation instructions.
+srclib requires Go 1.2+, Git, and Mercurial. Install and run srclib with:
 
-For dev tools hackers: The included `src` program invokes language-specific
-analysis toolchains on repositories, produces output in standardized formats,
-and exposes an API for editor integration. Language toolchains are programs that
-adhere to a spec and otherwise perform entirely language-specific analysis, and
-tooolchains may be easily installed and modified by users.
+```
+# download and install 'src', the command for running srclib
+go get -v sourcegraph.com/sourcegraph/srclib/cmd/src
+
+# install toolchain for JavaScript to ~/.srclib
+mkdir -p ~/.srclib/sourcegraph.com/sourcegraph
+cd ~/.srclib/sourcegraph.com/sourcegraph
+git clone https://github.com/sourcegraph/srclib-javascript
+cd srclib-javascript && npm install && cd node_modules/jsg && npm install
+
+# check that the toolchain is installed
+src toolchain list
+# should show 'sourcegraph.com/sourcegraph/srclib-javascript'
+
+# try it on a sample JavaScript repository
+cd /tmp
+git clone https://github.com/sgtest/javascript-nodejs-xrefs-0.git
+cd javascript-nodejs-xrefs-0
+src do-all
+# it writes analysis output to .srclib-cache/...
+
+# query the analysis output:
+src api describe --file $PWD/lib/http.js --start-byte 4
+src api describe --file $PWD/lib/http.js --start-byte 100
+# you should see JSON describing what's defined at that position in the file
+```
+
+OK, now srclib is installed. There are 2 ways to use it:
+
+### As an editor plugin backend (most common)
+
+srclib powers high-quality language support in your favorite editor. Currently
+the only available plugin is
+[emacs-sourcegraph-mode](https://sourcegraph.com/sourcegraph/emacs-sourcegraph-mode),
+but people are building more right now.
+
+To use an Sourcegraph editor plugin powered by srclib, follow the instructions
+in the editor plugin's README.
+
+### As a source analysis tool, or extending srclib itself to support more languages and editors (for dev tools hackers)
+
+The included `src` program invokes language-specific analysis toolchains on
+repositories, produces output in standardized formats, and exposes an API for
+editor integration. Language toolchains are programs that adhere to a spec and
+otherwise perform entirely language-specific analysis, and tooolchains may be
+easily installed and modified by users.
+
+For toolchains, we have a work-in-progress spec describing how to build them. (TODO add link)
+
+For editor plugins, run `src api describe --help` to see the command API, and
+check out
+[emacs-sourcegraph-mode](https://sourcegraph.com/sourcegraph/emacs-sourcegraph-mode)
+for a reference implementation.
+
 
 # Misc.
 
-* **bash completion**: run `source contrib/completion/src-completion.bash` or
+* **bash completion** for `src`: run `source contrib/completion/src-completion.bash` or
   copy that file to `/etc/bash_completion.d/srclib_src` (path may be different
   on your system)
