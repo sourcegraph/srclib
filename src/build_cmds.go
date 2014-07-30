@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	client "github.com/sourcegraph/go-sourcegraph/sourcegraph"
+	client "sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 )
 
 func build_(args []string) {

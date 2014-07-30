@@ -33,7 +33,7 @@ Currently, srclib supports:
   [JavaScript](https://sourcegraph.com/sourcegraph/srclib-javascript), and
   [Ruby](https://sourcegraph.com/sourcegraph/srclib-ruby)
 * **Integrations:** [Sourcegraph.com](https://sourcegraph.com) and
-  [emacs-sourcegraph-mode](https://github.com/sourcegraph/emacs-sourcegraph-mode)
+  [emacs-sourcegraph-mode](https://sourcegraph.com/sourcegraph/emacs-sourcegraph-mode)
 * **Features:** jump-to-definition, find usages, type inference, documentation
   generation, and dependency resolution
 
