@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block content %}
+{% include "navbar.html" %}
+{% include "docsnav.html" %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-3">{% include "toc.html" %}</div>
+    <div class="col-md-9" role="main">{% include "content.html" %}</div>
+  </div>
+
+  <!--{% include "newsletter.html" %}-->
+</div>
+{% endblock %}

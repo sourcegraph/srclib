@@ -1,0 +1,40 @@
+site_name: Srclib Documentation
+site_description: Documentation for the srclib toolchain.
+
+docs_dir: sources
+
+repo_url: https://github.com/sourcegraph/srclib/
+
+dev_addr: '0.0.0.0:8000'
+
+theme_dir: ./theme/
+
+pages:
+
+- ['gettingstarted.md', 'Getting Started']
+
+# Installation
+- ['installation/editor-plugins.md', 'Installation', 'Editor Plugins']
+- ['installation/src.md', 'Installation', 'src']
+
+# SRC
+- ['src/overview.md', 'src', 'Overview']
+- ['src/data-model.md', 'src', 'Data Model']
+- ['src/make.md', 'src', 'Make']
+- ['src/srcfile.md', 'src', 'Srcfile']
+- ['src/toolchains.md', 'src', 'Toolchains']
+- ['src/faq.md', 'src', 'FAQ']
+
+# Language Analysis
+- ['language-analysis/overview.md', 'Language Analysis', 'Overview']
+- ['language-analysis/scanner-output.md', 'Language Analysis', 'Scanner Output']
+- ['language-analysis/grapher-output.md', 'Language Analysis', 'Grapher Output']
+- ['language-analysis/dependency-resolution-output.md', 'Language Analysis', 'Dependency Resolution Output']
+- ['language-analysis/formatter.md', 'Language Analysis', 'Formatter Output']
+- ['language-analysis/openquestions.md', 'Language Analysis', 'Open Questions']
+- ['language-analysis/faq.md', 'Language Analysis', 'FAQ']
+
+# API
+- ['api/overview.md', 'API', 'Overview']
+
+theme: yeti
