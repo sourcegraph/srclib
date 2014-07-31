@@ -24,7 +24,7 @@ func Add(dir, toolchainPath string) error {
 	srclibpathEntry := strings.SplitN(srclib.Path, ":", 2)[0]
 	targetDir := filepath.Join(srclibpathEntry, toolchainPath)
 
-	if err := os.MkdirAll(targetDir, 0700); err != nil {
+	if err := os.MkdirAll(filepath.Dir(targetDir), 0700); err != nil {
 		return err
 	}
 
