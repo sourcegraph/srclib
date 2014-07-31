@@ -57,6 +57,10 @@ And the actual test output is written to:
 type TestCmd struct {
 	GenerateExpected bool `long:"gen" description:"(re)generate expected output for all test cases and exit"`
 
+	// ExeMethods is like the same field from ToolchainExecOpt, but we want it
+	// to default to "docker" for tests. So, we have to redefine it here.
+	ExeMethods string `short:"m" long:"methods" default:"docker" description:"permitted execution methods; unlike all other commands, for test it prefers Docker execution" value-name:"METHODS"`
+
 	Args struct {
 		Trees []Directory `name:"TREES" description:"trees to treat as test cases"`
 	} `positional-args:"yes"`
@@ -65,6 +69,14 @@ type TestCmd struct {
 var testCmd TestCmd
 
 func (c *TestCmd) Execute(args []string) error {
+	if strings.Contains(c.ExeMethods, ",") {
+		log.Fatal("Only one toolchain execution method can be specified per test run. You specified: %q.", c.ExeMethods)
+	}
+	execOpt := ToolchainExecOpt{ExeMethods: c.ExeMethods}
+	if gopt.Verbose {
+		log.Printf("Executing tests using method: %s", execOpt.ExeMethods)
+	}
+
 	var trees []string
 	if len(c.Args.Trees) > 0 {
 		for _, tree := range c.Args.Trees {
@@ -91,9 +103,10 @@ func (c *TestCmd) Execute(args []string) error {
 		if gopt.Verbose {
 			log.Printf("Testing tree %v...", tree)
 		}
-		expectedDir := filepath.Join(tree, "../../expected", filepath.Base(tree))
-		actualDir := filepath.Join(tree, "../../actual", filepath.Base(tree))
-		if err := testTree(tree, expectedDir, actualDir, c.GenerateExpected); err != nil {
+		exeMethod := execOpt.ExeMethods
+		expectedDir := filepath.Join(tree, "../../expected", exeMethod, filepath.Base(tree))
+		actualDir := filepath.Join(tree, "../../actual", exeMethod, filepath.Base(tree))
+		if err := testTree(tree, expectedDir, actualDir, c.GenerateExpected, execOpt); err != nil {
 			return fmt.Errorf("testing tree %q: %s", tree, err)
 		}
 	}
@@ -105,7 +118,7 @@ func (c *TestCmd) Execute(args []string) error {
 	return nil
 }
 
-func testTree(treeDir, expectedDir, actualDir string, generate bool) error {
+func testTree(treeDir, expectedDir, actualDir string, generate bool, execOpt ToolchainExecOpt) error {
 	treeName := filepath.Base(treeDir)
 	if treeName == "." {
 		absTreeDir, err := filepath.Abs(treeDir)
@@ -162,7 +175,7 @@ func testTree(treeDir, expectedDir, actualDir string, generate bool) error {
 	} else {
 		w = &buf
 	}
-	cmd := exec.Command("src", "-v", "do-all", "-m", "docker")
+	cmd := exec.Command("src", "-v", "do-all", "-m", execOpt.ExeMethods)
 	cmd.Dir = treeDir
 	cmd.Stderr, cmd.Stdout = w, w
 
