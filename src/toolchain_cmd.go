@@ -56,6 +56,15 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	_, err = c.AddCommand("add",
+		"add a local toolchain",
+		"Add a local directory as a toolchain in SRCLIBPATH.",
+		&toolchainAddCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 type ToolchainPath string
@@ -225,4 +234,17 @@ func (c *ToolchainGetCmd) Execute(args []string) error {
 		}
 	}
 	return nil
+}
+
+type ToolchainAddCmd struct {
+	Dir  string `long:"dir" description:"directory containing toolchain to add" value-name:"DIR"`
+	Args struct {
+		ToolchainPath string `name:"TOOLCHAIN" default:"." description:"toolchain path to use for toolchain directory"`
+	} `positional-args:"yes" required:"yes"`
+}
+
+var toolchainAddCmd ToolchainAddCmd
+
+func (c *ToolchainAddCmd) Execute(args []string) error {
+	return toolchain.Add(c.Dir, c.Args.ToolchainPath)
 }
