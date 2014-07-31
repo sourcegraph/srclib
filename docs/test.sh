@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Create site dir if it does not exist
+mkdir -p site
+
 # Python server
 cd site
 python -m SimpleHTTPServer &
