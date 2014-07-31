@@ -158,6 +158,37 @@ body {
     border-color: white;
     background-color: $blue-highlight;
 
+  }
+}
 
+// Community page
+.communitycontainer {
+  margin-top: 100px;
+
+  padding-top:80px;
+  padding-bottom:80px;
+  padding-left: 50px;
+  padding-right: 50px;
+
+  background-color:rgb(136,138,140);
+  width:100%;
+
+  > div {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    color: white;
+
+    font-weight:bold;
+    font-size: xx-large;
+
+    > a {
+      color:white;
+    }
+
+    > a:hover {
+      color: $blue-highlight;
+      text-decoration: none;
+    }
   }
 }

@@ -8,10 +8,11 @@ HTML.
 Run `pip install mkdocs` to install MkDocs.
 
 You will also need SASS, in order to compile the style sheets. This can be obtained with `gem install sass`.
-You can then run `sass theme/styles.scss:theme/styles.css` to quickly build the css.
+In order to use the testing script `test.sh`, you will need to run `sudo apt-get install inotify-tools`.
 
-When testing documentation, you can type `mkdocs serve` to start the server,
-or `mkdocs build` to build the HTML into the `site` directory.
+## Testing Documentation
+To start testing, run `./test.sh`. This will watch for changes, building into `site/` whenever a file is
+modified. Additionally, `python -m SimpleHTTPServer` is used to start a local server on port 8000.
 
 ## Editing
 Markdown files are located in the `sources` directory, with subdirectories intended to correspond
