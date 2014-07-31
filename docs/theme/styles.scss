@@ -145,10 +145,13 @@ body {
     }
 }
 
+// Newsletter form
 .newsletter {
   margin: 0 auto;
   text-align: center;
   color: $blue-highlight;
+
+  padding: 70px;
 
   input {
     margin: 0 auto;
@@ -159,6 +162,11 @@ body {
     background-color: $blue-highlight;
 
   }
+}
+
+// Pager
+.pager > li {
+  font-size: 200%;
 }
 
 // Community page
@@ -190,5 +198,20 @@ body {
       color: $blue-highlight;
       text-decoration: none;
     }
+  }
+}
+
+//From the team that brought you...
+.team {
+  background-color:$blue-highlight;
+
+  padding:50px;
+
+  > div {
+    text-align: center;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    color: white;
   }
 }

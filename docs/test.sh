@@ -1,10 +1,11 @@
 #!/bin/sh
 
-
+# Python server
 cd site
 python -m SimpleHTTPServer &
 cd ..
 
+# Kill python server on exit
 trap "exit" INT TERM
 trap "kill 0" EXIT
 
