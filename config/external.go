@@ -42,7 +42,7 @@ func init() {
 	// Default to using all available scanners.
 	if len(SrclibPathConfig.Scanners) == 0 {
 		SrclibPathConfig.Scanners, err = toolchain.ListTools("scan")
-		if err != nil {
+		if err != nil && !os.IsNotExist(err) {
 			log.Fatalf("Failed to find scanners in SRCLIBPATH: %s.", err)
 		}
 	}
