@@ -215,3 +215,96 @@ body {
     color: white;
   }
 }
+
+// About page
+.about {
+  padding:50px;
+
+  > div {
+    max-width: 400px;
+    font-size: 130%;
+
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+//Homepage banner
+.banner {
+  color: white;
+  padding:50px;
+
+  background-size: cover;
+  background-image: url('/images/banner.svg');
+}
+
+.languages {
+  color: white;
+  padding:50px;
+  background-color:#1E87C1;
+
+  img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60%;
+  }
+}
+
+.challenge {
+  color: black;
+  padding:50px;
+  background-color:white;
+
+  img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 30%;
+  }
+}
+
+.solution {
+  color: white;
+  padding:50px;
+  background-color: $blue-highlight;
+
+  img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 30%;
+  }
+}
+
+.features {
+  color: white;
+  padding:50px;
+  background-color: #BCBCC1;
+
+  #left {
+    text-align: center;
+  }
+  img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 30%;
+  }
+}
+
+.integrations {
+  color: white;
+  padding:50px;
+  background-color: #40A6D3;
+
+  #right {
+    text-align: center;
+  }
+  img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+  }
+}

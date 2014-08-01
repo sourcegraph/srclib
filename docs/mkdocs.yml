@@ -18,12 +18,12 @@ pages:
 - ['installation/src.md', 'Installation', 'src']
 
 # SRC
-- ['src/overview.md', 'src', 'Overview']
-- ['src/data-model.md', 'src', 'Data Model']
-- ['src/make.md', 'src', 'Make']
-- ['src/srcfile.md', 'src', 'Srcfile']
-- ['src/toolchains.md', 'src', 'Toolchains']
-- ['src/faq.md', 'src', 'FAQ']
+- ['src/overview.md', 'SRC', 'Overview']
+- ['src/data-model.md', 'SRC', 'Data Model']
+- ['src/make.md', 'SRC', 'Make']
+- ['src/srcfile.md', 'SRC', 'Srcfile']
+- ['src/toolchains.md', 'SRC', 'Toolchains']
+- ['src/faq.md', 'SRC', 'FAQ']
 
 # Language Analysis
 - ['language-analysis/overview.md', 'Language Analysis', 'Overview']
