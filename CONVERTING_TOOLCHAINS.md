@@ -148,7 +148,7 @@ constant JSON string in response to each subcommand.
 ## 6. Try your toolchain on a real repository
 
 Take one of the sample repositories in sgtest for the language whose toolchain
-you're converting. Run `src make` from within that sample repository. Does it
+you're converting. Run `src do-all` from within that sample repository. Does it
 run your toolchain? Are there any errors?
 
 ## 7. Create a Dockerfile that wraps your toolchain
