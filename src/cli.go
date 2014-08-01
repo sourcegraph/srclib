@@ -2,8 +2,11 @@ package src
 
 import (
 	"log"
+	"net/http"
 	"os"
 
+	"github.com/sourcegraph/httpcache"
+	"github.com/sourcegraph/httpcache/diskcache"
 	"github.com/sqs/go-flags"
 	client "sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"sourcegraph.com/sourcegraph/srclib/task2"
@@ -28,7 +31,10 @@ func init() {
 }
 
 // TODO(sqs): add base URL flag for apiclient
-var apiclient = client.NewClient(nil)
+var (
+	httpClient = http.Client{Transport: httpcache.NewTransport(diskcache.New("/tmp/srclib-cache"))}
+	apiclient  = client.NewClient(&httpClient)
+)
 
 var (
 	absDir string
