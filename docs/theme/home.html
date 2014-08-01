@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class="banner">
+<div class="banner section">
   <div class="container">
     <div class="row">
       <div class="col-sm-6"><h1>srclib</h1></div>
@@ -11,19 +11,22 @@
     <br><br>
     <div class="row">
       <div class="col-sm-6">
-        <p>A source code analysis library,
+        <p>A polyglot source code analysis library,
 built with hackability in mind.</p>
-        <p>Use locally in your editor, create a
-build for your own code, or perform
-deep language analysis, all with the
-same tool, all open source.</p>
+        <p>Integrate with your editor, build documentation for your code, or perform type inference - all with
+          the same tool, all open source.</p>
       </div>
-      <div class="col-sm-6"><img src="/images/layers.svg"></img></div>
+      <div class="col-sm-6" style="text-align:center;">
+        <br><img src="/images/layers.svg"></img><br><br><br></div>
+    </div>
+    <div class="row" style="text-align:center;">
+      <iframe width="420" height="315" src="//www.youtube.com/embed/cm59qQD6khs" frameborder="0" allowfullscreen></iframe><br>
+        Watch a quick demo of srclib in Emacs
     </div>
   </div>
 </div>
 
-<div class="challenge">
+<div class="challenge section">
   <div class="container">
     <div class="row">
       <div class="col-sm-6">
@@ -31,24 +34,20 @@ same tool, all open source.</p>
       </div>
       <div class="col-sm-6">
         <h1>The Challenge</h1>
-        <p>Given M editors, N languages, and O features, MxNxO plugins = a virtual nightmare for
+        <p>Given M editors, N languages, and O features, one would have to make MxNxO plugins - a virtual nightmare for
         any language analysis tool.</p>
       </div>
     </div>
   </div>
 </div>
 
-<div class="solution">
+<div class="solution section">
   <div class="container">
     <div class="row">
       <div class="col-sm-6">
         <h1>The Solution</h1>
-        <p>srclib lets you publish standard formats
-and APIs for source analyzers and editor
-plugins to provide high-quality language
-analyzers and editor plugs, the same
-open-sourced analyzer that powers
-Sourcegraph.com.</p>
+        <p>srclib provides a unified data model, with language analysis toolchains built on a single platform.</p>
+        <p>srclib also exposes an API, allowing editors and other programs to perform detailed queries on the analysis results.</p>
       </div>
       <div class="col-sm-6">
         <img src="/images/whiteasterisk.svg"></img>
@@ -57,29 +56,37 @@ Sourcegraph.com.</p>
   </div>
 </div>
 
-<div class="languages">
+<div class="features section">
   <div class="container">
+    <div style="text-align: center;" class="row">
+      <h1>Different ways to use srclib</h1><br>
+    </div>
     <div class="row">
-      <div class="col-sm-6">
-        <img src="/images/languages.svg"></img>
+      <div id="left" class="col-sm-6">
+        <img src="/images/features.svg"></img>
+        Run srclib on your code
       </div>
       <div class="col-sm-6">
-        <h1>Languages</h1>
-        <p>srclib currently has language support for Ruby, Python, Node.js, and Go.</p>
-        <p>If you're a developer with a love of language, be sure to check out the other languages people are working on here.</p>
+        <h1>Features</h1>
+        <ul>
+          <li>Jump to Definition</li>
+          <li>Find Usage Examples</li>
+          <li>Type Inference</li>
+          <li>Autocomplete</li>
+          <li>Dependency Resolution</li>
+        </ul>
+        For more info, check out this screencast.
       </div>
     </div>
   </div>
 </div>
 
-<div class="integrations">
+<div class="integrations section">
   <div class="container">
     <div class="row">
       <div id="left" class="col-sm-6">
         <h1>Integrations</h1>
-        <p>Provide high-quality language analyzers
-and editor plugs (the same open-sourced
-analyzer that powers Sourcegraph.com.</p>
+        <p>scrlib aims to provide high-quality editor plugins for its language analysis platform.</p>
         <p>Install the plugin for your editor (or hack on one if we don't support it yet).</p>
       </div>
       <div id="right" class="col-sm-6">
@@ -90,36 +97,35 @@ analyzer that powers Sourcegraph.com.</p>
   </div>
 </div>
 
-<div class="features">
+<div class="languages section">
   <div class="container">
     <div class="row">
-      <div id="left" class="col-sm-6">
-        <img src="/images/features.svg"></img>
-        Run srclib on your code
+      <div class="col-sm-6">
+        <img src="/images/languages.svg"></img>
       </div>
       <div class="col-sm-6">
-        <h1>Features</h1>
-        <p>Use srclib for a range of actions in your
-code, such as jump-to-defintion, find
-usage examples, type inference, docu-
-mentation generation, and dependency
-resolution.</p>
-        <p>For more info, check out this screencast.</p>
+        <h1>Languages</h1>
+        <p>srclib currently supports Ruby, Python, Node.js, and Go.</p>
+        <p>If you're a developer with a love of language analysis, be sure to check out the other languages people are working on here.</p>
       </div>
     </div>
   </div>
 </div>
 
 
+
+
 {% include "newsletter.html" %}
 
 
-<div class="team">
-  <div>
-    From the team that brought you
-    <br>
-    <br>
-    <a href="http://sourcegraph.com"><img src="/images/sourcegraphlogo-white.svg"></img></a>
+<div class="team section">
+  <div class="container">
+    <div>
+      From the team that brought you
+      <br>
+      <br>
+      <a href="http://sourcegraph.com"><img src="/images/sourcegraphlogo-white.svg"></img></a>
+    </div>
   </div>
 </div>
 {% endblock %}

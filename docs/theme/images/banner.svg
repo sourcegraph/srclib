@@ -9,12 +9,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="1021"
+   width="596.71429"
    height="543"
    id="svg4526"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="New document 7">
+   sodipodi:docname="banner.svg">
   <defs
      id="defs4528" />
   <sodipodi:namedview
@@ -24,9 +24,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35"
-     inkscape:cx="510.5"
-     inkscape:cy="271.5"
+     inkscape:zoom="1.4"
+     inkscape:cx="674.72571"
+     inkscape:cy="334.24378"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -34,11 +34,11 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1280"
-     inkscape:window-height="1388"
+     inkscape:window-width="2560"
+     inkscape:window-height="1416"
      inkscape:window-x="2560"
      inkscape:window-y="24"
-     inkscape:window-maximized="0" />
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata4531">
     <rdf:RDF>
@@ -60,22 +60,22 @@
        style="fill:#459de5"
        y="260.86218"
        x="-135.5"
-       width="1021"
+       width="596.71429"
        height="543"
        id="rect4461" />
     <rect
        style="fill:#1e87c1"
-       x="-33.5"
-       y="312.86218"
-       width="916"
-       height="491"
+       x="-126.45506"
+       y="273.76212"
+       width="588.59784"
+       height="530.10004"
        id="rect4463" />
     <rect
        style="fill:#40a6d3"
-       x="70.5"
-       y="366.86218"
-       width="812"
-       height="437"
+       x="-115.28757"
+       y="288.17181"
+       width="578.50183"
+       height="515.69037"
        id="rect4465" />
   </g>
 </svg>

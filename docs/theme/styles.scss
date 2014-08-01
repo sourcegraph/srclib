@@ -151,6 +151,7 @@ body {
   text-align: center;
   color: $blue-highlight;
 
+  font-size:130%;
   padding: 70px;
 
   input {
@@ -201,11 +202,22 @@ body {
   }
 }
 
+
+.section .container {
+  padding: 30px;
+
+  @media (min-width: 768px) {
+    padding: 50px;
+    padding-top:80px;
+    padding-bottom:80px;
+
+    font-size: 130%;
+  }
+}
+
 //From the team that brought you...
 .team {
   background-color:$blue-highlight;
-
-  padding:50px;
 
   > div {
     text-align: center;
@@ -231,16 +243,20 @@ body {
 
 //Homepage banner
 .banner {
+  iframe {
+    max-width:100%;
+  }
   color: white;
-  padding:50px;
+  background-color: #40A6D3;
 
-  background-size: cover;
-  background-image: url('/images/banner.svg');
+  @media (min-width: 768px) and (max-width: 2000px) {
+    //background-image: url('/images/banner.svg');
+    background-size: cover;
+  }
 }
 
 .languages {
   color: white;
-  padding:50px;
   background-color:#1E87C1;
 
   img {
@@ -253,7 +269,6 @@ body {
 
 .challenge {
   color: black;
-  padding:50px;
   background-color:white;
 
   img {
@@ -266,7 +281,6 @@ body {
 
 .solution {
   color: white;
-  padding:50px;
   background-color: $blue-highlight;
 
   img {
@@ -279,7 +293,6 @@ body {
 
 .features {
   color: white;
-  padding:50px;
   background-color: #BCBCC1;
 
   #left {
@@ -295,7 +308,6 @@ body {
 
 .integrations {
   color: white;
-  padding:50px;
   background-color: #40A6D3;
 
   #right {
