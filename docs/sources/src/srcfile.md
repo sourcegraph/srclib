@@ -1,5 +1,7 @@
 # Srcfile
 
+TODO(sqs): this is totally old and inaccurate
+
 A Srcfile configures how srclib handles a source tree. The file consists of
 instructions, one per line. Order does not matter. Lines starting with `#` are
 comments.

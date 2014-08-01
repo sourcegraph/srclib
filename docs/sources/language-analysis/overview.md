@@ -2,11 +2,16 @@ page_title: Language Analysis Overview
 
 # Language Analysis Overview
 
-> NOTE: Before reading through this section, make sure that you first have a proper understanding of the `src`
-> executable. Start with the [overview](../src/overview.md).
+> NOTE: Before reading through this section, make sure that you first have a
+> proper understanding of the `src` executable. Start with the
+> [overview](../src/overview.md).
 
 ## Output Location
-In the root directory that is being analyzed, there should be a directory created named “.sourcegraph-data”. In this directory, there should be a set of files generated for each source unit present. The files to generate for each source unit are listed below.
+
+In the root directory that is being analyzed, there should be a directory
+created named ".sourcegraph-data". In this directory, there should be a set of
+files generated for each source unit present. The files to generate for each
+source unit are listed below.
 
 ## Common Data Structures
 

@@ -130,6 +130,7 @@ directory tree and produce a JSON array of source units (in Go,
 `[]*unit.SourceUnit`) they encounter.
 
 **Arguments:** none; scanners scan the tree rooted at the current directory (typically the root directory of a repository)
+
 **Options:**
 * `--repo URI`: the URI of the repository that contains the directory tree being
   scanned
@@ -137,6 +138,7 @@ directory tree and produce a JSON array of source units (in Go,
   run), relative to the root directory of the repository being scanned (this is
   typically the root, `"."`, as it is most useful to scan the entire
   repository)
+
 **stdout:** `[]*unit.SourceUnit`
 
 See the `scan.Scan` function for an implementation of the calling side of this
@@ -153,8 +155,11 @@ resolve "raw" dependencies, such as the name and version of a dependency
 package, into a full specification of the dependency's target.
 
 **Arguments:** none
+
 **stdin:** JSON object representation of a source unit (`*unit.SourceUnit`)
+
 **Options:** none
+
 **stdout:** `[]*dep2.Resolution` JSON array with each item corresponding to the same-index entry in the source unit's `Dependencies` field
 
 See the `dep2.ResolveDeps` function for an implementation of the calling side of this
@@ -169,8 +174,11 @@ Graphers perform these operations on a source unit and have read access to all
 of the source unit's files.
 
 **Arguments:** none
+
 **stdin:** JSON object representation of a source unit (`*unit.SourceUnit`)
+
 **Options:** none
+
 **stdout:** JSON graph output (`grapher2.Output`)
 
 TODO(sqs): Can we provide the output of `dep` to the `graph` tool? Usually

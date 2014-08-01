@@ -1,9 +1,9 @@
-site_name: Srclib Documentation
+site_name: srclib documentation
 site_description: Documentation for the srclib toolchain.
 
 docs_dir: sources
 
-repo_url: https://github.com/sourcegraph/srclib/
+repo_url: https://sourcegraph.com/sourcegraph/srclib/
 
 dev_addr: '0.0.0.0:8000'
 
@@ -11,28 +11,28 @@ theme_dir: ./theme/
 
 pages:
 
-- ['gettingstarted.md', 'Getting Started']
+- ['gettingstarted.md', 'Getting started']
 
 # Installation
 - ['installation/editor-plugins.md', 'Installation', 'Editor Plugins']
 - ['installation/src.md', 'Installation', 'src']
 
-# SRC
-- ['src/overview.md', 'SRC', 'Overview']
-- ['src/data-model.md', 'SRC', 'Data Model']
-- ['src/make.md', 'SRC', 'Make']
-- ['src/srcfile.md', 'SRC', 'Srcfile']
-- ['src/toolchains.md', 'SRC', 'Toolchains']
-- ['src/faq.md', 'SRC', 'FAQ']
+# src command
+- ['src/overview.md', 'src command', 'Overview']
+- ['src/data-model.md', 'src command', 'Data Model']
+- ['src/make.md', 'src command', 'Make']
+- ['src/srcfile.md', 'src command', 'Srcfile']
+- ['src/toolchains.md', 'src command', 'Toolchains']
+- ['src/faq.md', 'src command', 'FAQ']
 
-# Language Analysis
-- ['language-analysis/overview.md', 'Language Analysis', 'Overview']
-- ['language-analysis/scanner-output.md', 'Language Analysis', 'Scanner Output']
-- ['language-analysis/grapher-output.md', 'Language Analysis', 'Grapher Output']
-- ['language-analysis/dependency-resolution-output.md', 'Language Analysis', 'Dependency Resolution Output']
-- ['language-analysis/formatter.md', 'Language Analysis', 'Formatter Output']
-- ['language-analysis/openquestions.md', 'Language Analysis', 'Open Questions']
-- ['language-analysis/faq.md', 'Language Analysis', 'FAQ']
+# Language analysis
+- ['language-analysis/overview.md', 'Language analysis', 'Overview']
+- ['language-analysis/scanner-output.md', 'Language analysis', 'Scanner Output']
+- ['language-analysis/grapher-output.md', 'Language analysis', 'Grapher Output']
+- ['language-analysis/dependency-resolution-output.md', 'Language analysis', 'Dependency Resolution Output']
+- ['language-analysis/formatter.md', 'Language analysis', 'Formatter Output']
+- ['language-analysis/openquestions.md', 'Language analysis', 'Open Questions']
+- ['language-analysis/faq.md', 'Language analysis', 'FAQ']
 
 # API
 - ['api/overview.md', 'API', 'Overview']
