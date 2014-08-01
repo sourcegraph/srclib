@@ -16,19 +16,28 @@
     <!-- Font Awesome -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-    <!-- Custom Styles -->
+    <!-- Syntax Highlighting Style -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.0/styles/vs.min.css" rel="stylesheet">
+
+    <!-- Custom Overrides -->
     <link href="/styles.css" rel="stylesheet">
+
+
   </head>
 
   <body>
 
     {% include "navbar.html" %}
-    
+
     {% block content %}{% endblock %}
 
     <!-- JQuery and Bootstrap js files -->
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+    <!-- Highlight.js -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
   </body>
 </html>
