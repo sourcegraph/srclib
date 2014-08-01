@@ -1,4 +1,4 @@
-# Srclib Documentation Site
+# srclib Documentation Site
 
 The srclib documentation files are written in Markdown and converted to a
 browsable HTML static site, hosted at [srclib.org](http://srclib.org/).

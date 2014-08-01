@@ -1,4 +1,4 @@
-# Srclib Data Model
+# srclib Data Model
 
 ### Source unit
 

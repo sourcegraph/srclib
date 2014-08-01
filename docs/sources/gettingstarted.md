@@ -1,4 +1,4 @@
-# What is Srclib?
+# What is srclib?
 
 The srclib project aims to provide the following functionality in a language agnostic fashion:
 

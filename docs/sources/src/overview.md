@@ -20,4 +20,4 @@ src make
 This should build the repository graph - once complete, you can `cd` into a directory
 called `.sourcegraph-data`. In that folder, you should find several files.
 
-Keep reading to learn more about how Srclib models code.
+Keep reading to learn more about how srclib models code.
