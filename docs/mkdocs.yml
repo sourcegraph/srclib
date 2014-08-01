@@ -1,5 +1,5 @@
 site_name: srclib documentation
-site_description: Documentation for the srclib toolchain.
+site_description: Documentation for srclib, a cross-language source code analysis package.
 
 docs_dir: sources
 
@@ -8,6 +8,8 @@ repo_url: https://sourcegraph.com/sourcegraph/srclib/
 dev_addr: '0.0.0.0:8000'
 
 theme_dir: ./theme/
+
+google_analytics: ['UA-40540747-5', 'srclib.org']
 
 pages:
 
