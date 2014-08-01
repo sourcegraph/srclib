@@ -2,7 +2,8 @@
 
 *Note: srclib is alpha.
 [Post an issue](https://github.com/sourcegraph/srclib/issues) if you have any
-questions or difficulties running and hacking on it.*
+questions or difficulties running and hacking on it. We'll have a full docs site
+up soon.*
 
 **srclib** is a source code analysis library. It provides standardized tools,
 interfaces and data formats for generating, representing and querying
@@ -23,18 +24,23 @@ to get good tooling in every case. That number gets large quickly, and it's why
 we suffer from poor developer tools.
 
 srclib solves this problem in 2 ways by:
+
 * Publishing standard formats and APIs for source analyzers and editor plugins
   to use. This means that improvements in a srclib language analyzer benefit
   users in any editor, and improvements in a srclib editor plugin benefit
   everyone who uses that editor on any language.
+
 * Providing high-quality language analyzers and editor plugins that implement
   this standard. These were open-sourced from the code that powers
   [Sourcegraph.com](https://sourcegraph.com).
 
 Currently, srclib supports:
+
 * **Languages:** [Go](https://sourcegraph.com/sourcegraph/srclib-go) and [JavaScript](https://sourcegraph.com/sourcegraph/srclib-javascript) (coming very soon: [Python](https://sourcegraph.com/sourcegraph/srclib-python) and [Ruby](https://sourcegraph.com/sourcegraph/srclib-ruby))
+
 * **Integrations:** [Sourcegraph.com](https://sourcegraph.com) and
   [emacs-sourcegraph-mode](https://sourcegraph.com/sourcegraph/emacs-sourcegraph-mode)
+
 * **Features:** jump-to-definition, find usages, type inference, documentation
   generation, and dependency resolution
 
@@ -46,63 +52,26 @@ what you're building to get started.
 
 ## Usage
 
-srclib requires Go 1.2+, Git, and Mercurial. Install and run srclib with:
+srclib requires Go 1.2+, Git, and Mercurial.
+
+Install and run `src`, the command-line frontend to srclib, with:
 
 ```
-# download and install 'src', the command for running srclib
 go get -v sourcegraph.com/sourcegraph/srclib/cmd/src
-
-# install toolchain for JavaScript to ~/.srclib
-mkdir -p ~/.srclib/sourcegraph.com/sourcegraph
-cd ~/.srclib/sourcegraph.com/sourcegraph
-git clone https://github.com/sourcegraph/srclib-javascript
-cd srclib-javascript && npm install && cd node_modules/jsg && npm install
-
-# check that the toolchain is installed
-src toolchain list
-# should show 'sourcegraph.com/sourcegraph/srclib-javascript'
-
-# try it on a sample JavaScript repository
-cd /tmp
-git clone https://github.com/sgtest/javascript-nodejs-xrefs-0.git
-cd javascript-nodejs-xrefs-0
-src do-all
-# it writes analysis output to .srclib-cache/...
-
-# query the analysis output:
-src api describe --file $PWD/lib/http.js --start-byte 4
-src api describe --file $PWD/lib/http.js --start-byte 100
-# you should see JSON describing what's defined at that position in the file
 ```
 
-OK, now srclib is installed. There are 2 ways to use it:
+Next, install toolchains for the languages you want to use. See instructions at:
 
-### As an editor plugin backend (most common)
+* [**srclib-go**](https://sourcegraph.com/sourcegraph/srclib-go) for Go
+* [**srclib-javascript**](https://sourcegraph.com/sourcegraph/srclib-javascript) for JavaScript (Node.js)
 
-srclib powers high-quality language support in your favorite editor. Currently
-the only available plugin is
-[emacs-sourcegraph-mode](https://sourcegraph.com/sourcegraph/emacs-sourcegraph-mode),
-but people are building more right now.
+Finally, install an editor plugin powered by srclib:
 
-To use an Sourcegraph editor plugin powered by srclib, follow the instructions
-in the editor plugin's README.
+* [emacs-sourcegraph-mode](https://sourcegraph.com/sourcegraph/emacs-sourcegraph-mode) for Emacs
 
-### As a source analysis tool, or extending srclib itself to support more languages and editors (for dev tools hackers)
-
-The included `src` program invokes language-specific analysis toolchains on
-repositories, produces output in standardized formats, and exposes an API for
-editor integration. Language toolchains are programs that adhere to a spec and
-otherwise perform entirely language-specific analysis, and tooolchains may be
-easily installed and modified by users.
-
-For toolchains, we have a work-in-progress spec describing how to build them
-(see TOOLCHAINS.md).
-
-For editor plugins, run `src api describe --help` to see the command API, and
-check out
-[emacs-sourcegraph-mode](https://sourcegraph.com/sourcegraph/emacs-sourcegraph-mode)
-for a reference implementation.
-
+Don't see your language or editor of choice?
+[Create or +1 an issue](https://github.com/sourcegraph/srclib/issues) to vote
+for it, or start adding support for it yourself!
 
 # Misc.
 
