@@ -11,17 +11,12 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
 )
 
-// DefaultScanners are the scanners used for a Tree if none are manually
-// specified in a Srcfile.
-var DefaultScanners = []*toolchain.ToolRef{
-	{"sourcegraph.com/sourcegraph/srclib-javascript", "scan-commonjs"},
-}
-
 // An External configuration file, represented by this struct, can set system-
 // and user-level settings for srclib.
 type External struct {
-	// DefaultScanners is the default set of scanners to use.
-	DefaultScanners []*toolchain.ToolRef
+	// Scanners is the default set of scanners to use. If not specified, all
+	// scanners in the SRCLIBPATH will be used.
+	Scanners []*toolchain.ToolRef
 }
 
 // SrclibPathConfig is stored in SRCLIBPATH/.srclibconfig.
@@ -44,8 +39,11 @@ func init() {
 		}
 	}
 
-	// Use default scanners.
-	if len(SrclibPathConfig.DefaultScanners) == 0 {
-		SrclibPathConfig.DefaultScanners = DefaultScanners
+	// Default to using all available scanners.
+	if len(SrclibPathConfig.Scanners) == 0 {
+		SrclibPathConfig.Scanners, err = toolchain.ListTools("scan")
+		if err != nil {
+			log.Fatalf("Failed to find scanners in SRCLIBPATH: %s.", err)
+		}
 	}
 }

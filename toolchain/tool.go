@@ -64,13 +64,13 @@ type ToolInfo struct {
 
 // ListTools lists all tools in all available toolchains (returned by List). If
 // op is non-empty, only tools that perform that operation are returned.
-func ListTools(op string) ([]*ToolInfo, error) {
+func ListTools(op string) ([]*ToolRef, error) {
 	tcs, err := List()
 	if err != nil {
 		return nil, err
 	}
 
-	var tools []*ToolInfo
+	var tools []*ToolRef
 	for _, tc := range tcs {
 		c, err := tc.ReadConfig()
 		if err != nil {
@@ -79,7 +79,7 @@ func ListTools(op string) ([]*ToolInfo, error) {
 
 		for _, tool := range c.Tools {
 			if op == "" || tool.Op == op {
-				tools = append(tools, tool)
+				tools = append(tools, &ToolRef{Toolchain: tc.Path, Subcmd: tool.Subcmd})
 			}
 		}
 	}
