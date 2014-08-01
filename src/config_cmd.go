@@ -68,7 +68,7 @@ func getInitialConfig(opt config.Options, dir Directory) (*config.Repository, er
 	}
 
 	if cfg.Scanners == nil {
-		cfg.Scanners = config.SrclibPathConfig.DefaultScanners
+		cfg.Scanners = config.SrclibPathConfig.Scanners
 	}
 
 	return cfg, nil
