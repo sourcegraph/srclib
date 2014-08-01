@@ -67,7 +67,7 @@ Next, install toolchains for the languages you want to use. See instructions at:
 
 Finally, install an editor plugin powered by srclib:
 
-* [emacs-sourcegraph-mode](https://sourcegraph.com/sourcegraph/emacs-sourcegraph-mode) for Emacs
+* [**emacs-sourcegraph-mode**](https://sourcegraph.com/sourcegraph/emacs-sourcegraph-mode) for Emacs
 
 Don't see your language or editor of choice?
 [Create or +1 an issue](https://github.com/sourcegraph/srclib/issues) to vote
