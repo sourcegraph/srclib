@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/sourcegraph/go-blame/blame"
-	"sourcegraph.com/sourcegraph/srclib/config"
 )
 
 type BlameOutput struct {
@@ -22,14 +21,14 @@ var blameIgnores = []string{
 	"third-party",
 }
 
-func BlameRepository(dir string, commitID string, c *config.Repository) (*BlameOutput, error) {
+func BlameRepository(dir string, commitID string) (*BlameOutput, error) {
 	blameOutput := &BlameOutput{}
 	var err error
 	blameOutput.HunkMap, blameOutput.CommitMap, err = blame.BlameRepository(dir, commitID, nil)
 	return utcTime(blameOutput), err
 }
 
-func BlameFiles(dir string, files []string, commitID string, c *config.Repository) (*BlameOutput, error) {
+func BlameFiles(dir string, files []string, commitID string) (*BlameOutput, error) {
 	hunkMap := make(map[string][]blame.Hunk)
 	commitMap := make(map[string]blame.Commit)
 

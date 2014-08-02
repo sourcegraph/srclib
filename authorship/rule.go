@@ -1,5 +1,3 @@
-//+build off
-
 package authorship
 
 import (
@@ -10,6 +8,7 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/graph"
+	"sourcegraph.com/sourcegraph/srclib/grapher"
 	"sourcegraph.com/sourcegraph/srclib/plan"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 	"sourcegraph.com/sourcegraph/srclib/vcsutil"
@@ -17,7 +16,7 @@ import (
 
 func init() {
 	plan.RegisterRuleMaker("authorship", makeAuthorshipRules)
-	buildstore.RegisterDataType("unit-authorship.v0", &SourceUnitOutput{})
+	buildstore.RegisterDataType("authorship", &SourceUnitOutput{})
 }
 
 type SourceUnitOutput struct {
@@ -29,13 +28,13 @@ type SourceUnitOutput struct {
 
 // makeAuthorshipRules makes rules for computing authorship information about
 // symbols and refs at a source unit level and a repository level.
-func makeAuthorshipRules(c *config.Repository, dataDir string, existing []makex.Rule) ([]makex.Rule, error) {
+func makeAuthorshipRules(c *config.Tree, dataDir string, existing []makex.Rule, opt plan.Options) ([]makex.Rule, error) {
 	// determine authorship for each source unit individually, but we have to
 	// wait until graphing AND blaming completes.
-	graphRules, blameRules := make(map[unit.ID]*plan.GraphUnitRule), make(map[unit.ID]*vcsutil.BlameSourceUnitRule)
+	graphRules, blameRules := make(map[unit.ID]*grapher.GraphUnitRule), make(map[unit.ID]*vcsutil.BlameSourceUnitRule)
 	for _, rule := range existing {
 		switch rule := rule.(type) {
-		case *plan.GraphUnitRule:
+		case *grapher.GraphUnitRule:
 			graphRules[rule.Unit.ID()] = rule
 		case *vcsutil.BlameSourceUnitRule:
 			blameRules[rule.Unit.ID()] = rule
@@ -89,7 +88,6 @@ func (r *ComputeUnitAuthorshipRule) Prereqs() []string { return []string{r.Blame
 
 func (r *ComputeUnitAuthorshipRule) Recipes() []string {
 	return []string{
-		"mkdir -p `dirname $@`",
-		fmt.Sprintf("srcgraph authorship %s %s 1> $@", makex.Quote(r.BlameOutput), makex.Quote(r.GraphOutput)),
+		fmt.Sprintf("src internal unit-authorship --blame-data %s --graph-data %s 1> $@", makex.Quote(r.BlameOutput), makex.Quote(r.GraphOutput)),
 	}
 }

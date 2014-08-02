@@ -1,5 +1,3 @@
-//+build off
-
 package authorship
 
 import (
@@ -9,14 +7,13 @@ import (
 
 	"github.com/sourcegraph/go-nnz/nnz"
 
-	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/grapher"
 	"sourcegraph.com/sourcegraph/srclib/repo"
 	"sourcegraph.com/sourcegraph/srclib/vcsutil"
 )
 
-func ComputeSourceUnit(g *grapher.Output, b *vcsutil.BlameOutput, c *config.Repository) (*SourceUnitOutput, error) {
+func ComputeSourceUnit(g *grapher.Output, b *vcsutil.BlameOutput) (*SourceUnitOutput, error) {
 	var getAuthors = func(file string, start, end int) (map[string]*AuthorshipInfo, map[string]int, error) {
 		hunks, present := b.HunkMap[file]
 		if !present {
