@@ -80,20 +80,13 @@ func (c *APIDescribeCmd) Execute(args []string) error {
 	}
 	toolchainExecOpt := ToolchainExecOpt{ExeMethods: "program"}
 
-	// Config & plan repository if not yet built.
+	// Config repository if not yet built.
 	if _, err := buildStore.Stat(buildStore.CommitPath(repo.CommitID)); os.IsNotExist(err) {
 		configCmd := &ConfigCmd{
 			Options:          configOpt,
 			ToolchainExecOpt: toolchainExecOpt,
 		}
 		if err := configCmd.Execute(nil); err != nil {
-			return err
-		}
-
-		planCmd := &PlanCmd{
-			ToolchainExecOpt: toolchainExecOpt,
-		}
-		if err := planCmd.Execute(nil); err != nil {
 			return err
 		}
 	}
