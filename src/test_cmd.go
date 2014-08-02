@@ -77,7 +77,7 @@ func (c *TestCmd) Execute(args []string) error {
 	if strings.Contains(c.ExeMethods, ",") {
 		log.Fatal("Only one toolchain execution method can be specified per test run. You specified: %q.", c.ExeMethods)
 	}
-	if gopt.Verbose {
+	if GlobalOpt.Verbose {
 		log.Printf("Executing tests using method: %s", c.ExeMethods)
 	}
 
@@ -99,12 +99,12 @@ func (c *TestCmd) Execute(args []string) error {
 		}
 	}
 
-	if gopt.Verbose {
+	if GlobalOpt.Verbose {
 		log.Printf("Testing trees: %v", trees)
 	}
 
 	for _, tree := range trees {
-		if gopt.Verbose {
+		if GlobalOpt.Verbose {
 			log.Printf("Testing tree %v...", tree)
 		}
 		expectedDir := filepath.Join(tree, "../../expected", c.ExeMethods, filepath.Base(tree))
