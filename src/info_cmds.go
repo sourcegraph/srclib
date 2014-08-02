@@ -24,7 +24,7 @@ type InfoCmd struct{}
 var infoCmd InfoCmd
 
 func (c *InfoCmd) Execute(args []string) error {
-	log.Printf("srclib version %s\n", Version)
+	log.Println("srclib\n")
 	log.Println("https://sourcegraph.com/sourcegraph/srclib")
 	log.Println()
 

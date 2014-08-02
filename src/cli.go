@@ -12,12 +12,6 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/task2"
 )
 
-var (
-	Version   = "0.0.1"
-	Name      = "srcgraph"
-	ExtraHelp = ""
-)
-
 var CLI = flags.NewNamedParser("src", flags.Default)
 
 // gopt is global options.
