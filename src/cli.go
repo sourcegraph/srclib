@@ -14,14 +14,14 @@ import (
 
 var CLI = flags.NewNamedParser("src", flags.Default)
 
-// gopt is global options.
-var gopt struct {
+// GlobalOpt contains global options.
+var GlobalOpt struct {
 	Verbose bool `short:"v" description:"show verbose output"`
 }
 
 func init() {
 	CLI.LongDescription = "src builds projects, analyzes source code, and queries Sourcegraph."
-	CLI.AddGroup("Global options", "", &gopt)
+	CLI.AddGroup("Global options", "", &GlobalOpt)
 }
 
 // TODO(sqs): add base URL flag for apiclient

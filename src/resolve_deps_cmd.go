@@ -38,7 +38,7 @@ The options are:
 
 	var allRawDeps []*dep.RawDependency
 	for name, input := range inputs {
-		if gopt.Verbose {
+		if GlobalOpt.Verbose {
 			log.Printf("Reading raw deps from %q", name)
 		}
 		var rawDeps []*dep.RawDependency

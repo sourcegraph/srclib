@@ -45,14 +45,14 @@ The options are:
 			log.Fatal(err)
 		}
 
-		if gopt.Verbose {
+		if GlobalOpt.Verbose {
 			log.Printf("%s", u.ID())
 		}
 
 		allRawDeps = append(allRawDeps, rawDeps...)
 
 		for _, rawDep := range rawDeps {
-			if gopt.Verbose {
+			if GlobalOpt.Verbose {
 				log.Printf("%+v", rawDep)
 			}
 

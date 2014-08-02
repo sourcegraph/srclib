@@ -225,7 +225,7 @@ var toolchainGetCmd ToolchainGetCmd
 
 func (c *ToolchainGetCmd) Execute(args []string) error {
 	for _, tc := range c.Args.Toolchains {
-		if gopt.Verbose {
+		if GlobalOpt.Verbose {
 			fmt.Println(tc)
 		}
 		_, err := toolchain.Get(string(tc))

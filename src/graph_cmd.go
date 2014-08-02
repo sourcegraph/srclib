@@ -44,7 +44,7 @@ The options are:
 			log.Fatal(err)
 		}
 
-		if *summary || gopt.Verbose {
+		if *summary || GlobalOpt.Verbose {
 			log.Printf("%s output summary:", u.ID())
 			log.Printf(" - %d symbols", len(output.Symbols))
 			log.Printf(" - %d refs", len(output.Refs))

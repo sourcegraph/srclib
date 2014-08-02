@@ -50,7 +50,7 @@ The options are:
 			log.Fatalf("Error creating build for %q: %s", uri, err)
 		}
 		log.Printf("%-30s Build #%d", uri, build.BID)
-		if gopt.Verbose {
+		if GlobalOpt.Verbose {
 			PrintJSON(build, "")
 			log.Println()
 		}
@@ -84,7 +84,7 @@ The options are:
 	for _, b := range builds {
 		// TODO(sqs): show repository URI, not just ID
 		log.Printf("%-35s@ %s #%-5d %s ago", b.RepoURI, b.CommitID, b.BID, time.Since(b.CreatedAt))
-		if gopt.Verbose {
+		if GlobalOpt.Verbose {
 			PrintJSON(b, "")
 			log.Println()
 		}

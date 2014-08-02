@@ -135,7 +135,7 @@ func (c *APIDescribeCmd) Execute(args []string) error {
 		}
 	}
 
-	if gopt.Verbose {
+	if GlobalOpt.Verbose {
 		if len(units) > 0 {
 			ids := make([]string, len(units))
 			for i, u := range units {
@@ -176,7 +176,7 @@ OuterLoop:
 	}
 
 	if ref == nil {
-		if gopt.Verbose {
+		if GlobalOpt.Verbose {
 			log.Printf("No ref found at %s:%d.", c.File, c.StartByte)
 		}
 		fmt.Println(`{}`)
@@ -219,7 +219,7 @@ OuterLoop:
 				}
 			}
 		}
-		if resp.Def == nil && gopt.Verbose {
+		if resp.Def == nil && GlobalOpt.Verbose {
 			log.Printf("No definition found with path %q in unit %q type %q.", ref.SymbolPath, ref.SymbolUnit, ref.SymbolUnitType)
 		}
 	}
@@ -241,7 +241,7 @@ OuterLoop:
 			defer wg.Done()
 			var err error
 			resp.Def, _, err = apiclient.Symbols.Get(spec, &sourcegraph.SymbolGetOptions{Doc: true})
-			if err != nil && gopt.Verbose {
+			if err != nil && GlobalOpt.Verbose {
 				log.Printf("Couldn't fetch definition %v: %s.", spec, err)
 			}
 		}()
@@ -256,7 +256,7 @@ OuterLoop:
 				Formatted:   true,
 				ListOptions: sourcegraph.ListOptions{PerPage: 4},
 			})
-			if err != nil && gopt.Verbose {
+			if err != nil && GlobalOpt.Verbose {
 				log.Printf("Couldn't fetch examples for %v: %s.", spec, err)
 			}
 		}()
