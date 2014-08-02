@@ -13,6 +13,7 @@ import (
 	"github.com/sourcegraph/makex"
 	"github.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
+	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
 
 	"sourcegraph.com/sourcegraph/srclib/plan"
@@ -113,64 +114,31 @@ func (c *PlanCmd) Execute(args []string) error {
 		return err
 	}
 
-	var mf makex.Makefile
-	var allTargets []string
+	// Parse units
 	sort.Strings(unitFiles)
-	for _, unitFile := range unitFiles {
+	units := make([]*unit.SourceUnit, len(unitFiles))
+	for i, unitFile := range unitFiles {
 		f, err := buildStore.Open(unitFile)
 		if err != nil {
 			return err
 		}
 		var u *unit.SourceUnit
 		if err := json.NewDecoder(f).Decode(&u); err != nil {
+			f.Close()
 			return err
 		}
 		if err := f.Close(); err != nil {
 			return err
 		}
-
-		// TODO(sqs): make the "graph" target depend on the "depresolve" target
-		// to avoid duplicating work
-		for _, op := range u.OpsSorted() {
-			var normalizeDataCmd string
-
-			toolRef := u.Ops[op]
-			if toolRef == nil {
-				choice, err := toolchain.ChooseTool(op, u.Type)
-				if err != nil {
-					return err
-				}
-				toolRef = choice
-			}
-
-			prereqFiles := []string{filepath.Join(filepath.Dir(buildDataDir), unitFile)}
-			if op == "graph" {
-				normalizeDataCmd = "| src internal normalize-graph-data"
-				prereqFiles = append(prereqFiles, u.Files...)
-			}
-
-			target := filepath.Join(buildDataDir, plan.SourceUnitDataFilename(op, u))
-			allTargets = append(allTargets, target)
-			mf.Rules = append(mf.Rules, &makex.BasicRule{
-				TargetFile:  target,
-				PrereqFiles: prereqFiles,
-				RecipeCmds:  []string{fmt.Sprintf("src tool %s %q %q < $^ %s 1> $@", strings.Join(toolchainExecOptArgs, " "), toolRef.Toolchain, toolRef.Subcmd, normalizeDataCmd)},
-			})
-		}
+		units[i] = u
 	}
-	mf.Rules = append(mf.Rules, &makex.BasicRule{
-		TargetFile:  "all",
-		PrereqFiles: allTargets,
-	})
 
-	// The special make target .DELETE_ON_ERROR makes it so that the targets for
-	// failed recipes are deleted. This lets us do "1> $@" to write to the
-	// target file without erroneously satisfying the target if the recipe
-	// fails. makex has this behavior by default and does not heed
-	// .DELETE_ON_ERROR.
-	mf.Rules = append(mf.Rules, &makex.BasicRule{TargetFile: ".DELETE_ON_ERROR"})
+	mf, err := plan.CreateMakefile(buildDataDir, &config.Tree{SourceUnits: units}, plan.Options{strings.Join(toolchainExecOptArgs, " ")})
+	if err != nil {
+		return err
+	}
 
-	mfData, err := makex.Marshal(&mf)
+	mfData, err := makex.Marshal(mf)
 	if err != nil {
 		log.Fatal(err)
 	}

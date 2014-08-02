@@ -1,50 +1,9 @@
 package dep
 
 import (
-	"path/filepath"
-
-	"github.com/sourcegraph/makex"
-	"sourcegraph.com/sourcegraph/srclib/buildstore"
-	"sourcegraph.com/sourcegraph/srclib/config"
-	"sourcegraph.com/sourcegraph/srclib/plan"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
-
-func init() {
-	plan.RegisterRuleMaker("depresolve", makeDepRules)
-	buildstore.RegisterDataType("depresolve.v0", []*ResolvedDep{})
-}
-
-func makeDepRules(c *config.Repository, dataDir string, existing []makex.Rule) ([]makex.Rule, error) {
-	if len(c.SourceUnits) == 0 {
-		return nil, nil
-	}
-
-	var rules []makex.Rule
-	for _, u := range c.SourceUnits {
-		rules = append(rules, &ResolveDepsRule{dataDir, u})
-	}
-
-	return rules, nil
-}
-
-type ResolveDepsRule struct {
-	dataDir string
-	Unit    *unit.SourceUnit
-}
-
-func (r *ResolveDepsRule) Target() string {
-	return filepath.Join(r.dataDir, plan.SourceUnitDataFilename([]*ResolvedDep{}, r.Unit))
-}
-
-func (r *ResolveDepsRule) Prereqs() []string {
-	return []string{filepath.Join(r.dataDir, plan.RepositoryCommitDataFilename(&config.Repository{}))}
-}
-
-func (r *ResolveDepsRule) Recipes() []string {
-	return []string{"src tool sourcegraph.com/sourcegraph/srclib-go depresolve < $^ 1> $@"}
-}
 
 // ResolvedTarget represents a resolved dependency target.
 type ResolvedTarget struct {

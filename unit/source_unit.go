@@ -89,7 +89,7 @@ func (u *SourceUnit) OpsSorted() []string {
 }
 
 func init() {
-	buildstore.RegisterDataType("unit.v0", SourceUnit{})
+	buildstore.RegisterDataType("unit", SourceUnit{})
 }
 
 // idSeparator joins a source unit's name and type in its ID string.
