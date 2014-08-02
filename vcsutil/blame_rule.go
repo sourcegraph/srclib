@@ -1,7 +1,3 @@
-//+build off
-
-// TMP reenable this
-
 package vcsutil
 
 import (
@@ -18,10 +14,10 @@ import (
 
 func init() {
 	plan.RegisterRuleMaker("blame", makeBlameRules)
-	buildstore.RegisterDataType("blame.v0", &BlameOutput{})
+	buildstore.RegisterDataType("blame", &BlameOutput{})
 }
 
-func makeBlameRules(c *config.Repository, dataDir string, existing []makex.Rule) ([]makex.Rule, error) {
+func makeBlameRules(c *config.Tree, dataDir string, existing []makex.Rule, opt plan.Options) ([]makex.Rule, error) {
 	// blame each source unit individually
 	var rules []makex.Rule
 	for _, u := range c.SourceUnits {
@@ -39,11 +35,14 @@ func (r *BlameSourceUnitRule) Target() string {
 	return filepath.Join(r.dataDir, plan.SourceUnitDataFilename(&BlameOutput{}, r.Unit))
 }
 
-func (r *BlameSourceUnitRule) Prereqs() []string { return r.Unit.Files }
+func (r *BlameSourceUnitRule) Prereqs() []string {
+	ps := []string{filepath.Join(r.dataDir, plan.SourceUnitDataFilename(unit.SourceUnit{}, r.Unit))}
+	ps = append(ps, r.Unit.Files...)
+	return ps
+}
 
 func (r *BlameSourceUnitRule) Recipes() []string {
 	return []string{
-		"mkdir -p `dirname $@`",
-		fmt.Sprintf("srcgraph blame %s 1> $@", makex.Quote(string(r.Unit.ID()))),
+		fmt.Sprintf("src internal unit-blame --unit-data %s 1> $@", makex.Quote(filepath.Join(r.dataDir, plan.SourceUnitDataFilename(unit.SourceUnit{}, r.Unit)))),
 	}
 }

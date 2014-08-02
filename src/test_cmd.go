@@ -13,8 +13,11 @@ import (
 	"testing"
 
 	"github.com/aybabtme/color/brush"
+	"github.com/kr/fs"
+	"sourcegraph.com/sourcegraph/srclib/authorship"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/util"
+	"sourcegraph.com/sourcegraph/srclib/vcsutil"
 )
 
 func init() {
@@ -57,6 +60,8 @@ And the actual test output is written to:
 type TestCmd struct {
 	GenerateExpected bool `long:"gen" description:"(re)generate expected output for all test cases and exit"`
 
+	CheckInternalTargets bool `long:"check-internal-targets" description:"also produce and check internal command outputs (ex: blame, authorship)"`
+
 	// ExeMethods is like the same field from ToolchainExecOpt, but we want it
 	// to default to "docker" for tests. So, we have to redefine it here.
 	ExeMethods string `short:"m" long:"methods" default:"docker" description:"permitted execution methods; unlike all other commands, for test it prefers Docker execution" value-name:"METHODS"`
@@ -72,9 +77,8 @@ func (c *TestCmd) Execute(args []string) error {
 	if strings.Contains(c.ExeMethods, ",") {
 		log.Fatal("Only one toolchain execution method can be specified per test run. You specified: %q.", c.ExeMethods)
 	}
-	execOpt := ToolchainExecOpt{ExeMethods: c.ExeMethods}
 	if gopt.Verbose {
-		log.Printf("Executing tests using method: %s", execOpt.ExeMethods)
+		log.Printf("Executing tests using method: %s", c.ExeMethods)
 	}
 
 	var trees []string
@@ -103,10 +107,9 @@ func (c *TestCmd) Execute(args []string) error {
 		if gopt.Verbose {
 			log.Printf("Testing tree %v...", tree)
 		}
-		exeMethod := execOpt.ExeMethods
-		expectedDir := filepath.Join(tree, "../../expected", exeMethod, filepath.Base(tree))
-		actualDir := filepath.Join(tree, "../../actual", exeMethod, filepath.Base(tree))
-		if err := testTree(tree, expectedDir, actualDir, c.GenerateExpected, execOpt); err != nil {
+		expectedDir := filepath.Join(tree, "../../expected", c.ExeMethods, filepath.Base(tree))
+		actualDir := filepath.Join(tree, "../../actual", c.ExeMethods, filepath.Base(tree))
+		if err := testTree(tree, expectedDir, actualDir, c); err != nil {
 			return fmt.Errorf("testing tree %q: %s", tree, err)
 		}
 	}
@@ -118,7 +121,7 @@ func (c *TestCmd) Execute(args []string) error {
 	return nil
 }
 
-func testTree(treeDir, expectedDir, actualDir string, generate bool, execOpt ToolchainExecOpt) error {
+func testTree(treeDir, expectedDir, actualDir string, c *TestCmd) error {
 	treeName := filepath.Base(treeDir)
 	if treeName == "." {
 		absTreeDir, err := filepath.Abs(treeDir)
@@ -130,7 +133,7 @@ func testTree(treeDir, expectedDir, actualDir string, generate bool, execOpt Too
 
 	// Determine and wipe the desired output dir.
 	var outputDir string
-	if generate {
+	if c.GenerateExpected {
 		outputDir = expectedDir
 	} else {
 		outputDir = actualDir
@@ -175,7 +178,7 @@ func testTree(treeDir, expectedDir, actualDir string, generate bool, execOpt Too
 	} else {
 		w = &buf
 	}
-	cmd := exec.Command("src", "-v", "do-all", "-m", execOpt.ExeMethods)
+	cmd := exec.Command("src", "-v", "do-all", "-m", c.ExeMethods)
 	cmd.Dir = treeDir
 	cmd.Stderr, cmd.Stdout = w, w
 
@@ -183,7 +186,26 @@ func testTree(treeDir, expectedDir, actualDir string, generate bool, execOpt Too
 		return fmt.Errorf("Command %v in %s failed: %s.\n\nOutput was:\n%s", cmd.Args, treeName, err, buf.String())
 	}
 
-	if generate {
+	if !c.CheckInternalTargets {
+		// remove all internal target output files
+		internalOutputs := []interface{}{&authorship.SourceUnitOutput{}, &vcsutil.BlameOutput{}}
+		w := fs.Walk(outputDir)
+		for w.Step() {
+			if w.Err() != nil {
+				return w.Err()
+			}
+			for _, o := range internalOutputs {
+				if strings.HasSuffix(w.Path(), buildstore.DataTypeSuffix(o)) {
+					if err := os.Remove(w.Path()); err != nil {
+						return err
+					}
+					break
+				}
+			}
+		}
+	}
+
+	if c.GenerateExpected {
 		log.Printf("Successfully generated expected output for %s in %s.", treeName, expectedDir)
 		return nil
 	}

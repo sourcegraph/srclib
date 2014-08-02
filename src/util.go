@@ -117,14 +117,11 @@ func updateVCSIgnore(name string) {
 	}
 }
 
-func readJSONFile(file string, v interface{}) {
+func readJSONFile(file string, v interface{}) error {
 	f, err := os.Open(file)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer f.Close()
-	err = json.NewDecoder(f).Decode(v)
-	if err != nil {
-		log.Fatal(err)
-	}
+	return json.NewDecoder(f).Decode(v)
 }
