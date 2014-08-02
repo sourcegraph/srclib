@@ -64,8 +64,8 @@ func (c *NormalizeGraphDataCmd) Execute(args []string) error {
 }
 
 type UnitAuthorshipCmd struct {
-	BlameData flags.Filename `long:"blame-data" description:"unit-blame output JSON file for a source unit" value-name:"FILE"`
-	GraphData flags.Filename `long:"graph-data" description:"graph output JSON file for a source unit" value-name:"FILE"`
+	BlameData flags.Filename `long:"blame-data" required:"yes" description:"unit-blame output JSON file for a source unit" value-name:"FILE"`
+	GraphData flags.Filename `long:"graph-data" required:"yes" description:"graph output JSON file for a source unit" value-name:"FILE"`
 }
 
 var unitAuthorshipCmd UnitAuthorshipCmd
@@ -99,7 +99,7 @@ func (c *UnitAuthorshipCmd) Execute(args []string) error {
 }
 
 type UnitBlameCmd struct {
-	UnitData flags.Filename `long:"unit-data" description:"source unit definition JSON file" value-name:"FILE"`
+	UnitData flags.Filename `long:"unit-data" required:"yes" description:"source unit definition JSON file" value-name:"FILE"`
 }
 
 var unitBlameCmd UnitBlameCmd
