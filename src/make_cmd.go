@@ -1,20 +1,24 @@
 package src
 
 import (
-	"fmt"
 	"log"
 	"os"
-	"os/exec"
 	"path/filepath"
+
+	"github.com/sourcegraph/makex"
+
+	"strings"
 
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
+	"sourcegraph.com/sourcegraph/srclib/plan"
+	"sourcegraph.com/sourcegraph/srclib/toolchain"
 )
 
 func init() {
 	c, err := CLI.AddCommand("make",
-		"execute planned Makefile",
-		`Executes the Makefile created by the "src plan" command.`,
+		"plans and executes plan",
+		`Generates a plan (in Makefile form, in memory) for analyzing the tree and executes the plan. `,
 		&makeCmd,
 	)
 	if err != nil {
@@ -29,6 +33,9 @@ type MakeCmd struct {
 
 	ToolchainExecOpt `group:"execution"`
 	BuildCacheOpt    `group:"build cache"`
+
+	PrintMakefile bool `short:"p" long:"print" description:"print planned Makefile and exit"`
+	DryRun        bool `short:"n" long:"dry-run" description:"print what would be done and exit"`
 
 	Dir Directory `short:"C" long:"directory" description:"change to DIR before doing anything" value-name:"DIR"`
 
@@ -60,16 +67,51 @@ func (c *MakeCmd) Execute(args []string) error {
 	if err != nil {
 		return err
 	}
-	buildRoot, err := buildstore.RootDir(buildStore)
+
+	treeConfig, err := config.ReadCached(buildStore, currentRepo.CommitID)
 	if err != nil {
 		return err
 	}
-	mfFile := filepath.Join(buildRoot, buildStore.FilePath(currentRepo.CommitID, "Makefile"))
-	makeCmd := exec.Command("make", "-f", mfFile)
-	makeCmd.Args = append(makeCmd.Args, c.Args.Targets...)
-	if out, err := makeCmd.CombinedOutput(); err != nil {
-		return fmt.Errorf("make failed: %s.\n\nOutput was:\n%s", err, out)
+
+	toolchainExecOptArgs, err := toolchain.MarshalArgs(&c.ToolchainExecOpt)
+	if err != nil {
+		return err
 	}
 
-	return nil
+	buildDataDir, err := buildstore.BuildDir(buildStore, currentRepo.CommitID)
+	if err != nil {
+		return err
+	}
+	absDir, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+	buildDataDir, _ = filepath.Rel(absDir, buildDataDir)
+
+	if c.PrintMakefile {
+		mf, err := plan.CreateMakefile(buildDataDir, treeConfig, plan.Options{strings.Join(toolchainExecOptArgs, " ")})
+		if err != nil {
+			return err
+		}
+		mfData, err := makex.Marshal(mf)
+		if err != nil {
+			return err
+		}
+		_, err = os.Stdout.Write(mfData)
+		return err
+	}
+
+	mf, err := plan.CreateMakefile(buildDataDir, treeConfig, plan.Options{strings.Join(toolchainExecOptArgs, " ")})
+	if err != nil {
+		return err
+	}
+
+	mkConf := &makex.Default
+	mk := mkConf.NewMaker(mf, c.Args.Targets...)
+
+	if c.DryRun {
+		return mk.DryRun(os.Stdout)
+	}
+
+	return mk.Run()
 }

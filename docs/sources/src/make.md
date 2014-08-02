@@ -43,14 +43,17 @@ can regenerate them when the source unit definitions change.
 
 ## Phase 2. Plan
 
-Next, `src plan` generates a Makefile that, when run, will run the necessary
-commands to analyze the project. To do so, it examines each source unit (using
-the build cache, if present) and generates rules for each of the predefined
-operations (currently depresolve and graph).
+Next, `src make` generates a Makefile (in memory) that, when run, will run the
+necessary commands to analyze the project. To do so, it examines each source
+unit (using the build cache, if present) and generates rules for each of the
+predefined operations (currently depresolve and graph).
 
-To determine which tool to use for an operation on a source unit, TODO(sqs): how
-does it know to run the Python grapher (and which Python grapher, if there are
-multiple in the SRCLIBPATH) on pip package source units, for example?
+You can view the Makefile by running `src make --print`.
+
+To determine which tool to use for an operation on a source unit, it first
+checks whether the Srcfile specifies a tool to use. If not, it takes the first
+tool in the SRCLIBPATH that can perform the given operation on the source unit
+type (based on the toolchains' Srclibtoolchain files).
 
 Planning a project that contains a source units named `NAME1` of type `TYPE`
 (and where `TOOLCHAIN` is the right toolchain to use) might yield the following
@@ -66,8 +69,7 @@ Makefile:
 
 ## Phase 3. Execute
 
-Finally, `src make` executes the Makefile produced in the prior planning
-phase.
+Finally, `src make` executes the Makefile created in the prior planning phase.
 
 The final products of the execution phase are the target JSON files containing
 the results of executing the tools as specified in the Makefile.

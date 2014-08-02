@@ -49,12 +49,6 @@ func (c *DoAllCmd) Execute(args []string) error {
 		return err
 	}
 
-	// plan
-	planCmd := &PlanCmd{ToolchainExecOpt: c.ToolchainExecOpt}
-	if err := planCmd.Execute(nil); err != nil {
-		return err
-	}
-
 	// make
 	makeCmd := &MakeCmd{
 		Options:          c.Options,
