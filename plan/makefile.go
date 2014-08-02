@@ -7,7 +7,11 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/config"
 )
 
-type RuleMaker func(c *config.Repository, dataDir string, existing []makex.Rule) ([]makex.Rule, error)
+type Options struct {
+	ToolchainExecOpt string
+}
+
+type RuleMaker func(c *config.Tree, dataDir string, existing []makex.Rule, opt Options) ([]makex.Rule, error)
 
 var (
 	RuleMakers        = make(map[string]RuleMaker)
@@ -30,11 +34,11 @@ func RegisterRuleMaker(name string, r RuleMaker) {
 	orderedRuleMakers = append(orderedRuleMakers, r)
 }
 
-func CreateMakefile(buildDataDir string, c *config.Repository) (*makex.Makefile, error) {
+func CreateMakefile(buildDataDir string, c *config.Tree, opt Options) (*makex.Makefile, error) {
 	var allRules []makex.Rule
 	for i, r := range orderedRuleMakers {
 		name := ruleMakerNames[i]
-		rules, err := r(c, buildDataDir, allRules)
+		rules, err := r(c, buildDataDir, allRules, opt)
 		if err != nil {
 			return nil, fmt.Errorf("rule maker %s: %s", name, err)
 		}
