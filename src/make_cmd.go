@@ -57,8 +57,6 @@ func (c *MakeCmd) Execute(args []string) error {
 		c.Args.Targets = []string{"all"}
 	}
 
-	// execute
-	// TODO(sqs): use makex and makefile returned by planCmd
 	currentRepo, err := OpenRepo(".")
 	if err != nil {
 		return err
