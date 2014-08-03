@@ -162,9 +162,6 @@ package, into a full specification of the dependency's target.
 
 **stdout:** `[]*dep2.Resolution` JSON array with each item corresponding to the same-index entry in the source unit's `Dependencies` field
 
-See the `dep2.ResolveDeps` function for an implementation of the calling side of this
-protocol.
-
 ## graph (graphers)
 
 Tools that perform the `graph` operation are called **graphers**. Depending on

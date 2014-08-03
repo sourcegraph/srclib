@@ -1,7 +1,10 @@
 package dep
 
 import (
-	"sourcegraph.com/sourcegraph/srclib/toolchain"
+	"encoding/json"
+	"sort"
+
+	"sourcegraph.com/sourcegraph/srclib/repo"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
@@ -47,60 +50,41 @@ type Resolution struct {
 // Command for dep resolution has no options.
 type Command struct{}
 
-// ResolveDeps resolves dependencies
-func ResolveDeps(resolver toolchain.Tool, cmd Command, unit *unit.SourceUnit) ([]*Resolution, error) {
-	args, err := toolchain.MarshalArgs(&cmd)
-	if err != nil {
-		return nil, err
+// ResolutionsToResolvedDeps converts a []*Resolution for a source unit to a
+// []*ResolvedDep (which is a data structure that includes the source unit
+// type/name/etc., so elements are meaningful even if the associated source unit
+// struct is not available).
+//
+// Resolutions with Errors are omitted from the returned slice and no such
+// errors are returned.
+func ResolutionsToResolvedDeps(ress []*Resolution, unit *unit.SourceUnit, fromRepo repo.URI, fromCommitID string) ([]*ResolvedDep, error) {
+	var resolved []*ResolvedDep
+	for _, res := range ress {
+		if res.Error != "" {
+			continue
+		}
+		if rt := res.Target; rt != nil {
+			rd := &ResolvedDep{
+				FromRepo:        fromRepo,
+				FromCommitID:    fromCommitID,
+				FromUnit:        unit.Name,
+				FromUnitType:    unit.Type,
+				ToRepo:          repo.MakeURI(rt.ToRepoCloneURL),
+				ToUnit:          rt.ToUnit,
+				ToUnitType:      rt.ToUnitType,
+				ToVersionString: rt.ToVersionString,
+				ToRevSpec:       rt.ToRevSpec,
+			}
+			resolved = append(resolved, rd)
+		}
 	}
-
-	var res []*Resolution
-	if err := resolver.Run(args, unit, &res); err != nil {
-		return nil, err
-	}
-
-	return res, nil
+	sort.Sort(resolvedDeps(resolved))
+	return resolved, nil
 }
 
-// func ResolveAll(rawDeps []*RawDependency, c *config.Repository) ([]*ResolvedDep, error) {
-// 	var resolved []*ResolvedDep
-// 	for _, rawDep := range rawDeps {
-// 		rt, err := Resolve(rawDep, c)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		if rt == nil {
-// 			continue
-// 		}
+type resolvedDeps []*ResolvedDep
 
-// 		var toRepo repo.URI
-// 		if rt.ToRepoCloneURL == "" {
-// 			// empty clone URL means the current repository
-// 			toRepo = c.URI
-// 		} else {
-// 			toRepo = repo.MakeURI(rt.ToRepoCloneURL)
-// 		}
-
-// 		// TODO!(sqs): return repo clone URLs as well, so we can add new repositories
-// 		rd := &ResolvedDep{
-// 			FromRepo:        c.URI,
-// 			FromUnit:        rawDep.FromUnit,
-// 			FromUnitType:    rawDep.FromUnitType,
-// 			ToRepo:          toRepo,
-// 			ToUnit:          rt.ToUnit,
-// 			ToUnitType:      rt.ToUnitType,
-// 			ToVersionString: rt.ToVersionString,
-// 			ToRevSpec:       rt.ToRevSpec,
-// 		}
-// 		resolved = append(resolved, rd)
-// 	}
-// 	sort.Sort(resolvedDeps(resolved))
-// 	return resolved, nil
-// }
-
-// type resolvedDeps []*ResolvedDep
-
-// func (d *ResolvedDep) sortKey() string    { b, _ := json.Marshal(d); return string(b) }
-// func (l resolvedDeps) Len() int           { return len(l) }
-// func (l resolvedDeps) Swap(i, j int)      { l[i], l[j] = l[j], l[i] }
-// func (l resolvedDeps) Less(i, j int) bool { return l[i].sortKey() < l[j].sortKey() }
+func (d *ResolvedDep) sortKey() string    { b, _ := json.Marshal(d); return string(b) }
+func (l resolvedDeps) Len() int           { return len(l) }
+func (l resolvedDeps) Swap(i, j int)      { l[i], l[j] = l[j], l[i] }
+func (l resolvedDeps) Less(i, j int) bool { return l[i].sortKey() < l[j].sortKey() }
