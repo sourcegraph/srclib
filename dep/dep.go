@@ -17,6 +17,9 @@ type ResolvedDep struct {
 	FromUnitType string `db:"from_unit_type"`
 
 	// ToRepo is the repository containing the source unit that is depended on.
+	//
+	// TODO(sqs): include repo clone URLs as well, so we can add new
+	// repositories from seen deps.
 	ToRepo repo.URI `db:"to_repo"`
 
 	// ToUnit is the name of the source unit that is depended on.
