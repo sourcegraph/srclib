@@ -13,30 +13,39 @@ google_analytics: ['UA-40540747-5', 'srclib.org']
 
 pages:
 
-- ['gettingstarted.md', 'Getting started']
+- ['gettingstarted.md', 'Getting Started']
 
-# Installation
-- ['installation/editor-plugins.md', 'Installation', 'Editor Plugins']
-- ['installation/src.md', 'Installation', 'src']
+# Editor Plugins
+- ['plugins/emacs.md', 'Editor Plugins', 'Emacs']
+- ['plugins/sublimetext.md', 'Editor Plugins', 'Sublime Text']
+- ['plugins/vim.md', 'Editor Plugins', 'Vim']
+- ['plugins/atom.md', 'Editor Plugins', 'Atom']
+- ['plugins/creatingaplugin.md', 'Editor Plugins', 'Creating a Plugin']
 
-# src command
-- ['src/overview.md', 'src command', 'Overview']
-- ['src/data-model.md', 'src command', 'Data Model']
-- ['src/make.md', 'src command', 'Make']
-- ['src/srcfile.md', 'src command', 'Srcfile']
-- ['src/toolchains.md', 'src command', 'Toolchains']
-- ['src/faq.md', 'src command', 'FAQ']
+# Language Toolchains
+- ['toolchains/python.md', 'Language Toolchains', 'Python']
+- ['toolchains/go.md', 'Language Toolchains', 'Go']
+- ['toolchains/ruby.md', 'Language Toolchains', 'Ruby']
+- ['toolchains/javascript.md', 'Language Toolchains', 'Javascript']
+- ['toolchains/java.md', 'Language Toolchains', 'Java']
 
-# Language analysis
-- ['language-analysis/overview.md', 'Language analysis', 'Overview']
-- ['language-analysis/scanner-output.md', 'Language analysis', 'Scanner Output']
-- ['language-analysis/grapher-output.md', 'Language analysis', 'Grapher Output']
-- ['language-analysis/dependency-resolution-output.md', 'Language analysis', 'Dependency Resolution Output']
-- ['language-analysis/formatter.md', 'Language analysis', 'Formatter Output']
-- ['language-analysis/openquestions.md', 'Language analysis', 'Open Questions']
-- ['language-analysis/faq.md', 'Language analysis', 'FAQ']
+# Building
+- ['building/srcfile.md', 'Library Authors', 'Srcfile Customization']
+- ['building/uploading.md', 'Library Authors', 'Uploading to Sourcegraph']
 
 # API
 - ['api/overview.md', 'API', 'Overview']
+- ['api/data-model.md', 'API', 'Data Model']
+- ['api/make.md', 'API', 'src make']
+- ['api/describe.md', 'API', 'src describe']
 
-theme: yeti
+# Creating a Toolchain
+- ['creatingtoolchain/overview.md', 'Creating a Toolchain', 'Overview']
+- ['creatingtoolchain/output.md', 'Creating a Toolchain', 'Output Overview']
+- ['creatingtoolchain/scanner-output.md', 'Creating a Toolchain', 'Scanner Output']
+- ['creatingtoolchain/grapher-output.md', 'Creating a Toolchain', 'Grapher Output']
+- ['creatingtoolchain/dependency-resolution-output.md', 'Creating a Toolchain', 'Dependency Resolution Output']
+- ['creatingtoolchain/formatter.md', 'Creating a Toolchain', 'Formatter API']
+- ['creatingtoolchain/openquestions.md', 'Creating a Toolchain', 'Open Questions']
+
+- ['faq.md', 'FAQ']

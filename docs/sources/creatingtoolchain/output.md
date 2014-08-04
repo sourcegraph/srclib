@@ -4,7 +4,7 @@ page_title: Language Analysis Overview
 
 > NOTE: Before reading through this section, make sure that you first have a
 > proper understanding of the `src` executable. Start with the
-> [overview](../src/overview.md).
+> `[overview](../src/overview.md)`.
 
 ## Output Location
 
