@@ -339,3 +339,10 @@ img.desaturate {
   -moz-filter: grayscale(100%);
   filter: grayscale(100%);
 }
+
+// Make sure images in markdown don't exceed the container
+.container {
+  img {
+    max-width: 100%;
+  }
+}
