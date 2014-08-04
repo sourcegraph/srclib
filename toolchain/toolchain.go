@@ -159,6 +159,8 @@ func newDockerToolchain(path, dir, dockerfile, hostVolumeDir string) (*dockerToo
 	dockerEndpoint := os.Getenv("DOCKER_HOST")
 	if dockerEndpoint == "" {
 		dockerEndpoint = "unix:///var/run/docker.sock"
+	} else if !strings.HasPrefix(dockerEndpoint, "http") {
+		dockerEndpoint = "http://" + dockerEndpoint
 	}
 	dc, err := docker.NewClient(dockerEndpoint)
 	if err != nil {
