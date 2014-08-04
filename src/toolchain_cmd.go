@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"strings"
+	"sync"
 
 	"github.com/sqs/go-flags"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
@@ -203,15 +204,21 @@ type ToolchainBuildCmd struct {
 var toolchainBuildCmd ToolchainBuildCmd
 
 func (c *ToolchainBuildCmd) Execute(args []string) error {
+	var wg sync.WaitGroup
 	for _, tc := range c.Args.Toolchains {
 		tc, err := toolchain.Open(string(tc), toolchain.AsDockerContainer)
 		if err != nil {
 			log.Fatal(err)
 		}
-		if err := tc.Build(); err != nil {
-			log.Fatal(err)
-		}
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			if err := tc.Build(); err != nil {
+				log.Fatal(err)
+			}
+		}()
 	}
+	wg.Wait()
 	return nil
 }
 
