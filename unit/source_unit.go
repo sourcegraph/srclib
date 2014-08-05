@@ -40,6 +40,10 @@ type SourceUnit struct {
 	// Files is all of the files that make up this source unit.
 	Files []string
 
+	// Dir is the root directory of this source unit. It is optional and maybe
+	// empty.
+	Dir string
+
 	// Dependencies is a list of dependencies that this source unit has. The
 	// schema for these dependencies is internal to the scanner that produced
 	// this source unit. The dependency resolver is expected to know how to
