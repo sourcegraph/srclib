@@ -20,7 +20,7 @@ func init() {
 }
 
 type SourceUnitOutput struct {
-	Symbols             map[graph.SymbolPath][]*SymbolAuthorship
+	Defs                map[graph.DefPath][]*SymbolAuthorship
 	Refs                []*RefAuthorship
 	Authors             []*AuthorStats
 	ClientsOfOtherUnits []*ClientStats

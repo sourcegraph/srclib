@@ -13,6 +13,7 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
 )
 
+// START SourceUnit OMIT
 type SourceUnit struct {
 	// Name is an opaque identifier for this source unit that MUST be unique
 	// among all other source units of the same type in the same repository.
@@ -26,8 +27,8 @@ type SourceUnit struct {
 	Type string
 
 	// Repo is the URI of the repository containing this source unit, if any.
-	//
-	// During scanning, it is set by the `src` tool, not by the scanner tool.
+	// The scanner tool does not need to set this field - it can be left blank,
+	// to be filled in by the `src` tool
 	Repo repo.URI
 
 	// Globs is a list of patterns that match files that make up this source
@@ -79,6 +80,8 @@ type SourceUnit struct {
 	// TODO(sqs): add a way to specify the toolchains and tools to use for
 	// various tasks on this source unit
 }
+
+//END SourceUnit OMIT
 
 // OpsSorted returns the keys of the Ops map in sorted order.
 func (u *SourceUnit) OpsSorted() []string {

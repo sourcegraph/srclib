@@ -164,11 +164,11 @@ OuterLoop:
 		for _, ref2 := range g.Refs {
 			if c.File == ref2.File && c.StartByte >= ref2.Start && c.StartByte <= ref2.End {
 				ref = ref2
-				if ref.SymbolUnit == "" {
-					ref.SymbolUnit = u.Name
+				if ref.DefUnit == "" {
+					ref.DefUnit = u.Name
 				}
-				if ref.SymbolUnitType == "" {
-					ref.SymbolUnitType = u.Type
+				if ref.DefUnitType == "" {
+					ref.DefUnitType = u.Type
 				}
 				break OuterLoop
 			}
@@ -183,21 +183,21 @@ OuterLoop:
 		return nil
 	}
 
-	if ref.SymbolRepo == "" {
-		ref.SymbolRepo = repo.URI()
+	if ref.DefRepo == "" {
+		ref.DefRepo = repo.URI()
 	}
 
 	var resp struct {
-		Def      *sourcegraph.Symbol
+		Def      *sourcegraph.Def
 		Examples []*sourcegraph.Example
 	}
 
 	// Now find the def for this ref.
-	defInCurrentRepo := ref.SymbolRepo == repo.URI()
+	defInCurrentRepo := ref.DefRepo == repo.URI()
 	if defInCurrentRepo {
 		// Def is in the current repo.
 		var g grapher.Output
-		graphFile := buildStore.FilePath(repo.CommitID, plan.SourceUnitDataFilename("graph", &unit.SourceUnit{Name: ref.SymbolUnit, Type: ref.SymbolUnitType}))
+		graphFile := buildStore.FilePath(repo.CommitID, plan.SourceUnitDataFilename("graph", &unit.SourceUnit{Name: ref.DefUnit, Type: ref.DefUnitType}))
 		f, err := buildStore.Open(graphFile)
 		if err != nil {
 			return err
@@ -206,29 +206,29 @@ OuterLoop:
 		if err := json.NewDecoder(f).Decode(&g); err != nil {
 			return fmt.Errorf("%s: %s", graphFile, err)
 		}
-		for _, def2 := range g.Symbols {
-			if def2.Path == ref.SymbolPath {
-				resp.Def = &sourcegraph.Symbol{Symbol: *def2}
+		for _, def2 := range g.Defs {
+			if def2.Path == ref.DefPath {
+				resp.Def = &sourcegraph.Def{Def: *def2}
 				break
 			}
 		}
 		if resp.Def != nil {
 			for _, doc := range g.Docs {
-				if doc.Path == ref.SymbolPath {
+				if doc.Path == ref.DefPath {
 					resp.Def.DocHTML = doc.Data
 				}
 			}
 		}
 		if resp.Def == nil && GlobalOpt.Verbose {
-			log.Printf("No definition found with path %q in unit %q type %q.", ref.SymbolPath, ref.SymbolUnit, ref.SymbolUnitType)
+			log.Printf("No definition found with path %q in unit %q type %q.", ref.DefPath, ref.DefUnit, ref.DefUnitType)
 		}
 	}
 
 	spec := sourcegraph.SymbolSpec{
-		Repo:     string(ref.SymbolRepo),
-		UnitType: ref.SymbolUnitType,
-		Unit:     ref.SymbolUnit,
-		Path:     string(ref.SymbolPath),
+		Repo:     string(ref.DefRepo),
+		UnitType: ref.DefUnitType,
+		Unit:     ref.DefUnit,
+		Path:     string(ref.DefPath),
 	}
 
 	var wg sync.WaitGroup
@@ -240,7 +240,7 @@ OuterLoop:
 		go func() {
 			defer wg.Done()
 			var err error
-			resp.Def, _, err = apiclient.Symbols.Get(spec, &sourcegraph.SymbolGetOptions{Doc: true})
+			resp.Def, _, err = apiclient.Defs.Get(spec, &sourcegraph.SymbolGetOptions{Doc: true})
 			if err != nil && GlobalOpt.Verbose {
 				log.Printf("Couldn't fetch definition %v: %s.", spec, err)
 			}
@@ -252,7 +252,7 @@ OuterLoop:
 		go func() {
 			defer wg.Done()
 			var err error
-			resp.Examples, _, err = apiclient.Symbols.ListExamples(spec, &sourcegraph.SymbolListExamplesOptions{
+			resp.Examples, _, err = apiclient.Defs.ListExamples(spec, &sourcegraph.SymbolListExamplesOptions{
 				Formatted:   true,
 				ListOptions: sourcegraph.ListOptions{PerPage: 4},
 			})

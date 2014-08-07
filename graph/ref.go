@@ -7,44 +7,46 @@ import (
 )
 
 type RefSymbolKey struct {
-	SymbolRepo     repo.URI   `db:"symbol_repo" json:",omitempty"`
-	SymbolUnitType string     `db:"symbol_unit_type" json:",omitempty"`
-	SymbolUnit     string     `db:"symbol_unit" json:",omitempty"`
-	SymbolPath     SymbolPath `db:"symbol_path" json:",omitempty"`
+	DefRepo     repo.URI `db:"symbol_repo" json:",omitempty"`
+	DefUnitType string   `db:"symbol_unit_type" json:",omitempty"`
+	DefUnit     string   `db:"symbol_unit" json:",omitempty"`
+	DefPath     DefPath  `db:"symbol_path" json:",omitempty"`
 }
 
 type RefKey struct {
-	SymbolRepo     repo.URI   `db:"symbol_repo" json:",omitempty"`
-	SymbolUnitType string     `db:"symbol_unit_type" json:",omitempty"`
-	SymbolUnit     string     `db:"symbol_unit" json:",omitempty"`
-	SymbolPath     SymbolPath `db:"symbol_path" json:",omitempty"`
-	Def            bool       `json:",omitempty"`
-	Repo           repo.URI   `json:",omitempty"`
-	UnitType       string     `db:"unit_type" json:",omitempty"`
-	Unit           string     `json:",omitempty"`
-	File           string     `json:",omitempty"`
-	CommitID       string     `db:"commit_id" json:",omitempty"`
-	Start          int        `json:",omitempty"`
-	End            int        `json:",omitempty"`
+	DefRepo     repo.URI `db:"symbol_repo" json:",omitempty"`
+	DefUnitType string   `db:"symbol_unit_type" json:",omitempty"`
+	DefUnit     string   `db:"symbol_unit" json:",omitempty"`
+	DefPath     DefPath  `db:"symbol_path" json:",omitempty"`
+	Def         bool     `json:",omitempty"`
+	Repo        repo.URI `json:",omitempty"`
+	UnitType    string   `db:"unit_type" json:",omitempty"`
+	Unit        string   `json:",omitempty"`
+	File        string   `json:",omitempty"`
+	CommitID    string   `db:"commit_id" json:",omitempty"`
+	Start       int      `json:",omitempty"`
+	End         int      `json:",omitempty"`
 }
 
 func (r *RefKey) RefSymbolKey() RefSymbolKey {
 	return RefSymbolKey{
-		SymbolRepo:     r.SymbolRepo,
-		SymbolUnitType: r.SymbolUnitType,
-		SymbolUnit:     r.SymbolUnit,
-		SymbolPath:     r.SymbolPath,
+		DefRepo:     r.DefRepo,
+		DefUnitType: r.DefUnitType,
+		DefUnit:     r.DefUnit,
+		DefPath:     r.DefPath,
 	}
 }
 
+// START Ref OMIT
 // Ref represents a reference from source code to a symbol.
 type Ref struct {
-	SymbolRepo     repo.URI   `db:"symbol_repo"`
-	SymbolUnitType string     `db:"symbol_unit_type"`
-	SymbolUnit     string     `db:"symbol_unit"`
-	SymbolPath     SymbolPath `db:"symbol_path"`
+	// The definition that this reference points to
+	DefRepo     repo.URI `db:"symbol_repo"`
+	DefUnitType string   `db:"symbol_unit_type"`
+	DefUnit     string   `db:"symbol_unit"`
+	DefPath     DefPath  `db:"symbol_path"`
 
-	// Def is true if this ref is to a definition of the target symbol.
+	// Def is true if this ref is the original definition or a redefinition
 	Def bool
 
 	Repo repo.URI
@@ -61,45 +63,47 @@ type Ref struct {
 	End   int
 }
 
+// END Ref OMIT
+
 func (r *Ref) RefKey() RefKey {
 	return RefKey{
-		SymbolRepo:     r.SymbolRepo,
-		SymbolUnitType: r.SymbolUnitType,
-		SymbolUnit:     r.SymbolUnit,
-		SymbolPath:     r.SymbolPath,
-		Def:            r.Def,
-		Repo:           r.Repo,
-		UnitType:       r.UnitType,
-		Unit:           r.Unit,
-		File:           r.File,
-		Start:          r.Start,
-		End:            r.End,
+		DefRepo:     r.DefRepo,
+		DefUnitType: r.DefUnitType,
+		DefUnit:     r.DefUnit,
+		DefPath:     r.DefPath,
+		Def:         r.Def,
+		Repo:        r.Repo,
+		UnitType:    r.UnitType,
+		Unit:        r.Unit,
+		File:        r.File,
+		Start:       r.Start,
+		End:         r.End,
 	}
 }
 
 func (r *Ref) RefSymbolKey() RefSymbolKey {
 	return RefSymbolKey{
-		SymbolRepo:     r.SymbolRepo,
-		SymbolUnitType: r.SymbolUnitType,
-		SymbolUnit:     r.SymbolUnit,
-		SymbolPath:     r.SymbolPath,
+		DefRepo:     r.DefRepo,
+		DefUnitType: r.DefUnitType,
+		DefUnit:     r.DefUnit,
+		DefPath:     r.DefPath,
 	}
 }
 
-func (r *Ref) SymbolKey() SymbolKey {
-	return SymbolKey{
-		Repo:     r.SymbolRepo,
-		UnitType: r.SymbolUnitType,
-		Unit:     r.SymbolUnit,
-		Path:     r.SymbolPath,
+func (r *Ref) DefKey() DefKey {
+	return DefKey{
+		Repo:     r.DefRepo,
+		UnitType: r.DefUnitType,
+		Unit:     r.DefUnit,
+		Path:     r.DefPath,
 	}
 }
 
-func (r *Ref) SetFromSymbolKey(k SymbolKey) {
-	r.SymbolPath = k.Path
-	r.SymbolUnitType = k.UnitType
-	r.SymbolUnit = k.Unit
-	r.SymbolRepo = k.Repo
+func (r *Ref) SetFromSymbolKey(k DefKey) {
+	r.DefPath = k.Path
+	r.DefUnitType = k.UnitType
+	r.DefUnit = k.Unit
+	r.DefRepo = k.Repo
 }
 
 // Sorting
@@ -107,7 +111,7 @@ func (r *Ref) SetFromSymbolKey(k SymbolKey) {
 type Refs []*Ref
 
 func (r *Ref) sortKey() string {
-	return string(r.SymbolPath) + string(r.SymbolRepo) + r.SymbolUnitType + r.SymbolUnit + string(r.Repo) + r.UnitType + r.Unit + r.File + strconv.Itoa(r.Start) + strconv.Itoa(r.End)
+	return string(r.DefPath) + string(r.DefRepo) + r.DefUnitType + r.DefUnit + string(r.Repo) + r.UnitType + r.Unit + r.File + strconv.Itoa(r.Start) + strconv.Itoa(r.End)
 }
 func (vs Refs) Len() int           { return len(vs) }
 func (vs Refs) Swap(i, j int)      { vs[i], vs[j] = vs[j], vs[i] }

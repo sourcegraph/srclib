@@ -20,11 +20,15 @@ type Grapher interface {
 	Graph(dir string, unit *unit.SourceUnit, c *config.Repository) (*Output, error)
 }
 
+// START Output OMIT
+//Encompasses the output of any grapher tool
 type Output struct {
-	Symbols []*graph.Symbol `json:",omitempty"`
-	Refs    []*graph.Ref    `json:",omitempty"`
-	Docs    []*graph.Doc    `json:",omitempty"`
+	Defs []*graph.Def `json:",omitempty"`
+	Refs []*graph.Ref `json:",omitempty"`
+	Docs []*graph.Doc `json:",omitempty"`
 }
+
+// END Output OMIT
 
 // TODO(sqs): add grapher validation of output
 
@@ -93,7 +97,7 @@ func ensureOffsetsAreByteOffsets(dir string, output *Output) {
 		}
 	}
 
-	for _, s := range output.Symbols {
+	for _, s := range output.Defs {
 		fix(s.File, &s.DefStart, &s.DefEnd)
 	}
 	for _, r := range output.Refs {
@@ -105,7 +109,7 @@ func ensureOffsetsAreByteOffsets(dir string, output *Output) {
 }
 
 func sortedOutput(o *Output) *Output {
-	sort.Sort(graph.Symbols(o.Symbols))
+	sort.Sort(graph.Defs(o.Defs))
 	sort.Sort(graph.Refs(o.Refs))
 	sort.Sort(graph.Docs(o.Docs))
 	return o
@@ -114,8 +118,8 @@ func sortedOutput(o *Output) *Output {
 // NormalizeData sorts data.
 func NormalizeData(o *Output) error {
 	for _, ref := range o.Refs {
-		if ref.SymbolRepo != "" {
-			ref.SymbolRepo = repo.MakeURI(string(ref.SymbolRepo))
+		if ref.DefRepo != "" {
+			ref.DefRepo = repo.MakeURI(string(ref.DefRepo))
 		}
 	}
 
