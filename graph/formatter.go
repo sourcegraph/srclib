@@ -80,7 +80,7 @@ var qualLevels = []Qualification{
 
 // A MakeSymbolFormatter is a function, typically implemented by toolchains,
 // that creates a SymbolFormatter for a symbol.
-type MakeSymbolFormatter func(*Symbol) SymbolFormatter
+type MakeSymbolFormatter func(*Def) SymbolFormatter
 
 // MakeSymbolFormatter holds MakeSymbolFormatters that toolchains have
 // registered with RegisterMakeSymbolFormatter.
@@ -153,7 +153,7 @@ type SymbolFormatter interface {
 //   ' '    (in `% t`) prepend the language-specific delimiter between a symbol's name and type
 //
 // See SymbolFormatter for more information.
-func PrintFormatter(s *Symbol) SymbolPrintFormatter {
+func PrintFormatter(s *Def) SymbolPrintFormatter {
 	mk, ok := MakeSymbolFormatters[s.UnitType]
 	if !ok {
 		panic("PrintFormatter: no formatter for unit type " + s.UnitType)

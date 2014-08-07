@@ -34,6 +34,7 @@ type ResolvedTarget struct {
 	// (if known).
 	ToRevSpec string
 }
+
 // END ResolvedTarget OMIT
 
 // START Resolution OMIT
@@ -49,6 +50,7 @@ type Resolution struct {
 	// Error is the resolution error, if any.
 	Error string `json:",omitempty"`
 }
+
 // END Resolution OMIT
 
 // Command for dep resolution has no options.

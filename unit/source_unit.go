@@ -80,6 +80,7 @@ type SourceUnit struct {
 	// TODO(sqs): add a way to specify the toolchains and tools to use for
 	// various tasks on this source unit
 }
+
 //END SourceUnit OMIT
 
 // OpsSorted returns the keys of the Ops map in sorted order.
