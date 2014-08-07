@@ -20,11 +20,14 @@ type Grapher interface {
 	Graph(dir string, unit *unit.SourceUnit, c *config.Repository) (*Output, error)
 }
 
+// START Output OMIT
+//Encompasses the output of any grapher tool
 type Output struct {
 	Symbols []*graph.Symbol `json:",omitempty"`
 	Refs    []*graph.Ref    `json:",omitempty"`
 	Docs    []*graph.Doc    `json:",omitempty"`
 }
+// END Output OMIT
 
 // TODO(sqs): add grapher validation of output
 

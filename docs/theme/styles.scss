@@ -346,3 +346,13 @@ img.desaturate {
     max-width: 100%;
   }
 }
+
+// Documentation Markdown stylings
+.markdown {
+  font-size: 110%;
+  line-height: 1.5em;
+
+  p, li {
+    margin-bottom: 16px;
+  }
+}
