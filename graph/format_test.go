@@ -2,17 +2,17 @@ package graph
 
 type testSymbolFormatter struct{}
 
-func (f testSymbolFormatter) RepositoryListing(s *Symbol) RepositoryListingSymbol {
+func (f testSymbolFormatter) RepositoryListing(s *Def) RepositoryListingSymbol {
 	return RepositoryListingSymbol{
 		Name:    s.Name,
 		SortKey: s.Name,
 	}
 }
 
-func (_ testSymbolFormatter) KindName(s *Symbol) string                             { return "" }
-func (_ testSymbolFormatter) LanguageName(s *Symbol) string                         { return "" }
-func (_ testSymbolFormatter) QualifiedName(s *Symbol, relativeTo *SymbolKey) string { return "" }
-func (f testSymbolFormatter) TypeString(s *Symbol) string                           { return "" }
+func (_ testSymbolFormatter) KindName(s *Def) string                          { return "" }
+func (_ testSymbolFormatter) LanguageName(s *Def) string                      { return "" }
+func (_ testSymbolFormatter) QualifiedName(s *Def, relativeTo *DefKey) string { return "" }
+func (f testSymbolFormatter) TypeString(s *Def) string                        { return "" }
 
 // func TestFormatAndSortSymbolsForRepositoryListing(t *testing.T) {
 // 	RegisterSymbolFormatter("t", testSymbolFormatter{})

@@ -53,9 +53,9 @@ func ComputeSourceUnit(g *grapher.Output, b *vcsutil.BlameOutput) (*SourceUnitOu
 	}
 
 	var o SourceUnitOutput
-	o.Symbols = make(map[graph.SymbolPath][]*SymbolAuthorship, len(g.Symbols))
+	o.Defs = make(map[graph.DefPath][]*SymbolAuthorship, len(g.Defs))
 
-	for _, sym := range g.Symbols {
+	for _, sym := range g.Defs {
 		authors, chars, err := getAuthors(sym.File, sym.DefStart, sym.DefEnd)
 		if err != nil {
 			return nil, err
@@ -66,7 +66,7 @@ func ComputeSourceUnit(g *grapher.Output, b *vcsutil.BlameOutput) (*SourceUnitOu
 			if totalSymbolDefChars != 0 {
 				charsProportion = float64(chars[author.AuthorEmail]) / totalSymbolDefChars
 			}
-			o.Symbols[sym.Path] = append(o.Symbols[sym.Path], &SymbolAuthorship{
+			o.Defs[sym.Path] = append(o.Defs[sym.Path], &SymbolAuthorship{
 				AuthorshipInfo:  *author,
 				Exported:        sym.Exported,
 				Chars:           chars[author.AuthorEmail],
@@ -90,7 +90,7 @@ func ComputeSourceUnit(g *grapher.Output, b *vcsutil.BlameOutput) (*SourceUnitOu
 
 	var totalSymbols, totalExportedSymbols int
 	authorsByEmail := make(map[string]*AuthorStats)
-	for _, sas := range o.Symbols {
+	for _, sas := range o.Defs {
 		totalSymbols++
 		if sas[0].Exported {
 			totalExportedSymbols++
@@ -143,14 +143,14 @@ func ComputeSourceUnit(g *grapher.Output, b *vcsutil.BlameOutput) (*SourceUnitOu
 			clientsByEmail[ra.AuthorEmail] = clientMap
 		}
 
-		key := clientKey{ra.SymbolRepo, ra.SymbolUnitType, ra.SymbolUnit}
+		key := clientKey{ra.DefRepo, ra.DefUnitType, ra.DefUnit}
 		rc, present := clientMap[key]
 		if !present {
 			rc = &ClientStats{}
 			rc.AuthorEmail = ra.AuthorEmail
-			rc.SymbolRepo = ra.SymbolRepo
-			rc.SymbolUnitType = nnz.String(ra.SymbolUnitType)
-			rc.SymbolUnit = nnz.String(ra.SymbolUnit)
+			rc.DefRepo = ra.DefRepo
+			rc.DefUnitType = nnz.String(ra.DefUnitType)
+			rc.DefUnit = nnz.String(ra.DefUnit)
 			clientMap[key] = rc
 		}
 

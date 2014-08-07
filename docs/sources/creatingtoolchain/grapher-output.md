@@ -13,7 +13,7 @@ Definitions, References, and Documentation data respectively. This should be pri
 [[.code "grapher/grapher.go" "Output"]]
 
 ### Def Object Structure
-[[.code "graph/def.go" "Def"]]
+[[.code "graph/def.go" "Def "]]
 
 ### Ref Object Structure
 [[.code "graph/ref.go" "Ref"]]

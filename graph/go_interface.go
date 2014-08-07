@@ -8,7 +8,7 @@ import "sourcegraph.com/sourcegraph/srclib/repo"
 type GoInterfaceMethod struct {
 	// OfSymbolPath refers to the Go interface symbol that defines this method, or the Go
 	// type symbol that implements this method.
-	OfSymbolPath SymbolPath `db:"of_symbol_path"`
+	OfSymbolPath DefPath `db:"of_symbol_path"`
 
 	// OfSymbolUnit refers to the unit containing the symbol denoted in OfSymbolPath.
 	OfSymbolUnit string `db:"of_symbol_unit"`

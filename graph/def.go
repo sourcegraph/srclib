@@ -13,38 +13,38 @@ import (
 
 type (
 	SID        int64
-	SymbolPath string
+	DefPath    string
 	SymbolKind string
 	TreePath   string
 )
 
 // START DefKey OMIT
-// DefKey specifies a symbol, either concretely or abstractly. A concrete
-// symbol key has a non-empty CommitID and refers to a symbol defined in a
-// specific commit. An abstract symbol key has an empty CommitID and is
-// considered to refer to symbols from any number of commits (so long as the
+// DefKey specifies a definition, either concretely or abstractly. A concrete
+// definition key has a non-empty CommitID and refers to a definition defined in a
+// specific commit. An abstract definition key has an empty CommitID and is
+// considered to refer to definitions from any number of commits (so long as the
 // Repo, UnitType, Unit, and Path match).
 //
 // You can think of CommitID as the time dimension. With an empty CommitID, you
-// are referring to a symbol that may or may not exist at various times. With a
-// non-empty CommitID, you are referring to a specific definition of a symbol at
+// are referring to a definition that may or may not exist at various times. With a
+// non-empty CommitID, you are referring to a specific definition of a definition at
 // the time specified by the CommitID.
-type SymbolKey struct {
-	// Repo is the VCS repository that defines this symbol. Its Elasticsearch mapping is defined
+type DefKey struct {
+	// Repo is the VCS repository that defines this definition. Its Elasticsearch mapping is defined
 	// separately.
 	Repo repo.URI `json:",omitempty"`
 
-	// CommitID is the ID of the VCS commit that this symbol was defined in. The
+	// CommitID is the ID of the VCS commit that this definition was defined in. The
 	// CommitID is always a full commit ID (40 hexadecimal characters for git
 	// and hg), never a branch or tag name.
 	CommitID string `db:"commit_id" json:",omitempty"`
 
 	// UnitType is the type name of the source unit (obtained from unit.Type(u))
-	// that this symbol was defined in.
+	// that this definition was defined in.
 	UnitType string `db:"unit_type" json:",omitempty"`
 
 	// Unit is the name of the source unit (obtained from u.Name()) that this
-	// symbol was defined in.
+	// definition was defined in.
 	Unit string `json:",omitempty"`
 
 	// Path is a unique identifier for the symbol, relative to the source unit.
@@ -58,11 +58,12 @@ type SymbolKey struct {
 	// the Path, but this may not always be the case. I.e., don't rely on Path
 	// to find parents or children or any other structural propreties of the
 	// symbol hierarchy). See Symbol.TreePath instead.
-	Path SymbolPath
+	Path DefPath
 }
+
 // END DefKey OMIT
 
-func (s SymbolKey) String() string {
+func (s DefKey) String() string {
 	b, err := json.Marshal(s)
 	if err != nil {
 		panic("SymbolKey.String: " + err.Error())
@@ -71,20 +72,20 @@ func (s SymbolKey) String() string {
 }
 
 // START Def OMIT
-type Symbol struct {
+type Def struct {
 	// SID is a unique, sequential ID for a symbol. It is regenerated each time
 	// the symbol is emitted by the grapher and saved to the database. The SID
 	// is used as an optimization (e.g., joins are faster on SID than on
-	// SymbolKey).
+	// DefKey).
 	SID SID `db:"sid" json:",omitempty" elastic:"type:integer,index:no"`
 
-	// SymbolKey is the natural unique key for a symbol. It is stable
+	// DefKey is the natural unique key for a symbol. It is stable
 	// (subsequent runs of a grapher will emit the same symbols with the same
-	// SymbolKeys).
-	SymbolKey
+	// DefKeys).
+	DefKey
 
 	// TreePath is a structurally significant path descriptor for a symbol. For
-	// many languages, it may be identical or similar to SymbolKey.Path.
+	// many languages, it may be identical or similar to DefKey.Path.
 	// However, it has the following constraints, which allow it to define a
 	// symbol tree.
 	//
@@ -122,6 +123,7 @@ type Symbol struct {
 	// import/require statements, language-specific type descriptions, etc.
 	Data types.JsonText `json:",omitempty" elastic:"type:object,enabled:false"`
 }
+
 // END Def OMIT
 
 var treePathRegexp = regexp.MustCompile(`^(?:[^/]+)(?:/[^/]+)*$`)
@@ -130,12 +132,12 @@ func (p TreePath) IsValid() bool {
 	return treePathRegexp.MatchString(string(p))
 }
 
-func (s *Symbol) Fmt() SymbolPrintFormatter { return PrintFormatter(s) }
+func (s *Def) Fmt() SymbolPrintFormatter { return PrintFormatter(s) }
 
 // HasImplementations returns true if this symbol is a Go interface and false
 // otherwise. It is used for the interface implementations queries. TODO(sqs):
 // run this through the golang toolchain instead of doing it here.
-func (s *Symbol) HasImplementations() bool {
+func (s *Def) HasImplementations() bool {
 	if s.Kind != Type {
 		return false
 	}
@@ -144,7 +146,7 @@ func (s *Symbol) HasImplementations() bool {
 	return m["Kind"] == "interface"
 }
 
-func (s *Symbol) sortKey() string { return s.SymbolKey.String() }
+func (s *Def) sortKey() string { return s.DefKey.String() }
 
 // Propagate describes type/value propagation in code. A Propagate entry from A
 // (src) to B (dst) indicates that the type/value of A propagates to B. In Tern,
@@ -206,13 +208,13 @@ func (s *Symbol) sortKey() string { return s.SymbolKey.String() }
 type Propagate struct {
 	// Src is the symbol whose type/value is being propagated to the dst symbol.
 	SrcRepo     repo.URI
-	SrcPath     SymbolPath
+	SrcPath     DefPath
 	SrcUnit     string
 	SrcUnitType string
 
 	// Dst is the symbol that is receiving a propagated type/value from the src symbol.
 	DstRepo     repo.URI
-	DstPath     SymbolPath
+	DstPath     DefPath
 	DstUnit     string
 	DstUnitType string
 }
@@ -266,13 +268,13 @@ func (x *SID) Scan(v interface{}) error {
 	return fmt.Errorf("%T.Scan failed: %v", x, v)
 }
 
-func (x SymbolPath) Value() (driver.Value, error) {
+func (x DefPath) Value() (driver.Value, error) {
 	return string(x), nil
 }
 
-func (x *SymbolPath) Scan(v interface{}) error {
+func (x *DefPath) Scan(v interface{}) error {
 	if data, ok := v.([]byte); ok {
-		*x = SymbolPath(data)
+		*x = DefPath(data)
 		return nil
 	}
 	return fmt.Errorf("%T.Scan failed: %v", x, v)
@@ -304,28 +306,28 @@ func (x *SymbolKind) Scan(v interface{}) error {
 
 // Debugging
 
-func (x Symbol) String() string {
+func (x Def) String() string {
 	s, _ := json.Marshal(x)
 	return string(s)
 }
 
 // Sorting
 
-type Symbols []*Symbol
+type Defs []*Def
 
-func (vs Symbols) Len() int           { return len(vs) }
-func (vs Symbols) Swap(i, j int)      { vs[i], vs[j] = vs[j], vs[i] }
-func (vs Symbols) Less(i, j int) bool { return vs[i].sortKey() < vs[j].sortKey() }
+func (vs Defs) Len() int           { return len(vs) }
+func (vs Defs) Swap(i, j int)      { vs[i], vs[j] = vs[j], vs[i] }
+func (vs Defs) Less(i, j int) bool { return vs[i].sortKey() < vs[j].sortKey() }
 
-func (syms Symbols) Keys() (keys []SymbolKey) {
-	keys = make([]SymbolKey, len(syms))
+func (syms Defs) Keys() (keys []DefKey) {
+	keys = make([]DefKey, len(syms))
 	for i, sym := range syms {
-		keys[i] = sym.SymbolKey
+		keys[i] = sym.DefKey
 	}
 	return
 }
 
-func (syms Symbols) SIDs() (ids []SID) {
+func (syms Defs) SIDs() (ids []SID) {
 	ids = make([]SID, len(syms))
 	for i, sym := range syms {
 		ids[i] = sym.SID

@@ -9,22 +9,23 @@ import (
 // Docstring
 type Doc struct {
 	// A link to the definition that this docstring describes
-	SymbolKey
+	DefKey
 
 	// The MIME-type that the documentation is stored in. Valid formats include 'text/html', 'text/plain', 'text/x-markdown', text/x-rst'
 	Format string
 
 	// The actual documentation text
-	Data   string
+	Data string
 
 	// Location where the docstring was extracted from. Leave blank for undefined location
 	File  string
 	Start int
 	End   int
 }
+
 // END Doc OMIT
 
-func (d *Doc) sortKey() string { return d.SymbolKey.String() }
+func (d *Doc) sortKey() string { return d.DefKey.String() }
 
 // Sorting
 
