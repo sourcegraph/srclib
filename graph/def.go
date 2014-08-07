@@ -18,7 +18,8 @@ type (
 	TreePath   string
 )
 
-// SymbolKey specifies a symbol, either concretely or abstractly. A concrete
+// START DefKey OMIT
+// DefKey specifies a symbol, either concretely or abstractly. A concrete
 // symbol key has a non-empty CommitID and refers to a symbol defined in a
 // specific commit. An abstract symbol key has an empty CommitID and is
 // considered to refer to symbols from any number of commits (so long as the
@@ -59,6 +60,7 @@ type SymbolKey struct {
 	// symbol hierarchy). See Symbol.TreePath instead.
 	Path SymbolPath
 }
+// END DefKey OMIT
 
 func (s SymbolKey) String() string {
 	b, err := json.Marshal(s)
@@ -68,6 +70,7 @@ func (s SymbolKey) String() string {
 	return string(b)
 }
 
+// START Def OMIT
 type Symbol struct {
 	// SID is a unique, sequential ID for a symbol. It is regenerated each time
 	// the symbol is emitted by the grapher and saved to the database. The SID
@@ -119,6 +122,7 @@ type Symbol struct {
 	// import/require statements, language-specific type descriptions, etc.
 	Data types.JsonText `json:",omitempty" elastic:"type:object,enabled:false"`
 }
+// END Def OMIT
 
 var treePathRegexp = regexp.MustCompile(`^(?:[^/]+)(?:/[^/]+)*$`)
 

@@ -37,14 +37,16 @@ func (r *RefKey) RefSymbolKey() RefSymbolKey {
 	}
 }
 
+// START Ref OMIT
 // Ref represents a reference from source code to a symbol.
 type Ref struct {
+	// The definition that this reference points to
 	SymbolRepo     repo.URI   `db:"symbol_repo"`
 	SymbolUnitType string     `db:"symbol_unit_type"`
 	SymbolUnit     string     `db:"symbol_unit"`
 	SymbolPath     SymbolPath `db:"symbol_path"`
 
-	// Def is true if this ref is to a definition of the target symbol.
+	// Def is true if this ref is the original definition or a redefinition
 	Def bool
 
 	Repo repo.URI
@@ -60,6 +62,7 @@ type Ref struct {
 	Start int
 	End   int
 }
+// END Ref OMIT
 
 func (r *Ref) RefKey() RefKey {
 	return RefKey{

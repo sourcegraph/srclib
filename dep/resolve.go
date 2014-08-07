@@ -8,6 +8,7 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
+// START ResolvedTarget OMIT
 // ResolvedTarget represents a resolved dependency target.
 type ResolvedTarget struct {
 	// ToRepoCloneURL is the clone URL of the repository that is depended on.
@@ -33,7 +34,9 @@ type ResolvedTarget struct {
 	// (if known).
 	ToRevSpec string
 }
+// END ResolvedTarget OMIT
 
+// START Resolution OMIT
 // Resolution is the result of dependency resolution: either a successfully
 // resolved target or an error.
 type Resolution struct {
@@ -46,6 +49,7 @@ type Resolution struct {
 	// Error is the resolution error, if any.
 	Error string `json:",omitempty"`
 }
+// END Resolution OMIT
 
 // Command for dep resolution has no options.
 type Command struct{}
