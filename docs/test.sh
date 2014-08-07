@@ -15,7 +15,7 @@ trap "kill 0" EXIT
 while true; do
   echo "Building site..."
   sass theme/styles.scss:theme/styles.css
-  mkdocs build
+  #mkdocs build
   python buildsite.py
 
   echo "Waiting for changes..."
