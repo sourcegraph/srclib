@@ -41,7 +41,7 @@ pages:
 
 # Creating a Toolchain
 - ['creatingtoolchain/overview.md', 'Creating a Toolchain', 'Overview']
-- ['creatingtoolchain/output.md', 'Creating a Toolchain', 'Output Overview']
+- ['creatingtoolchain/commonstructures.md', 'Creating a Toolchain', 'Common Data Structures']
 - ['creatingtoolchain/scanner-output.md', 'Creating a Toolchain', 'Scanner Output']
 - ['creatingtoolchain/grapher-output.md', 'Creating a Toolchain', 'Grapher Output']
 - ['creatingtoolchain/dependency-resolution-output.md', 'Creating a Toolchain', 'Dependency Resolution Output']

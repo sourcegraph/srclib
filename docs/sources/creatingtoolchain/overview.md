@@ -1,4 +1,4 @@
-# srclib toolchains & tools
+# Toolchains Overview
 
 A **toolchain** is a program that implements functionality for analyzing
 projects and source code, according to the specifications defined in this
@@ -70,7 +70,7 @@ There are 2 modes of execution for srclib tools:
    that relies on locally installed compiler/interpreter and dependency
    versions. (Used when you'll consume the analysis results locally, such as
    during editing of local code.)
-   
+
    An installed tool is an executable program located at "TOOLCHAIN/.bin/NAME",
    where TOOLCHAIN is the toolchain path and NAME is the last component in the
    toolchain path. For example, the installed tool for "github.com/foo/bar"
@@ -79,14 +79,14 @@ There are 2 modes of execution for srclib tools:
 1. Inside a **Docker container**: to produce analysis independent of your local
    configuration and versions. (Used when other people or services will reuse
    the analysis results, such as on [Sourcegraph](https://sourcegraph.com).)
-   
+
    A Docker-containerized tool is a directory (under SRCLIBPATH) that contains a
    Dockerfile. There is no installation necessary for these tools; the `src`
    program knows how to build and run their Docker container.
 
    When the Docker container runs, the project's source code is always
    volume-mounted at `/src` (in the container).
-   
+
 Tools may support either or both of these execution modes. Their behavior should
 be the same, if possible, regardless of the execution mode. (TODO(sqs): Clarify
 this. What does "should be the same" mean?)
@@ -160,7 +160,7 @@ package, into a full specification of the dependency's target.
 
 **Options:** none
 
-**stdout:** `[]*dep2.Resolution` JSON array with each item corresponding to the same-index entry in the source unit's `Dependencies` field
+**stdout:** `[]*dep.Resolution` JSON array with each item corresponding to the same-index entry in the source unit's `Dependencies` field
 
 ## graph (graphers)
 
@@ -176,7 +176,7 @@ of the source unit's files.
 
 **Options:** none
 
-**stdout:** JSON graph output (`grapher2.Output`)
+**stdout:** JSON graph output (`grapher.Output`)
 
 TODO(sqs): Can we provide the output of `dep` to the `graph` tool? Usually
 graphers have to resolve all of the same deps that `dep` would have to. But

@@ -46,8 +46,8 @@ func (_ testFormatter) Kind() string                 { return "kind" }
 
 func TestPrintFormatter(t *testing.T) {
 	const unitType = "TestFormatter"
-	RegisterMakeSymbolFormatter("TestFormatter", func(*Symbol) SymbolFormatter { return testFormatter{} })
-	symbol := &Symbol{SymbolKey: SymbolKey{UnitType: unitType}}
+	RegisterMakeSymbolFormatter("TestFormatter", func(*Def) SymbolFormatter { return testFormatter{} })
+	symbol := &Def{DefKey: DefKey{UnitType: unitType}}
 	tests := []struct {
 		format string
 		want   string

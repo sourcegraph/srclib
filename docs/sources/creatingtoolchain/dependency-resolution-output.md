@@ -8,27 +8,16 @@ output.
 ## Output Schema
 
 The schema of the dependency resolution output should be an array of
-`DependencyTarget` objects, with the structure of each object being as follows.
+`Resolution` objects, with the structure of each object being as follows.
 
-```go
-type DependencyTarget struct {
-	SourceUnit	SourceUnitKey
-	Version	string
-}
-```
+[[.code "dep/resolve.go" "Resolution"]]
 
-## Example: rails@rubygem_deps.v0.json
+The `Raw` field is language specific, but the Target field follows the following format.
 
-```json
-[
-	{
-		"SourceUnit" : {
-			"Repo" : "bitbucket.org/ged/ruby-pg",
-			"Unit" : "pg",
-			"UnitType" : "rubygem"
-		},
-		"Version" : "\u003e= 0.11.0"
-	},
-	...
-]
-```
+[[.code "dep/resolve.go" "ResolvedTarget"]]
+
+If an error occurred during resolution, a detailed description should be placed in the `Error` field.
+
+## Example
+
+> Updated Example needed

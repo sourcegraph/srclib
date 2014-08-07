@@ -98,14 +98,14 @@ type ClientStats struct {
 
 	// SymbolRepo is the repository that defines symbols that this client
 	// referred to.
-	SymbolRepo repo.URI `db:"symbol_repo"`
+	DefRepo repo.URI `db:"symbol_repo"`
 
 	// SymbolUnitType and SymbolUnit are the unit in SymbolRepo that defines
 	// symbols that this client referred to. If SymbolUnitType == "" and
 	// SymbolUnit == "", then this ClientStats is an aggregate of this client's
 	// refs to all units in SymbolRepo.
-	SymbolUnitType nnz.String `db:"symbol_unit_type"`
-	SymbolUnit     nnz.String `db:"symbol_unit"`
+	DefUnitType nnz.String `db:"symbol_unit_type"`
+	DefUnit     nnz.String `db:"symbol_unit"`
 
 	// RefCount is the number of references this client made in this repository
 	// to SymbolRepo.
@@ -140,7 +140,7 @@ type RepoUsageByClient struct {
 	// It's called SymbolRepo because "Repo" usually refers to the repository
 	// whose analysis created this linkage (i.e., the repository that contains
 	// the reference).
-	SymbolRepo repo.URI `db:"symbol_repo"`
+	DefRepo repo.URI `db:"symbol_repo"`
 
 	RefCount int `db:"ref_count"`
 

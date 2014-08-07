@@ -5,19 +5,27 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/repo"
 )
 
+// START Doc OMIT
 // Docstring
 type Doc struct {
-	SymbolKey
+	// A link to the definition that this docstring describes
+	DefKey
 
+	// The MIME-type that the documentation is stored in. Valid formats include 'text/html', 'text/plain', 'text/x-markdown', text/x-rst'
 	Format string
-	Data   string
 
+	// The actual documentation text
+	Data string
+
+	// Location where the docstring was extracted from. Leave blank for undefined location
 	File  string
 	Start int
 	End   int
 }
 
-func (d *Doc) sortKey() string { return d.SymbolKey.String() }
+// END Doc OMIT
+
+func (d *Doc) sortKey() string { return d.DefKey.String() }
 
 // Sorting
 

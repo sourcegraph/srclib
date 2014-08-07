@@ -9,6 +9,11 @@ import mkdocs.build
 from mkdocs.build import build
 from mkdocs.config import load_config
 
+def line_containing(lines, text):
+  for i in range(len(lines)):
+    if text.lower() in lines[i].lower():
+      return i
+
 # Wrap some functions to allow custom commands in markdown
 convert_markdown_original = mkdocs.build.convert_markdown
 def convert_markdown_new(source):
@@ -19,9 +24,33 @@ def convert_markdown_new(source):
     # Source code embeds
     if args[0] == ".code":
       lines = open("../" + args[1]).read().splitlines()
+
+      # Short hand for specifying a region
+      if len(args) == 3:
+        region = args[2]
+        args[2] = "START " + region
+        args.append("END " + region)
+
       if len(args) == 4:
-        lines = lines[int(args[2]) - 1:int(args[3]) + 1]
-      return "```go\n" + "\n".join(lines) + "\n```"
+        start = 1
+        end = len(lines) - 1
+
+        if args[2].isdigit(): start = int(args[2])
+        else: start = line_containing(lines, args[2]) + 1
+
+        if args[3].isdigit(): end = int(args[3])
+        else: end = line_containing(lines, args[3]) + 1
+
+        #TODO: Also allow regex matching
+
+        lines = lines[start - 1:end]
+
+      # Trim "OMIT" lines
+      lines = filter(lambda x: not x.strip().lower().endswith("omit"), lines)
+
+      lines.insert(0, "```go")
+      lines.append("```")
+      return "\n".join(lines)
 
     # No matching logic
     else:

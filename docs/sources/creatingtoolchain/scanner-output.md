@@ -3,46 +3,112 @@ page_title: Scanner Output
 # Scanner Output
 
 The scanner should descend through the directory on which it was invoked,
-searching for source units. For every source unit, a file should be created in
-the `.sourcegraph-data` directory, following the naming convention
-`{UnitName}@{UnitType}_info.{SchemaVersion}.json`.
+searching for source units and printing its results to stdout.
 
 ## Output Schema
 
-The data in the output file should consist of a single JSON object that conforms
+The data in the output file should consist of a JSON array of objects, each of which conforms
 to the data in this struct.
 
-```go
-type SourceUnit struct {
-	// The name of the package
-	UnitName	string
-	// The type of source unit - eg: "PipPackage", "RubyGem", "CommonJSPackage"
-	UnitType	string
+[[.code "unit/source_unit.go" "SourceUnit"]]
 
-	// Optional field - used to store language specific information about the source unit
-	Data		*types.JsonText
-
-	// List of files in the SourceUnit, relative to directory in which the scanner was invoked. Can be an empty list. Used to derive blame information
-	Files		[]*string
-}
-```
-
-## Example: rails@rubygem_info.v0.json
+## Example: Scanner output on [gorilla/mux](https://github.com/gorilla/mux)
 
 ```json
-{
-	"UnitName" : "rails",
-	"UnitType" : "rubygem",
-
-	"Data" : {
-		"Description" : "Ruby on Rails is a full-stack web framework opt...",
-		"Homepage": "http://www.rubyonrails.org",
-		...
-	},
-	"Files" : [
-		"activerecord/CHANGELOG.md",
-		"activerecord/MIT-LICENSE",
-		...
-	]
-}
+[
+    {
+        "Name": "github.com/gorilla/mux",
+        "Type": "GoPackage",
+        "Repo": "",
+        "Globs": null,
+        "Files": [
+            "doc.go",
+            "mux.go",
+            "regexp.go",
+            "route.go",
+            "bench_test.go",
+            "mux_test.go",
+            "old_test.go"
+        ],
+        "Dependencies": [
+            "bytes",
+            "errors",
+            "fmt",
+            "github.com/gorilla/context",
+            "net/http",
+            "net/url",
+            "path",
+            "regexp",
+            "strings",
+            "testing"
+        ],
+        "Data": {
+            "Dir": ".",
+            "Name": "mux",
+            "Doc": "Package gorilla/mux implements a request router and dispatcher.",
+            "ImportPath": "github.com/gorilla/mux",
+            "Root": "",
+            "SrcRoot": "",
+            "PkgRoot": "",
+            "BinDir": "",
+            "Goroot": false,
+            "PkgObj": "",
+            "AllTags": null,
+            "ConflictDir": "",
+            "GoFiles": [
+                "doc.go",
+                "mux.go",
+                "regexp.go",
+                "route.go"
+            ],
+            "CgoFiles": null,
+            "IgnoredGoFiles": null,
+            "CFiles": null,
+            "CXXFiles": null,
+            "MFiles": null,
+            "HFiles": null,
+            "SFiles": null,
+            "SwigFiles": null,
+            "SwigCXXFiles": null,
+            "SysoFiles": null,
+            "CgoCFLAGS": null,
+            "CgoCPPFLAGS": null,
+            "CgoCXXFLAGS": null,
+            "CgoLDFLAGS": null,
+            "CgoPkgConfig": null,
+            "Imports": [
+                "bytes",
+                "errors",
+                "fmt",
+                "github.com/gorilla/context",
+                "net/http",
+                "net/url",
+                "path",
+                "regexp",
+                "strings"
+            ],
+            "ImportPos": null,
+            "TestGoFiles": [
+                "bench_test.go",
+                "mux_test.go",
+                "old_test.go"
+            ],
+            "TestImports": [
+                "bytes",
+                "fmt",
+                "github.com/gorilla/context",
+                "net/http",
+                "testing"
+            ],
+            "TestImportPos": null,
+            "XTestGoFiles": null,
+            "XTestImports": null,
+            "XTestImportPos": null
+        },
+        "Ops": {
+            "depresolve": null,
+            "graph": null
+        }
+    }
+]
 ```
