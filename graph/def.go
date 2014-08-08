@@ -12,10 +12,10 @@ import (
 )
 
 type (
-	SID        int64
-	DefPath    string
-	SymbolKind string
-	TreePath   string
+	SID      int64
+	DefPath  string
+	DefKind  string
+	TreePath string
 )
 
 // START DefKey OMIT
@@ -47,9 +47,9 @@ type DefKey struct {
 	// definition was defined in.
 	Unit string `json:",omitempty"`
 
-	// Path is a unique identifier for the symbol, relative to the source unit.
-	// It should remain stable across commits as long as the symbol is the
-	// "same" symbol. Its Elasticsearch mapping is defined separately (because
+	// Path is a unique identifier for the def, relative to the source unit.
+	// It should remain stable across commits as long as the def is the
+	// "same" def. Its Elasticsearch mapping is defined separately (because
 	// it is a multi_field, which the struct tag can't currently represent).
 	//
 	// Path encodes no structural semantics. Its only meaning is to be a stable
@@ -57,7 +57,7 @@ type DefKey struct {
 	// convenient to use the namespace hierarchy (with some modifications) as
 	// the Path, but this may not always be the case. I.e., don't rely on Path
 	// to find parents or children or any other structural propreties of the
-	// symbol hierarchy). See Symbol.TreePath instead.
+	// def hierarchy). See Def.TreePath instead.
 	Path DefPath
 }
 
@@ -66,44 +66,44 @@ type DefKey struct {
 func (s DefKey) String() string {
 	b, err := json.Marshal(s)
 	if err != nil {
-		panic("SymbolKey.String: " + err.Error())
+		panic("DefKey.String: " + err.Error())
 	}
 	return string(b)
 }
 
 // START Def OMIT
 type Def struct {
-	// SID is a unique, sequential ID for a symbol. It is regenerated each time
-	// the symbol is emitted by the grapher and saved to the database. The SID
+	// SID is a unique, sequential ID for a def. It is regenerated each time
+	// the def is emitted by the grapher and saved to the database. The SID
 	// is used as an optimization (e.g., joins are faster on SID than on
 	// DefKey).
 	SID SID `db:"sid" json:",omitempty" elastic:"type:integer,index:no"`
 
-	// DefKey is the natural unique key for a symbol. It is stable
-	// (subsequent runs of a grapher will emit the same symbols with the same
+	// DefKey is the natural unique key for a def. It is stable
+	// (subsequent runs of a grapher will emit the same defs with the same
 	// DefKeys).
 	DefKey
 
-	// TreePath is a structurally significant path descriptor for a symbol. For
+	// TreePath is a structurally significant path descriptor for a def. For
 	// many languages, it may be identical or similar to DefKey.Path.
 	// However, it has the following constraints, which allow it to define a
-	// symbol tree.
+	// def tree.
 	//
 	// A tree-path is a chain of '/'-delimited components. A component is either a
-	// symbol name or a ghost component.
-	// - A symbol name satifies the regex [^/-][^/]*
+	// def name or a ghost component.
+	// - A def name satifies the regex [^/-][^/]*
 	// - A ghost component satisfies the regex -[^/]*
-	// Any prefix of a tree-path that terminates in a symbol name must be a valid
-	// tree-path for some symbol.
+	// Any prefix of a tree-path that terminates in a def name must be a valid
+	// tree-path for some def.
 	// The following regex captures the children of a tree-path X: X(/-[^/]*)*(/[^/-][^/]*)
 	TreePath TreePath `db:"treepath" json:",omitempty"`
 
-	// Kind is the language-independent kind of this symbol.
-	Kind SymbolKind `elastic:"type:string,index:analyzed"`
+	// Kind is the language-independent kind of this def.
+	Kind DefKind `elastic:"type:string,index:analyzed"`
 
 	Name string
 
-	// Callable is true if this symbol may be called or invoked, such as in the
+	// Callable is true if this def may be called or invoked, such as in the
 	// case of functions or methods.
 	Callable bool `db:"callable"`
 
@@ -114,12 +114,12 @@ type Def struct {
 
 	Exported bool `elastic:"type:boolean,index:not_analyzed"`
 
-	// Test is whether this symbol is defined in test code (as opposed to main
+	// Test is whether this def is defined in test code (as opposed to main
 	// code). For example, definitions in Go *_test.go files have Test = true.
 	Test bool `elastic:"type:boolean,index:not_analyzed" json:",omitempty"`
 
 	// Data contains additional language- and toolchain-specific information
-	// about the symbol. Data is used to construct function signatures,
+	// about the def. Data is used to construct function signatures,
 	// import/require statements, language-specific type descriptions, etc.
 	Data types.JsonText `json:",omitempty" elastic:"type:object,enabled:false"`
 }
@@ -132,9 +132,9 @@ func (p TreePath) IsValid() bool {
 	return treePathRegexp.MatchString(string(p))
 }
 
-func (s *Def) Fmt() SymbolPrintFormatter { return PrintFormatter(s) }
+func (s *Def) Fmt() DefPrintFormatter { return PrintFormatter(s) }
 
-// HasImplementations returns true if this symbol is a Go interface and false
+// HasImplementations returns true if this def is a Go interface and false
 // otherwise. It is used for the interface implementations queries. TODO(sqs):
 // run this through the golang toolchain instead of doing it here.
 func (s *Def) HasImplementations() bool {
@@ -161,19 +161,19 @@ func (s *Def) sortKey() string { return s.DefKey.String() }
 //   var a = Foo;
 //   var b = a;
 //
-// Foo, a, and b are each their own symbol. We could resolve all of them to the
-// symbol of their original type (perhaps Foo), but there are occasions when you
+// Foo, a, and b are each their own def. We could resolve all of them to the
+// def of their original type (perhaps Foo), but there are occasions when you
 // do want to see only the definition of a or b and examples thereof. Therefore,
-// we need to represent them as distinct symbols.
+// we need to represent them as distinct defs.
 //
-// Even though Foo, a, and b are distinct symbols, there are propagation
+// Even though Foo, a, and b are distinct defs, there are propagation
 // relationships between them that are important to represent. The type of Foo
 // propagates to both a and b, and the type of a propagates to b. In this case,
 // we would have 3 Propagates: Propagate{Src: "Foo", Dst: "a"}, Propagate{Src:
 // "Foo", Dst: "b"}, and Propagate{Src: "a", Dst: "b"}. (The propagation
 // relationships could be described by just the first and last Propagates, but
 // we explicitly include all paths as a denormalization optimization to avoid
-// requiring an unbounded number of DB queries to determine which symbols a type
+// requiring an unbounded number of DB queries to determine which defs a type
 // propagates to or from.)
 //
 //
@@ -188,7 +188,7 @@ func (s *Def) sortKey() string { return s.DefKey.String() }
 // this example file (which uses Foo as a library) modifies Foo to add a new
 // property, but other libraries that use Foo would never see that property
 // because they wouldn't be executed in the same context as this example file.
-// So, in general, we cannot say that Foo receives all types applied to symbols
+// So, in general, we cannot say that Foo receives all types applied to defs
 // that Foo propagates to.
 //
 //
@@ -206,13 +206,13 @@ func (s *Def) sortKey() string { return s.DefKey.String() }
 // In this example, there would be one Propagate: Propagate{Src: "file1/Foo",
 // Dst: "file2/Foo2}.
 type Propagate struct {
-	// Src is the symbol whose type/value is being propagated to the dst symbol.
+	// Src is the def whose type/value is being propagated to the dst def.
 	SrcRepo     repo.URI
 	SrcPath     DefPath
 	SrcUnit     string
 	SrcUnitType string
 
-	// Dst is the symbol that is receiving a propagated type/value from the src symbol.
+	// Dst is the def that is receiving a propagated type/value from the src def.
 	DstRepo     repo.URI
 	DstPath     DefPath
 	DstUnit     string
@@ -220,19 +220,19 @@ type Propagate struct {
 }
 
 const (
-	Const   SymbolKind = "const"
-	Field              = "field"
-	Func               = "func"
-	Module             = "module"
-	Package            = "package"
-	Type               = "type"
-	Var                = "var"
+	Const   DefKind = "const"
+	Field           = "field"
+	Func            = "func"
+	Module          = "module"
+	Package         = "package"
+	Type            = "type"
+	Var             = "var"
 )
 
-var AllSymbolKinds = []SymbolKind{Const, Field, Func, Module, Package, Type, Var}
+var AllDefKinds = []DefKind{Const, Field, Func, Module, Package, Type, Var}
 
-func IsContainer(symbolKind SymbolKind) bool {
-	switch symbolKind {
+func IsContainer(defKind DefKind) bool {
+	switch defKind {
 	case Module:
 		fallthrough
 	case Package:
@@ -244,9 +244,9 @@ func IsContainer(symbolKind SymbolKind) bool {
 	}
 }
 
-// Returns true iff k is a known symbol kind.
-func (k SymbolKind) Valid() bool {
-	for _, kk := range AllSymbolKinds {
+// Returns true iff k is a known def kind.
+func (k DefKind) Valid() bool {
+	for _, kk := range AllDefKinds {
 		if k == kk {
 			return true
 		}
@@ -292,13 +292,13 @@ func (x *TreePath) Scan(v interface{}) error {
 	return fmt.Errorf("%T.Scan failed: %v", x, v)
 }
 
-func (x SymbolKind) Value() (driver.Value, error) {
+func (x DefKind) Value() (driver.Value, error) {
 	return string(x), nil
 }
 
-func (x *SymbolKind) Scan(v interface{}) error {
+func (x *DefKind) Scan(v interface{}) error {
 	if data, ok := v.([]byte); ok {
-		*x = SymbolKind(data)
+		*x = DefKind(data)
 		return nil
 	}
 	return fmt.Errorf("%T.Scan failed: %v", x, v)
@@ -319,18 +319,18 @@ func (vs Defs) Len() int           { return len(vs) }
 func (vs Defs) Swap(i, j int)      { vs[i], vs[j] = vs[j], vs[i] }
 func (vs Defs) Less(i, j int) bool { return vs[i].sortKey() < vs[j].sortKey() }
 
-func (syms Defs) Keys() (keys []DefKey) {
-	keys = make([]DefKey, len(syms))
-	for i, sym := range syms {
-		keys[i] = sym.DefKey
+func (defs Defs) Keys() (keys []DefKey) {
+	keys = make([]DefKey, len(defs))
+	for i, def := range defs {
+		keys[i] = def.DefKey
 	}
 	return
 }
 
-func (syms Defs) SIDs() (ids []SID) {
-	ids = make([]SID, len(syms))
-	for i, sym := range syms {
-		ids[i] = sym.SID
+func (defs Defs) SIDs() (ids []SID) {
+	ids = make([]SID, len(defs))
+	for i, def := range defs {
+		ids[i] = def.SID
 	}
 	return
 }

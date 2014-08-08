@@ -18,7 +18,7 @@ func authorship_(args []string) {
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, `usage: `+Name+` authorship [options] blame.json graph.json
 
-Determines who authored a source unit's symbols and refs in a graph output file
+Determines who authored a source unit's defs and refs in a graph output file
 by merging it with VCS blame info.
 
 The options are:

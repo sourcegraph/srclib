@@ -1,8 +1,8 @@
 package graph
 
-// RepositoryListingSymbol holds rendered display text to show on the "package"
+// RepositoryListingDef holds rendered display text to show on the "package"
 // listing page of a repository.
-type RepositoryListingSymbol struct {
+type RepositoryListingDef struct {
 	// Name is the full name shown on the page.
 	Name string
 
@@ -10,45 +10,45 @@ type RepositoryListingSymbol struct {
 	// to denote that a package is a Go main package.
 	NameLabel string
 
-	// Language is the source language of the symbol, with any additional
+	// Language is the source language of the def, with any additional
 	// specifiers, such as "JavaScript (node.js)".
 	Language string
 
-	// SortKey is the key used to lexicographically sort all of the symbols on
+	// SortKey is the key used to lexicographically sort all of the defs on
 	// the page.
 	SortKey string
 }
 
-// // FormatAndSortSymbolsForRepositoryListing uses SymbolFormatters registered by
-// // the various toolchains to format and sort symbols for display on the
-// // "package" listing page of a repository. The provided symbols slice is sorted
+// // FormatAndSortDefsForRepositoryListing uses DefFormatters registered by
+// // the various toolchains to format and sort defs for display on the
+// // "package" listing page of a repository. The provided defs slice is sorted
 // // in-place.
-// func FormatAndSortSymbolsForRepositoryListing(symbols []*Symbol) map[*Symbol]RepositoryListingSymbol {
-// 	m := make(map[*Symbol]RepositoryListingSymbol, len(symbols))
-// 	for _, s := range symbols {
-// 		sf, present := SymbolFormatters[s.UnitType]
+// func FormatAndSortDefsForRepositoryListing(defs []*Def) map[*Def]RepositoryListingDef {
+// 	m := make(map[*Def]RepositoryListingDef, len(defs))
+// 	for _, s := range defs {
+// 		sf, present := DefFormatters[s.UnitType]
 // 		if !present {
-// 			panic("no SymbolFormatter for symbol with UnitType " + s.UnitType)
+// 			panic("no DefFormatter for def with UnitType " + s.UnitType)
 // 		}
 
 // 		m[s] = sf.RepositoryListing(s)
 // 	}
 
 // 	// sort
-// 	ss := &repositoryListingSymbols{m, symbols}
+// 	ss := &repositoryListingDefs{m, defs}
 // 	sort.Sort(ss)
 // 	return m
 // }
 
-// type repositoryListingSymbols struct {
-// 	info    map[*Symbol]RepositoryListingSymbol
-// 	symbols []*Symbol
+// type repositoryListingDefs struct {
+// 	info    map[*Def]RepositoryListingDef
+// 	defs []*Def
 // }
 
-// func (s *repositoryListingSymbols) Len() int { return len(s.symbols) }
-// func (s *repositoryListingSymbols) Swap(i, j int) {
-// 	s.symbols[i], s.symbols[j] = s.symbols[j], s.symbols[i]
+// func (s *repositoryListingDefs) Len() int { return len(s.defs) }
+// func (s *repositoryListingDefs) Swap(i, j int) {
+// 	s.defs[i], s.defs[j] = s.defs[j], s.defs[i]
 // }
-// func (s *repositoryListingSymbols) Less(i, j int) bool {
-// 	return s.info[s.symbols[i]].SortKey < s.info[s.symbols[j]].SortKey
+// func (s *repositoryListingDefs) Less(i, j int) bool {
+// 	return s.info[s.defs[i]].SortKey < s.info[s.defs[j]].SortKey
 // }

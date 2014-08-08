@@ -47,8 +47,8 @@ type DocPage struct {
 
 	// Note: the contents of these fields is unsanitized. Any sanitization should be done in the UI.
 	Title string // Doc title
-	Body  string // HTML tags with the data-sg-doc-symbol attribute will be linked to symbol pages and vice-versa in the UI
+	Body  string // HTML tags with the data-sg-doc-def attribute will be linked to def pages and vice-versa in the UI
 	Toc   string // Table of contents in conjunction (in sidebar) with body
 
-	SymbolPaths *db_common.StringSlice // symbols within the scope of this documentation page
+	DefPaths *db_common.StringSlice // defs within the scope of this documentation page
 }

@@ -1,46 +1,46 @@
 package graph
 
-type testSymbolFormatter struct{}
+type testDefFormatter struct{}
 
-func (f testSymbolFormatter) RepositoryListing(s *Def) RepositoryListingSymbol {
-	return RepositoryListingSymbol{
+func (f testDefFormatter) RepositoryListing(s *Def) RepositoryListingDef {
+	return RepositoryListingDef{
 		Name:    s.Name,
 		SortKey: s.Name,
 	}
 }
 
-func (_ testSymbolFormatter) KindName(s *Def) string                          { return "" }
-func (_ testSymbolFormatter) LanguageName(s *Def) string                      { return "" }
-func (_ testSymbolFormatter) QualifiedName(s *Def, relativeTo *DefKey) string { return "" }
-func (f testSymbolFormatter) TypeString(s *Def) string                        { return "" }
+func (_ testDefFormatter) KindName(s *Def) string                          { return "" }
+func (_ testDefFormatter) LanguageName(s *Def) string                      { return "" }
+func (_ testDefFormatter) QualifiedName(s *Def, relativeTo *DefKey) string { return "" }
+func (f testDefFormatter) TypeString(s *Def) string                        { return "" }
 
-// func TestFormatAndSortSymbolsForRepositoryListing(t *testing.T) {
-// 	RegisterSymbolFormatter("t", testSymbolFormatter{})
+// func TestFormatAndSortDefsForRepositoryListing(t *testing.T) {
+// 	RegisterDefFormatter("t", testDefFormatter{})
 // 	defer func() {
-// 		SymbolFormatters = nil
+// 		DefFormatters = nil
 // 	}()
 
-// 	symbols := []*Symbol{
-// 		{SymbolKey: SymbolKey{UnitType: "t"}, Name: "z"},
-// 		{SymbolKey: SymbolKey{UnitType: "t"}, Name: "a"},
+// 	defs := []*Def{
+// 		{DefKey: DefKey{UnitType: "t"}, Name: "z"},
+// 		{DefKey: DefKey{UnitType: "t"}, Name: "a"},
 // 	}
 
-// 	want := map[*Symbol]RepositoryListingSymbol{
-// 		symbols[0]: RepositoryListingSymbol{Name: "z", NameLabel: "", Language: "", SortKey: "z"},
-// 		symbols[1]: RepositoryListingSymbol{Name: "a", NameLabel: "", Language: "", SortKey: "a"},
+// 	want := map[*Def]RepositoryListingDef{
+// 		defs[0]: RepositoryListingDef{Name: "z", NameLabel: "", Language: "", SortKey: "z"},
+// 		defs[1]: RepositoryListingDef{Name: "a", NameLabel: "", Language: "", SortKey: "a"},
 // 	}
 
-// 	fmtSymbols := FormatAndSortSymbolsForRepositoryListing(symbols)
+// 	fmtDefs := FormatAndSortDefsForRepositoryListing(defs)
 
-// 	// Check that fmtSymbols is sorted (was [z,a], should be [a,z]).
-// 	if s1 := symbols[0]; s1.Name != "a" {
-// 		t.Errorf("got sorted symbol1 name %q, want 'a'", s1.Name)
+// 	// Check that fmtDefs is sorted (was [z,a], should be [a,z]).
+// 	if s1 := defs[0]; s1.Name != "a" {
+// 		t.Errorf("got sorted def1 name %q, want 'a'", s1.Name)
 // 	}
-// 	if s2 := symbols[1]; s2.Name != "z" {
-// 		t.Errorf("got sorted symbol2 name %q, want 'z'", s2.Name)
+// 	if s2 := defs[1]; s2.Name != "z" {
+// 		t.Errorf("got sorted def2 name %q, want 'z'", s2.Name)
 // 	}
 
-// 	if !reflect.DeepEqual(fmtSymbols, want) {
-// 		t.Errorf("got formatted symbols map %+v, want %+v", fmtSymbols, want)
+// 	if !reflect.DeepEqual(fmtDefs, want) {
+// 		t.Errorf("got formatted defs map %+v, want %+v", fmtDefs, want)
 // 	}
 // }

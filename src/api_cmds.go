@@ -224,7 +224,7 @@ OuterLoop:
 		}
 	}
 
-	spec := sourcegraph.SymbolSpec{
+	spec := sourcegraph.DefSpec{
 		Repo:     string(ref.DefRepo),
 		UnitType: ref.DefUnitType,
 		Unit:     ref.DefUnit,
@@ -240,7 +240,7 @@ OuterLoop:
 		go func() {
 			defer wg.Done()
 			var err error
-			resp.Def, _, err = apiclient.Defs.Get(spec, &sourcegraph.SymbolGetOptions{Doc: true})
+			resp.Def, _, err = apiclient.Defs.Get(spec, &sourcegraph.DefGetOptions{Doc: true})
 			if err != nil && GlobalOpt.Verbose {
 				log.Printf("Couldn't fetch definition %v: %s.", spec, err)
 			}
@@ -252,7 +252,7 @@ OuterLoop:
 		go func() {
 			defer wg.Done()
 			var err error
-			resp.Examples, _, err = apiclient.Defs.ListExamples(spec, &sourcegraph.SymbolListExamplesOptions{
+			resp.Examples, _, err = apiclient.Defs.ListExamples(spec, &sourcegraph.DefListExamplesOptions{
 				Formatted:   true,
 				ListOptions: sourcegraph.ListOptions{PerPage: 4},
 			})

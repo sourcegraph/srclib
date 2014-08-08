@@ -53,22 +53,22 @@ func ComputeSourceUnit(g *grapher.Output, b *vcsutil.BlameOutput) (*SourceUnitOu
 	}
 
 	var o SourceUnitOutput
-	o.Defs = make(map[graph.DefPath][]*SymbolAuthorship, len(g.Defs))
+	o.Defs = make(map[graph.DefPath][]*DefAuthorship, len(g.Defs))
 
-	for _, sym := range g.Defs {
-		authors, chars, err := getAuthors(sym.File, sym.DefStart, sym.DefEnd)
+	for _, def := range g.Defs {
+		authors, chars, err := getAuthors(def.File, def.DefStart, def.DefEnd)
 		if err != nil {
 			return nil, err
 		}
-		totalSymbolDefChars := float64(sym.DefEnd - sym.DefStart)
+		totalDefDefChars := float64(def.DefEnd - def.DefStart)
 		for _, author := range authors {
 			charsProportion := float64(0.0)
-			if totalSymbolDefChars != 0 {
-				charsProportion = float64(chars[author.AuthorEmail]) / totalSymbolDefChars
+			if totalDefDefChars != 0 {
+				charsProportion = float64(chars[author.AuthorEmail]) / totalDefDefChars
 			}
-			o.Defs[sym.Path] = append(o.Defs[sym.Path], &SymbolAuthorship{
+			o.Defs[def.Path] = append(o.Defs[def.Path], &DefAuthorship{
 				AuthorshipInfo:  *author,
-				Exported:        sym.Exported,
+				Exported:        def.Exported,
 				Chars:           chars[author.AuthorEmail],
 				CharsProportion: charsProportion,
 			})
@@ -88,12 +88,12 @@ func ComputeSourceUnit(g *grapher.Output, b *vcsutil.BlameOutput) (*SourceUnitOu
 		}
 	}
 
-	var totalSymbols, totalExportedSymbols int
+	var totalDefs, totalExportedDefs int
 	authorsByEmail := make(map[string]*AuthorStats)
 	for _, sas := range o.Defs {
-		totalSymbols++
+		totalDefs++
 		if sas[0].Exported {
-			totalExportedSymbols++
+			totalExportedDefs++
 		}
 
 		for _, sa := range sas {
@@ -104,9 +104,9 @@ func ComputeSourceUnit(g *grapher.Output, b *vcsutil.BlameOutput) (*SourceUnitOu
 				authorsByEmail[sa.AuthorEmail] = ra
 			}
 
-			ra.SymbolCount++
+			ra.DefCount++
 			if sa.Exported {
-				ra.ExportedSymbolCount++
+				ra.ExportedDefCount++
 			}
 
 			if ra.LastCommitDate.Before(sa.LastCommitDate) {
@@ -119,11 +119,11 @@ func ComputeSourceUnit(g *grapher.Output, b *vcsutil.BlameOutput) (*SourceUnitOu
 	o.Authors = make([]*AuthorStats, len(authorsByEmail))
 	i := 0
 	for _, ra := range authorsByEmail {
-		if totalSymbols != 0 {
-			ra.SymbolsProportion = float64(ra.SymbolCount) / float64(totalSymbols)
+		if totalDefs != 0 {
+			ra.DefsProportion = float64(ra.DefCount) / float64(totalDefs)
 		}
-		if totalExportedSymbols != 0 {
-			ra.ExportedSymbolsProportion = float64(ra.ExportedSymbolCount) / float64(totalExportedSymbols)
+		if totalExportedDefs != 0 {
+			ra.ExportedDefsProportion = float64(ra.ExportedDefCount) / float64(totalExportedDefs)
 		}
 
 		o.Authors[i] = ra
