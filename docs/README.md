@@ -24,6 +24,29 @@ intended to correspond with the drop-down menus on the site. The actual
 categories, however, are specified through configuration in `mkdocs.yml`.
 
 ### Embedding Code Segments
+In the docs, you can embed code taken directly from the repository source.
+The format is as follows:
+```
+[[.code "grapher/grapher.go" 23 30]]
+```
+Note that the file name is specified as relative to the repository root.
+You can also specify two strings instead of two integers.
+```
+[[.code "grapher/grapher.go" "START REGION" "END REGION"]]
+```
+This will look for the first lines that contain those strings (case insensitive).
+
+Like in the go-present tool, lines ending with the word `OMIT` are omitted from the
+embedded code. If you have a segment as follows:
+```go
+// START RegionName OMIT
+Go code here...
+// END RegionName OMIT
+```
+You can use the following short-hand:
+```
+[[.code "grapher/grapher.go" "RegionName"]]
+```
 
 ## Deploying
 
