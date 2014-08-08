@@ -68,7 +68,7 @@ var Subcommands = []Subcommand{
 // {"resolve-deps", "resolve a repository's raw dependencies", resolveDeps},
 // {"graph", "analyze a repository's source code for definitions and references", graph_},
 // {"blame", "blame a source unit's source files to determine commit authors", blame},
-// {"authorship", "determine authorship of a source unit's symbols and refs", authorship_},
+// {"authorship", "determine authorship of a source unit's defs and refs", authorship_},
 // {"data", "list repository data", dataCmd},
 // {"upload", "upload a previously generated build", uploadCmd},
 // {"fetch", "downloads build data files from the server", fetchCmd},

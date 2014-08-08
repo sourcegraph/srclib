@@ -6,18 +6,18 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/repo"
 )
 
-type RefSymbolKey struct {
-	DefRepo     repo.URI `db:"symbol_repo" json:",omitempty"`
-	DefUnitType string   `db:"symbol_unit_type" json:",omitempty"`
-	DefUnit     string   `db:"symbol_unit" json:",omitempty"`
-	DefPath     DefPath  `db:"symbol_path" json:",omitempty"`
+type RefDefKey struct {
+	DefRepo     repo.URI `db:"def_repo" json:",omitempty"`
+	DefUnitType string   `db:"def_unit_type" json:",omitempty"`
+	DefUnit     string   `db:"def_unit" json:",omitempty"`
+	DefPath     DefPath  `db:"def_path" json:",omitempty"`
 }
 
 type RefKey struct {
-	DefRepo     repo.URI `db:"symbol_repo" json:",omitempty"`
-	DefUnitType string   `db:"symbol_unit_type" json:",omitempty"`
-	DefUnit     string   `db:"symbol_unit" json:",omitempty"`
-	DefPath     DefPath  `db:"symbol_path" json:",omitempty"`
+	DefRepo     repo.URI `db:"def_repo" json:",omitempty"`
+	DefUnitType string   `db:"def_unit_type" json:",omitempty"`
+	DefUnit     string   `db:"def_unit" json:",omitempty"`
+	DefPath     DefPath  `db:"def_path" json:",omitempty"`
 	Def         bool     `json:",omitempty"`
 	Repo        repo.URI `json:",omitempty"`
 	UnitType    string   `db:"unit_type" json:",omitempty"`
@@ -28,8 +28,8 @@ type RefKey struct {
 	End         int      `json:",omitempty"`
 }
 
-func (r *RefKey) RefSymbolKey() RefSymbolKey {
-	return RefSymbolKey{
+func (r *RefKey) RefDefKey() RefDefKey {
+	return RefDefKey{
 		DefRepo:     r.DefRepo,
 		DefUnitType: r.DefUnitType,
 		DefUnit:     r.DefUnit,
@@ -38,13 +38,13 @@ func (r *RefKey) RefSymbolKey() RefSymbolKey {
 }
 
 // START Ref OMIT
-// Ref represents a reference from source code to a symbol.
+// Ref represents a reference from source code to a def.
 type Ref struct {
 	// The definition that this reference points to
-	DefRepo     repo.URI `db:"symbol_repo"`
-	DefUnitType string   `db:"symbol_unit_type"`
-	DefUnit     string   `db:"symbol_unit"`
-	DefPath     DefPath  `db:"symbol_path"`
+	DefRepo     repo.URI `db:"def_repo"`
+	DefUnitType string   `db:"def_unit_type"`
+	DefUnit     string   `db:"def_unit"`
+	DefPath     DefPath  `db:"def_path"`
 
 	// Def is true if this ref is the original definition or a redefinition
 	Def bool
@@ -81,8 +81,8 @@ func (r *Ref) RefKey() RefKey {
 	}
 }
 
-func (r *Ref) RefSymbolKey() RefSymbolKey {
-	return RefSymbolKey{
+func (r *Ref) RefDefKey() RefDefKey {
+	return RefDefKey{
 		DefRepo:     r.DefRepo,
 		DefUnitType: r.DefUnitType,
 		DefUnit:     r.DefUnit,
@@ -99,7 +99,7 @@ func (r *Ref) DefKey() DefKey {
 	}
 }
 
-func (r *Ref) SetFromSymbolKey(k DefKey) {
+func (r *Ref) SetFromDefKey(k DefKey) {
 	r.DefPath = k.Path
 	r.DefUnitType = k.UnitType
 	r.DefUnit = k.Unit

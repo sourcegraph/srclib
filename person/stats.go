@@ -16,8 +16,8 @@ const (
 	StatContributedToRepos = "contributed-to-repos"
 	StatDependencies       = "dependencies"
 	StatDependents         = "dependents"
-	StatSymbols            = "symbols"
-	StatExportedSymbols    = "exported-symbols"
+	StatDefs               = "defs"
+	StatExportedDefs       = "exported-defs"
 )
 
 func (x StatType) Value() (driver.Value, error) {

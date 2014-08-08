@@ -12,19 +12,19 @@ type StatType string
 type Stats map[StatType]int
 
 const (
-	// StatXRefs is the number of external references to any symbol defined in a
+	// StatXRefs is the number of external references to any def defined in a
 	// repository (i.e., references from other repositories). It is only
 	// computed per-repository (and not per-repository-commit) because it is
 	// not easy to determine which specific commit a ref references.
 	StatXRefs = "xrefs"
 
 	// StatAuthors is the number of resolved people who contributed code to any
-	// symbol defined in a repository (i.e., references from other
+	// def defined in a repository (i.e., references from other
 	// repositories). It is only computed per-repository-commit.
 	StatAuthors = "authors"
 
 	// StatClients is the number of resolved people who have committed refs that
-	// reference a symbol defined in the repository. It is only computed
+	// reference a def defined in the repository. It is only computed
 	// per-repository (and not per-repository-commit) because it is not easy to
 	// determine which specific commit a ref references.
 	StatClients = "clients"
@@ -33,25 +33,25 @@ const (
 	// depends on. It is only computed per-repository-commit.
 	StatDependencies = "dependencies"
 
-	// StatDependents is the number of repositories containing refs to a symbol
+	// StatDependents is the number of repositories containing refs to a def
 	// defined in the repository. It is only computed per-repository (and not
 	// per-repository-commit) because it is not easy to determine which specific
 	// commit a ref references.
 	StatDependents = "dependents"
 
-	// StatSymbols is the number of symbols defined in a repository commit. It
-	// is only computed per-repository-commit (or else it would count 1 symbol
+	// StatDefs is the number of defs defined in a repository commit. It
+	// is only computed per-repository-commit (or else it would count 1 def
 	// for each revision of the repository that we have processed).
-	StatSymbols = "symbols"
+	StatDefs = "defs"
 
-	// StatExportedSymbols is the number of exported symbols defined in a
+	// StatExportedDefs is the number of exported defs defined in a
 	// repository commit. It is only computed per-repository-commit (or else it
-	// would count 1 symbol for each revision of the repository that we have
+	// would count 1 def for each revision of the repository that we have
 	// processed).
-	StatExportedSymbols = "exported-symbols"
+	StatExportedDefs = "exported-defs"
 )
 
-var StatTypes = map[StatType]struct{}{StatXRefs: struct{}{}, StatAuthors: struct{}{}, StatClients: struct{}{}, StatDependencies: struct{}{}, StatDependents: struct{}{}, StatSymbols: struct{}{}, StatExportedSymbols: struct{}{}}
+var StatTypes = map[StatType]struct{}{StatXRefs: struct{}{}, StatAuthors: struct{}{}, StatClients: struct{}{}, StatDependencies: struct{}{}, StatDependents: struct{}{}, StatDefs: struct{}{}, StatExportedDefs: struct{}{}}
 
 // Value implements database/sql/driver.Valuer.
 func (x StatType) Value() (driver.Value, error) {

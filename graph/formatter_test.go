@@ -46,8 +46,8 @@ func (_ testFormatter) Kind() string                 { return "kind" }
 
 func TestPrintFormatter(t *testing.T) {
 	const unitType = "TestFormatter"
-	RegisterMakeSymbolFormatter("TestFormatter", func(*Def) SymbolFormatter { return testFormatter{} })
-	symbol := &Def{DefKey: DefKey{UnitType: unitType}}
+	RegisterMakeDefFormatter("TestFormatter", func(*Def) DefFormatter { return testFormatter{} })
+	def := &Def{DefKey: DefKey{UnitType: unitType}}
 	tests := []struct {
 		format string
 		want   string
@@ -69,9 +69,9 @@ func TestPrintFormatter(t *testing.T) {
 		{"%k", "kind"},
 	}
 	for _, test := range tests {
-		str := fmt.Sprintf(test.format, PrintFormatter(symbol))
+		str := fmt.Sprintf(test.format, PrintFormatter(def))
 		if str != test.want {
-			t.Errorf("Sprintf(%q, symbol): got %q, want %q", test.format, str, test.want)
+			t.Errorf("Sprintf(%q, def): got %q, want %q", test.format, str, test.want)
 		}
 	}
 }

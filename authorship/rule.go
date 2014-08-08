@@ -20,14 +20,14 @@ func init() {
 }
 
 type SourceUnitOutput struct {
-	Defs                map[graph.DefPath][]*SymbolAuthorship
+	Defs                map[graph.DefPath][]*DefAuthorship
 	Refs                []*RefAuthorship
 	Authors             []*AuthorStats
 	ClientsOfOtherUnits []*ClientStats
 }
 
 // makeAuthorshipRules makes rules for computing authorship information about
-// symbols and refs at a source unit level and a repository level.
+// defs and refs at a source unit level and a repository level.
 func makeAuthorshipRules(c *config.Tree, dataDir string, existing []makex.Rule, opt plan.Options) ([]makex.Rule, error) {
 	// determine authorship for each source unit individually, but we have to
 	// wait until graphing AND blaming completes.

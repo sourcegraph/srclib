@@ -3,15 +3,15 @@ package graph
 import "sourcegraph.com/sourcegraph/srclib/repo"
 
 // GoInterfaceMethod represents a Go interface method defined by an Go interface
-// symbol or implemented by a Go type symbol. It is used for finding all
+// def or implemented by a Go type def. It is used for finding all
 // implementations of an interface.
 type GoInterfaceMethod struct {
-	// OfSymbolPath refers to the Go interface symbol that defines this method, or the Go
-	// type symbol that implements this method.
-	OfSymbolPath DefPath `db:"of_symbol_path"`
+	// OfDefPath refers to the Go interface def that defines this method, or the Go
+	// type def that implements this method.
+	OfDefPath DefPath `db:"of_def_path"`
 
-	// OfSymbolUnit refers to the unit containing the symbol denoted in OfSymbolPath.
-	OfSymbolUnit string `db:"of_symbol_unit"`
+	// OfDefUnit refers to the unit containing the def denoted in OfDefPath.
+	OfDefUnit string `db:"of_def_unit"`
 
 	// Repo refers to the repository in which this method was defined.
 	Repo repo.URI

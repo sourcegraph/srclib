@@ -42,8 +42,8 @@ document as we come up with clearer explanations.
 For each source unit, a graph is generated from the associated code, consisting
 of **definitions** and **references**. A definition is the original point in
 code where an object is defined, be it a function, module, or class. References
-are anywhere that symbol is then later used in code - references then link back
-to the original definition. References can link to definitions in other source
+are anywhere that def is then later used in code - references then link back to
+the original definition. References can link to definitions in other source
 units and repositories.
 
 ## Toolchain
