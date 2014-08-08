@@ -30,7 +30,6 @@ pages:
 - ['toolchains/java.md', 'Language Toolchains', 'Java']
 
 # Building
-- ['building/srcfile.md', 'Library Authors', 'Srcfile Customization']
 - ['building/uploading.md', 'Library Authors', 'Uploading to Sourcegraph']
 
 # API
