@@ -110,18 +110,11 @@ src tool github.com/alice/srclib-python scan ~/my-python-project
 
 Toolchains and their tools must conform to the protocol described below. The
 protocol is the same whether the tool is run directly or inside a Docker
-container.
+container. This includes four subcommands, listed below:
 
-## Toolchain protocol
-
-All toolchains must implement the following subcommands:
-
-| Command           | Description  | Output                                                               |
-| ----------------- | ------------ | -------------------------------------------------------------------- |
-| `info`            | Show info    | Human-readable info describing the version, author, etc. (free-form) |
-
-In addition to the `info` subcommand, each of a toolchain's tools are exposed as a subcommand.
-
+## info
+This command should display a human-readable info describing
+the version, author, etc. (free-form)
 
 ## scan (scanners)
 
@@ -139,7 +132,7 @@ directory tree and produce a JSON array of source units (in Go,
   typically the root, `"."`, as it is most useful to scan the entire
   repository)
 
-**stdout:** `[]*unit.SourceUnit`
+**stdout:** `[]*unit.SourceUnit`. For a more detailed description, click [here](scanner-output.md).
 
 See the `scan.Scan` function for an implementation of the calling side of this
 protocol.
@@ -148,7 +141,9 @@ Scanners sometimes need the option values to produce the correct paths. (E.g.,
 the Go scanner requires these to generate the right import paths when running in
 Docker, since the system GOPATH is not available in the container.)
 
-## dep (dependency resolvers)
+
+
+## depresolve (dependency resolvers)
 
 Tools that perform the `dep` operation are called **dependency resolvers**. They
 resolve "raw" dependencies, such as the name and version of a dependency
@@ -160,9 +155,11 @@ package, into a full specification of the dependency's target.
 
 **Options:** none
 
-**stdout:** `[]*dep.Resolution` JSON array with each item corresponding to the same-index entry in the source unit's `Dependencies` field
+**stdout:** `[]*dep.Resolution` JSON array with each item corresponding to the
+same-index entry in the source unit's `Dependencies` field. For a more
+detailed description, click [here](dependency-resolution-output.md).
 
-## graph (graphers)
+## graph  (graphers)
 
 Tools that perform the `graph` operation are called **graphers**. Depending on
 the programming language of the source code they analyze, they perform a
@@ -176,7 +173,8 @@ of the source unit's files.
 
 **Options:** none
 
-**stdout:** JSON graph output (`grapher.Output`)
+**stdout:** JSON graph output (`grapher.Output`). field. For a more
+detailed description, click [here](grapher-output.md).
 
 TODO(sqs): Can we provide the output of `dep` to the `graph` tool? Usually
 graphers have to resolve all of the same deps that `dep` would have to. But

@@ -23,6 +23,8 @@ Markdown files are located in the `sources` directory, with subdirectories
 intended to correspond with the drop-down menus on the site. The actual
 categories, however, are specified through configuration in `mkdocs.yml`.
 
+### Embedding Code Segments
+
 ## Deploying
 
 The site can be deployed to srclib.org simply by running `./deploy.sh`. This

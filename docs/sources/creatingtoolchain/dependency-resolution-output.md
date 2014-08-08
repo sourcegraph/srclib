@@ -18,6 +18,109 @@ The `Raw` field is language specific, but the Target field follows the following
 
 If an error occurred during resolution, a detailed description should be placed in the `Error` field.
 
-## Example
+## Example: Depresolve on [gorilla/mux](https://github.com/gorilla/mux)
 
-> Updated Example needed
+```json
+[
+    {
+        "Raw": "bytes",
+        "Target": {
+            "ToRepoCloneURL": "",
+            "ToUnit": "bytes",
+            "ToUnitType": "GoPackage",
+            "ToVersionString": "",
+            "ToRevSpec": ""
+        }
+    },
+    {
+        "Raw": "errors",
+        "Target": {
+            "ToRepoCloneURL": "",
+            "ToUnit": "errors",
+            "ToUnitType": "GoPackage",
+            "ToVersionString": "",
+            "ToRevSpec": ""
+        }
+    },
+    {
+        "Raw": "fmt",
+        "Target": {
+            "ToRepoCloneURL": "",
+            "ToUnit": "fmt",
+            "ToUnitType": "GoPackage",
+            "ToVersionString": "",
+            "ToRevSpec": ""
+        }
+    },
+    {
+        "Raw": "github.com/gorilla/context",
+        "Target": {
+            "ToRepoCloneURL": "",
+            "ToUnit": "github.com/gorilla/context",
+            "ToUnitType": "GoPackage",
+            "ToVersionString": "",
+            "ToRevSpec": ""
+        }
+    },
+    {
+        "Raw": "net/http",
+        "Target": {
+            "ToRepoCloneURL": "",
+            "ToUnit": "net/http",
+            "ToUnitType": "GoPackage",
+            "ToVersionString": "",
+            "ToRevSpec": ""
+        }
+    },
+    {
+        "Raw": "net/url",
+        "Target": {
+            "ToRepoCloneURL": "",
+            "ToUnit": "net/url",
+            "ToUnitType": "GoPackage",
+            "ToVersionString": "",
+            "ToRevSpec": ""
+        }
+    },
+    {
+        "Raw": "path",
+        "Target": {
+            "ToRepoCloneURL": "",
+            "ToUnit": "path",
+            "ToUnitType": "GoPackage",
+            "ToVersionString": "",
+            "ToRevSpec": ""
+        }
+    },
+    {
+        "Raw": "regexp",
+        "Target": {
+            "ToRepoCloneURL": "",
+            "ToUnit": "regexp",
+            "ToUnitType": "GoPackage",
+            "ToVersionString": "",
+            "ToRevSpec": ""
+        }
+    },
+    {
+        "Raw": "strings",
+        "Target": {
+            "ToRepoCloneURL": "",
+            "ToUnit": "strings",
+            "ToUnitType": "GoPackage",
+            "ToVersionString": "",
+            "ToRevSpec": ""
+        }
+    },
+    {
+        "Raw": "testing",
+        "Target": {
+            "ToRepoCloneURL": "",
+            "ToUnit": "testing",
+            "ToUnitType": "GoPackage",
+            "ToVersionString": "",
+            "ToRevSpec": ""
+        }
+    }
+]
+```
