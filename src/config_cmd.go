@@ -162,14 +162,14 @@ func (c *ConfigCmd) Execute(args []string) error {
 
 		fmt.Printf("CONFIG PROPERTIES (%d)\n", len(cfg.Config))
 		for _, kv := range sortedMap(cfg.Config) {
-			fmt.Printf(" - %s: %q\n", kv[0], kv[1])
+			fmt.Printf(" - %s: %s\n", kv[0], kv[1])
 		}
 	}
 
 	return nil
 }
 
-func sortedMap(m map[string]string) [][2]string {
+func sortedMap(m map[string]interface{}) [][2]interface{} {
 	keys := make([]string, len(m))
 	i := 0
 	for k := range m {
@@ -178,9 +178,9 @@ func sortedMap(m map[string]string) [][2]string {
 	}
 	sort.Strings(keys)
 
-	sorted := make([][2]string, len(keys))
+	sorted := make([][2]interface{}, len(keys))
 	for i, k := range keys {
-		sorted[i] = [2]string{k, m[k]}
+		sorted[i] = [2]interface{}{k, m[k]}
 	}
 	return sorted
 }
