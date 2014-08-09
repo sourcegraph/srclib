@@ -33,6 +33,11 @@ type Tree struct {
 	// Scanners to use to scan for source units in this tree.
 	Scanners []*toolchain.ToolRef `json:",omitempty"`
 
+	// SkipDirs is a list of directory trees that are skipped. That is, any
+	// source units (produced by scanners) whose Dir is in a skipped dir tree is
+	// not processed further.
+	SkipDirs []string `json:",omitempty"`
+
 	// TODO(sqs): Add some type of field that lets the Srcfile and the scanners
 	// have input into which tools get used during the execution phase. Right
 	// now, we're going to try just using the system defaults (srclib-*) and

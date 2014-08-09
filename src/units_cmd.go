@@ -3,6 +3,9 @@ package src
 import (
 	"fmt"
 	"log"
+	"path/filepath"
+
+	"strings"
 
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/scan"
@@ -53,7 +56,21 @@ func scanUnitsIntoConfig(cfg *config.Repository, configOpt config.Options, execO
 
 	// TODO(sqs): merge the Srcfile's source units with the ones we scanned;
 	// don't just clobber them.
-	cfg.SourceUnits = units
+
+	for _, u := range units {
+		unitDir := u.Dir
+		if unitDir == "" && len(u.Files) > 0 {
+			// in case the unit doesn't specify a Dir, obtain it from the first file
+			unitDir = filepath.Dir(u.Files[0])
+		}
+
+		// heed SkipDirs
+		if pathHasAnyPrefix(unitDir, cfg.SkipDirs) {
+			continue
+		}
+
+		cfg.SourceUnits = append(cfg.SourceUnits, u)
+	}
 
 	return nil
 }
@@ -97,4 +114,19 @@ func (c *UnitsCmd) Execute(args []string) error {
 	}
 
 	return nil
+}
+
+func pathHasAnyPrefix(path string, prefixes []string) bool {
+	for _, prefix := range prefixes {
+		if pathHasPrefix(path, prefix) {
+			return true
+		}
+	}
+	return false
+}
+
+func pathHasPrefix(path, prefix string) bool {
+	path = filepath.Clean(path)
+	prefix = filepath.Clean(prefix)
+	return prefix == "." || path == prefix || strings.HasPrefix(path, prefix+"/")
 }
