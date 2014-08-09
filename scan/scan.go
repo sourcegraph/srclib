@@ -1,6 +1,7 @@
 package scan
 
 import (
+	"fmt"
 	"runtime"
 	"sync"
 
@@ -27,7 +28,8 @@ func ScanMulti(scanners []toolchain.Tool, opt Options) ([]*unit.SourceUnit, erro
 		run.Do(func() error {
 			units2, err := Scan(scanner, opt)
 			if err != nil {
-				return err
+				cmd, _ := scanner.Command()
+				return fmt.Errorf("scanner %v: %s", cmd.Args, err)
 			}
 
 			mu.Lock()
