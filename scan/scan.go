@@ -16,7 +16,14 @@ type Options struct {
 	config.Options
 }
 
-func ScanMulti(scanners []toolchain.Tool, opt Options) ([]*unit.SourceUnit, error) {
+// ScanMulti runs multiple scanner tools in parallel. It passes command-line
+// options from opt to each one, and it sends the JSON representation of cfg
+// (the repo/tree's Config) to each tool's stdin.
+func ScanMulti(scanners []toolchain.Tool, opt Options, treeConfig map[string]interface{}) ([]*unit.SourceUnit, error) {
+	if treeConfig == nil {
+		treeConfig = map[string]interface{}{}
+	}
+
 	var (
 		units []*unit.SourceUnit
 		mu    sync.Mutex
@@ -26,7 +33,7 @@ func ScanMulti(scanners []toolchain.Tool, opt Options) ([]*unit.SourceUnit, erro
 	for _, scanner_ := range scanners {
 		scanner := scanner_
 		run.Do(func() error {
-			units2, err := Scan(scanner, opt)
+			units2, err := Scan(scanner, opt, treeConfig)
 			if err != nil {
 				cmd, _ := scanner.Command()
 				return fmt.Errorf("scanner %v: %s", cmd.Args, err)
@@ -44,14 +51,14 @@ func ScanMulti(scanners []toolchain.Tool, opt Options) ([]*unit.SourceUnit, erro
 	return units, nil
 }
 
-func Scan(scanner toolchain.Tool, opt Options) ([]*unit.SourceUnit, error) {
+func Scan(scanner toolchain.Tool, opt Options, treeConfig map[string]interface{}) ([]*unit.SourceUnit, error) {
 	args, err := toolchain.MarshalArgs(&opt)
 	if err != nil {
 		return nil, err
 	}
 
 	var units []*unit.SourceUnit
-	if err := scanner.Run(args, nil, &units); err != nil {
+	if err := scanner.Run(args, treeConfig, &units); err != nil {
 		return nil, err
 	}
 

@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"strings"
-
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/scan"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
@@ -37,17 +35,20 @@ func scanUnitsIntoConfig(cfg *config.Repository, configOpt config.Options, execO
 		scanners[i] = scanner
 	}
 
-	// Add Config properties from Srcfile.
-	for k, v := range cfg.Config {
-		if strings.Contains(k, "=") {
-			return fmt.Errorf("Config property key must not contain a '=' (in key %q, value %q)", k, v)
-		}
-		configOpt.Config = append(configOpt.Config, k+"="+v)
-	}
-
-	units, err := scan.ScanMulti(scanners, scan.Options{configOpt})
+	units, err := scan.ScanMulti(scanners, scan.Options{configOpt}, cfg.Config)
 	if err != nil {
 		return err
+	}
+
+	// Copy the repo/tree config to each source unit.
+	for _, u := range units {
+		// TODO(sqs): merge the config, don't just clobber the config (in case
+		// the scanner set any in the units it produces)
+		if cfg.Config != nil {
+			u.Config = cfg.Config
+		} else {
+			u.Config = map[string]interface{}{}
+		}
 	}
 
 	// TODO(sqs): merge the Srcfile's source units with the ones we scanned;

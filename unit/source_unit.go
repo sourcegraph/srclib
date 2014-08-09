@@ -69,7 +69,7 @@ type SourceUnit struct {
 	// Config is an arbitrary key-value property map. The Config map from the
 	// tree config is copied verbatim to each source unit. It can be used to
 	// pass options from the Srcfile to tools.
-	Config map[string]string `json:",omitempty"`
+	Config map[string]interface{} `json:",omitempty"`
 
 	// Ops enumerates the operations that should be performed on this source
 	// unit. Each key is the name of an operation, and the value is the tool to
