@@ -10,7 +10,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"testing"
 
 	"github.com/aybabtme/color/brush"
 	"github.com/kr/fs"
@@ -173,7 +172,7 @@ func testTree(treeDir, expectedDir, actualDir string, c *TestCmd) error {
 	// Run `src make`.
 	var w io.Writer
 	var buf bytes.Buffer
-	if testing.Verbose() {
+	if GlobalOpt.Verbose {
 		w = io.MultiWriter(&buf, os.Stderr)
 	} else {
 		w = &buf
