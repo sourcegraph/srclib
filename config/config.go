@@ -78,6 +78,7 @@ func (c *Repository) finish(repoURI repo.URI) (*Repository, error) {
 }
 
 type Options struct {
-	Repo   string `long:"repo" description:"repository URI" value-name:"URI"`
-	Subdir string `long:"subdir" description:"subdirectory in repository" value-name:"DIR"`
+	Repo   string   `long:"repo" description:"repository URI" value-name:"URI"`
+	Subdir string   `long:"subdir" description:"subdirectory in repository" value-name:"DIR"`
+	Config []string `long:"config" description:"config property from Srcfile" value-name:"KEY=VALUE"`
 }

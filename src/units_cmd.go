@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 
+	"strings"
+
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/scan"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
@@ -33,6 +35,14 @@ func scanUnitsIntoConfig(cfg *config.Repository, configOpt config.Options, execO
 			return err
 		}
 		scanners[i] = scanner
+	}
+
+	// Add Config properties from Srcfile.
+	for k, v := range cfg.Config {
+		if strings.Contains(k, "=") {
+			return fmt.Errorf("Config property key must not contain a '=' (in key %q, value %q)", k, v)
+		}
+		configOpt.Config = append(configOpt.Config, k+"="+v)
 	}
 
 	units, err := scan.ScanMulti(scanners, scan.Options{configOpt})
