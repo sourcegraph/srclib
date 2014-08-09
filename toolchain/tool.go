@@ -160,6 +160,9 @@ func (t *tool) Run(arg []string, input, resp interface{}) error {
 		if err := json.NewEncoder(stdin).Encode(input); err != nil {
 			return err
 		}
+		if err := stdin.Close(); err != nil {
+			return err
+		}
 	}
 
 	if err := json.NewDecoder(stdout).Decode(resp); err != nil {
