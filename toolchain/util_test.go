@@ -40,6 +40,18 @@ func TestMarshalArgs(t *testing.T) {
 			}{Foo: "bar"},
 			wantArgs: []string{"--foo", "bar"},
 		},
+		{
+			group: &struct {
+				Foo []string `long:"foo"`
+			}{Foo: []string{"bar", "baz"}},
+			wantArgs: []string{"--foo", "bar", "--foo", "baz"},
+		},
+		{
+			group: &struct {
+				Foo []string `long:"foo"`
+			}{Foo: []string{}},
+			wantArgs: nil,
+		},
 	}
 	for _, test := range tests {
 		args, err := MarshalArgs(test.group)

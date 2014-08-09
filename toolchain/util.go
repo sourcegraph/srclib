@@ -25,17 +25,19 @@ func MarshalArgs(v interface{}) ([]string, error) {
 			flagStr = flagStr[i+2:]
 		}
 
-		args = append(args, flagStr)
-
 		v := opt.Value()
 		if m, ok := v.(flags.Marshaler); ok {
 			s, err := m.MarshalFlag()
 			if err != nil {
 				return nil, err
 			}
-			args = append(args, s)
+			args = append(args, flagStr, s)
+		} else if ss, ok := v.([]string); ok {
+			for _, s := range ss {
+				args = append(args, flagStr, s)
+			}
 		} else {
-			args = append(args, fmt.Sprintf("%v", opt.Value()))
+			args = append(args, flagStr, fmt.Sprintf("%v", opt.Value()))
 		}
 	}
 	return args, nil
