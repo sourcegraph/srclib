@@ -132,15 +132,21 @@ func (t *tool) Run(arg []string, input, resp interface{}) error {
 	cmd.Args = append(cmd.Args, arg...)
 	cmd.Stderr = os.Stderr
 
+	log.Printf("Running: %v", cmd.Args)
+
 	var stdin io.WriteCloser
 	if input != nil {
+		data, err := json.Marshal(input)
+		if err != nil {
+			return err
+		}
+		log.Printf("  --> with input %s", data)
+
 		stdin, err = cmd.StdinPipe()
 		if err != nil {
 			return err
 		}
 	}
-
-	log.Printf("Running: %v", cmd.Args)
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
