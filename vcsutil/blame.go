@@ -1,6 +1,7 @@
 package vcsutil
 
 import (
+	"log"
 	"os"
 	"path/filepath"
 	"time"
@@ -48,7 +49,8 @@ func BlameFiles(dir string, files []string, commitID string) (*BlameOutput, erro
 
 		hunks, commitMap2, err := blame.BlameFile(dir, relFile, commitID)
 		if err != nil {
-			return nil, err
+			log.Printf("Warning: failed to blame file %s in commit %s (error was: %s); continuing", relFile, commitID, err)
+			continue
 		}
 		hunkMap[relFile] = hunks
 		for cid, cm := range commitMap2 {
