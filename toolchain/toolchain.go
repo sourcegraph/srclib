@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"sourcegraph.com/sourcegraph/srclib/util"
+
 	"github.com/fsouza/go-dockerclient"
 )
 
@@ -156,13 +158,7 @@ type dockerToolchain struct {
 }
 
 func newDockerToolchain(path, dir, dockerfile, hostVolumeDir string) (*dockerToolchain, error) {
-	dockerEndpoint := os.Getenv("DOCKER_HOST")
-	if dockerEndpoint == "" {
-		dockerEndpoint = "unix:///var/run/docker.sock"
-	} else if !strings.HasPrefix(dockerEndpoint, "http") {
-		dockerEndpoint = "http://" + dockerEndpoint
-	}
-	dc, err := docker.NewClient(dockerEndpoint)
+	dc, err := util.NewDockerClient()
 	if err != nil {
 		return nil, err
 	}
