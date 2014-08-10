@@ -3,7 +3,10 @@ package src
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"os"
+	"os/exec"
 	"path/filepath"
 	"sort"
 
@@ -12,6 +15,7 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/plan"
 	"sourcegraph.com/sourcegraph/srclib/repo"
+	"sourcegraph.com/sourcegraph/srclib/toolchain"
 
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -101,6 +105,12 @@ func (c *ConfigCmd) Execute(args []string) error {
 		return err
 	}
 
+	if len(cfg.PreConfigCommands) > 0 {
+		if err := runPreConfigCommands(string(c.Args.Dir), cfg.PreConfigCommands, c.ToolchainExecOpt); err != nil {
+			return fmt.Errorf("PreConfigCommands: %s", err)
+		}
+	}
+
 	if err := scanUnitsIntoConfig(cfg, c.Options, c.ToolchainExecOpt); err != nil {
 		return fmt.Errorf("failed to scan for source units: %s", err)
 	}
@@ -183,4 +193,62 @@ func sortedMap(m map[string]interface{}) [][2]interface{} {
 		sorted[i] = [2]interface{}{k, m[k]}
 	}
 	return sorted
+}
+
+func runPreConfigCommands(dir string, cmds []string, execOpt ToolchainExecOpt) error {
+	switch execOpt.ToolchainMode() {
+	case toolchain.AsProgram:
+		for _, cmdStr := range cmds {
+			cmd := exec.Command("sh", "-c", cmdStr)
+			cmd.Dir = dir
+			cmd.Stdout, cmd.Stderr = os.Stderr, os.Stderr
+			if err := cmd.Run(); err != nil {
+				return fmt.Errorf("command %q: %s", cmdStr, err)
+			}
+		}
+
+	case toolchain.AsDockerContainer:
+		// Build image
+		dockerfile := []byte(`
+FROM ubuntu:14.04
+RUN apt-get update -qq && echo 2014-08-10
+RUN apt-get install -qq curl git mercurial build-essential
+WORKDIR /src
+`)
+		tmpdir, err := ioutil.TempDir("", "src-docker-preconfig")
+		if err != nil {
+			return err
+		}
+		defer os.RemoveAll(tmpdir)
+
+		if err := ioutil.WriteFile(filepath.Join(tmpdir, "Dockerfile"), dockerfile, 0600); err != nil {
+			return err
+		}
+
+		// TODO(sqs): use a unique container ID
+
+		const containerName = "src-PreConfigCommands"
+		buildCmd := exec.Command("docker", "build", "-t", containerName, ".")
+		buildCmd.Dir = tmpdir
+		buildCmd.Stdout, buildCmd.Stderr = os.Stderr, os.Stderr
+		if err := buildCmd.Run(); err != nil {
+			return fmt.Errorf("building PreConfigCommands Docker container: %s", err)
+		}
+
+		for _, cmdStr := range cmds {
+			dir, err := filepath.Abs(dir)
+			if err != nil {
+				return err
+			}
+			cmd := exec.Command("docker", "run", "-v", dir+":/src", "--rm", "--entrypoint=/bin/bash", containerName)
+			cmd.Args = append(cmd.Args, "-c", cmdStr)
+			cmd.Stdout, cmd.Stderr = os.Stderr, os.Stderr
+			log.Printf("Running PreConfigCommands Docker container: %v", cmd.Args)
+			if err := cmd.Run(); err != nil {
+				return fmt.Errorf("command %q: %s", cmdStr, err)
+			}
+		}
+	}
+
+	return nil
 }

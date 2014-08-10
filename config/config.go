@@ -33,6 +33,24 @@ type Tree struct {
 	// Scanners to use to scan for source units in this tree.
 	Scanners []*toolchain.ToolRef `json:",omitempty"`
 
+	// PreConfigCommands is a list of commands (passed to `sh -c`) that should
+	// be run on the tree before configuration occurs (after the initial config
+	// is read from the Srcfile but before scanners are run). The commands are
+	// run at the top-level directory of the tree.
+	//
+	// If `src config` is run with the program execution method ("-m program"),
+	// the commands are executed normally. If it is run with the Docker
+	// execution method ("-m docker"), the commands are run in a Docker
+	// container with the tree mounted read-write at /src. Currently this
+	// container runs Ubuntu 14.04 with the git, mercurial, curl, and
+	// build-essential packages installed.
+	//
+	// This is the only accepted way to modify the tree during processing. Tools
+	// shouldn't modify the tree because they run concurrently. If they run in
+	// Docker, they're unable to modify the tree because it is mounted
+	// read-only.
+	PreConfigCommands []string `json:",omitempty"`
+
 	// SkipDirs is a list of directory trees that are skipped. That is, any
 	// source units (produced by scanners) whose Dir is in a skipped dir tree is
 	// not processed further.
