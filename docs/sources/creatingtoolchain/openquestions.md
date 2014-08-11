@@ -1,9 +1,6 @@
 page_title: Open Questions
 
 # Open Questions
-
-## Source Unit Versioning
-
 ## Type Complexities
 
 There are some cases where the current type system is insufficient to convey all

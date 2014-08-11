@@ -8,6 +8,8 @@ import shlex
 import mkdocs.build
 from mkdocs.build import build
 from mkdocs.config import load_config
+from urllib2 import urlopen
+import subprocess
 
 def line_containing(lines, text):
   for i in range(len(lines)):
@@ -21,9 +23,35 @@ def convert_markdown_new(source):
   def expand(match):
     args = shlex.split(match.groups()[0])
 
+    # Import external markdown
+    if args[0] == ".import":
+      code = ""
+      try: #Try as a URL
+        code = urlopen(args[1]).read()
+      except ValueError:  # invalid URL, try as a file
+        code = open(args[1]).read()
+
+      return code
+
+    # Run a shell command
+    elif args[0] == ".run":
+      result = ""
+      command = "$ " + match.groups()[0].replace(".run", "").strip()
+      try:
+        result = subprocess.check_output(args[1:],  stderr=subprocess.STDOUT)
+      except subprocess.CalledProcessError, e:
+        result = e.output
+      return "```\n" + command + "\n" + result.strip() + "\n```"
+
     # Source code embeds
-    if args[0] == ".code":
-      lines = open("../" + args[1]).read().splitlines()
+    elif args[0] == ".code":
+      code = ""
+      try: #Try as a URL
+        code = urlopen(args[1]).read()
+      except ValueError:  # invalid URL, try as a file
+        code = open("../" + args[1]).read()
+
+      lines = code.splitlines()
 
       # Short hand for specifying a region
       if len(args) == 3:
@@ -47,6 +75,8 @@ def convert_markdown_new(source):
 
       # Trim "OMIT" lines
       lines = filter(lambda x: not x.strip().lower().endswith("omit"), lines)
+
+      # TODO: Trim leading and trailing empty lines
 
       lines.insert(0, "```go")
       lines.append("```")
@@ -74,7 +104,6 @@ if __name__ == "__main__":
   template_env = jinja2.Environment(loader = jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'theme')))
   index_template = template_env.get_template('home.html')
   community_template = template_env.get_template('community.html')
-  about_template = template_env.get_template('about.html')
 
   # Home page
   with open('site/index.html', 'w') as f:
@@ -86,10 +115,4 @@ if __name__ == "__main__":
   with open('site/community.html', 'w') as f:
     f.write(community_template.render(
       page="community"
-    ))
-
-  # About page
-  with open('site/about.html', 'w') as f:
-    f.write(about_template.render(
-      page="about"
     ))

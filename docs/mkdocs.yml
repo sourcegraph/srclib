@@ -17,34 +17,38 @@ pages:
 
 # Editor Plugins
 - ['plugins/emacs.md', 'Editor Plugins', 'Emacs']
-- ['plugins/sublimetext.md', 'Editor Plugins', 'Sublime Text']
-- ['plugins/vim.md', 'Editor Plugins', 'Vim']
-- ['plugins/atom.md', 'Editor Plugins', 'Atom']
-- ['plugins/creatingaplugin.md', 'Editor Plugins', 'Creating a Plugin']
+#- ['plugins/sublimetext.md', 'Editor Plugins', 'Sublime Text']
+#- ['plugins/vim.md', 'Editor Plugins', 'Vim']
+#- ['plugins/atom.md', 'Editor Plugins', 'Atom']
+#- ['plugins/creatingaplugin.md', 'Editor Plugins', 'Creating a Plugin']
 
 # Language Toolchains
-- ['toolchains/python.md', 'Language Toolchains', 'Python']
+#- ['toolchains/python.md', 'Language Toolchains', 'Python']
 - ['toolchains/go.md', 'Language Toolchains', 'Go']
-- ['toolchains/ruby.md', 'Language Toolchains', 'Ruby']
+#- ['toolchains/ruby.md', 'Language Toolchains', 'Ruby']
 - ['toolchains/javascript.md', 'Language Toolchains', 'Javascript']
-- ['toolchains/java.md', 'Language Toolchains', 'Java']
+#- ['toolchains/java.md', 'Language Toolchains', 'Java']
 
 # Building
-- ['building/uploading.md', 'Library Authors', 'Uploading to Sourcegraph']
+#- ['building/uploading.md', 'Library Authors', 'Uploading to Sourcegraph']
 
 # API
-- ['api/overview.md', 'API', 'Overview']
-- ['api/data-model.md', 'API', 'Data Model']
-- ['api/make.md', 'API', 'src make']
-- ['api/describe.md', 'API', 'src describe']
+- ['api/overview.md', 'Building on Srclib', 'Overview']
+- ['api/make.md', 'Building on Srclib', 'src make']
+- ['api/describe.md', 'Building on Srclib', 'src describe']
 
 # Creating a Toolchain
-- ['creatingtoolchain/overview.md', 'Creating a Toolchain', 'Overview']
-- ['creatingtoolchain/commonstructures.md', 'Creating a Toolchain', 'Common Data Structures']
-- ['creatingtoolchain/scanner-output.md', 'Creating a Toolchain', 'Scanner Output']
-- ['creatingtoolchain/grapher-output.md', 'Creating a Toolchain', 'Grapher Output']
-- ['creatingtoolchain/dependency-resolution-output.md', 'Creating a Toolchain', 'Dependency Resolution Output']
-- ['creatingtoolchain/formatter.md', 'Creating a Toolchain', 'Formatter API']
-- ['creatingtoolchain/openquestions.md', 'Creating a Toolchain', 'Open Questions']
+- ['creatingtoolchain/overview.md', 'Contributing to Srclib', 'Creating a Toolchain']
+- ['creatingtoolchain/openquestions.md', 'Contributing to Srclib', 'Open Questions']
+
+#- ['creatingtoolchain/formatter.md', 'Creating a Toolchain', 'Formatter API']
+
+
+# Data Model
+- ['api/data-model.md', 'Data Model', 'Overview']
+- ['creatingtoolchain/commonstructures.md', 'Data Model', 'Common Data Structures']
+- ['creatingtoolchain/scanner-output.md', 'Data Model', 'Scanner Output']
+- ['creatingtoolchain/grapher-output.md', 'Data Model', 'Grapher Output']
+- ['creatingtoolchain/dependency-resolution-output.md', 'Data Model', 'Dependency Resolution Output']
 
 - ['faq.md', 'FAQ']

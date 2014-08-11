@@ -1,6 +1,6 @@
 # Frequently asked questions
-
-## Why are there 2 different execution schemes for tools: running directly as a program and running inside a Docker container?
+## Questions About Toolchains
+### Why are there 2 different execution schemes for tools: running directly as a program and running inside a Docker container?
 
 Running toolchains as normal programs means that it'll pick up context from your
 local system, such as interpreter/compiler versions, dependencies, etc. This is
@@ -13,7 +13,7 @@ This is desirable when you want to share analysis output with others, such as
 when you're uploading it to an external service (like
 [Sourcegraph](https://sourcegraph.com)).
 
-## Why can't a toolchain's tools use different Docker images from each other?
+### Why can't a toolchain's tools use different Docker images from each other?
 
 The Docker image built for a toolchain should be capable of running all of the
 toolchain's functionality. It would add a lot of complexity to either:

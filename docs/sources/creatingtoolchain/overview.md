@@ -12,9 +12,6 @@ include:
 * Scanning: runs before all other tools and finds all *source units* of the
   language (e.g., Python packages, Ruby gems, etc.) in a directory tree.
   Scanners also determine which other tools to call on each source unit.
-* Dependency listing: enumerates all dependencies specified by the language's
-  source units in their raw form (e.g., as the name and version of an npm or pip
-  package).
 * Dependency resolution: resolves raw dependencies to git/hg clone URIs,
   subdirectories, and commit IDs if possible (e.g., `foo@0.2.1` to
   github.com/alice/foo commit ID abcd123).
@@ -66,26 +63,26 @@ available tools (provided by all available toolchains), run `src info tools`.
 
 There are 2 modes of execution for srclib tools:
 
-1. As a normal **installed program** on your system: to produce analysis
-   that relies on locally installed compiler/interpreter and dependency
-   versions. (Used when you'll consume the analysis results locally, such as
-   during editing of local code.)
+1.  As a normal **installed program** on your system: to produce analysis
+    that relies on locally installed compiler/interpreter and dependency
+    versions. (Used when you'll consume the analysis results locally, such as
+    during editing of local code.)
 
-   An installed tool is an executable program located at "TOOLCHAIN/.bin/NAME",
-   where TOOLCHAIN is the toolchain path and NAME is the last component in the
-   toolchain path. For example, the installed tool for "github.com/foo/bar"
-   would be at "SRCLIBPATH/github.com/foo/bar/.bin/bar".
+    An installed tool is an executable program located at "TOOLCHAIN/.bin/NAME",
+    where TOOLCHAIN is the toolchain path and NAME is the last component in the
+    toolchain path. For example, the installed tool for "github.com/foo/bar"
+    would be at "SRCLIBPATH/github.com/foo/bar/.bin/bar".
 
-1. Inside a **Docker container**: to produce analysis independent of your local
-   configuration and versions. (Used when other people or services will reuse
-   the analysis results, such as on [Sourcegraph](https://sourcegraph.com).)
+2.  Inside a **Docker container**: to produce analysis independent of your local
+    configuration and versions. (Used when other people or services will reuse
+    the analysis results, such as on [Sourcegraph](https://sourcegraph.com).)
 
-   A Docker-containerized tool is a directory (under SRCLIBPATH) that contains a
-   Dockerfile. There is no installation necessary for these tools; the `src`
-   program knows how to build and run their Docker container.
+    A Docker-containerized tool is a directory (under SRCLIBPATH) that contains a
+    Dockerfile. There is no installation necessary for these tools; the `src`
+    program knows how to build and run their Docker container.
 
-   When the Docker container runs, the project's source code is always
-   volume-mounted at `/src` (in the container).
+    When the Docker container runs, the project's source code is always
+    volume-mounted at `/src` (in the container).
 
 Tools may support either or both of these execution modes. Their behavior should
 be the same, if possible, regardless of the execution mode. (TODO(sqs): Clarify
@@ -132,7 +129,7 @@ directory tree and produce a JSON array of source units (in Go,
   typically the root, `"."`, as it is most useful to scan the entire
   repository)
 
-**stdout:** `[]*unit.SourceUnit`. For a more detailed description, click [here](scanner-output.md).
+**stdout:** `[]*unit.SourceUnit`. For a more detailed description, [read the scanner output spec](scanner-output.md).
 
 See the `scan.Scan` function for an implementation of the calling side of this
 protocol.
@@ -157,7 +154,7 @@ package, into a full specification of the dependency's target.
 
 **stdout:** `[]*dep.Resolution` JSON array with each item corresponding to the
 same-index entry in the source unit's `Dependencies` field. For a more
-detailed description, click [here](dependency-resolution-output.md).
+detailed description, [read the dependency resolution output sepc](dependency-resolution-output.md).
 
 ## graph  (graphers)
 
@@ -174,7 +171,7 @@ of the source unit's files.
 **Options:** none
 
 **stdout:** JSON graph output (`grapher.Output`). field. For a more
-detailed description, click [here](grapher-output.md).
+detailed description, [read the grapher output spec](grapher-output.md).
 
 TODO(sqs): Can we provide the output of `dep` to the `graph` tool? Usually
 graphers have to resolve all of the same deps that `dep` would have to. But

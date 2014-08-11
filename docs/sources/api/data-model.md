@@ -1,4 +1,4 @@
-# srclib Data Model
+# Data Model Overview
 
 ### Source unit
 
@@ -56,11 +56,9 @@ language that implements these can be automatically used with srclib.
 1. **Scanner** - Traverses the directory tree looking for source units. Invokes
    the grapher and dependency lister on each unit.
 2. **Grapher** - Produces the code graph through static analysis.
-3. **Dependency Lister** - Lists all of the dependencies that a source unit
-   uses - for example the raw PipPackage or NPM package names.
-4. **Dependency Resolver** - Resolves raw dependency names to VCS repository
+3. **Dependency Resolver** - Resolves raw dependency names to VCS repository
    urls.
-5. **Formatter** - Exports functions that the API uses to transform raw
+4. **Formatter** - Exports functions that the API uses to transform raw
    language-specific data into a generic, useable structure. This is the only
    tool that must be written in Go.
 
