@@ -85,8 +85,11 @@ There are 2 modes of execution for srclib tools:
     volume-mounted at `/src` (in the container).
 
 Tools may support either or both of these execution modes. Their behavior should
-be the same, if possible, regardless of the execution mode. (TODO(sqs): Clarify
-this. What does "should be the same" mean?)
+be the same, if possible, regardless of the execution mode.
+
+<!---
+TODO(sqs): Clarify this. What does "should be the same" mean?
+--->
 
 Toolchains are not typically invoked directly by users; the `src` program invokes
 them as part of higher-level commands. However, it is possible to invoke them
@@ -173,7 +176,9 @@ of the source unit's files.
 **stdout:** JSON graph output (`grapher.Output`). field. For a more
 detailed description, [read the grapher output spec](grapher-output.md).
 
+<!---
 TODO(sqs): Can we provide the output of `dep` to the `graph` tool? Usually
 graphers have to resolve all of the same deps that `dep` would have to. But
 we're already providing a full JSON object on stdin, so making it an array or
 sending another object would slightly complicate things.
+--->
