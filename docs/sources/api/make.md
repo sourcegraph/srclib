@@ -38,8 +38,10 @@ following files:
 * `.srclib-cache/COMMITID/NAME1/TYPE1.unit.v0.json`
 * `.srclib-cache/COMMITID/NAME2/TYPE2.unit.v0.json`
 
+<!---
 TODO(sqs): make these files be generated themselves by a Makefile.config, so we
 can regenerate them when the source unit definitions change.
+--->
 
 ## Phase 2. Plan
 
