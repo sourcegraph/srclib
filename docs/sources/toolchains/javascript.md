@@ -5,7 +5,7 @@ This toolchain is not a standalone program; it provides additional functionality
 to editor plugins and other applications that use [srclib](https://srclib.org).
 
 First,
-[install the `src` program (see srclib installation instructions)](https://sourcegraph.com/sourcegraph/srclib).
+[install the `src` program (see srclib installation instructions)](../gettingstarted.md#install-srclib).
 
 Then run:
 
