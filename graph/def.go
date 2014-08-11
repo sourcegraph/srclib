@@ -327,6 +327,17 @@ func (defs Defs) Keys() (keys []DefKey) {
 	return
 }
 
+func (defs Defs) KeySet() (keys map[DefKey]struct{}, err error) {
+	keys = make(map[DefKey]struct{})
+	for _, def := range defs {
+		if _, in := keys[def.DefKey]; in {
+			return nil, fmt.Errorf("duplicate def key %+v", def.DefKey)
+		}
+		keys[def.DefKey] = struct{}{}
+	}
+	return keys, nil
+}
+
 func (defs Defs) SIDs() (ids []SID) {
 	ids = make([]SID, len(defs))
 	for i, def := range defs {
