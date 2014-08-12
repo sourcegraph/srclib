@@ -44,14 +44,17 @@ func scanUnitsIntoConfig(cfg *config.Repository, configOpt config.Options, execO
 		return err
 	}
 
-	// Copy the repo/tree config to each source unit.
+	// Merge the repo/tree config with each source unit's config.
+	if cfg.Config != nil {
+		cfg.Config = map[string]interface{}{}
+	}
 	for _, u := range units {
-		// TODO(sqs): merge the config, don't just clobber the config (in case
-		// the scanner set any in the units it produces)
-		if cfg.Config != nil {
-			u.Config = cfg.Config
-		} else {
-			u.Config = map[string]interface{}{}
+		for k, v := range cfg.Config {
+			if uv, present := u.Config[k]; present {
+				log.Printf("Both the scanned source unit %q and the Srcfile specify a Config key %q. Using the value from the scanned source unit (%+v).", k, uv)
+			} else {
+				u.Config[k] = v
+			}
 		}
 	}
 
