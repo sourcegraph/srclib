@@ -196,8 +196,7 @@ func sortedMap(m map[string]interface{}) [][2]interface{} {
 }
 
 func runPreConfigCommands(dir string, cmds []string, execOpt ToolchainExecOpt) error {
-	switch execOpt.ToolchainMode() {
-	case toolchain.AsProgram:
+	if mode := execOpt.ToolchainMode(); mode&toolchain.AsProgram > 0 {
 		for _, cmdStr := range cmds {
 			cmd := exec.Command("sh", "-c", cmdStr)
 			cmd.Dir = dir
@@ -206,8 +205,7 @@ func runPreConfigCommands(dir string, cmds []string, execOpt ToolchainExecOpt) e
 				return fmt.Errorf("command %q: %s", cmdStr, err)
 			}
 		}
-
-	case toolchain.AsDockerContainer:
+	} else if mode&toolchain.AsDockerContainer > 0 {
 		// Build image
 		dockerfile := []byte(`
 FROM ubuntu:14.04
@@ -248,6 +246,8 @@ WORKDIR /src
 				return fmt.Errorf("command %q: %s", cmdStr, err)
 			}
 		}
+	} else {
+		log.Fatalf("Can't run PreConfigCommands: unknown execution mode %q.", mode)
 	}
 
 	return nil
