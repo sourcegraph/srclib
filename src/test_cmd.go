@@ -2,6 +2,7 @@ package src
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -61,9 +62,7 @@ type TestCmd struct {
 
 	CheckInternalTargets bool `long:"check-internal-targets" description:"also produce and check internal command outputs (ex: blame, authorship)"`
 
-	// ExeMethods is like the same field from ToolchainExecOpt, but we want it
-	// to default to "docker" for tests. So, we have to redefine it here.
-	ExeMethods string `short:"m" long:"methods" default:"docker" description:"permitted execution methods; unlike all other commands, for test it prefers Docker execution" value-name:"METHODS"`
+	ToolchainExecOpt
 
 	Args struct {
 		Trees []Directory `name:"TREES" description:"trees to treat as test cases"`
@@ -73,43 +72,47 @@ type TestCmd struct {
 var testCmd TestCmd
 
 func (c *TestCmd) Execute(args []string) error {
-	if strings.Contains(c.ExeMethods, ",") {
-		log.Fatal("Only one toolchain execution method can be specified per test run. You specified: %q.", c.ExeMethods)
-	}
-	if GlobalOpt.Verbose {
-		log.Printf("Executing tests using method: %s", c.ExeMethods)
+	exeMethods := strings.Split(c.ExeMethods, ",")
+	if len(exeMethods) == 0 {
+		return errors.New("At least one toolchain execution method must be specified (with -m or --methods).")
 	}
 
-	var trees []string
-	if len(c.Args.Trees) > 0 {
-		for _, tree := range c.Args.Trees {
-			trees = append(trees, string(tree))
-		}
-	} else {
-		entries, err := ioutil.ReadDir("testdata/case")
-		if err != nil {
-			return err
-		}
-		for _, e := range entries {
-			if strings.HasPrefix(e.Name(), "_") {
-				continue
-			}
-			trees = append(trees, filepath.Join("testdata/case", e.Name()))
-		}
-	}
-
-	if GlobalOpt.Verbose {
-		log.Printf("Testing trees: %v", trees)
-	}
-
-	for _, tree := range trees {
+	for _, exeMethod := range exeMethods {
 		if GlobalOpt.Verbose {
-			log.Printf("Testing tree %v...", tree)
+			log.Printf("Executing tests using method: %s", exeMethod)
 		}
-		expectedDir := filepath.Join(tree, "../../expected", c.ExeMethods, filepath.Base(tree))
-		actualDir := filepath.Join(tree, "../../actual", c.ExeMethods, filepath.Base(tree))
-		if err := testTree(tree, expectedDir, actualDir, c); err != nil {
-			return fmt.Errorf("testing tree %q: %s", tree, err)
+
+		var trees []string
+		if len(c.Args.Trees) > 0 {
+			for _, tree := range c.Args.Trees {
+				trees = append(trees, string(tree))
+			}
+		} else {
+			entries, err := ioutil.ReadDir("testdata/case")
+			if err != nil {
+				return err
+			}
+			for _, e := range entries {
+				if strings.HasPrefix(e.Name(), "_") {
+					continue
+				}
+				trees = append(trees, filepath.Join("testdata/case", e.Name()))
+			}
+		}
+
+		if GlobalOpt.Verbose {
+			log.Printf("Testing trees: %v", trees)
+		}
+
+		for _, tree := range trees {
+			if GlobalOpt.Verbose {
+				log.Printf("Testing tree %v...", tree)
+			}
+			expectedDir := filepath.Join(tree, "../../expected", exeMethod, filepath.Base(tree))
+			actualDir := filepath.Join(tree, "../../actual", exeMethod, filepath.Base(tree))
+			if err := testTree(tree, expectedDir, actualDir, exeMethod, c.GenerateExpected, c.CheckInternalTargets); err != nil {
+				return fmt.Errorf("testing tree %q: %s", tree, err)
+			}
 		}
 	}
 
@@ -120,7 +123,7 @@ func (c *TestCmd) Execute(args []string) error {
 	return nil
 }
 
-func testTree(treeDir, expectedDir, actualDir string, c *TestCmd) error {
+func testTree(treeDir, expectedDir, actualDir string, exeMethod string, generateExpected, checkInternalTargets bool) error {
 	treeName := filepath.Base(treeDir)
 	if treeName == "." {
 		absTreeDir, err := filepath.Abs(treeDir)
@@ -132,7 +135,7 @@ func testTree(treeDir, expectedDir, actualDir string, c *TestCmd) error {
 
 	// Determine and wipe the desired output dir.
 	var outputDir string
-	if c.GenerateExpected {
+	if generateExpected {
 		outputDir = expectedDir
 	} else {
 		outputDir = actualDir
@@ -177,7 +180,7 @@ func testTree(treeDir, expectedDir, actualDir string, c *TestCmd) error {
 	} else {
 		w = &buf
 	}
-	cmd := exec.Command("src", "-v", "do-all", "-m", c.ExeMethods)
+	cmd := exec.Command("src", "-v", "do-all", "-m", exeMethod)
 	cmd.Dir = treeDir
 	cmd.Stderr, cmd.Stdout = w, w
 
@@ -185,7 +188,7 @@ func testTree(treeDir, expectedDir, actualDir string, c *TestCmd) error {
 		return fmt.Errorf("Command %v in %s failed: %s.\n\nOutput was:\n%s", cmd.Args, treeName, err, buf.String())
 	}
 
-	if !c.CheckInternalTargets {
+	if !checkInternalTargets {
 		// remove all internal target output files
 		internalOutputs := []interface{}{&authorship.SourceUnitOutput{}, &vcsutil.BlameOutput{}}
 		w := fs.Walk(outputDir)
@@ -204,7 +207,7 @@ func testTree(treeDir, expectedDir, actualDir string, c *TestCmd) error {
 		}
 	}
 
-	if c.GenerateExpected {
+	if generateExpected {
 		log.Printf("Successfully generated expected output for %s in %s.", treeName, expectedDir)
 		return nil
 	}

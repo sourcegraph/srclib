@@ -86,7 +86,7 @@ func (t ToolchainPath) Complete(match string) []flags.Completion {
 }
 
 type ToolchainExecOpt struct {
-	ExeMethods string `short:"m" long:"methods" default:"program,docker" description:"permitted execution methods" value-name:"METHODS"`
+	ExeMethods string `short:"m" long:"methods" default:"program,docker" description:"toolchain execution methods" value-name:"METHODS"`
 }
 
 func (o *ToolchainExecOpt) ToolchainMode() toolchain.Mode {
