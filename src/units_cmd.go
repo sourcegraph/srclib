@@ -10,6 +10,7 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/scan"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
+	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
 func init() {
@@ -54,10 +55,24 @@ func scanUnitsIntoConfig(cfg *config.Repository, configOpt config.Options, execO
 		}
 	}
 
-	// TODO(sqs): merge the Srcfile's source units with the ones we scanned;
-	// don't just clobber them.
+	// collect manually specified source units by ID
+	manualUnits := make(map[unit.ID]*unit.SourceUnit, len(cfg.SourceUnits))
+	for _, u := range cfg.SourceUnits {
+		manualUnits[u.ID()] = u
+
+		xf, err := unit.ExpandPaths(".", u.Files)
+		if err != nil {
+			return err
+		}
+		u.Files = xf
+	}
 
 	for _, u := range units {
+		if mu, present := manualUnits[u.ID()]; present {
+			log.Printf("Found manually specified source unit %q with same ID as scanned source unit. Using manually specified unit, ignoring scanned source unit.", mu.ID())
+			continue
+		}
+
 		unitDir := u.Dir
 		if unitDir == "" && len(u.Files) > 0 {
 			// in case the unit doesn't specify a Dir, obtain it from the first file

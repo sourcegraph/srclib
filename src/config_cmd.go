@@ -66,11 +66,6 @@ func getInitialConfig(opt config.Options, dir Directory) (*config.Repository, er
 		return nil, fmt.Errorf("failed to read repository at %s: %s", dir, err)
 	}
 
-	if cfg.SourceUnits != nil {
-		// TODO(sqs): support specifying source units in the Srcfile
-		log.Fatal("specifying source units in the Srcfile is not currently supported.")
-	}
-
 	if cfg.Scanners == nil {
 		cfg.Scanners = config.SrclibPathConfig.Scanners
 	}
