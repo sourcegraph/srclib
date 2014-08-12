@@ -61,7 +61,7 @@ func resolveWorkingTreeRevision(vcsType string, dir string) (string, error) {
 	case "git":
 		cmd = exec.Command("git", "rev-parse", "HEAD")
 	case "hg":
-		cmd = exec.Command("hg", "identify", "--debug", "-i", "--rev=tip")
+		cmd = exec.Command("hg", "--config", "trusted.users=root", "identify", "--debug", "-i", "--rev=tip")
 	default:
 		return "", fmt.Errorf("unknown vcs type: %q", vcsType)
 	}
@@ -80,7 +80,7 @@ func getRootDir(vcsType string, dir string) (string, error) {
 	case "git":
 		cmd = exec.Command("git", "rev-parse", "--show-toplevel")
 	case "hg":
-		cmd = exec.Command("hg", "root")
+		cmd = exec.Command("hg", "--config", "trusted.users=root", "root")
 	}
 	if cmd == nil {
 		return "", fmt.Errorf("unrecognized VCS %v", vcsType)
@@ -99,7 +99,7 @@ func getVCSCloneURL(vcsType string, repoDir string) (string, error) {
 	case "git":
 		cmd = exec.Command("git", "config", "remote.origin.url")
 	case "hg":
-		cmd = exec.Command("hg", "paths", "default")
+		cmd = exec.Command("hg", "--config", "trusted.users=root", "paths", "default")
 	}
 	if cmd == nil {
 		return "", fmt.Errorf("unrecognized VCS %v", vcsType)
