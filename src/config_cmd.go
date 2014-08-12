@@ -225,7 +225,7 @@ WORKDIR /src
 
 		// TODO(sqs): use a unique container ID
 
-		const containerName = "src-PreConfigCommands"
+		const containerName = "src-preconfigcommands"
 		buildCmd := exec.Command("docker", "build", "-t", containerName, ".")
 		buildCmd.Dir = tmpdir
 		buildCmd.Stdout, buildCmd.Stderr = os.Stderr, os.Stderr
