@@ -211,6 +211,10 @@ func runPreConfigCommands(dir string, cmds []string, execOpt ToolchainExecOpt) e
 FROM ubuntu:14.04
 RUN apt-get update -qq && echo 2014-08-10
 RUN apt-get install -qq curl git mercurial build-essential
+RUN useradd -ms /bin/bash srclib
+RUN mkdir /src
+RUN chown srclib /src
+USER srclib
 WORKDIR /src
 `)
 		tmpdir, err := ioutil.TempDir("", "src-docker-preconfig")

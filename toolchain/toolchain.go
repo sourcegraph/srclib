@@ -1,8 +1,10 @@
 package toolchain
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -184,6 +186,14 @@ func (t *dockerToolchain) IsBuilt() (bool, error) {
 
 // Build builds the Docker image for this toolchain from its Dockerfile.
 func (t *dockerToolchain) Build() error {
+	// Check that the Dockerfile has a "USER srclib" directive, for security.
+	dfPath := filepath.Join(t.dir, "Dockerfile")
+	if df, err := ioutil.ReadFile(dfPath); err != nil {
+		return err
+	} else if !bytes.Contains(df, []byte("\nUSER srclib")) {
+		return fmt.Errorf(`Dockerfile at %s must contain a "USER srclib" directive, for security purposes.`, dfPath)
+	}
+
 	cmd := exec.Command("docker", "build", "-t", t.imageName, ".")
 	cmd.Dir = t.dir
 	cmd.Stdout = os.Stderr
@@ -205,6 +215,10 @@ func (t *dockerToolchain) Command() (*exec.Cmd, error) {
 			return nil, err
 		}
 	}
+
+	// TODO(sqs): once all the toolchains have a "USER srclib" directive, add:
+	//   "--user", "srclib"
+	// to the run options below.
 	cmd := exec.Command("docker", "run", "-i", "--volume="+t.hostVolumeDir+":/src:ro", t.imageName)
 	return cmd, nil
 }
