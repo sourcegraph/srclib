@@ -64,20 +64,34 @@ type Command struct{}
 // Resolutions with Errors are omitted from the returned slice and no such
 // errors are returned.
 func ResolutionsToResolvedDeps(ress []*Resolution, unit *unit.SourceUnit, fromRepo repo.URI, fromCommitID string) ([]*ResolvedDep, error) {
+	or := func(a, b string) string {
+		if a != "" {
+			return a
+		}
+		return b
+	}
 	var resolved []*ResolvedDep
 	for _, res := range ress {
 		if res.Error != "" {
 			continue
 		}
+
 		if rt := res.Target; rt != nil {
+			var uri repo.URI
+			if rt.ToRepoCloneURL != "" {
+				uri = repo.MakeURI(rt.ToRepoCloneURL)
+			} else {
+				uri = fromRepo
+			}
+
 			rd := &ResolvedDep{
 				FromRepo:        fromRepo,
 				FromCommitID:    fromCommitID,
 				FromUnit:        unit.Name,
 				FromUnitType:    unit.Type,
-				ToRepo:          repo.MakeURI(rt.ToRepoCloneURL),
-				ToUnit:          rt.ToUnit,
-				ToUnitType:      rt.ToUnitType,
+				ToRepo:          uri,
+				ToUnit:          or(rt.ToUnit, unit.Name),
+				ToUnitType:      or(rt.ToUnitType, unit.Type),
 				ToVersionString: rt.ToVersionString,
 				ToRevSpec:       rt.ToRevSpec,
 			}
