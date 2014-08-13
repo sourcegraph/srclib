@@ -37,6 +37,15 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	_, err = c.AddCommand("list",
+		"list all refs in a given file",
+		"Return a list of all references that are in the current file.",
+		&apiListCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 type APICmd struct{}
@@ -52,28 +61,16 @@ type APIDescribeCmd struct {
 	NoExamples bool `long:"no-examples" describe:"don't show examples from Sourcegraph.com"`
 }
 
+type APIListCmd struct {
+	File			string `long:"file" required:"yes" value-name:"FILE"`
+}
+
 var apiDescribeCmd APIDescribeCmd
+var apiListCmd APIListCmd
 
-func (c *APIDescribeCmd) Execute(args []string) error {
-	repo, err := OpenRepo(filepath.Dir(c.File))
-	if err != nil {
-		return err
-	}
 
-	c.File, err = filepath.Rel(repo.RootDir, c.File)
-	if err != nil {
-		return err
-	}
-
-	if err := os.Chdir(repo.RootDir); err != nil {
-		return err
-	}
-
-	buildStore, err := buildstore.NewRepositoryStore(repo.RootDir)
-	if err != nil {
-		return err
-	}
-
+// Invokes the build process on the given repository
+func ensureBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
 	configOpt := config.Options{
 		Repo:   string(repo.URI()),
 		Subdir: ".",
@@ -102,6 +99,11 @@ func (c *APIDescribeCmd) Execute(args []string) error {
 		return err
 	}
 
+	return nil
+}
+
+// Get a list of all source units that contain the given file
+func getSourceUnitsWithFile(buildStore *buildstore.RepositoryStore, repo *Repo, filename string) ([]*unit.SourceUnit, error) {
 	// TODO(sqs): This whole lookup is totally inefficient. The storage format
 	// is not optimized for lookups.
 
@@ -121,18 +123,117 @@ func (c *APIDescribeCmd) Execute(args []string) error {
 		var u *unit.SourceUnit
 		f, err := buildStore.Open(unitFile)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		defer f.Close()
 		if err := json.NewDecoder(f).Decode(&u); err != nil {
-			return fmt.Errorf("%s: %s", unitFile, err)
+			return nil, fmt.Errorf("%s: %s", unitFile, err)
 		}
 		for _, f2 := range u.Files {
-			if f2 == c.File {
+			if f2 == filename {
 				units = append(units, u)
 				break
 			}
 		}
+	}
+
+	return units, nil
+}
+
+func (c *APIListCmd) Execute(args []string) error {
+	repo, err := OpenRepo(filepath.Dir(c.File))
+	if err != nil {
+		return err
+	}
+
+	c.File, err = filepath.Rel(repo.RootDir, c.File)
+	if err != nil {
+		return err
+	}
+
+	if err := os.Chdir(repo.RootDir); err != nil {
+		return err
+	}
+
+	buildStore, err := buildstore.NewRepositoryStore(repo.RootDir)
+	if err != nil {
+		return err
+	}
+
+	if err := ensureBuild(buildStore, repo); err != nil {
+		return err
+	}
+
+	units, err := getSourceUnitsWithFile(buildStore, repo, c.File)
+	if err != nil {
+		return err
+	}
+
+	if GlobalOpt.Verbose {
+		if len(units) > 0 {
+			ids := make([]string, len(units))
+			for i, u := range units {
+				ids[i] = string(u.ID())
+			}
+			log.Printf("File %s is in %d source units %v.", c.File, len(units), ids)
+		} else {
+			log.Printf("File %s is not in any source units.", c.File)
+		}
+	}
+
+	// Find the ref(s) at the character position.
+	var refs []*graph.Ref
+	for _, u := range units {
+		var g grapher.Output
+		graphFile := buildStore.FilePath(repo.CommitID, plan.SourceUnitDataFilename("graph", u))
+		f, err := buildStore.Open(graphFile)
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+		if err := json.NewDecoder(f).Decode(&g); err != nil {
+			return fmt.Errorf("%s: %s", graphFile, err)
+		}
+		for _, ref := range g.Refs {
+			if c.File == ref.File {
+				refs = append(refs, ref)
+			}
+		}
+	}
+
+	if err := json.NewEncoder(os.Stdout).Encode(refs); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *APIDescribeCmd) Execute(args []string) error {
+	repo, err := OpenRepo(filepath.Dir(c.File))
+	if err != nil {
+		return err
+	}
+
+	c.File, err = filepath.Rel(repo.RootDir, c.File)
+	if err != nil {
+		return err
+	}
+
+	if err := os.Chdir(repo.RootDir); err != nil {
+		return err
+	}
+
+	buildStore, err := buildstore.NewRepositoryStore(repo.RootDir)
+	if err != nil {
+		return err
+	}
+
+	if err := ensureBuild(buildStore, repo); err != nil {
+		return err
+	}
+
+	units, err := getSourceUnitsWithFile(buildStore, repo, c.File)
+	if err != nil {
+		return err
 	}
 
 	if GlobalOpt.Verbose {
