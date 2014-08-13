@@ -12,7 +12,10 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/task2"
 )
 
-var CLI = flags.NewNamedParser("src", flags.Default)
+var (
+	CLI     = flags.NewNamedParser("src", flags.Default)
+	Version = "0.0.5"
+)
 
 // GlobalOpt contains global options.
 var GlobalOpt struct {
