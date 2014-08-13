@@ -68,26 +68,9 @@ type APIListCmd struct {
 var apiDescribeCmd APIDescribeCmd
 var apiListCmd APIListCmd
 
-func (c *APIListCmd) Execute(args []string) error {
-	repo, err := OpenRepo(filepath.Dir(c.File))
-	if err != nil {
-		return err
-	}
 
-	c.File, err = filepath.Rel(repo.RootDir, c.File)
-	if err != nil {
-		return err
-	}
-
-	if err := os.Chdir(repo.RootDir); err != nil {
-		return err
-	}
-
-	buildStore, err := buildstore.NewRepositoryStore(repo.RootDir)
-	if err != nil {
-		return err
-	}
-
+// Invokes the build process on the given repository
+func ensureBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
 	configOpt := config.Options{
 		Repo:   string(repo.URI()),
 		Subdir: ".",
@@ -113,6 +96,33 @@ func (c *APIListCmd) Execute(args []string) error {
 		ToolchainExecOpt: toolchainExecOpt,
 	}
 	if err := makeCmd.Execute(nil); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *APIListCmd) Execute(args []string) error {
+	repo, err := OpenRepo(filepath.Dir(c.File))
+	if err != nil {
+		return err
+	}
+
+	c.File, err = filepath.Rel(repo.RootDir, c.File)
+	if err != nil {
+		return err
+	}
+
+	if err := os.Chdir(repo.RootDir); err != nil {
+		return err
+	}
+
+	buildStore, err := buildstore.NewRepositoryStore(repo.RootDir)
+	if err != nil {
+		return err
+	}
+
+	if err := ensureBuild(buildStore, repo); err != nil {
 		return err
 	}
 
@@ -207,31 +217,7 @@ func (c *APIDescribeCmd) Execute(args []string) error {
 		return err
 	}
 
-	configOpt := config.Options{
-		Repo:   string(repo.URI()),
-		Subdir: ".",
-	}
-	toolchainExecOpt := ToolchainExecOpt{ExeMethods: "program"}
-
-	// Config repository if not yet built.
-	if _, err := buildStore.Stat(buildStore.CommitPath(repo.CommitID)); os.IsNotExist(err) {
-		configCmd := &ConfigCmd{
-			Options:          configOpt,
-			ToolchainExecOpt: toolchainExecOpt,
-		}
-		if err := configCmd.Execute(nil); err != nil {
-			return err
-		}
-	}
-
-	// Always re-make.
-	//
-	// TODO(sqs): optimize this
-	makeCmd := &MakeCmd{
-		Options:          configOpt,
-		ToolchainExecOpt: toolchainExecOpt,
-	}
-	if err := makeCmd.Execute(nil); err != nil {
+	if err := ensureBuild(buildStore, repo); err != nil {
 		return err
 	}
 
