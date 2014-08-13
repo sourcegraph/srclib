@@ -15,3 +15,4 @@ release: src
 	@mkdir -p releases
 	cp ${GOBIN}/src releases/src
 	gh release create -p -a releases ${TAG}
+	rm -f releases/src
