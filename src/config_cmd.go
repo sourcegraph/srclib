@@ -132,6 +132,9 @@ func (c *ConfigCmd) Execute(args []string) error {
 	// all the files (maybe just use setup.py as a prereq? but then how will we
 	// update SourceUnit.Files list? SourceUnit.Globs could help here...)
 	if !c.NoCacheWrite {
+		if err := rwvfs.MkdirAll(buildStore, buildStore.CommitPath(currentRepo.CommitID)); err != nil {
+			return err
+		}
 		for _, u := range cfg.SourceUnits {
 			filename := buildStore.FilePath(currentRepo.CommitID, plan.SourceUnitDataFilename(unit.SourceUnit{}, u))
 			if err := rwvfs.MkdirAll(buildStore, filepath.Dir(filename)); err != nil {
