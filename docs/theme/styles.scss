@@ -4,6 +4,28 @@ $blue-highlight: rgb(69,157,229);
 .home {
     button.btn {
         font-size: 1em;
+        margin-top: 0.3em;
+    }
+
+    a.button-link:hover {
+        text-decoration: none;
+    }
+
+    button.btn-default {
+        background-color: white;
+        &:hover {
+            background-color: #008cba;
+            border-color: #0079a1;
+            color: white;
+        }
+    }
+
+    button.btn-disabled {
+        &:hover {
+            background-color: white !important;
+            border-color: #e0e0e0 !important;
+            color: #333333;
+        }
     }
 
     img.img-screen {
