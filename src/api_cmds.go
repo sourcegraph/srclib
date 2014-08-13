@@ -49,7 +49,7 @@ type APIDescribeCmd struct {
 	File      string `long:"file" required:"yes" value-name:"FILE"`
 	StartByte int    `long:"start-byte" required:"yes" value-name:"BYTE"`
 
-	Examples bool `long:"examples" describe:"show examples from Sourcegraph.com"`
+	NoExamples bool `long:"no-examples" describe:"don't show examples from Sourcegraph.com"`
 }
 
 var apiDescribeCmd APIDescribeCmd
@@ -247,7 +247,7 @@ OuterLoop:
 		}()
 	}
 
-	if fetchExamples := true; fetchExamples {
+	if !c.NoExamples {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
