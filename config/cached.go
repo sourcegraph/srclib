@@ -56,10 +56,6 @@ func ReadCached(buildStore *buildstore.RepositoryStore, commitID string) (*Tree,
 		}
 	}
 
-	if len(unitFiles) == 0 {
-		return nil, fmt.Errorf("no source unit files found. Did you run `src config`?")
-	}
-
 	// Parse units
 	sort.Strings(unitFiles)
 	units := make([]*unit.SourceUnit, len(unitFiles))

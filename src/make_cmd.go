@@ -91,6 +91,9 @@ func CreateMaker(execOpt ToolchainExecOpt, goals []string) (*makex.Maker, *makex
 	if err != nil {
 		return nil, nil, err
 	}
+	if len(treeConfig.SourceUnits) == 0 {
+		log.Println("No source unit files found. Did you mean to run `src config`? (This is not an error; it just means that src didn't find anything to build or analyze here.)")
+	}
 
 	toolchainExecOptArgs, err := toolchain.MarshalArgs(&execOpt)
 	if err != nil {
