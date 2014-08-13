@@ -7,7 +7,6 @@ The `src api describe` command is used by editor plugins to retrieve information
 
 ## Output
 The output is defined in [api_cmds.go](https://github.com/sourcegraph/srclib/blob/e5295dfcd719535ff9cbb37a2771337d44fe5953/src/api_cmds.go#L190-L193), as a json representation of the following struct.  
-[[.code "src/api_cmds.go" "resp"]]
 
 The Def and Example structs are defined as follows in the Sourcegraph API.
 

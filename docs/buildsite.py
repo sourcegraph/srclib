@@ -64,7 +64,8 @@ def convert_markdown_new(source):
         end = len(lines) - 1
 
         if args[2].isdigit(): start = int(args[2])
-        else: start = line_containing(lines, args[2]) + 1
+        else:
+          start = line_containing(lines, args[2]) + 1
 
         if args[3].isdigit(): end = int(args[3])
         else: end = line_containing(lines, args[3]) + 1
