@@ -1,6 +1,37 @@
 $dark-color: rgb(60,60,60);
 $blue-highlight: rgb(69,157,229);
 
+.home {
+    button.btn {
+        font-size: 1em;
+    }
+
+    img.img-screen {
+        border: 1px solid black;
+    }
+
+    table tr.tall td {
+        padding-top: 3em;
+        padding-bottom: 3em;
+    }
+
+    table.editor-lang-grid {
+        tr {
+            td, th {
+                padding-top: 1.5em;
+                padding-bottom: 1.5em;
+            }
+        }
+    }
+
+    form.form-subscribe {
+        input.form-control {
+            font-size: 1em;
+            height: 3.025em;
+        }
+    }
+}
+
 body {
   background-color: white;
 }
@@ -204,10 +235,8 @@ body {
 
 
 .section .container {
-  padding: 30px;
 
   @media (min-width: 768px) {
-    padding: 50px;
     padding-top:80px;
     padding-bottom:80px;
 
@@ -249,6 +278,20 @@ body {
   color: white;
   background-color: #40A6D3;
 
+  a {
+      color: white;
+      font-weight: bold;
+  }
+
+  p {
+      padding-top: 0.5em;
+  }
+
+  .btn {
+      font-size: 1em;
+      padding: 0.75em 0.75em;
+  }
+
   @media (min-width: 768px) and (max-width: 2000px) {
     //background-image: url('/images/banner.svg');
     background-size: cover;
@@ -268,8 +311,8 @@ body {
 }
 
 .challenge {
-  color: black;
-  background-color:white;
+  color: #e0e0e0;
+  background-color: #202020;
 
   img {
     display: block;
