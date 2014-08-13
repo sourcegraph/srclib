@@ -270,12 +270,18 @@ body {
 .team {
   background-color:$blue-highlight;
 
+  a {
+      color: white;
+  }
+
   > div {
-    text-align: center;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-    color: white;
+      img {
+          max-width: 400px;
+      }
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+      color: white;
   }
 }
 
