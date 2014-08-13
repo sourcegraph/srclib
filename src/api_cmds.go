@@ -102,6 +102,44 @@ func ensureBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
 	return nil
 }
 
+// Get a list of all source units that contain the given file
+func getSourceUnitsWithFile(buildStore *buildstore.RepositoryStore, repo *Repo, filename string) ([]*unit.SourceUnit, error) {
+	// TODO(sqs): This whole lookup is totally inefficient. The storage format
+	// is not optimized for lookups.
+
+	// Find all source unit definition files.
+	var unitFiles []string
+	unitSuffix := buildstore.DataTypeSuffix(unit.SourceUnit{})
+	w := fs.WalkFS(buildStore.CommitPath(repo.CommitID), buildStore)
+	for w.Step() {
+		if strings.HasSuffix(w.Path(), unitSuffix) {
+			unitFiles = append(unitFiles, w.Path())
+		}
+	}
+
+	// Find which source units the file belongs to.
+	var units []*unit.SourceUnit
+	for _, unitFile := range unitFiles {
+		var u *unit.SourceUnit
+		f, err := buildStore.Open(unitFile)
+		if err != nil {
+			return nil, err
+		}
+		defer f.Close()
+		if err := json.NewDecoder(f).Decode(&u); err != nil {
+			return nil, fmt.Errorf("%s: %s", unitFile, err)
+		}
+		for _, f2 := range u.Files {
+			if f2 == filename {
+				units = append(units, u)
+				break
+			}
+		}
+	}
+
+	return units, nil
+}
+
 func (c *APIListCmd) Execute(args []string) error {
 	repo, err := OpenRepo(filepath.Dir(c.File))
 	if err != nil {
@@ -126,37 +164,9 @@ func (c *APIListCmd) Execute(args []string) error {
 		return err
 	}
 
-	// TODO(sqs): This whole lookup is totally inefficient. The storage format
-	// is not optimized for lookups.
-
-	// Find all source unit definition files.
-	var unitFiles []string
-	unitSuffix := buildstore.DataTypeSuffix(unit.SourceUnit{})
-	w := fs.WalkFS(buildStore.CommitPath(repo.CommitID), buildStore)
-	for w.Step() {
-		if strings.HasSuffix(w.Path(), unitSuffix) {
-			unitFiles = append(unitFiles, w.Path())
-		}
-	}
-
-	// Find which source units the file belongs to.
-	var units []*unit.SourceUnit
-	for _, unitFile := range unitFiles {
-		var u *unit.SourceUnit
-		f, err := buildStore.Open(unitFile)
-		if err != nil {
-			return err
-		}
-		defer f.Close()
-		if err := json.NewDecoder(f).Decode(&u); err != nil {
-			return fmt.Errorf("%s: %s", unitFile, err)
-		}
-		for _, f2 := range u.Files {
-			if f2 == c.File {
-				units = append(units, u)
-				break
-			}
-		}
+	units, err := getSourceUnitsWithFile(buildStore, repo, c.File)
+	if err != nil {
+		return err
 	}
 
 	if GlobalOpt.Verbose {
@@ -221,37 +231,9 @@ func (c *APIDescribeCmd) Execute(args []string) error {
 		return err
 	}
 
-	// TODO(sqs): This whole lookup is totally inefficient. The storage format
-	// is not optimized for lookups.
-
-	// Find all source unit definition files.
-	var unitFiles []string
-	unitSuffix := buildstore.DataTypeSuffix(unit.SourceUnit{})
-	w := fs.WalkFS(buildStore.CommitPath(repo.CommitID), buildStore)
-	for w.Step() {
-		if strings.HasSuffix(w.Path(), unitSuffix) {
-			unitFiles = append(unitFiles, w.Path())
-		}
-	}
-
-	// Find which source units the file belongs to.
-	var units []*unit.SourceUnit
-	for _, unitFile := range unitFiles {
-		var u *unit.SourceUnit
-		f, err := buildStore.Open(unitFile)
-		if err != nil {
-			return err
-		}
-		defer f.Close()
-		if err := json.NewDecoder(f).Decode(&u); err != nil {
-			return fmt.Errorf("%s: %s", unitFile, err)
-		}
-		for _, f2 := range u.Files {
-			if f2 == c.File {
-				units = append(units, u)
-				break
-			}
-		}
+	units, err := getSourceUnitsWithFile(buildStore, repo, c.File)
+	if err != nil {
+		return err
 	}
 
 	if GlobalOpt.Verbose {
