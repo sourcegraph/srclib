@@ -18,10 +18,10 @@ and editor, and maybe only half the features you wanted (such as doc lookups and
 APIs and formats, it is difficult to reuse your plugin for other languages or
 editors.
 
-We call this the **M-by-N-by-O problem**: given *M* editors, *N* languages, and
-*O* features, we need to write (on the order of) *M*&times;*N*&times;*O* plugins
-to get good tooling in every case. That number gets large quickly, and it's why
-we suffer from poor developer tools.
+We call this the **M-by-N problem**: given *M* editors and *N* languages, we
+need to write (on the order of) *M*&times;*N* plugins to get good tooling in 
+every case. That number gets large quickly, and it's why we suffer from poor
+developer tools.
 
 srclib solves this problem in 2 ways by:
 
