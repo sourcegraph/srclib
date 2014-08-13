@@ -5,6 +5,9 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
+// TODO(sqs): override github.com/emicklei/go-restful to exclude the ./examples
+// dir since it has conflicting main packages
+
 var overrides = map[repo.URI]*Repository{
 	"code.google.com/p/go": {
 		URI: "code.google.com/p/go",
