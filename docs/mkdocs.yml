@@ -38,17 +38,17 @@ pages:
 - ['api/describe.md', 'Building on srclib', 'src describe']
 
 # Creating a Toolchain
-- ['creatingtoolchain/overview.md', 'Contributing to srclib', 'Creating a Toolchain']
-- ['creatingtoolchain/openquestions.md', 'Contributing to srclib', 'Open Questions']
+- ['toolchains/overview.md', 'Contributing to srclib', 'Creating a Toolchain']
+- ['toolchains/openquestions.md', 'Contributing to srclib', 'Open Questions']
 
-#- ['creatingtoolchain/formatter.md', 'Creating a Toolchain', 'Formatter API']
+#- ['toolchains/formatter.md', 'Creating a Toolchain', 'Formatter API']
 
 
 # Data Model
 - ['api/data-model.md', 'Data Model', 'Overview']
-- ['creatingtoolchain/commonstructures.md', 'Data Model', 'Common Data Structures']
-- ['creatingtoolchain/scanner-output.md', 'Data Model', 'Scanner Output']
-- ['creatingtoolchain/grapher-output.md', 'Data Model', 'Grapher Output']
-- ['creatingtoolchain/dependency-resolution-output.md', 'Data Model', 'Dependency Resolution Output']
+- ['toolchains/commonstructures.md', 'Data Model', 'Common Data Structures']
+- ['toolchains/scanner-output.md', 'Data Model', 'Scanner Output']
+- ['toolchains/grapher-output.md', 'Data Model', 'Grapher Output']
+- ['toolchains/dependency-resolution-output.md', 'Data Model', 'Dependency Resolution Output']
 
 - ['faq.md', 'FAQ']

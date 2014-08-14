@@ -59,4 +59,4 @@ read through the docs on [Building on srclib](api/overview.md).
 
 Finally, if you want to help build out the language analysis infrastructure,
 make sure you're familiar with the [API](api/overview.md). Then, read closely over
-the [Creating a Toolchain](creatingtoolchain/overview.md) section.
+the [Creating a Toolchain](toolchains/overview.md) section.
