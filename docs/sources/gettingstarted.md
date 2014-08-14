@@ -14,6 +14,19 @@ src binary downloads:
 After downloading the file, unzip it and place the `src` program in your
 `$PATH`. Run `src --help` to verify that it's installed.
 
+To install the standard set of language analysis toolchains
+([Go](toolchains/go.md), [Ruby](toolchains/ruby.md), and
+[JavaScript](toolchains/javascript.md)), run:
+
+```
+src toolchain install-std
+```
+
+If this command fails, please
+[file an issue](https://github.com/sourcegraph/srclib/issues).
+
+Now, `src toolchain list` should show the toolchains you just installed.
+
 ### Building from source
 
 First, [install Go](http://golang.org/doc/install) (version 1.3 or newer).
@@ -24,17 +37,9 @@ Then download and install `src`:
 go get -u -v sourcegraph.com/sourcegraph/srclib/cmd/src
 ```
 
-Next, you must install the toolchain for each language you wish to use. See
-instructions at:
+Next, you must install the language toolchains: `src toolchain install-std`.
 
-* [**srclib-go**](toolchains/go.md) for Go
-* [**srclib-javascript**](toolchains/javascript.md) for JavaScript (Node.js)
-* [**srclib-ruby**](toolchains/ruby.md) for Ruby
-
-To check which toolchains are installed, run `src toolchain list`.
-
-If you see your language of choice in that list, you should now be able to use
-and contribute to srclib.
+Now, `src toolchain list` should show the toolchains you just installed.
 
 ## Next Steps
 
