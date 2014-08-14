@@ -1,8 +1,13 @@
 language: go
+go: 1.3
 
-go:
-  - 1.3
-  - tip
+before_install:
+  - mkdir -p $HOME/gopath/src/sourcegraph.com/sourcegraph
+  - mv $TRAVIS_BUILD_DIR $HOME/gopath/src/sourcegraph.com/sourcegraph/srclib
+  - export TRAVIS_BUILD_DIR=$HOME/gopath/src/sourcegraph.com/sourcegraph/srclib
+  # for rst2html (package doc)
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq python-docutils
 
 install:
   - go get -d -v ./... && go build -v ./...
