@@ -223,7 +223,8 @@ func (c *ToolchainBuildCmd) Execute(args []string) error {
 }
 
 type ToolchainGetCmd struct {
-	Args struct {
+	Update bool `short:"u" long:"update" description:"use the network to update the toolchain"`
+	Args   struct {
 		Toolchains []ToolchainPath `name:"TOOLCHAINS" description:"toolchain paths of toolchains to get"`
 	} `positional-args:"yes" required:"yes"`
 }
@@ -235,7 +236,7 @@ func (c *ToolchainGetCmd) Execute(args []string) error {
 		if GlobalOpt.Verbose {
 			fmt.Println(tc)
 		}
-		_, err := toolchain.Get(string(tc))
+		_, err := toolchain.Get(string(tc), c.Update)
 		if err != nil {
 			return err
 		}
