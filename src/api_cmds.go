@@ -62,12 +62,11 @@ type APIDescribeCmd struct {
 }
 
 type APIListCmd struct {
-	File			string `long:"file" required:"yes" value-name:"FILE"`
+	File string `long:"file" required:"yes" value-name:"FILE"`
 }
 
 var apiDescribeCmd APIDescribeCmd
 var apiListCmd APIListCmd
-
 
 // Invokes the build process on the given repository
 func ensureBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
@@ -82,6 +81,7 @@ func ensureBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
 		configCmd := &ConfigCmd{
 			Options:          configOpt,
 			ToolchainExecOpt: toolchainExecOpt,
+			w:                os.Stderr,
 		}
 		if err := configCmd.Execute(nil); err != nil {
 			return err
