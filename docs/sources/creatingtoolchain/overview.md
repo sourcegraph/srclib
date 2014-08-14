@@ -124,6 +124,8 @@ directory tree and produce a JSON array of source units (in Go,
 
 **Arguments:** none; scanners scan the tree rooted at the current directory (typically the root directory of a repository)
 
+**Stdin:** JSON object representation of repository config (typically `{}`)
+
 **Options:**
 
 * `--repo URI`: the URI of the repository that contains the directory tree being
