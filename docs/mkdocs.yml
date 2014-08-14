@@ -1,5 +1,5 @@
-site_name: srclib documentation
-site_description: Documentation for srclib, a cross-language source code analysis package.
+site_name: srclib
+site_description: srclib is a hackable, polyglot code analysis library.
 
 docs_dir: sources
 
