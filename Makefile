@@ -16,7 +16,7 @@ release: upload-release check-release
 
 upload-release:
 	@bash -c 'if [[ "$(V)" == "" ]]; then echo Must specify version: make release V=x.y.z; exit 1; fi'
-	git tag $(V)
+	git tag v$(V)
 	@equinox release \
 	  --platforms 'darwin_amd64 linux_amd64 linux_386' \
 	  --private-key ~/.equinox/update.key \
