@@ -125,6 +125,7 @@ directory tree and produce a JSON array of source units (in Go,
 **Arguments:** none; scanners scan the tree rooted at the current directory (typically the root directory of a repository)
 
 **Options:**
+
 * `--repo URI`: the URI of the repository that contains the directory tree being
   scanned
 * `--subdir DIR`: the path of the current directory (in which the scanner is
@@ -132,7 +133,7 @@ directory tree and produce a JSON array of source units (in Go,
   typically the root, `"."`, as it is most useful to scan the entire
   repository)
 
-**stdout:** `[]*unit.SourceUnit`. For a more detailed description, [read the scanner output spec](scanner-output.md).
+**Stdout:** `[]*unit.SourceUnit`. For a more detailed description, [read the scanner output spec](scanner-output.md).
 
 See the `scan.Scan` function for an implementation of the calling side of this
 protocol.
@@ -151,11 +152,11 @@ package, into a full specification of the dependency's target.
 
 **Arguments:** none
 
-**stdin:** JSON object representation of a source unit (`*unit.SourceUnit`)
+**Stdin:** JSON object representation of a source unit (`*unit.SourceUnit`)
 
 **Options:** none
 
-**stdout:** `[]*dep.Resolution` JSON array with each item corresponding to the
+**Stdout:** `[]*dep.Resolution` JSON array with each item corresponding to the
 same-index entry in the source unit's `Dependencies` field. For a more
 detailed description, [read the dependency resolution output sepc](dependency-resolution-output.md).
 
@@ -169,11 +170,11 @@ of the source unit's files.
 
 **Arguments:** none
 
-**stdin:** JSON object representation of a source unit (`*unit.SourceUnit`)
+**Stdin:** JSON object representation of a source unit (`*unit.SourceUnit`)
 
 **Options:** none
 
-**stdout:** JSON graph output (`grapher.Output`). field. For a more
+**Stdout:** JSON graph output (`grapher.Output`). field. For a more
 detailed description, [read the grapher output spec](grapher-output.md).
 
 <!---
