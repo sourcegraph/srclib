@@ -69,6 +69,12 @@ body {
 
   .navbar-brand {
     color: $dark-color;
+
+    img {
+        margin-top: -6px;
+        height: 35px;
+        width: 35px;
+    }
   }
 
   .navbar-brand:hover {
