@@ -3,9 +3,10 @@ package srclib
 import (
 	"log"
 	"os"
-	"os/user"
 	"path/filepath"
 	"strings"
+
+	"sourcegraph.com/sourcegraph/srclib/util"
 )
 
 var (
@@ -23,14 +24,11 @@ var (
 
 func init() {
 	if Path == "" {
-		user, err := user.Current()
-		if err != nil {
-			log.Fatal(err)
+		homeDir := util.CurrentUserHomeDir()
+		if homeDir == "" {
+			log.Fatalf("Fatal: No SRCLIBPATH and current user has no home directory.")
 		}
-		if user.HomeDir == "" {
-			log.Fatalf("Fatal: No SRCLIBPATH and current user %q has no home directory.", user.Username)
-		}
-		Path = filepath.Join(user.HomeDir, ".srclib")
+		Path = filepath.Join(homeDir, ".srclib")
 		if err := os.Setenv("SRCLIBPATH", Path); err != nil {
 			log.Fatalf("Fatal: Could not set SRCLIBPATH environment variable to %q.", Path)
 		}

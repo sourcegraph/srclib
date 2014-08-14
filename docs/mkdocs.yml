@@ -25,7 +25,7 @@ pages:
 # Language Toolchains
 #- ['toolchains/python.md', 'Language Toolchains', 'Python']
 - ['toolchains/go.md', 'Language Toolchains', 'Go']
-#- ['toolchains/ruby.md', 'Language Toolchains', 'Ruby']
+- ['toolchains/ruby.md', 'Language Toolchains', 'Ruby']
 - ['toolchains/javascript.md', 'Language Toolchains', 'Javascript']
 #- ['toolchains/java.md', 'Language Toolchains', 'Java']
 
