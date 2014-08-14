@@ -328,11 +328,11 @@ func (c *ToolchainInstallStdCmd) installGoToolchain() error {
 
 	if fi, err := os.Stat(gopathDir); os.IsNotExist(err) {
 		// symlink to gopath
-		log.Println("mkdir -p %s", filepath.Dir(gopathDir))
+		log.Printf("mkdir -p %s", filepath.Dir(gopathDir))
 		if err := os.MkdirAll(filepath.Dir(gopathDir), 0700); err != nil {
 			return err
 		}
-		log.Println("ln -s %s %s", srclibpathDir, gopathDir)
+		log.Printf("ln -s %s %s", srclibpathDir, gopathDir)
 		if err := os.Symlink(srclibpathDir, gopathDir); err != nil {
 			return err
 		}
