@@ -1,6 +1,6 @@
 MAKEFLAGS+=--no-print-directory
 
-.PHONY: default install src release upload-release check-release
+.PHONY: default install src release upload-release check-release install-std-toolchains test-std-toolchains
 
 default: install
 
@@ -38,3 +38,12 @@ check-release:
 	/tmp/src-$(V) version --no-check-update
 	echo; echo
 	@echo Released src $(V)
+
+install-std-toolchains:
+	src toolchain install-std
+
+test-std-toolchains:
+	src toolchain list | grep srclib-go
+	src toolchain list | grep srclib-javascript
+#	src toolchain list | grep srclib-python
+	src toolchain list | grep srclib-ruby

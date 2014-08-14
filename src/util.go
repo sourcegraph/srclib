@@ -45,6 +45,16 @@ func cmdOutput(c ...string) string {
 	return strings.TrimSpace(string(out))
 }
 
+func execCmd(prog string, arg ...string) error {
+	cmd := exec.Command(prog, arg...)
+	cmd.Stderr = os.Stderr
+	cmd.Stdout = os.Stderr
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("command %q failed: %s", cmd.Args, err)
+	}
+	return nil
+}
+
 func SourceUnitMatchesArgs(specified []string, u *unit.SourceUnit) bool {
 	var match bool
 	if len(specified) == 0 {

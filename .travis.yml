@@ -8,8 +8,15 @@ before_install:
   # for rst2html (package doc)
   - sudo apt-get update -qq
   - sudo apt-get install -qq python-docutils
+  - export PATH=$PATH:$HOME/gopath/bin
+  - export GOBIN=$HOME/gopath/bin
 
 install:
   - go get -d -v ./... && go build -v ./...
+  - go install ./cmd/src
 
-script: go test -v ./...
+script:
+  - go test -v ./...
+  - make install-std-toolchains
+  - make test-std-toolchains
+
