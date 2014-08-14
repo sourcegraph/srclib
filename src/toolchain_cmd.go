@@ -376,7 +376,7 @@ func (c *ToolchainInstallStdCmd) installRubyToolchain() error {
 
 	log.Println("Installing deps for Ruby toolchain in", srclibpathDir)
 	if err := execCmd("make", "-C", srclibpathDir, "dep"); err != nil {
-		return err
+		return fmt.Errorf("%s\nIf you get an error about the bundler version, try installing rvm and running this command with 'rvm 2.1.2 do src toolchain install-std' (i.e., wrapping it with rvm).", err)
 	}
 
 	return nil
