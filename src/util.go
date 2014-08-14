@@ -49,6 +49,7 @@ func execCmd(prog string, arg ...string) error {
 	cmd := exec.Command(prog, arg...)
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stderr
+	log.Println("Running ", cmd.Args)
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("command %q failed: %s", cmd.Args, err)
 	}

@@ -47,3 +47,8 @@ test-std-toolchains:
 	src toolchain list | grep srclib-javascript
 #	src toolchain list | grep srclib-python
 	src toolchain list | grep srclib-ruby
+
+	@echo
+	@echo
+	@echo Testing installation of standard toolchains in Docker if Docker is running
+	(docker info && make -C integration test) || echo Docker is not running...skipping integration tests.
