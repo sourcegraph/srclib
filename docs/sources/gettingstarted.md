@@ -49,7 +49,7 @@ If you're interested in srclib, here are a couple next steps that you can take.
 
 If you are interested in using the editor plugins that we have available, check
 out the Editor Plugins section of the documentation. Currently,
-[Emacs](plugins/emacs.md) and [Subliem Text](plugins/sublimetext.md) are
+[Emacs](plugins/emacs.md) and [Sublime Text](plugins/sublimetext.md) are
 supported, and support for more editors is coming soon.
 
 ### Build on srclib
