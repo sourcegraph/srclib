@@ -19,7 +19,7 @@ pages:
 - ['plugins/emacs.md', 'Editor Plugins', 'Emacs']
 - ['plugins/sublimetext.md', 'Editor Plugins', 'Sublime Text']
 #- ['plugins/vim.md', 'Editor Plugins', 'Vim']
-#- ['plugins/atom.md', 'Editor Plugins', 'Atom']
+- ['plugins/atom.md', 'Editor Plugins', 'Atom']
 #- ['plugins/creatingaplugin.md', 'Editor Plugins', 'Creating a Plugin']
 
 # Language Toolchains
