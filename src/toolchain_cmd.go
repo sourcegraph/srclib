@@ -368,6 +368,9 @@ func (c *ToolchainInstallStdCmd) installRubyToolchain() error {
 	if _, err := exec.LookPath("bundle"); err == exec.ErrNotFound {
 		return fmt.Errorf("no `bundle` in PATH; Ruby toolchain requires bundler (run `gem install bundler` to install it)")
 	}
+	if _, err := exec.LookPath("rvm"); err == exec.ErrNotFound {
+		return fmt.Errorf("no `rvm` in PATH; Ruby toolchain requires rvm (https://rvm.io)")
+	}
 
 	log.Println("Downloading or updating Ruby toolchain in", srclibpathDir)
 	if err := execCmd("src", "toolchain", "get", "-u", toolchain); err != nil {
@@ -375,8 +378,8 @@ func (c *ToolchainInstallStdCmd) installRubyToolchain() error {
 	}
 
 	log.Println("Installing deps for Ruby toolchain in", srclibpathDir)
-	if err := execCmd("make", "-C", srclibpathDir, "dep"); err != nil {
-		return fmt.Errorf("%s\nIf you get an error about the bundler version, try installing rvm and running this command with 'rvm 2.1.2 do src toolchain install-std' (i.e., wrapping it with rvm).", err)
+	if err := execCmd("make", "-C", srclibpathDir); err != nil {
+		return fmt.Errorf("%s\n\nTip: If you are using a version of Ruby other than 2.1.2 (the default for srclib), rerun this command with 'rvm x.y.z do src toolchain install-std', where x.y.z is your preferred Ruby version.", err)
 	}
 
 	return nil
