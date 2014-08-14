@@ -21,7 +21,7 @@ type Grapher interface {
 }
 
 // START Output OMIT
-//Encompasses the output of any grapher tool
+// Output is produced by grapher tools.
 type Output struct {
 	Defs []*graph.Def `json:",omitempty"`
 	Refs []*graph.Ref `json:",omitempty"`
