@@ -1,4 +1,4 @@
-# Javascript Toolchain
+# JavaScript Toolchain
 ## Installation
 
 This toolchain is not a standalone program; it provides additional functionality

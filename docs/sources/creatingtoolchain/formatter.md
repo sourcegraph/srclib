@@ -30,7 +30,7 @@ The purpose of this function is to provide some general understanding of the
 
 #### Union Types
 
-Union types can occur for dynamic languages such as Javascript and Python, where
+Union types can occur for dynamic languages such as JavaScript and Python, where
 type inference may be able to narrow down the type of a variable to two or three
 possibilities. This should be specified through the array format, where each
 type is an element in an array.
