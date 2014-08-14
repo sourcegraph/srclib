@@ -45,7 +45,7 @@ func scanUnitsIntoConfig(cfg *config.Repository, configOpt config.Options, execO
 	}
 
 	// Merge the repo/tree config with each source unit's config.
-	if cfg.Config != nil {
+	if cfg.Config == nil {
 		cfg.Config = map[string]interface{}{}
 	}
 	for _, u := range units {
