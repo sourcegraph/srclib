@@ -1,4 +1,4 @@
-# Getting Started
+# Getting started
 
 ## Installing srclib
 
@@ -41,11 +41,9 @@ Next, you must install the language toolchains: `src toolchain install-std`.
 
 Now, `src toolchain list` should show the toolchains you just installed.
 
-## Next Steps
+## Next steps
 
-If you're interested in srclib, here are a couple next steps that you can take.
-
-### Download an Editor Plugin
+### Download an editor plugin
 
 If you are interested in using the editor plugins that we have available, check
 out the Editor Plugins section of the documentation. Currently,
