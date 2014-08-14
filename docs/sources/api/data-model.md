@@ -1,6 +1,6 @@
 # Data Model Overview
 
-### Source unit
+### [Source unit](../creatingtoolchain/scanner-output.md)
 
 A source unit is code that Sourcegraph processes as one logical unit. It is
 conceptually similar to a compilation unit.
@@ -37,16 +37,19 @@ Examples of things that would NOT be good source units and the reasons why:
 NOTE: We haven't yet found a succinct way to describe a source unit. Modify this
 document as we come up with clearer explanations.
 
-## Code Graph
+## [Defs and refs](../creatingtoolchain/grapher-output.md)
 
 For each source unit, a graph is generated from the associated code, consisting
 of **definitions** and **references**. A definition is the original point in
 code where an object is defined, be it a function, module, or class. References
-are anywhere that def is then later used in code - references then link back to
+are anywhere that def is then later used in code--references then link back to
 the original definition. References can link to definitions in other source
 units and repositories.
 
-## Toolchain
+See [grapher output specs](../creatingtoolchain/grapher-output.md) for more
+information.
+
+## [Toolchain](../creatingtoolchain/overview.md)
 
 A primary tool called 'src' will serve as a harness for all of the individual
 language toolchains. It will also serve as the API endpoint, for users to query
