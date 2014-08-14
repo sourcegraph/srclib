@@ -53,6 +53,9 @@ func scanUnitsIntoConfig(cfg *config.Repository, configOpt config.Options, execO
 			if uv, present := u.Config[k]; present {
 				log.Printf("Both the scanned source unit %q and the Srcfile specify a Config key %q. Using the value from the scanned source unit (%+v).", k, uv)
 			} else {
+				if u.Config == nil {
+					u.Config = map[string]interface{}{}
+				}
 				u.Config[k] = v
 			}
 		}
