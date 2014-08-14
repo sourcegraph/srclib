@@ -5,7 +5,7 @@
 questions or difficulties running and hacking on it. We'll have a full docs site
 up soon.*
 
-**srclib** is a source code analysis library. It provides standardized tools,
+[**srclib**](https://srclib.org) is a source code analysis library. It provides standardized tools,
 interfaces and data formats for generating, representing and querying
 information about source code in software projects.
 
@@ -34,12 +34,15 @@ srclib solves this problem in 2 ways by:
   this standard. These were open-sourced from the code that powers
   [Sourcegraph.com](https://sourcegraph.com).
 
+See [srclib.org](https://srclib.org) for more information.
+
 Currently, srclib supports:
 
-* **Languages:** [Go](https://sourcegraph.com/sourcegraph/srclib-go) and [JavaScript](https://sourcegraph.com/sourcegraph/srclib-javascript) (coming very soon: [Python](https://sourcegraph.com/sourcegraph/srclib-python) and [Ruby](https://sourcegraph.com/sourcegraph/srclib-ruby))
+* **Languages:** [Go](https://sourcegraph.com/sourcegraph/srclib-go), [JavaScript](https://sourcegraph.com/sourcegraph/srclib-javascript), and [Ruby](https://sourcegraph.com/sourcegraph/srclib-ruby) (coming very soon: [Python](https://sourcegraph.com/sourcegraph/srclib-python))
 
-* **Integrations:** [Sourcegraph.com](https://sourcegraph.com) and
-  [emacs-sourcegraph-mode](https://sourcegraph.com/sourcegraph/emacs-sourcegraph-mode)
+* **Integrations:** [emacs-sourcegraph-mode](https://srclib.org/plugins/emacs/),
+  [Sublime Text](https://srclib.org/plugins/sublimetext/), and
+  [Sourcegraph.com](https://sourcegraph.com)
 
 * **Features:** jump-to-definition, find usages, type inference, documentation
   generation, and dependency resolution
@@ -52,24 +55,13 @@ what you're building to get started.
 
 ## Usage
 
-srclib requires Go 1.2+, Git, and Mercurial.
+See [*Getting started*](https://srclib.org/gettingstarted/) for installation
+instructions.
 
-Install and run `src`, the command-line frontend to srclib, with:
+Once you install srclib's `src` tool and language support toolchains, you'll use
+srclib by installing an editor plugin in your editor of choice.
 
-```
-go get -v sourcegraph.com/sourcegraph/srclib/cmd/src
-```
-
-Next, install toolchains for the languages you want to use. See instructions at:
-
-* [**srclib-go**](https://sourcegraph.com/sourcegraph/srclib-go) for Go
-* [**srclib-javascript**](https://sourcegraph.com/sourcegraph/srclib-javascript) for JavaScript (Node.js)
-
-Finally, install an editor plugin powered by srclib:
-
-* [**emacs-sourcegraph-mode**](https://sourcegraph.com/sourcegraph/emacs-sourcegraph-mode) for Emacs
-
-Don't see your language or editor of choice?
+Want to add support for a new editor or language?
 [Create or +1 an issue](https://github.com/sourcegraph/srclib/issues) to vote
 for it, or start adding support for it yourself!
 
