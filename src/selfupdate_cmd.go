@@ -38,7 +38,7 @@ type SelfupdateCmd struct {
 var selfupdateCmd SelfupdateCmd
 
 func (c *SelfupdateCmd) Execute(args []string) error {
-	log.Printf("Current: src v%s.", Version)
+	log.Printf("Current: src %s.", Version)
 
 	r, err := checkForUpdate()
 	if err == check.NoUpdateAvailable {
@@ -48,7 +48,7 @@ func (c *SelfupdateCmd) Execute(args []string) error {
 		return fmt.Errorf("checking for update: %s.", err)
 	}
 
-	log.Printf("Updating to src v%s...", r.Version)
+	log.Printf("Updating to src %s...", r.Version)
 
 	// apply update
 	err, errRecover := r.Update()
@@ -59,7 +59,7 @@ func (c *SelfupdateCmd) Execute(args []string) error {
 		return fmt.Errorf("update failed: %s", err)
 	}
 
-	fmt.Printf("Updated to src v%s.\n", r.Version)
+	fmt.Printf("Updated to src %s.\n", r.Version)
 	return nil
 }
 
