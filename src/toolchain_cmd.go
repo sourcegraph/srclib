@@ -1,13 +1,19 @@
 package src
 
 import (
+	"errors"
 	"fmt"
 	"log"
+	"os"
+	"os/exec"
+	"path/filepath"
 
 	"strings"
 	"sync"
 
+	"github.com/aybabtme/color/brush"
 	"github.com/sqs/go-flags"
+	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
 )
 
@@ -62,6 +68,15 @@ func init() {
 		"add a local toolchain",
 		"Add a local directory as a toolchain in SRCLIBPATH.",
 		&toolchainAddCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = c.AddCommand("install-std",
+		"install standard toolchains",
+		"Install standard toolchains (sourcegraph.com/sourcegraph/srclib-* toolchains).",
+		&toolchainInstallStdCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -255,4 +270,140 @@ var toolchainAddCmd ToolchainAddCmd
 
 func (c *ToolchainAddCmd) Execute(args []string) error {
 	return toolchain.Add(c.Dir, c.Args.ToolchainPath)
+}
+
+type ToolchainInstallStdCmd struct {
+}
+
+var toolchainInstallStdCmd ToolchainInstallStdCmd
+
+func (c *ToolchainInstallStdCmd) Execute(args []string) error {
+	fmt.Println(brush.Cyan("Installing/upgrading standard toolchains..."))
+	fmt.Println()
+
+	x := map[string]func() error{
+		"Go (sourcegraph.com/sourcegraph/srclib-go)":                 c.installGoToolchain,
+		"Python (sourcegraph.com/sourcegraph/srclib-python)":         c.installPythonToolchain,
+		"Ruby (sourcegraph.com/sourcegraph/srclib-ruby)":             c.installRubyToolchain,
+		"JavaScript (sourcegraph.com/sourcegraph/srclib-javascript)": c.installJavaScriptToolchain,
+	}
+
+	for name, fn := range x {
+		fmt.Println(brush.Cyan(name + " " + strings.Repeat("=", 78-len(name))).String())
+		if err := fn(); err != nil {
+			if err, ok := err.(skippedToolchain); ok {
+				fmt.Println(brush.Yellow(err.Error()).String())
+				fmt.Println()
+				continue
+			}
+			return errors.New(brush.Red(fmt.Sprintf("failed to install/upgrade %s toolchain: %s", name, err)).String())
+		}
+
+		fmt.Println(brush.Green("OK! Installed/upgraded " + name + " toolchain").String())
+		fmt.Println(brush.Cyan(strings.Repeat("=", 80)).String())
+		fmt.Println()
+	}
+
+	return nil
+}
+
+func (c *ToolchainInstallStdCmd) installGoToolchain() error {
+	const toolchain = "sourcegraph.com/sourcegraph/srclib-go"
+	gopath := os.Getenv("GOPATH")
+	if gopath == "" {
+		return skippedToolchain{toolchain, "no GOPATH set (assuming Go is not installed and you don't want the Go toolchain)"}
+	}
+
+	srcDir := strings.Split(gopath, ":")[0]
+	gopathDir := filepath.Join(srcDir, toolchain)                                 // toolchain dir under GOPATH
+	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
+
+	if fi, err := os.Stat(gopathDir); os.IsNotExist(err) {
+		// symlink to gopath
+		if err := os.MkdirAll(filepath.Dir(gopathDir), 0700); err != nil {
+			return err
+		}
+		if _, err := os.Stat(srclibpathDir); os.IsNotExist(err) {
+			if err := os.Symlink(gopathDir, srclibpathDir); err != nil {
+				return err
+			}
+		}
+	} else if err != nil {
+		return err
+	} else if fi.Mode()&os.ModeSymlink == 0 {
+		return skippedToolchain{toolchain, fmt.Sprintf("toolchain dir in GOPATH (%s) is not a symlink (assuming you intentionally cloned the toolchain repo to your GOPATH; not modifying it)")}
+	}
+
+	log.Println("Downloading or updating Go toolchain in", srclibpathDir)
+	if err := execCmd("src", "toolchain", "get", "-u", toolchain); err != nil {
+		return err
+	}
+
+	log.Println("Symlinked Go toolchain into your GOPATH at", gopathDir)
+
+	log.Println("Building Go toolchain program")
+	if err := execCmd("make", "-C", srclibpathDir); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *ToolchainInstallStdCmd) installRubyToolchain() error {
+	const toolchain = "sourcegraph.com/sourcegraph/srclib-ruby"
+
+	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
+
+	if _, err := exec.LookPath("ruby"); err == exec.ErrNotFound {
+		return skippedToolchain{toolchain, "no `ruby` in PATH (assuming you don't have Ruby installed and you don't want the Ruby toolchain)"}
+	}
+	if _, err := exec.LookPath("bundle"); err == exec.ErrNotFound {
+		return fmt.Errorf("no `bundle` in PATH; Ruby toolchain requires bundler (run `gem install bundler` to install it)")
+	}
+
+	log.Println("Downloading or updating Ruby toolchain in", srclibpathDir)
+	if err := execCmd("src", "toolchain", "get", "-u", toolchain); err != nil {
+		return err
+	}
+
+	log.Println("Installing deps for Ruby toolchain in", srclibpathDir)
+	if err := execCmd("make", "-C", srclibpathDir, "dep"); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *ToolchainInstallStdCmd) installJavaScriptToolchain() error {
+	const toolchain = "sourcegraph.com/sourcegraph/srclib-javascript"
+
+	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
+
+	if _, err := exec.LookPath("node"); err == exec.ErrNotFound {
+		return skippedToolchain{toolchain, "no `node` in PATH (assuming you don't have Node.js installed and you don't want the JavaScript toolchain)"}
+	}
+	if _, err := exec.LookPath("npm"); err == exec.ErrNotFound {
+		return fmt.Errorf("no `npm` in PATH; JavaScript toolchain requires npm")
+	}
+
+	log.Println("Downloading or updating JavaScript toolchain in", srclibpathDir)
+	if err := execCmd("src", "toolchain", "get", "-u", toolchain); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *ToolchainInstallStdCmd) installPythonToolchain() error {
+	const toolchain = "sourcegraph.com/sourcegraph/srclib-python"
+	return skippedToolchain{toolchain, "not yet finished porting this toolchain"}
+}
+
+type skippedToolchain struct {
+	toolchain string
+	why       string
+}
+
+func (e skippedToolchain) Error() string {
+	return fmt.Sprintf("skipped %s: %s", e.toolchain, e.why)
 }
