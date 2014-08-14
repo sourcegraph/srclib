@@ -3,6 +3,7 @@ package src
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -86,11 +87,17 @@ type ConfigCmd struct {
 	Args struct {
 		Dir Directory `name:"DIR" default:"." description:"root directory of tree to configure"`
 	} `positional-args:"yes"`
+
+	w io.Writer // output stream to print to (defaults to os.Stdout)
 }
 
 var configCmd ConfigCmd
 
 func (c *ConfigCmd) Execute(args []string) error {
+	if c.w == nil {
+		c.w = os.Stdout
+	}
+
 	if c.Args.Dir == "" {
 		c.Args.Dir = "."
 	}
@@ -156,21 +163,21 @@ func (c *ConfigCmd) Execute(args []string) error {
 	if c.Output.Output == "json" {
 		PrintJSON(cfg, "")
 	} else {
-		fmt.Printf("SCANNERS (%d)\n", len(cfg.Scanners))
+		fmt.Fprintf(c.w, "SCANNERS (%d)\n", len(cfg.Scanners))
 		for _, s := range cfg.Scanners {
-			fmt.Printf(" - %s\n", s)
+			fmt.Fprintf(c.w, " - %s\n", s)
 		}
-		fmt.Println()
+		fmt.Fprintln(c.w)
 
-		fmt.Printf("SOURCE UNITS (%d)\n", len(cfg.SourceUnits))
+		fmt.Fprintf(c.w, "SOURCE UNITS (%d)\n", len(cfg.SourceUnits))
 		for _, u := range cfg.SourceUnits {
-			fmt.Printf(" - %s: %s\n", u.Type, u.Name)
+			fmt.Fprintf(c.w, " - %s: %s\n", u.Type, u.Name)
 		}
-		fmt.Println()
+		fmt.Fprintln(c.w)
 
-		fmt.Printf("CONFIG PROPERTIES (%d)\n", len(cfg.Config))
+		fmt.Fprintf(c.w, "CONFIG PROPERTIES (%d)\n", len(cfg.Config))
 		for _, kv := range sortedMap(cfg.Config) {
-			fmt.Printf(" - %s: %s\n", kv[0], kv[1])
+			fmt.Fprintf(c.w, " - %s: %s\n", kv[0], kv[1])
 		}
 	}
 
