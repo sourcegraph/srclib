@@ -281,16 +281,20 @@ func (c *ToolchainInstallStdCmd) Execute(args []string) error {
 	fmt.Println(brush.Cyan("Installing/upgrading standard toolchains..."))
 	fmt.Println()
 
-	x := map[string]func() error{
-		"Go (sourcegraph.com/sourcegraph/srclib-go)":                 c.installGoToolchain,
-		"Python (sourcegraph.com/sourcegraph/srclib-python)":         c.installPythonToolchain,
-		"Ruby (sourcegraph.com/sourcegraph/srclib-ruby)":             c.installRubyToolchain,
-		"JavaScript (sourcegraph.com/sourcegraph/srclib-javascript)": c.installJavaScriptToolchain,
+	x := []struct {
+		name string
+		fn   func() error
+	}{
+		{"Go (sourcegraph.com/sourcegraph/srclib-go)", c.installGoToolchain},
+		{"Python (sourcegraph.com/sourcegraph/srclib-python)", c.installPythonToolchain},
+		{"Ruby (sourcegraph.com/sourcegraph/srclib-ruby)", c.installRubyToolchain},
+		{"JavaScript (sourcegraph.com/sourcegraph/srclib-javascript)", c.installJavaScriptToolchain},
 	}
 
-	for name, fn := range x {
+	for _, x := range x {
+		name := x.name
 		fmt.Println(brush.Cyan(name + " " + strings.Repeat("=", 78-len(name))).String())
-		if err := fn(); err != nil {
+		if err := x.fn(); err != nil {
 			if err, ok := err.(skippedToolchain); ok {
 				fmt.Println(brush.Yellow(err.Error()).String())
 				fmt.Println()
@@ -318,13 +322,17 @@ func (c *ToolchainInstallStdCmd) installGoToolchain() error {
 	gopathDir := filepath.Join(srcDir, toolchain)                                 // toolchain dir under GOPATH
 	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
 
+	if err := os.MkdirAll(filepath.Dir(srclibpathDir), 0700); err != nil {
+		return err
+	}
+
 	if fi, err := os.Stat(gopathDir); os.IsNotExist(err) {
 		// symlink to gopath
 		if err := os.MkdirAll(filepath.Dir(gopathDir), 0700); err != nil {
 			return err
 		}
 		if _, err := os.Stat(srclibpathDir); os.IsNotExist(err) {
-			if err := os.Symlink(gopathDir, srclibpathDir); err != nil {
+			if err := os.Symlink(srclibpathDir, gopathDir); err != nil {
 				return err
 			}
 		}
