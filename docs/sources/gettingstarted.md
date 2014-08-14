@@ -1,23 +1,40 @@
 # Getting Started
 
-## Install srclib
+## Installing srclib
 
-Eventually, binary distributions will be available, bundled with default toolchains.
-For now, srclib can be built easily from source. First, you will need to install Go - instructions are available
-[here](http://golang.org/doc/install).
+To install the **src** program, download one of the prebuilt binaries or build
+it from source (see next section).
 
-Once Go is installed, The `src` command-line tool can then
-be installed with the following command.
+src binary downloads:
+
+* [Linux amd64](https://api.equinox.io/1/Applications/ap_BQxVz1iWMxmjQnbVGd85V58qz6/Updates/Asset/src.zip?os=darwin&arch=amd64&channel=stable)
+* [Linux i386](https://api.equinox.io/1/Applications/ap_BQxVz1iWMxmjQnbVGd85V58qz6/Updates/Asset/src.zip?os=darwin&arch=386&channel=stable)
+* [Mac OS X](https://api.equinox.io/1/Applications/ap_BQxVz1iWMxmjQnbVGd85V58qz6/Updates/Asset/src.zip?os=darwin&arch=amd64&channel=stable)
+
+After downloading the file, unzip it and place the `src` program in your
+`$PATH`. Run `src --help` to verify that it's installed.
+
+### Building from source
+
+First, [install Go](http://golang.org/doc/install) (version 1.3 or newer).
+
+Then download and install `src`:
 
 ```
-go get -v sourcegraph.com/sourcegraph/srclib/cmd/src
+go get -u -v sourcegraph.com/sourcegraph/srclib/cmd/src
 ```
-Next, you must install the individual toolchains for each language you wish to use. See instructions at:
+
+Next, you must install the toolchain for each language you wish to use. See
+instructions at:
 
 * [**srclib-go**](toolchains/go.md) for Go
 * [**srclib-javascript**](toolchains/javascript.md) for JavaScript (Node.js)
+* [**srclib-ruby**](toolchains/ruby.md) for Ruby
 
-You should now be able to use and contribute to srclib.
+To check which toolchains are installed, run `src toolchain list`.
+
+If you see your language of choice in that list, you should now be able to use
+and contribute to srclib.
 
 ## Next Steps
 
