@@ -10,7 +10,7 @@ web service.
 ## Commands
 
 ### `src config`
-`src make` is used to detect what kinds of source units (npm/pip/Go/etc. packages) exist in a repository or directory tree.
+`src config` is used to detect what kinds of source units (npm/pip/Go/etc. packages) exist in a repository or directory tree.
 
 ### `src make`
 `src make` is used to perform analysis on a given directory. See the [src make docs](make.md) for usage instructions.
