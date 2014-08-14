@@ -15,9 +15,11 @@
 First, make sure you've installed srclib, following
 the [instructions here](../gettingstarted.md#install-srclib).
 
-To install, clone the git repository
+To install, either use
+[Package Control](https://sublime.wbond.net/packages/Sourcegraph) to install it
+by name (Sourcegraph), or clone the git repository
 `https://github.com/sourcegraph/sourcegraph-sublime.git` to your Packages
-folder. This plugin will be posted to Package Control soon.
+folder.
 
 In any file in a project supported by srclib, right-click on identifiers in code
 and choose one of the new options to see docs or usages.
