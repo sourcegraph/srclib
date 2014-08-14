@@ -331,7 +331,7 @@ func (c *ToolchainInstallStdCmd) installGoToolchain() error {
 		if err := os.MkdirAll(filepath.Dir(gopathDir), 0700); err != nil {
 			return err
 		}
-		if _, err := os.Stat(srclibpathDir); os.IsNotExist(err) {
+		if _, err := os.Stat(gopathDir); os.IsNotExist(err) {
 			if err := os.Symlink(srclibpathDir, gopathDir); err != nil {
 				return err
 			}
