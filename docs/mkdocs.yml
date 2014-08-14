@@ -33,13 +33,13 @@ pages:
 #- ['building/uploading.md', 'Library Authors', 'Uploading to Sourcegraph']
 
 # API
-- ['api/overview.md', 'Building on Srclib', 'Overview']
-- ['api/make.md', 'Building on Srclib', 'src make']
-- ['api/describe.md', 'Building on Srclib', 'src describe']
+- ['api/overview.md', 'Building on srclib', 'Overview']
+- ['api/make.md', 'Building on srclib', 'src make']
+- ['api/describe.md', 'Building on srclib', 'src describe']
 
 # Creating a Toolchain
-- ['creatingtoolchain/overview.md', 'Contributing to Srclib', 'Creating a Toolchain']
-- ['creatingtoolchain/openquestions.md', 'Contributing to Srclib', 'Open Questions']
+- ['creatingtoolchain/overview.md', 'Contributing to srclib', 'Creating a Toolchain']
+- ['creatingtoolchain/openquestions.md', 'Contributing to srclib', 'Open Questions']
 
 #- ['creatingtoolchain/formatter.md', 'Creating a Toolchain', 'Formatter API']
 
