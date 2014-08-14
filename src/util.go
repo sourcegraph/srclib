@@ -9,12 +9,12 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"os/user"
 	"path/filepath"
 	"strings"
 
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/unit"
+	"sourcegraph.com/sourcegraph/srclib/util"
 )
 
 func isDir(dir string) bool {
@@ -94,14 +94,11 @@ func CloseAll(files map[string]io.ReadCloser) {
 // updateVCSIgnore adds .srclib-cache/ to the user's .${VCS}ignore file in
 // their home directory.
 func updateVCSIgnore(name string) {
-	u, err := user.Current()
-	if err != nil {
-		log.Fatal(err)
-	}
+	homeDir := util.CurrentUserHomeDir()
 
 	entry := buildstore.BuildDataDirName + "/"
 
-	path := filepath.Join(u.HomeDir, name)
+	path := filepath.Join(homeDir, name)
 	data, err := ioutil.ReadFile(path)
 	if os.IsNotExist(err) {
 		err = nil
