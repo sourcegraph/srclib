@@ -38,7 +38,7 @@ See [srclib.org](https://srclib.org) for more information.
 
 Currently, srclib supports:
 
-* **Languages:** [Go](https://srclib.org/toolchains/go), [JavaScript](https://srclib.org/toolchains/javascript), and [Ruby](https://srclib.org/toolchains/ruby) (coming very soon: [Python](https://sourcegraph.com/sourcegraph/srclib-python) and [Java](https://github.com/sourcegraph/srclib-java))
+* **Languages:** [Go](https://sourcegraph.com/sourcegraph/srclib-go), [JavaScript](https://github.com/sourcegraph/srclib-javascript), and [Ruby](https://github.com/sourcegraph/srclib-ruby) (coming very soon: [Python](https://sourcegraph.com/sourcegraph/srclib-python) and [Java](https://github.com/sourcegraph/srclib-java))
 
 * **Integrations:** [emacs-sourcegraph-mode](https://srclib.org/plugins/emacs/),
   [Sublime Text](https://srclib.org/plugins/sublimetext/), and
