@@ -24,7 +24,7 @@
 
         <p><p>
         <a class="button-link"
-        href="#install-an-editor-plugin"><button type="button" class="btn
+        href="#install"><button type="button" class="btn
         btn-default"><i class="fa fa-download"></i> Try it now</button></a>
         <a class="button-link" href="/gettingstarted">
           <button type="button" class="btn btn-default"><i class="fa fa-book"></i> Docs</button>
@@ -51,18 +51,38 @@
   </div>
 </div>
 
-<div id="install-an-editor-plugin" class="editor-plugins section">
+<div id="install" class="editor-plugins section">
   <div class="container">
 
     <div class="row">
-      <div class="col-sm-8">
-        <h1>Editor plugins (beta)</h1>
+      <div class="col-sm-12">
+        <h1>Installation</h1>
+        <p>To install srclib and use it in your editor, follow these steps.</p>
+
+        <h2>1. Install <tt>src</tt></h2>
+        <p>
+          The <tt>src</tt> command-line tool is the interface to srclib.
+        </p>
+
+        <ul>
+          <li>Binaries: <a href="https://api.equinox.io/1/Applications/ap_BQxVz1iWMxmjQnbVGd85V58qz6/Updates/Asset/src.zip?os=linux&arch=amd64&channel=stable">Linux amd64</a>, <a href="https://api.equinox.io/1/Applications/ap_BQxVz1iWMxmjQnbVGd85V58qz6/Updates/Asset/src.zip?os=linux&arch=386&channel=stable">Linux i386</a>, <a href="https://api.equinox.io/1/Applications/ap_BQxVz1iWMxmjQnbVGd85V58qz6/Updates/Asset/src.zip?os=darwin&arch=amd64&channel=stable">Mac OS X</a> (unzip and place the <tt>src</tt> program in your <tt>$PATH</tt>)</li>
+          <li>Or <a href="/gettingstarted/#building-from-source">build from source</a>: <code>go get -u -v sourcegraph.com/sourcegraph/srclib/cmd/src</code></li>
+        </ul>
+
+
+        <h2>2. Install toolchains</h2>
+        <p>Toolchains add support for languages (JavaScript, Ruby, Go, etc.).</p>
+        <p><a href="/gettingstarted">Install the standard set of toolchains</a>: <code>src toolchain install-std</code></p>
+        <p>You can skip languages you don't want by adding, e.g., <code>--skip ruby</code>.</p>
+        <p>To list installed toolchains, run <code>src toolchain list</code>.</p>
+
+        <h2>3. Install an editor plugin</h2>
         <p>Install a srclib editor plugin, which provides doc lookups, find-usages, and type information with zero
         configuration needed (in most cases).
       </div>
     </div>
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-12">
         <p>
         <a href="/plugins/emacs"><button class="btn btn-primary"><img style="height: 1em;" src="/images/editors/emacs.svg"> Emacs</button></a>
         <a href="/plugins/sublimetext"><button class="btn btn-primary"><img style="height: 1em;" src="/images/editors/sublime.png"> Sublime</button></a>
@@ -82,7 +102,6 @@
           <!--      class="editoricon  desaturatehalf" src="/images/editors/emacs.svg"></img> -->
 
         <p>
-        <img class="img-responsive img-screen" src="/images/sourcegraph-emacs.png">
 
         <p>Interested in building a plugin for an editor srclib doesn't yet
         support? <a target="_blank" href="https://twitter.com/sourcelib">Let us
