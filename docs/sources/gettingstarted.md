@@ -20,7 +20,9 @@ To install the standard set of language analysis toolchains
 
 ```
 src toolchain install-std
-```
+````
+
+By default this installs the toolchains for Ruby, Go, and JavaScript. To skip installing toolchains you don't care about, use `--skip`, as in `src toolchain install-std --skip javascript --skip go`.
 
 If this command fails, please
 [file an issue](https://github.com/sourcegraph/srclib/issues).
@@ -37,7 +39,7 @@ Then download and install `src`:
 go get -u -v sourcegraph.com/sourcegraph/srclib/cmd/src
 ```
 
-Next, you must install the language toolchains: `src toolchain install-std`.
+Next, you must install the language toolchains: `src toolchain install-std`. By default this installs the toolchains for Ruby, Go, and JavaScript. To skip installing toolchains you don't care about, use `--skip`, as in `src toolchain install-std --skip javascript --skip go`.
 
 Now, `src toolchain list` should show the toolchains you just installed.
 
