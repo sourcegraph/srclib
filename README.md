@@ -2,8 +2,7 @@
 
 *Note: srclib is alpha.
 [Post an issue](https://github.com/sourcegraph/srclib/issues) if you have any
-questions or difficulties running and hacking on it. We'll have a full docs site
-up soon.*
+questions or difficulties running and hacking on it.*
 
 [**srclib**](https://srclib.org) is a source code analysis library. It provides standardized tools,
 interfaces and data formats for generating, representing and querying
