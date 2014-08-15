@@ -273,6 +273,7 @@ func (c *ToolchainAddCmd) Execute(args []string) error {
 }
 
 type ToolchainInstallStdCmd struct {
+	Skip []string `long:"skip" description:"skip installing matching toolchains (can be specified multiple times; e.g., --skip go --skip ruby)" value-name:"NAME"`
 }
 
 var toolchainInstallStdCmd ToolchainInstallStdCmd
@@ -291,8 +292,15 @@ func (c *ToolchainInstallStdCmd) Execute(args []string) error {
 		{"JavaScript (sourcegraph.com/sourcegraph/srclib-javascript)", c.installJavaScriptToolchain},
 	}
 
+OuterLoop:
 	for _, x := range x {
 		name := x.name
+		for _, skip := range c.Skip {
+			if strings.Contains(name, skip) {
+				fmt.Println(brush.Yellow(fmt.Sprintf("Skipping installation of %s", name)))
+				continue OuterLoop
+			}
+		}
 		fmt.Println(brush.Cyan(name + " " + strings.Repeat("=", 78-len(name))).String())
 		if err := x.fn(); err != nil {
 			if err, ok := err.(skippedToolchain); ok {
