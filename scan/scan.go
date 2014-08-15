@@ -45,7 +45,9 @@ func ScanMulti(scanners []toolchain.Tool, opt Options, treeConfig map[string]int
 			return nil
 		})
 	}
-	if err := run.Wait(); err != nil {
+	err := run.Wait()
+	// Return error only if none of the commands succeeded.
+	if len(units) == 0 {
 		return nil, err
 	}
 	return units, nil
