@@ -347,7 +347,7 @@ func (c *ToolchainInstallStdCmd) installGoToolchain() error {
 	} else if err != nil {
 		return err
 	} else if fi.Mode()&os.ModeSymlink == 0 {
-		return skippedToolchain{toolchain, fmt.Sprintf("toolchain dir in GOPATH (%s) is not a symlink (assuming you intentionally cloned the toolchain repo to your GOPATH; not modifying it)")}
+		return skippedToolchain{toolchain, fmt.Sprintf("toolchain dir in GOPATH (%s) is not a symlink (assuming you intentionally cloned the toolchain repo to your GOPATH; not modifying it)", gopathDir)}
 	}
 
 	log.Println("Downloading or updating Go toolchain in", srclibpathDir)
