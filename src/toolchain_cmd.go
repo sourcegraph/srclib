@@ -370,13 +370,13 @@ func (c *ToolchainInstallStdCmd) installRubyToolchain() error {
 
 	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
 
-	if _, err := exec.LookPath("ruby"); err == exec.ErrNotFound {
+	if _, err := exec.LookPath("ruby"); isExecErrNotFound(err) {
 		return skippedToolchain{toolchain, "no `ruby` in PATH (assuming you don't have Ruby installed and you don't want the Ruby toolchain)"}
 	}
-	if _, err := exec.LookPath("bundle"); err == exec.ErrNotFound {
-		return fmt.Errorf("no `bundle` in PATH; Ruby toolchain requires bundler (run `gem install bundler` to install it)")
+	if _, err := exec.LookPath("bundle"); isExecErrNotFound(err) {
+		return fmt.Errorf("found `ruby` in PATH but did not find `bundle` in PATH; Ruby toolchain requires bundler (run `gem install bundler` to install it)")
 	}
-	if _, err := exec.LookPath("rvm"); err == exec.ErrNotFound {
+	if _, err := exec.LookPath("rvm"); isExecErrNotFound(err) {
 		return fmt.Errorf("no `rvm` in PATH; Ruby toolchain requires rvm (https://rvm.io)")
 	}
 
@@ -398,10 +398,10 @@ func (c *ToolchainInstallStdCmd) installJavaScriptToolchain() error {
 
 	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
 
-	if _, err := exec.LookPath("node"); err == exec.ErrNotFound {
+	if _, err := exec.LookPath("node"); isExecErrNotFound(err) {
 		return skippedToolchain{toolchain, "no `node` in PATH (assuming you don't have Node.js installed and you don't want the JavaScript toolchain)"}
 	}
-	if _, err := exec.LookPath("npm"); err == exec.ErrNotFound {
+	if _, err := exec.LookPath("npm"); isExecErrNotFound(err) {
 		return fmt.Errorf("no `npm` in PATH; JavaScript toolchain requires npm")
 	}
 
@@ -425,4 +425,11 @@ type skippedToolchain struct {
 
 func (e skippedToolchain) Error() string {
 	return fmt.Sprintf("skipped %s: %s", e.toolchain, e.why)
+}
+
+func isExecErrNotFound(err error) bool {
+	if e, ok := err.(*exec.Error); ok && e.Err == exec.ErrNotFound {
+		return true
+	}
+	return false
 }
