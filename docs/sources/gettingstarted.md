@@ -20,7 +20,7 @@ To install the standard set of language analysis toolchains
 
 ```
 src toolchain install-std
-````
+```
 
 By default this installs the toolchains for Ruby, Go, and JavaScript. To skip installing toolchains you don't care about, use `--skip`, as in `src toolchain install-std --skip javascript --skip go`.
 
