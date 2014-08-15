@@ -66,3 +66,7 @@ srclib by installing an editor plugin in your editor of choice. [See all editor 
 * **bash completion** for `src`: run `source contrib/completion/src-completion.bash` or
   copy that file to `/etc/bash_completion.d/srclib_src` (path may be different
   on your system)
+
+## License
+Sourcegraph is licensed under the [MIT License](https://tldrlegal.com/license/mit-license).
+More information in the LICENSE file.
