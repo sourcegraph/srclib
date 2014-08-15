@@ -39,7 +39,7 @@ func scanUnitsIntoConfig(cfg *config.Repository, configOpt config.Options, execO
 		scanners[i] = scanner
 	}
 
-	units, err := scan.ScanMulti(scanners, scan.Options{configOpt}, cfg.Config)
+	units, err := scan.ScanMulti(scanners, scan.Options{Options: configOpt}, cfg.Config)
 	if err != nil {
 		return err
 	}
@@ -51,7 +51,7 @@ func scanUnitsIntoConfig(cfg *config.Repository, configOpt config.Options, execO
 	for _, u := range units {
 		for k, v := range cfg.Config {
 			if uv, present := u.Config[k]; present {
-				log.Printf("Both the scanned source unit %q and the Srcfile specify a Config key %q. Using the value from the scanned source unit (%+v).", k, uv)
+				log.Printf("Both the scanned source unit %q and the Srcfile specify a Config key %q. Using the value from the scanned source unit (%+v).", u.ID(), k, uv)
 			} else {
 				if u.Config == nil {
 					u.Config = map[string]interface{}{}

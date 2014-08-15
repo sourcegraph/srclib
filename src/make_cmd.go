@@ -110,7 +110,7 @@ func CreateMaker(execOpt ToolchainExecOpt, goals []string) (*makex.Maker, *makex
 	}
 	buildDataDir, _ = filepath.Rel(absDir, buildDataDir)
 
-	mf, err := plan.CreateMakefile(buildDataDir, treeConfig, plan.Options{strings.Join(toolchainExecOptArgs, " ")})
+	mf, err := plan.CreateMakefile(buildDataDir, treeConfig, plan.Options{ToolchainExecOpt: strings.Join(toolchainExecOptArgs, " ")})
 	if err != nil {
 		return nil, nil, err
 	}
