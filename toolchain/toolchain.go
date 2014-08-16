@@ -200,7 +200,7 @@ func (t *dockerToolchain) Build() error {
 	cmd.Stderr = os.Stderr
 
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("%s (command was: %v)", err, cmd.Args)
+		return fmt.Errorf("%s (working dir was: %s, command was: `%v`)", err, cmd.Dir, cmd.Args)
 	}
 	return nil
 }
