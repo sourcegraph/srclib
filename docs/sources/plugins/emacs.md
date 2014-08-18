@@ -10,17 +10,25 @@
 - Find usages (across all open-source projects globally)
 
 ## Installation Instructions
-First, make sure you've installed srclib, following the [instructions here](../gettingstarted.md#install-srclib).
+First, make sure you've [installed srclib](../gettingstarted.md#install-srclib), along with the toolchains for the programming
+languages you're using. Once srclib is installed, you can install the emacs plugin by navigating to your `.emacs.d`
+directory and cloning the repository.
 
-Once srclib is installed, you can install the emacs plugin by navigating to your `.emacs.d` directory and cloning the repository.
 ```bash
 cd ~/.emacs.d
 git clone https://github.com/sourcegraph/emacs-sourcegraph-mode.git
 ```
 
-Then you can add a hook, or run add a hook or just run `sourcegraph-mode` manually to enable it in a buffer.
+To install the plugin, append the following code to `~/.emacs.d/init.el`.
+```lisp
+(add-to-list 'load-path "~/.emacs.d/emacs-sourcegraph-mode")
+(require 'sourcegraph-mode)
+```
 
-In any file (with sourcegraph-mode enabled), run sourcegraph-describe (or C-M-.) to see docs, type info, and examples.
+Sourcegraph-mode can be enabled in a buffer with M-x, then typing `sourcegraph-mode`.
+
+Now, in any file (with `sourcegraph-mode` enabled), run `sourcegraph-describe`
+(or C-M-.) to see docs, type info, and examples.
 
 ## Contribute on GitHub
 <iframe src="http://ghbtns.com/github-btn.html?user=sourcegraph&repo=emacs-sourcegraph-mode&type=watch&count=true&size=large"
