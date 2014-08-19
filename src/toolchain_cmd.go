@@ -376,9 +376,6 @@ func (c *ToolchainInstallStdCmd) installRubyToolchain() error {
 	if _, err := exec.LookPath("bundle"); isExecErrNotFound(err) {
 		return fmt.Errorf("found `ruby` in PATH but did not find `bundle` in PATH; Ruby toolchain requires bundler (run `gem install bundler` to install it)")
 	}
-	if _, err := exec.LookPath("rvm"); isExecErrNotFound(err) {
-		return fmt.Errorf("no `rvm` in PATH; Ruby toolchain requires rvm (https://rvm.io)")
-	}
 
 	log.Println("Downloading or updating Ruby toolchain in", srclibpathDir)
 	if err := execCmd("src", "toolchain", "get", "-u", toolchain); err != nil {
@@ -387,7 +384,7 @@ func (c *ToolchainInstallStdCmd) installRubyToolchain() error {
 
 	log.Println("Installing deps for Ruby toolchain in", srclibpathDir)
 	if err := execCmd("make", "-C", srclibpathDir); err != nil {
-		return fmt.Errorf("%s\n\nTip: If you are using a version of Ruby other than 2.1.2 (the default for srclib), rerun this command with 'rvm x.y.z do src toolchain install-std', where x.y.z is your preferred Ruby version.", err)
+		return fmt.Errorf("%s\n\nTip: If you are using a version of Ruby other than 2.1.2 (the default for srclib), or if you are using your system Ruby, try using a Ruby version manager (such as https://rvm.io) to install a more standard Ruby, and try Ruby 2.1.2.\n\nIf you are still having problems, post an issue at https://github.com/sourcegraph/srclib-ruby/issues with the full log output and information about your OS and Ruby version.\n\nIf you don't care about Ruby, skip this installation by running `src toolchain install-std --skip ruby`.", err)
 	}
 
 	return nil
