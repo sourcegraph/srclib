@@ -104,6 +104,8 @@ func ensureBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
 
 // Get a list of all source units that contain the given file
 func getSourceUnitsWithFile(buildStore *buildstore.RepositoryStore, repo *Repo, filename string) ([]*unit.SourceUnit, error) {
+	filename = filepath.Clean(filename)
+
 	// TODO(sqs): This whole lookup is totally inefficient. The storage format
 	// is not optimized for lookups.
 
@@ -130,7 +132,7 @@ func getSourceUnitsWithFile(buildStore *buildstore.RepositoryStore, repo *Repo, 
 			return nil, fmt.Errorf("%s: %s", unitFile, err)
 		}
 		for _, f2 := range u.Files {
-			if f2 == filename {
+			if filepath.Clean(f2) == filename {
 				units = append(units, u)
 				break
 			}
@@ -141,6 +143,8 @@ func getSourceUnitsWithFile(buildStore *buildstore.RepositoryStore, repo *Repo, 
 }
 
 func (c *APIListCmd) Execute(args []string) error {
+	c.File = filepath.Clean(c.File)
+
 	repo, err := OpenRepo(filepath.Dir(c.File))
 	if err != nil {
 		return err
@@ -208,6 +212,8 @@ func (c *APIListCmd) Execute(args []string) error {
 }
 
 func (c *APIDescribeCmd) Execute(args []string) error {
+	c.File = filepath.Clean(c.File)
+
 	repo, err := OpenRepo(filepath.Dir(c.File))
 	if err != nil {
 		return err
