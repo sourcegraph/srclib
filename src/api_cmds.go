@@ -325,6 +325,9 @@ OuterLoop:
 					resp.Def.DocHTML = doc.Data
 				}
 			}
+
+			// If Def is in the current Repo, transform that path to be an absolute path
+			resp.Def.File = filepath.Join(repo.RootDir, resp.Def.File)
 		}
 		if resp.Def == nil && GlobalOpt.Verbose {
 			log.Printf("No definition found with path %q in unit %q type %q.", ref.DefPath, ref.DefUnit, ref.DefUnitType)
