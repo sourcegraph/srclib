@@ -46,3 +46,5 @@ func (r *BlameSourceUnitRule) Recipes() []string {
 		fmt.Sprintf("src internal unit-blame --unit-data %s 1> $@", makex.Quote(filepath.Join(r.dataDir, plan.SourceUnitDataFilename(unit.SourceUnit{}, r.Unit)))),
 	}
 }
+
+func (r *BlameSourceUnitRule) SourceUnit() *unit.SourceUnit { return r.Unit }
