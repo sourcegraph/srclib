@@ -59,3 +59,5 @@ func (r *GraphUnitRule) Recipes() []string {
 		fmt.Sprintf("src tool %s %q %q < $^ | src internal normalize-graph-data 1> $@", r.opt.ToolchainExecOpt, r.Tool.Toolchain, r.Tool.Subcmd),
 	}
 }
+
+func (r *GraphUnitRule) SourceUnit() *unit.SourceUnit { return r.Unit }

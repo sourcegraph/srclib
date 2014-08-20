@@ -91,3 +91,5 @@ func (r *ComputeUnitAuthorshipRule) Recipes() []string {
 		fmt.Sprintf("src internal unit-authorship --blame-data %s --graph-data %s 1> $@", makex.Quote(r.BlameOutput), makex.Quote(r.GraphOutput)),
 	}
 }
+
+func (r *ComputeUnitAuthorshipRule) SourceUnit() *unit.SourceUnit { return r.Unit }
