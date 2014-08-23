@@ -45,7 +45,7 @@ install-std-toolchains:
 test-std-toolchains:
 	src toolchain list | grep srclib-go
 	src toolchain list | grep srclib-javascript
-#	src toolchain list | grep srclib-python
+	src toolchain list | grep srclib-python
 	src toolchain list | grep srclib-ruby
 
 	@echo
