@@ -412,7 +412,31 @@ func (c *ToolchainInstallStdCmd) installJavaScriptToolchain() error {
 
 func (c *ToolchainInstallStdCmd) installPythonToolchain() error {
 	const toolchain = "sourcegraph.com/sourcegraph/srclib-python"
-	return skippedToolchain{toolchain, "not yet finished porting this toolchain"}
+
+	requiredCmds := map[string]string{
+		"go":         "visit https://golang.org/doc/install",
+		"python":     "visit https://www.python.org/downloads/",
+		"pip":        "visit http://pip.readthedocs.org/en/latest/installing.html",
+		"virtualenv": "run `[sudo] pip install virtualenv`",
+	}
+	for requiredCmd, instructions := range requiredCmds {
+		if _, err := exec.LookPath(requiredCmd); isExecErrNotFound(err) {
+			return skippedToolchain{toolchain, fmt.Sprintf("no `%s` found in PATH; to install, %s", requiredCmd, instructions)}
+		}
+	}
+
+	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
+	log.Println("Downloading or updating Python toolchain in", srclibpathDir)
+	if err := execCmd("src", "toolchain", "get", "-u", toolchain); err != nil {
+		return err
+	}
+
+	log.Println("Installing deps for Python toolchain in", srclibpathDir)
+	if err := execCmd("make", "-C", srclibpathDir); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 type skippedToolchain struct {
