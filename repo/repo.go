@@ -71,6 +71,9 @@ type Repository struct {
 
 	// Mirror is whether this repository is a mirror.
 	Mirror bool
+
+	// Private is whether this repository is private.
+	Private bool
 }
 
 // IsGitHubRepository returns true iff this repository is hosted on GitHub.
