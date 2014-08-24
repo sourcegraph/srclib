@@ -326,8 +326,6 @@ func (c *ToolchainInstallStdCmd) installGoToolchain() error {
 		return skippedToolchain{toolchain, "no GOPATH set (assuming Go is not installed and you don't want the Go toolchain)"}
 	}
 
-	srcDir := strings.Split(gopath, ":")[0]
-	gopathDir := filepath.Join(srcDir, toolchain)                                 // toolchain dir under GOPATH
 	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
 
 	if err := os.MkdirAll(filepath.Dir(srclibpathDir), 0700); err != nil {
@@ -339,7 +337,6 @@ func (c *ToolchainInstallStdCmd) installGoToolchain() error {
 	} else if skipmsg != "" {
 		return skippedToolchain{toolchain, skipmsg}
 	}
-	log.Println("Symlinked Go toolchain into your GOPATH at", gopathDir)
 
 	log.Println("Downloading or updating Go toolchain in", srclibpathDir)
 	if err := execCmd("src", "toolchain", "get", "-u", toolchain); err != nil {
@@ -457,7 +454,7 @@ func symlinkToGopath(toolchain string) (skip string, err error) {
 		return "", fmt.Errorf("GOPATH not set")
 	}
 
-	srcDir := strings.Split(gopath, ":")[0]
+	srcDir := filepath.Join(strings.Split(gopath, ":")[0], "src")
 	gopathDir := filepath.Join(srcDir, toolchain)
 	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain)
 
@@ -475,5 +472,7 @@ func symlinkToGopath(toolchain string) (skip string, err error) {
 	} else if fi.Mode()&os.ModeSymlink == 0 {
 		return fmt.Sprintf("toolchain dir in GOPATH (%s) is not a symlink (assuming you intentionally cloned the toolchain repo to your GOPATH; not modifying it)", gopathDir), nil
 	}
+
+	log.Printf("Symlinked toolchain %s into your GOPATH at", toolchain, gopathDir)
 	return "", nil
 }
