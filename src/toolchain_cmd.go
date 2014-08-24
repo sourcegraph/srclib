@@ -334,20 +334,10 @@ func (c *ToolchainInstallStdCmd) installGoToolchain() error {
 		return err
 	}
 
-	if fi, err := os.Lstat(gopathDir); os.IsNotExist(err) {
-		// symlink to gopath
-		log.Printf("mkdir -p %s", filepath.Dir(gopathDir))
-		if err := os.MkdirAll(filepath.Dir(gopathDir), 0700); err != nil {
-			return err
-		}
-		log.Printf("ln -s %s %s", srclibpathDir, gopathDir)
-		if err := os.Symlink(srclibpathDir, gopathDir); err != nil {
-			return err
-		}
-	} else if err != nil {
+	if skipmsg, err := symlinkToGopath(toolchain); err != nil {
 		return err
-	} else if fi.Mode()&os.ModeSymlink == 0 {
-		return skippedToolchain{toolchain, fmt.Sprintf("toolchain dir in GOPATH (%s) is not a symlink (assuming you intentionally cloned the toolchain repo to your GOPATH; not modifying it)", gopathDir)}
+	} else if skipmsg != "" {
+		return skippedToolchain{toolchain, skipmsg}
 	}
 	log.Println("Symlinked Go toolchain into your GOPATH at", gopathDir)
 
