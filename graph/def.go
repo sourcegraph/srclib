@@ -14,7 +14,6 @@ import (
 type (
 	SID      int64
 	DefPath  string
-	DefKind  string
 	TreePath string
 )
 
@@ -77,7 +76,7 @@ type Def struct {
 	// the def is emitted by the grapher and saved to the database. The SID
 	// is used as an optimization (e.g., joins are faster on SID than on
 	// DefKey).
-	SID SID `db:"sid" json:",omitempty" elastic:"type:integer,index:no"`
+	SID SID `db:"sid" json:",omitempty"`
 
 	// DefKey is the natural unique key for a def. It is stable
 	// (subsequent runs of a grapher will emit the same defs with the same
@@ -98,30 +97,29 @@ type Def struct {
 	// The following regex captures the children of a tree-path X: X(/-[^/]*)*(/[^/-][^/]*)
 	TreePath TreePath `db:"treepath" json:",omitempty"`
 
-	// Kind is the language-independent kind of this def.
-	Kind DefKind `elastic:"type:string,index:analyzed"`
-
+	// Name of the definition. This need not be unique.
 	Name string
 
-	// Callable is true if this def may be called or invoked, such as in the
-	// case of functions or methods.
-	Callable bool `db:"callable"`
+	// Kind is the kind of thing this definition is. This is
+	// language-specific. Possible values include "type", "func",
+	// "var", etc.
+	Kind string
 
-	File string `elastic:"type:string,index:no"`
+	File string
 
-	DefStart int `db:"def_start" elastic:"type:integer,index:no"`
-	DefEnd   int `db:"def_end" elastic:"type:integer,index:no"`
+	DefStart int `db:"def_start"`
+	DefEnd   int `db:"def_end"`
 
-	Exported bool `elastic:"type:boolean,index:not_analyzed"`
+	Exported bool
 
 	// Test is whether this def is defined in test code (as opposed to main
 	// code). For example, definitions in Go *_test.go files have Test = true.
-	Test bool `elastic:"type:boolean,index:not_analyzed" json:",omitempty"`
+	Test bool `json:",omitempty"`
 
 	// Data contains additional language- and toolchain-specific information
 	// about the def. Data is used to construct function signatures,
 	// import/require statements, language-specific type descriptions, etc.
-	Data types.JsonText `json:",omitempty" elastic:"type:object,enabled:false"`
+	Data types.JsonText `json:",omitempty"`
 }
 
 // END Def OMIT
@@ -133,18 +131,6 @@ func (p TreePath) IsValid() bool {
 }
 
 func (s *Def) Fmt() DefPrintFormatter { return PrintFormatter(s) }
-
-// HasImplementations returns true if this def is a Go interface and false
-// otherwise. It is used for the interface implementations queries. TODO(sqs):
-// run this through the golang toolchain instead of doing it here.
-func (s *Def) HasImplementations() bool {
-	if s.Kind != Type {
-		return false
-	}
-	var m map[string]string
-	json.Unmarshal(s.Data, &m)
-	return m["Kind"] == "interface"
-}
 
 func (s *Def) sortKey() string { return s.DefKey.String() }
 
@@ -219,41 +205,6 @@ type Propagate struct {
 	DstUnitType string
 }
 
-const (
-	Const   DefKind = "const"
-	Field           = "field"
-	Func            = "func"
-	Module          = "module"
-	Package         = "package"
-	Type            = "type"
-	Var             = "var"
-)
-
-var AllDefKinds = []DefKind{Const, Field, Func, Module, Package, Type, Var}
-
-func IsContainer(defKind DefKind) bool {
-	switch defKind {
-	case Module:
-		fallthrough
-	case Package:
-		fallthrough
-	case Type:
-		return true
-	default:
-		return false
-	}
-}
-
-// Returns true iff k is a known def kind.
-func (k DefKind) Valid() bool {
-	for _, kk := range AllDefKinds {
-		if k == kk {
-			return true
-		}
-	}
-	return false
-}
-
 // SQL
 
 func (x SID) Value() (driver.Value, error) {
@@ -287,18 +238,6 @@ func (x TreePath) Value() (driver.Value, error) {
 func (x *TreePath) Scan(v interface{}) error {
 	if data, ok := v.([]byte); ok {
 		*x = TreePath(data)
-		return nil
-	}
-	return fmt.Errorf("%T.Scan failed: %v", x, v)
-}
-
-func (x DefKind) Value() (driver.Value, error) {
-	return string(x), nil
-}
-
-func (x *DefKind) Scan(v interface{}) error {
-	if data, ok := v.([]byte); ok {
-		*x = DefKind(data)
 		return nil
 	}
 	return fmt.Errorf("%T.Scan failed: %v", x, v)

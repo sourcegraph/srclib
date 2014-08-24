@@ -30,7 +30,6 @@ Definitions, References, and Documentation data respectively. This should be pri
       "TreePath": "-commonjs/test/arrays.js",
       "Kind": "module",
       "Exported": true,
-      "Callable": false,
       "Data": {
         "Kind": "commonjs-module",
         "Key": {
