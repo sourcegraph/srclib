@@ -11,7 +11,7 @@ before_install:
   - sudo apt-get install -qq python-docutils
   - export PATH=$PATH:$HOME/gopath/bin
   - export GOBIN=$HOME/gopath/bin
-  - pip install virtualenv
+  - sudo pip install virtualenv
 
 install:
   - go get -d -v ./... && go build -v ./...
