@@ -42,13 +42,16 @@ check-release:
 install-std-toolchains:
 	src toolchain install-std
 
+toolchains ?= go javascript python ruby
+
 test-std-toolchains:
-	src toolchain list | grep srclib-go
-	src toolchain list | grep srclib-javascript
-	src toolchain list | grep srclib-python
-	src toolchain list | grep srclib-ruby
+	@echo Checking that all standard toolchains are installed
+	for lang in $(toolchains); do echo $$lang; src toolchain list | grep srclib-$$lang; done
 
 	@echo
 	@echo
 	@echo Testing installation of standard toolchains in Docker if Docker is running
 	(docker info && make -C integration test) || echo Docker is not running...skipping integration tests.
+
+regen-std-toolchain-tests:
+	for lang in $(toolchains); do echo $$lang; cd ~/.srclib/sourcegraph.com/sourcegraph/srclib-$$lang; src test --gen; done
