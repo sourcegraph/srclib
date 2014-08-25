@@ -58,19 +58,9 @@ const (
 	// DefKey) because otherwise it would count 1 exported element for each
 	// revision of the repository that we have processed.
 	StatExportedElements = "exported_elements"
-
-	// StatInterfaces is the number of interfaces that a def implements (in
-	// its own repository or other repositories). TODO(sqs): it is not currently
-	// being computed.
-	StatInterfaces = "interfaces"
-
-	// StatImplementations is the number of implementations of an interface
-	// def (in its own repository or other repositories). TODO(sqs): it is
-	// not currently being computed.
-	StatImplementations = "implementations"
 )
 
-var AllStatTypes = []StatType{StatXRefs, StatRRefs, StatURefs, StatAuthors, StatClients, StatDependents, StatExportedElements, StatInterfaces, StatImplementations}
+var AllStatTypes = []StatType{StatXRefs, StatRRefs, StatURefs, StatAuthors, StatClients, StatDependents, StatExportedElements}
 
 func (x StatType) IsAbstract() bool {
 	switch x {
