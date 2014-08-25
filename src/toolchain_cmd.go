@@ -425,7 +425,7 @@ func (c *ToolchainInstallStdCmd) installPythonToolchain() error {
 	}
 
 	log.Println("Installing deps for Python toolchain in", srclibpathDir)
-	if err := execCmd("make", "-C", srclibpathDir); err != nil {
+	if err := execCmd("make", "-C", srclibpathDir, "install"); err != nil {
 		return err
 	}
 
