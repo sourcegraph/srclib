@@ -54,9 +54,6 @@ type User struct {
 	// registered (i.e., we have processed their repos but they haven't signed
 	// into Sourcegraph), it is null.
 	RegisteredAt db_common.NullTime `db:"registered_at"`
-
-	// GitHubOAuth2AccessToken is the user's GitHub access token.
-	GitHubOAuth2AccessToken string `db:"github_oauth2_access_token" json:"-"` // don't write the OAuth2 access token to JSON
 }
 
 // GitHubLogin returns the user's Login. They are the same for now, but callers
