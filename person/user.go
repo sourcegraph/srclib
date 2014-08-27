@@ -120,9 +120,3 @@ func GravatarURL(email string, size uint16) string {
 	io.WriteString(h, email)
 	return fmt.Sprintf("https://secure.gravatar.com/avatar/%x?s=%d&d=mm", h.Sum(nil), size)
 }
-
-// UserEmail is a row in the user_email DB table.
-type UserEmail struct {
-	UID   UID
-	Email string
-}
