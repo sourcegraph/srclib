@@ -143,7 +143,11 @@ func getSourceUnitsWithFile(buildStore *buildstore.RepositoryStore, repo *Repo, 
 }
 
 func (c *APIListCmd) Execute(args []string) error {
-	c.File = filepath.Clean(c.File)
+	var err error
+	c.File, err = filepath.Abs(c.File)
+	if err != nil {
+		return err
+	}
 
 	repo, err := OpenRepo(filepath.Dir(c.File))
 	if err != nil {
@@ -212,7 +216,11 @@ func (c *APIListCmd) Execute(args []string) error {
 }
 
 func (c *APIDescribeCmd) Execute(args []string) error {
-	c.File = filepath.Clean(c.File)
+	var err error
+	c.File, err = filepath.Abs(c.File)
+	if err != nil {
+		return err
+	}
 
 	repo, err := OpenRepo(filepath.Dir(c.File))
 	if err != nil {
