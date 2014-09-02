@@ -102,6 +102,14 @@ func ensureBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
 	return nil
 }
 
+func flushCache(buildStore *buildstore.RepositoryStore, commitID string) {
+	path, err := buildstore.BuildDir(buildStore, commitID)
+	if err != nil {
+		return
+	}
+	os.RemoveAll(path)
+}
+
 // Get a list of all source units that contain the given file
 func getSourceUnitsWithFile(buildStore *buildstore.RepositoryStore, repo *Repo, filename string) ([]*unit.SourceUnit, error) {
 	filename = filepath.Clean(filename)
@@ -165,6 +173,7 @@ func (c *APIListCmd) Execute(args []string) error {
 	}
 
 	if err := ensureBuild(buildStore, repo); err != nil {
+		flushCache(buildStore, repo.CommitID)
 		return err
 	}
 
@@ -234,6 +243,7 @@ func (c *APIDescribeCmd) Execute(args []string) error {
 	}
 
 	if err := ensureBuild(buildStore, repo); err != nil {
+		flushCache(buildStore, repo.CommitID)
 		return err
 	}
 
