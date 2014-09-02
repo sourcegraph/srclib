@@ -90,6 +90,17 @@ func BuildDir(s *RepositoryStore, commitID string) (string, error) {
 	return filepath.Join(rootDataDir, s.CommitPath(commitID)), nil
 }
 
+func FlushCache(s *RepositoryStore, commitID string) error {
+	path, err := BuildDir(s, commitID)
+	if err != nil {
+		return err
+	}
+	if err := os.RemoveAll(path); err != nil {
+		return err
+	}
+	return nil
+}
+
 type BuildDataFileInfo struct {
 	CommitID string
 	Path     string

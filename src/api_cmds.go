@@ -102,20 +102,6 @@ func ensureBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
 	return nil
 }
 
-// flushCache is part of 'src api' because a user isn't expected to
-// remove their cache if a build fails, or inspect their cache for
-// debugging purposes.
-func flushCache(buildStore *buildstore.RepositoryStore, commitID string) {
-	path, err := buildstore.BuildDir(buildStore, commitID)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	if err := os.RemoveAll(path); err != nil {
-		log.Println(err)
-	}
-}
-
 // Get a list of all source units that contain the given file
 func getSourceUnitsWithFile(buildStore *buildstore.RepositoryStore, repo *Repo, filename string) ([]*unit.SourceUnit, error) {
 	filename = filepath.Clean(filename)
@@ -179,7 +165,9 @@ func (c *APIListCmd) Execute(args []string) error {
 	}
 
 	if err := ensureBuild(buildStore, repo); err != nil {
-		flushCache(buildStore, repo.CommitID)
+		if err := buildstore.FlushCache(buildStore, repo.CommitID); err != nil {
+			log.Println(err)
+		}
 		return err
 	}
 
@@ -249,7 +237,9 @@ func (c *APIDescribeCmd) Execute(args []string) error {
 	}
 
 	if err := ensureBuild(buildStore, repo); err != nil {
-		flushCache(buildStore, repo.CommitID)
+		if err := buildstore.FlushCache(buildStore, repo.CommitID); err != nil {
+			log.Println(err)
+		}
 		return err
 	}
 
