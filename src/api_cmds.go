@@ -165,6 +165,9 @@ func (c *APIListCmd) Execute(args []string) error {
 	}
 
 	if err := ensureBuild(buildStore, repo); err != nil {
+		if err := buildstore.FlushCache(buildStore, repo.CommitID); err != nil {
+			log.Println(err)
+		}
 		return err
 	}
 
@@ -234,6 +237,9 @@ func (c *APIDescribeCmd) Execute(args []string) error {
 	}
 
 	if err := ensureBuild(buildStore, repo); err != nil {
+		if err := buildstore.FlushCache(buildStore, repo.CommitID); err != nil {
+			log.Println(err)
+		}
 		return err
 	}
 
