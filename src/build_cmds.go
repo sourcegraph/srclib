@@ -40,7 +40,7 @@ The options are:
 
 	for _, uri := range fs.Args() {
 		build, _, err := apiclient.Builds.Create(
-			client.RepositorySpec{URI: uri, CommitID: *rev},
+			client.RepoSpec{URI: uri, CommitID: *rev},
 			&client.BuildCreateOptions{
 				Force:       *force,
 				BuildConfig: client.BuildConfig{Queue: *queue, Import: *import_, UseCache: *useCache, Priority: *priority},
