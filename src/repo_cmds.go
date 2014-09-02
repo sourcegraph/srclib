@@ -68,7 +68,7 @@ The options are:
 	}
 
 	for _, uri := range fs.Args() {
-		_, err := apiclient.Repositories.RefreshProfile(client.RepositorySpec{URI: uri})
+		_, err := apiclient.Repositories.RefreshProfile(client.RepoSpec{URI: uri})
 		if err != nil {
 			log.Fatalf("Error triggering a refresh of repository profile for %q: %s.", uri, err)
 		}
@@ -95,7 +95,7 @@ The options are:
 	}
 
 	for _, uri := range fs.Args() {
-		_, err := apiclient.Repositories.RefreshVCSData(client.RepositorySpec{URI: uri})
+		_, err := apiclient.Repositories.RefreshVCSData(client.RepoSpec{URI: uri})
 		if err != nil {
 			log.Fatalf("Error triggering a refresh of repository VCS data for %q: %s.", uri, err)
 		}
@@ -122,7 +122,7 @@ The options are:
 	}
 
 	for _, uri := range fs.Args() {
-		repoSpec := client.RepositorySpec{URI: uri}
+		repoSpec := client.RepoSpec{URI: uri}
 		repo, _, err := apiclient.Repositories.Get(repoSpec, &client.RepositoryGetOptions{ResolveRevision: true})
 		if err != nil {
 			log.Fatalf("Error resolving revision %q for repository %q: %s.", repoSpec.CommitID, repoSpec.URI, err)
