@@ -35,7 +35,10 @@ func ScanMulti(scanners []toolchain.Tool, opt Options, treeConfig map[string]int
 		run.Do(func() error {
 			units2, err := Scan(scanner, opt, treeConfig)
 			if err != nil {
-				cmd, _ := scanner.Command()
+				cmd, newErr := scanner.Command()
+				if newErr != nil {
+					return fmt.Errorf("scanner %v, cmd error: %s", newErr)
+				}
 				return fmt.Errorf("scanner %v: %s", cmd.Args, err)
 			}
 
