@@ -81,6 +81,15 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	_, err = c.AddCommand("install",
+		"install specific toolchains",
+		"Install specific toolchains (sourcegraph.com/sourcegraph/srclib-* toolchains).",
+		&toolchainInstallCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 type ToolchainPath string
@@ -283,6 +292,19 @@ var stdToolchains map[string]toolchainInfo = map[string]toolchainInfo{
 	"ruby":       {"Ruby (sourcegraph.com/sourcegraph/srclib-ruby)", installRubyToolchain},
 	"javascript": {"JavaScript (sourcegraph.com/sourcegraph/srclib-javascript)", installJavaScriptToolchain},
 }
+
+type ToolchainInstallCmd struct{}
+
+var toolchainInstallCmd ToolchainInstallCmd
+
+func (c *ToolchainInstallCmd) Execute(args []string) error {
+	// TODO(samer): Add Args to ToolchainInstallCmd instead?
+	if len(args) == 0 {
+		return errors.New("Recieved zero arguments.")
+	}
+	return installToolchains(args)
+}
+
 type ToolchainInstallStdCmd struct {
 	Skip []string `long:"skip" description:"skip installing matching toolchains (can be specified multiple times; e.g., --skip go --skip ruby)" value-name:"NAME"`
 }
