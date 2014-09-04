@@ -16,4 +16,4 @@ RUN mkdir -p /root/.srclib/sourcegraph.com/sourcegraph
 RUN ln -rs /srclib/src/sourcegraph.com/sourcegraph/srclib-go /root/.srclib/sourcegraph.com/sourcegraph/srclib-go
 RUN ln -rs /srclib/src/sourcegraph.com/sourcegraph/srclib-javascript /root/.srclib/sourcegraph.com/sourcegraph/srclib-javascript
 
-ENTRYPOINT /srclib/bin/src
+ENTRYPOINT ["/srclib/bin/src"]
