@@ -1,6 +1,8 @@
 package src
 
 import (
+	"bytes"
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -54,9 +56,11 @@ func (c *ToolCmd) Execute(args []string) error {
 		log.Fatal(err)
 	}
 
+	// HACK: Buffer stdout to work around https://github.com/docker/docker/issues/3631. Otherwise, lots of builds fail.
+	var out bytes.Buffer
 	cmd.Args = append(cmd.Args, c.Args.ToolArgs...)
 	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
+	cmd.Stdout = &out
 	cmd.Stdin = os.Stdin
 	if GlobalOpt.Verbose {
 		log.Printf("Running tool: %v", cmd.Args)
@@ -64,7 +68,7 @@ func (c *ToolCmd) Execute(args []string) error {
 	if err := cmd.Run(); err != nil {
 		log.Fatal(err)
 	}
-
+	fmt.Println(out.String())
 	return nil
 }
 
