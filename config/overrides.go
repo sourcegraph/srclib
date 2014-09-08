@@ -14,7 +14,7 @@ var overrides = map[repo.URI]*Repository{
 		Tree: Tree{
 			Config:            map[string]interface{}{"GOROOT": "."},
 			SkipDirs:          []string{"test", "misc", "doc", "lib", "include"},
-			PreConfigCommands: []string{"mkdir -p /src/.hg && printf '[trusted]\\nusers=root' > /src/.hg/hgrc && cd src && ./make.bash"},
+			PreConfigCommands: []string{"mkdir -p /src/.hg && printf '[trusted]\\nusers=root' > /src/.hg/hgrc && chown srclib /src/.hg/hgrc && cd src && ./make.bash"},
 		},
 	},
 	"github.com/joyent/node": {
