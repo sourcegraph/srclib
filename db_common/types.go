@@ -114,6 +114,12 @@ func (nt NullTime) String() string {
 	return "<nil>"
 }
 
+// Now returns a valid NullTime with the time set to now, in UTC and
+// rounded to the nearest millisecond. It does this so that JSON- and
+// SQL-serialization and deserialization yields the same time as passed
+// in. If the time is not UTC or has sub-millisecond accuracy, the time
+// retrieved from an SQL DB or JSON object might not be equal to the
+// original object due to rounding and automatic timezone conversion.
 func Now() NullTime {
 	return NullTime{Time: time.Now().In(time.UTC).Round(time.Millisecond), Valid: true}
 }
