@@ -55,8 +55,9 @@ func (r *GraphUnitRule) Prereqs() []string {
 }
 
 func (r *GraphUnitRule) Recipes() []string {
+	sourceUnitFile := filepath.Join(r.dataDir, plan.SourceUnitDataFilename(unit.SourceUnit{}, r.Unit))
 	return []string{
-		fmt.Sprintf("src tool %s %q %q < $^ | src internal normalize-graph-data 1> $@", r.opt.ToolchainExecOpt, r.Tool.Toolchain, r.Tool.Subcmd),
+		fmt.Sprintf("src tool %s %q %q < %s | src internal normalize-graph-data 1> $@", r.opt.ToolchainExecOpt, r.Tool.Toolchain, r.Tool.Subcmd, sourceUnitFile),
 	}
 }
 
