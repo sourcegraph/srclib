@@ -39,7 +39,7 @@ Then download and install `src`:
 go get -u -v sourcegraph.com/sourcegraph/srclib/cmd/src
 ```
 
-Next, you must install the language toolchains: `src toolchain install-std`. By default this installs the toolchains for Ruby, Go, and JavaScript. To skip installing toolchains you don't care about, use `--skip`, as in `src toolchain install-std --skip javascript --skip go`.
+Next, you must install the language toolchains: `src toolchain install-std`. By default this installs the toolchains for Ruby, Go, JavaScript, and Python. To skip installing toolchains you don't care about, use `--skip`, as in `src toolchain install-std --skip javascript --skip go`.
 
 Now, `src toolchain list` should show the toolchains you just installed.
 
