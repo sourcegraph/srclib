@@ -45,7 +45,7 @@ testdata/n/t.blame.json: testdata/n/t.unit.json f
 	src internal unit-blame --unit-data testdata/n/t.unit.json 1> $@
 
 testdata/n/t.graph.json: testdata/n/t.unit.json f
-	src tool  "tc" "t" < $^ | src internal normalize-graph-data 1> $@
+	src tool  "tc" "t" < $< | src internal normalize-graph-data 1> $@
 
 testdata/n/t.depresolve.json: testdata/n/t.unit.json
 	src tool  "tc" "t" < $^ 1> $@
