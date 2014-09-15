@@ -2,13 +2,14 @@ package src
 
 import (
 	"bytes"
-	"fmt"
+	"encoding/json"
 	"log"
 	"os"
 	"os/exec"
 	"strings"
 
 	"github.com/sqs/go-flags"
+
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
 )
 
@@ -51,25 +52,44 @@ func (c *ToolCmd) Execute(args []string) error {
 		cmder = tc
 	}
 
-	cmd, err := cmder.Command()
-	if err != nil {
-		log.Fatal(err)
-	}
+	// HACK: Buffer stdout to work around
+	// https://github.com/docker/docker/issues/3631. Otherwise, lots
+	// of builds fail. Also, if a lot of data is printed, the return
+	// code is 0, but JSON parsing fails, retry it up to 4 times until
+	// JSON parsing succeeds.
+	for tries := 4; ; tries-- {
+		cmd, err := cmder.Command()
+		if err != nil {
+			log.Fatal(err)
+		}
+		cmd.Args = append(cmd.Args, c.Args.ToolArgs...)
+		cmd.Stderr = os.Stderr
+		var out bytes.Buffer
+		cmd.Stdout = &out
+		cmd.Stdin = os.Stdin
+		if GlobalOpt.Verbose {
+			log.Printf("Running tool: %v", cmd.Args)
+		}
+		if err := cmd.Run(); err != nil {
+			log.Fatal(err)
+		}
 
-	// HACK: Buffer stdout to work around https://github.com/docker/docker/issues/3631. Otherwise, lots of builds fail.
-	var out bytes.Buffer
-	cmd.Args = append(cmd.Args, c.Args.ToolArgs...)
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = &out
-	cmd.Stdin = os.Stdin
-	if GlobalOpt.Verbose {
-		log.Printf("Running tool: %v", cmd.Args)
+		b := out.Bytes()
+
+		if tries > 0 {
+			// Try parsing (see HACK) above.
+			if len(b) > 2000 {
+				var o interface{}
+				if err := json.Unmarshal(b, &o); err != nil {
+					log.Printf("Suspect JSON output by %v (%d bytes, parse error %q); retrying %d more times. (This is a workaround for https://github.com/docker/docker/issues/3631.)", cmd.Args, len(b), err, tries)
+					continue // retry
+				}
+			}
+		}
+
+		os.Stdout.Write(b)
+		return nil
 	}
-	if err := cmd.Run(); err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(out.String())
-	return nil
 }
 
 type ToolName string
