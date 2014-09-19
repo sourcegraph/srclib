@@ -13,6 +13,7 @@ import (
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
+	"sourcegraph.com/sourcegraph/srclib/dep"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/grapher"
 	"sourcegraph.com/sourcegraph/srclib/plan"
@@ -46,6 +47,15 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	_, err = c.AddCommand("deps",
+		"list all dependencies for a commit hash and package name",
+		"Return a list of all dependencies that are in the current file.",
+		&apiDepsCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 type APICmd struct{}
@@ -65,8 +75,18 @@ type APIListCmd struct {
 	File string `long:"file" required:"yes" value-name:"FILE"`
 }
 
+type APIDepsCmd struct {
+	Commit      string `long:"commit" value-name:"COMMIT"`
+	PackageName string `long:"package" value-name:"PACKAGENAME"`
+
+	Args struct {
+		Dir Directory `name:"DIR" default:"." description:"root directory of target project"`
+	} `positional-args:"yes"`
+}
+
 var apiDescribeCmd APIDescribeCmd
 var apiListCmd APIListCmd
+var apiDepsCmd APIDepsCmd
 
 // Invokes the build process on the given repository
 func ensureBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
@@ -100,6 +120,15 @@ func ensureBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
 	}
 
 	return nil
+}
+
+func ensurePullAndBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
+	var err error
+	if err = pullCmd.Execute(nil); err != nil {
+		return err
+	}
+
+	return ensureBuild(buildStore, repo)
 }
 
 // Get a list of all source units that contain the given file
@@ -391,5 +420,70 @@ OuterLoop:
 	if err := json.NewEncoder(os.Stdout).Encode(resp); err != nil {
 		return err
 	}
+	return nil
+}
+
+func (c *APIDepsCmd) Execute(args []string) error {
+	var err error
+
+	if c.Commit != "" || c.PackageName != "" {
+		return fmt.Errorf("Specifying commit hash or package name not implemented yet.")
+	}
+
+	repo, err := OpenRepo(filepath.Dir(string(c.Args.Dir)))
+	if err != nil {
+		return err
+	}
+
+	if err := os.Chdir(repo.RootDir); err != nil {
+		return err
+	}
+
+	buildStore, err := buildstore.NewRepositoryStore(repo.RootDir)
+	if err != nil {
+		return err
+	}
+
+	if _, err := buildStore.Lstat(buildStore.CommitPath(repo.CommitID)); os.IsNotExist(err) {
+		return fmt.Errorf("No build data found. Try running `src config` first.")
+	}
+
+	var depSlice []*dep.Resolution
+	// TODO: Make DataTypeSuffix work with type of depSlice
+	depSuffix := buildstore.DataTypeSuffix([]*dep.ResolvedDep{})
+	depCache := make(map[*dep.Resolution]bool)
+	foundDepresolve := false
+	w := fs.WalkFS(buildStore.CommitPath(repo.CommitID), buildStore)
+	for w.Step() {
+		depfile := w.Path()
+		if strings.HasSuffix(depfile, depSuffix) {
+			foundDepresolve = true
+			var deps []*dep.Resolution
+			f, err := buildStore.Open(depfile)
+			if err != nil {
+				return err
+			}
+			defer f.Close()
+			if err := json.NewDecoder(f).Decode(&deps); err != nil {
+				return fmt.Errorf("%s: %s", depfile, err)
+			}
+			for _, d := range deps {
+				if _, ok := depCache[d]; !ok {
+					depCache[d] = true
+					depSlice = append(depSlice, d)
+				}
+			}
+		}
+	}
+
+	if foundDepresolve == false {
+		return fmt.Errorf("No dependency information found. Try running `src config` first.")
+	}
+
+	out, err := json.Marshal(depSlice)
+	if err != nil {
+		return err
+	}
+	log.Print(string(out))
 	return nil
 }
