@@ -2,6 +2,7 @@ package src
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -49,8 +50,8 @@ func init() {
 	}
 
 	_, err = c.AddCommand("deps",
-		"list all dependencies for a commit hash and package name",
-		"Return a list of all dependencies that are in the current file.",
+		"list all resolved and unresolved dependencies for a commit hash and package name",
+		"Return a list of all resolved and unresolved dependencies that are in the current repository.",
 		&apiDepsCmd,
 	)
 	if err != nil {
@@ -76,9 +77,6 @@ type APIListCmd struct {
 }
 
 type APIDepsCmd struct {
-	Commit      string `long:"commit" value-name:"COMMIT"`
-	PackageName string `long:"package" value-name:"PACKAGENAME"`
-
 	Args struct {
 		Dir Directory `name:"DIR" default:"." description:"root directory of target project"`
 	} `positional-args:"yes"`
@@ -123,8 +121,7 @@ func ensureBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
 }
 
 func ensurePullAndBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
-	var err error
-	if err = pullCmd.Execute(nil); err != nil {
+	if err := pullCmd.Execute(nil); err != nil {
 		return err
 	}
 
@@ -426,10 +423,6 @@ OuterLoop:
 func (c *APIDepsCmd) Execute(args []string) error {
 	var err error
 
-	if c.Commit != "" || c.PackageName != "" {
-		return fmt.Errorf("Specifying commit hash or package name not implemented yet.")
-	}
-
 	repo, err := OpenRepo(filepath.Dir(string(c.Args.Dir)))
 	if err != nil {
 		return err
@@ -445,13 +438,13 @@ func (c *APIDepsCmd) Execute(args []string) error {
 	}
 
 	if _, err := buildStore.Lstat(buildStore.CommitPath(repo.CommitID)); os.IsNotExist(err) {
-		return fmt.Errorf("No build data found. Try running `src config` first.")
+		return errors.New("No build data found. Try running `src config` first.")
 	}
 
 	var depSlice []*dep.Resolution
 	// TODO: Make DataTypeSuffix work with type of depSlice
 	depSuffix := buildstore.DataTypeSuffix([]*dep.ResolvedDep{})
-	depCache := make(map[*dep.Resolution]bool)
+	depCache := make(map[string]struct{})
 	foundDepresolve := false
 	w := fs.WalkFS(buildStore.CommitPath(repo.CommitID), buildStore)
 	for w.Step() {
@@ -468,8 +461,9 @@ func (c *APIDepsCmd) Execute(args []string) error {
 				return fmt.Errorf("%s: %s", depfile, err)
 			}
 			for _, d := range deps {
-				if _, ok := depCache[d]; !ok {
-					depCache[d] = true
+				key := d.KeyId()
+				if _, ok := depCache[key]; !ok {
+					depCache[key] = struct{}{}
 					depSlice = append(depSlice, d)
 				}
 			}
@@ -477,13 +471,8 @@ func (c *APIDepsCmd) Execute(args []string) error {
 	}
 
 	if foundDepresolve == false {
-		return fmt.Errorf("No dependency information found. Try running `src config` first.")
+		return errors.New("No dependency information found. Try running `src config` first.")
 	}
 
-	out, err := json.Marshal(depSlice)
-	if err != nil {
-		return err
-	}
-	log.Print(string(out))
-	return nil
+	return json.NewEncoder(os.Stdout).Encode(depSlice)
 }
