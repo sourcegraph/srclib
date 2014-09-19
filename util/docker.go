@@ -13,7 +13,7 @@ func NewDockerClient() (*docker.Client, error) {
 	dockerEndpoint := os.Getenv("DOCKER_HOST")
 	if dockerEndpoint == "" {
 		dockerEndpoint = "unix:///var/run/docker.sock"
-	} else if !strings.HasPrefix(dockerEndpoint, "http") {
+	} else if !strings.HasPrefix(dockerEndpoint, "http") && !strings.HasPrefix(dockerEndpoint, "tcp") {
 		dockerEndpoint = "http://" + dockerEndpoint
 	}
 	return docker.NewClient(dockerEndpoint)
