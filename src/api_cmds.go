@@ -50,9 +50,18 @@ func init() {
 	}
 
 	_, err = c.AddCommand("deps",
-		"list all resolved and unresolved dependencies for a commit hash and package name",
+		"list all resolved and unresolved dependencies",
 		"Return a list of all resolved and unresolved dependencies that are in the current repository.",
 		&apiDepsCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = c.AddCommand("units",
+		"list all source unit information",
+		"Return a list of all source units that are in the current repository.",
+		&apiUnitsCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -82,9 +91,16 @@ type APIDepsCmd struct {
 	} `positional-args:"yes"`
 }
 
+type APIUnitsCmd struct {
+	Args struct {
+		Dir Directory `name:"DIR" default:"." description:"root directory of target project"`
+	} `positional-args:"yes"`
+}
+
 var apiDescribeCmd APIDescribeCmd
 var apiListCmd APIListCmd
 var apiDepsCmd APIDepsCmd
+var apiUnitsCmd APIUnitsCmd
 
 // Invokes the build process on the given repository
 func ensureBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
@@ -475,4 +491,53 @@ func (c *APIDepsCmd) Execute(args []string) error {
 	}
 
 	return json.NewEncoder(os.Stdout).Encode(depSlice)
+}
+
+func (c *APIUnitsCmd) Execute(args []string) error {
+	var err error
+
+	repo, err := OpenRepo(filepath.Dir(string(c.Args.Dir)))
+	if err != nil {
+		return err
+	}
+
+	if err := os.Chdir(repo.RootDir); err != nil {
+		return err
+	}
+
+	buildStore, err := buildstore.NewRepositoryStore(repo.RootDir)
+	if err != nil {
+		return err
+	}
+
+	if _, err := buildStore.Lstat(buildStore.CommitPath(repo.CommitID)); os.IsNotExist(err) {
+		return errors.New("No build data found. Try running `src config` first.")
+	}
+
+	var unitSlice []unit.SourceUnit
+	unitSuffix := buildstore.DataTypeSuffix(unit.SourceUnit{})
+	foundUnit := false
+	w := fs.WalkFS(buildStore.CommitPath(repo.CommitID), buildStore)
+	for w.Step() {
+		unitFile := w.Path()
+		if strings.HasSuffix(unitFile, unitSuffix) {
+			var unit unit.SourceUnit
+			foundUnit = true
+			f, err := buildStore.Open(unitFile)
+			if err != nil {
+				return err
+			}
+			defer f.Close()
+			if err := json.NewDecoder(f).Decode(&unit); err != nil {
+				return fmt.Errorf("%s: %s", unitFile, err)
+			}
+			unitSlice = append(unitSlice, unit)
+		}
+	}
+
+	if foundUnit == false {
+		return errors.New("No source units found. Try running `src config` first.")
+	}
+
+	return json.NewEncoder(os.Stdout).Encode(unitSlice)
 }
