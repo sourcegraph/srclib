@@ -41,6 +41,9 @@ type Repository struct {
 	// CloneURL is the URL used to clone the repository from its original host.
 	CloneURL string `db:"clone_url"`
 
+	// If not empty, then CloneURL redirects to ActualCloneURL
+	ActualCloneURL string `db:"actual_clone_url"`
+
 	// HomepageURL is the URL to the repository's homepage, if any.
 	HomepageURL nnz.String `db:"homepage_url"`
 
