@@ -3,6 +3,9 @@ package repo
 import (
 	"database/sql/driver"
 	"fmt"
+	"net/url"
+
+	"strings"
 
 	"github.com/sourcegraph/go-nnz/nnz"
 	"sourcegraph.com/sourcegraph/srclib/person"
@@ -81,7 +84,22 @@ type Repository struct {
 
 // IsGitHubRepository returns true iff this repository is hosted on GitHub.
 func (r *Repository) IsGitHubRepository() bool {
-	return r.URI.IsGitHubRepository()
+
+	cloneURLStr := r.GetActualCloneURL()
+	cloneURL, err := url.Parse(cloneURLStr)
+	if err != nil {
+		return false
+	}
+
+	return strings.ToLower(cloneURL.Host) == "github.com"
+}
+
+// Returns the most direct URL used to clone the repository, following any redirects
+func (r *Repository) GetActualCloneURL() string {
+	if r.ActualCloneURL == "" {
+		return r.CloneURL
+	}
+	return r.ActualCloneURL
 }
 
 type VCS string
