@@ -34,6 +34,19 @@ var ErrForbidden = errors.New("repository is unavailable")
 // explicitly added (it will not be implicitly added via a Get call).
 var ErrNotPersisted = errors.New("repository is not persisted locally, but it might exist remotely (explicitly add it to check)")
 
+// ErrNotPersisted is an error indicating that repository cannot be created
+// without an explicit clone URL, because it has a non-standard URI. It implies
+// ErrNotPersisted.
+var ErrNonStandardURI = errors.New("cannot infer repository clone URL because repository host is not standard; try adding it explicitly")
+
+type ErrRedirect struct {
+	RedirectURI URI
+}
+
+func (e ErrRedirect) Error() string {
+	return fmt.Sprintf("the repository requested exists at another URI: %s", e.RedirectURI)
+}
+
 // IsNotPresent returns whether err is one of ErrNotExist, ErrNotPersisted, or
 // ErrRedirected.
 func IsNotPresent(err error) bool {
