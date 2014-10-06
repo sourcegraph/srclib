@@ -84,8 +84,11 @@ type Repository struct {
 
 // IsGitHubRepository returns true iff this repository is hosted on GitHub.
 func (r *Repository) IsGitHubRepository() bool {
-
 	cloneURLStr := r.GetActualCloneURL()
+	if cloneURLStr == "" {
+		return strings.HasPrefix(strings.ToLower(string(r.URI)), "github.com/")
+	}
+
 	cloneURL, err := url.Parse(cloneURLStr)
 	if err != nil {
 		return false
