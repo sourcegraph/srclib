@@ -45,7 +45,7 @@ type Repository struct {
 	CloneURL string `db:"clone_url"`
 
 	// If not empty, then CloneURL redirects to ActualCloneURL
-	ActualCloneURL string `db:"actual_clone_url"`
+	ActualCloneURL nnz.String `db:"actual_clone_url"`
 
 	// HomepageURL is the URL to the repository's homepage, if any.
 	HomepageURL nnz.String `db:"homepage_url"`
@@ -102,7 +102,7 @@ func (r *Repository) GetActualCloneURL() string {
 	if r.ActualCloneURL == "" {
 		return r.CloneURL
 	}
-	return r.ActualCloneURL
+	return string(r.ActualCloneURL)
 }
 
 type VCS string
