@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/sourcegraph/makex"
-	_ "sourcegraph.com/sourcegraph/srclib/authorship"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	_ "sourcegraph.com/sourcegraph/srclib/config"
 	_ "sourcegraph.com/sourcegraph/srclib/dep"
@@ -39,7 +38,7 @@ func TestCreateMakefile(t *testing.T) {
 	}
 
 	want := `
-all: testdata/n/t.blame.json testdata/n/t.graph.json testdata/n/t.depresolve.json testdata/n/t.authorship.json
+all: testdata/n/t.blame.json testdata/n/t.graph.json testdata/n/t.depresolve.json
 
 testdata/n/t.blame.json: testdata/n/t.unit.json f
 	src internal unit-blame --unit-data testdata/n/t.unit.json 1> $@
@@ -49,9 +48,6 @@ testdata/n/t.graph.json: testdata/n/t.unit.json f
 
 testdata/n/t.depresolve.json: testdata/n/t.unit.json
 	src tool  "tc" "t" < $^ 1> $@
-
-testdata/n/t.authorship.json: testdata/n/t.blame.json testdata/n/t.graph.json
-	src internal unit-authorship --blame-data testdata/n/t.blame.json --graph-data testdata/n/t.graph.json 1> $@
 
 .DELETE_ON_ERROR:
 `
