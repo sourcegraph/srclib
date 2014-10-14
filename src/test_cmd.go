@@ -14,7 +14,6 @@ import (
 
 	"github.com/aybabtme/color/brush"
 	"github.com/kr/fs"
-	"sourcegraph.com/sourcegraph/srclib/authorship"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/util"
 	"sourcegraph.com/sourcegraph/srclib/vcsutil"
@@ -190,7 +189,7 @@ func testTree(treeDir, expectedDir, actualDir string, exeMethod string, generate
 
 	if !checkInternalTargets {
 		// remove all internal target output files
-		internalOutputs := []interface{}{&authorship.SourceUnitOutput{}, &vcsutil.BlameOutput{}}
+		internalOutputs := []interface{}{&vcsutil.BlameOutput{}}
 		w := fs.Walk(outputDir)
 		for w.Step() {
 			if w.Err() != nil {
