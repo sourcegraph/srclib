@@ -53,6 +53,10 @@ type Resolution struct {
 
 // END Resolution OMIT
 
+func (r *Resolution) KeyId() string {
+	return r.Target.ToRepoCloneURL + r.Target.ToUnit + r.Target.ToUnitType + r.Target.ToVersionString + r.Target.ToRevSpec
+}
+
 // Command for dep resolution has no options.
 type Command struct{}
 
