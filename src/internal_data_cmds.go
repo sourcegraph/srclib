@@ -29,7 +29,10 @@ func init() {
 	}
 }
 
-type NormalizeGraphDataCmd struct{}
+type NormalizeGraphDataCmd struct {
+	UnitType string `long:"unit-type" description:"source unit type (e.g., GoPackage)"`
+	Dir      string `long:"dir" description:"directory of source unit (SourceUnit.Dir field)"`
+}
 
 var normalizeGraphDataCmd NormalizeGraphDataCmd
 
@@ -41,7 +44,7 @@ func (c *NormalizeGraphDataCmd) Execute(args []string) error {
 		return err
 	}
 
-	if err := grapher.NormalizeData(o); err != nil {
+	if err := grapher.NormalizeData(c.UnitType, c.Dir, o); err != nil {
 		return err
 	}
 

@@ -1,7 +1,6 @@
 package grapher
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -31,30 +30,6 @@ type Output struct {
 // END Output OMIT
 
 // TODO(sqs): add grapher validation of output
-
-// Graph uses the registered grapher (if any) to graph the source unit (whose repository is cloned to
-// dir).
-func Graph(dir string, u *unit.SourceUnit, c *config.Repository) (*Output, error) {
-	g, registered := Graphers[ptrTo(u)]
-	if !registered {
-		return nil, fmt.Errorf("no grapher registered for source unit %T", u)
-	}
-
-	o, err := g.Graph(dir, u, c)
-	if err != nil {
-		return nil, err
-	}
-
-	// If the grapher is known to output Unicode character offsets instead of
-	// byte offsets, then convert all offsets to byte offsets.
-	//
-	// TODO(sqs): handle this less hackily
-	if u.Type != "GoPackage" {
-		ensureOffsetsAreByteOffsets(dir, o)
-	}
-
-	return sortedOutput(o), nil
-}
 
 func ensureOffsetsAreByteOffsets(dir string, output *Output) {
 	fset := fileset.NewFileSet()
@@ -93,6 +68,10 @@ func ensureOffsetsAreByteOffsets(dir string, output *Output) {
 			if *offset == 0 {
 				continue
 			}
+			before, after := *offset, f.ByteOffsetOfRune(*offset)
+			if before != after {
+				log.Printf("Changed pos %d to %d in %s", before, after, filename)
+			}
 			*offset = f.ByteOffsetOfRune(*offset)
 		}
 	}
@@ -115,12 +94,16 @@ func sortedOutput(o *Output) *Output {
 	return o
 }
 
-// NormalizeData sorts data.
-func NormalizeData(o *Output) error {
+// NormalizeData sorts data and performs other postprocessing.
+func NormalizeData(unitType, dir string, o *Output) error {
 	for _, ref := range o.Refs {
 		if ref.DefRepo != "" {
 			ref.DefRepo = repo.MakeURI(string(ref.DefRepo))
 		}
+	}
+
+	if unitType != "GoPackage" {
+		ensureOffsetsAreByteOffsets(dir, o)
 	}
 
 	sortedOutput(o)
