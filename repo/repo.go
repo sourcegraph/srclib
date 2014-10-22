@@ -3,6 +3,9 @@ package repo
 import (
 	"database/sql/driver"
 	"fmt"
+	"net/url"
+
+	"strings"
 
 	"github.com/sourcegraph/go-nnz/nnz"
 	"sourcegraph.com/sourcegraph/srclib/person"
@@ -41,6 +44,9 @@ type Repository struct {
 	// CloneURL is the URL used to clone the repository from its original host.
 	CloneURL string `db:"clone_url"`
 
+	// If not empty, then CloneURL redirects to ActualCloneURL
+	ActualCloneURL nnz.String `db:"actual_clone_url"`
+
 	// HomepageURL is the URL to the repository's homepage, if any.
 	HomepageURL nnz.String `db:"homepage_url"`
 
@@ -78,7 +84,25 @@ type Repository struct {
 
 // IsGitHubRepository returns true iff this repository is hosted on GitHub.
 func (r *Repository) IsGitHubRepository() bool {
-	return r.URI.IsGitHubRepository()
+	cloneURLStr := r.GetActualCloneURL()
+	if cloneURLStr == "" {
+		return strings.HasPrefix(strings.ToLower(string(r.URI)), "github.com/")
+	}
+
+	cloneURL, err := url.Parse(cloneURLStr)
+	if err != nil {
+		return false
+	}
+
+	return strings.ToLower(cloneURL.Host) == "github.com"
+}
+
+// Returns the most direct URL used to clone the repository, following any redirects
+func (r *Repository) GetActualCloneURL() string {
+	if r.ActualCloneURL == "" {
+		return r.CloneURL
+	}
+	return string(r.ActualCloneURL)
 }
 
 type VCS string

@@ -6,6 +6,12 @@ import (
 )
 
 var overrides = map[repo.URI]*Repository{
+	"code.google.com/p/rsc": {
+		URI: "code.google.com/p/rsc",
+		Tree: Tree{
+			SkipDirs: []string{"cmd/numbers", "cc"},
+		},
+	},
 	"github.com/emicklei/go-restful": {
 		URI: "github.com/emicklei/go-restful",
 		Tree: Tree{

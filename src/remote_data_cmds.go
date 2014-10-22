@@ -8,6 +8,7 @@ import (
 
 	"code.google.com/p/rog-go/parallel"
 	"github.com/sourcegraph/rwvfs"
+	"sourcegraph.com/sourcegraph/go-sourcegraph/router"
 	client "sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 )
@@ -34,6 +35,7 @@ func init() {
 
 type PullCmd struct {
 	List bool `short:"l" long:"list" description:"only list files that exist on remote; don't fetch"`
+	URLs bool `long:"urls" description:"show URLs to build data files"`
 }
 
 var pullCmd PullCmd
@@ -48,14 +50,12 @@ func (c *PullCmd) Execute(args []string) error {
 		log.Printf("Listing remote build files for repository %q commit %q...", repo.URI(), repo.CommitID)
 	}
 
-	remoteFiles, resp, err := apiclient.BuildData.List(
-		client.RepoRevSpec{
-			RepoSpec: client.RepoSpec{URI: string(repo.URI())},
-			Rev:      repo.CommitID,
-			CommitID: repo.CommitID,
-		},
-		nil,
-	)
+	rr := client.RepoRevSpec{
+		RepoSpec: client.RepoSpec{URI: string(repo.URI())},
+		Rev:      repo.CommitID,
+		CommitID: repo.CommitID,
+	}
+	remoteFiles, resp, err := apiclient.BuildData.List(rr, nil)
 	if err != nil {
 		if hresp, ok := resp.(*client.HTTPResponse); hresp != nil && ok && hresp.StatusCode == http.StatusNotFound {
 			log.Println("No remote build files found.")
@@ -68,7 +68,15 @@ func (c *PullCmd) Execute(args []string) error {
 	if c.List {
 		log.Printf("# Remote build files for repository %q commit %s:", repo.URI(), repo.CommitID)
 		for _, file := range remoteFiles {
-			fmt.Println(file.Path)
+			fmt.Print(file.Path)
+			if c.URLs {
+				bdspec := client.BuildDataFileSpec{RepoRev: rr, Path: file.Path}
+				u := router.URITo(router.RepositoryBuildDataEntry, router.MapToArray(bdspec.RouteVars())...)
+				u.Host = apiclient.BaseURL.Host
+				u.Scheme = apiclient.BaseURL.Scheme
+				fmt.Print(" ", u)
+			}
+			fmt.Println()
 		}
 		return nil
 	}
