@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/sourcegraph/go-blame/blame"
@@ -22,6 +23,15 @@ var blameIgnores = []string{
 	"third-party",
 }
 
+func ignoreFile(filename string) bool {
+	for _, ig := range blameIgnores {
+		if strings.Contains(filename, ig) {
+			return true
+		}
+	}
+	return false
+}
+
 func BlameRepository(dir string, commitID string) (*BlameOutput, error) {
 	blameOutput := &BlameOutput{}
 	var err error
@@ -34,6 +44,10 @@ func BlameFiles(dir string, files []string, commitID string) (*BlameOutput, erro
 	commitMap := make(map[string]blame.Commit)
 
 	for _, file := range files {
+		if ignoreFile(file) {
+			continue
+		}
+
 		fi, err := os.Stat(file)
 		if err != nil {
 			return nil, err
