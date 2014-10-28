@@ -18,7 +18,12 @@ type Repo struct {
 	CloneURL string // CloneURL of repo.
 }
 
-func (c *Repo) URI() repo.URI { return repo.MakeURI(c.CloneURL) }
+func (c *Repo) URI() repo.URI {
+	if strings.Contains(c.CloneURL, "github.com/sourcegraph/sourcegraph") {
+		return "sourcegraph.com/sourcegraph/sourcegraph"
+	}
+	return repo.MakeURI(c.CloneURL)
+}
 
 func OpenRepo(dir string) (*Repo, error) {
 	if fi, err := os.Stat(dir); err != nil || !fi.Mode().IsDir() {
