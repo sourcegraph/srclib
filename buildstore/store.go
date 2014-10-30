@@ -47,7 +47,7 @@ func (s *MultiStore) RepositoryStore(repoURI repo.URI) (*RepositoryStore, error)
 }
 
 type RepositoryStore struct {
-	walkableRWVFS
+	rwvfs.WalkableFileSystem
 }
 
 func newRepositoryStore(fs rwvfs.FileSystem) *RepositoryStore {
@@ -132,7 +132,7 @@ func (s *RepositoryStore) ListCommits() ([]string, error) {
 
 func (s *RepositoryStore) DataFiles(path string) ([]*BuildDataFileInfo, error) {
 	files := []*BuildDataFileInfo{}
-	walker := fs.WalkFS(path, s.walkableRWVFS)
+	walker := fs.WalkFS(path, s)
 	for walker.Step() {
 		fi := walker.Stat()
 		if fi == nil {
