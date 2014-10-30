@@ -43,15 +43,11 @@ func (s *MultiStore) RepositoryStore(repoURI repo.URI) (*RepositoryStore, error)
 		}
 	}
 
-	return newRepositoryStore(walkableRWVFS{rwvfs.Sub(s.walkableRWVFS, path)}), nil
+	return &RepositoryStore{walkableRWVFS{rwvfs.Sub(s.walkableRWVFS, path)}}, nil
 }
 
 type RepositoryStore struct {
 	rwvfs.WalkableFileSystem
-}
-
-func newRepositoryStore(fs rwvfs.FileSystem) *RepositoryStore {
-	return &RepositoryStore{walkableRWVFS{fs}}
 }
 
 func NewRepositoryStore(repoDir string) (*RepositoryStore, error) {
@@ -65,7 +61,7 @@ func NewRepositoryStore(repoDir string) (*RepositoryStore, error) {
 		return nil, err
 	}
 
-	s := newRepositoryStore(walkableRWVFS{rwvfs.OS(storeDir)})
+	s := &RepositoryStore{walkableRWVFS{rwvfs.OS(storeDir)}}
 
 	localDirs[s] = storeDir
 
