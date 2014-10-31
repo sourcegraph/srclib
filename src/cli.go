@@ -3,6 +3,7 @@ package src
 import (
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 
 	"github.com/sourcegraph/httpcache"
@@ -24,11 +25,21 @@ func init() {
 	CLI.AddGroup("Global options", "", &GlobalOpt)
 }
 
-// TODO(sqs): add base URL flag for apiclient
 var (
 	httpClient = http.Client{Transport: httpcache.NewTransport(diskcache.New("/tmp/srclib-cache"))}
 	apiclient  = client.NewClient(&httpClient)
 )
+
+func init() {
+	// Set the API client's base URL from the SRC_ENDPOINT env var, if set.
+	if urlStr := os.Getenv("SRC_ENDPOINT"); urlStr != "" {
+		u, err := url.Parse(urlStr)
+		if err != nil {
+			log.Fatal(err)
+		}
+		apiclient.BaseURL = u
+	}
+}
 
 var (
 	absDir string
