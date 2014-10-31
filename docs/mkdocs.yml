@@ -23,7 +23,7 @@ pages:
 #- ['plugins/creatingaplugin.md', 'Editor Plugins', 'Creating a Plugin']
 
 # Language Toolchains
-#- ['toolchains/python.md', 'Language Toolchains', 'Python']
+- ['toolchains/python.md', 'Language Toolchains', 'Python']
 - ['toolchains/go.md', 'Language Toolchains', 'Go']
 - ['toolchains/ruby.md', 'Language Toolchains', 'Ruby']
 - ['toolchains/javascript.md', 'Language Toolchains', 'JavaScript']
