@@ -242,16 +242,20 @@ func checkResults(output bytes.Buffer, treeDir, actualDir, expectedDir string) e
 
 // TODO(beyang): should have TestCmd use this in checkResults to give more helpful output
 type DiffCmd struct {
+	Args struct {
+		ExpFile string `name:"expfile" description:"expected file"`
+		ActFile string `name:"actfile" description:"actual file"`
+	} `positional-args:"yes"`
 }
 
 var diffCmd DiffCmd
 
 func (c *DiffCmd) Execute(args []string) error {
-	if len(args) != 2 {
-		return fmt.Errorf("incorrect number of arguments (found %d, wanted 2)", len(args))
+	if len(args) > 0 {
+		return fmt.Errorf("too many arguments")
 	}
 
-	expFile, actFile := args[0], args[1]
+	expFile, actFile := c.Args.ExpFile, c.Args.ActFile
 	if !(strings.HasSuffix(expFile, ".graph.json") && strings.HasSuffix(actFile, ".graph.json")) {
 		return fmt.Errorf("unsupported file formats; currently this tool only supports .graph.json files; for other files, fallback to the regular diff")
 	}
