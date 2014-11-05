@@ -2,6 +2,7 @@ package src
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -10,11 +11,14 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"reflect"
 	"strings"
 
 	"github.com/aybabtme/color/brush"
 	"github.com/kr/fs"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
+	"sourcegraph.com/sourcegraph/srclib/graph"
+	"sourcegraph.com/sourcegraph/srclib/grapher"
 	"sourcegraph.com/sourcegraph/srclib/util"
 	"sourcegraph.com/sourcegraph/srclib/vcsutil"
 )
@@ -54,6 +58,11 @@ And the actual test output is written to:
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	_, err = CLI.AddCommand("diff",
+		"display semantic diff of two output files",
+		"Displays easier-to-read diff of two srclib output files. Intended for debugging use when developing srclib toolchains",
+		&diffCmd)
 }
 
 type TestCmd struct {
@@ -229,4 +238,83 @@ func checkResults(output bytes.Buffer, treeDir, actualDir, expectedDir string) e
 		fmt.Println(brush.Green(treeName + " PASS").String())
 	}
 	return nil
+}
+
+// TODO(beyang): should have TestCmd use this in checkResults to give more helpful output
+type DiffCmd struct {
+}
+
+var diffCmd DiffCmd
+
+func (c *DiffCmd) Execute(args []string) error {
+	if len(args) != 2 {
+		return fmt.Errorf("incorrect number of arguments (found %d, wanted 2)", len(args))
+	}
+
+	expFile, actFile := args[0], args[1]
+	if !(strings.HasSuffix(expFile, ".graph.json") && strings.HasSuffix(actFile, ".graph.json")) {
+		return fmt.Errorf("unsupported file formats; currently this tool only supports .graph.json files; for other files, fallback to the regular diff")
+	}
+
+	expFile_, err := os.Open(expFile)
+	if err != nil {
+		return err
+	}
+	defer expFile_.Close()
+	actFile_, err := os.Open(actFile)
+	if err != nil {
+		return err
+	}
+	defer actFile_.Close()
+
+	var expOutput, actOutput grapher.Output
+	err = json.NewDecoder(expFile_).Decode(&expOutput)
+	if err != nil {
+		return err
+	}
+	err = json.NewDecoder(actFile_).Decode(&actOutput)
+	if err != nil {
+		return err
+	}
+
+	if reflect.DeepEqual(expOutput, actOutput) {
+		return nil
+	}
+
+	expDefs, actDefs := make(map[graph.DefKey]*graph.Def), make(map[graph.DefKey]*graph.Def)
+	for _, def := range expOutput.Defs {
+		expDefs[def.DefKey] = def
+	}
+	for _, def := range actOutput.Defs {
+		actDefs[def.DefKey] = def
+	}
+
+	var expOnlyDefs, actOnlyDefs, differingDefs []graph.DefKey
+	for defKey, expDef := range expDefs {
+		if actDef, exists := actDefs[defKey]; !exists {
+			expOnlyDefs = append(expOnlyDefs, defKey)
+		} else if !reflect.DeepEqual(expDef, actDef) {
+			differingDefs = append(differingDefs, defKey)
+		}
+	}
+	for defKey, _ := range actDefs {
+		if _, exists := expDefs[defKey]; !exists {
+			actOnlyDefs = append(actOnlyDefs, defKey)
+		}
+	}
+
+	fmt.Println("The following defs were missing:")
+	for _, defKey := range expOnlyDefs {
+		fmt.Printf("  %v\n", defKey)
+	}
+	fmt.Println("\nThe following defs were unexpected:")
+	for _, defKey := range actOnlyDefs {
+		fmt.Printf("  %v\n", defKey)
+	}
+	fmt.Println("\nThe following defs differed:")
+	for _, defKey := range differingDefs {
+		fmt.Println("  %v\n", defKey)
+	}
+
+	return fmt.Errorf("expected and actual output differ")
 }
