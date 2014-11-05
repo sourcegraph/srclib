@@ -49,8 +49,8 @@ Now, `src toolchain list` should show the toolchains you just installed.
 
 If you are interested in using the editor plugins that we have available, check
 out the Editor Plugins section of the documentation. Currently,
-[Emacs](plugins/emacs.md) and [Sublime Text](plugins/sublimetext.md) are
-supported, and support for more editors is coming soon.
+[Emacs](plugins/emacs.md) [Sublime Text](plugins/sublimetext.md) and
+[Atom](plugins/atom.md) are supported, and support for more editors is coming soon.
 
 ### Build on srclib
 
