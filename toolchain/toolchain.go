@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/fsouza/go-dockerclient"
+
 	"sourcegraph.com/sourcegraph/srclib/util"
 )
 
