@@ -2,6 +2,7 @@ package src
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -112,10 +113,11 @@ func fetchFile(repoStore *buildstore.RepositoryStore, repoURI string, fi *builds
 		log.Printf("Fetching %s (%.1fkb)", path, kb)
 	}
 
-	data, _, err := apiclient.BuildData.Get(fileSpec)
+	remoteFile, _, err := apiclient.BuildData.Get(fileSpec)
 	if err != nil {
 		return err
 	}
+	defer remoteFile.Close()
 
 	if GlobalOpt.Verbose {
 		log.Printf("Fetched %s (%.1fkb)", path, kb)
@@ -132,8 +134,7 @@ func fetchFile(repoStore *buildstore.RepositoryStore, repoURI string, fi *builds
 	}
 	defer f.Close()
 
-	_, err = f.Write(data)
-	if err != nil {
+	if _, err := io.Copy(f, remoteFile); err != nil {
 		return err
 	}
 
