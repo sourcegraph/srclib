@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"math"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -132,4 +133,22 @@ func readJSONFile(file string, v interface{}) error {
 	}
 	defer f.Close()
 	return json.NewDecoder(f).Decode(v)
+}
+
+func bytesString(s uint64) string {
+	sizes := []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
+	if s < 10 {
+		return fmt.Sprintf("%dB", s)
+	}
+	logn := func(n, b float64) float64 {
+		return math.Log(n) / math.Log(b)
+	}
+	e := math.Floor(logn(float64(s), 1000))
+	suffix := sizes[int(e)]
+	val := math.Floor(float64(s)/math.Pow(1000, math.Floor(e))*10+0.5) / 10
+	f := "%.0f"
+	if val < 10 {
+		f = "%.1f"
+	}
+	return fmt.Sprintf(f+"%s", val, suffix)
 }

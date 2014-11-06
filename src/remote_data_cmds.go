@@ -68,15 +68,14 @@ func (c *PullCmd) Execute(args []string) error {
 	if c.List {
 		log.Printf("# Remote build files for repository %q commit %s:", repo.URI(), repo.CommitID)
 		for _, file := range remoteFiles {
-			fmt.Print(file.Path)
+			fmt.Printf("%7s   %s   %s\n", bytesString(uint64(file.Size)), file.ModTime, file.Path)
 			if c.URLs {
 				bdspec := client.BuildDataFileSpec{RepoRev: rr, Path: file.Path}
 				u := router.URITo(router.RepositoryBuildDataEntry, router.MapToArray(bdspec.RouteVars())...)
 				u.Host = apiclient.BaseURL.Host
 				u.Scheme = apiclient.BaseURL.Scheme
-				fmt.Print(" ", u)
+				fmt.Println(" @", u)
 			}
-			fmt.Println()
 		}
 		return nil
 	}
