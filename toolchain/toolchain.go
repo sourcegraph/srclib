@@ -11,8 +11,6 @@ import (
 	"strings"
 
 	"sourcegraph.com/sourcegraph/srclib/util"
-
-	"github.com/fsouza/go-dockerclient"
 )
 
 // Info describes a toolchain.
@@ -219,6 +217,6 @@ func (t *dockerToolchain) Command() (*exec.Cmd, error) {
 	// TODO(sqs): once all the toolchains have a "USER srclib" directive, add:
 	//   "--user", "srclib"
 	// to the run options below.
-	cmd := exec.Command("docker", "run", "-i", "--volume="+t.hostVolumeDir+":/src:ro", t.imageName)
+	cmd := exec.Command("docker", "run", "--memory=4g", "-i", "--volume="+t.hostVolumeDir+":/src:ro", t.imageName)
 	return cmd, nil
 }
