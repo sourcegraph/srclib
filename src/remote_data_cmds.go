@@ -113,7 +113,11 @@ func fetchFile(repoStore *buildstore.RepositoryStore, repoURI string, fi *builds
 		log.Printf("Fetching %s (%.1fkb)", path, kb)
 	}
 
-	remoteFile, _, err := apiclient.BuildData.Get(fileSpec)
+	// Use uncached API client because the .srclib-cache already
+	// caches it, and we want to be able to stream large files.
+	apiclientUncached := client.NewClient(nil)
+	apiclientUncached.BaseURL = apiclient.BaseURL
+	remoteFile, _, err := apiclientUncached.BuildData.Get(fileSpec)
 	if err != nil {
 		return err
 	}
