@@ -56,6 +56,11 @@ type Tree struct {
 	// not processed further.
 	SkipDirs []string `json:",omitempty"`
 
+	// SkipUnits is a list of source units that are skipped. That is,
+	// any scanned source units whose name and type exactly matches a
+	// name and type pair in SkipUnits is skipped.
+	SkipUnits []struct{ Name, Type string } `json:",omitempty"`
+
 	// TODO(sqs): Add some type of field that lets the Srcfile and the scanners
 	// have input into which tools get used during the execution phase. Right
 	// now, we're going to try just using the system defaults (srclib-*) and
