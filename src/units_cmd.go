@@ -90,6 +90,17 @@ func scanUnitsIntoConfig(cfg *config.Repository, configOpt config.Options, execO
 			continue
 		}
 
+		skip := false
+		for _, skipUnit := range cfg.SkipUnits {
+			if u.Name == skipUnit.Name && u.Type == skipUnit.Type {
+				skip = true
+				break
+			}
+		}
+		if skip {
+			continue
+		}
+
 		cfg.SourceUnits = append(cfg.SourceUnits, u)
 	}
 
