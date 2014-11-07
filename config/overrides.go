@@ -6,6 +6,16 @@ import (
 )
 
 var overrides = map[repo.URI]*Repository{
+	"sourcegraph.com/sourcegraph/sourcegraph": {
+		URI: "sourcegraph.com/sourcegraph/sourcegraph",
+		Tree: Tree{
+			SkipDirs: []string{"app/node_modules", "app/bower_components"},
+			SkipUnits: []struct{ Name, Type string }{
+				{Name: ".", Type: "ruby"},
+				{Name: "app", Type: "CommonJSPackage"},
+			},
+		},
+	},
 	"code.google.com/p/rsc": {
 		URI: "code.google.com/p/rsc",
 		Tree: Tree{
