@@ -7,6 +7,7 @@ import (
 	"regexp"
 
 	"github.com/jmoiron/sqlx/types"
+	"github.com/sourcegraph/go-nnz/nnz"
 	"sourcegraph.com/sourcegraph/srclib/repo"
 )
 
@@ -107,6 +108,9 @@ type Def struct {
 	// Test is whether this def is defined in test code (as opposed to main
 	// code). For example, definitions in Go *_test.go files have Test = true.
 	Test bool `json:",omitempty"`
+
+	// Private is whether this definition is private, i.e., if it came from a private repository.
+	Private nnz.Bool
 
 	// Data contains additional language- and toolchain-specific information
 	// about the def. Data is used to construct function signatures,
