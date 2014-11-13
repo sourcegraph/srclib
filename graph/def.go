@@ -5,14 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
-	"strconv"
 
 	"github.com/jmoiron/sqlx/types"
 	"sourcegraph.com/sourcegraph/srclib/repo"
 )
 
 type (
-	SID      int64
 	DefPath  string
 	TreePath string
 )
@@ -72,12 +70,6 @@ func (s DefKey) String() string {
 
 // START Def OMIT
 type Def struct {
-	// SID is a unique, sequential ID for a def. It is regenerated each time
-	// the def is emitted by the grapher and saved to the database. The SID
-	// is used as an optimization (e.g., joins are faster on SID than on
-	// DefKey).
-	SID SID `db:"sid" json:",omitempty"`
-
 	// DefKey is the natural unique key for a def. It is stable
 	// (subsequent runs of a grapher will emit the same defs with the same
 	// DefKeys).
@@ -207,18 +199,6 @@ type Propagate struct {
 
 // SQL
 
-func (x SID) Value() (driver.Value, error) {
-	return int64(x), nil
-}
-
-func (x *SID) Scan(v interface{}) error {
-	if data, ok := v.(int64); ok {
-		*x = SID(data)
-		return nil
-	}
-	return fmt.Errorf("%T.Scan failed: %v", x, v)
-}
-
 func (x DefPath) Value() (driver.Value, error) {
 	return string(x), nil
 }
@@ -275,23 +255,4 @@ func (defs Defs) KeySet() (keys map[DefKey]struct{}, err error) {
 		keys[def.DefKey] = struct{}{}
 	}
 	return keys, nil
-}
-
-func (defs Defs) SIDs() (ids []SID) {
-	ids = make([]SID, len(defs))
-	for i, def := range defs {
-		ids[i] = def.SID
-	}
-	return
-}
-
-func ParseSIDs(sidstrs []string) (sids []SID) {
-	sids = make([]SID, len(sidstrs))
-	for i, sidstr := range sidstrs {
-		sid, err := strconv.Atoi(sidstr)
-		if err == nil {
-			sids[i] = SID(sid)
-		}
-	}
-	return
 }
