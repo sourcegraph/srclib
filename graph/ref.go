@@ -62,7 +62,7 @@ type Ref struct {
 
 	// Private is whether this reference is private, i.e., if it came from a private repository. Note that this means
 	// the the repository that contains the reference is private, NOT the repository to which the reference points.
-	Private nnz.Bool
+	Private nnz.Bool `json:",omitempty"`
 
 	File  string
 	Start int
