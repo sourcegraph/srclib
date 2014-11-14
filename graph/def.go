@@ -118,7 +118,7 @@ type Def struct {
 	Test bool `json:",omitempty"`
 
 	// Private is whether this definition is private, i.e., if it came from a private repository.
-	Private nnz.Bool
+	Private nnz.Bool `json:",omitempty"`
 
 	// Data contains additional language- and toolchain-specific information
 	// about the def. Data is used to construct function signatures,
