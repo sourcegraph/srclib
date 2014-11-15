@@ -9,6 +9,7 @@ import (
 	"github.com/sourcegraph/httpcache"
 	"github.com/sourcegraph/httpcache/diskcache"
 	"github.com/sqs/go-flags"
+	"sourcegraph.com/sourcegraph/go-sourcegraph/auth"
 	client "sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"sourcegraph.com/sourcegraph/srclib/task2"
 )
@@ -26,11 +27,22 @@ func init() {
 }
 
 var (
-	httpClient = http.Client{Transport: httpcache.NewTransport(diskcache.New("/tmp/srclib-cache"))}
-	apiclient  = client.NewClient(&httpClient)
+	httpClient http.Client
+	apiclient  *client.Client
 )
 
 func init() {
+	// Initialize API client, setting auth data from SRC_USER_ID and SRC_USER_KEY if those env vars are set.
+	unauthedTransport := httpcache.NewTransport(diskcache.New("/tmp/srclib-cache"))
+	uid, uKey := os.Getenv("SRC_USER_ID"), os.Getenv("SRC_USER_KEY")
+	if uid == "" {
+		httpClient = http.Client{Transport: unauthedTransport}
+	} else {
+		authedTransport := &auth.BasicAuthTransport{Username: uid, Password: uKey, Transport: unauthedTransport}
+		httpClient = http.Client{Transport: authedTransport}
+	}
+	apiclient = client.NewClient(&httpClient)
+
 	// Set the API client's base URL from the SRC_ENDPOINT env var, if set.
 	if urlStr := os.Getenv("SRC_ENDPOINT"); urlStr != "" {
 		u, err := url.Parse(urlStr)
