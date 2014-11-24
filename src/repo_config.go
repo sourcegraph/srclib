@@ -66,7 +66,7 @@ func resolveWorkingTreeRevision(vcsType string, dir string) (string, error) {
 	case "git":
 		cmd = exec.Command("git", "rev-parse", "HEAD")
 	case "hg":
-		cmd = exec.Command("hg", "--config", "trusted.users=root", "identify", "--debug", "-i", "--rev=tip")
+		cmd = exec.Command("hg", "--config", "trusted.users=root", "identify", "--debug", "-i")
 	default:
 		return "", fmt.Errorf("unknown vcs type: %q", vcsType)
 	}
