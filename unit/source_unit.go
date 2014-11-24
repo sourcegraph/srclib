@@ -38,7 +38,8 @@ type SourceUnit struct {
 	// TODO(sqs): implement this in the Makefiles
 	Globs []string
 
-	// Files is all of the files that make up this source unit.
+	// Files is all of the files that make up this source unit. Filepaths should
+	// be relative to the repository root.
 	Files []string
 
 	// Dir is the root directory of this source unit. It is optional and maybe
