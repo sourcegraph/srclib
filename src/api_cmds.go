@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -312,6 +313,7 @@ func (c *APIDescribeCmd) Execute(args []string) error {
 
 	// Find the ref(s) at the character position.
 	var ref *graph.Ref
+	var nearbyRefs []*graph.Ref // Find nearby refs to help with debugging.
 OuterLoop:
 	for _, u := range units {
 		var g grapher.Output
@@ -325,15 +327,19 @@ OuterLoop:
 			return fmt.Errorf("%s: %s", graphFile, err)
 		}
 		for _, ref2 := range g.Refs {
-			if c.File == ref2.File && c.StartByte >= ref2.Start && c.StartByte <= ref2.End {
-				ref = ref2
-				if ref.DefUnit == "" {
-					ref.DefUnit = u.Name
+			if c.File == ref2.File {
+				if c.StartByte >= ref2.Start && c.StartByte <= ref2.End {
+					ref = ref2
+					if ref.DefUnit == "" {
+						ref.DefUnit = u.Name
+					}
+					if ref.DefUnitType == "" {
+						ref.DefUnitType = u.Type
+					}
+					break OuterLoop
+				} else if GlobalOpt.Verbose && abs(ref2.Start-c.StartByte) < 25 {
+					nearbyRefs = append(nearbyRefs, ref2)
 				}
-				if ref.DefUnitType == "" {
-					ref.DefUnitType = u.Type
-				}
-				break OuterLoop
 			}
 		}
 	}
@@ -341,6 +347,33 @@ OuterLoop:
 	if ref == nil {
 		if GlobalOpt.Verbose {
 			log.Printf("No ref found at %s:%d.", c.File, c.StartByte)
+
+			if len(nearbyRefs) > 0 {
+				log.Printf("However, nearby refs were found in the same file:")
+				for _, nref := range nearbyRefs {
+					log.Printf("Ref at bytes %d-%d to %v", nref.Start, nref.End, nref.DefKey())
+				}
+			}
+
+			f, err := os.Open(c.File)
+			if err == nil {
+				defer f.Close()
+				b, err := ioutil.ReadAll(f)
+				if err != nil {
+					log.Fatalf("Error reading source file: %s.", err)
+				}
+				start := c.StartByte
+				if start < 0 || start > len(b)-1 {
+					log.Fatalf("Start byte %d is out of file bounds.", c.StartByte)
+				}
+				end := c.StartByte + 50
+				if end > len(b)-1 {
+					end = len(b) - 1
+				}
+				log.Printf("Surrounding source is:\n\n%s", b[start:end])
+			} else {
+				log.Printf("Error opening source file to show surrounding source: %s.", err)
+			}
 		}
 		fmt.Println(`{}`)
 		return nil
@@ -434,6 +467,13 @@ OuterLoop:
 		return err
 	}
 	return nil
+}
+
+func abs(n int) int {
+	if n < 0 {
+		return -1 * n
+	}
+	return n
 }
 
 func (c *APIDepsCmd) Execute(args []string) error {
