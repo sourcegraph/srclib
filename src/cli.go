@@ -11,7 +11,6 @@ import (
 	"github.com/sqs/go-flags"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/auth"
 	client "sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
-	"sourcegraph.com/sourcegraph/srclib/task2"
 )
 
 var CLI = flags.NewNamedParser("src", flags.Default)
@@ -65,12 +64,10 @@ func init() {
 	}
 }
 
-func Main() {
+func Main() error {
 	log.SetFlags(0)
 	log.SetPrefix("")
-	defer task2.FlushAll()
 
-	if _, err := CLI.Parse(); err != nil {
-		os.Exit(1)
-	}
+	_, err := CLI.Parse()
+	return err
 }

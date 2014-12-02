@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/sourcegraph/makex"
+	"sourcegraph.com/sourcegraph/makex"
 
 	"strings"
 

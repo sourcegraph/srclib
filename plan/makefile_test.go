@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/sourcegraph/makex"
+	"sourcegraph.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	_ "sourcegraph.com/sourcegraph/srclib/config"
 	_ "sourcegraph.com/sourcegraph/srclib/dep"
