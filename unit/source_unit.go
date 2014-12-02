@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
-	"sourcegraph.com/sourcegraph/srclib/repo"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
 )
 
@@ -29,7 +28,7 @@ type SourceUnit struct {
 	// Repo is the URI of the repository containing this source unit, if any.
 	// The scanner tool does not need to set this field - it can be left blank,
 	// to be filled in by the `src` tool
-	Repo repo.URI
+	Repo string
 
 	// Globs is a list of patterns that match files that make up this source
 	// unit. It is used to detect when the source unit definition is out of date

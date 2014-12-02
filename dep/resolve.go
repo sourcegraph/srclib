@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"sort"
 
-	"sourcegraph.com/sourcegraph/srclib/repo"
+	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
@@ -67,7 +67,7 @@ type Command struct{}
 //
 // Resolutions with Errors are omitted from the returned slice and no such
 // errors are returned.
-func ResolutionsToResolvedDeps(ress []*Resolution, unit *unit.SourceUnit, fromRepo repo.URI, fromCommitID string) ([]*ResolvedDep, error) {
+func ResolutionsToResolvedDeps(ress []*Resolution, unit *unit.SourceUnit, fromRepo string, fromCommitID string) ([]*ResolvedDep, error) {
 	or := func(a, b string) string {
 		if a != "" {
 			return a
@@ -81,9 +81,9 @@ func ResolutionsToResolvedDeps(ress []*Resolution, unit *unit.SourceUnit, fromRe
 		}
 
 		if rt := res.Target; rt != nil {
-			var uri repo.URI
+			var uri string
 			if rt.ToRepoCloneURL != "" {
-				uri = repo.MakeURI(rt.ToRepoCloneURL)
+				uri = graph.MakeURI(rt.ToRepoCloneURL)
 			} else {
 				uri = fromRepo
 			}

@@ -15,7 +15,6 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/plan"
-	"sourcegraph.com/sourcegraph/srclib/repo"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
 
 	"sourcegraph.com/sourcegraph/srclib/unit"
@@ -62,7 +61,7 @@ func getInitialConfig(opt config.Options, dir Directory) (*config.Repository, er
 		log.Fatalf("Configuration is currently only supported at the root (top-level directory) of a repository, not in a subdirectory (%q).", opt.Subdir)
 	}
 
-	cfg, err := config.ReadRepository(string(dir), repo.URI(opt.Repo))
+	cfg, err := config.ReadRepository(string(dir), opt.Repo)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read repository at %s: %s", dir, err)
 	}

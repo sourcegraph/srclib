@@ -1,13 +1,11 @@
-package repo
+package graph
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestMakeURI(t *testing.T) {
 	tests := []struct {
 		cloneURL string
-		want     URI
+		want     string
 	}{
 		{"https://github.com/user/repo", "github.com/user/repo"},
 		{"git://github.com/user/repo", "github.com/user/repo"},
