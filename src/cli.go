@@ -10,7 +10,7 @@ import (
 	"github.com/gregjones/httpcache/diskcache"
 	"github.com/sqs/go-flags"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/auth"
-	client "sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
+	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 )
 
 var CLI = flags.NewNamedParser("src", flags.Default)
@@ -27,7 +27,7 @@ func init() {
 
 var (
 	httpClient http.Client
-	apiclient  *client.Client
+	apiclient  *sourcegraph.Client
 )
 
 func init() {
@@ -40,7 +40,7 @@ func init() {
 		authedTransport := &auth.BasicAuthTransport{Username: uid, Password: uKey, Transport: unauthedTransport}
 		httpClient = http.Client{Transport: authedTransport}
 	}
-	apiclient = client.NewClient(&httpClient)
+	apiclient = sourcegraph.NewClient(&httpClient)
 
 	// Set the API client's base URL from the SRC_ENDPOINT env var, if set.
 	if urlStr := os.Getenv("SRC_ENDPOINT"); urlStr != "" {
