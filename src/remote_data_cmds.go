@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 
 	"code.google.com/p/rog-go/parallel"
-	"github.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/router"
 	client "sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
+	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 )
 
