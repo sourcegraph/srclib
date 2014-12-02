@@ -13,7 +13,6 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/plan"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
 	"sourcegraph.com/sourcegraph/srclib/unit"
-	_ "sourcegraph.com/sourcegraph/srclib/vcsutil"
 )
 
 func TestCreateMakefile(t *testing.T) {
@@ -38,10 +37,7 @@ func TestCreateMakefile(t *testing.T) {
 	}
 
 	want := `
-all: testdata/n/t.blame.json testdata/n/t.graph.json testdata/n/t.depresolve.json
-
-testdata/n/t.blame.json: testdata/n/t.unit.json f
-	src internal unit-blame --unit-data testdata/n/t.unit.json 1> $@
+all: testdata/n/t.graph.json testdata/n/t.depresolve.json
 
 testdata/n/t.graph.json: testdata/n/t.unit.json f
 	src tool  "tc" "t" < $< | src internal normalize-graph-data --unit-type "t" --dir . 1> $@
