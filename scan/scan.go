@@ -7,7 +7,6 @@ import (
 
 	"code.google.com/p/rog-go/parallel"
 	"sourcegraph.com/sourcegraph/srclib/config"
-	"sourcegraph.com/sourcegraph/srclib/repo"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -68,7 +67,7 @@ func Scan(scanner toolchain.Tool, opt Options, treeConfig map[string]interface{}
 	}
 
 	for _, u := range units {
-		u.Repo = repo.URI(opt.Repo)
+		u.Repo = opt.Repo
 	}
 
 	return units, nil

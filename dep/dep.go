@@ -1,10 +1,8 @@
 package dep
 
-import "sourcegraph.com/sourcegraph/srclib/repo"
-
 type ResolvedDep struct {
 	// FromRepo is the repository from which this dependency originates.
-	FromRepo repo.URI `db:"from_repo" json:",omitempty"`
+	FromRepo string `db:"from_repo" json:",omitempty"`
 
 	// FromCommitID is the VCS commit in the repository that this dep was found
 	// in.
@@ -20,7 +18,7 @@ type ResolvedDep struct {
 	//
 	// TODO(sqs): include repo clone URLs as well, so we can add new
 	// repositories from seen deps.
-	ToRepo repo.URI `db:"to_repo"`
+	ToRepo string `db:"to_repo"`
 
 	// ToUnit is the name of the source unit that is depended on.
 	ToUnit string `db:"to_unit"`

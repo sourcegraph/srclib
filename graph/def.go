@@ -8,7 +8,6 @@ import (
 
 	"github.com/jmoiron/sqlx/types"
 	"github.com/sourcegraph/go-nnz/nnz"
-	"sourcegraph.com/sourcegraph/srclib/repo"
 )
 
 type (
@@ -30,7 +29,7 @@ type (
 type DefKey struct {
 	// Repo is the VCS repository that defines this definition. Its Elasticsearch mapping is defined
 	// separately.
-	Repo repo.URI `json:",omitempty"`
+	Repo string `json:",omitempty"`
 
 	// CommitID is the ID of the VCS commit that this definition was defined in. The
 	// CommitID is always a full commit ID (40 hexadecimal characters for git
@@ -189,13 +188,13 @@ func (s *Def) sortKey() string { return s.DefKey.String() }
 // Dst: "file2/Foo2}.
 type Propagate struct {
 	// Src is the def whose type/value is being propagated to the dst def.
-	SrcRepo     repo.URI
+	SrcRepo     string
 	SrcPath     DefPath
 	SrcUnit     string
 	SrcUnitType string
 
 	// Dst is the def that is receiving a propagated type/value from the src def.
-	DstRepo     repo.URI
+	DstRepo     string
 	DstPath     DefPath
 	DstUnit     string
 	DstUnitType string

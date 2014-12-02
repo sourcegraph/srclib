@@ -1,11 +1,8 @@
 package config
 
-import (
-	"sourcegraph.com/sourcegraph/srclib/repo"
-	"sourcegraph.com/sourcegraph/srclib/unit"
-)
+import "sourcegraph.com/sourcegraph/srclib/unit"
 
-var overrides = map[repo.URI]*Repository{
+var overrides = map[string]*Repository{
 	"sourcegraph.com/sourcegraph/sourcegraph": {
 		URI: "sourcegraph.com/sourcegraph/sourcegraph",
 		Tree: Tree{
