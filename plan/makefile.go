@@ -3,7 +3,7 @@ package plan
 import (
 	"fmt"
 
-	"github.com/sourcegraph/makex"
+	"sourcegraph.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srclib/config"
 )
 
