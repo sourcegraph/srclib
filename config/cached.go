@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/kr/fs"
-	"github.com/sourcegraph/rwvfs"
+	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
