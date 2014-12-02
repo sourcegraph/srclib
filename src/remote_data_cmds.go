@@ -72,7 +72,7 @@ func (c *PullCmd) Execute(args []string) error {
 			fmt.Printf("%7s   %s   %s\n", bytesString(uint64(file.Size)), file.ModTime, file.Path)
 			if c.URLs {
 				bdspec := sourcegraph.BuildDataFileSpec{RepoRev: rr, Path: file.Path}
-				u := router.URITo(router.RepositoryBuildDataEntry, router.MapToArray(bdspec.RouteVars())...)
+				u := router.URITo(router.RepoBuildDataEntry, router.MapToArray(bdspec.RouteVars())...)
 				u.Host = apiclient.BaseURL.Host
 				u.Scheme = apiclient.BaseURL.Scheme
 				fmt.Println(" @", u)
