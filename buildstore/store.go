@@ -11,8 +11,8 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/repo"
 
 	"github.com/kr/fs"
-	"github.com/sourcegraph/s3vfs"
 	"sourcegraph.com/sourcegraph/rwvfs"
+	"sourcegraph.com/sourcegraph/s3vfs"
 )
 
 var BuildDataDirName = ".srclib-cache"
