@@ -9,7 +9,7 @@ import (
 
 	"code.google.com/p/rog-go/parallel"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/router"
-	client "sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
+	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 )
@@ -51,14 +51,14 @@ func (c *PullCmd) Execute(args []string) error {
 		log.Printf("Listing remote build files for repository %q commit %q...", repo.URI(), repo.CommitID)
 	}
 
-	rr := client.RepoRevSpec{
-		RepoSpec: client.RepoSpec{URI: string(repo.URI())},
+	rr := sourcegraph.RepoRevSpec{
+		RepoSpec: sourcegraph.RepoSpec{URI: string(repo.URI())},
 		Rev:      repo.CommitID,
 		CommitID: repo.CommitID,
 	}
 	remoteFiles, resp, err := apiclient.BuildData.List(rr, nil)
 	if err != nil {
-		if hresp, ok := resp.(*client.HTTPResponse); hresp != nil && ok && hresp.StatusCode == http.StatusNotFound {
+		if hresp, ok := resp.(*sourcegraph.HTTPResponse); hresp != nil && ok && hresp.StatusCode == http.StatusNotFound {
 			log.Println("No remote build files found.")
 			return nil
 		} else {
@@ -71,7 +71,7 @@ func (c *PullCmd) Execute(args []string) error {
 		for _, file := range remoteFiles {
 			fmt.Printf("%7s   %s   %s\n", bytesString(uint64(file.Size)), file.ModTime, file.Path)
 			if c.URLs {
-				bdspec := client.BuildDataFileSpec{RepoRev: rr, Path: file.Path}
+				bdspec := sourcegraph.BuildDataFileSpec{RepoRev: rr, Path: file.Path}
 				u := router.URITo(router.RepositoryBuildDataEntry, router.MapToArray(bdspec.RouteVars())...)
 				u.Host = apiclient.BaseURL.Host
 				u.Scheme = apiclient.BaseURL.Scheme
@@ -99,9 +99,9 @@ func (c *PullCmd) Execute(args []string) error {
 func fetchFile(repoStore *buildstore.RepositoryStore, repoURI string, fi *buildstore.BuildDataFileInfo) error {
 	path := repoStore.FilePath(fi.CommitID, fi.Path)
 
-	fileSpec := client.BuildDataFileSpec{
-		RepoRev: client.RepoRevSpec{
-			RepoSpec: client.RepoSpec{URI: repoURI},
+	fileSpec := sourcegraph.BuildDataFileSpec{
+		RepoRev: sourcegraph.RepoRevSpec{
+			RepoSpec: sourcegraph.RepoSpec{URI: repoURI},
 			Rev:      fi.CommitID,
 			CommitID: fi.CommitID,
 		},
@@ -115,7 +115,7 @@ func fetchFile(repoStore *buildstore.RepositoryStore, repoURI string, fi *builds
 
 	// Use uncached API client because the .srclib-cache already
 	// caches it, and we want to be able to stream large files.
-	apiclientUncached := client.NewClient(nil)
+	apiclientUncached := sourcegraph.NewClient(nil)
 	apiclientUncached.BaseURL = apiclient.BaseURL
 	remoteFile, _, err := apiclientUncached.BuildData.Get(fileSpec)
 	if err != nil {
@@ -196,9 +196,9 @@ func (c *PushCmd) Execute(args []string) error {
 func uploadFile(repoStore *buildstore.RepositoryStore, file *buildstore.BuildDataFileInfo, repoURI string) error {
 	path := repoStore.FilePath(file.CommitID, file.Path)
 
-	fileSpec := client.BuildDataFileSpec{
-		RepoRev: client.RepoRevSpec{
-			RepoSpec: client.RepoSpec{URI: repoURI},
+	fileSpec := sourcegraph.BuildDataFileSpec{
+		RepoRev: sourcegraph.RepoRevSpec{
+			RepoSpec: sourcegraph.RepoSpec{URI: repoURI},
 			Rev:      file.CommitID,
 			CommitID: file.CommitID,
 		},
