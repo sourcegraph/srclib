@@ -15,12 +15,10 @@ import (
 	"strings"
 
 	"github.com/aybabtme/color/brush"
-	"github.com/kr/fs"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/grapher"
 	"sourcegraph.com/sourcegraph/srclib/util"
-	"sourcegraph.com/sourcegraph/srclib/vcsutil"
 )
 
 func init() {
@@ -67,8 +65,6 @@ And the actual test output is written to:
 
 type TestCmd struct {
 	GenerateExpected bool `long:"gen" description:"(re)generate expected output for all test cases and exit"`
-
-	CheckInternalTargets bool `long:"check-internal-targets" description:"also produce and check internal command outputs (ex: blame, authorship)"`
 
 	ToolchainExecOpt
 
@@ -118,7 +114,7 @@ func (c *TestCmd) Execute(args []string) error {
 			}
 			expectedDir := filepath.Join(tree, "../../expected", exeMethod, filepath.Base(tree))
 			actualDir := filepath.Join(tree, "../../actual", exeMethod, filepath.Base(tree))
-			if err := testTree(tree, expectedDir, actualDir, exeMethod, c.GenerateExpected, c.CheckInternalTargets); err != nil {
+			if err := testTree(tree, expectedDir, actualDir, exeMethod, c.GenerateExpected); err != nil {
 				return fmt.Errorf("testing tree %q: %s", tree, err)
 			}
 		}
@@ -131,7 +127,7 @@ func (c *TestCmd) Execute(args []string) error {
 	return nil
 }
 
-func testTree(treeDir, expectedDir, actualDir string, exeMethod string, generateExpected, checkInternalTargets bool) error {
+func testTree(treeDir, expectedDir, actualDir string, exeMethod string, generateExpected bool) error {
 	treeName := filepath.Base(treeDir)
 	if treeName == "." {
 		absTreeDir, err := filepath.Abs(treeDir)
@@ -194,25 +190,6 @@ func testTree(treeDir, expectedDir, actualDir string, exeMethod string, generate
 
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("Command %v in %s failed: %s.\n\nOutput was:\n%s", cmd.Args, treeName, err, buf.String())
-	}
-
-	if !checkInternalTargets {
-		// remove all internal target output files
-		internalOutputs := []interface{}{&vcsutil.BlameOutput{}}
-		w := fs.Walk(outputDir)
-		for w.Step() {
-			if w.Err() != nil {
-				return w.Err()
-			}
-			for _, o := range internalOutputs {
-				if strings.HasSuffix(w.Path(), buildstore.DataTypeSuffix(o)) {
-					if err := os.Remove(w.Path()); err != nil {
-						return err
-					}
-					break
-				}
-			}
-		}
 	}
 
 	if generateExpected {
