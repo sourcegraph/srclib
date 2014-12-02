@@ -6,8 +6,8 @@ import (
 	"net/url"
 	"os"
 
-	"github.com/sourcegraph/httpcache"
-	"github.com/sourcegraph/httpcache/diskcache"
+	"github.com/gregjones/httpcache"
+	"github.com/gregjones/httpcache/diskcache"
 	"github.com/sqs/go-flags"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/auth"
 	client "sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
