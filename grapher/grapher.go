@@ -11,7 +11,6 @@ import (
 
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/graph"
-	"sourcegraph.com/sourcegraph/srclib/repo"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
@@ -98,7 +97,7 @@ func sortedOutput(o *Output) *Output {
 func NormalizeData(unitType, dir string, o *Output) error {
 	for _, ref := range o.Refs {
 		if ref.DefRepo != "" {
-			ref.DefRepo = repo.MakeURI(string(ref.DefRepo))
+			ref.DefRepo = graph.MakeURI(string(ref.DefRepo))
 		}
 	}
 

@@ -1,10 +1,6 @@
 package unit
 
-import (
-	"github.com/jmoiron/sqlx/types"
-
-	"sourcegraph.com/sourcegraph/srclib/repo"
-)
+import "github.com/jmoiron/sqlx/types"
 
 // A RepoSourceUnit is the "concrete" form of SourceUnit that includes
 // information about which repository (and commit) the source unit exists in. In
@@ -12,7 +8,7 @@ import (
 // type RepoSourceUnit is used afterwards (either in cross-source-unit analysis,
 // such as cross-reference resolution, or in after-the-fact DB/API queries).
 type RepoSourceUnit struct {
-	Repo     repo.URI
+	Repo     string
 	CommitID string `db:"commit_id"`
 	UnitType string `db:"unit_type"`
 	Unit     string

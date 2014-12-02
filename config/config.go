@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"sourcegraph.com/sourcegraph/srclib/repo"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -17,7 +16,7 @@ var Filename = "Srcfile"
 // Repository represents the config for an entire repository.
 type Repository struct {
 	// URI is the repository's clone URI.
-	URI repo.URI `json:",omitempty"`
+	URI string `json:",omitempty"`
 
 	// Tree is the configuration for the top-level directory tree in the
 	// repository.
@@ -76,7 +75,7 @@ type Tree struct {
 // an overridden configuration is specified for the repository (hard-coded in
 // the Go code), then it is used instead of the Srcfile or the default
 // configuration.
-func ReadRepository(dir string, repoURI repo.URI) (*Repository, error) {
+func ReadRepository(dir string, repoURI string) (*Repository, error) {
 	var c *Repository
 	if oc, overridden := overrides[repoURI]; overridden {
 		c = oc
@@ -96,7 +95,7 @@ func ReadRepository(dir string, repoURI repo.URI) (*Repository, error) {
 	return c.finish(repoURI)
 }
 
-func (c *Repository) finish(repoURI repo.URI) (*Repository, error) {
+func (c *Repository) finish(repoURI string) (*Repository, error) {
 	err := c.validate()
 	if err != nil {
 		return nil, err
