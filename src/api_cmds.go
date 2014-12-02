@@ -106,7 +106,7 @@ var apiUnitsCmd APIUnitsCmd
 // Invokes the build process on the given repository
 func ensureBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
 	configOpt := config.Options{
-		Repo:   string(repo.URI()),
+		Repo:   repo.URI(),
 		Subdir: ".",
 	}
 	toolchainExecOpt := ToolchainExecOpt{ExeMethods: "program"}

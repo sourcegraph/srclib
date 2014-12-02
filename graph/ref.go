@@ -4,30 +4,28 @@ import (
 	"strconv"
 
 	"github.com/sourcegraph/go-nnz/nnz"
-
-	"sourcegraph.com/sourcegraph/srclib/repo"
 )
 
 type RefDefKey struct {
-	DefRepo     repo.URI `db:"def_repo" json:",omitempty"`
-	DefUnitType string   `db:"def_unit_type" json:",omitempty"`
-	DefUnit     string   `db:"def_unit" json:",omitempty"`
-	DefPath     DefPath  `db:"def_path" json:",omitempty"`
+	DefRepo     string  `db:"def_repo" json:",omitempty"`
+	DefUnitType string  `db:"def_unit_type" json:",omitempty"`
+	DefUnit     string  `db:"def_unit" json:",omitempty"`
+	DefPath     DefPath `db:"def_path" json:",omitempty"`
 }
 
 type RefKey struct {
-	DefRepo     repo.URI `db:"def_repo" json:",omitempty"`
-	DefUnitType string   `db:"def_unit_type" json:",omitempty"`
-	DefUnit     string   `db:"def_unit" json:",omitempty"`
-	DefPath     DefPath  `db:"def_path" json:",omitempty"`
-	Def         bool     `json:",omitempty"`
-	Repo        repo.URI `json:",omitempty"`
-	UnitType    string   `db:"unit_type" json:",omitempty"`
-	Unit        string   `json:",omitempty"`
-	File        string   `json:",omitempty"`
-	CommitID    string   `db:"commit_id" json:",omitempty"`
-	Start       int      `json:",omitempty"`
-	End         int      `json:",omitempty"`
+	DefRepo     string  `db:"def_repo" json:",omitempty"`
+	DefUnitType string  `db:"def_unit_type" json:",omitempty"`
+	DefUnit     string  `db:"def_unit" json:",omitempty"`
+	DefPath     DefPath `db:"def_path" json:",omitempty"`
+	Def         bool    `json:",omitempty"`
+	Repo        string  `json:",omitempty"`
+	UnitType    string  `db:"unit_type" json:",omitempty"`
+	Unit        string  `json:",omitempty"`
+	File        string  `json:",omitempty"`
+	CommitID    string  `db:"commit_id" json:",omitempty"`
+	Start       int     `json:",omitempty"`
+	End         int     `json:",omitempty"`
 }
 
 func (r *RefKey) RefDefKey() RefDefKey {
@@ -43,15 +41,15 @@ func (r *RefKey) RefDefKey() RefDefKey {
 // Ref represents a reference from source code to a def.
 type Ref struct {
 	// The definition that this reference points to
-	DefRepo     repo.URI `db:"def_repo"`
-	DefUnitType string   `db:"def_unit_type"`
-	DefUnit     string   `db:"def_unit"`
-	DefPath     DefPath  `db:"def_path"`
+	DefRepo     string  `db:"def_repo"`
+	DefUnitType string  `db:"def_unit_type"`
+	DefUnit     string  `db:"def_unit"`
+	DefPath     DefPath `db:"def_path"`
 
 	// Def is true if this ref is the original definition or a redefinition
 	Def bool
 
-	Repo repo.URI
+	Repo string
 
 	// CommitID is the immutable commit ID (not the branch name) of the VCS
 	// revision that this ref was found in.

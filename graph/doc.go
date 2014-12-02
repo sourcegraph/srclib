@@ -1,9 +1,6 @@
 package graph
 
-import (
-	"sourcegraph.com/sourcegraph/srclib/db_common"
-	"sourcegraph.com/sourcegraph/srclib/repo"
-)
+import "sourcegraph.com/sourcegraph/srclib/db_common"
 
 // START Doc OMIT
 // Docstring
@@ -36,7 +33,7 @@ func (vs Docs) Swap(i, j int)      { vs[i], vs[j] = vs[j], vs[i] }
 func (vs Docs) Less(i, j int) bool { return vs[i].sortKey() < vs[j].sortKey() }
 
 type DocPageKey struct {
-	Repo     repo.URI
+	Repo     string
 	UnitType string `db:"unit_type"`
 	Unit     string
 	Path     string

@@ -48,11 +48,11 @@ func (c *PullCmd) Execute(args []string) error {
 	}
 
 	if GlobalOpt.Verbose {
-		log.Printf("Listing remote build files for repository %q commit %q...", repo.URI(), repo.CommitID)
+		log.Printf("Listing remote build files for repository %q commit %q...", repo.URI, repo.CommitID)
 	}
 
 	rr := sourcegraph.RepoRevSpec{
-		RepoSpec: sourcegraph.RepoSpec{URI: string(repo.URI())},
+		RepoSpec: sourcegraph.RepoSpec{URI: repo.URI()},
 		Rev:      repo.CommitID,
 		CommitID: repo.CommitID,
 	}
@@ -67,12 +67,12 @@ func (c *PullCmd) Execute(args []string) error {
 	}
 
 	if c.List {
-		log.Printf("# Remote build files for repository %q commit %s:", repo.URI(), repo.CommitID)
+		log.Printf("# Remote build files for repository %q commit %s:", repo.URI, repo.CommitID)
 		for _, file := range remoteFiles {
 			fmt.Printf("%7s   %s   %s\n", bytesString(uint64(file.Size)), file.ModTime, file.Path)
 			if c.URLs {
 				bdspec := sourcegraph.BuildDataFileSpec{RepoRev: rr, Path: file.Path}
-				u := router.URITo(router.RepositoryBuildDataEntry, router.MapToArray(bdspec.RouteVars())...)
+				u := router.URITo(router.RepoBuildDataEntry, router.MapToArray(bdspec.RouteVars())...)
 				u.Host = apiclient.BaseURL.Host
 				u.Scheme = apiclient.BaseURL.Scheme
 				fmt.Println(" @", u)
@@ -90,7 +90,7 @@ func (c *PullCmd) Execute(args []string) error {
 	for _, file_ := range remoteFiles {
 		file := file_
 		par.Do(func() error {
-			return fetchFile(repoStore, string(repo.URI()), file)
+			return fetchFile(repoStore, repo.URI(), file)
 		})
 	}
 	return par.Wait()
@@ -162,7 +162,7 @@ func (c *PushCmd) Execute(args []string) error {
 	}
 
 	if GlobalOpt.Verbose {
-		log.Printf("Listing local build files for repository %q commit %q...", repo.URI(), repo.CommitID)
+		log.Printf("Listing local build files for repository %q commit %q...", repo.URI, repo.CommitID)
 	}
 
 	repoStore, err := buildstore.NewRepositoryStore(repo.RootDir)
@@ -176,7 +176,7 @@ func (c *PushCmd) Execute(args []string) error {
 	}
 
 	if c.List {
-		log.Printf("# Local build files for repository %q commit %s:", repo.URI(), repo.CommitID)
+		log.Printf("# Local build files for repository %q commit %s:", repo.URI, repo.CommitID)
 		for _, file := range localFiles {
 			fmt.Println(file.Path)
 		}
@@ -187,7 +187,7 @@ func (c *PushCmd) Execute(args []string) error {
 	for _, file_ := range localFiles {
 		file := file_
 		par.Do(func() error {
-			return uploadFile(repoStore, file, string(repo.URI()))
+			return uploadFile(repoStore, file, repo.URI())
 		})
 	}
 	return par.Wait()

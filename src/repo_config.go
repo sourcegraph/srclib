@@ -8,7 +8,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"sourcegraph.com/sourcegraph/srclib/repo"
+	"sourcegraph.com/sourcegraph/srclib/graph"
 )
 
 type Repo struct {
@@ -18,11 +18,11 @@ type Repo struct {
 	CloneURL string // CloneURL of repo.
 }
 
-func (c *Repo) URI() repo.URI {
+func (c *Repo) URI() string {
 	if strings.Contains(c.CloneURL, "github.com/sourcegraph/sourcegraph") {
 		return "sourcegraph.com/sourcegraph/sourcegraph"
 	}
-	return repo.MakeURI(c.CloneURL)
+	return graph.MakeURI(c.CloneURL)
 }
 
 func OpenRepo(dir string) (*Repo, error) {

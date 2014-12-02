@@ -8,8 +8,6 @@ import (
 
 	"strings"
 
-	"sourcegraph.com/sourcegraph/srclib/repo"
-
 	"github.com/kr/fs"
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/s3vfs"
@@ -32,7 +30,7 @@ func New(fs rwvfs.FileSystem) *MultiStore {
 	return &MultiStore{walkableRWVFS{fs}}
 }
 
-func (s *MultiStore) RepositoryStore(repoURI repo.URI) (*RepositoryStore, error) {
+func (s *MultiStore) RepositoryStore(repoURI string) (*RepositoryStore, error) {
 	path := filepath.Clean(string(repoURI))
 
 	// No need to mkdir for S3, since S3 doesn't have directories.
