@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"reflect"
 	"sort"
 	"strings"
 
@@ -37,11 +38,14 @@ func ReadCached(buildStore *buildstore.RepositoryStore, commitID string) (*Tree,
 	} else if fi.Mode().IsDir() {
 		w = fs.WalkFS(dataPath, buildStore)
 	} else if fi.Mode()&os.ModeSymlink > 0 {
+		if ufs := getUnderlyingFileSystem(buildStore.WalkableFileSystem); reflect.TypeOf(ufs) != reflect.TypeOf(rwvfs.OS("")) {
+			return nil, fmt.Errorf("symlink at %s is not supported by FS type %T (only supported by OS filesystem, not other VFS)", buildDataDir, ufs)
+		}
 		dst, err := os.Readlink(buildDataDir)
 		if err != nil {
 			return nil, err
 		}
-		w = fs.WalkFS(".", walkableFileSystem{rwvfs.OS(dst)})
+		w = fs.WalkFS(".", rwvfs.Walkable(rwvfs.OS(dst)))
 		needsCommitPrefix = true
 	} else {
 		return nil, fmt.Errorf("invalid build cache dir")
@@ -78,6 +82,13 @@ func ReadCached(buildStore *buildstore.RepositoryStore, commitID string) (*Tree,
 	return &Tree{SourceUnits: units}, nil
 }
 
-type walkableFileSystem struct{ rwvfs.FileSystem }
-
-func (_ walkableFileSystem) Join(elem ...string) string { return filepath.Join(elem...) }
+func getUnderlyingFileSystem(fs rwvfs.FileSystem) rwvfs.FileSystem {
+	type underlying interface {
+		Underlying() rwvfs.FileSystem
+	}
+	switch fs := fs.(type) {
+	case underlying:
+		return getUnderlyingFileSystem(fs.Underlying())
+	}
+	return fs
+}
