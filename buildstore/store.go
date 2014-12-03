@@ -1,170 +1,117 @@
 package buildstore
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
-	"time"
-
-	"strings"
 
 	"github.com/kr/fs"
+
+	"sort"
+
 	"sourcegraph.com/sourcegraph/rwvfs"
-	"sourcegraph.com/sourcegraph/s3vfs"
 )
 
+// BuildDataDirName is the name of the directory in which local
+// repository build data is stored, relative to the top-level dir of a
+// VCS repository.
 var BuildDataDirName = ".srclib-cache"
 
-var (
-	// localDirs stores the OS filesystem path that each local repository store
-	// is rooted at. It is used to construct the full, non-VFS path to files
-	// within local VFSes.
-	localDirs = make(map[*RepositoryStore]string)
-)
-
+// A MultiStore contains RepoBuildStores for multiple repositories.
 type MultiStore struct {
-	walkableRWVFS
+	fs rwvfs.WalkableFileSystem
 }
 
-func New(fs rwvfs.FileSystem) *MultiStore {
-	return &MultiStore{walkableRWVFS{fs}}
+// NewMulti creates a new multi-repo build store.
+func NewMulti(fs rwvfs.FileSystem) *MultiStore {
+	return &MultiStore{rwvfs.Walkable(fs)}
 }
 
-func (s *MultiStore) RepositoryStore(repoURI string) (*RepositoryStore, error) {
+func (s *MultiStore) RepoBuildStore(repoURI string) (RepoBuildStore, error) {
 	path := filepath.Clean(string(repoURI))
-
-	// No need to mkdir for S3, since S3 doesn't have directories.
-	if _, ok := s.walkableRWVFS.FileSystem.(*s3vfs.S3FS); !ok {
-		err := rwvfs.MkdirAll(s, path)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return &RepositoryStore{walkableRWVFS{rwvfs.Sub(s.walkableRWVFS, path)}}, nil
+	return Repo(rwvfs.Walkable(rwvfs.Sub(s.fs, path))), nil
 }
 
-type RepositoryStore struct {
-	rwvfs.WalkableFileSystem
+// A RepoBuildStore stores and exposes a repository's build data in a
+// VFS.
+type RepoBuildStore interface {
+	// Commit returns a VFS for accessing and writing build data for a
+	// specific commit.
+	Commit(commitID string) rwvfs.WalkableFileSystem
+
+	// FilePath returns the path (from the repo build store's root) to
+	// a file at the specified commit ID.
+	FilePath(commitID string, file string) string
 }
 
-func NewRepositoryStore(repoDir string) (*RepositoryStore, error) {
-	storeDir, err := filepath.Abs(filepath.Join(repoDir, BuildDataDirName))
+// Repo creates a new single-repository build store rooted at the
+// given filesystem.
+func Repo(repoStoreFS rwvfs.WalkableFileSystem) RepoBuildStore {
+	return &repoBuildStore{repoStoreFS}
+}
 
-	err = os.Mkdir(storeDir, 0700)
-	if os.IsExist(err) {
-		err = nil
-	}
-	if err != nil {
+// LocalRepo creates a new single-repository build store for the VCS
+// repository whose top-level directory is repoDir.
+//
+// The store is laid out as follows:
+//
+//   .                the root dir of repoStoreFS
+//   <COMMITID>/**/*  build data for a specific commit
+func LocalRepo(repoDir string) (RepoBuildStore, error) {
+	storeDir := filepath.Join(repoDir, BuildDataDirName)
+	if err := os.Mkdir(storeDir, 0700); err != nil && !os.IsExist(err) {
 		return nil, err
 	}
-
-	s := &RepositoryStore{walkableRWVFS{rwvfs.OS(storeDir)}}
-
-	localDirs[s] = storeDir
-
-	return s, nil
+	return Repo(rwvfs.Walkable(rwvfs.OS(storeDir))), nil
 }
 
-// RootDir returns the OS filesystem path that s's VFS is rooted at, if
-// it is a local store (that uses the OS filesystem). If s is a
-// non-OS-filesystem VFS, an error is returned.
-func RootDir(s *RepositoryStore) (string, error) {
-	if dir, present := localDirs[s]; present {
-		return dir, nil
-	}
-	return "", fmt.Errorf("store VFS is not an OS filesystem VFS")
+type repoBuildStore struct {
+	fs rwvfs.WalkableFileSystem
 }
 
-func BuildDir(s *RepositoryStore, commitID string) (string, error) {
-	rootDataDir, err := RootDir(s)
-	if err != nil {
-		return "", err
-	}
-	return filepath.Join(rootDataDir, s.CommitPath(commitID)), nil
+func (s *repoBuildStore) Commit(commitID string) rwvfs.WalkableFileSystem {
+	return rwvfs.Walkable(rwvfs.Sub(s.fs, s.commitPath(commitID)))
 }
 
-func FlushCache(s *RepositoryStore, commitID string) error {
-	path, err := BuildDir(s, commitID)
-	if err != nil {
-		return err
+func (s *repoBuildStore) commitPath(commitID string) string { return commitID }
+
+func (s *repoBuildStore) FilePath(commitID, path string) string {
+	return filepath.Join(s.commitPath(commitID), path)
+}
+
+// RemoveAllDataForCommit removes all files and directories from the
+// repo build store for the given commit.
+func RemoveAllDataForCommit(s RepoBuildStore, commitID string) error {
+	commitFS := s.Commit(commitID)
+	w := fs.WalkFS(".", commitFS)
+	var dirs []string // remove dirs after removing all files
+	for w.Step() {
+		if err := w.Err(); err != nil {
+			return err
+		}
+		if w.Stat().IsDir() {
+			dirs = append(dirs, w.Path())
+		} else {
+			if err := commitFS.Remove(w.Path()); err != nil {
+				return err
+			}
+		}
 	}
-	if err := os.RemoveAll(path); err != nil {
-		return err
+	sort.Sort(sort.Reverse(sort.StringSlice(dirs))) // reverse so we delete leaf dirs first
+	for _, dir := range dirs {
+		if err := commitFS.Remove(dir); err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
-type BuildDataFileInfo struct {
-	CommitID string
-	Path     string
-	Size     int64
-	ModTime  time.Time
-	DataType string
-}
-
-func (s *RepositoryStore) CommitPath(commitID string) string { return commitID }
-
-func (s *RepositoryStore) FilePath(commitID, path string) string {
-	return filepath.Join(s.CommitPath(commitID), path)
-}
-
-func (s *RepositoryStore) ListCommits() ([]string, error) {
-	files, err := s.ReadDir(".")
-	if err != nil {
-		return nil, err
+func BuildDataExistsForCommit(s RepoBuildStore, commitID string) (bool, error) {
+	cfs := s.Commit(commitID)
+	_, err := cfs.Stat(".")
+	if err == nil {
+		return true, nil
+	} else if os.IsNotExist(err) {
+		return false, nil
 	}
-
-	var commits []string
-	for _, f := range files {
-		if f.IsDir() {
-			commits = append(commits, f.Name())
-		}
-	}
-	return commits, nil
+	return false, err
 }
-
-func (s *RepositoryStore) DataFiles(path string) ([]*BuildDataFileInfo, error) {
-	files := []*BuildDataFileInfo{}
-	walker := fs.WalkFS(path, s)
-	for walker.Step() {
-		fi := walker.Stat()
-		if fi == nil {
-			continue
-		}
-		if fi.IsDir() {
-			continue
-		}
-
-		path := strings.TrimPrefix(walker.Path(), "/")
-
-		parts := strings.SplitN(path, "/", 2)
-		if len(parts) != 2 {
-			return nil, fmt.Errorf("bad build data file path: %q", walker.Path())
-		}
-		commitID, path := parts[0], parts[1]
-
-		dataTypeName, _ := DataType(path)
-
-		files = append(files, &BuildDataFileInfo{
-			CommitID: commitID,
-			Path:     path,
-			Size:     fi.Size(),
-			ModTime:  fi.ModTime(),
-			DataType: dataTypeName,
-		})
-	}
-	return files, nil
-}
-
-func (s *RepositoryStore) DataFilesForCommit(commitID string) ([]*BuildDataFileInfo, error) {
-	return s.DataFiles(s.CommitPath(commitID))
-}
-
-func (s *RepositoryStore) AllDataFiles() ([]*BuildDataFileInfo, error) {
-	return s.DataFiles(".")
-}
-
-type walkableRWVFS struct{ rwvfs.FileSystem }
-
-func (_ walkableRWVFS) Join(elem ...string) string { return filepath.Join(elem...) }
