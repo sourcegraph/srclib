@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 )
 
@@ -23,6 +24,14 @@ func (c *Repo) URI() string {
 		return "sourcegraph.com/sourcegraph/sourcegraph"
 	}
 	return graph.MakeURI(c.CloneURL)
+}
+
+func (r *Repo) RepoRevSpec() sourcegraph.RepoRevSpec {
+	return sourcegraph.RepoRevSpec{
+		RepoSpec: sourcegraph.RepoSpec{URI: r.URI()},
+		Rev:      r.CommitID,
+		CommitID: r.CommitID,
+	}
 }
 
 func OpenRepo(dir string) (*Repo, error) {
