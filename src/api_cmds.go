@@ -104,7 +104,7 @@ var apiDepsCmd APIDepsCmd
 var apiUnitsCmd APIUnitsCmd
 
 // Invokes the build process on the given repository
-func ensureBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
+func ensureBuild(buildStore buildstore.RepoBuildStore, repo *Repo) error {
 	configOpt := config.Options{
 		Repo:   repo.URI(),
 		Subdir: ".",
@@ -112,7 +112,11 @@ func ensureBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
 	toolchainExecOpt := ToolchainExecOpt{ExeMethods: "program"}
 
 	// Config repository if not yet built.
-	if _, err := buildStore.Stat(buildStore.CommitPath(repo.CommitID)); os.IsNotExist(err) {
+	exists, err := buildstore.BuildDataExistsForCommit(buildStore, repo.CommitID)
+	if err != nil {
+		return err
+	}
+	if !exists {
 		configCmd := &ConfigCmd{
 			Options:          configOpt,
 			ToolchainExecOpt: toolchainExecOpt,
@@ -137,16 +141,8 @@ func ensureBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
 	return nil
 }
 
-func ensurePullAndBuild(buildStore *buildstore.RepositoryStore, repo *Repo) error {
-	if err := pullCmd.Execute(nil); err != nil {
-		return err
-	}
-
-	return ensureBuild(buildStore, repo)
-}
-
 // Get a list of all source units that contain the given file
-func getSourceUnitsWithFile(buildStore *buildstore.RepositoryStore, repo *Repo, filename string) ([]*unit.SourceUnit, error) {
+func getSourceUnitsWithFile(buildStore buildstore.RepoBuildStore, repo *Repo, filename string) ([]*unit.SourceUnit, error) {
 	filename = filepath.Clean(filename)
 
 	// TODO(sqs): This whole lookup is totally inefficient. The storage format
@@ -155,7 +151,8 @@ func getSourceUnitsWithFile(buildStore *buildstore.RepositoryStore, repo *Repo, 
 	// Find all source unit definition files.
 	var unitFiles []string
 	unitSuffix := buildstore.DataTypeSuffix(unit.SourceUnit{})
-	w := fs.WalkFS(buildStore.CommitPath(repo.CommitID), buildStore)
+	commitFS := buildStore.Commit(repo.CommitID)
+	w := fs.WalkFS(".", commitFS)
 	for w.Step() {
 		if strings.HasSuffix(w.Path(), unitSuffix) {
 			unitFiles = append(unitFiles, w.Path())
@@ -166,7 +163,7 @@ func getSourceUnitsWithFile(buildStore *buildstore.RepositoryStore, repo *Repo, 
 	var units []*unit.SourceUnit
 	for _, unitFile := range unitFiles {
 		var u *unit.SourceUnit
-		f, err := buildStore.Open(unitFile)
+		f, err := commitFS.Open(unitFile)
 		if err != nil {
 			return nil, err
 		}
@@ -206,13 +203,14 @@ func (c *APIListCmd) Execute(args []string) error {
 		return err
 	}
 
-	buildStore, err := buildstore.NewRepositoryStore(repo.RootDir)
+	buildStore, err := buildstore.LocalRepo(repo.RootDir)
 	if err != nil {
 		return err
 	}
+	commitFS := buildStore.Commit(repo.CommitID)
 
 	if err := ensureBuild(buildStore, repo); err != nil {
-		if err := buildstore.FlushCache(buildStore, repo.CommitID); err != nil {
+		if err := buildstore.RemoveAllDataForCommit(buildStore, repo.CommitID); err != nil {
 			log.Println(err)
 		}
 		return err
@@ -239,8 +237,8 @@ func (c *APIListCmd) Execute(args []string) error {
 	var refs []*graph.Ref
 	for _, u := range units {
 		var g grapher.Output
-		graphFile := buildStore.FilePath(repo.CommitID, plan.SourceUnitDataFilename("graph", u))
-		f, err := buildStore.Open(graphFile)
+		graphFile := plan.SourceUnitDataFilename("graph", u)
+		f, err := commitFS.Open(graphFile)
 		if err != nil {
 			return err
 		}
@@ -282,13 +280,14 @@ func (c *APIDescribeCmd) Execute(args []string) error {
 		return err
 	}
 
-	buildStore, err := buildstore.NewRepositoryStore(repo.RootDir)
+	buildStore, err := buildstore.LocalRepo(repo.RootDir)
 	if err != nil {
 		return err
 	}
+	commitFS := buildStore.Commit(repo.CommitID)
 
 	if err := ensureBuild(buildStore, repo); err != nil {
-		if err := buildstore.FlushCache(buildStore, repo.CommitID); err != nil {
+		if err := buildstore.RemoveAllDataForCommit(buildStore, repo.CommitID); err != nil {
 			log.Println(err)
 		}
 		return err
@@ -317,8 +316,8 @@ func (c *APIDescribeCmd) Execute(args []string) error {
 OuterLoop:
 	for _, u := range units {
 		var g grapher.Output
-		graphFile := buildStore.FilePath(repo.CommitID, plan.SourceUnitDataFilename("graph", u))
-		f, err := buildStore.Open(graphFile)
+		graphFile := plan.SourceUnitDataFilename("graph", u)
+		f, err := commitFS.Open(graphFile)
 		if err != nil {
 			return err
 		}
@@ -393,8 +392,8 @@ OuterLoop:
 	if defInCurrentRepo {
 		// Def is in the current repo.
 		var g grapher.Output
-		graphFile := buildStore.FilePath(repo.CommitID, plan.SourceUnitDataFilename("graph", &unit.SourceUnit{Name: ref.DefUnit, Type: ref.DefUnitType}))
-		f, err := buildStore.Open(graphFile)
+		graphFile := plan.SourceUnitDataFilename("graph", &unit.SourceUnit{Name: ref.DefUnit, Type: ref.DefUnitType})
+		f, err := commitFS.Open(graphFile)
 		if err != nil {
 			return err
 		}
@@ -488,12 +487,17 @@ func (c *APIDepsCmd) Execute(args []string) error {
 		return err
 	}
 
-	buildStore, err := buildstore.NewRepositoryStore(repo.RootDir)
+	buildStore, err := buildstore.LocalRepo(repo.RootDir)
 	if err != nil {
 		return err
 	}
+	commitFS := buildStore.Commit(repo.CommitID)
 
-	if _, err := buildStore.Lstat(buildStore.CommitPath(repo.CommitID)); os.IsNotExist(err) {
+	exists, err := buildstore.BuildDataExistsForCommit(buildStore, repo.CommitID)
+	if err != nil {
+		return err
+	}
+	if !exists {
 		return errors.New("No build data found. Try running `src config` first.")
 	}
 
@@ -502,13 +506,13 @@ func (c *APIDepsCmd) Execute(args []string) error {
 	depSuffix := buildstore.DataTypeSuffix([]*dep.ResolvedDep{})
 	depCache := make(map[string]struct{})
 	foundDepresolve := false
-	w := fs.WalkFS(buildStore.CommitPath(repo.CommitID), buildStore)
+	w := fs.WalkFS(".", commitFS)
 	for w.Step() {
 		depfile := w.Path()
 		if strings.HasSuffix(depfile, depSuffix) {
 			foundDepresolve = true
 			var deps []*dep.Resolution
-			f, err := buildStore.Open(depfile)
+			f, err := commitFS.Open(depfile)
 			if err != nil {
 				return err
 			}
@@ -545,25 +549,30 @@ func (c *APIUnitsCmd) Execute(args []string) error {
 		return err
 	}
 
-	buildStore, err := buildstore.NewRepositoryStore(repo.RootDir)
+	buildStore, err := buildstore.LocalRepo(repo.RootDir)
 	if err != nil {
 		return err
 	}
+	commitFS := buildStore.Commit(repo.CommitID)
 
-	if _, err := buildStore.Lstat(buildStore.CommitPath(repo.CommitID)); os.IsNotExist(err) {
+	exists, err := buildstore.BuildDataExistsForCommit(buildStore, repo.CommitID)
+	if err != nil {
+		return err
+	}
+	if !exists {
 		return errors.New("No build data found. Try running `src config` first.")
 	}
 
 	var unitSlice []unit.SourceUnit
 	unitSuffix := buildstore.DataTypeSuffix(unit.SourceUnit{})
 	foundUnit := false
-	w := fs.WalkFS(buildStore.CommitPath(repo.CommitID), buildStore)
+	w := fs.WalkFS(".", commitFS)
 	for w.Step() {
 		unitFile := w.Path()
 		if strings.HasSuffix(unitFile, unitSuffix) {
 			var unit unit.SourceUnit
 			foundUnit = true
-			f, err := buildStore.Open(unitFile)
+			f, err := commitFS.Open(unitFile)
 			if err != nil {
 				return err
 			}
