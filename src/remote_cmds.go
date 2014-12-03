@@ -6,9 +6,19 @@ import (
 	"time"
 
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
+	"sourcegraph.com/sourcegraph/srclib/buildstore"
 )
 
 func init() {
+	_, err := CLI.AddCommand("push",
+		"build, upload, and import the current commit (to make it available on Sourcegraph.com)",
+		"The push command (1) builds the current commit if it's not built; (2) uploads the current repository commit's build data; and (3) imports it into Sourcegraph.",
+		&pushCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	remoteGroup, err := CLI.AddCommand("remote",
 		"remote operations",
 		"The remote command contains subcommands perform operations on Sourcegraph.com.",
@@ -26,6 +36,43 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+type PushCmd struct {
+}
+
+var pushCmd PushCmd
+
+func (c *PushCmd) Execute(args []string) error {
+	repo, err := OpenRepo(".")
+	if err != nil {
+		return err
+	}
+	buildStore, err := buildstore.LocalRepo(repo.RootDir)
+	if err != nil {
+		return err
+	}
+	if err := ensureBuild(buildStore, repo); err != nil {
+		return fmt.Errorf("local build failed: %s", err)
+	}
+
+	if _, _, err := apiclient.Repos.GetOrCreate(repo.RepoRevSpec().RepoSpec, nil); err != nil {
+		return fmt.Errorf("couldn't find repo %q on remote: %s", repo.URI(), err)
+	}
+	if _, _, err := apiclient.Repos.GetCommit(repo.RepoRevSpec(), nil); err != nil {
+		if _, err := apiclient.Repos.RefreshVCSData(repo.RepoRevSpec().RepoSpec); err != nil {
+			log.Printf("Warning: failed to trigger VCS update: %s.", err)
+		}
+		return fmt.Errorf("could not find commit %s on remote (%s); was it pushed? a VCS update was just triggered, so try again in a few seconds/minutes", repo.RepoRevSpec().CommitID, err)
+	}
+
+	if err := buildDataUploadCmd.Execute(nil); err != nil {
+		return err
+	}
+	if err := remoteImportBuildDataCmd.Execute(nil); err != nil {
+		return err
+	}
+	return nil
 }
 
 type RemoteCmd struct {
@@ -62,7 +109,6 @@ func (c *RemoteImportBuildDataCmd) Execute(args []string) error {
 
 	// Check that the remote server knows about the commit.
 	if _, _, err := apiclient.Repos.GetCommit(repoRevSpec, nil); err != nil {
-		// TODO(sqs): update remote repo VCS and wait
 		return fmt.Errorf("could not find commit %s on remote (%s); was it pushed?", repoRevSpec.CommitID, err)
 	}
 
