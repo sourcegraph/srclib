@@ -19,10 +19,12 @@ type Repo struct {
 }
 
 func (c *Repo) URI() string {
-	if strings.Contains(c.CloneURL, "github.com/sourcegraph/sourcegraph") {
+	uri := graph.MakeURI(c.CloneURL)
+	// TODO(sqs): temp workaround for sourcegraph private repo
+	if uri == "github.com/sourcegraph/sourcegraph" {
 		return "sourcegraph.com/sourcegraph/sourcegraph"
 	}
-	return graph.MakeURI(c.CloneURL)
+	return uri
 }
 
 func OpenRepo(dir string) (*Repo, error) {
