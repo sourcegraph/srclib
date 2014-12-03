@@ -3,6 +3,7 @@ package src
 import (
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
@@ -125,6 +126,13 @@ func (c *RemoteImportBuildDataCmd) Execute(args []string) error {
 	}
 	if GlobalOpt.Verbose {
 		log.Printf("Created build #%d", build.BID)
+	}
+
+	now := time.Now()
+	host := fmt.Sprintf("local (USER=%s)", os.Getenv("USER"))
+	buildUpdate := sourcegraph.BuildUpdate{StartedAt: &now, Host: &host}
+	if _, _, err := apiclient.Builds.Update(build.Spec(), buildUpdate); err != nil {
+		return err
 	}
 
 	importTask := &sourcegraph.BuildTask{
