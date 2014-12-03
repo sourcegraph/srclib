@@ -1,0 +1,173 @@
+package src
+
+import (
+	"fmt"
+	"log"
+	"time"
+
+	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
+)
+
+func init() {
+	remoteGroup, err := CLI.AddCommand("remote",
+		"remote operations",
+		"The remote command contains subcommands perform operations on Sourcegraph.com.",
+		&remoteCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = remoteGroup.AddCommand("import-build-data",
+		"import build data for a repository at a specific commit",
+		"The `src remote import-build-data` subcommand imports build data for a repository at a specific commit. To import build data that was produced locally, first run `src build-data upload` (or run `src push`, which performs both steps).",
+		&remoteImportBuildDataCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+type RemoteCmd struct {
+}
+
+var remoteCmd RemoteCmd
+
+func (c *RemoteCmd) Execute(args []string) error {
+	return nil
+}
+
+type RemoteImportBuildDataCmd struct {
+}
+
+var remoteImportBuildDataCmd RemoteImportBuildDataCmd
+
+func (c *RemoteImportBuildDataCmd) Execute(args []string) error {
+	repo, err := OpenRepo(".")
+	if err != nil {
+		return err
+	}
+
+	if GlobalOpt.Verbose {
+		log.Printf("Creating a new import-only build for repo %q commit %q", repo.URI(), repo.CommitID)
+	}
+
+	repoSpec := sourcegraph.RepoSpec{URI: repo.URI()}
+	repoRevSpec := sourcegraph.RepoRevSpec{RepoSpec: repoSpec, Rev: repo.CommitID, CommitID: repo.CommitID}
+
+	rrepo, _, err := apiclient.Repos.Get(repoSpec, nil)
+	if err != nil {
+		return err
+	}
+
+	// Check that the remote server knows about the commit.
+	if _, _, err := apiclient.Repos.GetCommit(repoRevSpec, nil); err != nil {
+		// TODO(sqs): update remote repo VCS and wait
+		return fmt.Errorf("could not find commit %s on remote (%s); was it pushed?", repoRevSpec.CommitID, err)
+	}
+
+	build, _, err := apiclient.Builds.Create(repoSpec, &sourcegraph.BuildCreateOptions{
+		BuildConfig: sourcegraph.BuildConfig{
+			Import:   true,
+			Queue:    false,
+			CommitID: repo.CommitID,
+		},
+		Force: true,
+	})
+	if err != nil {
+		return err
+	}
+	if GlobalOpt.Verbose {
+		log.Printf("Created build #%d", build.BID)
+	}
+
+	importTask := &sourcegraph.BuildTask{
+		BID:   build.BID,
+		Op:    sourcegraph.ImportTaskOp,
+		Queue: true,
+	}
+	tasks, _, err := apiclient.Builds.CreateTasks(build.Spec(), []*sourcegraph.BuildTask{importTask})
+	if err != nil {
+		return err
+	}
+	importTask = tasks[0]
+	if GlobalOpt.Verbose {
+		log.Printf("Created import task #%d", importTask.TaskID)
+	}
+
+	// Stream logs.
+	done := make(chan struct{})
+	go func() {
+		var logOpt sourcegraph.BuildGetLogOptions
+		loopsSinceLastLog := 0
+		for {
+			select {
+			case <-done:
+				return
+			case <-time.After(time.Duration(loopsSinceLastLog+1) * 500 * time.Millisecond):
+				logs, _, err := apiclient.Builds.GetTaskLog(importTask.Spec(), &logOpt)
+				if err != nil {
+					log.Printf("Warning: failed to get build logs: %s.", err)
+					return
+				}
+				if len(logs.Entries) == 0 {
+					loopsSinceLastLog++
+					continue
+				}
+				logOpt.MinID = logs.MaxID
+				for _, e := range logs.Entries {
+					fmt.Println(e)
+				}
+				loopsSinceLastLog = 0
+			}
+		}
+	}()
+
+	defer func() {
+		done <- struct{}{}
+	}()
+	taskID := importTask.TaskID
+	started := false
+	log.Printf("# Import queued. Waiting for task #%d in build #%d to start...", importTask.TaskID, build.BID)
+	for i, start := 0, time.Now(); ; i++ {
+		if time.Since(start) > 45*time.Minute {
+			return fmt.Errorf("import timed out after %s", time.Since(start))
+		}
+
+		tasks, _, err := apiclient.Builds.ListBuildTasks(build.Spec(), nil)
+		if err != nil {
+			return err
+		}
+		importTask = nil
+		for _, task := range tasks {
+			if task.TaskID == taskID {
+				importTask = task
+				break
+			}
+		}
+		if importTask == nil {
+			return fmt.Errorf("task #%d not found in task list for build #%d", taskID, build.BID)
+		}
+
+		if !started && importTask.StartedAt.Valid {
+			log.Printf("# Import started.")
+			started = true
+		}
+
+		if importTask.EndedAt.Valid {
+			if importTask.Success {
+				log.Printf("# Import succeeded!")
+			} else if importTask.Failure {
+				log.Printf("# Import failed!")
+			}
+			break
+		}
+
+		time.Sleep(time.Duration(i) * 200 * time.Millisecond)
+	}
+
+	log.Printf("# View the repository at:")
+	log.Printf("# %s://%s/%s@%s", apiclient.BaseURL.Scheme, apiclient.BaseURL.Host, rrepo.URI, build.CommitID)
+
+	return nil
+}
