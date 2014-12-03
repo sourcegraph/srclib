@@ -4,11 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"time"
 
-	"strings"
-
-	"github.com/kr/fs"
 	"sourcegraph.com/sourcegraph/rwvfs"
 )
 
@@ -85,72 +81,8 @@ func FlushCache(s *RepositoryStore, commitID string) error {
 	return nil
 }
 
-type BuildDataFileInfo struct {
-	CommitID string
-	Path     string
-	Size     int64
-	ModTime  time.Time
-	DataType string
-}
-
 func (s *RepositoryStore) CommitPath(commitID string) string { return commitID }
 
 func (s *RepositoryStore) FilePath(commitID, path string) string {
 	return filepath.Join(s.CommitPath(commitID), path)
-}
-
-func (s *RepositoryStore) ListCommits() ([]string, error) {
-	files, err := s.ReadDir(".")
-	if err != nil {
-		return nil, err
-	}
-
-	var commits []string
-	for _, f := range files {
-		if f.IsDir() {
-			commits = append(commits, f.Name())
-		}
-	}
-	return commits, nil
-}
-
-func (s *RepositoryStore) DataFiles(path string) ([]*BuildDataFileInfo, error) {
-	files := []*BuildDataFileInfo{}
-	walker := fs.WalkFS(path, s)
-	for walker.Step() {
-		fi := walker.Stat()
-		if fi == nil {
-			continue
-		}
-		if fi.IsDir() {
-			continue
-		}
-
-		path := strings.TrimPrefix(walker.Path(), "/")
-
-		parts := strings.SplitN(path, "/", 2)
-		if len(parts) != 2 {
-			return nil, fmt.Errorf("bad build data file path: %q", walker.Path())
-		}
-		commitID, path := parts[0], parts[1]
-
-		dataTypeName, _ := DataType(path)
-
-		files = append(files, &BuildDataFileInfo{
-			CommitID: commitID,
-			Path:     path,
-			Size:     fi.Size(),
-			ModTime:  fi.ModTime(),
-			DataType: dataTypeName,
-		})
-	}
-	return files, nil
-}
-
-func (s *RepositoryStore) DataFilesForCommit(commitID string) ([]*BuildDataFileInfo, error) {
-	return s.DataFiles(s.CommitPath(commitID))
-}
-
-func (s *RepositoryStore) AllDataFiles() ([]*BuildDataFileInfo, error) {
-	return s.DataFiles(".")
 }
