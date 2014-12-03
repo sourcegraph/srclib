@@ -82,12 +82,12 @@ func CreateMakefile(execOpt ToolchainExecOpt) (*makex.Makefile, error) {
 	if err != nil {
 		return nil, err
 	}
-	buildStore, err := buildstore.NewRepositoryStore(currentRepo.RootDir)
+	buildStore, err := buildstore.LocalRepo(currentRepo.RootDir)
 	if err != nil {
 		return nil, err
 	}
 
-	treeConfig, err := config.ReadCached(buildStore, currentRepo.CommitID)
+	treeConfig, err := config.ReadCached(buildStore.Commit(currentRepo.CommitID))
 	if err != nil {
 		return nil, err
 	}
@@ -100,15 +100,8 @@ func CreateMakefile(execOpt ToolchainExecOpt) (*makex.Makefile, error) {
 		return nil, err
 	}
 
-	buildDataDir, err := buildstore.BuildDir(buildStore, currentRepo.CommitID)
-	if err != nil {
-		return nil, err
-	}
-	absDir, err := os.Getwd()
-	if err != nil {
-		return nil, err
-	}
-	buildDataDir, _ = filepath.Rel(absDir, buildDataDir)
+	// TODO(sqs): buildDataDir is hardcoded.
+	buildDataDir := filepath.Join(buildstore.BuildDataDirName, currentRepo.CommitID)
 
 	mf, err := plan.CreateMakefile(buildDataDir, treeConfig, plan.Options{ToolchainExecOpt: strings.Join(toolchainExecOptArgs, " ")})
 	if err != nil {
