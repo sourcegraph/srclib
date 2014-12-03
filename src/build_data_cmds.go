@@ -84,11 +84,11 @@ func (c *BuildDataCmd) Execute(args []string) error { return nil }
 
 func getBuildDataCmdFS(repo *Repo) (rwvfs.FileSystem, error) {
 	if buildDataCmd.Local {
-		localStore, err := buildstore.NewRepositoryStore(repo.RootDir)
+		localStore, err := buildstore.LocalRepo(repo.RootDir)
 		if err != nil {
 			return nil, err
 		}
-		return rwvfs.Sub(localStore, localStore.CommitPath(repo.CommitID)), nil
+		return localStore.Commit(repo.CommitID), nil
 	}
 	return apiclient.BuildData.FileSystem(repo.RepoRevSpec())
 }
@@ -256,15 +256,14 @@ func (c *PullCmd) Execute(args []string) error {
 	if err != nil {
 		return err
 	}
-	localStore, err := buildstore.NewRepositoryStore(repo.RootDir)
+	localStore, err := buildstore.LocalRepo(repo.RootDir)
 	if err != nil {
 		log.Fatal(err)
 	}
-	buildDataDir, err := buildstore.BuildDir(localStore, repo.CommitID)
-	if err := os.MkdirAll(buildDataDir, 0700); err != nil {
+	localFS := localStore.Commit(repo.CommitID)
+	if err := rwvfs.MkdirAll(localFS, "."); err != nil {
 		return err
 	}
-	localFS := rwvfs.Sub(localStore, localStore.CommitPath(repo.CommitID))
 
 	// Use uncached API client because the .srclib-cache already
 	// caches it, and we want to be able to stream large files.
@@ -352,11 +351,11 @@ func (c *PushCmd) Execute(args []string) error {
 	if err != nil {
 		return err
 	}
-	localStore, err := buildstore.NewRepositoryStore(repo.RootDir)
+	localStore, err := buildstore.LocalRepo(repo.RootDir)
 	if err != nil {
 		return err
 	}
-	localFS := rwvfs.Sub(localStore, localStore.CommitPath(repo.CommitID))
+	localFS := localStore.Commit(repo.CommitID)
 
 	remoteFS, err := apiclient.BuildData.FileSystem(repo.RepoRevSpec())
 	if err != nil {
