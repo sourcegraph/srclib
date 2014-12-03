@@ -141,14 +141,6 @@ func ensureBuild(buildStore buildstore.RepoBuildStore, repo *Repo) error {
 	return nil
 }
 
-func ensurePullAndBuild(buildStore buildstore.RepoBuildStore, repo *Repo) error {
-	if err := pullCmd.Execute(nil); err != nil {
-		return err
-	}
-
-	return ensureBuild(buildStore, repo)
-}
-
 // Get a list of all source units that contain the given file
 func getSourceUnitsWithFile(buildStore buildstore.RepoBuildStore, repo *Repo, filename string) ([]*unit.SourceUnit, error) {
 	filename = filepath.Clean(filename)

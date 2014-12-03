@@ -55,19 +55,19 @@ func init() {
 		log.Fatal(err)
 	}
 
-	_, err = CLI.AddCommand("pull",
+	_, err = buildDataGroup.AddCommand("fetch",
 		"fetch remote build data to local dir",
 		"Fetch remote build data (from Sourcegraph.com) for the current repository to the local .srclib-cache directory.",
-		&pullCmd,
+		&buildDataFetchCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_, err = CLI.AddCommand("push",
+	_, err = buildDataGroup.AddCommand("upload",
 		"upload local build data to remote",
 		"Upload local build data (in .srclib-cache) for the current repository to Sourcegraph.com.",
-		&pushCmd,
+		&buildDataUploadCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -75,7 +75,7 @@ func init() {
 }
 
 type BuildDataCmd struct {
-	Local bool `short:"l" long:"local" description:"execute build-data subcommands on local build data (.srclib-cache), not remote (sourcegraph.com)"`
+	Local bool `short:"l" long:"local" description:"execute build-data ls/cat/rm subcommands on local build data (.srclib-cache), not remote (sourcegraph.com)"`
 }
 
 var buildDataCmd BuildDataCmd
@@ -120,7 +120,7 @@ func (c *BuildDataListCmd) Execute(args []string) error {
 	}
 
 	if GlobalOpt.Verbose {
-		log.Printf("Listing build files for repository %q commit %q in dir %q", repo.URI, repo.CommitID, dir)
+		log.Printf("Listing build files for repository %q commit %q in dir %q", repo.URI(), repo.CommitID, dir)
 	}
 
 	bdfs, err := getBuildDataCmdFS(repo)
@@ -197,7 +197,7 @@ func (c *BuildDataCatCmd) Execute(args []string) error {
 	}
 
 	if GlobalOpt.Verbose {
-		log.Printf("Displaying build file %q for repository %q commit %q", file, repo.URI, repo.CommitID)
+		log.Printf("Displaying build file %q for repository %q commit %q", file, repo.URI(), repo.CommitID)
 	}
 
 	bdfs, err := getBuildDataCmdFS(repo)
@@ -216,7 +216,7 @@ func (c *BuildDataCatCmd) Execute(args []string) error {
 
 type BuildDataRemoveCmd struct {
 	Args struct {
-		File string `name:"FILE" default:"." description:"file to remove"`
+		Files []string `name:"FILES" default:"." description:"file to remove"`
 	} `positional-args:"yes"`
 }
 
@@ -228,13 +228,12 @@ func (c *BuildDataRemoveCmd) Execute(args []string) error {
 		return err
 	}
 
-	file := c.Args.File
-	if file == "" {
-		return fmt.Errorf("no file specified")
+	if len(c.Args.Files) == 0 {
+		return fmt.Errorf("no files specified")
 	}
 
 	if GlobalOpt.Verbose {
-		log.Printf("Removing build file %q for repository %q commit %q", file, repo.URI, repo.CommitID)
+		log.Printf("Removing build files %v for repository %q commit %q", c.Args.Files, repo.URI(), repo.CommitID)
 	}
 
 	bdfs, err := getBuildDataCmdFS(repo)
@@ -242,16 +241,24 @@ func (c *BuildDataRemoveCmd) Execute(args []string) error {
 		return err
 	}
 
-	return bdfs.Remove(file)
+	for _, file := range c.Args.Files {
+		if err := bdfs.Remove(file); err != nil {
+			return err
+		}
+		if GlobalOpt.Verbose {
+			log.Printf("Removed %s", file)
+		}
+	}
+	return nil
 }
 
-type PullCmd struct {
+type BuildDataFetchCmd struct {
 	DryRun bool `short:"n" long:"dry-run" description:"don't do anything, just show what would be done"`
 }
 
-var pullCmd PullCmd
+var buildDataFetchCmd BuildDataFetchCmd
 
-func (c *PullCmd) Execute(args []string) error {
+func (c *BuildDataFetchCmd) Execute(args []string) error {
 	repo, err := OpenRepo(".")
 	if err != nil {
 		return err
@@ -263,6 +270,10 @@ func (c *PullCmd) Execute(args []string) error {
 	localFS := localStore.Commit(repo.CommitID)
 	if err := rwvfs.MkdirAll(localFS, "."); err != nil {
 		return err
+	}
+
+	if _, _, err := apiclient.Repos.Get(repo.RepoRevSpec().RepoSpec, nil); err != nil {
+		return fmt.Errorf("couldn't find repository on remote: %s.", err)
 	}
 
 	// Use uncached API client because the .srclib-cache already
@@ -278,7 +289,7 @@ func (c *PullCmd) Execute(args []string) error {
 	}
 
 	if GlobalOpt.Verbose {
-		log.Printf("Pulling remote build files for repository %q commit %q from %s to %s...", repo.URI(), repo.CommitID, remoteFS.String(), localFS.String())
+		log.Printf("Fetching remote build files for repository %q commit %q from %s to %s...", repo.URI(), repo.CommitID, remoteFS.String(), localFS.String())
 	}
 
 	// TODO(sqs): check if file exists in local cache and don't fetch it if it does and if it is identical
@@ -340,13 +351,13 @@ func fetchFile(remote vfs.FileSystem, local rwvfs.FileSystem, path string, fi os
 	return lf.Close()
 }
 
-type PushCmd struct {
+type BuildDataUploadCmd struct {
 	DryRun bool `short:"n" long:"dry-run" description:"don't do anything, just show what would be done"`
 }
 
-var pushCmd PushCmd
+var buildDataUploadCmd BuildDataUploadCmd
 
-func (c *PushCmd) Execute(args []string) error {
+func (c *BuildDataUploadCmd) Execute(args []string) error {
 	repo, err := OpenRepo(".")
 	if err != nil {
 		return err
@@ -357,16 +368,20 @@ func (c *PushCmd) Execute(args []string) error {
 	}
 	localFS := localStore.Commit(repo.CommitID)
 
+	if _, _, err := apiclient.Repos.Get(repo.RepoRevSpec().RepoSpec, nil); err != nil {
+		return fmt.Errorf("couldn't find repository on remote: %s.", err)
+	}
+
 	remoteFS, err := apiclient.BuildData.FileSystem(repo.RepoRevSpec())
 	if err != nil {
 		return err
 	}
 
 	if GlobalOpt.Verbose {
-		log.Printf("Pushing local build files to remote for repository %q commit %q from %s to %s...", repo.URI(), repo.CommitID, localFS.String(), remoteFS.String())
+		log.Printf("Uploading local build files to remote for repository %q commit %q from %s to %s...", repo.URI(), repo.CommitID, localFS.String(), remoteFS.String())
 	}
 
-	// TODO(sqs): check if file exists remotely and don't push it if it does and if it is identical
+	// TODO(sqs): check if file exists remotely and don't upload it if it does and if it is identical
 
 	par := parallel.NewRun(8)
 	w := fs.WalkFS(".", rwvfs.Walkable(localFS))
