@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"reflect"
+	"runtime"
 	"sort"
 	"strings"
+
+	"code.google.com/p/rog-go/parallel"
 
 	"github.com/kr/fs"
 	"sourcegraph.com/sourcegraph/rwvfs"
@@ -33,13 +35,14 @@ func ReadCached(buildStore *buildstore.RepositoryStore, commitID string) (*Tree,
 	} else if fi.Mode().IsDir() {
 		w = fs.WalkFS(dataPath, buildStore)
 	} else if fi.Mode()&os.ModeSymlink > 0 {
+		// Symlinks are currently used by the `src test` command for
+		// the .srclib-cache dirs of test case repos. We assume that
+		// symlinks only exist in OS VFSes, and if we see a symlink,
+		// we dereference it and open its target using an OS VFS. This
+		// will break if other VFSes have symlinks.
 		buildDataDir, err := buildstore.BuildDir(buildStore, commitID)
 		if err != nil {
 			return nil, err
-		}
-
-		if ufs := getUnderlyingFileSystem(buildStore.WalkableFileSystem); reflect.TypeOf(ufs) != reflect.TypeOf(rwvfs.OS("")) {
-			return nil, fmt.Errorf("symlink at %s is not supported by FS type %T (only supported by OS filesystem, not other VFS)", buildDataDir, ufs)
 		}
 
 		dst, err := os.Readlink(buildDataDir)
@@ -64,32 +67,27 @@ func ReadCached(buildStore *buildstore.RepositoryStore, commitID string) (*Tree,
 	// Parse units
 	sort.Strings(unitFiles)
 	units := make([]*unit.SourceUnit, len(unitFiles))
-	for i, unitFile := range unitFiles {
-		f, err := buildStore.Open(unitFile)
-		if err != nil {
-			return nil, err
-		}
-		var u *unit.SourceUnit
-		if err := json.NewDecoder(f).Decode(&u); err != nil {
-			f.Close()
-			return nil, err
-		}
-		if err := f.Close(); err != nil {
-			return nil, err
-		}
-		units[i] = u
+	par := parallel.NewRun(runtime.GOMAXPROCS(0))
+	for i_, unitFile_ := range unitFiles {
+		i, unitFile := i_, unitFile_
+		par.Do(func() error {
+			f, err := buildStore.Open(unitFile)
+			if err != nil {
+				return err
+			}
+			if err := json.NewDecoder(f).Decode(&units[i]); err != nil {
+				f.Close()
+				return err
+			}
+			if err := f.Close(); err != nil {
+				return err
+			}
+			return nil
+		})
+	}
+	if err := par.Wait(); err != nil {
+		return nil, err
 	}
 
 	return &Tree{SourceUnits: units}, nil
-}
-
-func getUnderlyingFileSystem(fs rwvfs.FileSystem) rwvfs.FileSystem {
-	type underlying interface {
-		Underlying() rwvfs.FileSystem
-	}
-	switch fs := fs.(type) {
-	case underlying:
-		return getUnderlyingFileSystem(fs.Underlying())
-	}
-	return fs
 }
