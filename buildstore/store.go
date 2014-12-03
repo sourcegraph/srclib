@@ -10,7 +10,6 @@ import (
 
 	"github.com/kr/fs"
 	"sourcegraph.com/sourcegraph/rwvfs"
-	"sourcegraph.com/sourcegraph/s3vfs"
 )
 
 var BuildDataDirName = ".srclib-cache"
@@ -23,25 +22,16 @@ var (
 )
 
 type MultiStore struct {
-	walkableRWVFS
+	fs rwvfs.WalkableFileSystem
 }
 
 func New(fs rwvfs.FileSystem) *MultiStore {
-	return &MultiStore{walkableRWVFS{fs}}
+	return &MultiStore{rwvfs.Walkable(fs)}
 }
 
 func (s *MultiStore) RepositoryStore(repoURI string) (*RepositoryStore, error) {
 	path := filepath.Clean(string(repoURI))
-
-	// No need to mkdir for S3, since S3 doesn't have directories.
-	if _, ok := s.walkableRWVFS.FileSystem.(*s3vfs.S3FS); !ok {
-		err := rwvfs.MkdirAll(s, path)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return &RepositoryStore{walkableRWVFS{rwvfs.Sub(s.walkableRWVFS, path)}}, nil
+	return &RepositoryStore{rwvfs.Walkable(rwvfs.Sub(s.fs, path))}, nil
 }
 
 type RepositoryStore struct {
@@ -59,7 +49,7 @@ func NewRepositoryStore(repoDir string) (*RepositoryStore, error) {
 		return nil, err
 	}
 
-	s := &RepositoryStore{walkableRWVFS{rwvfs.OS(storeDir)}}
+	s := &RepositoryStore{rwvfs.Walkable(rwvfs.OS(storeDir))}
 
 	localDirs[s] = storeDir
 
@@ -164,7 +154,3 @@ func (s *RepositoryStore) DataFilesForCommit(commitID string) ([]*BuildDataFileI
 func (s *RepositoryStore) AllDataFiles() ([]*BuildDataFileInfo, error) {
 	return s.DataFiles(".")
 }
-
-type walkableRWVFS struct{ rwvfs.FileSystem }
-
-func (_ walkableRWVFS) Join(elem ...string) string { return filepath.Join(elem...) }
