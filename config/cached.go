@@ -20,11 +20,6 @@ import (
 // read the Srcfile; the Srcfile's directives are already baked into the cached
 // source unit definition files.
 func ReadCached(buildStore *buildstore.RepositoryStore, commitID string) (*Tree, error) {
-	buildDataDir, err := buildstore.BuildDir(buildStore, commitID)
-	if err != nil {
-		return nil, err
-	}
-
 	// Get all .srclib-cache/**/*.unit.v0.json files.
 	var unitFiles []string
 	unitSuffix := buildstore.DataTypeSuffix(unit.SourceUnit{})
@@ -38,9 +33,15 @@ func ReadCached(buildStore *buildstore.RepositoryStore, commitID string) (*Tree,
 	} else if fi.Mode().IsDir() {
 		w = fs.WalkFS(dataPath, buildStore)
 	} else if fi.Mode()&os.ModeSymlink > 0 {
+		buildDataDir, err := buildstore.BuildDir(buildStore, commitID)
+		if err != nil {
+			return nil, err
+		}
+
 		if ufs := getUnderlyingFileSystem(buildStore.WalkableFileSystem); reflect.TypeOf(ufs) != reflect.TypeOf(rwvfs.OS("")) {
 			return nil, fmt.Errorf("symlink at %s is not supported by FS type %T (only supported by OS filesystem, not other VFS)", buildDataDir, ufs)
 		}
+
 		dst, err := os.Readlink(buildDataDir)
 		if err != nil {
 			return nil, err
