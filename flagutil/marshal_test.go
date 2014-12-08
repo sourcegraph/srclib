@@ -12,6 +12,13 @@ func TestMarshalArgs(t *testing.T) {
 	}{
 		{
 			group: &struct {
+				Foo bool `short:"f"`
+				Bar bool `short:"b"`
+			}{Foo: true},
+			wantArgs: []string{"-f"},
+		},
+		{
+			group: &struct {
 				Foo string `short:"f"`
 			}{Foo: "bar"},
 			wantArgs: []string{"-f", "bar"},
