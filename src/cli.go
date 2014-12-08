@@ -27,19 +27,6 @@ func init() {
 	CLI.AddGroup("Global options", "", &GlobalOpt)
 }
 
-var (
-	// endpointURL is the API endpoint used as apiclient.BaseURL. It
-	// is set from SRC_ENDPOINT and it defaults to hitting
-	// Sourcegraph.
-	endpointURL = getEndpointURL()
-
-	// apiclient is the API client, created using
-	// newAPIClientWithAuthIfPresent. It is authenticated if the user
-	// has previously stored login credentials for the current
-	// endpointURL.
-	apiclient = NewAPIClientWithAuthIfPresent()
-)
-
 func getEndpointURL() *url.URL {
 	if urlStr := os.Getenv("SRC_ENDPOINT"); urlStr != "" {
 		u, err := url.Parse(urlStr)
@@ -68,6 +55,8 @@ func getPermGrantTickets() []string {
 // credentials in ua (if non-nil) and perm grant ticket (if one is
 // provided in SRCLIB_TICKET).
 func newAPIClient(ua *userEndpointAuth) *sourcegraph.Client {
+	endpointURL := getEndpointURL()
+
 	transport := http.RoundTripper(httpcache.NewTransport(diskcache.New("/tmp/srclib-cache")))
 
 	if tickets := getPermGrantTickets(); len(tickets) > 0 {
@@ -100,7 +89,7 @@ func NewAPIClientWithAuthIfPresent() *sourcegraph.Client {
 	if err != nil {
 		log.Fatal("Reading user auth:", err)
 	}
-	ua := a[endpointURL.String()]
+	ua := a[getEndpointURL().String()]
 	return newAPIClient(ua)
 }
 
