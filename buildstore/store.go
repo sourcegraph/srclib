@@ -1,13 +1,13 @@
 package buildstore
 
 import (
+	"log"
 	"os"
 	"path/filepath"
+	"sort"
+	"strconv"
 
 	"github.com/kr/fs"
-
-	"sort"
-
 	"sourcegraph.com/sourcegraph/rwvfs"
 )
 
@@ -69,7 +69,28 @@ type repoBuildStore struct {
 }
 
 func (s *repoBuildStore) Commit(commitID string) rwvfs.WalkableFileSystem {
-	return rwvfs.Walkable(rwvfs.Sub(s.fs, s.commitPath(commitID)))
+	path := s.commitPath(commitID)
+
+	// Dereference path if path refers to a symlink, so that we can
+	// walk the tree.
+
+	e, _ := s.fs.Lstat(path)
+	if e != nil && e.Mode()&os.ModeSymlink != 0 {
+		if fs, ok := s.fs.(rwvfs.LinkReader); ok {
+			var err error
+			dst, err := fs.ReadLink(path)
+			if err == nil {
+				path = dst
+			} else if err == rwvfs.ErrOutsideRoot && FollowCrossFSSymlinks {
+				return rwvfs.Walkable(rwvfs.OS(dst))
+			} else {
+				log.Printf("Failed to read symlink %s: %s. Using non-dereferenced path.", path, err)
+			}
+		} else {
+			log.Printf("Repository build store path for commit %s is a symlink, but the current VFS %s doesn't support dereferencing symlinks.", commitID, s.fs)
+		}
+	}
+	return rwvfs.Walkable(rwvfs.Sub(s.fs, path))
 }
 
 func (s *repoBuildStore) commitPath(commitID string) string { return commitID }
@@ -115,3 +136,11 @@ func BuildDataExistsForCommit(s RepoBuildStore, commitID string) (bool, error) {
 	}
 	return false, err
 }
+
+// FollowCrossFSSymlinks is whether symlinks inside a buildstore
+// should be followed if they cross filesystem boundaries. This should
+// only be true during testing. Setting it to true during normal
+// operation could make it possible for an attacker who uploads
+// symlinks to a build data store to read files on your local
+// filesystem.
+var FollowCrossFSSymlinks, _ = strconv.ParseBool(os.Getenv("SRCLIB_FOLLOW_CROSS_FS_SYMLINKS"))

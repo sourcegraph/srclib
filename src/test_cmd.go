@@ -187,6 +187,7 @@ func testTree(treeDir, expectedDir, actualDir string, exeMethod string, generate
 	cmd := exec.Command("src", "-v", "do-all", "-m", exeMethod)
 	cmd.Dir = treeDir
 	cmd.Stderr, cmd.Stdout = w, w
+	cmd.Env = append(os.Environ(), "SRCLIB_FOLLOW_CROSS_FS_SYMLINKS=true")
 
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("Command %v in %s failed: %s.\n\nOutput was:\n%s", cmd.Args, treeName, err, buf.String())
