@@ -37,7 +37,7 @@ var (
 	// newAPIClientWithAuthIfPresent. It is authenticated if the user
 	// has previously stored login credentials for the current
 	// endpointURL.
-	apiclient = newAPIClientWithAuthIfPresent()
+	apiclient = NewAPIClientWithAuthIfPresent()
 )
 
 func getEndpointURL() *url.URL {
@@ -92,10 +92,10 @@ func newAPIClient(ua *userEndpointAuth) *sourcegraph.Client {
 	return c
 }
 
-// newAPIClientWithAuthIfPresent calls newAPIClient with the user auth
+// NewAPIClientWithAuthIfPresent calls newAPIClient with the user auth
 // credentials from the userAuthFile (if present), and otherwise
 // creates an unauthed API client.
-func newAPIClientWithAuthIfPresent() *sourcegraph.Client {
+func NewAPIClientWithAuthIfPresent() *sourcegraph.Client {
 	a, err := readUserAuth()
 	if err != nil {
 		log.Fatal("Reading user auth:", err)
