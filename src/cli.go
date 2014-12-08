@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"os"
 
+	"strconv"
+
 	"github.com/gregjones/httpcache"
 	"github.com/gregjones/httpcache/diskcache"
 	"github.com/sqs/go-flags"
@@ -26,30 +28,63 @@ func init() {
 }
 
 var (
-	httpClient http.Client
-	apiclient  *sourcegraph.Client
+	// endpointURL is the API endpoint used as apiclient.BaseURL. It
+	// is set from SRC_ENDPOINT and it defaults to hitting
+	// Sourcegraph.
+	endpointURL = getEndpointURL()
+
+	// apiclient is the API client, created using
+	// newAPIClientWithAuthIfPresent. It is authenticated if the user
+	// has previously stored login credentials for the current
+	// endpointURL.
+	apiclient = newAPIClientWithAuthIfPresent()
 )
 
-func init() {
-	// Initialize API client, setting auth data from SRC_USER_ID and SRC_USER_KEY if those env vars are set.
-	unauthedTransport := httpcache.NewTransport(diskcache.New("/tmp/srclib-cache"))
-	uid, uKey := os.Getenv("SRC_USER_ID"), os.Getenv("SRC_USER_KEY")
-	if uid == "" {
-		httpClient = http.Client{Transport: unauthedTransport}
-	} else {
-		authedTransport := &auth.BasicAuthTransport{Username: uid, Password: uKey, Transport: unauthedTransport}
-		httpClient = http.Client{Transport: authedTransport}
-	}
-	apiclient = sourcegraph.NewClient(&httpClient)
-
-	// Set the API client's base URL from the SRC_ENDPOINT env var, if set.
+func getEndpointURL() *url.URL {
 	if urlStr := os.Getenv("SRC_ENDPOINT"); urlStr != "" {
 		u, err := url.Parse(urlStr)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("Parsing SRC_ENDPOINT URL string:", err)
 		}
-		apiclient.BaseURL = u
+		return u
 	}
+	return &url.URL{Scheme: "https", Host: "sourcegraph.com", Path: "/api/"}
+}
+
+// newAPIClient creates a new Sourcegraph API client for the endpoint
+// given by endpointURL (a global) and that is authenticated using the
+// credentials in ua (if non-nil).
+func newAPIClient(ua *userEndpointAuth) *sourcegraph.Client {
+	cache := httpcache.NewTransport(diskcache.New("/tmp/srclib-cache"))
+	var httpClient http.Client
+	if ua == nil {
+		// Unauthenticated API client.
+		if GlobalOpt.Verbose {
+			log.Printf("# Using unauthenticated API client for endpoint %s.", endpointURL)
+		}
+		httpClient.Transport = cache
+	} else {
+		// Authenticated API client.
+		if GlobalOpt.Verbose {
+			log.Printf("# Using authenticated API client for endpoint %s (UID %d).", endpointURL, ua.UID)
+		}
+		httpClient.Transport = &auth.BasicAuthTransport{Username: strconv.Itoa(ua.UID), Password: ua.Key, Transport: cache}
+	}
+	c := sourcegraph.NewClient(&httpClient)
+	c.BaseURL = endpointURL
+	return c
+}
+
+// newAPIClientWithAuthIfPresent calls newAPIClient with the user auth
+// credentials from the userAuthFile (if present), and otherwise
+// creates an unauthed API client.
+func newAPIClientWithAuthIfPresent() *sourcegraph.Client {
+	a, err := readUserAuth()
+	if err != nil {
+		log.Fatal("Reading user auth:", err)
+	}
+	ua := a[endpointURL.String()]
+	return newAPIClient(ua)
 }
 
 var (
