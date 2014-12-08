@@ -7,6 +7,7 @@ import (
 
 	"code.google.com/p/rog-go/parallel"
 	"sourcegraph.com/sourcegraph/srclib/config"
+	"sourcegraph.com/sourcegraph/srclib/flagutil"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -56,7 +57,7 @@ func ScanMulti(scanners []toolchain.Tool, opt Options, treeConfig map[string]int
 }
 
 func Scan(scanner toolchain.Tool, opt Options, treeConfig map[string]interface{}) ([]*unit.SourceUnit, error) {
-	args, err := toolchain.MarshalArgs(&opt)
+	args, err := flagutil.MarshalArgs(&opt)
 	if err != nil {
 		return nil, err
 	}

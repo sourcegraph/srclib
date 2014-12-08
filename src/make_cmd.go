@@ -11,8 +11,8 @@ import (
 
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
+	"sourcegraph.com/sourcegraph/srclib/flagutil"
 	"sourcegraph.com/sourcegraph/srclib/plan"
-	"sourcegraph.com/sourcegraph/srclib/toolchain"
 )
 
 func init() {
@@ -95,7 +95,7 @@ func CreateMakefile(execOpt ToolchainExecOpt) (*makex.Makefile, error) {
 		log.Println("No source unit files found. Did you mean to run `src config`? (This is not an error; it just means that src didn't find anything to build or analyze here.)")
 	}
 
-	toolchainExecOptArgs, err := toolchain.MarshalArgs(&execOpt)
+	toolchainExecOptArgs, err := flagutil.MarshalArgs(&execOpt)
 	if err != nil {
 		return nil, err
 	}

@@ -1,4 +1,4 @@
-package toolchain
+package flagutil
 
 import (
 	"fmt"
