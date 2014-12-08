@@ -40,11 +40,18 @@ func init() {
 }
 
 type PushCmd struct {
+	Dir Directory `short:"C" long:"directory" description:"change to DIR before doing anything" value-name:"DIR"`
 }
 
 var pushCmd PushCmd
 
 func (c *PushCmd) Execute(args []string) error {
+	if c.Dir != "" {
+		if err := os.Chdir(string(c.Dir)); err != nil {
+			return err
+		}
+	}
+
 	repo, err := OpenRepo(".")
 	if err != nil {
 		return err
