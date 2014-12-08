@@ -85,11 +85,20 @@ func newAPIClient(ua *userEndpointAuth) *sourcegraph.Client {
 // credentials from the userAuthFile (if present), and otherwise
 // creates an unauthed API client.
 func NewAPIClientWithAuthIfPresent() *sourcegraph.Client {
-	a, err := readUserAuth()
-	if err != nil {
-		log.Fatal("Reading user auth:", err)
+	var ua *userEndpointAuth
+	if uidStr, key := os.Getenv("SRC_UID"), os.Getenv("SRC_KEY"); uidStr != "" && key != "" {
+		uid, err := strconv.Atoi(uidStr)
+		if err != nil {
+			log.Fatal("Parsing SRC_UID:", err)
+		}
+		ua = &userEndpointAuth{UID: uid, Key: key}
+	} else {
+		a, err := readUserAuth()
+		if err != nil {
+			log.Fatal("Reading user auth:", err)
+		}
+		ua = a[getEndpointURL().String()]
 	}
-	ua := a[getEndpointURL().String()]
 	return newAPIClient(ua)
 }
 
