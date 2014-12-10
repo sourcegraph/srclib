@@ -64,6 +64,8 @@ func (c *PushCmd) Execute(args []string) error {
 		return fmt.Errorf("local build failed: %s", err)
 	}
 
+	apiclient := NewAPIClientWithAuthIfPresent()
+
 	if _, _, err := apiclient.Repos.GetOrCreate(repo.RepoRevSpec().RepoSpec, nil); err != nil {
 		return fmt.Errorf("couldn't find repo %q on remote: %s", repo.URI(), err)
 	}
@@ -109,6 +111,8 @@ func (c *RemoteImportBuildDataCmd) Execute(args []string) error {
 
 	repoSpec := sourcegraph.RepoSpec{URI: repo.URI()}
 	repoRevSpec := sourcegraph.RepoRevSpec{RepoSpec: repoSpec, Rev: repo.CommitID, CommitID: repo.CommitID}
+
+	apiclient := NewAPIClientWithAuthIfPresent()
 
 	rrepo, _, err := apiclient.Repos.Get(repoSpec, nil)
 	if err != nil {

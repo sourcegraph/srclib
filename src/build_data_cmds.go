@@ -90,7 +90,7 @@ func getBuildDataCmdFS(repo *Repo) (rwvfs.FileSystem, error) {
 		}
 		return localStore.Commit(repo.CommitID), nil
 	}
-	return apiclient.BuildData.FileSystem(repo.RepoRevSpec())
+	return NewAPIClientWithAuthIfPresent().BuildData.FileSystem(repo.RepoRevSpec())
 }
 
 type BuildDataListCmd struct {
@@ -150,8 +150,9 @@ func (c *BuildDataListCmd) Execute(args []string) error {
 		if c.URLs {
 			spec := sourcegraph.BuildDataFileSpec{RepoRev: repo.RepoRevSpec(), Path: filepath.Join(dir, fi.Name())}
 			u := router.URITo(router.RepoBuildDataEntry, router.MapToArray(spec.RouteVars())...)
-			u.Host = apiclient.BaseURL.Host
-			u.Scheme = apiclient.BaseURL.Scheme
+			endpointURL := getEndpointURL()
+			u.Host = endpointURL.Host
+			u.Scheme = endpointURL.Scheme
 			url = u.String()
 		}
 
@@ -308,6 +309,8 @@ func (c *BuildDataFetchCmd) Execute(args []string) error {
 		return err
 	}
 
+	apiclient := NewAPIClientWithAuthIfPresent()
+
 	if _, _, err := apiclient.Repos.Get(repo.RepoRevSpec().RepoSpec, nil); err != nil {
 		return fmt.Errorf("couldn't find repository on remote: %s.", err)
 	}
@@ -403,6 +406,8 @@ func (c *BuildDataUploadCmd) Execute(args []string) error {
 		return err
 	}
 	localFS := localStore.Commit(repo.CommitID)
+
+	apiclient := NewAPIClientWithAuthIfPresent()
 
 	if _, _, err := apiclient.Repos.Get(repo.RepoRevSpec().RepoSpec, nil); err != nil {
 		return fmt.Errorf("couldn't find repository on remote: %s.", err)

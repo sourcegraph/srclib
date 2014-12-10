@@ -49,7 +49,7 @@ func (c *QueryCmd) Execute(args []string) error {
 		return errors.New("No build data found. Try running `src config` first.")
 	}
 
-	cl := newAPIClientWithAuthIfPresent()
+	cl := NewAPIClientWithAuthIfPresent()
 
 	repoAndDepURIs := []string{repo.URI()}
 
