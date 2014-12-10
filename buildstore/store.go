@@ -7,7 +7,10 @@ import (
 	"sort"
 	"strconv"
 
+	"code.google.com/p/rog-go/parallel"
+
 	"github.com/kr/fs"
+
 	"sourcegraph.com/sourcegraph/rwvfs"
 )
 
@@ -103,8 +106,19 @@ func (s *repoBuildStore) FilePath(commitID, path string) string {
 // repo build store for the given commit.
 func RemoveAllDataForCommit(s RepoBuildStore, commitID string) error {
 	commitFS := s.Commit(commitID)
-	w := fs.WalkFS(".", commitFS)
+	return RemoveAll(".", commitFS)
+}
+
+// RemoveAll removes a tree recursively.
+func RemoveAll(path string, vfs rwvfs.WalkableFileSystem) error {
+	w := fs.WalkFS(path, vfs)
+
+	remove := func(par *parallel.Run, path string) {
+		par.Do(func() error { return vfs.Remove(path) })
+	}
+
 	var dirs []string // remove dirs after removing all files
+	filesPar := parallel.NewRun(20)
 	for w.Step() {
 		if err := w.Err(); err != nil {
 			return err
@@ -112,18 +126,20 @@ func RemoveAllDataForCommit(s RepoBuildStore, commitID string) error {
 		if w.Stat().IsDir() {
 			dirs = append(dirs, w.Path())
 		} else {
-			if err := commitFS.Remove(w.Path()); err != nil {
-				return err
-			}
+			remove(filesPar, w.Path())
 		}
 	}
+
+	if err := filesPar.Wait(); err != nil {
+		return err
+	}
+
+	dirsPar := parallel.NewRun(20)
 	sort.Sort(sort.Reverse(sort.StringSlice(dirs))) // reverse so we delete leaf dirs first
 	for _, dir := range dirs {
-		if err := commitFS.Remove(dir); err != nil {
-			return err
-		}
+		remove(dirsPar, dir)
 	}
-	return nil
+	return dirsPar.Wait()
 }
 
 func BuildDataExistsForCommit(s RepoBuildStore, commitID string) (bool, error) {

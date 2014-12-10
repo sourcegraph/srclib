@@ -98,8 +98,10 @@ type BuildDataListCmd struct {
 		Dir string `name:"DIR" default:"." description:"list build data files in this dir"`
 	} `positional-args:"yes"`
 
-	Recursive bool `short:"r" long:"recursive" description:"list recursively"`
-	URLs      bool `long:"urls" description:"show URLs to build data files"`
+	Recursive bool   `short:"r" long:"recursive" description:"list recursively"`
+	Long      bool   `short:"l" long:"long" description:"show file sizes and times"`
+	Type      string `long:"type" description:"show only entries of this type (f=file, d=dir)"`
+	URLs      bool   `long:"urls" description:"show URLs to build data files (implies -l)"`
 }
 
 var buildDataListCmd BuildDataListCmd
@@ -107,6 +109,9 @@ var buildDataListCmd BuildDataListCmd
 func (c *BuildDataListCmd) Execute(args []string) error {
 	if c.URLs && buildDataCmd.Local {
 		return fmt.Errorf("using --urls is incompatible with the build-data -l/--local option because local build data files do not have a URL")
+	}
+	if c.URLs {
+		c.Long = true
 	}
 
 	repo, err := OpenRepo(".")
@@ -128,23 +133,14 @@ func (c *BuildDataListCmd) Execute(args []string) error {
 		return err
 	}
 
-	var fis []os.FileInfo
-	if c.Recursive {
-		w := fs.WalkFS(dir, rwvfs.Walkable(bdfs))
-		for w.Step() {
-			if err := w.Err(); err != nil {
-				return err
-			}
-			fis = append(fis, treeFileInfo{w.Path(), w.Stat()})
+	printFile := func(fi os.FileInfo) {
+		if c.Type == "f" && !fi.Mode().IsRegular() {
+			return
 		}
-	} else {
-		fis, err = bdfs.ReadDir(dir)
-		if err != nil {
-			return err
+		if c.Type == "d" && !fi.Mode().IsDir() {
+			return
 		}
-	}
 
-	for _, fi := range fis {
 		var suffix string
 		if fi.IsDir() {
 			suffix = "/"
@@ -159,12 +155,34 @@ func (c *BuildDataListCmd) Execute(args []string) error {
 			url = u.String()
 		}
 
-		var timeStr string
-		if !fi.ModTime().IsZero() {
-			timeStr = fi.ModTime().Format("Jan _2 15:04")
+		if c.Long {
+			var timeStr string
+			if !fi.ModTime().IsZero() {
+				timeStr = fi.ModTime().Format("Jan _2 15:04")
+			}
+			fmt.Printf("% 7d %12s %s%s %s\n", fi.Size(), timeStr, fi.Name(), suffix, url)
+		} else {
+			fmt.Println(fi.Name() + suffix)
 		}
+	}
 
-		fmt.Printf("% 7d %12s %s%s %s\n", fi.Size(), timeStr, fi.Name(), suffix, url)
+	var fis []os.FileInfo
+	if c.Recursive {
+		w := fs.WalkFS(dir, rwvfs.Walkable(bdfs))
+		for w.Step() {
+			if err := w.Err(); err != nil {
+				return err
+			}
+			printFile(treeFileInfo{w.Path(), w.Stat()})
+		}
+	} else {
+		fis, err = bdfs.ReadDir(dir)
+		if err != nil {
+			return err
+		}
+		for _, fi := range fis {
+			printFile(fi)
+		}
 	}
 
 	return nil
@@ -215,7 +233,8 @@ func (c *BuildDataCatCmd) Execute(args []string) error {
 }
 
 type BuildDataRemoveCmd struct {
-	Args struct {
+	Recursive bool `short:"r" description:"recursively delete files and dir"`
+	Args      struct {
 		Files []string `name:"FILES" default:"." description:"file to remove"`
 	} `positional-args:"yes"`
 }
@@ -241,13 +260,30 @@ func (c *BuildDataRemoveCmd) Execute(args []string) error {
 		return err
 	}
 
+	vfs := removeLoggedFS{rwvfs.Walkable(bdfs)}
+
 	for _, file := range c.Args.Files {
-		if err := bdfs.Remove(file); err != nil {
-			return err
+		if c.Recursive {
+			if err := buildstore.RemoveAll(file, vfs); err != nil {
+				return err
+			}
+		} else {
+			if err := vfs.Remove(file); err != nil {
+				return err
+			}
 		}
-		if GlobalOpt.Verbose {
-			log.Printf("Removed %s", file)
-		}
+	}
+	return nil
+}
+
+type removeLoggedFS struct{ rwvfs.WalkableFileSystem }
+
+func (fs removeLoggedFS) Remove(path string) error {
+	if err := fs.WalkableFileSystem.Remove(path); err != nil {
+		return err
+	}
+	if GlobalOpt.Verbose {
+		log.Printf("Removed %s", path)
 	}
 	return nil
 }
