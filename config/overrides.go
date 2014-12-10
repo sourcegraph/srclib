@@ -25,6 +25,14 @@ var overrides = map[string]*Repository{
 			SkipDirs: []string{"examples"},
 		},
 	},
+	"github.com/golang/go": {
+		URI: "github.com/golang/go",
+		Tree: Tree{
+			Config:            map[string]interface{}{"GOROOT": "."},
+			SkipDirs:          []string{"test", "misc", "doc", "lib", "include"},
+			PreConfigCommands: []string{"echo devel > VERSION && cd src && ./make.bash"},
+		},
+	},
 	"code.google.com/p/go": {
 		URI: "code.google.com/p/go",
 		Tree: Tree{
