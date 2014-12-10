@@ -84,6 +84,7 @@ func (c *LoginCmd) Execute(args []string) error {
 	}
 
 	ua := userEndpointAuth{UID: c.UID, Key: c.Key}
+	endpointURL := getEndpointURL()
 
 	if !c.NoVerify {
 		authedAPIClient := newAPIClient(&ua)

@@ -429,6 +429,8 @@ OuterLoop:
 		Path:     string(ref.DefPath),
 	}
 
+	apiclient := NewAPIClientWithAuthIfPresent()
+
 	var wg sync.WaitGroup
 
 	if resp.Def == nil {
