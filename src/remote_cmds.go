@@ -28,8 +28,11 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	if repo := openCurrentRepo(); repo != nil {
+		SetOptionDefaultValue(remoteGroup.Group, "repo", repo.URI())
+	}
 
-	_, err = remoteGroup.AddCommand("import-build-data",
+	importBuildDataCmd, err := remoteGroup.AddCommand("import-build-data",
 		"import build data for a repository at a specific commit",
 		"The `src remote import-build-data` subcommand imports build data for a repository at a specific commit. To import build data that was produced locally, first run `src build-data upload` (or run `src push`, which performs both steps).",
 		&remoteImportBuildDataCmd,
@@ -37,6 +40,12 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	if repo := openCurrentRepo(); repo != nil {
+		SetOptionDefaultValue(importBuildDataCmd.Group, "commit", repo.CommitID)
+	}
+
+	initRemoteBuildCmds(remoteGroup)
+	initRemoteRepoCmds(remoteGroup)
 }
 
 type PushCmd struct {
@@ -86,6 +95,7 @@ func (c *PushCmd) Execute(args []string) error {
 }
 
 type RemoteCmd struct {
+	RepoURI string `short:"r" long:"repo" description:"repository URI (defaults to VCS 'srclib' or 'origin' remote URL)" required:"yes"`
 }
 
 var remoteCmd RemoteCmd
@@ -95,6 +105,7 @@ func (c *RemoteCmd) Execute(args []string) error {
 }
 
 type RemoteImportBuildDataCmd struct {
+	CommitID string `short:"c" long:"commit" description:"commit ID of data to import" required:"yes"`
 }
 
 var remoteImportBuildDataCmd RemoteImportBuildDataCmd
