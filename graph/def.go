@@ -7,7 +7,7 @@ import (
 	"regexp"
 
 	"github.com/jmoiron/sqlx/types"
-	"github.com/sourcegraph/go-nnz/nnz"
+	"sourcegraph.com/sourcegraph/go-nnz/nnz"
 )
 
 type (

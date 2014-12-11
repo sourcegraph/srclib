@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/sourcegraph/go-nnz/nnz"
+	"sourcegraph.com/sourcegraph/go-nnz/nnz"
 	"sourcegraph.com/sourcegraph/srclib/db_common"
 )
 
