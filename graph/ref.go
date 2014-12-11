@@ -3,7 +3,7 @@ package graph
 import (
 	"strconv"
 
-	"github.com/sourcegraph/go-nnz/nnz"
+	"sourcegraph.com/sourcegraph/go-nnz/nnz"
 )
 
 type RefDefKey struct {
