@@ -34,7 +34,8 @@ func initRemoteBuildCmds(remoteGroup *flags.Command) {
 }
 
 type RemoteBuildCmd struct {
-	CommitID string `short:"c" long:"commit" description:"commit ID of data to import" required:"yes"`
+	CommitID string `short:"c" long:"commit" description:"commit ID to build" required:"yes"`
+	Priority int    `short:"p" long:"priority" description:"build priority" default:"2"`
 }
 
 var remoteBuildCmd RemoteBuildCmd
@@ -42,7 +43,20 @@ var remoteBuildCmd RemoteBuildCmd
 func (c *RemoteBuildCmd) Execute(args []string) error {
 	cl := NewAPIClientWithAuthIfPresent()
 
-	_ = cl
+	build, _, err := cl.Builds.Create(sourcegraph.RepoSpec{URI: remoteCmd.RepoURI}, &sourcegraph.BuildCreateOptions{
+		BuildConfig: sourcegraph.BuildConfig{
+			Import:   true,
+			Queue:    true,
+			Priority: c.Priority,
+			CommitID: c.CommitID,
+		},
+		Force: true,
+	})
+	if err != nil {
+		return err
+	}
+	log.Printf("# Created build #%d", build.BID)
+
 	return nil
 }
 
