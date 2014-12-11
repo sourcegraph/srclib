@@ -152,22 +152,6 @@ func (c *QueryCmd) Execute(args []string) error {
 	return nil
 }
 
-func bold(s string) string {
-	return "\x1b[1m" + s + "\x1b[0m"
-}
-
-func red(s string) string {
-	return "\x1b[31m" + s + "\x1b[0m"
-}
-
-func fade(s string) string {
-	return "\x1b[30;1m" + s + "\x1b[0m"
-}
-
-func invert(s string) string {
-	return "\x1b[30m\x1b[47m" + s + "\x1b[0m"
-}
-
 func stripHTML(html string) string {
 	return strings.Replace(strings.Replace(html, "<p>", "", -1), "</p>", "", -1)
 }

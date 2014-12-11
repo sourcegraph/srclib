@@ -12,12 +12,17 @@ var (
 	currentRepoErr error
 )
 
-func SetRepoOptDefaults(c *flags.Command) {
+func openCurrentRepo() *Repo {
 	// only try to open the current-dir repo once (we'd get the same result each
 	// time, since we never modify it)
 	if currentRepo == nil && currentRepoErr == nil {
 		currentRepo, currentRepoErr = OpenRepo(".")
 	}
+	return currentRepo
+}
+
+func SetRepoOptDefaults(c *flags.Command) {
+	openCurrentRepo()
 
 	if currentRepo != nil {
 		if currentRepo.CloneURL != "" {
