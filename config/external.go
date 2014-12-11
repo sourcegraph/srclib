@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -19,12 +20,16 @@ type External struct {
 	Scanners []*toolchain.ToolRef
 }
 
-// SrclibPathConfig is stored in SRCLIBPATH/.srclibconfig.
-var SrclibPathConfig External
-
 const srclibconfigFile = ".srclibconfig"
 
-func init() {
+// SrclibPathConfig gets the srclib path configuration (which lists
+// all available scanners). It reads it from SRCLIBPATH/.srclibconfig
+// if that file exists, and otherwise it walks SRCLIBPATH for
+// available scanners.
+func SrclibPathConfig() (*External, error) {
+	var x External
+
+	// Try reading from .srclibconfig.
 	dir := strings.SplitN(srclib.Path, ":", 2)[0]
 	configFile := filepath.Join(dir, srclibconfigFile)
 	f, err := os.Open(configFile)
@@ -34,16 +39,19 @@ func init() {
 		log.Printf("Warning: unable to open config file at %s: %s. Continuing without this config.", configFile, err)
 	} else {
 		defer f.Close()
-		if err := json.NewDecoder(f).Decode(&SrclibPathConfig); err != nil {
+		if err := json.NewDecoder(f).Decode(&x); err != nil {
 			log.Printf("Warning: unable to decode config file at %s: %s. Continuing without this config.", configFile, err)
 		}
 	}
 
 	// Default to using all available scanners.
-	if len(SrclibPathConfig.Scanners) == 0 {
-		SrclibPathConfig.Scanners, err = toolchain.ListTools("scan")
+	if len(x.Scanners) == 0 {
+		var err error
+		x.Scanners, err = toolchain.ListTools("scan")
 		if err != nil && !os.IsNotExist(err) {
-			log.Fatalf("Failed to find scanners in SRCLIBPATH: %s.", err)
+			return nil, fmt.Errorf("failed to find scanners in SRCLIBPATH: %s", err)
 		}
 	}
+
+	return &x, nil
 }
