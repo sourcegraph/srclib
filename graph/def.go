@@ -102,7 +102,17 @@ type Def struct {
 	DefStart int `db:"def_start"`
 	DefEnd   int `db:"def_end"`
 
+	// Exported is whether this def is part of a source unit's
+	// public API. For example, in Java a "public" field is
+	// Exported.
 	Exported bool
+
+	// Local is whether this def is local to a function or some
+	// other inner scope. Local defs do *not* have module,
+	// package, or file scope. For example, in Java a function's
+	// args are Local, but fields with "private" scope are not
+	// Local.
+	Local bool
 
 	// Test is whether this def is defined in test code (as opposed to main
 	// code). For example, definitions in Go *_test.go files have Test = true.
