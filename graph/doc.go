@@ -1,7 +1,5 @@
 package graph
 
-import "sourcegraph.com/sourcegraph/srclib/db_common"
-
 // START Doc OMIT
 // Docstring
 type Doc struct {
@@ -31,21 +29,3 @@ type Docs []*Doc
 func (vs Docs) Len() int           { return len(vs) }
 func (vs Docs) Swap(i, j int)      { vs[i], vs[j] = vs[j], vs[i] }
 func (vs Docs) Less(i, j int) bool { return vs[i].sortKey() < vs[j].sortKey() }
-
-type DocPageKey struct {
-	Repo     string
-	UnitType string `db:"unit_type"`
-	Unit     string
-	Path     string
-}
-
-type DocPage struct {
-	DocPageKey
-
-	// Note: the contents of these fields is unsanitized. Any sanitization should be done in the UI.
-	Title string // Doc title
-	Body  string // HTML tags with the data-sg-doc-def attribute will be linked to def pages and vice-versa in the UI
-	Toc   string // Table of contents in conjunction (in sidebar) with body
-
-	DefPaths *db_common.StringSlice // defs within the scope of this documentation page
-}
