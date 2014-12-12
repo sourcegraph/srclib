@@ -88,7 +88,7 @@ func (c *LoginCmd) Execute(args []string) error {
 
 	if !c.NoVerify {
 		authedAPIClient := newAPIClient(&ua)
-		u, _, err := authedAPIClient.People.Get(sourcegraph.PersonSpec{UID: c.UID}, nil)
+		u, _, err := authedAPIClient.Users.Get(sourcegraph.UserSpec{UID: c.UID}, nil)
 		if err != nil {
 			log.Fatalf("Error verifying auth credentials with endpoint %s: %s.", endpointURL, err)
 		}
