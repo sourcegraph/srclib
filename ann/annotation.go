@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jmoiron/sqlx/types"
+	"sourcegraph.com/sourcegraph/srclib/util/sqltypes"
 )
 
 // An Ann is a source code annotation.
@@ -47,7 +47,7 @@ type Ann struct {
 
 	// Data contains arbitrary JSON data that is specific to this
 	// annotation type (e.g., the link URL for Link annotations).
-	Data types.JsonText `json:",omitempty"`
+	Data sqltypes.JSON `json:",omitempty"`
 }
 
 const (
