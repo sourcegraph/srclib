@@ -8,8 +8,8 @@ import (
 	"sort"
 	"strings"
 
+	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
-	"sourcegraph.com/sourcegraph/srclib/toolchain"
 )
 
 // START SourceUnit OMIT
@@ -75,7 +75,7 @@ type SourceUnit struct {
 	// unit. Each key is the name of an operation, and the value is the tool to
 	// use to perform that operation. If the value is nil, the tool is chosen
 	// automatically according to the user's configuration.
-	Ops map[string]*toolchain.ToolRef
+	Ops map[string]*srclib.ToolRef
 
 	// TODO(sqs): add a way to specify the toolchains and tools to use for
 	// various tasks on this source unit

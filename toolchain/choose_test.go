@@ -3,6 +3,8 @@ package toolchain
 import (
 	"reflect"
 	"testing"
+
+	"sourcegraph.com/sourcegraph/srclib"
 )
 
 func TestChooseTool(t *testing.T) {
@@ -10,7 +12,7 @@ func TestChooseTool(t *testing.T) {
 	tests := []struct {
 		toolchains   []*Info
 		op, unitType string
-		want         *ToolRef
+		want         *srclib.ToolRef
 		wantErr      error
 	}{}
 	for _, test := range tests {

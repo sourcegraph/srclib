@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"sourcegraph.com/sourcegraph/srclib/toolchain"
+	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
@@ -30,7 +30,7 @@ type Tree struct {
 	SourceUnits []*unit.SourceUnit `json:",omitempty"`
 
 	// Scanners to use to scan for source units in this tree.
-	Scanners []*toolchain.ToolRef `json:",omitempty"`
+	Scanners []*srclib.ToolRef `json:",omitempty"`
 
 	// PreConfigCommands is a list of commands (passed to `sh -c`) that should
 	// be run on the tree before configuration occurs (after the initial config

@@ -17,7 +17,7 @@ import (
 type External struct {
 	// Scanners is the default set of scanners to use. If not specified, all
 	// scanners in the SRCLIBPATH will be used.
-	Scanners []*toolchain.ToolRef
+	Scanners []*srclib.ToolRef
 }
 
 const srclibconfigFile = ".srclibconfig"
