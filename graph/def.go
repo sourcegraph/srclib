@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/jmoiron/sqlx/types"
 	"sourcegraph.com/sourcegraph/go-nnz/nnz"
+	"sourcegraph.com/sourcegraph/srclib/util/sqltypes"
 )
 
 type (
@@ -124,7 +124,7 @@ type Def struct {
 	// Data contains additional language- and toolchain-specific information
 	// about the def. Data is used to construct function signatures,
 	// import/require statements, language-specific type descriptions, etc.
-	Data types.JsonText `json:",omitempty"`
+	Data sqltypes.JSON `json:",omitempty"`
 }
 
 // END Def OMIT

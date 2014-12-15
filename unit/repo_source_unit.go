@@ -1,6 +1,6 @@
 package unit
 
-import "github.com/jmoiron/sqlx/types"
+import "sourcegraph.com/sourcegraph/srclib/util/sqltypes"
 
 // A RepoSourceUnit is the "concrete" form of SourceUnit that includes
 // information about which repository (and commit) the source unit exists in. In
@@ -14,7 +14,7 @@ type RepoSourceUnit struct {
 	Unit     string
 
 	// Data is the JSON of the underlying SourceUnit.
-	Data types.JsonText
+	Data sqltypes.JSON
 }
 
 // SourceUnit decodes u's Data JSON field to the SourceUnit it represents.
