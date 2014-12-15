@@ -7,6 +7,7 @@ import (
 	"regexp"
 
 	"sourcegraph.com/sourcegraph/go-nnz/nnz"
+	"sourcegraph.com/sourcegraph/go-nnz/sdf"
 	"sourcegraph.com/sourcegraph/srclib/util/sqltypes"
 )
 
@@ -112,7 +113,7 @@ type Def struct {
 	// package, or file scope. For example, in Java a function's
 	// args are Local, but fields with "private" scope are not
 	// Local.
-	Local nnz.Bool
+	Local sdf.Bool
 
 	// Test is whether this def is defined in test code (as opposed to main
 	// code). For example, definitions in Go *_test.go files have Test = true.
