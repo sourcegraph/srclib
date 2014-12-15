@@ -6,12 +6,12 @@ import (
 	"testing"
 
 	"sourcegraph.com/sourcegraph/makex"
+	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	_ "sourcegraph.com/sourcegraph/srclib/config"
 	_ "sourcegraph.com/sourcegraph/srclib/dep"
 	_ "sourcegraph.com/sourcegraph/srclib/grapher"
 	"sourcegraph.com/sourcegraph/srclib/plan"
-	"sourcegraph.com/sourcegraph/srclib/toolchain"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
@@ -23,7 +23,7 @@ func TestCreateMakefile(t *testing.T) {
 				Name:  "n",
 				Type:  "t",
 				Files: []string{"f"},
-				Ops: map[string]*toolchain.ToolRef{
+				Ops: map[string]*srclib.ToolRef{
 					"graph":      {Toolchain: "tc", Subcmd: "t"},
 					"depresolve": {Toolchain: "tc", Subcmd: "t"},
 				},

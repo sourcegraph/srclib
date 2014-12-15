@@ -1,4 +1,4 @@
-package util
+package toolchain
 
 import (
 	"os"
@@ -7,9 +7,9 @@ import (
 	"github.com/fsouza/go-dockerclient"
 )
 
-// NewDockerClient creates a new Docker client configured to reach Docker at the
+// newDockerClient creates a new Docker client configured to reach Docker at the
 // DOCKER_HOST env var, or the default /var/run/docker.sock socket if unset.
-func NewDockerClient() (*docker.Client, error) {
+func newDockerClient() (*docker.Client, error) {
 	dockerEndpoint := os.Getenv("DOCKER_HOST")
 	if dockerEndpoint == "" {
 		dockerEndpoint = "unix:///var/run/docker.sock"

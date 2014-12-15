@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 
 	"sourcegraph.com/sourcegraph/makex"
+	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/plan"
@@ -40,7 +41,7 @@ func makeDepRules(c *config.Tree, dataDir string, existing []makex.Rule, opt pla
 type ResolveDepsRule struct {
 	dataDir string
 	Unit    *unit.SourceUnit
-	Tool    *toolchain.ToolRef
+	Tool    *srclib.ToolRef
 	opt     plan.Options
 }
 

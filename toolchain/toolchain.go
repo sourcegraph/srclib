@@ -11,8 +11,6 @@ import (
 	"strings"
 
 	"github.com/fsouza/go-dockerclient"
-
-	"sourcegraph.com/sourcegraph/srclib/util"
 )
 
 // Info describes a toolchain.
@@ -160,7 +158,7 @@ type dockerToolchain struct {
 }
 
 func newDockerToolchain(path, dir, dockerfile, hostVolumeDir string) (*dockerToolchain, error) {
-	dc, err := util.NewDockerClient()
+	dc, err := newDockerClient()
 	if err != nil {
 		return nil, err
 	}
