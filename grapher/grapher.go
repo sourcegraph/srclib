@@ -9,6 +9,7 @@ import (
 
 	"github.com/sqs/fileset"
 
+	"sourcegraph.com/sourcegraph/srclib/ann"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/unit"
@@ -24,6 +25,7 @@ type Output struct {
 	Defs []*graph.Def `json:",omitempty"`
 	Refs []*graph.Ref `json:",omitempty"`
 	Docs []*graph.Doc `json:",omitempty"`
+	Anns []*ann.Ann   `json:",omitempty"`
 }
 
 // END Output OMIT
@@ -84,12 +86,16 @@ func ensureOffsetsAreByteOffsets(dir string, output *Output) {
 	for _, d := range output.Docs {
 		fix(d.File, &d.Start, &d.End)
 	}
+	for _, a := range output.Anns {
+		fix(a.File, &a.Start, &a.End)
+	}
 }
 
 func sortedOutput(o *Output) *Output {
 	sort.Sort(graph.Defs(o.Defs))
 	sort.Sort(graph.Refs(o.Refs))
 	sort.Sort(graph.Docs(o.Docs))
+	sort.Sort(ann.Anns(o.Anns))
 	return o
 }
 
