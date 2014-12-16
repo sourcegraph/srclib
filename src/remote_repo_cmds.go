@@ -27,7 +27,7 @@ var remoteRepoCmd RemoteRepoCmd
 func (c *RemoteRepoCmd) Execute(args []string) error {
 	cl := NewAPIClientWithAuthIfPresent()
 
-	remoteRepo, _, err := cl.Repos.Get(sourcegraph.RepoSpec{URI: remoteCmd.RepoURI}, nil)
+	remoteRepo, _, err := cl.Repos.GetOrCreate(sourcegraph.RepoSpec{URI: remoteCmd.RepoURI}, nil)
 	if err != nil {
 		return err
 	}
