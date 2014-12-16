@@ -3,6 +3,7 @@ package src
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -11,13 +12,16 @@ import (
 )
 
 func init() {
-	_, err := CLI.AddCommand("push",
+	pushGroup, err := CLI.AddCommand("push",
 		"build, upload, and import the current commit (to make it available on Sourcegraph.com)",
 		"The push command (1) builds the current commit if it's not built; (2) uploads the current repository commit's build data; and (3) imports it into Sourcegraph.",
 		&pushCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
+	}
+	if repo := openCurrentRepo(); repo != nil {
+		SetOptionDefaultValue(pushGroup.Group, "commit", repo.CommitID)
 	}
 
 	remoteGroup, err := CLI.AddCommand("remote",
@@ -49,7 +53,8 @@ func init() {
 }
 
 type PushCmd struct {
-	Dir Directory `short:"C" long:"directory" description:"change to DIR before doing anything" value-name:"DIR"`
+	Dir      Directory `short:"C" long:"directory" description:"change to DIR before doing anything" value-name:"DIR"`
+	CommitID string    `short:"c" long:"commit" description:"commit ID of data to import" required:"yes"`
 }
 
 var pushCmd PushCmd
@@ -73,16 +78,16 @@ func (c *PushCmd) Execute(args []string) error {
 		return fmt.Errorf("local build failed: %s", err)
 	}
 
-	apiclient := NewAPIClientWithAuthIfPresent()
+	cl := NewAPIClientWithAuthIfPresent()
 
-	if _, _, err := apiclient.Repos.GetOrCreate(repo.RepoRevSpec().RepoSpec, nil); err != nil {
+	repoSpec := sourcegraph.RepoSpec{URI: remoteCmd.RepoURI}
+	repoRevSpec := sourcegraph.RepoRevSpec{RepoSpec: repoSpec, Rev: c.CommitID}
+
+	if _, _, err := cl.Repos.GetOrCreate(repo.RepoRevSpec().RepoSpec, nil); err != nil {
 		return fmt.Errorf("couldn't find repo %q on remote: %s", repo.URI(), err)
 	}
-	if _, _, err := apiclient.Repos.GetCommit(repo.RepoRevSpec(), nil); err != nil {
-		if _, err := apiclient.Repos.RefreshVCSData(repo.RepoRevSpec().RepoSpec); err != nil {
-			log.Printf("Warning: failed to trigger VCS update: %s.", err)
-		}
-		return fmt.Errorf("could not find commit %s on remote (%s); was it pushed? a VCS update was just triggered, so try again in a few seconds/minutes", repo.RepoRevSpec().CommitID, err)
+	if _, err := getCommitWithRefreshAndRetry(cl, repoRevSpec); err != nil {
+		return err
 	}
 
 	if err := buildDataUploadCmd.Execute(nil); err != nil {
@@ -93,6 +98,48 @@ func (c *PushCmd) Execute(args []string) error {
 	}
 	return nil
 }
+
+// getCommitWithRefreshAndRetry tries to get a repository commit. If
+// it doesn't exist, it triggers a refresh of the repo's VCS data and
+// then retries (until maxGetCommitVCSRefreshWait has elapsed).
+func getCommitWithRefreshAndRetry(cl *sourcegraph.Client, repoRevSpec sourcegraph.RepoRevSpec) (*sourcegraph.Commit, error) {
+	timeout := time.After(maxGetCommitVCSRefreshWait)
+	done := make(chan struct{})
+	var commit *sourcegraph.Commit
+	var err error
+	go func() {
+		refreshTriggered := false
+		for {
+			commit, _, err = cl.Repos.GetCommit(repoRevSpec, nil)
+
+			// Keep retrying if it's a 404, but stop trying if we succeeded, or if it's some other
+			// error.
+			if !sourcegraph.IsHTTPErrorCode(err, http.StatusNotFound) {
+				break
+			}
+
+			if !refreshTriggered {
+				_, err = cl.Repos.RefreshVCSData(repoRevSpec.RepoSpec)
+				if err != nil {
+					err = fmt.Errorf("failed to trigger VCS refresh for repo %s: %s", repoRevSpec.URI, err)
+					break
+				}
+				log.Printf("Repository %s revision %s wasn't found on remote. Triggered refresh of VCS data; waiting %s.", repoRevSpec.URI, repoRevSpec.Rev, maxGetCommitVCSRefreshWait)
+				refreshTriggered = true
+			}
+			time.Sleep(time.Second)
+		}
+		done <- struct{}{}
+	}()
+	select {
+	case <-done:
+		return commit, err
+	case <-timeout:
+		return nil, fmt.Errorf("repo %s revision %s not found on remote, even after triggering a VCS refresh and waiting %s (if you are sure that commit has been pushed, try again later)", repoRevSpec.URI, repoRevSpec.Rev, maxGetCommitVCSRefreshWait)
+	}
+}
+
+const maxGetCommitVCSRefreshWait = time.Second * 3
 
 type RemoteCmd struct {
 	RepoURI string `short:"r" long:"repo" description:"repository URI (defaults to VCS 'srclib' or 'origin' remote URL)" required:"yes"`
@@ -111,35 +158,33 @@ type RemoteImportBuildDataCmd struct {
 var remoteImportBuildDataCmd RemoteImportBuildDataCmd
 
 func (c *RemoteImportBuildDataCmd) Execute(args []string) error {
-	repo, err := OpenRepo(".")
-	if err != nil {
-		return err
-	}
+	cl := NewAPIClientWithAuthIfPresent()
 
 	if GlobalOpt.Verbose {
-		log.Printf("Creating a new import-only build for repo %q commit %q", repo.URI(), repo.CommitID)
+		log.Printf("Creating a new import-only build for repo %q commit %q", remoteCmd.RepoURI, c.CommitID)
 	}
 
-	repoSpec := sourcegraph.RepoSpec{URI: repo.URI()}
-	repoRevSpec := sourcegraph.RepoRevSpec{RepoSpec: repoSpec, Rev: repo.CommitID, CommitID: repo.CommitID}
-
-	apiclient := NewAPIClientWithAuthIfPresent()
-
-	rrepo, _, err := apiclient.Repos.Get(repoSpec, nil)
+	repo, _, err := cl.Repos.GetOrCreate(sourcegraph.RepoSpec{URI: remoteCmd.RepoURI}, nil)
 	if err != nil {
 		return err
 	}
 
-	// Check that the remote server knows about the commit.
-	if _, _, err := apiclient.Repos.GetCommit(repoRevSpec, nil); err != nil {
-		return fmt.Errorf("could not find commit %s on remote (%s); was it pushed?", repoRevSpec.CommitID, err)
-	}
+	repoSpec := sourcegraph.RepoSpec{URI: remoteCmd.RepoURI}
+	repoRevSpec := sourcegraph.RepoRevSpec{RepoSpec: repoSpec, Rev: c.CommitID}
 
-	build, _, err := apiclient.Builds.Create(repoSpec, &sourcegraph.BuildCreateOptions{
+	// Resolve to the full commit ID, and ensure that the remote
+	// server knows about the commit.
+	commit, err := getCommitWithRefreshAndRetry(cl, repoRevSpec)
+	if err != nil {
+		return err
+	}
+	repoRevSpec.CommitID = string(commit.ID)
+
+	build, _, err := cl.Builds.Create(repoSpec, &sourcegraph.BuildCreateOptions{
 		BuildConfig: sourcegraph.BuildConfig{
 			Import:   true,
 			Queue:    false,
-			CommitID: repo.CommitID,
+			CommitID: repoRevSpec.CommitID,
 		},
 		Force: true,
 	})
@@ -153,7 +198,7 @@ func (c *RemoteImportBuildDataCmd) Execute(args []string) error {
 	now := time.Now()
 	host := fmt.Sprintf("local (USER=%s)", os.Getenv("USER"))
 	buildUpdate := sourcegraph.BuildUpdate{StartedAt: &now, Host: &host}
-	if _, _, err := apiclient.Builds.Update(build.Spec(), buildUpdate); err != nil {
+	if _, _, err := cl.Builds.Update(build.Spec(), buildUpdate); err != nil {
 		return err
 	}
 
@@ -162,7 +207,7 @@ func (c *RemoteImportBuildDataCmd) Execute(args []string) error {
 		Op:    sourcegraph.ImportTaskOp,
 		Queue: true,
 	}
-	tasks, _, err := apiclient.Builds.CreateTasks(build.Spec(), []*sourcegraph.BuildTask{importTask})
+	tasks, _, err := cl.Builds.CreateTasks(build.Spec(), []*sourcegraph.BuildTask{importTask})
 	if err != nil {
 		return err
 	}
@@ -181,7 +226,7 @@ func (c *RemoteImportBuildDataCmd) Execute(args []string) error {
 			case <-done:
 				return
 			case <-time.After(time.Duration(loopsSinceLastLog+1) * 500 * time.Millisecond):
-				logs, _, err := apiclient.Builds.GetTaskLog(importTask.Spec(), &logOpt)
+				logs, _, err := cl.Builds.GetTaskLog(importTask.Spec(), &logOpt)
 				if err != nil {
 					log.Printf("Warning: failed to get build logs: %s.", err)
 					return
@@ -210,7 +255,7 @@ func (c *RemoteImportBuildDataCmd) Execute(args []string) error {
 			return fmt.Errorf("import timed out after %s", time.Since(start))
 		}
 
-		tasks, _, err := apiclient.Builds.ListBuildTasks(build.Spec(), nil)
+		tasks, _, err := cl.Builds.ListBuildTasks(build.Spec(), nil)
 		if err != nil {
 			return err
 		}
@@ -243,7 +288,7 @@ func (c *RemoteImportBuildDataCmd) Execute(args []string) error {
 	}
 
 	log.Printf("# View the repository at:")
-	log.Printf("# %s://%s/%s@%s", apiclient.BaseURL.Scheme, apiclient.BaseURL.Host, rrepo.URI, build.CommitID)
+	log.Printf("# %s://%s/%s@%s", cl.BaseURL.Scheme, cl.BaseURL.Host, repo.URI, repoRevSpec.Rev)
 
 	return nil
 }
