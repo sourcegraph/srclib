@@ -139,7 +139,7 @@ func getCommitWithRefreshAndRetry(cl *sourcegraph.Client, repoRevSpec sourcegrap
 	}
 }
 
-const maxGetCommitVCSRefreshWait = time.Second * 3
+const maxGetCommitVCSRefreshWait = time.Second * 10
 
 type RemoteCmd struct {
 	RepoURI string `short:"r" long:"repo" description:"repository URI (defaults to VCS 'srclib' or 'origin' remote URL)" required:"yes"`
