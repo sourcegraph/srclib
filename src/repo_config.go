@@ -3,6 +3,7 @@ package src
 import (
 	"bytes"
 	"fmt"
+	"path/filepath"
 
 	"os"
 	"os/exec"
@@ -43,11 +44,14 @@ func OpenRepo(dir string) (*Repo, error) {
 
 	// VCS and root directory
 	rc := new(Repo)
+	pathCompsInFoundRepo := 0 // find the closest ancestor repo
 	for _, vcsType := range []string{"git", "hg"} {
 		if d, err := getRootDir(vcsType, dir); err == nil {
-			rc.VCSType = vcsType
-			rc.RootDir = d
-			break
+			if pathComps := strings.Count(d, string(os.PathSeparator)); pathComps > pathCompsInFoundRepo {
+				rc.VCSType = vcsType
+				rc.RootDir = d
+				pathCompsInFoundRepo = pathComps
+			}
 		}
 	}
 	if rc.RootDir == "" {
@@ -107,7 +111,8 @@ func getRootDir(vcsType string, dir string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return strings.TrimSpace(string(out)), nil
+	rootDir := filepath.Clean(strings.TrimSpace(string(out)))
+	return filepath.Abs(rootDir)
 }
 
 func getVCSCloneURL(vcsType string, repoDir string) (string, error) {
