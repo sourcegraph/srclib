@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net/url"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/kr/fs"
 	"golang.org/x/tools/godoc/vfs"
@@ -147,12 +147,19 @@ func (c *BuildDataListCmd) Execute(args []string) error {
 			suffix = "/"
 		}
 
-		var url string
+		var urlStr string
 		if c.URLs {
 			spec := sourcegraph.BuildDataFileSpec{RepoRev: repo.RepoRevSpec(), Path: filepath.Join(dir, fi.Name())}
-			u := router.URLTo(router.NewAPIRouter(nil), router.RepoBuildDataEntry, router.MapToArray(spec.RouteVars())...)
-			u.Path = strings.TrimPrefix(u.Path, "/")
-			url = getEndpointURL().ResolveReference(u).String()
+
+			// TODO(sqs): use sourcegraph.Router when it is merged to go-sourcegraph master
+			u, err := router.NewAPIRouter(nil).Get(router.RepoBuildDataEntry).URLPath(router.MapToArray(spec.RouteVars())...)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			// Strip leading "/" so that the URL is relative to the
+			// endpoint URL even if the endpoint URL contains a path.
+			urlStr = getEndpointURL().ResolveReference(&url.URL{Path: u.Path[1:]}).String()
 		}
 
 		if c.Long {
@@ -160,7 +167,7 @@ func (c *BuildDataListCmd) Execute(args []string) error {
 			if !fi.ModTime().IsZero() {
 				timeStr = fi.ModTime().Format("Jan _2 15:04")
 			}
-			fmt.Printf("% 7d %12s %s%s %s\n", fi.Size(), timeStr, fi.Name(), suffix, url)
+			fmt.Printf("% 7d %12s %s%s %s\n", fi.Size(), timeStr, fi.Name(), suffix, urlStr)
 		} else {
 			fmt.Println(fi.Name() + suffix)
 		}
