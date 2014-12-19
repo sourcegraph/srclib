@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/kr/fs"
 	"golang.org/x/tools/godoc/vfs"
@@ -149,11 +150,9 @@ func (c *BuildDataListCmd) Execute(args []string) error {
 		var url string
 		if c.URLs {
 			spec := sourcegraph.BuildDataFileSpec{RepoRev: repo.RepoRevSpec(), Path: filepath.Join(dir, fi.Name())}
-			u := router.URITo(router.RepoBuildDataEntry, router.MapToArray(spec.RouteVars())...)
-			endpointURL := getEndpointURL()
-			u.Host = endpointURL.Host
-			u.Scheme = endpointURL.Scheme
-			url = u.String()
+			u := router.URLTo(router.NewAPIRouter(nil), router.RepoBuildDataEntry, router.MapToArray(spec.RouteVars())...)
+			u.Path = strings.TrimPrefix(u.Path, "/")
+			url = getEndpointURL().ResolveReference(u).String()
 		}
 
 		if c.Long {
