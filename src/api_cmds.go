@@ -12,6 +12,7 @@ import (
 	"sync"
 
 	"github.com/kr/fs"
+	"github.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
@@ -141,24 +142,26 @@ func ensureBuild(buildStore buildstore.RepoBuildStore, repo *Repo) error {
 	return nil
 }
 
-// Get a list of all source units that contain the given file
-func getSourceUnitsWithFile(buildStore buildstore.RepoBuildStore, repo *Repo, filename string) ([]*unit.SourceUnit, error) {
-	filename = filepath.Clean(filename)
-
-	// TODO(sqs): This whole lookup is totally inefficient. The storage format
-	// is not optimized for lookups.
-
-	// Find all source unit definition files.
+func getSourceUnits(commitFS rwvfs.WalkableFileSystem, repo *Repo) []string {
 	var unitFiles []string
 	unitSuffix := buildstore.DataTypeSuffix(unit.SourceUnit{})
-	commitFS := buildStore.Commit(repo.CommitID)
 	w := fs.WalkFS(".", commitFS)
 	for w.Step() {
 		if strings.HasSuffix(w.Path(), unitSuffix) {
 			unitFiles = append(unitFiles, w.Path())
 		}
 	}
+	return unitFiles
+}
 
+// Get a list of all source units that contain the given file
+func getSourceUnitsWithFile(buildStore buildstore.RepoBuildStore, repo *Repo, filename string) ([]*unit.SourceUnit, error) {
+	filename = filepath.Clean(filename)
+
+	// TODO(sqs): This whole lookup is totally inefficient. The storage format
+	// is not optimized for lookups.
+	commitFS := buildStore.Commit(repo.CommitID)
+	unitFiles := getSourceUnits(commitFS, repo)
 	// Find which source units the file belongs to.
 	var units []*unit.SourceUnit
 	for _, unitFile := range unitFiles {
