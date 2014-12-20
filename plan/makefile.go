@@ -36,6 +36,10 @@ func RegisterRuleMaker(name string, r RuleMaker) {
 
 func CreateMakefile(buildDataDir string, c *config.Tree, opt Options) (*makex.Makefile, error) {
 	var allRules []makex.Rule
+	// Process cached files first
+	for i := 0; i < len(c.SourceUnits); i++ {
+		// WIP: deal with that here.
+	}
 	for i, r := range orderedRuleMakers {
 		name := ruleMakerNames[i]
 		rules, err := r(c, buildDataDir, allRules, opt)
