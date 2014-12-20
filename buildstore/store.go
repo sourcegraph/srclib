@@ -1,7 +1,6 @@
 package buildstore
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -42,11 +41,6 @@ type RepoBuildStore interface {
 	// specific commit.
 	Commit(commitID string) rwvfs.WalkableFileSystem
 
-	// Exists returns true if a VFS for commitID already exists.
-	Exists(commitID string) bool
-
-	Symlink(oldname, newname string) error
-
 	// FilePath returns the path (from the repo build store's root) to
 	// a file at the specified commit ID.
 	FilePath(commitID string, file string) string
@@ -77,13 +71,6 @@ type repoBuildStore struct {
 	fs rwvfs.WalkableFileSystem
 }
 
-func (s *repoBuildStore) Symlink(oldname, newname string) error {
-	if fs, ok := s.fs.(rwvfs.LinkFS); ok {
-		return fs.Symlink(oldname, newname)
-	}
-	return fmt.Errorf("this file system does not support symlinks")
-}
-
 func (s *repoBuildStore) Commit(commitID string) rwvfs.WalkableFileSystem {
 	path := s.commitPath(commitID)
 
@@ -92,7 +79,7 @@ func (s *repoBuildStore) Commit(commitID string) rwvfs.WalkableFileSystem {
 
 	e, _ := s.fs.Lstat(path)
 	if e != nil && e.Mode()&os.ModeSymlink != 0 {
-		if fs, ok := s.fs.(rwvfs.LinkFS); ok {
+		if fs, ok := s.fs.(rwvfs.LinkReader); ok {
 			var err error
 			dst, err := fs.ReadLink(path)
 			if err == nil {
@@ -107,11 +94,6 @@ func (s *repoBuildStore) Commit(commitID string) rwvfs.WalkableFileSystem {
 		}
 	}
 	return rwvfs.Walkable(rwvfs.Sub(s.fs, path))
-}
-
-func (s *repoBuildStore) Exists(commitID string) bool {
-	_, err := s.fs.Stat(s.commitPath(commitID))
-	return !os.IsNotExist(err)
 }
 
 func (s *repoBuildStore) commitPath(commitID string) string { return commitID }
