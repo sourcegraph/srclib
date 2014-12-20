@@ -23,7 +23,7 @@ import (
 func init() {
 	c, err := CLI.AddCommand("config",
 		"reads & scans for project configuration",
-		`Produces a configuration file suitable for building the repository or directory tree rooted at DIR (or the current directory if not specified).
+		`meowProduces a configuration file suitable for building the repository or directory tree rooted at DIR (or the current directory if not specified).
 
 The steps are:
 
