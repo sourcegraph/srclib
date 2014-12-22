@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 
 	"github.com/sqs/fileset"
 
@@ -107,7 +108,7 @@ func NormalizeData(unitType, dir string, o *Output) error {
 		}
 	}
 
-	if unitType != "GoPackage" && unitType != "Dockerfile" {
+	if unitType != "GoPackage" && unitType != "Dockerfile" && !strings.HasPrefix(unitType, "Java") {
 		ensureOffsetsAreByteOffsets(dir, o)
 	}
 
