@@ -79,7 +79,7 @@ func (s *repoBuildStore) Commit(commitID string) rwvfs.WalkableFileSystem {
 
 	e, _ := s.fs.Lstat(path)
 	if e != nil && e.Mode()&os.ModeSymlink != 0 {
-		if fs, ok := s.fs.(rwvfs.LinkReader); ok {
+		if fs, ok := s.fs.(rwvfs.LinkFS); ok {
 			var err error
 			dst, err := fs.ReadLink(path)
 			if err == nil {
