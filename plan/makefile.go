@@ -2,9 +2,11 @@ package plan
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"sourcegraph.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srclib/config"
+	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
 type Options struct {
@@ -34,17 +36,61 @@ func RegisterRuleMaker(name string, r RuleMaker) {
 	orderedRuleMakers = append(orderedRuleMakers, r)
 }
 
+// SAMER: needs a name other than 'cached'.
+type cachedRule struct {
+	cachedPath string
+	target     string
+	unit       *unit.SourceUnit
+	prereqs    []string
+}
+
+func (r *cachedRule) Target() string {
+	return r.target
+}
+
+func (r *cachedRule) Prereqs() []string {
+	return r.prereqs
+}
+
+func (r *cachedRule) Recipes() []string {
+	return []string{
+		// SAMER: will this blow up if s/cp/ln -s/ ?
+		fmt.Sprintf("cp %s %s", r.cachedPath, r.target),
+	}
+}
+
+// SAMER: do I need this?
+func (r *cachedRule) SourceUnit() *unit.SourceUnit {
+	return r.unit
+}
+
 func CreateMakefile(buildDataDir string, c *config.Tree, opt Options) (*makex.Makefile, error) {
 	var allRules []makex.Rule
-	// Process cached files first
-	for i := 0; i < len(c.SourceUnits); i++ {
-		// WIP: deal with that here.
-	}
 	for i, r := range orderedRuleMakers {
 		name := ruleMakerNames[i]
 		rules, err := r(c, buildDataDir, allRules, opt)
 		if err != nil {
 			return nil, fmt.Errorf("rule maker %s: %s", name, err)
+		}
+		// SAMER: check option flag first.
+		// Replace rules for cached source units with symlinks
+		for i, rule := range rules {
+			r, ok := rule.(interface {
+				SourceUnit() *unit.SourceUnit
+			})
+			if !ok {
+				continue
+			}
+			u := r.SourceUnit()
+			if u.CachedPath == "" {
+				continue
+			}
+			rules[i] = &cachedRule{
+				cachedPath: filepath.Join(buildDataDir, u.CachedPath),
+				target:     rule.Target(),
+				unit:       u,
+				prereqs:    rule.Prereqs(),
+			}
 		}
 		allRules = append(allRules, rules...)
 	}

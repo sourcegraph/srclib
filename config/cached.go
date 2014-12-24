@@ -49,17 +49,6 @@ func ReadCached(bdfs vfs.FileSystem) (*Tree, error) {
 	for i_, unitFile_ := range unitFiles {
 		i, unitFile := i_, unitFile_
 		par.Do(func() error {
-			// Check to see if the unit is cached (stored
-			// as a symlink).
-			if info, err := bdfs.Lstat(unitFile); err == nil && info.Mode()&os.ModeSymlink != 0 {
-				p, err := bdfs.(rwvfs.LinkFS).ReadLink(unitFile)
-				if err != nil {
-					return err
-				}
-				units[i] = &unit.SourceUnit{CachedPath: p}
-				return nil
-			}
-
 			f, err := bdfs.Open(unitFile)
 			if err != nil {
 				return err
@@ -74,12 +63,20 @@ func ReadCached(bdfs vfs.FileSystem) (*Tree, error) {
 			if err := f.Close(); err != nil {
 				return err
 			}
+			// Check to see if the unit is cached (stored
+			// as a symlink).
+			if info, err := bdfs.Lstat(unitFile); err == nil && info.Mode()&os.ModeSymlink != 0 {
+				p, err := bdfs.(rwvfs.LinkFS).ReadLink(unitFile)
+				if err != nil {
+					return err
+				}
+				units[i].CachedPath = p
+			}
 			return nil
 		})
 	}
 	if err := par.Wait(); err != nil {
 		return nil, err
 	}
-
 	return &Tree{SourceUnits: units}, nil
 }
