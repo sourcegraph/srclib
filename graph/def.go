@@ -122,6 +122,8 @@ type Def struct {
 	// Private is whether this definition is private, i.e., if it came from a private repository.
 	Private nnz.Bool `json:",omitempty"`
 
+	// TODO(scale): link to previous revision (is revision the proper vocab word?) of def.
+
 	// Data contains additional language- and toolchain-specific information
 	// about the def. Data is used to construct function signatures,
 	// import/require statements, language-specific type descriptions, etc.
