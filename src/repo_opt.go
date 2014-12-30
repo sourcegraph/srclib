@@ -4,7 +4,7 @@ import (
 	"log"
 	"path/filepath"
 
-	"github.com/sqs/go-flags"
+	"sourcegraph.com/sourcegraph/go-flags"
 )
 
 var (

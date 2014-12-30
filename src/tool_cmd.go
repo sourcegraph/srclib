@@ -8,7 +8,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/sqs/go-flags"
+	"sourcegraph.com/sourcegraph/go-flags"
 
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
 )
