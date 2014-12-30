@@ -3,7 +3,7 @@ package src
 import (
 	"log"
 
-	"github.com/sqs/go-flags"
+	"sourcegraph.com/sourcegraph/go-flags"
 )
 
 func SetOptionDefaultValue(g *flags.Group, longName string, defaultVal ...string) {

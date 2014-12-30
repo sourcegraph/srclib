@@ -7,7 +7,7 @@ import (
 
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 
-	"github.com/sqs/go-flags"
+	"sourcegraph.com/sourcegraph/go-flags"
 )
 
 func initRemoteBuildCmds(remoteGroup *flags.Command) {

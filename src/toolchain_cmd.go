@@ -12,7 +12,7 @@ import (
 	"sync"
 
 	"github.com/aybabtme/color/brush"
-	"github.com/sqs/go-flags"
+	"sourcegraph.com/sourcegraph/go-flags"
 	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
 )

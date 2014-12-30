@@ -10,7 +10,7 @@ import (
 
 	"github.com/gregjones/httpcache"
 	"github.com/gregjones/httpcache/diskcache"
-	"github.com/sqs/go-flags"
+	"sourcegraph.com/sourcegraph/go-flags"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/auth"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 )

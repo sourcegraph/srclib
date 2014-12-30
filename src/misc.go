@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/sqs/go-flags"
+	"sourcegraph.com/sourcegraph/go-flags"
 )
 
 // Directory is flags.Completer that provides directory name completion.
