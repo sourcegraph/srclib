@@ -88,16 +88,3 @@ func (x *StatType) Scan(v interface{}) error {
 	}
 	return fmt.Errorf("%T.Scan failed: %v", x, v)
 }
-
-// UniqueRefDefs groups refs by the RefDefKey field and returns a map of
-// how often each RefDefKey appears. If m is non-nil, counts are incremented
-// and a new map is not created.
-func UniqueRefDefs(refs []*Ref, m map[RefDefKey]int) map[RefDefKey]int {
-	if m == nil {
-		m = make(map[RefDefKey]int)
-	}
-	for _, ref := range refs {
-		m[ref.RefDefKey()]++
-	}
-	return m
-}
