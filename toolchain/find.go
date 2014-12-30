@@ -31,6 +31,10 @@ func Lookup(path string) (*Info, error) {
 }
 
 // List finds all toolchains in the SRCLIBPATH.
+//
+// List does not find nested toolchains; i.e., if DIR is a toolchain
+// dir (with a DIR/Srclibtoolchain file), then none of DIR's
+// subdirectories are searched for toolchains.
 func List() ([]*Info, error) {
 	var found []*Info
 	seen := map[string]string{}
@@ -60,7 +64,17 @@ func List() ([]*Info, error) {
 				// the path to them through the original entry in SRCLIBPATH
 				dirs = append(dirs, path+"/")
 				origDirs[path+"/"] = dir
-			} else if fi.Mode().IsRegular() && strings.ToLower(name) == strings.ToLower(ConfigFilename) {
+			} else if fi.Mode().IsDir() {
+				// Check for Srclibtoolchain file in this dir.
+				if _, err := os.Stat(filepath.Join(path, ConfigFilename)); os.IsNotExist(err) {
+					continue
+				} else if err != nil {
+					return nil, err
+				}
+
+				// Found a Srclibtoolchain file.
+				path = filepath.Clean(path)
+
 				var base string
 				if orig, present := origDirs[dir]; present {
 					base = orig
@@ -68,18 +82,23 @@ func List() ([]*Info, error) {
 					base = dir
 				}
 
-				toolchainPath, _ := filepath.Rel(base, filepath.Dir(path))
+				toolchainPath, _ := filepath.Rel(base, path)
 
 				if otherDir, seen := seen[toolchainPath]; seen {
-					return nil, fmt.Errorf("saw 2 toolchains at path %s in dirs %s and %s", toolchainPath, otherDir, filepath.Dir(path))
+					return nil, fmt.Errorf("saw 2 toolchains at path %s in dirs %s and %s", toolchainPath, otherDir, path)
 				}
-				seen[toolchainPath] = filepath.Dir(path)
+				seen[toolchainPath] = path
 
-				info, err := newInfo(toolchainPath, filepath.Dir(path), name)
+				info, err := newInfo(toolchainPath, path, ConfigFilename)
 				if err != nil {
 					return nil, err
 				}
 				found = append(found, info)
+
+				// Disallow nested toolchains to speed up List. This
+				// means that if DIR/Srclibtoolchain exists, no other
+				// Srclibtoolchain files underneath DIR will be read.
+				w.SkipDir()
 			}
 		}
 	}
