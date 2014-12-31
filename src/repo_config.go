@@ -90,6 +90,32 @@ func resolveWorkingTreeRevision(vcsType string, dir string) (string, error) {
 	return strings.TrimSuffix(string(bytes.TrimSpace(out)), "+"), nil
 }
 
+func listRevisions(vcsType string, dir string) ([]string, error) {
+	if vcsType != "git" {
+		return nil, fmt.Errorf("listRevisions: unsupported vcs type: %q", vcsType)
+	}
+	cmd := exec.Command("git", "rev-list", "--max-count=5", "HEAD")
+	cmd.Dir = dir
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return nil, err
+	}
+	return strings.Split(string(bytes.TrimSpace(out)), "\n"), nil
+}
+
+func changedFilesFromCurrentRev(vcsType string, dir string, fromRev string) ([]string, error) {
+	if vcsType != "git" {
+		return nil, fmt.Errorf("changedFilesFromCurrentRev: unsupported vcs type: %q", vcsType)
+	}
+	cmd := exec.Command("git", "diff", "--name-only", fromRev+"..HEAD")
+	cmd.Dir = dir
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return nil, err
+	}
+	return strings.Split(string(bytes.TrimSpace(out)), "\n"), nil
+}
+
 func getRootDir(vcsType string, dir string) (string, error) {
 	var cmd *exec.Cmd
 	switch vcsType {

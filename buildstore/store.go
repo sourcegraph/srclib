@@ -1,6 +1,7 @@
 package buildstore
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -41,6 +42,8 @@ type RepoBuildStore interface {
 	// specific commit.
 	Commit(commitID string) rwvfs.WalkableFileSystem
 
+	Symlink(oldname, newname string) error
+
 	// FilePath returns the path (from the repo build store's root) to
 	// a file at the specified commit ID.
 	FilePath(commitID string, file string) string
@@ -69,6 +72,13 @@ func LocalRepo(repoDir string) (RepoBuildStore, error) {
 
 type repoBuildStore struct {
 	fs rwvfs.WalkableFileSystem
+}
+
+func (s *repoBuildStore) Symlink(oldname, newname string) error {
+	if fs, ok := s.fs.(rwvfs.LinkFS); ok {
+		return fs.Symlink(oldname, newname)
+	}
+	return fmt.Errorf("this file system does not support symlinks")
 }
 
 func (s *repoBuildStore) Commit(commitID string) rwvfs.WalkableFileSystem {
