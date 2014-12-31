@@ -12,8 +12,8 @@ import (
 	"sync"
 
 	"github.com/kr/fs"
-	"github.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
+	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/dep"
