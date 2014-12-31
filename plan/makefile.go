@@ -2,7 +2,6 @@ package plan
 
 import (
 	"fmt"
-	"log"
 
 	"strings"
 
@@ -89,21 +88,22 @@ func CreateMakefile(buildDataDir string, c *config.Tree, opt Options) (*makex.Ma
 			if u.CachedRev == "" {
 				continue
 			}
-			t := strings.Split(rule.Target(), "/")
-			// Sanity checks
-			if len(t) < 3 ||
-				strings.Join(t[0:2], "/") != buildDataDir ||
-				// Mercurial and Git both use 40-char hashes.
-				len(t[1]) != 40 {
-				// TODO(samer): how can we reliably check that the file exists?
-				log.Println(buildDataDir, t, t[0], t[1])
-				log.Printf("Aborted caching of %s because target is in the wrong format!", rule.Target())
-				continue
+
+			// The format for p is varies based on whether its prefixed by buildDataDir:
+			// if it is, we simply swap the revision in the file name with the previous
+			// valid revision. If it isn't, we prefix p with "../[previous revision]".
+			p := strings.Split(rule.Target(), "/")
+			if len(p) > 2 ||
+				strings.Join(p[0:2], "/") == buildDataDir ||
+				len(p[1]) == 40 { // HACK: Mercurial and Git both use 40-char hashes.
+				// p is prefixed by "[dataDir, e.g. '.srclib-cache']/[vcs hash]"
+				p[1] = u.CachedRev
+			} else {
+				p = append([]string{"..", u.CachedRev}, p...)
 			}
-			t[1] = u.CachedRev
 
 			rules[i] = &cachedRule{
-				cachedPath: strings.Join(t, "/"),
+				cachedPath: strings.Join(p, "/"),
 				target:     rule.Target(),
 				unit:       u,
 				prereqs:    rule.Prereqs(),
