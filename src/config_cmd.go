@@ -147,10 +147,38 @@ func (c *ConfigCmd) Execute(args []string) error {
 		if err := rwvfs.MkdirAll(commitFS, "."); err != nil {
 			return err
 		}
+		// Check to see if a previous build exists.
+		var prevRev string
+		var changedFiles []string
+		if revs, err := listRevisions(currentRepo.VCSType, buildstore.BuildDataDirName); err != nil {
+			log.Println("error listing revisions, rebuilding from scratch: %s", err)
+		} else {
+			// Skip HEAD, the first revision in the list.
+			for i := 1; i < len(revs); i++ {
+				if !buildStore.Exists(revs[i]) {
+					continue
+				}
+				// A build store exists for this commit. Now we need
+				// to get all the changed files between this rev and
+				// the current rev.
+				files, err := changedFilesFromCurrentRev(currentRepo.VCSType, buildstore.BuildDataDirName, revs[i])
+				if err != nil {
+					log.Println("error retriving changed files, rebuilding from scratch: %s", err)
+					break
+				}
+				changedFiles = files
+				prevRev = revs[i]
+			}
+		}
 		for _, u := range cfg.SourceUnits {
 			unitFile := plan.SourceUnitDataFilename(unit.SourceUnit{}, u)
 			if err := rwvfs.MkdirAll(commitFS, filepath.Dir(unitFile)); err != nil {
 				return err
+			}
+			if prevRev != "" && !u.ContainsAny(changedFiles) {
+				// This unit is cached at the previous revision.
+				// TODO(samer): go through revisions.
+				u.CachedRev = prevRev
 			}
 			f, err := commitFS.Create(unitFile)
 			if err != nil {
