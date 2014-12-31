@@ -12,6 +12,7 @@ import (
 
 type Options struct {
 	ToolchainExecOpt string
+	NoCache          bool
 }
 
 type RuleMaker func(c *config.Tree, dataDir string, existing []makex.Rule, opt Options) ([]makex.Rule, error)
@@ -55,12 +56,10 @@ func (r *cachedRule) Prereqs() []string {
 
 func (r *cachedRule) Recipes() []string {
 	return []string{
-		// SAMER: will this blow up if s/cp/ln -s/ ?
 		fmt.Sprintf("cp %s %s", r.cachedPath, r.target),
 	}
 }
 
-// SAMER: do I need this?
 func (r *cachedRule) SourceUnit() *unit.SourceUnit {
 	return r.unit
 }
@@ -75,38 +74,39 @@ func CreateMakefile(buildDataDir string, c *config.Tree, opt Options) (*makex.Ma
 		if err != nil {
 			return nil, fmt.Errorf("rule maker %s: %s", name, err)
 		}
-		// SAMER: check option flag first.
-		// Replace rules for cached source units
-		for i, rule := range rules {
-			r, ok := rule.(interface {
-				SourceUnit() *unit.SourceUnit
-			})
-			if !ok {
-				continue
-			}
-			u := r.SourceUnit()
-			if u.CachedRev == "" {
-				continue
-			}
+		if !opt.NoCache {
+			// Replace rules for cached source units
+			for i, rule := range rules {
+				r, ok := rule.(interface {
+					SourceUnit() *unit.SourceUnit
+				})
+				if !ok {
+					continue
+				}
+				u := r.SourceUnit()
+				if u.CachedRev == "" {
+					continue
+				}
 
-			// The format for p is varies based on whether its prefixed by buildDataDir:
-			// if it is, we simply swap the revision in the file name with the previous
-			// valid revision. If it isn't, we prefix p with "../[previous revision]".
-			p := strings.Split(rule.Target(), "/")
-			if len(p) > 2 ||
-				strings.Join(p[0:2], "/") == buildDataDir ||
-				len(p[1]) == 40 { // HACK: Mercurial and Git both use 40-char hashes.
-				// p is prefixed by "[dataDir, e.g. '.srclib-cache']/[vcs hash]"
-				p[1] = u.CachedRev
-			} else {
-				p = append([]string{"..", u.CachedRev}, p...)
-			}
+				// The format for p is varies based on whether its prefixed by buildDataDir:
+				// if it is, we simply swap the revision in the file name with the previous
+				// valid revision. If it isn't, we prefix p with "../[previous revision]".
+				p := strings.Split(rule.Target(), "/")
+				if len(p) > 2 ||
+					strings.Join(p[0:2], "/") == buildDataDir ||
+					len(p[1]) == 40 { // HACK: Mercurial and Git both use 40-char hashes.
+					// p is prefixed by "[dataDir, e.g. '.srclib-cache']/[vcs hash]"
+					p[1] = u.CachedRev
+				} else {
+					p = append([]string{"..", u.CachedRev}, p...)
+				}
 
-			rules[i] = &cachedRule{
-				cachedPath: strings.Join(p, "/"),
-				target:     rule.Target(),
-				unit:       u,
-				prereqs:    rule.Prereqs(),
+				rules[i] = &cachedRule{
+					cachedPath: strings.Join(p, "/"),
+					target:     rule.Target(),
+					unit:       u,
+					prereqs:    rule.Prereqs(),
+				}
 			}
 		}
 		allRules = append(allRules, rules...)
