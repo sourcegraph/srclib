@@ -20,12 +20,13 @@ func init() {
 
 type MakefileCmd struct {
 	ToolchainExecOpt `group:"execution"`
+	BuildCacheOpt    `group:"build cache"`
 }
 
 var makefileCmd MakefileCmd
 
 func (c *MakefileCmd) Execute(args []string) error {
-	mf, err := CreateMakefile(c.ToolchainExecOpt)
+	mf, err := CreateMakefile(c.ToolchainExecOpt, c.BuildCacheOpt)
 	if err != nil {
 		return err
 	}
