@@ -143,6 +143,10 @@ func (c *ConfigCmd) Execute(args []string) error {
 	// or maybe a custom stale checker is better than just using file mtimes for
 	// all the files (maybe just use setup.py as a prereq? but then how will we
 	// update SourceUnit.Files list? SourceUnit.Globs could help here...)
+	//
+	// note(samertm): going with a custom checker because we need to create a
+	// symlink to the previous unit/graph files if a source unit hasn't
+	// changed. Punting on updating SourceUnit.Files for now.
 	if !c.NoCacheWrite {
 		if err := rwvfs.MkdirAll(commitFS, "."); err != nil {
 			return err
@@ -155,7 +159,7 @@ func (c *ConfigCmd) Execute(args []string) error {
 		} else {
 			// Skip HEAD, the first revision in the list.
 			for i := 1; i < len(revs); i++ {
-				if !buildStore.Exists(revs[i]) {
+				if exist, _ := buildstore.BuildDataExistsForCommit(buildStore, revs[i]); !exist {
 					continue
 				}
 				// A build store exists for this commit. Now we need
