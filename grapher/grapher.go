@@ -112,6 +112,13 @@ func NormalizeData(unitType, dir string, o *Output) error {
 		ensureOffsetsAreByteOffsets(dir, o)
 	}
 
+	if err := ValidateRefs(o.Refs); err != nil {
+		return err
+	}
+	if err := ValidateDefs(o.Defs); err != nil {
+		return err
+	}
+
 	sortedOutput(o)
 	return nil
 }

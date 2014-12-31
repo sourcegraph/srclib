@@ -21,6 +21,19 @@ func ValidateRefs(refs []*graph.Ref) (errs MultiError) {
 	return
 }
 
+func ValidateDefs(defs []*graph.Def) (errs MultiError) {
+	defKeys := make(map[graph.DefKey]struct{})
+	for _, def := range defs {
+		key := def.DefKey
+		if _, in := defKeys[key]; in {
+			errs = append(errs, fmt.Errorf("duplicate def key: %+v", key))
+		} else {
+			defKeys[key] = struct{}{}
+		}
+	}
+	return
+}
+
 type MultiError []error
 
 func (e MultiError) Error() string {
