@@ -63,15 +63,6 @@ func ReadCached(bdfs vfs.FileSystem) (*Tree, error) {
 			if err := f.Close(); err != nil {
 				return err
 			}
-			// Check to see if the unit is cached (stored
-			// as a symlink).
-			if info, err := bdfs.Lstat(unitFile); err == nil && info.Mode()&os.ModeSymlink != 0 {
-				p, err := bdfs.(rwvfs.LinkFS).ReadLink(unitFile)
-				if err != nil {
-					return err
-				}
-				units[i].CachedPath = p
-			}
 			return nil
 		})
 	}

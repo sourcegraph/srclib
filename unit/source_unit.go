@@ -77,11 +77,9 @@ type SourceUnit struct {
 	// automatically according to the user's configuration.
 	Ops map[string]*srclib.ToolRef
 
-	// CachedPath is the path storing a cached version of this source unit.
-	// If CachedPath is not the empty string, any of the above fields may be
-	// empty.
-	// TODO(scale):
-	CachedPath string
+	// CachedRev is the vcs revision that contains the last modified version
+	// of this source unit.
+	CachedRev string
 
 	// TODO(sqs): add a way to specify the toolchains and tools to use for
 	// various tasks on this source unit

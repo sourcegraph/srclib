@@ -2,7 +2,9 @@ package plan
 
 import (
 	"fmt"
-	"path/filepath"
+	"log"
+
+	"strings"
 
 	"sourcegraph.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srclib/config"
@@ -64,6 +66,8 @@ func (r *cachedRule) SourceUnit() *unit.SourceUnit {
 	return r.unit
 }
 
+// CreateMakeFile creats the make files for the source units in c.
+// buildDataDir has the format "[dataDir, e.g. '.srclib-cache']/[vcs hash]"
 func CreateMakefile(buildDataDir string, c *config.Tree, opt Options) (*makex.Makefile, error) {
 	var allRules []makex.Rule
 	for i, r := range orderedRuleMakers {
@@ -73,7 +77,7 @@ func CreateMakefile(buildDataDir string, c *config.Tree, opt Options) (*makex.Ma
 			return nil, fmt.Errorf("rule maker %s: %s", name, err)
 		}
 		// SAMER: check option flag first.
-		// Replace rules for cached source units with symlinks
+		// Replace rules for cached source units
 		for i, rule := range rules {
 			r, ok := rule.(interface {
 				SourceUnit() *unit.SourceUnit
@@ -82,11 +86,24 @@ func CreateMakefile(buildDataDir string, c *config.Tree, opt Options) (*makex.Ma
 				continue
 			}
 			u := r.SourceUnit()
-			if u.CachedPath == "" {
+			if u.CachedRev == "" {
 				continue
 			}
+			t := strings.Split(rule.Target(), "/")
+			// Sanity checks
+			if len(t) < 3 ||
+				strings.Join(t[0:2], "/") != buildDataDir ||
+				// Mercurial and Git both use 40-char hashes.
+				len(t[1]) != 40 {
+				// TODO(samer): how can we reliably check that the file exists?
+				log.Println(buildDataDir, t, t[0], t[1])
+				log.Printf("Aborted caching of %s because target is in the wrong format!", rule.Target())
+				continue
+			}
+			t[1] = u.CachedRev
+
 			rules[i] = &cachedRule{
-				cachedPath: filepath.Join(buildDataDir, u.CachedPath),
+				cachedPath: strings.Join(t, "/"),
 				target:     rule.Target(),
 				unit:       u,
 				prereqs:    rule.Prereqs(),
