@@ -57,9 +57,6 @@ func ReadCached(bdfs vfs.FileSystem) (*Tree, error) {
 				f.Close()
 				return err
 			}
-			if err != nil {
-				return err
-			}
 			if err := f.Close(); err != nil {
 				return err
 			}
