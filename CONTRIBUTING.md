@@ -14,9 +14,8 @@ contribution. See the [DCO](DCO) file for details.
 
 # Email and Chat
 
-The project currently uses the general Sourcegraph email list and IRC channel:
-- Email: [srclib-dev](https://groups.google.com/forum/#!forum/srclib-dev)
-- IRC: #[srclib](irc://irc.freenode.org:6667/#srclib) IRC channel on freenode.org
+The project currently uses the
+[srclib-dev email list](https://groups.google.com/forum/#!forum/srclib-dev).
 
 Please avoid emailing maintainers found in the MAINTAINERS file directly. They
 are very busy and read the mailing lists.
