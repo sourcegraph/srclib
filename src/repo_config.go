@@ -90,11 +90,12 @@ func resolveWorkingTreeRevision(vcsType string, dir string) (string, error) {
 	return strings.TrimSuffix(string(bytes.TrimSpace(out)), "+"), nil
 }
 
-func listRevisions(vcsType string, dir string) ([]string, error) {
+// listLatestCommitIDs lists the latest commit ids for dir.
+func listLatestCommitIDs(vcsType, dir string) ([]string, error) {
 	if vcsType != "git" {
-		return nil, fmt.Errorf("listRevisions: unsupported vcs type: %q", vcsType)
+		return nil, fmt.Errorf("listCommitIDs: unsupported vcs type: %q", vcsType)
 	}
-	cmd := exec.Command("git", "rev-list", "--max-count=5", "HEAD")
+	cmd := exec.Command("git", "rev-list", "--max-count=5", "HEAD") // 5 picked by random dice roll.
 	cmd.Dir = dir
 	out, err := cmd.CombinedOutput()
 	if err != nil {
@@ -103,11 +104,13 @@ func listRevisions(vcsType string, dir string) ([]string, error) {
 	return strings.Split(string(bytes.TrimSpace(out)), "\n"), nil
 }
 
-func changedFilesFromCurrentRev(vcsType string, dir string, fromRev string) ([]string, error) {
+// filesChangedToWorkingDir returns a list of the files that have
+// changed from fromRev to the current index.
+func filesChangedFromRevToIndex(vcsType, dir, fromRev string) ([]string, error) {
 	if vcsType != "git" {
-		return nil, fmt.Errorf("changedFilesFromCurrentRev: unsupported vcs type: %q", vcsType)
+		return nil, fmt.Errorf("filesChangedFromRevToHEAD: unsupported vcs type: %q", vcsType)
 	}
-	cmd := exec.Command("git", "diff", "--name-only", fromRev+"..HEAD")
+	cmd := exec.Command("git", "diff", "--name-only", fromRev)
 	cmd.Dir = dir
 	out, err := cmd.CombinedOutput()
 	if err != nil {
