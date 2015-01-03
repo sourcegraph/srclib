@@ -1,8 +1,10 @@
 package plan
 
 import (
+	"bytes"
 	"fmt"
 	"log"
+	"os/exec"
 	"path/filepath"
 
 	"strings"
@@ -74,6 +76,35 @@ func (r *cachedRule) SourceUnit() *unit.SourceUnit {
 	return r.unit
 }
 
+// listLatestCommitIDs lists the latest commit ids for dir.
+func listLatestCommitIDs(vcsType, dir string) ([]string, error) {
+	if vcsType != "git" {
+		return nil, fmt.Errorf("listCommitIDs: unsupported vcs type: %q", vcsType)
+	}
+	cmd := exec.Command("git", "rev-list", "--max-count=5", "HEAD") // 5 picked by random dice roll.
+	cmd.Dir = dir
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return nil, err
+	}
+	return strings.Split(string(bytes.TrimSpace(out)), "\n"), nil
+}
+
+// filesChangedToWorkingDir returns a list of the files that have
+// changed from fromRev to the current index.
+func filesChangedFromRevToIndex(vcsType, dir, fromRev string) ([]string, error) {
+	if vcsType != "git" {
+		return nil, fmt.Errorf("filesChangedFromRevToHEAD: unsupported vcs type: %q", vcsType)
+	}
+	cmd := exec.Command("git", "diff", "--name-only", fromRev)
+	cmd.Dir = dir
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return nil, err
+	}
+	return strings.Split(string(bytes.TrimSpace(out)), "\n"), nil
+}
+
 // CreateMakefile creates the makefiles for the source units in c.
 func CreateMakefile(buildStore buildstore.RepoBuildStore, commitID, vcsType string, c *config.Tree, opt Options) (*makex.Makefile, error) {
 	// TODO(sqs): buildDataDir is hardcoded.
@@ -91,10 +122,10 @@ func CreateMakefile(buildStore buildstore.RepoBuildStore, commitID, vcsType stri
 			// hasn't changed between revisions with a rule that copies files from
 			// the ... to the current directory.
 			// Check to see if a previous build exists.
-			var prevRev string
+			var prevCommitID string
 			var changedFiles []string
-			if revs, err := listRevisions(currentRepo.VCSType, buildstore.BuildDataDirName); err != nil {
-				log.Println("error listing revisions, rebuilding from scratch: %s", err)
+			if revs, err := listLatestCommitIDs(vcsType, buildstore.BuildDataDirName); err != nil {
+				log.Printf("error listing revisions, rebuilding from scratch: %s", err)
 			} else {
 				// Skip HEAD, the first revision in the list.
 				for i := 1; i < len(revs); i++ {
@@ -104,13 +135,13 @@ func CreateMakefile(buildStore buildstore.RepoBuildStore, commitID, vcsType stri
 					// A build store exists for this commit. Now we need
 					// to get all the changed files between this rev and
 					// the current rev.
-					files, err := changedFilesFromCurrentRev(currentRepo.VCSType, buildstore.BuildDataDirName, revs[i])
+					files, err := filesChangedFromRevToIndex(vcsType, buildstore.BuildDataDirName, revs[i])
 					if err != nil {
-						log.Println("error retriving changed files, rebuilding from scratch: %s", err)
+						log.Printf("error retriving changed files, rebuilding from scratch: %s", err)
 						break
 					}
 					changedFiles = files
-					prevRev = revs[i]
+					prevCommitID = revs[i]
 				}
 			}
 			// Replace rules.
@@ -122,7 +153,7 @@ func CreateMakefile(buildStore buildstore.RepoBuildStore, commitID, vcsType stri
 					continue
 				}
 				u := r.SourceUnit()
-				if u.CachedRev == "" {
+				if !u.ContainsAny(changedFiles) {
 					continue
 				}
 
@@ -135,9 +166,9 @@ func CreateMakefile(buildStore buildstore.RepoBuildStore, commitID, vcsType stri
 					strings.Join(p[0:2], "/") == buildDataDir ||
 					len(p[1]) == 40 { // HACK: Mercurial and Git both use 40-char hashes.
 					// p is prefixed by "data-dir/vcs-commit-id"
-					p[1] = u.CachedRev
+					p[1] = prevCommitID
 				} else {
-					p = append([]string{"..", u.CachedRev}, p...)
+					p = append([]string{"..", prevCommitID}, p...)
 				}
 
 				rules[i] = &cachedRule{
