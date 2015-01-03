@@ -132,21 +132,6 @@ func (c *ConfigCmd) Execute(args []string) error {
 	commitFS := buildStore.Commit(localRepo.CommitID)
 
 	// Write source units to build cache.
-	//
-	// TODO(sqs): create Makefile.config that makes it more standard to recreate
-	// these when the source unit defns change (and to determine when the source
-	// unit defns change), with targets like:
-	//
-	// UNITNAME/UNITTYPE.unit.v0.json: setup.py mylib/foo.py
-	//   src config --unit=UNITNAME@UNITTYPE
-	//
-	// or maybe a custom stale checker is better than just using file mtimes for
-	// all the files (maybe just use setup.py as a prereq? but then how will we
-	// update SourceUnit.Files list? SourceUnit.Globs could help here...)
-	//
-	// note(samertm): going with a custom checker because we need to create a
-	// symlink to the previous unit/graph files if a source unit hasn't
-	// changed. Punting on updating SourceUnit.Files for now.
 	if !c.NoCacheWrite {
 		if err := rwvfs.MkdirAll(commitFS, "."); err != nil {
 			return err
@@ -155,11 +140,6 @@ func (c *ConfigCmd) Execute(args []string) error {
 			unitFile := plan.SourceUnitDataFilename(unit.SourceUnit{}, u)
 			if err := rwvfs.MkdirAll(commitFS, filepath.Dir(unitFile)); err != nil {
 				return err
-			}
-			if prevRev != "" && !u.ContainsAny(changedFiles) {
-				// This unit is cached at the previous revision.
-				// TODO(samer): go through revisions.
-				u.CachedRev = prevRev
 			}
 			f, err := commitFS.Create(unitFile)
 			if err != nil {
