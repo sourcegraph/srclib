@@ -60,7 +60,6 @@ func TestDoAll_cached_sample(t *testing.T) {
 	if o, err := srcCmd.CombinedOutput(); err != nil {
 		t.Fatal(string(o), err)
 	}
-	// Source unit "one" should have been cached.
 	firstOne, err := ioutil.ReadFile(filepath.Join(testdataPath, "go-cached", buildstore.BuildDataDirName, "071610bf3a597bc41aae05e27c5407444b7ea0d1", "one", "sample.graph.json"))
 	if err != nil {
 		t.Fatal(err)
@@ -70,9 +69,8 @@ func TestDoAll_cached_sample(t *testing.T) {
 		t.Fatal(err)
 	}
 	if string(firstOne) != string(secondOne) {
-		t.Error("string(firstOne) != string(secondOne)")
+		t.Error("Source unit \"one\" should have been cached: string(firstOne) != string(secondOne)")
 	}
-	// Source unit "two" should not be cached .
 	firstTwo, err := ioutil.ReadFile(filepath.Join(testdataPath, "go-cached", buildstore.BuildDataDirName, "071610bf3a597bc41aae05e27c5407444b7ea0d1", "two", "sample.graph.json"))
 	if err != nil {
 		t.Fatal(err)
@@ -82,7 +80,7 @@ func TestDoAll_cached_sample(t *testing.T) {
 		t.Fatal(err)
 	}
 	if string(firstTwo) == string(secondTwo) {
-		t.Error("string(firstTwo) == string(secondTwo)")
+		t.Error("Source unit \"two\" should not be cached: string(firstTwo) == string(secondTwo)")
 	}
 	cleanup("go-cache")
 }
