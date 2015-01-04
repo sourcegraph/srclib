@@ -79,34 +79,28 @@ func (r *cachedRule) SourceUnit() *unit.SourceUnit {
 // listLatestCommitIDs lists the latest commit ids for dir.
 func listLatestCommitIDs(vcsType, dir string) ([]string, error) {
 	if vcsType != "git" {
-		return nil, fmt.Errorf("listCommitIDs: unsupported vcs type: %q", vcsType)
+		return nil, fmt.Errorf("listLatestCommitIDs: unsupported vcs type: %q", vcsType)
 	}
 	cmd := exec.Command("git", "rev-list", "--max-count=5", "HEAD") // 5 picked by random dice roll.
 	cmd.Dir = dir
 	out, err := cmd.CombinedOutput()
-	if err != nil {
-		return nil, err
-	}
-	return strings.Split(string(bytes.TrimSpace(out)), "\n"), nil
+	return strings.Split(string(bytes.TrimSpace(out)), "\n"), err
 }
 
 // filesChangedToWorkingDir returns a list of the files that have
 // changed from fromRev to the current index.
 func filesChangedFromRevToIndex(vcsType, dir, fromRev string) ([]string, error) {
 	if vcsType != "git" {
-		return nil, fmt.Errorf("filesChangedFromRevToHEAD: unsupported vcs type: %q", vcsType)
+		return nil, fmt.Errorf("filesChangedFromRevToIndex: unsupported vcs type: %q", vcsType)
 	}
-	cmd := exec.Command("git", "diff", "--name-only", fromRev)
+	cmd := exec.Command("git", "diff", "--name-only", fromRev, "--")
 	cmd.Dir = dir
 	out, err := cmd.CombinedOutput()
-	if err != nil {
-		return nil, err
-	}
-	return strings.Split(string(bytes.TrimSpace(out)), "\n"), nil
+	return strings.Split(string(bytes.TrimSpace(out)), "\n"), err
 }
 
 // CreateMakefile creates the makefiles for the source units in c.
-func CreateMakefile(buildStore buildstore.RepoBuildStore, commitID, vcsType string, c *config.Tree, opt Options) (*makex.Makefile, error) {
+func CreateMakefile(buildStore buildstore.RepoBuildStore, vcsType, commitID string, c *config.Tree, opt Options) (*makex.Makefile, error) {
 	// TODO(sqs): buildDataDir is hardcoded.
 	buildDataDir := filepath.Join(buildstore.BuildDataDirName, commitID)
 
@@ -125,7 +119,7 @@ func CreateMakefile(buildStore buildstore.RepoBuildStore, commitID, vcsType stri
 			var prevCommitID string
 			var changedFiles []string
 			if revs, err := listLatestCommitIDs(vcsType, buildstore.BuildDataDirName); err != nil {
-				log.Printf("error listing revisions, rebuilding from scratch: %s", err)
+				log.Printf("Warning: could not list revisions, rebuilding from scratch: %s, %s", revs, err)
 			} else {
 				// Skip HEAD, the first revision in the list.
 				for i := 1; i < len(revs); i++ {
@@ -137,45 +131,47 @@ func CreateMakefile(buildStore buildstore.RepoBuildStore, commitID, vcsType stri
 					// the current rev.
 					files, err := filesChangedFromRevToIndex(vcsType, buildstore.BuildDataDirName, revs[i])
 					if err != nil {
-						log.Printf("error retriving changed files, rebuilding from scratch: %s", err)
+						log.Printf("Warning: could not retrieve changed files, rebuilding from scratch: %s %s", files, err)
 						break
 					}
 					changedFiles = files
 					prevCommitID = revs[i]
 				}
 			}
-			// Replace rules.
-			for i, rule := range rules {
-				r, ok := rule.(interface {
-					SourceUnit() *unit.SourceUnit
-				})
-				if !ok {
-					continue
-				}
-				u := r.SourceUnit()
-				if !u.ContainsAny(changedFiles) {
-					continue
-				}
+			if prevCommitID != "" {
+				// Replace rules.
+				for i, rule := range rules {
+					r, ok := rule.(interface {
+						SourceUnit() *unit.SourceUnit
+					})
+					if !ok {
+						continue
+					}
+					u := r.SourceUnit()
+					if u.ContainsAny(changedFiles) {
+						continue
+					}
 
-				// The format for p varies based on whether it's prefixed by buildDataDir:
-				// if it is, we simply swap the revision in the file name with the
-				// previous valid revision. If it isn't, we prefix p with
-				// "../[previous-revision]".
-				p := strings.Split(rule.Target(), "/")
-				if len(p) > 2 ||
-					strings.Join(p[0:2], "/") == buildDataDir ||
-					len(p[1]) == 40 { // HACK: Mercurial and Git both use 40-char hashes.
-					// p is prefixed by "data-dir/vcs-commit-id"
-					p[1] = prevCommitID
-				} else {
-					p = append([]string{"..", prevCommitID}, p...)
-				}
+					// The format for p varies based on whether it's prefixed by buildDataDir:
+					// if it is, we simply swap the revision in the file name with the
+					// previous valid revision. If it isn't, we prefix p with
+					// "../[previous-revision]".
+					p := strings.Split(rule.Target(), "/")
+					if len(p) > 2 ||
+						strings.Join(p[0:2], "/") == buildDataDir ||
+						len(p[1]) == 40 { // HACK: Mercurial and Git both use 40-char hashes.
+						// p is prefixed by "data-dir/vcs-commit-id"
+						p[1] = prevCommitID
+					} else {
+						p = append([]string{"..", prevCommitID}, p...)
+					}
 
-				rules[i] = &cachedRule{
-					cachedPath: strings.Join(p, "/"),
-					target:     rule.Target(),
-					unit:       u,
-					prereqs:    rule.Prereqs(),
+					rules[i] = &cachedRule{
+						cachedPath: strings.Join(p, "/"),
+						target:     rule.Target(),
+						unit:       u,
+						prereqs:    rule.Prereqs(),
+					}
 				}
 			}
 		}
