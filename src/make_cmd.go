@@ -3,6 +3,7 @@ package src
 import (
 	"log"
 	"os"
+	"path/filepath"
 
 	"sourcegraph.com/sourcegraph/makex"
 
@@ -100,7 +101,9 @@ func CreateMakefile(execOpt ToolchainExecOpt, cacheOpt BuildCacheOpt) (*makex.Ma
 		return nil, err
 	}
 
-	mf, err := plan.CreateMakefile(buildStore, currentRepo.VCSType, currentRepo.CommitID, treeConfig, plan.Options{
+	// TODO(sqs): buildDataDir is hardcoded.
+	buildDataDir := filepath.Join(buildstore.BuildDataDirName, currentRepo.CommitID)
+	mf, err := plan.CreateMakefile(buildDataDir, buildStore, currentRepo.VCSType, treeConfig, plan.Options{
 		ToolchainExecOpt: strings.Join(toolchainExecOptArgs, " "),
 		NoCache:          cacheOpt.NoCacheWrite,
 	})
