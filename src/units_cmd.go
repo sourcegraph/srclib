@@ -23,7 +23,8 @@ func init() {
 		log.Fatal(err)
 	}
 
-	SetRepoOptDefaults(c)
+	setDefaultRepoURIOpt(c)
+	setDefaultRepoSubdirOpt(c)
 }
 
 // scanUnitsIntoConfig uses cfg to scan for source units. It modifies

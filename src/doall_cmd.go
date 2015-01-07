@@ -18,7 +18,8 @@ func init() {
 		log.Fatal(err)
 	}
 
-	SetRepoOptDefaults(c)
+	setDefaultRepoURIOpt(c)
+	setDefaultRepoSubdirOpt(c)
 }
 
 type DoAllCmd struct {

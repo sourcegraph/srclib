@@ -6,61 +6,20 @@ import (
 	"time"
 
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
-
-	"sourcegraph.com/sourcegraph/go-flags"
 )
 
-func initRemoteBuildCmds(remoteGroup *flags.Command) {
-	remoteBuildCmd, err := remoteGroup.AddCommand("build",
-		"repository operations",
-		"The repo subcommands perform operations on remote repositories.",
-		&remoteBuildCmd,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
-	if repo := openCurrentRepo(); repo != nil {
-		SetOptionDefaultValue(remoteBuildCmd.Group, "commit", repo.CommitID)
-	}
-
-	_, err = remoteGroup.AddCommand("builds",
-		"repository operations",
-		"The repo subcommands perform operations on remote repositories.",
-		&remoteBuildsCmd,
+func init() {
+	_, err := CLI.AddCommand("builds",
+		"list remote builds",
+		"The builds command lists remote builds for the repository.",
+		&buildsCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-type RemoteBuildCmd struct {
-	CommitID string `short:"c" long:"commit" description:"commit ID to build" required:"yes"`
-	Priority int    `short:"p" long:"priority" description:"build priority" default:"2"`
-}
-
-var remoteBuildCmd RemoteBuildCmd
-
-func (c *RemoteBuildCmd) Execute(args []string) error {
-	cl := NewAPIClientWithAuthIfPresent()
-
-	build, _, err := cl.Builds.Create(sourcegraph.RepoSpec{URI: remoteCmd.RepoURI}, &sourcegraph.BuildCreateOptions{
-		BuildConfig: sourcegraph.BuildConfig{
-			Import:   true,
-			Queue:    true,
-			Priority: c.Priority,
-			CommitID: c.CommitID,
-		},
-		Force: true,
-	})
-	if err != nil {
-		return err
-	}
-	log.Printf("# Created build #%d", build.BID)
-
-	return nil
-}
-
-type RemoteBuildsCmd struct {
+type BuildsCmd struct {
 	N         int    `short:"n" description:"number of builds to show" default:"5"`
 	Rev       string `long:"rev" description:"filter builds by revision or commit ID"`
 	Queued    bool   `long:"queued"`
@@ -71,10 +30,15 @@ type RemoteBuildsCmd struct {
 	Direction string `long:"dir" default:"desc"`
 }
 
-var remoteBuildsCmd RemoteBuildsCmd
+var buildsCmd BuildsCmd
 
-func (c *RemoteBuildsCmd) Execute(args []string) error {
+func (c *BuildsCmd) Execute(args []string) error {
 	cl := NewAPIClientWithAuthIfPresent()
+
+	rrepo, err := remoteCmd.getRemoteRepo(cl)
+	if err != nil {
+		return err
+	}
 
 	opt := &sourcegraph.BuildListByRepoOptions{
 		Rev: c.Rev,
@@ -88,7 +52,7 @@ func (c *RemoteBuildsCmd) Execute(args []string) error {
 			ListOptions: sourcegraph.ListOptions{PerPage: c.N},
 		},
 	}
-	builds, _, err := cl.Builds.ListByRepo(sourcegraph.RepoSpec{URI: remoteCmd.RepoURI}, opt)
+	builds, _, err := cl.Builds.ListByRepo(rrepo.RepoSpec(), opt)
 	if err != nil {
 		return err
 	}

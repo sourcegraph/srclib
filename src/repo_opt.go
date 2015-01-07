@@ -8,28 +8,43 @@ import (
 )
 
 var (
-	currentRepo    *Repo
-	currentRepoErr error
+	localRepo    *Repo
+	localRepoErr error
 )
 
-func openCurrentRepo() *Repo {
-	// only try to open the current-dir repo once (we'd get the same result each
-	// time, since we never modify it)
-	if currentRepo == nil && currentRepoErr == nil {
-		currentRepo, currentRepoErr = OpenRepo(".")
+// openLocalRepo opens the VCS repository in or above the current
+// directory.
+func openLocalRepo() (*Repo, error) {
+	// Only try to open the current-dir repo once (we'd get the same result each
+	// time, since we never modify it).
+	if localRepo == nil && localRepoErr == nil {
+		localRepo, localRepoErr = OpenRepo(".")
 	}
-	return currentRepo
+	return localRepo, localRepoErr
 }
 
-func SetRepoOptDefaults(c *flags.Command) {
-	openCurrentRepo()
-
-	if currentRepo != nil {
-		if currentRepo.CloneURL != "" {
-			SetOptionDefaultValue(c.Group, "repo", string(currentRepo.URI()))
+func setDefaultRepoURIOpt(c *flags.Command) {
+	openLocalRepo()
+	if localRepo != nil {
+		if localRepo.CloneURL != "" {
+			SetOptionDefaultValue(c.Group, "repo", localRepo.URI())
 		}
+	}
+}
 
-		subdir, err := filepath.Rel(currentRepo.RootDir, absDir)
+func setDefaultCommitIDOpt(c *flags.Command) {
+	openLocalRepo()
+	if localRepo != nil {
+		if localRepo.CommitID != "" {
+			SetOptionDefaultValue(c.Group, "commit", localRepo.CommitID)
+		}
+	}
+}
+
+func setDefaultRepoSubdirOpt(c *flags.Command) {
+	openLocalRepo()
+	if localRepo != nil {
+		subdir, err := filepath.Rel(localRepo.RootDir, absDir)
 		if err != nil {
 			log.Fatal(err)
 		}

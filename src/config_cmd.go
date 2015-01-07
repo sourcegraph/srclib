@@ -42,7 +42,8 @@ The default values for --repo and --subdir are determined by detecting the curre
 	}
 	c.Aliases = []string{"c"}
 
-	SetRepoOptDefaults(c)
+	setDefaultRepoURIOpt(c)
+	setDefaultRepoSubdirOpt(c)
 }
 
 // getInitialConfig gets the initial config (i.e., the config that comes solely
@@ -120,15 +121,15 @@ func (c *ConfigCmd) Execute(args []string) error {
 		return fmt.Errorf("failed to scan for source units: %s", err)
 	}
 
-	currentRepo, err := OpenRepo(string(c.Args.Dir))
+	localRepo, err := OpenRepo(string(c.Args.Dir))
 	if err != nil {
 		return fmt.Errorf("failed to open repo: %s", err)
 	}
-	buildStore, err := buildstore.LocalRepo(currentRepo.RootDir)
+	buildStore, err := buildstore.LocalRepo(localRepo.RootDir)
 	if err != nil {
 		return err
 	}
-	commitFS := buildStore.Commit(currentRepo.CommitID)
+	commitFS := buildStore.Commit(localRepo.CommitID)
 
 	// Write source units to build cache.
 	//
