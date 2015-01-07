@@ -387,7 +387,12 @@ func (c *BuildDataFetchCmd) Execute(args []string) error {
 	par := parallel.NewRun(8)
 	w := fs.WalkFS(".", rwvfs.Walkable(remoteFS))
 	for w.Step() {
+		path := w.Path()
 		if err := w.Err(); err != nil {
+			if path == "." {
+				log.Printf("# No build data to pull from %s", remoteRepoLabel)
+				return nil
+			}
 			return fmt.Errorf("walking remote dir tree: %s", err)
 		}
 		fi := w.Stat()
@@ -397,7 +402,6 @@ func (c *BuildDataFetchCmd) Execute(args []string) error {
 		if !fi.Mode().IsRegular() {
 			continue
 		}
-		path := w.Path()
 		par.Do(func() error {
 			return fetchFile(remoteFS, localFS, path, fi, c.DryRun)
 		})
