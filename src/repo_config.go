@@ -22,10 +22,6 @@ type Repo struct {
 
 func (c *Repo) URI() string {
 	uri := graph.MakeURI(c.CloneURL)
-	// TODO(sqs): temp workaround for sourcegraph private repo
-	if uri == "github.com/sourcegraph/sourcegraph" {
-		return "sourcegraph.com/sourcegraph/sourcegraph"
-	}
 	return uri
 }
 
