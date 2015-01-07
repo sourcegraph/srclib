@@ -25,7 +25,8 @@ func init() {
 		log.Fatal(err)
 	}
 
-	SetRepoOptDefaults(c)
+	setDefaultRepoURIOpt(c)
+	setDefaultRepoSubdirOpt(c)
 }
 
 type MakeCmd struct {
@@ -78,16 +79,16 @@ func (c *MakeCmd) Execute(args []string) error {
 // be the root of the tree you want to make (due to some probably
 // unnecessary assumptions that CreateMaker makes).
 func CreateMakefile(execOpt ToolchainExecOpt) (*makex.Makefile, error) {
-	currentRepo, err := OpenRepo(".")
+	localRepo, err := OpenRepo(".")
 	if err != nil {
 		return nil, err
 	}
-	buildStore, err := buildstore.LocalRepo(currentRepo.RootDir)
+	buildStore, err := buildstore.LocalRepo(localRepo.RootDir)
 	if err != nil {
 		return nil, err
 	}
 
-	treeConfig, err := config.ReadCached(buildStore.Commit(currentRepo.CommitID))
+	treeConfig, err := config.ReadCached(buildStore.Commit(localRepo.CommitID))
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +102,7 @@ func CreateMakefile(execOpt ToolchainExecOpt) (*makex.Makefile, error) {
 	}
 
 	// TODO(sqs): buildDataDir is hardcoded.
-	buildDataDir := filepath.Join(buildstore.BuildDataDirName, currentRepo.CommitID)
+	buildDataDir := filepath.Join(buildstore.BuildDataDirName, localRepo.CommitID)
 
 	mf, err := plan.CreateMakefile(buildDataDir, treeConfig, plan.Options{ToolchainExecOpt: strings.Join(toolchainExecOptArgs, " ")})
 	if err != nil {

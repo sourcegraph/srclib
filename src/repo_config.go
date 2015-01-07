@@ -2,12 +2,14 @@ package src
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"path/filepath"
 
 	"os"
 	"os/exec"
 	"strings"
+	"syscall"
 
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"sourcegraph.com/sourcegraph/srclib/graph"
@@ -20,10 +22,7 @@ type Repo struct {
 	CloneURL string // CloneURL of repo.
 }
 
-func (c *Repo) URI() string {
-	uri := graph.MakeURI(c.CloneURL)
-	return uri
-}
+func (c *Repo) URI() string { return graph.MakeURI(c.CloneURL) }
 
 func (r *Repo) RepoRevSpec() sourcegraph.RepoRevSpec {
 	return sourcegraph.RepoRevSpec{
@@ -51,19 +50,19 @@ func OpenRepo(dir string) (*Repo, error) {
 		}
 	}
 	if rc.RootDir == "" {
-		return nil, fmt.Errorf("failed to detect repository root dir for %q", dir)
+		return nil, fmt.Errorf("failed to detect git/hg repository root dir for %q; is it in a git/hg repository?", dir)
 	}
 
 	var err error
 	rc.CommitID, err = resolveWorkingTreeRevision(rc.VCSType, rc.RootDir)
 	if err != nil {
-		return nil, err
+		return rc, err
 	}
 
 	// Get repo URI from clone URL.
 	cloneURL, err := getVCSCloneURL(rc.VCSType, rc.RootDir)
 	if err != nil {
-		return nil, err
+		return rc, err
 	}
 	rc.CloneURL = cloneURL
 
@@ -115,9 +114,9 @@ func getVCSCloneURL(vcsType string, repoDir string) (string, error) {
 	run := func(args ...string) (string, error) {
 		cmd := exec.Command(args[0], args[1:]...)
 		cmd.Dir = repoDir
-		out, err := cmd.Output()
+		out, err := cmd.CombinedOutput()
 		if err != nil {
-			return "", fmt.Errorf("could not get VCS URL: %s", err)
+			return "", err
 		}
 		cloneURL := strings.TrimSpace(string(out))
 		if vcsType == "git" {
@@ -133,10 +132,31 @@ func getVCSCloneURL(vcsType string, repoDir string) (string, error) {
 			return url, nil
 		}
 
-		return run("git", "config", "remote.origin.url")
+		url, err = run("git", "config", "remote.origin.url")
+		if code, _ := exitStatus(err); code == 1 {
+			// `git config --get` returns exit code 1 if the config key doesn't exist.
+			return "", errNoVCSCloneURL
+		}
+		return url, err
 	case "hg":
 		return run("hg", "--config", "trusted.users=root", "paths", "default")
 	default:
 		return "", fmt.Errorf("unrecognized VCS %v", vcsType)
 	}
+}
+
+var errNoVCSCloneURL = errors.New("Could not determine remote clone URL for the current repository. For git repositories, srclib checks for remotes named 'srclib' or 'origin' (in that order). Run 'git remote add NAME URL' to add a remote, where NAME is either 'srclib' or 'origin' and URL is a git clone URL (e.g. https://example.com/repo.git).' to add a remote. For hg repositories, srclib checks the 'default' remote.")
+
+func exitStatus(err error) (uint32, error) {
+	if err != nil {
+		if exiterr, ok := err.(*exec.ExitError); ok {
+			// There is no platform independent way to retrieve
+			// the exit code, but the following will work on Unix
+			if status, ok := exiterr.Sys().(syscall.WaitStatus); ok {
+				return uint32(status.ExitStatus()), nil
+			}
+		}
+		return 0, err
+	}
+	return 0, nil
 }

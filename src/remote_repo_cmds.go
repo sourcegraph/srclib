@@ -1,67 +1,60 @@
 package src
 
 import (
-	"fmt"
 	"log"
 
-	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
-
 	"sourcegraph.com/sourcegraph/go-flags"
+	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 )
 
 func initRemoteRepoCmds(remoteGroup *flags.Command) {
-	_, err := remoteGroup.AddCommand("repo",
-		"repository",
-		"The repo subcommands perform operations on remote repositories.",
-		&remoteRepoCmd,
+	c, err := remoteGroup.AddCommand("add",
+		"add the local repository to the remote",
+		"The add command creates a remote repository corresponding to the current local repository.",
+		&remoteAddCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Set defaults.
+	openLocalRepo()
+	if localRepo != nil {
+		if localRepo.CloneURL != "" {
+			//SetOptionDefaultValue(c.Group, "uri", localRepo.URI())
+			SetOptionDefaultValue(c.Group, "clone-url", localRepo.CloneURL)
+		}
+		SetOptionDefaultValue(c.Group, "vcs", localRepo.VCSType)
+	}
 }
 
-type RemoteRepoCmd struct{}
+type RemoteAddCmd struct {
+	VCSType  string `long:"vcs" description:"VCS type" required:"yes"`
+	CloneURL string `long:"clone-url" description:"clone URL" required:"yes"`
+}
 
-var remoteRepoCmd RemoteRepoCmd
+var remoteAddCmd RemoteAddCmd
 
-func (c *RemoteRepoCmd) Execute(args []string) error {
+func (c *RemoteAddCmd) Execute(args []string) error {
 	cl := NewAPIClientWithAuthIfPresent()
 
-	remoteRepo, _, err := cl.Repos.GetOrCreate(sourcegraph.RepoSpec{URI: remoteCmd.RepoURI}, nil)
+	if lrepo, _ := openLocalRepo(); lrepo != nil {
+		if c.CloneURL != lrepo.CloneURL {
+			log.Printf("# Warning: you are creating a remote repository with a clone URL (%q) that doesn't match that of the current dir's repository (%q).", c.CloneURL, lrepo.CloneURL)
+		}
+		if c.VCSType != lrepo.VCSType {
+			log.Printf("# Warning: you are creating a remote repository with a VCS type (%q) that doesn't match that of the current dir's repository (%q).", c.VCSType, lrepo.VCSType)
+		}
+	}
+
+	newRepo := sourcegraph.NewRepoSpec{
+		Type:        c.VCSType,
+		CloneURLStr: c.CloneURL,
+	}
+	rrepo, _, err := cl.Repos.Create(newRepo)
 	if err != nil {
 		return err
 	}
-
-	fmt.Printf("%s\n", bold(remoteRepo.URI))
-	if remoteRepo.URIAlias != "" {
-		fmt.Printf(fade("%s (alias)\n"), remoteRepo.URIAlias)
-	}
-	fmt.Println()
-
-	if remoteRepo.Description != "" {
-		fmt.Printf("%s\n", remoteRepo.Description)
-		fmt.Println()
-	}
-
-	if remoteRepo.HomepageURL != "" {
-		fmt.Printf("Homepage:       %s\n", remoteRepo.HomepageURL)
-	}
-	if remoteRepo.HTTPCloneURL != "" {
-		fmt.Printf("Clone (HTTP):   %s (%s)\n", remoteRepo.HTTPCloneURL, remoteRepo.VCS)
-	}
-	if remoteRepo.SSHCloneURL != "" {
-		fmt.Printf("Clone (SSH):    %s (%s)\n", remoteRepo.SSHCloneURL, remoteRepo.VCS)
-	}
-	fmt.Printf("Default branch: %s\n", remoteRepo.DefaultBranch)
-	if remoteRepo.Language != "" {
-		fmt.Printf("Language:       %s\n", remoteRepo.Language)
-	}
-
-	log.Println()
-	log.Println()
-	log.Printf("# View recent builds: src remote builds")
-	log.Printf("# Trigger new build:  src remote build")
-	log.Println()
-
+	printRemoteRepo(rrepo)
 	return nil
 }

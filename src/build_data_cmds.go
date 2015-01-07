@@ -22,79 +22,126 @@ import (
 func init() {
 	buildDataGroup, err := CLI.AddCommand("build-data",
 		"build data operations",
-		"The build-data command contains subcommands for performing operations on local and remote build data.",
+		"The build-data command group contains subcommands for listing, displaying, uploading, and downloading build data.",
 		&buildDataCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_, err = buildDataGroup.AddCommand("ls",
+	c, err := buildDataGroup.AddCommand("ls",
 		"list build data files and dirs",
-		"The `src build-data ls` subcommand lists build data files and directories for a repository at a specific commit.",
+		"The ls command lists build data files and directories for a repository at a specific commit.",
 		&buildDataListCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
+	setDefaultCommitIDOpt(c)
 
-	_, err = buildDataGroup.AddCommand("cat",
+	c, err = buildDataGroup.AddCommand("cat",
 		"display contents of build files",
-		"The `src build-data cat` subcommand displays the contents of a build data file for a repository at a specific commit.",
+		"The command displays the contents of a build data file for a repository at a specific commit.",
 		&buildDataCatCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
+	setDefaultCommitIDOpt(c)
 
-	_, err = buildDataGroup.AddCommand("rm",
+	c, err = buildDataGroup.AddCommand("rm",
 		"remove build data files and dirs",
-		"The `src build-data rm` subcommand removes a build data file or directory for a repository at a specific commit.",
+		"The rm command removes a build data file or directory for a repository at a specific commit.",
 		&buildDataRemoveCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
+	setDefaultCommitIDOpt(c)
 
-	_, err = buildDataGroup.AddCommand("fetch",
+	c, err = buildDataGroup.AddCommand("fetch",
 		"fetch remote build data to local dir",
-		"Fetch remote build data (from Sourcegraph.com) for the current repository to the local .srclib-cache directory.",
+		"The fetch command fetches remote build data for the current repository to the local .srclib-cache directory.",
 		&buildDataFetchCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
+	setDefaultCommitIDOpt(c)
 
-	_, err = buildDataGroup.AddCommand("upload",
+	c, err = buildDataGroup.AddCommand("upload",
 		"upload local build data to remote",
-		"Upload local build data (in .srclib-cache) for the current repository to Sourcegraph.com.",
+		"The upload command uploads local build data (in .srclib-cache) for the current repository to the remote.",
 		&buildDataUploadCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
+	setDefaultCommitIDOpt(c)
 }
 
 type BuildDataCmd struct {
-	Local bool `short:"l" long:"local" description:"execute build-data ls/cat/rm subcommands on local build data (.srclib-cache), not remote (sourcegraph.com)"`
 }
 
 var buildDataCmd BuildDataCmd
 
 func (c *BuildDataCmd) Execute(args []string) error { return nil }
 
-func getBuildDataCmdFS(repo *Repo) (rwvfs.FileSystem, error) {
-	if buildDataCmd.Local {
-		localStore, err := buildstore.LocalRepo(repo.RootDir)
-		if err != nil {
-			return nil, err
-		}
-		return localStore.Commit(repo.CommitID), nil
+type buildDataSingleCommitCommonOpts struct {
+	CommitID string `long:"commit" description:"commit ID of build data to operate on" required:"yes"`
+}
+
+func (c buildDataSingleCommitCommonOpts) getLocalFileSystem() (rwvfs.FileSystem, string, error) {
+	// Open local build data FS.
+	lrepo, err := openLocalRepo()
+	if lrepo == nil || lrepo.RootDir == "" || lrepo.CommitID == "" {
+		return nil, "", err
 	}
-	return NewAPIClientWithAuthIfPresent().BuildData.FileSystem(repo.RepoRevSpec())
+	localStore, err := buildstore.LocalRepo(lrepo.RootDir)
+	if err != nil {
+		return nil, "", err
+	}
+	return localStore.Commit(lrepo.CommitID), fmt.Sprintf("local repository (root dir %s, commit %s)", lrepo.RootDir, lrepo.CommitID), nil
+}
+
+func (c buildDataSingleCommitCommonOpts) getRemoteFileSystem() (rwvfs.FileSystem, string, sourcegraph.RepoRevSpec, error) {
+	cl := NewAPIClientWithAuthIfPresent()
+	rrepo, err := getRemoteRepo(cl)
+	if err != nil {
+		return nil, "", sourcegraph.RepoRevSpec{}, err
+	}
+
+	// Reopen the local repo (even though getRemoteRepo also opens it)
+	// because we need the local commit ID, which getRemoteRepo
+	// doesn't return.
+	lrepo, err := openLocalRepo()
+	if err != nil {
+		return nil, "", sourcegraph.RepoRevSpec{}, err
+	}
+
+	repoRevSpec := sourcegraph.RepoRevSpec{RepoSpec: rrepo.RepoSpec(), Rev: lrepo.CommitID, CommitID: lrepo.CommitID}
+	fs, err := cl.BuildData.FileSystem(repoRevSpec)
+	return fs, fmt.Sprintf("remote repository (URI %s, commit %s)", rrepo.URI, lrepo.CommitID), repoRevSpec, err
+}
+
+type buildDataSingleRepoCommonOpts struct {
+	buildDataSingleCommitCommonOpts
+	Local bool `long:"local" description:"execute build-data ls/cat/rm subcommands on local build data (.srclib-cache), not remote (sourcegraph.com)"`
+}
+
+// getFileSystem gets either the local or remote build data FS,
+// depending on the value of c.Local.
+func (c *buildDataSingleRepoCommonOpts) getFileSystem() (rwvfs.FileSystem, string, error) {
+	if c.Local {
+		return c.getLocalFileSystem()
+	}
+	fs, label, _, err := c.getRemoteFileSystem()
+	return fs, label, err
 }
 
 type BuildDataListCmd struct {
+	buildDataSingleRepoCommonOpts
+
 	Args struct {
 		Dir string `name:"DIR" default:"." description:"list build data files in this dir"`
 	} `positional-args:"yes"`
@@ -108,30 +155,42 @@ type BuildDataListCmd struct {
 var buildDataListCmd BuildDataListCmd
 
 func (c *BuildDataListCmd) Execute(args []string) error {
-	if c.URLs && buildDataCmd.Local {
+	if c.URLs && c.Local {
 		return fmt.Errorf("using --urls is incompatible with the build-data -l/--local option because local build data files do not have a URL")
 	}
 	if c.URLs {
 		c.Long = true
 	}
-
-	repo, err := OpenRepo(".")
-	if err != nil {
-		return err
-	}
-
 	dir := c.Args.Dir
 	if dir == "" {
 		dir = "."
 	}
 
-	if GlobalOpt.Verbose {
-		log.Printf("Listing build files for repository %q commit %q in dir %q", repo.URI(), repo.CommitID, dir)
-	}
-
-	bdfs, err := getBuildDataCmdFS(repo)
+	bdfs, repoLabel, err := c.getFileSystem()
 	if err != nil {
 		return err
+	}
+
+	if GlobalOpt.Verbose {
+		log.Printf("Listing build files for %s in dir %q", repoLabel, dir)
+	}
+
+	// Only used for constructing the URLs for remote build data.
+	var repoRevSpec sourcegraph.RepoRevSpec
+	if !c.Local {
+		cl := NewAPIClientWithAuthIfPresent()
+		rrepo, err := getRemoteRepo(cl)
+		if err != nil {
+			return err
+		}
+		repoRevSpec.RepoSpec = rrepo.RepoSpec()
+
+		lrepo, err := openLocalRepo()
+		if err != nil {
+			return err
+		}
+		repoRevSpec.Rev = lrepo.CommitID
+		repoRevSpec.CommitID = lrepo.CommitID
 	}
 
 	printFile := func(fi os.FileInfo) {
@@ -149,7 +208,7 @@ func (c *BuildDataListCmd) Execute(args []string) error {
 
 		var urlStr string
 		if c.URLs {
-			spec := sourcegraph.BuildDataFileSpec{RepoRev: repo.RepoRevSpec(), Path: filepath.Join(dir, fi.Name())}
+			spec := sourcegraph.BuildDataFileSpec{RepoRev: repoRevSpec, Path: filepath.Join(dir, fi.Name())}
 
 			// TODO(sqs): use sourcegraph.Router when it is merged to go-sourcegraph master
 			u, err := router.NewAPIRouter(nil).Get(router.RepoBuildDataEntry).URLPath(router.MapToArray(spec.RouteVars())...)
@@ -203,6 +262,8 @@ type treeFileInfo struct {
 func (fi treeFileInfo) Name() string { return fi.path }
 
 type BuildDataCatCmd struct {
+	buildDataSingleRepoCommonOpts
+
 	Args struct {
 		File string `name:"FILE" default:"." description:"file whose contents to print"`
 	} `positional-args:"yes"`
@@ -211,23 +272,18 @@ type BuildDataCatCmd struct {
 var buildDataCatCmd BuildDataCatCmd
 
 func (c *BuildDataCatCmd) Execute(args []string) error {
-	repo, err := OpenRepo(".")
-	if err != nil {
-		return err
-	}
-
 	file := c.Args.File
 	if file == "" {
 		return fmt.Errorf("no file specified")
 	}
 
-	if GlobalOpt.Verbose {
-		log.Printf("Displaying build file %q for repository %q commit %q", file, repo.URI(), repo.CommitID)
-	}
-
-	bdfs, err := getBuildDataCmdFS(repo)
+	bdfs, repoLabel, err := c.getFileSystem()
 	if err != nil {
 		return err
+	}
+
+	if GlobalOpt.Verbose {
+		log.Printf("Displaying build file %q for %s", file, repoLabel)
 	}
 
 	f, err := bdfs.Open(file)
@@ -240,6 +296,8 @@ func (c *BuildDataCatCmd) Execute(args []string) error {
 }
 
 type BuildDataRemoveCmd struct {
+	buildDataSingleRepoCommonOpts
+
 	Recursive bool `short:"r" description:"recursively delete files and dir"`
 	Args      struct {
 		Files []string `name:"FILES" default:"." description:"file to remove"`
@@ -249,22 +307,17 @@ type BuildDataRemoveCmd struct {
 var buildDataRemoveCmd BuildDataRemoveCmd
 
 func (c *BuildDataRemoveCmd) Execute(args []string) error {
-	repo, err := OpenRepo(".")
-	if err != nil {
-		return err
-	}
-
 	if len(c.Args.Files) == 0 {
 		return fmt.Errorf("no files specified")
 	}
 
-	if GlobalOpt.Verbose {
-		log.Printf("Removing build files %v for repository %q commit %q", c.Args.Files, repo.URI(), repo.CommitID)
-	}
-
-	bdfs, err := getBuildDataCmdFS(repo)
+	bdfs, repoLabel, err := c.getFileSystem()
 	if err != nil {
 		return err
+	}
+
+	if GlobalOpt.Verbose {
+		log.Printf("Removing build files %v for %s", c.Args.Files, repoLabel)
 	}
 
 	vfs := removeLoggedFS{rwvfs.Walkable(bdfs)}
@@ -296,29 +349,22 @@ func (fs removeLoggedFS) Remove(path string) error {
 }
 
 type BuildDataFetchCmd struct {
+	buildDataSingleCommitCommonOpts
+
 	DryRun bool `short:"n" long:"dry-run" description:"don't do anything, just show what would be done"`
 }
 
 var buildDataFetchCmd BuildDataFetchCmd
 
 func (c *BuildDataFetchCmd) Execute(args []string) error {
-	repo, err := OpenRepo(".")
+	localFS, localRepoLabel, err := c.getLocalFileSystem()
 	if err != nil {
 		return err
 	}
-	localStore, err := buildstore.LocalRepo(repo.RootDir)
+
+	remoteFS, remoteRepoLabel, repoRevSpec, err := c.getRemoteFileSystem()
 	if err != nil {
-		log.Fatal(err)
-	}
-	localFS := localStore.Commit(repo.CommitID)
-	if err := rwvfs.MkdirAll(localFS, "."); err != nil {
 		return err
-	}
-
-	apiclient := NewAPIClientWithAuthIfPresent()
-
-	if _, _, err := apiclient.Repos.Get(repo.RepoRevSpec().RepoSpec, nil); err != nil {
-		return fmt.Errorf("couldn't find repository on remote: %s.", err)
 	}
 
 	// Use uncached API client because the .srclib-cache already
@@ -326,15 +372,14 @@ func (c *BuildDataFetchCmd) Execute(args []string) error {
 	//
 	// TODO(sqs): this uncached client isn't authed because it doesn't
 	// have the other API client's http.Client or http.RoundTripper
-	apiclientUncached := sourcegraph.NewClient(nil)
-	apiclientUncached.BaseURL = apiclient.BaseURL
-	remoteFS, err := apiclientUncached.BuildData.FileSystem(repo.RepoRevSpec())
+	cl := newAPIClientWithAuth(false)
+	remoteFS, err = cl.BuildData.FileSystem(repoRevSpec)
 	if err != nil {
 		return err
 	}
 
 	if GlobalOpt.Verbose {
-		log.Printf("Fetching remote build files for repository %q commit %q from %s to %s...", repo.URI(), repo.CommitID, remoteFS.String(), localFS.String())
+		log.Printf("Fetching remote build files for %s to %s...", remoteRepoLabel, localRepoLabel)
 	}
 
 	// TODO(sqs): check if file exists in local cache and don't fetch it if it does and if it is identical
@@ -343,7 +388,7 @@ func (c *BuildDataFetchCmd) Execute(args []string) error {
 	w := fs.WalkFS(".", rwvfs.Walkable(remoteFS))
 	for w.Step() {
 		if err := w.Err(); err != nil {
-			return err
+			return fmt.Errorf("walking remote dir tree: %s", err)
 		}
 		fi := w.Stat()
 		if fi == nil {
@@ -357,7 +402,10 @@ func (c *BuildDataFetchCmd) Execute(args []string) error {
 			return fetchFile(remoteFS, localFS, path, fi, c.DryRun)
 		})
 	}
-	return par.Wait()
+	if err := par.Wait(); err != nil {
+		return fmt.Errorf("error fetching: %s", err)
+	}
+	return nil
 }
 
 func fetchFile(remote vfs.FileSystem, local rwvfs.FileSystem, path string, fi os.FileInfo, dryRun bool) error {
@@ -375,57 +423,51 @@ func fetchFile(remote vfs.FileSystem, local rwvfs.FileSystem, path string, fi os
 
 	rf, err := remote.Open(path)
 	if err != nil {
-		return err
+		return fmt.Errorf("remote file: %s", err)
 	}
 	defer rf.Close()
 
 	lf, err := local.Create(path)
 	if err != nil {
-		return err
+		return fmt.Errorf("local file: %s", err)
 	}
 	defer lf.Close()
 
 	if _, err := io.Copy(lf, rf); err != nil {
-		return err
+		return fmt.Errorf("copy from remote to local: %s", err)
 	}
 
 	if GlobalOpt.Verbose {
 		log.Printf("Fetched %s (%.1fkb)", path, kb)
 	}
 
-	return lf.Close()
+	if err := lf.Close(); err != nil {
+		return fmt.Errorf("local file: %s", err)
+	}
+	return nil
 }
 
 type BuildDataUploadCmd struct {
+	buildDataSingleCommitCommonOpts
+
 	DryRun bool `short:"n" long:"dry-run" description:"don't do anything, just show what would be done"`
 }
 
 var buildDataUploadCmd BuildDataUploadCmd
 
 func (c *BuildDataUploadCmd) Execute(args []string) error {
-	repo, err := OpenRepo(".")
+	localFS, localRepoLabel, err := c.getLocalFileSystem()
 	if err != nil {
 		return err
 	}
-	localStore, err := buildstore.LocalRepo(repo.RootDir)
-	if err != nil {
-		return err
-	}
-	localFS := localStore.Commit(repo.CommitID)
 
-	apiclient := NewAPIClientWithAuthIfPresent()
-
-	if _, _, err := apiclient.Repos.Get(repo.RepoRevSpec().RepoSpec, nil); err != nil {
-		return fmt.Errorf("couldn't find repository on remote: %s.", err)
-	}
-
-	remoteFS, err := apiclient.BuildData.FileSystem(repo.RepoRevSpec())
+	remoteFS, remoteRepoLabel, _, err := c.getRemoteFileSystem()
 	if err != nil {
 		return err
 	}
 
 	if GlobalOpt.Verbose {
-		log.Printf("Uploading local build files to remote for repository %q commit %q from %s to %s...", repo.URI(), repo.CommitID, localFS.String(), remoteFS.String())
+		log.Printf("Uploading build files from %s to %s...", localRepoLabel, remoteRepoLabel)
 	}
 
 	// TODO(sqs): check if file exists remotely and don't upload it if it does and if it is identical
@@ -472,7 +514,11 @@ func uploadFile(local vfs.FileSystem, remote rwvfs.FileSystem, path string, fi o
 	if err != nil {
 		return err
 	}
-	defer rf.Close()
+	defer func() {
+		if err := rf.Close(); err != nil {
+			log.Println("Error closing after error:", err)
+		}
+	}()
 
 	if _, err := io.Copy(rf, lf); err != nil {
 		return err
