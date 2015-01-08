@@ -43,3 +43,86 @@ func (e MultiError) Error() string {
 	}
 	return strings.Join(msgs, "\n")
 }
+
+// UnresolvedInternalRefs returns a map of unresolved internal refs,
+// keyed on the (nonexistent) defs they point to. CurrentRepoURI must
+// be the repo URI of the repo the refs and defs were built from. It
+// is used to determine whether a ref is an internal ref or not. Only
+// internal refs can be checked in this way because checking
+// resolution to external defs would require loading external data,
+// which is outside the scope of this function.
+func UnresolvedInternalRefs(currentRepoURI string, refs []*graph.Ref, defs []*graph.Def) map[graph.DefKey][]*graph.Ref {
+	defKeys := map[graph.DefKey]*graph.Def{}
+	for _, def := range defs {
+		// Remove CommitID because the internal refs don't have a
+		// DefCommitID (it's implied).
+		defKeyInMapKey := def.DefKey
+		defKeyInMapKey.CommitID = ""
+
+		defKeys[defKeyInMapKey] = def
+	}
+
+	unresolvedInternalRefsByDefKey := map[graph.DefKey][]*graph.Ref{}
+	for _, ref := range refs {
+		// We can only check internal refs easily here, since we've
+		// pulled only the data we need to do so already. Checking
+		// xrefs would also be useful but it would take a lot longer
+		// and require fetching external data.
+		if graph.URIEqual(ref.DefRepo, currentRepoURI) {
+			defKey := ref.DefKey()
+			if _, resolved := defKeys[defKey]; !resolved {
+				unresolvedInternalRefsByDefKey[defKey] = append(unresolvedInternalRefsByDefKey[defKey], ref)
+			}
+		}
+	}
+
+	return unresolvedInternalRefsByDefKey
+}
+
+// PopulateImpliedFields fills in fields on graph data objects that
+// individual toolchains leave blank but that are implied by the
+// source unit the graph data objects were built from.
+func PopulateImpliedFields(repo, commitID, unitType, unit string, o *Output) {
+	for _, def := range o.Defs {
+		def.UnitType = unitType
+		def.Unit = unit
+		def.Repo = repo
+		def.CommitID = commitID
+		if len(def.Data) == 0 {
+			def.Data = []byte(`{}`)
+		}
+	}
+	for _, ref := range o.Refs {
+		ref.Repo = repo
+		ref.UnitType = unitType
+		ref.Unit = unit
+		ref.CommitID = commitID
+
+		// Treat an empty repository URI as referring to the current
+		// repository.
+		if ref.DefRepo == "" {
+			ref.DefRepo = repo
+			if ref.DefUnit == "" {
+				ref.DefUnitType = unitType
+				ref.DefUnit = unit
+			}
+		}
+		if ref.DefUnitType == "" {
+			// default DefUnitType to same unit type as the ref itself
+			ref.DefUnitType = unitType
+		}
+	}
+	for _, doc := range o.Docs {
+		doc.UnitType = unitType
+		doc.Unit = unit
+		doc.Repo = repo
+		doc.CommitID = commitID
+	}
+
+	for _, ann := range o.Anns {
+		ann.UnitType = unitType
+		ann.Unit = unit
+		ann.Repo = repo
+		ann.CommitID = commitID
+	}
+}
