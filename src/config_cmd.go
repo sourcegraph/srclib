@@ -132,17 +132,6 @@ func (c *ConfigCmd) Execute(args []string) error {
 	commitFS := buildStore.Commit(localRepo.CommitID)
 
 	// Write source units to build cache.
-	//
-	// TODO(sqs): create Makefile.config that makes it more standard to recreate
-	// these when the source unit defns change (and to determine when the source
-	// unit defns change), with targets like:
-	//
-	// UNITNAME/UNITTYPE.unit.v0.json: setup.py mylib/foo.py
-	//   src config --unit=UNITNAME@UNITTYPE
-	//
-	// or maybe a custom stale checker is better than just using file mtimes for
-	// all the files (maybe just use setup.py as a prereq? but then how will we
-	// update SourceUnit.Files list? SourceUnit.Globs could help here...)
 	if !c.NoCacheWrite {
 		if err := rwvfs.MkdirAll(commitFS, "."); err != nil {
 			return err

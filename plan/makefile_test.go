@@ -31,7 +31,7 @@ func TestCreateMakefile(t *testing.T) {
 		},
 	}
 
-	mf, err := plan.CreateMakefile(buildDataDir, c, plan.Options{})
+	mf, err := plan.CreateMakefile(buildDataDir, nil, "", c, plan.Options{NoCache: true})
 	if err != nil {
 		t.Fatal(err)
 	}
