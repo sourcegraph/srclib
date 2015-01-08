@@ -66,6 +66,5 @@ func ReadCached(bdfs vfs.FileSystem) (*Tree, error) {
 	if err := par.Wait(); err != nil {
 		return nil, err
 	}
-
 	return &Tree{SourceUnits: units}, nil
 }

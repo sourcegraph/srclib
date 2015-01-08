@@ -83,6 +83,24 @@ type SourceUnit struct {
 
 //END SourceUnit OMIT
 
+// ContainsAny returns true if u contains any files in filesnames. Currently
+// doesn't process globs.
+func (u SourceUnit) ContainsAny(filenames []string) bool {
+	if len(filenames) == 0 {
+		return false
+	}
+	files := make(map[string]bool)
+	for _, f := range filenames {
+		files[f] = true
+	}
+	for _, uf := range u.Files {
+		if files[uf] {
+			return true
+		}
+	}
+	return false
+}
+
 // OpsSorted returns the keys of the Ops map in sorted order.
 func (u *SourceUnit) OpsSorted() []string {
 	ops := make([]string, len(u.Ops))
