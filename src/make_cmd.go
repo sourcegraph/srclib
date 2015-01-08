@@ -102,8 +102,8 @@ func CreateMakefile(execOpt ToolchainExecOpt, cacheOpt BuildCacheOpt) (*makex.Ma
 	}
 
 	// TODO(sqs): buildDataDir is hardcoded.
-	buildDataDir := filepath.Join(buildstore.BuildDataDirName, currentRepo.CommitID)
-	mf, err := plan.CreateMakefile(buildDataDir, buildStore, currentRepo.VCSType, treeConfig, plan.Options{
+	buildDataDir := filepath.Join(buildstore.BuildDataDirName, localRepo.CommitID)
+	mf, err := plan.CreateMakefile(buildDataDir, buildStore, localRepo.VCSType, treeConfig, plan.Options{
 		ToolchainExecOpt: strings.Join(toolchainExecOptArgs, " "),
 		NoCache:          cacheOpt.NoCacheWrite,
 	})
