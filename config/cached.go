@@ -14,7 +14,7 @@ import (
 	"golang.org/x/tools/godoc/vfs"
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
-	"sourcegraph.com/sourcegraph/srclib/grapher"
+	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
@@ -71,7 +71,7 @@ func ReadCached(bdfs vfs.FileSystem) (*Tree, error) {
 }
 
 // ReadCachedGraph returns all of the graph data rooted at bdfs.
-func ReadCachedGraph(bdfs vfs.FileSystem) (grapher.Output, error) {
+func ReadCachedGraph(bdfs vfs.FileSystem) (*graph.Output, error) {
 	if _, err := bdfs.Lstat("."); os.IsNotExist(err) {
 		return nil, fmt.Errorf("build cache dir does not exist (did you run `src config` to create it)?")
 	} else if err != nil {
@@ -79,7 +79,7 @@ func ReadCachedGraph(bdfs vfs.FileSystem) (grapher.Output, error) {
 	}
 
 	var graphFiles []string
-	graphSuffix := buildstore.DataTypeSuffix(grapher.Output{})
+	graphSuffix := buildstore.DataTypeSuffix(graph.Output{})
 	w := fs.WalkFS(".", rwvfs.Walkable(rwvfs.ReadOnly(bdfs)))
 	for w.Step() {
 		if path := w.Path(); strings.HasSuffix(path, graphSuffix) {
@@ -87,20 +87,20 @@ func ReadCachedGraph(bdfs vfs.FileSystem) (grapher.Output, error) {
 		}
 	}
 
-	var totalOutput grapher.Output
+	totalOutput := &graph.Output{}
 	for _, g := range graphFiles {
 		f, err := bdfs.Open(g)
 		if err != nil {
 			return nil, err
 		}
-		o := &grapher.Output{}
+		o := &graph.Output{}
 		if err := json.NewDecoder(f).Decode(o); err != nil {
 			return nil, err
 		}
-		totalOutput.Defs = append(totalOutput.Defs, o.Defs)
-		totalOutput.Refs = append(totalOutput.Refs, o.Refs)
-		totalOutput.Docs = append(totalOutput.Docs, o.Docs)
-		totalOutput.Anns = append(totalOutput.Anns, o.Anns)
+		totalOutput.Defs = append(totalOutput.Defs, o.Defs...)
+		totalOutput.Refs = append(totalOutput.Refs, o.Refs...)
+		totalOutput.Docs = append(totalOutput.Docs, o.Docs...)
+		totalOutput.Anns = append(totalOutput.Anns, o.Anns...)
 	}
 	return totalOutput, nil
 }

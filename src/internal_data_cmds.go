@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/grapher"
 )
 
@@ -30,7 +31,7 @@ var normalizeGraphDataCmd NormalizeGraphDataCmd
 func (c *NormalizeGraphDataCmd) Execute(args []string) error {
 	in := os.Stdin
 
-	var o *grapher.Output
+	var o *graph.Output
 	if err := json.NewDecoder(in).Decode(&o); err != nil {
 		return err
 	}
