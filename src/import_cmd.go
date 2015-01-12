@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	c, err := CLI.AddCommand("import",
+	_, err := CLI.AddCommand("import",
 		"import data",
 		`Import data into the graph store. Only imports ref data for now.`,
 		&importCmd,

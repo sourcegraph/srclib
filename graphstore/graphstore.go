@@ -14,12 +14,13 @@ import (
 // StoreDirName is the name of the directory in which all repository
 // build data is stored, relative to the user's .srclib directory. We
 // will eventually remove the .srclib-cache directory and use the
-// store exclusively.
+// graph store exclusively.
 var StoreDirName = "store"
 
-// what I need:
-// * walk srclib-cache
+// TODO(graphstore):
 // * write doc.go
+// * store defs
+// * store docs
 
 // Graph store layout
 // ------------------
@@ -41,7 +42,7 @@ func New(srclibPath string) (*Store, error) {
 	if err := os.Mkdir(storeDir, 0700); err != nil && !os.IsExist(err) {
 		return nil, err
 	}
-	return Store{rwvfs.Walkable(rwvfs.OS(storeDir))}, nil
+	return &Store{rwvfs.Walkable(rwvfs.OS(storeDir))}, nil
 }
 
 var graphStore Store
@@ -57,19 +58,19 @@ func (s *Store) constructDefPath(d graph.DefKey, includeCommitID bool) string {
 	if d.Repo == "" || d.UnitType == "" || d.Unit == "" || d.Path == "" {
 		return ""
 	}
-	p := s.Join(d.Repo, d.UnitType, d.Unit, d.Path)
+	p := s.fs.Join(d.Repo, d.UnitType, d.Unit, string(d.Path))
 	if includeCommitID {
 		if d.CommitID == "" {
 			return ""
 		}
-		p = s.Join(p, d.CommitID)
+		p = s.fs.Join(p, d.CommitID)
 	}
 	return p
 }
 
 func (s *Store) refsFS(d graph.DefKey) rwvfs.WalkableFileSystem {
 	p := s.constructDefPath(d, false)
-	return fs.Walkable(rwvfs.Sub(s, s.Join("refs", p, ".refs")))
+	return rwvfs.Walkable(rwvfs.Sub(s.fs, s.fs.Join("refs", p, ".refs")))
 }
 
 // SAMER: this stuff should go in refs.go... or defs.go
@@ -96,22 +97,21 @@ func (s *Store) ListRefs(d graph.DefKey, opt *ListRefsOptions) ([]*graph.Ref, er
 	var refs []*graph.Ref
 	// Read in all refs.
 	for _, m := range matches {
-		file, err := f.Open(m)
+		// TODO(samer): move Join out of loop.
+		file, err := f.Open(filepath.Join(opt.Repo, m))
 		if err != nil {
 			return nil, err
 		}
 		rs := &[]*graph.Ref{}
-		// TODO(samer): move Join out of loop.
-		d := json.Decoder(filepath.Join(opt.Repo, file))
-		if err := d.Decode(rs); err != nil {
+		if err := json.NewDecoder(file).Decode(rs); err != nil {
 			return nil, err
 		}
-		refs = append(refs, rs)
+		refs = append(refs, *rs...)
 	}
-	return refs
+	return refs, nil
 }
 
-var sortableRefs struct{ refs []*graph.Ref }
+type sortableRefs struct{ refs []*graph.Ref }
 
 func (rs sortableRefs) Len() int {
 	return len(rs.refs)
@@ -127,24 +127,25 @@ func (rs sortableRefs) Swap(i, j int) {
 
 // StoreRefs stores the refs in the graph store.
 func (s *Store) StoreRefs(refs []*graph.Ref) error {
-	sortable = sortableRefs{refs}
+	sortable := sortableRefs{refs}
 	sort.Sort(sortable)
 	var prevRepo string
 	var prevRefs []*graph.Ref
 	for i, r := range sortable.refs {
-		if i == len(sortable.refs)-1 || r.RefDefKey().Repo != prevRepo && len(prevRefs) > 0 {
+		if i == len(sortable.refs)-1 || r.RefDefKey().DefRepo != prevRepo && len(prevRefs) > 0 {
 			f := s.refsFS(r.DefKey())
-			refsFile, err := f.Open(r.RefDefKey().Repo + "/all.refs")
+			refsFile, err := f.Create(r.RefDefKey().DefRepo + "/all.refs")
 			if err != nil {
 				return err
 			}
 			if err := json.NewEncoder(refsFile).Encode(prevRefs); err != nil {
 				return err
 			}
-			prevRepo = r.RefDefKey().Repo
+			prevRepo = r.RefDefKey().DefRepo
 			prevRefs = []*graph.Ref{r}
 			continue
 		}
 		prevRefs = append(prevRefs, r)
 	}
+	return nil
 }
