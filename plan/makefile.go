@@ -152,8 +152,8 @@ func CreateMakefile(buildDataDir string, buildStore buildstore.RepoBuildStore, v
 					// previous valid revision. If it isn't, we prefix p with
 					// "../[previous-revision]".
 					p := strings.Split(rule.Target(), "/")
-					if len(p) > 2 ||
-						strings.Join(p[0:2], "/") == buildDataDir ||
+					if len(p) > 2 &&
+						strings.Join(p[0:2], "/") == buildDataDir &&
 						len(p[1]) == 40 { // HACK: Mercurial and Git both use 40-char hashes.
 						// p is prefixed by "data-dir/vcs-commit-id"
 						p[1] = prevCommitID
