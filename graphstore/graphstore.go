@@ -2,6 +2,7 @@ package graphstore
 
 import (
 	"encoding/json"
+	"os"
 	"path/filepath"
 
 	"sort"
@@ -31,7 +32,16 @@ var StoreDirName = "store"
 
 // SAMER: docstring
 type Store struct {
-	FS rwvfs.WalkableFileSystem
+	fs rwvfs.WalkableFileSystem
+}
+
+// New takes a path for the global srclib directory and returns a Store.
+func New(srclibPath string) (*Store, error) {
+	storeDir := filepath.Join(srclibPath, StoreDirName)
+	if err := os.Mkdir(storeDir, 0700); err != nil && !os.IsExist(err) {
+		return nil, err
+	}
+	return Store{rwvfs.Walkable(rwvfs.OS(storeDir))}, nil
 }
 
 var graphStore Store
