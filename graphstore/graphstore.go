@@ -115,6 +115,9 @@ func (s *Store) ListRefs(d graph.DefKey, opt *ListRefsOptions) ([]*graph.Ref, er
 		if err := json.NewDecoder(file).Decode(rs); err != nil {
 			return nil, err
 		}
+		if err := file.Close(); err != nil {
+			return nil, err
+		}
 		refs = append(refs, *rs...)
 	}
 	return refs, nil
@@ -149,6 +152,9 @@ func (s *Store) StoreRefs(refs []*graph.Ref) error {
 			return err
 		}
 		if err := json.NewEncoder(refsFile).Encode(refs); err != nil {
+			return err
+		}
+		if err := refsFile.Close(); err != nil {
 			return err
 		}
 		return nil

@@ -97,6 +97,9 @@ func ReadCachedGraph(bdfs vfs.FileSystem) (*graph.Output, error) {
 		if err := json.NewDecoder(f).Decode(o); err != nil {
 			return nil, err
 		}
+		if err := f.Close(); err != nil {
+			return nil, err
+		}
 		totalOutput.Defs = append(totalOutput.Defs, o.Defs...)
 		totalOutput.Refs = append(totalOutput.Refs, o.Refs...)
 		totalOutput.Docs = append(totalOutput.Docs, o.Docs...)
