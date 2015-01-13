@@ -34,7 +34,7 @@ var StoreDirName = "store"
 // <refs> := SRCLIBPATH/refs/<ref-path>
 // <ref-path> := <def-path-no-commit-id>/.refs/<ref-repo>
 
-// SAMER: docstring
+// Store represents the user's graph store.
 type Store struct {
 	fs rwvfs.WalkableFileSystem
 }
@@ -79,7 +79,6 @@ func (s *Store) refsFS(d graph.DefKey) rwvfs.WalkableFileSystem {
 	return rwvfs.Walkable(rwvfs.Sub(s.fs, p))
 }
 
-// SAMER: this stuff should go in refs.go... or defs.go
 type ListRefsOptions struct {
 	// Repo is a repository URI. When it is not blank, only fetch
 	// references from Repo.
