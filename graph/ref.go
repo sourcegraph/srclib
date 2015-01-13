@@ -1,6 +1,7 @@
 package graph
 
 import (
+	"encoding/json"
 	"strconv"
 
 	"sourcegraph.com/sourcegraph/go-nnz/nnz"
@@ -11,6 +12,14 @@ type RefDefKey struct {
 	DefUnitType string  `db:"def_unit_type" json:",omitempty"`
 	DefUnit     string  `db:"def_unit" json:",omitempty"`
 	DefPath     DefPath `db:"def_path" json:",omitempty"`
+}
+
+func (r RefDefKey) String() string {
+	b, err := json.Marshal(r)
+	if err != nil {
+		panic("RefDefKey.String: " + err.Error())
+	}
+	return string(b)
 }
 
 type RefKey struct {

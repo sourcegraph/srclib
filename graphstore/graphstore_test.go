@@ -79,16 +79,16 @@ func TestRefsStore(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, r0 := range refs {
+	for _, r0 := range testRefs {
 		var exist bool
-		for _, r1 := range testRefs {
+		for _, r1 := range refs {
 			if reflect.DeepEqual(r0, r1) {
 				exist = true
 				break
 			}
 		}
 		if !exist {
-			t.Errorf("%+v not found in %+v", r0, testRefs)
+			t.Errorf("%+v not found in %+v", r0, refs)
 		}
 	}
 	// Now, we get the refs from only one repository.
