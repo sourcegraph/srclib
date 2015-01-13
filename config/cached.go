@@ -79,7 +79,7 @@ func ReadCachedGraph(bdfs vfs.FileSystem) (*graph.Output, error) {
 	}
 
 	var graphFiles []string
-	graphSuffix := buildstore.DataTypeSuffix(graph.Output{})
+	graphSuffix := buildstore.DataTypeSuffix(&graph.Output{})
 	w := fs.WalkFS(".", rwvfs.Walkable(rwvfs.ReadOnly(bdfs)))
 	for w.Step() {
 		if path := w.Path(); strings.HasSuffix(path, graphSuffix) {
