@@ -90,10 +90,15 @@ func sortedOutput(o *graph.Output) *graph.Output {
 }
 
 // NormalizeData sorts data and performs other postprocessing.
-func NormalizeData(unitType, dir string, o *graph.Output) error {
+func NormalizeData(currentRepoURI, unitType, dir string, o *graph.Output) error {
 	for _, ref := range o.Refs {
 		if ref.DefRepo != "" {
 			ref.DefRepo = graph.MakeURI(string(ref.DefRepo))
+		} else {
+			ref.DefRepo = currentRepoURI
+		}
+		if ref.Repo == "" {
+			ref.Repo = currentRepoURI
 		}
 	}
 
