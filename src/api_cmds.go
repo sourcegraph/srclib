@@ -18,7 +18,6 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/dep"
 	"sourcegraph.com/sourcegraph/srclib/graph"
-	"sourcegraph.com/sourcegraph/srclib/grapher"
 	"sourcegraph.com/sourcegraph/srclib/plan"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -249,7 +248,7 @@ func (c *APIListCmd) Execute(args []string) error {
 	// Find the ref(s) at the character position.
 	var refs []*graph.Ref
 	for _, u := range units {
-		var g grapher.Output
+		var g graph.Output
 		graphFile := plan.SourceUnitDataFilename("graph", u)
 		f, err := commitFS.Open(graphFile)
 		if err != nil {
@@ -328,7 +327,7 @@ func (c *APIDescribeCmd) Execute(args []string) error {
 	var nearbyRefs []*graph.Ref // Find nearby refs to help with debugging.
 OuterLoop:
 	for _, u := range units {
-		var g grapher.Output
+		var g graph.Output
 		graphFile := plan.SourceUnitDataFilename("graph", u)
 		f, err := commitFS.Open(graphFile)
 		if err != nil {
@@ -404,7 +403,7 @@ OuterLoop:
 	defInCurrentRepo := ref.DefRepo == repo.URI()
 	if defInCurrentRepo {
 		// Def is in the current repo.
-		var g grapher.Output
+		var g graph.Output
 		graphFile := plan.SourceUnitDataFilename("graph", &unit.SourceUnit{Name: ref.DefUnit, Type: ref.DefUnitType})
 		f, err := commitFS.Open(graphFile)
 		if err != nil {

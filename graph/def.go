@@ -8,6 +8,7 @@ import (
 
 	"sourcegraph.com/sourcegraph/go-nnz/nnz"
 	"sourcegraph.com/sourcegraph/go-nnz/sdf"
+	"sourcegraph.com/sourcegraph/srclib/ann"
 	"sourcegraph.com/sourcegraph/srclib/util/sqltypes"
 )
 
@@ -270,3 +271,14 @@ func (defs Defs) KeySet() (keys map[DefKey]struct{}, err error) {
 	}
 	return keys, nil
 }
+
+// START Output OMIT
+// Output is produced by grapher tools.
+type Output struct {
+	Defs []*Def     `json:",omitempty"`
+	Refs []*Ref     `json:",omitempty"`
+	Docs []*Doc     `json:",omitempty"`
+	Anns []*ann.Ann `json:",omitempty"`
+}
+
+// END Output OMIT
