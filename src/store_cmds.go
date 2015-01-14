@@ -35,7 +35,7 @@ var graphStore *graphstore.Store
 
 func init() {
 	var err error
-	graphStore, err = graphstore.New(srclib.Path)
+	graphStore, err = graphstore.NewLocal(srclib.Path)
 	if err != nil {
 		log.Fatal(err)
 	}

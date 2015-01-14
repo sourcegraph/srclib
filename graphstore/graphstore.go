@@ -39,13 +39,17 @@ type Store struct {
 	fs rwvfs.WalkableFileSystem
 }
 
-// New takes a path for the global srclib directory and returns a Store.
-func New(srclibPath string) (*Store, error) {
+// NewLocal takes a path for the global srclib directory and returns a Store.
+func NewLocal(srclibPath string) (*Store, error) {
 	storeDir := filepath.Join(srclibPath, StoreDirName)
 	if err := os.Mkdir(storeDir, 0700); err != nil && !os.IsExist(err) {
 		return nil, err
 	}
-	return &Store{rwvfs.Walkable(rwvfs.OS(storeDir))}, nil
+	return New(rwvfs.OS(storeDir)), nil
+}
+
+func New(fs rwvfs.FileSystem) *Store {
+	return &Store{rwvfs.Walkable(fs)}
 }
 
 var graphStore Store
