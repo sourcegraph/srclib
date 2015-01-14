@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"sourcegraph.com/sourcegraph/srclib"
+	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/graphstore"
 )
@@ -40,7 +41,9 @@ func init() {
 	}
 }
 
-type StoreCmd struct{}
+type StoreCmd struct {
+	config.Options
+}
 
 var storeCmd StoreCmd
 
