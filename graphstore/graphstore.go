@@ -24,6 +24,8 @@ var StoreDirName = "store"
 // * write doc.go
 // * store defs
 // * store docs
+// * catch panics
+// * fix issue with github.com/sourcegraph clone uris.
 
 // Graph store layout
 // ------------------
@@ -32,7 +34,9 @@ var StoreDirName = "store"
 // <def-path-no-commit-id> := <repo>/<unit-type>/<unit>/<path>
 //
 // <refs> := SRCLIBPATH/refs/<ref-path>
-// <ref-path> := <def-path-no-commit-id>/.refs/<ref-repo>
+// <ref-path> := <def-path-no-commit-id>/.refs/<ref-repo>/all.refs
+//
+// <filerefs> := SRCLIBPATH/filerefs/<repo>/<file-path>/<rev>.refs
 
 // Store represents the user's graph store.
 type Store struct {
@@ -77,6 +81,14 @@ func (s *Store) constructDefPath(d graph.DefKey, includeCommitID bool) string {
 
 func (s *Store) refsFS(d graph.DefKey) rwvfs.WalkableFileSystem {
 	p := s.fs.Join("refs", s.constructDefPath(d, false), ".refs")
+	if err := rwvfs.MkdirAll(s.fs, p); err != nil {
+		panic(err)
+	}
+	return rwvfs.Walkable(rwvfs.Sub(s.fs, p))
+}
+
+func (s *Store) fileRefsFS(repoURI, filepath string) rwvfs.WalkableFileSystem {
+	p := s.fs.Join("filerefs", repoURI, filepath)
 	if err := rwvfs.MkdirAll(s.fs, p); err != nil {
 		panic(err)
 	}
@@ -140,28 +152,52 @@ func (rs refsSortableByRepo) Len() int           { return len(rs.refs) }
 func (rs refsSortableByRepo) Swap(i, j int)      { rs.refs[i], rs.refs[j] = rs.refs[j], rs.refs[i] }
 func (rs refsSortableByRepo) Less(i, j int) bool { return rs.refs[i].Repo < rs.refs[j].Repo }
 
-// StoreRefs stores the refs in the graph store.
-func (s *Store) StoreRefs(refs []*graph.Ref) error {
-	writeRefs := func(f rwvfs.WalkableFileSystem, refs []*graph.Ref) error {
-		if len(refs) == 0 {
-			return nil
-		}
-		err := rwvfs.MkdirAll(f, refs[0].Repo) // All members of refs have the same Repo.
-		if err != nil {
-			return err
-		}
-		refsFile, err := f.Create(refs[0].Repo + "/all.refs")
-		if err != nil {
-			return err
-		}
-		if err := json.NewEncoder(refsFile).Encode(refs); err != nil {
-			return err
-		}
-		if err := refsFile.Close(); err != nil {
-			return err
-		}
+func writeRefs(f rwvfs.WalkableFileSystem, refs []*graph.Ref) error {
+	if len(refs) == 0 {
 		return nil
 	}
+	err := rwvfs.MkdirAll(f, refs[0].Repo) // All members of refs have the same Repo.
+	if err != nil {
+		return err
+	}
+	refsFile, err := f.Create(refs[0].Repo + "/all.refs")
+	if err != nil {
+		return err
+	}
+	if err := json.NewEncoder(refsFile).Encode(refs); err != nil {
+		return err
+	}
+	if err := refsFile.Close(); err != nil {
+		return err
+	}
+	return nil
+}
+
+// SAMER: make consistent with writeRefs.
+// All members of refs must have the same Repo, File and CommitID.
+func writeRefsToFile(s *Store, refs []*graph.Ref) error {
+	if len(refs) == 0 {
+		return nil
+	}
+	f := s.fileRefsFS(refs[0].Repo, refs[0].File)
+	refsFile, err := f.Create(refs[0].CommitID + ".refs")
+	if err != nil {
+		return err
+	}
+	if err := json.NewEncoder(refsFile).Encode(refs); err != nil {
+		return err
+	}
+	if err := refsFile.Close(); err != nil {
+		return err
+	}
+	return nil
+}
+
+// storeRefsByDefKey stores refs in the following format:
+//
+// <refs> := SRCLIBPATH/refs/<ref-path>
+// <ref-path> := <def-path-no-commit-id>/.refs/<ref-repo>/all.refs
+func (s *Store) storeRefsByDefKey(refs []*graph.Ref) error {
 	writeRefsToDefKey := func(refs []*graph.Ref) error {
 		if len(refs) == 0 {
 			return nil
@@ -200,4 +236,80 @@ func (s *Store) StoreRefs(refs []*graph.Ref) error {
 		prevRefs = append(prevRefs, r)
 	}
 	return writeRefsToDefKey(prevRefs)
+}
+
+type refsSortableByRepoFile struct{ refs []*graph.Ref }
+
+func (rs refsSortableByRepoFile) Len() int      { return len(rs.refs) }
+func (rs refsSortableByRepoFile) Swap(i, j int) { rs.refs[i], rs.refs[j] = rs.refs[j], rs.refs[i] }
+func (rs refsSortableByRepoFile) Less(i, j int) bool {
+	return rs.refs[i].Repo+rs.refs[i].File < rs.refs[j].Repo+rs.refs[j].File
+}
+
+// storeRefsByFile stores refs in the following format:
+//
+// <filerefs> := SRCLIBPATH/filerefs/<repo>/<file-path>/<rev>.refs
+func (s *Store) storeRefsByFile(refs []*graph.Ref) error {
+	writeRefsToRepo := func(refs []*graph.Ref) error {
+		// refs are already sorted by file.
+		var prevFile string
+		var prevRefs []*graph.Ref
+		for _, r := range refs {
+			if r.File != prevFile {
+				if err := writeRefsToFile(s, prevRefs); err != nil {
+					return err
+				}
+				prevFile = r.File
+				prevRefs = []*graph.Ref{r}
+				continue
+			}
+			prevRefs = append(prevRefs, r)
+		}
+		return writeRefsToFile(s, prevRefs)
+	}
+	sortable := refsSortableByRepoFile{refs}
+	sort.Sort(sortable)
+	var prevRepo string
+	var prevRefs []*graph.Ref
+	for _, r := range sortable.refs {
+		if r.Repo != prevRepo {
+			if err := writeRefsToRepo(prevRefs); err != nil {
+				return err
+			}
+			prevRepo = r.Repo
+			prevRefs = []*graph.Ref{r}
+			continue
+		}
+		prevRefs = append(prevRefs, r)
+	}
+	return writeRefsToRepo(prevRefs)
+}
+
+// StoreRefs stores the refs in the graph store.
+func (s *Store) StoreRefs(refs []*graph.Ref) error {
+	// TODO(graphstore): parallelize.
+	if err := s.storeRefsByDefKey(refs); err != nil {
+		return err
+	}
+	if err := s.storeRefsByFile(refs); err != nil {
+		return err
+	}
+	return nil
+}
+
+// SAMER: add doc string
+func (s *Store) ListFileRefs(repoURI, filename, commitID string) ([]*graph.Ref, error) {
+	f := s.fileRefsFS(repoURI, filename)
+	file, err := f.Open(commitID + RefsSuffix)
+	if err != nil {
+		return nil, err
+	}
+	rs := &[]*graph.Ref{}
+	if err := json.NewDecoder(file).Decode(rs); err != nil {
+		return nil, err
+	}
+	if err := file.Close(); err != nil {
+		return nil, err
+	}
+	return *rs, nil
 }
