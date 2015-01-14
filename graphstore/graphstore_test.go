@@ -17,7 +17,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	testStore, err = graphstore.New(tmp)
+	testStore, err = graphstore.NewLocal(tmp)
 	if err != nil {
 		log.Fatal(err)
 	}
