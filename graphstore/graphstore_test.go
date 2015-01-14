@@ -23,7 +23,80 @@ func init() {
 	}
 }
 
-func TestRefsStore(t *testing.T) {
+func TestRefsStore_ListFileRefs(t *testing.T) {
+	testDefKey := graph.DefKey{
+		Repo:     "defrepo",
+		UnitType: "defunittype",
+		Unit:     "defunit",
+		Path:     "defpath",
+	}
+	testRefs := []*graph.Ref{
+		{
+			DefRepo:     testDefKey.Repo,
+			DefUnitType: testDefKey.UnitType,
+			DefUnit:     testDefKey.Unit,
+			DefPath:     testDefKey.Path,
+			Repo:        "refrepo0",
+			CommitID:    "ffffffffffffffffffffffffffffffffffffffff",
+			UnitType:    "refunittype0",
+			Unit:        "refunit0",
+			File:        "reffile0",
+			Start:       0,
+			End:         3,
+		},
+		{
+			DefRepo:     testDefKey.Repo,
+			DefUnitType: testDefKey.UnitType,
+			DefUnit:     testDefKey.Unit,
+			DefPath:     testDefKey.Path,
+			Repo:        "refrepo0",
+			CommitID:    "ffffffffffffffffffffffffffffffffffffffff",
+			UnitType:    "refunittype0",
+			Unit:        "refunit0",
+			File:        "reffile0",
+			Start:       4,
+			End:         8,
+		},
+		{
+			DefRepo:     testDefKey.Repo,
+			DefUnitType: testDefKey.UnitType,
+			DefUnit:     testDefKey.Unit,
+			DefPath:     testDefKey.Path,
+			Repo:        "refrepo1",
+			CommitID:    "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
+			UnitType:    "refunittype1",
+			Unit:        "refunit1",
+			File:        "reffile1",
+			Start:       0,
+			End:         3,
+		},
+	}
+	if err := testStore.StoreRefs(testRefs); err != nil {
+		t.Fatal(err)
+	}
+	refs, err := testStore.ListFileRefs("refrepo0", "reffile0", "ffffffffffffffffffffffffffffffffffffffff")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if wantLen := 2; len(refs) != wantLen {
+		t.Errorf("Wrong number of refs. Wanted %d, got %d", wantLen, len(refs))
+	}
+	// Check that we got the first two refs from our test refs.
+	for i := 0; i < 2; i++ {
+		var exist bool
+		for _, r := range refs {
+			if reflect.DeepEqual(r, testRefs[i]) {
+				exist = true
+				break
+			}
+		}
+		if !exist {
+			t.Errorf("Ref %v not found in %v", testRefs[i], refs)
+		}
+	}
+}
+
+func TestRefsStore_ListRefs(t *testing.T) {
 	testDefKey := graph.DefKey{
 		Repo:     "defrepo",
 		UnitType: "defunittype",
