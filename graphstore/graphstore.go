@@ -26,6 +26,8 @@ var StoreDirName = "store"
 // * store docs
 // * catch panics
 // * fix issue with github.com/sourcegraph clone uris.
+// * add paging and limits
+// * remove deleted refs (requires index?)
 
 // Graph store layout
 // ------------------
