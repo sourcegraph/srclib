@@ -14,11 +14,11 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/graph"
 )
 
-// StoreDirName is the name of the directory in which all repository
-// build data is stored, relative to the user's .srclib directory. We
-// will eventually remove the .srclib-cache directory and use the
-// graph store exclusively.
-var StoreDirName = "store"
+// Name is the name of the directory in which all repository build
+// data is stored, relative to the user's .srclib directory. We will
+// eventually remove the .srclib-cache directory and use the graph
+// store exclusively.
+var Name = "store"
 
 // TODO(graphstore):
 // * write doc.go
@@ -31,23 +31,25 @@ var StoreDirName = "store"
 
 // Graph store layout
 // ------------------
-// <defs> := SRCLIBPATH/defs/<def-path>
+// <graphstore> := $SRCLIBPATH/store
+//
+// <defs> := <graphstore>/defs/<def-path>
 // <def-path> := <repo>/<unit-type>/<unit>/<path>/<commit-id>
 // <def-path-no-commit-id> := <repo>/<unit-type>/<unit>/<path>
 //
-// <refs> := SRCLIBPATH/refs/<ref-path>
+// <refs> := <graphstore>/refs/<ref-path>
 // <ref-path> := <def-path-no-commit-id>/.refs/<ref-repo>/all.refs
 //
-// <filerefs> := SRCLIBPATH/filerefs/<repo>/<file-path>/<rev>.refs
+// <filerefs> := <graphstore>/filerefs/<repo>/<file-path>/<rev>.refs
 
 // Store represents the user's graph store.
 type Store struct {
 	fs rwvfs.WalkableFileSystem
 }
 
-// NewLocal takes a path for the global srclib directory and returns a Store.
+// NewLocal takes a path for the global graph store directory and returns a Store.
 func NewLocal(srclibPath string) (*Store, error) {
-	storeDir := filepath.Join(srclibPath, StoreDirName)
+	storeDir := filepath.Join(srclibPath)
 	if err := os.Mkdir(storeDir, 0700); err != nil && !os.IsExist(err) {
 		return nil, err
 	}

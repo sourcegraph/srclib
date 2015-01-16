@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"path/filepath"
 
 	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
@@ -45,7 +46,7 @@ var graphStore *graphstore.Store
 
 func init() {
 	var err error
-	graphStore, err = graphstore.NewLocal(srclib.Path)
+	graphStore, err = graphstore.NewLocal(filepath.Join(srclib.Path, graphstore.Name))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -83,7 +84,7 @@ func (c *StoreImportCmd) Execute(args []string) error {
 		// be done.
 		return nil
 	}
-	gs, err := graphstore.NewLocal(srclib.Path)
+	gs, err := graphstore.NewLocal(filepath.Join(srclib.Path, graphstore.Name))
 	if err != nil {
 		return err
 	}
