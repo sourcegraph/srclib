@@ -307,6 +307,9 @@ func (s *Store) ListFileRefs(repoURI, filename, commitID string) ([]*graph.Ref, 
 	file, err := f.Open(commitID + RefsSuffix)
 	if err != nil {
 		return nil, err
+	} else if os.IsNotExist(err) {
+		// File refs not existing is not an error.
+		return nil, nil
 	}
 	rs := &[]*graph.Ref{}
 	if err := json.NewDecoder(file).Decode(rs); err != nil {
