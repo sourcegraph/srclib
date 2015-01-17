@@ -50,7 +50,7 @@ type Store struct {
 // NewLocal takes a path for the global graph store directory and returns a Store.
 func NewLocal(srclibPath string) (*Store, error) {
 	storeDir := filepath.Join(srclibPath)
-	if err := os.Mkdir(storeDir, 0700); err != nil && !os.IsExist(err) {
+	if err := os.MkdirAll(storeDir, 0700); err != nil && !os.IsExist(err) {
 		return nil, err
 	}
 	return New(rwvfs.OS(storeDir)), nil
