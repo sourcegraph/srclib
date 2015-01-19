@@ -41,8 +41,8 @@ func NewFlatFileRepoStore(fs rwvfs.FileSystem, conf *FlatFileConfig) RepoStoreIm
 	return ts
 }
 
-func (s *flatFileRepoStore) Version(commitID string) (*Version, error) {
-	versions, err := s.Versions(versionCommitIDFilter(commitID))
+func (s *flatFileRepoStore) Version(key VersionKey) (*Version, error) {
+	versions, err := s.Versions(versionCommitIDFilter(key.CommitID))
 	if err != nil {
 		return nil, err
 	}

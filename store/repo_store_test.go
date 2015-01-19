@@ -30,7 +30,7 @@ func testRepoStore(t *testing.T, newFn func() RepoStoreImporter) {
 }
 
 func testRepoStore_uninitialized(t *testing.T, rs RepoStoreImporter) {
-	version, err := rs.Version("c")
+	version, err := rs.Version(VersionKey{CommitID: "c"})
 	if err == nil {
 		t.Errorf("%s: Version: got nil err", rs)
 	}
@@ -87,7 +87,7 @@ func testRepoStore_Version(t *testing.T, rs RepoStoreImporter) {
 
 	want := &Version{CommitID: "c"}
 
-	version, err := rs.Version("c")
+	version, err := rs.Version(VersionKey{CommitID: "c"})
 	if err != nil {
 		t.Errorf("%s: Version(c): %s", rs, err)
 	}
