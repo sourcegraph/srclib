@@ -93,6 +93,9 @@ func (c *StoreCmd) Execute(args []string) error { return nil }
 
 type StoreImportCmd struct {
 	DryRun bool `short:"n" long:"dry-run" description:"print what would be done but don't do anything"`
+
+	Unit     string `long:"unit" description:"only import source units with this name"`
+	UnitType string `long:"unit-type" description:"only import source units with this type"`
 }
 
 var storeImportCmd StoreImportCmd
@@ -127,6 +130,22 @@ func (c *StoreImportCmd) Execute(args []string) error {
 		return err
 	}
 	for _, rule := range mf.Rules {
+		if c.Unit != "" || c.UnitType != "" {
+			type ruleForSourceUnit interface {
+				SourceUnit() *unit.SourceUnit
+			}
+			if rule, ok := rule.(ruleForSourceUnit); ok {
+				u := rule.SourceUnit()
+				if (c.Unit != "" && u.Name != c.Unit) || (c.UnitType != "" && u.Type != c.UnitType) {
+					continue
+				}
+			} else {
+				// Skip all non-source-unit rules if --unit or
+				// --unit-type are specified.
+				continue
+			}
+		}
+
 		switch rule := rule.(type) {
 		case *grapher.GraphUnitRule:
 			var data graph.Output
