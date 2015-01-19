@@ -9,7 +9,6 @@ import (
 
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib"
-	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/grapher"
@@ -133,6 +132,8 @@ type StoreImportCmd struct {
 	Unit     string `long:"unit" description:"only import source units with this name"`
 	UnitType string `long:"unit-type" description:"only import source units with this type"`
 	CommitID string `long:"commit" description:"commit ID of commit whose data to import"`
+
+	RemoteBuildData bool `long:"remote" description:"import remote build data (not the local .srclib-cache build data)"`
 }
 
 var storeImportCmd StoreImportCmd
@@ -148,12 +149,13 @@ func (c *StoreImportCmd) Execute(args []string) error {
 		return err
 	}
 
-	// Open the build data cache.
-	buildStore, err := buildstore.LocalRepo(lrepo.RootDir)
+	bdfs, label, err := getBuildDataFS(!c.RemoteBuildData, c.Repo, c.CommitID)
 	if err != nil {
 		return err
 	}
-	bdfs := buildStore.Commit(c.CommitID)
+	if GlobalOpt.Verbose {
+		log.Printf("# Importing build data for %s (commit %s) from %s", c.Repo, c.CommitID, label)
+	}
 
 	// Traverse the build data directory for this repo and commit to
 	// create the makefile that lists the targets (which are the data
@@ -162,10 +164,11 @@ func (c *StoreImportCmd) Execute(args []string) error {
 	if err != nil {
 		return err
 	}
-	mf, err := plan.CreateMakefile(".", buildStore, lrepo.VCSType, treeConfig, plan.Options{})
+	mf, err := plan.CreateMakefile(".", nil, lrepo.VCSType, treeConfig, plan.Options{NoCache: true})
 	if err != nil {
 		return err
 	}
+
 	for _, rule := range mf.Rules {
 		if c.Unit != "" || c.UnitType != "" {
 			type ruleForSourceUnit interface {
@@ -190,7 +193,7 @@ func (c *StoreImportCmd) Execute(args []string) error {
 				return err
 			}
 			if c.DryRun || GlobalOpt.Verbose {
-				log.Printf("# Import graph data (%d defs, %d refs, %d docs, %d anns) for commit %s unit %s %s", len(data.Defs), len(data.Refs), len(data.Docs), len(data.Anns), c.CommitID, rule.Unit.Type, rule.Unit.Name)
+				log.Printf("# Importing graph data (%d defs, %d refs, %d docs, %d anns) for unit %s %s", len(data.Defs), len(data.Refs), len(data.Docs), len(data.Anns), rule.Unit.Type, rule.Unit.Name)
 				if c.DryRun {
 					continue
 				}
