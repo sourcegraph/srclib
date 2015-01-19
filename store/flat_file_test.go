@@ -13,7 +13,7 @@ func TestFlatFileUnitStore(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		return &flatFileUnitStore{rwvfs.OS(tmpDir)}
+		return &flatFileUnitStore{fs: rwvfs.OS(tmpDir), codec: JSONCodec{}}
 	})
 }
 
@@ -25,7 +25,7 @@ func TestFlatFileTreeStore(t *testing.T) {
 		}
 		fs := rwvfs.OS(tmpDir)
 		setCreateParentDirs(fs)
-		return newFlatFileTreeStore(rwvfs.Sub(fs, "tree"))
+		return newFlatFileTreeStore(rwvfs.Sub(fs, "tree"), nil)
 	})
 }
 
@@ -37,6 +37,6 @@ func TestFlatFileRepoStore(t *testing.T) {
 		}
 		fs := rwvfs.OS(tmpDir)
 		setCreateParentDirs(fs)
-		return NewFlatFileRepoStore(rwvfs.Sub(fs, "repo"))
+		return NewFlatFileRepoStore(rwvfs.Sub(fs, "repo"), nil)
 	})
 }

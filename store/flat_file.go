@@ -1,13 +1,11 @@
 package store
 
 import (
-	"encoding/json"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/kr/fs"
-
-	"strings"
 
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib/graph"
@@ -18,11 +16,27 @@ import (
 type flatFileRepoStore struct {
 	fs rwvfs.FileSystem
 	multiTreeStore
+
+	codec Codec
 }
 
-func NewFlatFileRepoStore(fs rwvfs.FileSystem) RepoStoreImporter {
+// FlatFileConfig configures a flat file store.
+type FlatFileConfig struct {
+	Codec Codec
+}
+
+// NewFlatFileRepoStore creates a new repository store (that can be
+// imported into) that is backed by files on a filesystem.
+func NewFlatFileRepoStore(fs rwvfs.FileSystem, conf *FlatFileConfig) RepoStoreImporter {
+	if conf == nil {
+		conf = &FlatFileConfig{}
+	}
+	if conf.Codec == nil {
+		conf.Codec = JSONCodec{}
+	}
+
 	setCreateParentDirs(fs)
-	ts := &flatFileRepoStore{fs: fs}
+	ts := &flatFileRepoStore{fs: fs, codec: conf.Codec}
 	ts.multiTreeStore = multiTreeStore{treeStores: ts.treeStores}
 	return ts
 }
@@ -71,7 +85,7 @@ func (s *flatFileRepoStore) versionDirs() ([]string, error) {
 }
 
 func (s *flatFileRepoStore) Import(commitID string, unit *unit.SourceUnit, data graph.Output) error {
-	ts := newFlatFileTreeStore(rwvfs.Sub(s.fs, commitID))
+	ts := newFlatFileTreeStore(rwvfs.Sub(s.fs, commitID), &FlatFileConfig{Codec: s.codec})
 	return ts.Import(unit, data)
 }
 
@@ -84,7 +98,7 @@ func (s *flatFileRepoStore) treeStores() (map[string]TreeStore, error) {
 	tss := make(map[string]TreeStore, len(versionDirs))
 	for _, dir := range versionDirs {
 		commitID := path.Base(dir)
-		tss[commitID] = newFlatFileTreeStore(rwvfs.Sub(s.fs, commitID))
+		tss[commitID] = newFlatFileTreeStore(rwvfs.Sub(s.fs, commitID), &FlatFileConfig{Codec: s.codec})
 	}
 	return tss, nil
 }
@@ -96,10 +110,19 @@ func (s *flatFileRepoStore) String() string { return "flatFileRepoStore" }
 type flatFileTreeStore struct {
 	fs rwvfs.FileSystem
 	multiUnitStore
+
+	codec Codec
 }
 
-func newFlatFileTreeStore(fs rwvfs.FileSystem) *flatFileTreeStore {
-	ts := &flatFileTreeStore{fs: fs}
+func newFlatFileTreeStore(fs rwvfs.FileSystem, conf *FlatFileConfig) *flatFileTreeStore {
+	if conf == nil {
+		conf = &FlatFileConfig{}
+	}
+	if conf.Codec == nil {
+		conf.Codec = JSONCodec{}
+	}
+
+	ts := &flatFileTreeStore{fs: fs, codec: conf.Codec}
 	ts.multiUnitStore = multiUnitStore{ts.unitStores}
 	return ts
 }
@@ -154,7 +177,7 @@ func (s *flatFileTreeStore) openUnitFile(filename string) (*unit.SourceUnit, err
 	}()
 
 	var unit unit.SourceUnit
-	return &unit, json.NewDecoder(f).Decode(&unit)
+	return &unit, s.codec.Decode(f, &unit)
 }
 
 func (s *flatFileTreeStore) unitFilenames() ([]string, error) {
@@ -197,7 +220,7 @@ func (s *flatFileTreeStore) Import(unit *unit.SourceUnit, data graph.Output) (er
 			err = err2
 		}
 	}()
-	if err := json.NewEncoder(f).Encode(unit); err != nil {
+	if err := s.codec.Encode(f, unit); err != nil {
 		return err
 	}
 
@@ -205,7 +228,7 @@ func (s *flatFileTreeStore) Import(unit *unit.SourceUnit, data graph.Output) (er
 	if err := rwvfs.MkdirAll(s.fs, dir); err != nil {
 		return err
 	}
-	us := &flatFileUnitStore{fs: rwvfs.Sub(s.fs, dir)}
+	us := &flatFileUnitStore{fs: rwvfs.Sub(s.fs, dir), codec: s.codec}
 	return us.Import(data)
 }
 
@@ -219,7 +242,7 @@ func (s *flatFileTreeStore) unitStores() (map[unit.Key]UnitStore, error) {
 	for _, unitFile := range unitFiles {
 		dir := strings.TrimSuffix(unitFile, unitFileSuffix)
 		unitKey := unit.Key{UnitType: path.Base(dir), Unit: path.Dir(dir)}
-		uss[unitKey] = &flatFileUnitStore{fs: rwvfs.Sub(s.fs, dir)}
+		uss[unitKey] = &flatFileUnitStore{fs: rwvfs.Sub(s.fs, dir), codec: s.codec}
 	}
 	return uss, nil
 }
@@ -230,6 +253,8 @@ func (s *flatFileTreeStore) String() string { return "flatFileTreeStore" }
 // in a filesystem.
 type flatFileUnitStore struct {
 	fs rwvfs.FileSystem
+
+	codec Codec
 }
 
 const flatFileUnitDataFilename = "data.json"
@@ -292,7 +317,7 @@ func (s *flatFileUnitStore) Import(data graph.Output) (err error) {
 			err = err2
 		}
 	}()
-	return json.NewEncoder(f).Encode(data)
+	return s.codec.Encode(f, data)
 }
 
 func (s *flatFileUnitStore) open() (o *graph.Output, err error) {
@@ -307,7 +332,7 @@ func (s *flatFileUnitStore) open() (o *graph.Output, err error) {
 		}
 	}()
 	o = &graph.Output{}
-	return o, json.NewDecoder(f).Decode(o)
+	return o, s.codec.Decode(f, o)
 }
 
 func (s *flatFileUnitStore) String() string { return "flatFileUnitStore" }
