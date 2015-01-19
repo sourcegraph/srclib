@@ -291,7 +291,7 @@ func (c *StoreRefsCmd) Execute(args []string) error {
 			v = v && c.DefUnit == ref.DefUnit
 		}
 		if c.DefPath != "" {
-			v = v && c.DefPath == string(ref.DefPath)
+			v = v && c.DefPath == ref.DefPath
 		}
 		if c.UnitType != "" {
 			v = v && c.UnitType == ref.UnitType
