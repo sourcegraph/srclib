@@ -8,11 +8,6 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/ann"
 )
 
-type (
-	DefPath  string
-	TreePath string
-)
-
 // START DefKey OMIT
 // DefKey specifies a definition, either concretely or abstractly. A concrete
 // definition key has a non-empty CommitID and refers to a definition defined in a
@@ -194,13 +189,13 @@ func (s *Def) sortKey() string { return s.DefKey.String() }
 type Propagate struct {
 	// Src is the def whose type/value is being propagated to the dst def.
 	SrcRepo     string
-	SrcPath     DefPath
+	SrcPath     string
 	SrcUnit     string
 	SrcUnitType string
 
 	// Dst is the def that is receiving a propagated type/value from the src def.
 	DstRepo     string
-	DstPath     DefPath
+	DstPath     string
 	DstUnit     string
 	DstUnitType string
 }
