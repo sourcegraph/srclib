@@ -212,6 +212,7 @@ func (s *memoryUnitStore) Refs(f RefFilter) ([]*graph.Ref, error) {
 }
 
 func (s *memoryUnitStore) Import(data graph.Output) error {
+	cleanForUnitStoreImport(&data)
 	s.data = &data
 	return nil
 }

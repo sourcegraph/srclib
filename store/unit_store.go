@@ -153,3 +153,30 @@ func (s multiUnitStore) Refs(f RefFilter) ([]*graph.Ref, error) {
 	}
 	return allRefs, nil
 }
+
+func cleanForUnitStoreImport(data *graph.Output) {
+	for _, def := range data.Defs {
+		def.Unit = ""
+		def.UnitType = ""
+		def.Repo = ""
+		def.CommitID = ""
+	}
+	for _, ref := range data.Refs {
+		ref.Unit = ""
+		ref.UnitType = ""
+		ref.Repo = ""
+		ref.CommitID = ""
+	}
+	for _, doc := range data.Docs {
+		doc.Unit = ""
+		doc.UnitType = ""
+		doc.Repo = ""
+		doc.CommitID = ""
+	}
+	for _, ann := range data.Anns {
+		ann.Unit = ""
+		ann.UnitType = ""
+		ann.Repo = ""
+		ann.CommitID = ""
+	}
+}
