@@ -5,10 +5,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"sourcegraph.com/sourcegraph/go-nnz/nnz"
-	"sourcegraph.com/sourcegraph/go-nnz/sdf"
 	"sourcegraph.com/sourcegraph/srclib/ann"
-	"sourcegraph.com/sourcegraph/srclib/util/sqltypes"
 )
 
 type (
@@ -35,11 +32,11 @@ type DefKey struct {
 	// CommitID is the ID of the VCS commit that this definition was defined in. The
 	// CommitID is always a full commit ID (40 hexadecimal characters for git
 	// and hg), never a branch or tag name.
-	CommitID string `db:"commit_id" json:",omitempty"`
+	CommitID string `json:",omitempty"`
 
 	// UnitType is the type name of the source unit (obtained from unit.Type(u))
 	// that this definition was defined in.
-	UnitType string `db:"unit_type" json:",omitempty"`
+	UnitType string `json:",omitempty"`
 
 	// Unit is the name of the source unit (obtained from u.Name()) that this
 	// definition was defined in.
@@ -88,7 +85,7 @@ type Def struct {
 	// Any prefix of a tree-path that terminates in a def name must be a valid
 	// tree-path for some def.
 	// The following regex captures the children of a tree-path X: X(/-[^/]*)*(/[^/-][^/]*)
-	TreePath string `db:"treepath" json:",omitempty"`
+	TreePath string `json:",omitempty"`
 
 	// Name of the definition. This need not be unique.
 	Name string
@@ -96,12 +93,12 @@ type Def struct {
 	// Kind is the kind of thing this definition is. This is
 	// language-specific. Possible values include "type", "func",
 	// "var", etc.
-	Kind string
+	Kind string `json:",omitempty"`
 
 	File string
 
-	DefStart int `db:"def_start"`
-	DefEnd   int `db:"def_end"`
+	DefStart int
+	DefEnd   int
 
 	// Exported is whether this def is part of a source unit's
 	// public API. For example, in Java a "public" field is
@@ -113,19 +110,16 @@ type Def struct {
 	// package, or file scope. For example, in Java a function's
 	// args are Local, but fields with "private" scope are not
 	// Local.
-	Local sdf.Bool
+	Local bool
 
 	// Test is whether this def is defined in test code (as opposed to main
 	// code). For example, definitions in Go *_test.go files have Test = true.
 	Test bool `json:",omitempty"`
 
-	// Private is whether this definition is private, i.e., if it came from a private repository.
-	Private nnz.Bool `json:",omitempty"`
-
 	// Data contains additional language- and toolchain-specific information
 	// about the def. Data is used to construct function signatures,
 	// import/require statements, language-specific type descriptions, etc.
-	Data sqltypes.JSON `json:",omitempty"`
+	Data json.RawMessage `json:",omitempty"`
 }
 
 // END Def OMIT

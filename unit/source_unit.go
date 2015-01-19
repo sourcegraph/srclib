@@ -1,7 +1,6 @@
 package unit
 
 import (
-	"database/sql/driver"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -44,27 +43,27 @@ type SourceUnit struct {
 	// Repo is the URI of the repository containing this source unit, if any.
 	// The scanner tool does not need to set this field - it can be left blank,
 	// to be filled in by the `src` tool
-	Repo string
+	Repo string `json:",omitempty"`
 
 	// CommitID is the commit ID of the repository containing this
 	// source unit, if any. The scanner tool need not fill this in; it
 	// should be left blank, to be filled in by the `src` tool.
-	CommitID string
+	CommitID string `json:",omitempty"`
 
 	// Globs is a list of patterns that match files that make up this source
 	// unit. It is used to detect when the source unit definition is out of date
 	// (e.g., when a file matches the glob but is not in the Files list).
 	//
 	// TODO(sqs): implement this in the Makefiles
-	Globs []string
+	Globs []string `json:",omitempty"`
 
 	// Files is all of the files that make up this source unit. Filepaths should
 	// be relative to the repository root.
-	Files []string
+	Files []string `json:",omitempty"`
 
 	// Dir is the root directory of this source unit. It is optional and maybe
 	// empty.
-	Dir string
+	Dir string `json:",omitempty"`
 
 	// Dependencies is a list of dependencies that this source unit has. The
 	// schema for these dependencies is internal to the scanner that produced
@@ -96,7 +95,7 @@ type SourceUnit struct {
 	// unit. Each key is the name of an operation, and the value is the tool to
 	// use to perform that operation. If the value is nil, the tool is chosen
 	// automatically according to the user's configuration.
-	Ops map[string]*srclib.ToolRef
+	Ops map[string]*srclib.ToolRef `json:",omitempty"`
 
 	// TODO(sqs): add a way to specify the toolchains and tools to use for
 	// various tasks on this source unit
@@ -179,20 +178,6 @@ func ParseID(unitID string) (name, typ string, err error) {
 
 // ID is a source unit ID.
 type ID string
-
-// Value implements driver.Valuer.
-func (x ID) Value() (driver.Value, error) {
-	return string(x), nil
-}
-
-// Scan implements sql.Scanner.
-func (x *ID) Scan(v interface{}) error {
-	if data, ok := v.([]byte); ok {
-		*x = ID(data)
-		return nil
-	}
-	return fmt.Errorf("%T.Scan failed: %v", x, v)
-}
 
 // ExpandPaths interprets paths, which contains paths (optionally with
 // filepath.Glob-compatible globs) that are relative to base. A list of actual
