@@ -44,7 +44,7 @@ func defKeyFilter(key graph.DefKey) DefFilter {
 	}
 }
 
-func defPathFilter(path graph.DefPath) DefFilter {
+func defPathFilter(path string) DefFilter {
 	return func(def *graph.Def) bool {
 		return def.Path == path
 	}

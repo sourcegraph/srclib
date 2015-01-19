@@ -1,7 +1,6 @@
 package graph
 
 import (
-	"database/sql/driver"
 	"encoding/json"
 	"fmt"
 	"regexp"
@@ -57,7 +56,7 @@ type DefKey struct {
 	// the Path, but this may not always be the case. I.e., don't rely on Path
 	// to find parents or children or any other structural propreties of the
 	// def hierarchy). See Def.TreePath instead.
-	Path DefPath
+	Path string
 }
 
 // END DefKey OMIT
@@ -89,7 +88,7 @@ type Def struct {
 	// Any prefix of a tree-path that terminates in a def name must be a valid
 	// tree-path for some def.
 	// The following regex captures the children of a tree-path X: X(/-[^/]*)*(/[^/-][^/]*)
-	TreePath TreePath `db:"treepath" json:",omitempty"`
+	TreePath string `db:"treepath" json:",omitempty"`
 
 	// Name of the definition. This need not be unique.
 	Name string
@@ -133,8 +132,8 @@ type Def struct {
 
 var treePathRegexp = regexp.MustCompile(`^(?:[^/]+)(?:/[^/]+)*$`)
 
-func (p TreePath) IsValid() bool {
-	return treePathRegexp.MatchString(string(p))
+func IsValidTreePath(treePath string) bool {
+	return treePathRegexp.MatchString(treePath)
 }
 
 func (s *Def) Fmt() DefPrintFormatter { return PrintFormatter(s) }
@@ -210,32 +209,6 @@ type Propagate struct {
 	DstPath     DefPath
 	DstUnit     string
 	DstUnitType string
-}
-
-// SQL
-
-func (x DefPath) Value() (driver.Value, error) {
-	return string(x), nil
-}
-
-func (x *DefPath) Scan(v interface{}) error {
-	if data, ok := v.([]byte); ok {
-		*x = DefPath(data)
-		return nil
-	}
-	return fmt.Errorf("%T.Scan failed: %v", x, v)
-}
-
-func (x TreePath) Value() (driver.Value, error) {
-	return string(x), nil
-}
-
-func (x *TreePath) Scan(v interface{}) error {
-	if data, ok := v.([]byte); ok {
-		*x = TreePath(data)
-		return nil
-	}
-	return fmt.Errorf("%T.Scan failed: %v", x, v)
 }
 
 // Debugging

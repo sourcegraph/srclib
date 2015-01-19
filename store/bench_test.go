@@ -76,7 +76,7 @@ func insertDefs(b *testing.B, rs RepoStoreImporter, numDefs int) {
 			data := graph.Output{Defs: make([]*graph.Def, numDefs)}
 			for d := 0; d < numDefs; d++ {
 				data.Defs[d] = &graph.Def{
-					DefKey: graph.DefKey{Path: graph.DefPath(fmt.Sprintf("path%d", d))},
+					DefKey: graph.DefKey{Path: fmt.Sprintf("path%d", d)},
 					Name:   fmt.Sprintf("name%d", d),
 					File:   fmt.Sprintf("file%d", d%*numFiles),
 				}
@@ -96,7 +96,7 @@ func insertRefs(b *testing.B, rs RepoStoreImporter, numRefs int) {
 			data := graph.Output{Refs: make([]*graph.Ref, numRefs)}
 			for r := 0; r < numRefs; r++ {
 				data.Refs[r] = &graph.Ref{
-					DefPath: graph.DefPath(fmt.Sprintf("path%d", r%*numRefDefs)),
+					DefPath: fmt.Sprintf("path%d", r%*numRefDefs),
 					File:    fmt.Sprintf("file%d", r%*numFiles),
 					Start:   r % 1000,
 					End:     (r + 7) % 1000,
@@ -116,7 +116,7 @@ func benchmarkDef(b *testing.B, rs RepoStoreImporter, numDefs int) {
 		CommitID: fmt.Sprintf("commit%d", *numVersions/2),
 		Unit:     fmt.Sprintf("unit%d", *numUnits/2),
 		UnitType: fmt.Sprintf("type%d", *numUnits/2),
-		Path:     graph.DefPath(fmt.Sprintf("path%d", numDefs/2)),
+		Path:     fmt.Sprintf("path%d", numDefs/2),
 	}
 
 	checkCorrectness := false
