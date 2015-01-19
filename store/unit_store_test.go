@@ -8,22 +8,27 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/graph"
 )
 
-type labeledUnitStore struct {
+type unitStoreImporter interface {
 	UnitStore
+	UnitImporter
+}
+
+type labeledUnitStoreImporter struct {
+	unitStoreImporter
 	label string
 }
 
-func (s *labeledUnitStore) String() string {
-	return fmt.Sprintf("%s: %s", s.UnitStore, s.label)
+func (s *labeledUnitStoreImporter) String() string {
+	return fmt.Sprintf("%s: %s", s.unitStoreImporter, s.label)
 }
 
-func testUnitStore(t *testing.T, newFn func() UnitStore) {
-	testUnitStore_uninitialized(t, &labeledUnitStore{newFn(), "uninitialized"})
-	testUnitStore_Import_empty(t, &labeledUnitStore{newFn(), "import empty"})
-	testUnitStore_Import(t, &labeledUnitStore{newFn(), "import"})
-	testUnitStore_Def(t, &labeledUnitStore{newFn(), "def"})
-	testUnitStore_Defs(t, &labeledUnitStore{newFn(), "defs"})
-	testUnitStore_Refs(t, &labeledUnitStore{newFn(), "refs"})
+func testUnitStore(t *testing.T, newFn func() unitStoreImporter) {
+	testUnitStore_uninitialized(t, &labeledUnitStoreImporter{newFn(), "uninitialized"})
+	testUnitStore_Import_empty(t, &labeledUnitStoreImporter{newFn(), "import empty"})
+	testUnitStore_Import(t, &labeledUnitStoreImporter{newFn(), "import"})
+	testUnitStore_Def(t, &labeledUnitStoreImporter{newFn(), "def"})
+	testUnitStore_Defs(t, &labeledUnitStoreImporter{newFn(), "defs"})
+	testUnitStore_Refs(t, &labeledUnitStoreImporter{newFn(), "refs"})
 }
 
 func testUnitStore_uninitialized(t *testing.T, us UnitStore) {
@@ -54,8 +59,8 @@ func testUnitStore_uninitialized(t *testing.T, us UnitStore) {
 
 func testUnitStore_empty(t *testing.T, us UnitStore) {
 	def, err := us.Def(graph.DefKey{})
-	if !IsDefNotExist(err) {
-		t.Errorf("%s: Def: got err %v, want IsDefNotExist-satisfying err", us, err)
+	if !IsNotExist(err) {
+		t.Errorf("%s: Def: got err %v, want IsNotExist-satisfying err", us, err)
 	}
 	if def != nil {
 		t.Errorf("%s: Def: got def %v, want nil", us, def)
@@ -78,7 +83,7 @@ func testUnitStore_empty(t *testing.T, us UnitStore) {
 	}
 }
 
-func testUnitStore_Import_empty(t *testing.T, us UnitStore) {
+func testUnitStore_Import_empty(t *testing.T, us unitStoreImporter) {
 	data := graph.Output{
 		Defs: []*graph.Def{},
 		Refs: []*graph.Ref{},
@@ -89,7 +94,7 @@ func testUnitStore_Import_empty(t *testing.T, us UnitStore) {
 	testUnitStore_empty(t, us)
 }
 
-func testUnitStore_Import(t *testing.T, us UnitStore) {
+func testUnitStore_Import(t *testing.T, us unitStoreImporter) {
 	data := graph.Output{
 		Defs: []*graph.Def{
 			{
@@ -111,7 +116,7 @@ func testUnitStore_Import(t *testing.T, us UnitStore) {
 	}
 }
 
-func testUnitStore_Def(t *testing.T, us UnitStore) {
+func testUnitStore_Def(t *testing.T, us unitStoreImporter) {
 	data := graph.Output{
 		Defs: []*graph.Def{
 			{
@@ -133,15 +138,15 @@ func testUnitStore_Def(t *testing.T, us UnitStore) {
 	}
 
 	def2, err := us.Def(graph.DefKey{Path: "p2"})
-	if !IsDefNotExist(err) {
-		t.Errorf("%s: Def: got err %v, want IsDefNotExist-satisfying err", us, err)
+	if !IsNotExist(err) {
+		t.Errorf("%s: Def: got err %v, want IsNotExist-satisfying err", us, err)
 	}
 	if def2 != nil {
-		t.Errorf("%s: Def: got def %v, want nil", us, def)
+		t.Errorf("%s: Def: got def %v, want nil", us, def2)
 	}
 }
 
-func testUnitStore_Defs(t *testing.T, us UnitStore) {
+func testUnitStore_Defs(t *testing.T, us unitStoreImporter) {
 	data := graph.Output{
 		Defs: []*graph.Def{
 			{
@@ -167,7 +172,7 @@ func testUnitStore_Defs(t *testing.T, us UnitStore) {
 	}
 }
 
-func testUnitStore_Refs(t *testing.T, us UnitStore) {
+func testUnitStore_Refs(t *testing.T, us unitStoreImporter) {
 	data := graph.Output{
 		Refs: []*graph.Ref{
 			{
