@@ -9,21 +9,16 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
-type repoStoreImporter interface {
-	RepoStore
-	RepoImporter
-}
-
 type labeledRepoStoreImporter struct {
-	repoStoreImporter
+	RepoStoreImporter
 	label string
 }
 
 func (s *labeledRepoStoreImporter) String() string {
-	return fmt.Sprintf("%s: %s", s.repoStoreImporter, s.label)
+	return fmt.Sprintf("%s: %s", s.RepoStoreImporter, s.label)
 }
 
-func testRepoStore(t *testing.T, newFn func() repoStoreImporter) {
+func testRepoStore(t *testing.T, newFn func() RepoStoreImporter) {
 	testRepoStore_uninitialized(t, &labeledRepoStoreImporter{newFn(), "uninitialized"})
 	testRepoStore_Import_empty(t, &labeledRepoStoreImporter{newFn(), "import empty"})
 	testRepoStore_Import(t, &labeledRepoStoreImporter{newFn(), "import"})
@@ -34,7 +29,7 @@ func testRepoStore(t *testing.T, newFn func() repoStoreImporter) {
 	testRepoStore_Refs(t, &labeledRepoStoreImporter{newFn(), "refs"})
 }
 
-func testRepoStore_uninitialized(t *testing.T, rs repoStoreImporter) {
+func testRepoStore_uninitialized(t *testing.T, rs RepoStoreImporter) {
 	version, err := rs.Version("c")
 	if err == nil {
 		t.Errorf("%s: Version: got nil err", rs)
@@ -54,14 +49,14 @@ func testRepoStore_uninitialized(t *testing.T, rs repoStoreImporter) {
 	testTreeStore_uninitialized(t, rs)
 }
 
-func testRepoStore_Import_empty(t *testing.T, rs repoStoreImporter) {
+func testRepoStore_Import_empty(t *testing.T, rs RepoStoreImporter) {
 	if err := rs.Import("c", nil, graph.Output{}); err != nil {
 		t.Errorf("%s: Import(c, nil, empty): %s", rs, err)
 	}
 	testTreeStore_empty(t, rs)
 }
 
-func testRepoStore_Import(t *testing.T, rs repoStoreImporter) {
+func testRepoStore_Import(t *testing.T, rs RepoStoreImporter) {
 	unit := &unit.SourceUnit{Type: "t", Name: "u"}
 	data := graph.Output{
 		Defs: []*graph.Def{
@@ -84,7 +79,7 @@ func testRepoStore_Import(t *testing.T, rs repoStoreImporter) {
 	}
 }
 
-func testRepoStore_Version(t *testing.T, rs repoStoreImporter) {
+func testRepoStore_Version(t *testing.T, rs RepoStoreImporter) {
 	unit := &unit.SourceUnit{Type: "t", Name: "u"}
 	if err := rs.Import("c", unit, graph.Output{}); err != nil {
 		t.Errorf("%s: Import(c, %v, empty data): %s", rs, unit, err)
@@ -101,7 +96,7 @@ func testRepoStore_Version(t *testing.T, rs repoStoreImporter) {
 	}
 }
 
-func testRepoStore_Versions(t *testing.T, rs repoStoreImporter) {
+func testRepoStore_Versions(t *testing.T, rs RepoStoreImporter) {
 	for _, version := range []string{"c1", "c2"} {
 		unit := &unit.SourceUnit{Type: "t1", Name: "u1"}
 		if err := rs.Import(version, unit, graph.Output{}); err != nil {
@@ -120,7 +115,7 @@ func testRepoStore_Versions(t *testing.T, rs repoStoreImporter) {
 	}
 }
 
-func testRepoStore_Unit(t *testing.T, rs repoStoreImporter) {
+func testRepoStore_Unit(t *testing.T, rs RepoStoreImporter) {
 	want := &unit.SourceUnit{Type: "t", Name: "u"}
 	if err := rs.Import("c", want, graph.Output{}); err != nil {
 		t.Errorf("%s: Import(c, %v, empty data): %s", rs, want, err)
@@ -136,7 +131,7 @@ func testRepoStore_Unit(t *testing.T, rs repoStoreImporter) {
 	}
 }
 
-func testRepoStore_Units(t *testing.T, rs repoStoreImporter) {
+func testRepoStore_Units(t *testing.T, rs RepoStoreImporter) {
 	units := []*unit.SourceUnit{
 		{Type: "t1", Name: "u1"},
 		{Type: "t2", Name: "u2"},
@@ -161,7 +156,7 @@ func testRepoStore_Units(t *testing.T, rs repoStoreImporter) {
 	}
 }
 
-func testRepoStore_Def(t *testing.T, rs repoStoreImporter) {
+func testRepoStore_Def(t *testing.T, rs RepoStoreImporter) {
 	unit := &unit.SourceUnit{Type: "t", Name: "u"}
 	data := graph.Output{
 		Defs: []*graph.Def{
@@ -212,7 +207,7 @@ func testRepoStore_Def(t *testing.T, rs repoStoreImporter) {
 	}
 }
 
-func testRepoStore_Defs(t *testing.T, rs repoStoreImporter) {
+func testRepoStore_Defs(t *testing.T, rs RepoStoreImporter) {
 	unit := &unit.SourceUnit{Type: "t", Name: "u"}
 	data := graph.Output{
 		Defs: []*graph.Def{
@@ -250,7 +245,7 @@ func testRepoStore_Defs(t *testing.T, rs repoStoreImporter) {
 	}
 }
 
-func testRepoStore_Refs(t *testing.T, rs repoStoreImporter) {
+func testRepoStore_Refs(t *testing.T, rs RepoStoreImporter) {
 	unit := &unit.SourceUnit{Type: "t", Name: "u"}
 	data := graph.Output{
 		Refs: []*graph.Ref{

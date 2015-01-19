@@ -39,17 +39,17 @@ func BenchmarkFlatFile_RefsByDefPath500(b *testing.B)   { benchmarkRefsByDefPath
 func BenchmarkFlatFile_RefsByDefPath5000(b *testing.B)  { benchmarkRefsByDefPath(b, repoStore(), 5000) }
 func BenchmarkFlatFile_RefsByDefPath50000(b *testing.B) { benchmarkRefsByDefPath(b, repoStore(), 50000) }
 
-func repoStore() repoStoreImporter {
+func repoStore() RepoStoreImporter {
 	tmpDir, err := ioutil.TempDir("", "srclib-FlatFileRepoStore-bench")
 	if err != nil {
 		panic(err)
 	}
 	fs := rwvfs.OS(tmpDir)
 	setCreateParentDirs(fs)
-	return newFlatFileRepoStore(fs)
+	return NewFlatFileRepoStore(fs)
 }
 
-func insertDefs(b *testing.B, rs repoStoreImporter, numDefs int) {
+func insertDefs(b *testing.B, rs RepoStoreImporter, numDefs int) {
 	for v := 0; v < *numVersions; v++ {
 		version := &Version{CommitID: fmt.Sprintf("commit%d", v)}
 		for u := 0; u < *numUnits; u++ {
@@ -69,7 +69,7 @@ func insertDefs(b *testing.B, rs repoStoreImporter, numDefs int) {
 	}
 }
 
-func insertRefs(b *testing.B, rs repoStoreImporter, numRefs int) {
+func insertRefs(b *testing.B, rs RepoStoreImporter, numRefs int) {
 	for v := 0; v < *numVersions; v++ {
 		version := &Version{CommitID: fmt.Sprintf("commit%d", v)}
 		for u := 0; u < *numUnits; u++ {
@@ -90,7 +90,7 @@ func insertRefs(b *testing.B, rs repoStoreImporter, numRefs int) {
 	}
 }
 
-func benchmarkDef(b *testing.B, rs repoStoreImporter, numDefs int) {
+func benchmarkDef(b *testing.B, rs RepoStoreImporter, numDefs int) {
 	insertDefs(b, rs, numDefs)
 
 	defKey := graph.DefKey{
@@ -118,7 +118,7 @@ func benchmarkDef(b *testing.B, rs repoStoreImporter, numDefs int) {
 	}
 }
 
-func benchmarkDefsByFile(b *testing.B, rs repoStoreImporter, numDefs int) {
+func benchmarkDefsByFile(b *testing.B, rs RepoStoreImporter, numDefs int) {
 	insertDefs(b, rs, numDefs)
 
 	commitID := fmt.Sprintf("commit%d", *numVersions/2)
@@ -137,7 +137,7 @@ func benchmarkDefsByFile(b *testing.B, rs repoStoreImporter, numDefs int) {
 	}
 }
 
-func benchmarkRefsByFile(b *testing.B, rs repoStoreImporter, numRefs int) {
+func benchmarkRefsByFile(b *testing.B, rs RepoStoreImporter, numRefs int) {
 	insertRefs(b, rs, numRefs)
 
 	commitID := fmt.Sprintf("commit%d", *numVersions/2)
@@ -156,7 +156,7 @@ func benchmarkRefsByFile(b *testing.B, rs repoStoreImporter, numRefs int) {
 	}
 }
 
-func benchmarkRefsByDefPath(b *testing.B, rs repoStoreImporter, numRefs int) {
+func benchmarkRefsByDefPath(b *testing.B, rs RepoStoreImporter, numRefs int) {
 	insertRefs(b, rs, numRefs)
 
 	commitID := fmt.Sprintf("commit%d", *numVersions/2)

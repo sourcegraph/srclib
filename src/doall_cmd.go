@@ -61,9 +61,7 @@ func (c *DoAllCmd) Execute(args []string) error {
 	}
 
 	// store
-	storeImportCmd := &StoreImportCmd{
-		Options: c.Options,
-	}
+	storeImportCmd := &StoreImportCmd{}
 	if err := storeImportCmd.Execute(nil); err != nil {
 		return err
 	}

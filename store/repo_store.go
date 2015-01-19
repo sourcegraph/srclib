@@ -29,6 +29,12 @@ type RepoImporter interface {
 	Import(commitID string, unit *unit.SourceUnit, data graph.Output) error
 }
 
+// A RepoStoreImporter implements both RepoStore and RepoImporter.
+type RepoStoreImporter interface {
+	RepoStore
+	RepoImporter
+}
+
 // A Version represents a revision (i.e., commit) of a repository.
 type Version struct {
 	// CommitID is the commit ID of the VCS revision that this version
