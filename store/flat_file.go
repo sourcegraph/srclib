@@ -12,17 +12,118 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
-// A flatFileRepoStore is a RepoStore that stores data in flatFile.
+// FlatFileConfig configures a flat file store.
+type FlatFileConfig struct {
+	Codec Codec
+}
+
+const SrclibStoreDir = ".srclib-store"
+
+// A flatFileMultiRepoStore is a MultiRepoStore that stores data in
+// flat files.
+type flatFileMultiRepoStore struct {
+	fs rwvfs.FileSystem
+	multiRepoStore
+	codec Codec
+}
+
+// NewFlatFileMultiRepoStore creates a new repository store (that can
+// be imported into) that is backed by files on a filesystem.
+//
+// The repoPathFunc takes a repo ID (URI) and returns the
+// slash-delimited subpath where its data should be stored in the
+// multi-repo store. If nil, it defaults to a function that returns
+// the string passed in plus "/.srclib-store".
+//
+// The isRepoPathFunc takes a subpath and returns true if it is a repo
+// path returned by repoPathFunc. This is used when listing all repos
+// (in the Repos method). Repos may not be nested, so if
+// isRepoPathFunc returns true for a dir, it is not recursively
+// searched for repos. If nil, it defaults to returning true if the
+// last path component is ".srclib-store" (which means it works with
+// the default repoPathFunc).
+func NewFlatFileMultiRepoStore(fs rwvfs.FileSystem, conf *FlatFileConfig) MultiRepoStoreImporter {
+	if conf == nil {
+		conf = &FlatFileConfig{}
+	}
+	if conf.Codec == nil {
+		conf.Codec = JSONCodec{}
+	}
+
+	setCreateParentDirs(fs)
+	mrs := &flatFileMultiRepoStore{fs: fs, codec: conf.Codec}
+	mrs.multiRepoStore = multiRepoStore{repoStores: mrs.repoStores}
+	return mrs
+}
+
+func (s *flatFileMultiRepoStore) Repo(id string) (string, error) {
+	repos, err := s.Repos(func(repoPath string) bool { return repoPath == id })
+	if err != nil {
+		return "", err
+	}
+	if len(repos) == 0 {
+		return "", errRepoNotExist
+	}
+	return repos[0], nil
+}
+
+func (s *flatFileMultiRepoStore) Repos(f RepoFilter) ([]string, error) {
+	if f == nil {
+		f = allRepos
+	}
+
+	var repos []string
+	w := fs.WalkFS(".", rwvfs.Walkable(s.fs))
+	for w.Step() {
+		if err := w.Err(); err != nil {
+			return nil, err
+		}
+		fi := w.Stat()
+		if fi.Mode().IsDir() {
+			if fi.Name() == SrclibStoreDir {
+				w.SkipDir()
+				repo := path.Dir(w.Path())
+				if f(repo) {
+					repos = append(repos, repo)
+				}
+				continue
+			}
+			if strings.HasPrefix(fi.Name(), ".") {
+				w.SkipDir()
+				continue
+			}
+		}
+	}
+	return repos, nil
+}
+
+func (s *flatFileMultiRepoStore) repoStores() (map[string]RepoStore, error) {
+	repos, err := s.Repos(nil)
+	if err != nil {
+		return nil, err
+	}
+
+	rss := make(map[string]RepoStore, len(repos))
+	for _, repoPath := range repos {
+		rss[repoPath] = NewFlatFileRepoStore(rwvfs.Sub(s.fs, path.Join(repoPath, SrclibStoreDir)), &FlatFileConfig{Codec: s.codec})
+	}
+	return rss, nil
+}
+
+func (s *flatFileMultiRepoStore) Import(repo, commitID string, unit *unit.SourceUnit, data graph.Output) error {
+	repoPath := path.Join(repo, SrclibStoreDir)
+	rs := NewFlatFileRepoStore(rwvfs.Sub(s.fs, repoPath), &FlatFileConfig{Codec: s.codec})
+	return rs.Import(commitID, unit, data)
+}
+
+func (s *flatFileMultiRepoStore) String() string { return "flatFileMultiRepoStore" }
+
+// A flatFileRepoStore is a RepoStore that stores data in flat files.
 type flatFileRepoStore struct {
 	fs rwvfs.FileSystem
 	multiTreeStore
 
 	codec Codec
-}
-
-// FlatFileConfig configures a flat file store.
-type FlatFileConfig struct {
-	Codec Codec
 }
 
 // NewFlatFileRepoStore creates a new repository store (that can be
@@ -36,9 +137,9 @@ func NewFlatFileRepoStore(fs rwvfs.FileSystem, conf *FlatFileConfig) RepoStoreIm
 	}
 
 	setCreateParentDirs(fs)
-	ts := &flatFileRepoStore{fs: fs, codec: conf.Codec}
-	ts.multiTreeStore = multiTreeStore{treeStores: ts.treeStores}
-	return ts
+	rs := &flatFileRepoStore{fs: fs, codec: conf.Codec}
+	rs.multiTreeStore = multiTreeStore{treeStores: rs.treeStores}
+	return rs
 }
 
 func (s *flatFileRepoStore) Version(key VersionKey) (*Version, error) {

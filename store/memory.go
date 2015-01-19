@@ -7,6 +7,76 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
+// A memoryMultiRepoStore is a MultiRepoStore that stores data in
+// memory
+type memoryMultiRepoStore struct {
+	repos map[string]*memoryRepoStore
+
+	multiRepoStore
+}
+
+func newMemoryMultiRepoStore() *memoryMultiRepoStore {
+	mrs := &memoryMultiRepoStore{}
+	mrs.multiRepoStore = multiRepoStore{mrs.repoStores}
+	return mrs
+}
+
+var errMultiRepoStoreNoInit = errors.New("multi-repo store not yet initialized")
+
+func (s *memoryMultiRepoStore) Repo(id string) (string, error) {
+	if s.repos == nil {
+		return "", errMultiRepoStoreNoInit
+	}
+
+	_, present := s.repos[id]
+	if !present {
+		return "", errRepoNotExist
+	}
+	return id, nil
+}
+
+func (s *memoryMultiRepoStore) Repos(f RepoFilter) ([]string, error) {
+	if f == nil {
+		f = allRepos
+	}
+
+	if s.repos == nil {
+		return nil, errMultiRepoStoreNoInit
+	}
+
+	var repos []string
+	for repo := range s.repos {
+		if f(repo) {
+			repos = append(repos, repo)
+		}
+	}
+	return repos, nil
+}
+
+func (s *memoryMultiRepoStore) repoStores() (map[string]RepoStore, error) {
+	if s.repos == nil {
+		return nil, errMultiRepoStoreNoInit
+	}
+
+	rss := make(map[string]RepoStore, len(s.repos))
+	for id, rs := range s.repos {
+		rss[id] = rs
+	}
+	return rss, nil
+}
+
+func (s *memoryMultiRepoStore) Import(repo, commitID string, unit *unit.SourceUnit, data graph.Output) error {
+	if s.repos == nil {
+		s.repos = map[string]*memoryRepoStore{}
+	}
+	if _, present := s.repos[repo]; !present {
+		s.repos[repo] = newMemoryRepoStore()
+	}
+	return s.repos[repo].Import(commitID, unit, data)
+}
+
+func (s *memoryMultiRepoStore) String() string { return "memoryMultiRepoStore" }
+
 // A memoryRepoStore is a RepoStore that stores data in memory.
 type memoryRepoStore struct {
 	versions []*Version
@@ -15,9 +85,9 @@ type memoryRepoStore struct {
 }
 
 func newMemoryRepoStore() *memoryRepoStore {
-	ts := &memoryRepoStore{}
-	ts.multiTreeStore = multiTreeStore{treeStores: ts.treeStores}
-	return ts
+	rs := &memoryRepoStore{}
+	rs.multiTreeStore = multiTreeStore{treeStores: rs.treeStores}
+	return rs
 }
 
 var errRepoNoInit = errors.New("repo not yet initialized")

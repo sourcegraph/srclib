@@ -19,3 +19,9 @@ func TestMemoryRepoStore(t *testing.T) {
 		return newMemoryRepoStore()
 	})
 }
+
+func TestMemoryMultiRepoStore(t *testing.T) {
+	testMultiRepoStore(t, func() MultiRepoStoreImporter {
+		return newMemoryMultiRepoStore()
+	})
+}
