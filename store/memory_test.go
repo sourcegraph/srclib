@@ -15,7 +15,7 @@ func TestMemoryTreeStore(t *testing.T) {
 }
 
 func TestMemoryRepoStore(t *testing.T) {
-	testRepoStore(t, func() repoStoreImporter {
+	testRepoStore(t, func() RepoStoreImporter {
 		return newMemoryRepoStore()
 	})
 }

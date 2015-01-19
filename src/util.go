@@ -15,6 +15,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"golang.org/x/tools/godoc/vfs"
+
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 	"sourcegraph.com/sourcegraph/srclib/util"
@@ -134,6 +136,20 @@ func readJSONFile(file string, v interface{}) error {
 		return err
 	}
 	defer f.Close()
+	return json.NewDecoder(f).Decode(v)
+}
+
+func readJSONFileFS(fs vfs.FileSystem, file string, v interface{}) (err error) {
+	f, err := fs.Open(file)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		err2 := f.Close()
+		if err == nil {
+			err = err2
+		}
+	}()
 	return json.NewDecoder(f).Decode(v)
 }
 

@@ -20,7 +20,8 @@ type flatFileRepoStore struct {
 	multiTreeStore
 }
 
-func newFlatFileRepoStore(fs rwvfs.FileSystem) *flatFileRepoStore {
+func NewFlatFileRepoStore(fs rwvfs.FileSystem) RepoStoreImporter {
+	setCreateParentDirs(fs)
 	ts := &flatFileRepoStore{fs: fs}
 	ts.multiTreeStore = multiTreeStore{treeStores: ts.treeStores}
 	return ts
@@ -310,3 +311,12 @@ func (s *flatFileUnitStore) open() (o *graph.Output, err error) {
 }
 
 func (s *flatFileUnitStore) String() string { return "flatFileUnitStore" }
+
+func setCreateParentDirs(fs rwvfs.FileSystem) {
+	type createParents interface {
+		CreateParentDirs(bool)
+	}
+	if fs, ok := fs.(createParents); ok {
+		fs.CreateParentDirs(true)
+	}
+}

@@ -30,22 +30,13 @@ func TestFlatFileTreeStore(t *testing.T) {
 }
 
 func TestFlatFileRepoStore(t *testing.T) {
-	testRepoStore(t, func() repoStoreImporter {
+	testRepoStore(t, func() RepoStoreImporter {
 		tmpDir, err := ioutil.TempDir("", "srclib-TestFlatFileRepoStore")
 		if err != nil {
 			t.Fatal(err)
 		}
 		fs := rwvfs.OS(tmpDir)
 		setCreateParentDirs(fs)
-		return newFlatFileRepoStore(rwvfs.Sub(fs, "repo"))
+		return NewFlatFileRepoStore(rwvfs.Sub(fs, "repo"))
 	})
-}
-
-func setCreateParentDirs(fs rwvfs.FileSystem) {
-	type createParents interface {
-		CreateParentDirs(bool)
-	}
-	if fs, ok := fs.(createParents); ok {
-		fs.CreateParentDirs(true)
-	}
 }
