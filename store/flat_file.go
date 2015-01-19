@@ -14,6 +14,82 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
+// A flatFileRepoStore is a RepoStore that stores data in flatFile.
+type flatFileRepoStore struct {
+	fs rwvfs.FileSystem
+	multiTreeStore
+}
+
+func newFlatFileRepoStore(fs rwvfs.FileSystem) *flatFileRepoStore {
+	ts := &flatFileRepoStore{fs: fs}
+	ts.multiTreeStore = multiTreeStore{treeStores: ts.treeStores}
+	return ts
+}
+
+func (s *flatFileRepoStore) Version(commitID string) (*Version, error) {
+	versions, err := s.Versions(versionCommitIDFilter(commitID))
+	if err != nil {
+		return nil, err
+	}
+	if len(versions) == 0 {
+		return nil, errVersionNotExist
+	}
+	return versions[0], nil
+}
+
+func (s *flatFileRepoStore) Versions(f VersionFilter) ([]*Version, error) {
+	if f == nil {
+		f = allVersions
+	}
+
+	versionDirs, err := s.versionDirs()
+	if err != nil {
+		return nil, err
+	}
+
+	var versions []*Version
+	for _, dir := range versionDirs {
+		version := &Version{CommitID: path.Base(dir)}
+		if f(version) {
+			versions = append(versions, version)
+		}
+	}
+	return versions, nil
+}
+
+func (s *flatFileRepoStore) versionDirs() ([]string, error) {
+	entries, err := s.fs.ReadDir(".")
+	if err != nil {
+		return nil, err
+	}
+	dirs := make([]string, len(entries))
+	for i, e := range entries {
+		dirs[i] = e.Name()
+	}
+	return dirs, nil
+}
+
+func (s *flatFileRepoStore) Import(commitID string, unit *unit.SourceUnit, data graph.Output) error {
+	ts := newFlatFileTreeStore(rwvfs.Sub(s.fs, commitID))
+	return ts.Import(unit, data)
+}
+
+func (s *flatFileRepoStore) treeStores() (map[string]TreeStore, error) {
+	versionDirs, err := s.versionDirs()
+	if err != nil {
+		return nil, err
+	}
+
+	tss := make(map[string]TreeStore, len(versionDirs))
+	for _, dir := range versionDirs {
+		commitID := path.Base(dir)
+		tss[commitID] = newFlatFileTreeStore(rwvfs.Sub(s.fs, commitID))
+	}
+	return tss, nil
+}
+
+func (s *flatFileRepoStore) String() string { return "flatFileRepoStore" }
+
 // A flatFileTreeStore is a TreeStore that stores data in flat files
 // in a filesystem.
 type flatFileTreeStore struct {
@@ -27,8 +103,8 @@ func newFlatFileTreeStore(fs rwvfs.FileSystem) *flatFileTreeStore {
 	return ts
 }
 
-func (s *flatFileTreeStore) Unit(typ, name string) (*unit.SourceUnit, error) {
-	units, err := s.Units(unitKeyFilter(unitKey{typ, name}))
+func (s *flatFileTreeStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
+	units, err := s.Units(unitKeyFilter(key))
 	if err != nil {
 		return nil, err
 	}
@@ -95,8 +171,8 @@ func (s *flatFileTreeStore) unitFilenames() ([]string, error) {
 	return files, nil
 }
 
-func (s *flatFileTreeStore) unitFilename(typ, name string) string {
-	return path.Join(typ, name+unitFileSuffix)
+func (s *flatFileTreeStore) unitFilename(key unit.Key) string {
+	return path.Join(key.UnitType, key.Unit+unitFileSuffix)
 }
 
 const unitFileSuffix = ".unit.json"
@@ -106,7 +182,7 @@ func (s *flatFileTreeStore) Import(unit *unit.SourceUnit, data graph.Output) (er
 		return rwvfs.MkdirAll(s.fs, ".")
 	}
 
-	filename := s.unitFilename(unit.Type, unit.Name)
+	filename := s.unitFilename(unit.Key())
 	if err := rwvfs.MkdirAll(s.fs, path.Dir(filename)); err != nil {
 		return err
 	}
@@ -124,7 +200,7 @@ func (s *flatFileTreeStore) Import(unit *unit.SourceUnit, data graph.Output) (er
 		return err
 	}
 
-	dir := strings.TrimSuffix(s.unitFilename(unit.Type, unit.Name), unitFileSuffix)
+	dir := strings.TrimSuffix(s.unitFilename(unit.Key()), unitFileSuffix)
 	if err := rwvfs.MkdirAll(s.fs, dir); err != nil {
 		return err
 	}
@@ -132,17 +208,17 @@ func (s *flatFileTreeStore) Import(unit *unit.SourceUnit, data graph.Output) (er
 	return us.Import(data)
 }
 
-func (s *flatFileTreeStore) unitStores() (map[unitKey]UnitStore, error) {
+func (s *flatFileTreeStore) unitStores() (map[unit.Key]UnitStore, error) {
 	unitFiles, err := s.unitFilenames()
 	if err != nil {
 		return nil, err
 	}
 
-	uss := make(map[unitKey]UnitStore, len(unitFiles))
+	uss := make(map[unit.Key]UnitStore, len(unitFiles))
 	for _, unitFile := range unitFiles {
 		dir := strings.TrimSuffix(unitFile, unitFileSuffix)
-		typ, name := path.Dir(dir), path.Base(dir)
-		uss[unitKey{typ, name}] = &flatFileUnitStore{fs: rwvfs.Sub(s.fs, dir)}
+		unitKey := unit.Key{UnitType: path.Dir(dir), Unit: path.Base(dir)}
+		uss[unitKey] = &flatFileUnitStore{fs: rwvfs.Sub(s.fs, dir)}
 	}
 	return uss, nil
 }

@@ -2,6 +2,7 @@ package unit
 
 import (
 	"database/sql/driver"
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"path/filepath"
@@ -11,6 +12,21 @@ import (
 	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 )
+
+// Key is the unique key for a source unit.
+type Key struct {
+	// Repo is the URI of the repository containing this source unit.
+	Repo string
+
+	// CommitID is the VCS commit that the source unit exists at.
+	CommitID string
+
+	// UnitType is the source unit's Type.
+	UnitType string
+
+	// Unit is the source unit's Name.
+	Unit string
+}
 
 // START SourceUnit OMIT
 type SourceUnit struct {
@@ -29,6 +45,11 @@ type SourceUnit struct {
 	// The scanner tool does not need to set this field - it can be left blank,
 	// to be filled in by the `src` tool
 	Repo string
+
+	// CommitID is the commit ID of the repository containing this
+	// source unit, if any. The scanner tool need not fill this in; it
+	// should be left blank, to be filled in by the `src` tool.
+	CommitID string
 
 	// Globs is a list of patterns that match files that make up this source
 	// unit. It is used to detect when the source unit definition is out of date
@@ -81,6 +102,15 @@ type SourceUnit struct {
 	// various tasks on this source unit
 }
 
+func (u *SourceUnit) Key() Key {
+	return Key{
+		Repo:     u.Repo,
+		CommitID: u.CommitID,
+		UnitType: u.Type,
+		Unit:     u.Name,
+	}
+}
+
 //END SourceUnit OMIT
 
 // ContainsAny returns true if u contains any files in filesnames. Currently
@@ -124,6 +154,11 @@ var idSeparator = "@"
 // unique among all other source units in the same repository.
 func (u SourceUnit) ID() ID {
 	return ID(fmt.Sprintf("%s%s%s", url.QueryEscape(u.Name), idSeparator, u.Type))
+}
+
+func (u SourceUnit) String() string {
+	b, _ := json.Marshal(u)
+	return string(b)
 }
 
 // ParseID parses the name and type from a source unit ID (from
