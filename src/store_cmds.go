@@ -319,6 +319,7 @@ func openRepoStore() (store.RepoStoreImporter, error) {
 	if err != nil {
 		return nil, err
 	}
-	rs := store.NewFlatFileRepoStore(rwvfs.OS(filepath.Join(lrepo.RootDir, ".srclib-store")))
+	conf := &store.FlatFileConfig{Codec: store.GobAndJSONGzipCodec{}}
+	rs := store.NewFlatFileRepoStore(rwvfs.OS(filepath.Join(lrepo.RootDir, ".srclib-store")), conf)
 	return rs, nil
 }

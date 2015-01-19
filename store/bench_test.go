@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"runtime"
 	"testing"
 
@@ -17,6 +18,8 @@ var (
 	numUnits    = flag.Int("bench.units", 1, "number of source units (each of which has the denoted number of defs)")
 	numFiles    = flag.Int("bench.files", 25, "number of distinct files (Def.File and Ref.File values)")
 	numRefDefs  = flag.Int("bench.refdefs", 100, "number of distinct defs that refs point to")
+
+	codec = flag.String("codec", "json", "flat file codec")
 )
 
 func BenchmarkFlatFile_Def1(b *testing.B)     { benchmarkDef(b, repoStore(), 1) }
@@ -46,7 +49,23 @@ func repoStore() RepoStoreImporter {
 	}
 	fs := rwvfs.OS(tmpDir)
 	setCreateParentDirs(fs)
-	return NewFlatFileRepoStore(fs)
+
+	var conf FlatFileConfig
+	switch *codec {
+	case "gob-json-gzip":
+		conf.Codec = GobAndJSONGzipCodec{}
+	case "gob-json":
+		conf.Codec = GobAndJSONCodec{}
+	case "json":
+		conf.Codec = JSONCodec{}
+	case "gob":
+		conf.Codec = GobCodec{}
+	default:
+		fmt.Fprintln(os.Stderr, "Unknown -codec:", *codec)
+		os.Exit(1)
+	}
+
+	return NewFlatFileRepoStore(fs, &conf)
 }
 
 func insertDefs(b *testing.B, rs RepoStoreImporter, numDefs int) {
