@@ -24,9 +24,7 @@ func TestFlatFileTreeStore(t *testing.T) {
 			t.Fatal(err)
 		}
 		fs := rwvfs.OS(tmpDir)
-		if fs, ok := fs.(createParents); ok {
-			fs.CreateParentDirs(true)
-		}
+		setCreateParentDirs(fs)
 		return newFlatFileTreeStore(rwvfs.Sub(fs, "tree"))
 	})
 }
@@ -38,13 +36,16 @@ func TestFlatFileRepoStore(t *testing.T) {
 			t.Fatal(err)
 		}
 		fs := rwvfs.OS(tmpDir)
-		if fs, ok := fs.(createParents); ok {
-			fs.CreateParentDirs(true)
-		}
+		setCreateParentDirs(fs)
 		return newFlatFileRepoStore(rwvfs.Sub(fs, "repo"))
 	})
 }
 
-type createParents interface {
-	CreateParentDirs(bool)
+func setCreateParentDirs(fs rwvfs.FileSystem) {
+	type createParents interface {
+		CreateParentDirs(bool)
+	}
+	if fs, ok := fs.(createParents); ok {
+		fs.CreateParentDirs(true)
+	}
 }
