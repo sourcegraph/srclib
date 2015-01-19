@@ -76,6 +76,8 @@ func (s multiUnitStore) Def(key graph.DefKey) (*graph.Def, error) {
 		if !defUnitFilter(unitKey)(&graph.Def{DefKey: key}) {
 			continue
 		}
+		key.UnitType = ""
+		key.Unit = ""
 		def, err := us.Def(key)
 		if err != nil {
 			if IsNotExist(err) {

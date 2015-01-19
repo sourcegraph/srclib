@@ -128,6 +128,7 @@ func (s multiTreeStore) Def(key graph.DefKey) (*graph.Def, error) {
 		if key.CommitID != commitID {
 			continue
 		}
+		key.CommitID = ""
 		def, err := ts.Def(key)
 		if err != nil {
 			if IsNotExist(err) {
