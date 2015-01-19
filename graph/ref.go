@@ -54,7 +54,7 @@ type Ref struct {
 	DefPath     string `json:",omitempty"`
 
 	// Def is true if this ref is the original definition or a redefinition
-	Def bool
+	Def bool `json:",omitempty"`
 
 	Repo string `json:",omitempty"`
 
@@ -71,6 +71,14 @@ type Ref struct {
 }
 
 // END Ref OMIT
+
+func (r *Ref) String() string {
+	b, err := json.MarshalIndent(r, "", "  ")
+	if err != nil {
+		panic(err)
+	}
+	return string(b)
+}
 
 func (r *Ref) RefKey() RefKey {
 	return RefKey{
