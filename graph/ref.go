@@ -3,15 +3,13 @@ package graph
 import (
 	"encoding/json"
 	"strconv"
-
-	"sourcegraph.com/sourcegraph/go-nnz/nnz"
 )
 
 type RefDefKey struct {
-	DefRepo     string `db:"def_repo" json:",omitempty"`
-	DefUnitType string `db:"def_unit_type" json:",omitempty"`
-	DefUnit     string `db:"def_unit" json:",omitempty"`
-	DefPath     string `db:"def_path" json:",omitempty"`
+	DefRepo     string `json:",omitempty"`
+	DefUnitType string `json:",omitempty"`
+	DefUnit     string `json:",omitempty"`
+	DefPath     string `json:",omitempty"`
 }
 
 func (r RefDefKey) String() string {
@@ -23,16 +21,16 @@ func (r RefDefKey) String() string {
 }
 
 type RefKey struct {
-	DefRepo     string `db:"def_repo" json:",omitempty"`
-	DefUnitType string `db:"def_unit_type" json:",omitempty"`
-	DefUnit     string `db:"def_unit" json:",omitempty"`
-	DefPath     string `db:"def_path" json:",omitempty"`
+	DefRepo     string `json:",omitempty"`
+	DefUnitType string `json:",omitempty"`
+	DefUnit     string `json:",omitempty"`
+	DefPath     string `json:",omitempty"`
 	Def         bool   `json:",omitempty"`
 	Repo        string `json:",omitempty"`
-	UnitType    string `db:"unit_type" json:",omitempty"`
+	UnitType    string `json:",omitempty"`
 	Unit        string `json:",omitempty"`
 	File        string `json:",omitempty"`
-	CommitID    string `db:"commit_id" json:",omitempty"`
+	CommitID    string `json:",omitempty"`
 	Start       int    `json:",omitempty"`
 	End         int    `json:",omitempty"`
 }
@@ -50,28 +48,24 @@ func (r *RefKey) RefDefKey() RefDefKey {
 // Ref represents a reference from source code to a def.
 type Ref struct {
 	// The definition that this reference points to
-	DefRepo     string `db:"def_repo"`
-	DefUnitType string `db:"def_unit_type"`
-	DefUnit     string `db:"def_unit"`
-	DefPath     string `db:"def_path"`
+	DefRepo     string `json:",omitempty"`
+	DefUnitType string `json:",omitempty"`
+	DefUnit     string `json:",omitempty"`
+	DefPath     string `json:",omitempty"`
 
 	// Def is true if this ref is the original definition or a redefinition
 	Def bool
 
-	Repo string
+	Repo string `json:",omitempty"`
 
 	// CommitID is the immutable commit ID (not the branch name) of the VCS
 	// revision that this ref was found in.
-	CommitID string `db:"commit_id" json:",omitempty"`
+	CommitID string `json:",omitempty"`
 
-	UnitType string `db:"unit_type" json:",omitempty"`
+	UnitType string `json:",omitempty"`
 	Unit     string `json:",omitempty"`
 
-	// Private is whether this reference is private, i.e., if it came from a private repository. Note that this means
-	// the the repository that contains the reference is private, NOT the repository to which the reference points.
-	Private nnz.Bool `json:",omitempty"`
-
-	File  string
+	File  string `json:",omitempty"`
 	Start int
 	End   int
 }

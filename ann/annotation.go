@@ -6,8 +6,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-
-	"sourcegraph.com/sourcegraph/srclib/util/sqltypes"
 )
 
 // An Ann is a source code annotation.
@@ -19,14 +17,14 @@ type Ann struct {
 	Repo string `json:",omitempty"`
 
 	// CommitID refers to the commit that contains this annotation.
-	CommitID string `db:"commit_id" json:",omitempty"`
+	CommitID string `json:",omitempty"`
 
 	// UnitType is the source unit type that the annotation exists
 	// on. It is either the source unit type during whose processing
 	// the annotation was detected/created. Multiple annotations may
 	// exist on the same file from different source unit types if a
 	// file is contained in multiple source units.
-	UnitType string `db:"unit_type" json:",omitempty"`
+	UnitType string `json:",omitempty"`
 
 	// Unit is the source unit name that the annotation exists on. See
 	// UnitType for more information.
@@ -47,7 +45,7 @@ type Ann struct {
 
 	// Data contains arbitrary JSON data that is specific to this
 	// annotation type (e.g., the link URL for Link annotations).
-	Data sqltypes.JSON `json:",omitempty"`
+	Data json.RawMessage `json:",omitempty"`
 }
 
 const (
