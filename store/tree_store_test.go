@@ -34,8 +34,8 @@ func testTreeStore(t *testing.T, newFn func() treeStoreImporter) {
 	testTreeStore_Refs(t, &labeledTreeStoreImporter{newFn(), "refs"})
 }
 
-func testTreeStore_uninitialized(t *testing.T, ts treeStoreImporter) {
-	unit, err := ts.Unit("t", "u")
+func testTreeStore_uninitialized(t *testing.T, ts TreeStore) {
+	unit, err := ts.Unit(unit.Key{UnitType: "t", Unit: "u"})
 	if err == nil {
 		t.Errorf("%s: Unit: got nil err", ts)
 	}
@@ -54,8 +54,8 @@ func testTreeStore_uninitialized(t *testing.T, ts treeStoreImporter) {
 	testUnitStore_uninitialized(t, ts)
 }
 
-func testTreeStore_empty(t *testing.T, ts treeStoreImporter) {
-	unit, err := ts.Unit("t", "u")
+func testTreeStore_empty(t *testing.T, ts TreeStore) {
+	unit, err := ts.Unit(unit.Key{UnitType: "t", Unit: "u"})
 	if !IsNotExist(err) {
 		t.Errorf("%s: Unit: got err %v, want IsNotExist-satisfying err", ts, err)
 	}
@@ -110,12 +110,13 @@ func testTreeStore_Unit(t *testing.T, ts treeStoreImporter) {
 		t.Errorf("%s: Import(%v, empty data): %s", ts, want, err)
 	}
 
-	unit, err := ts.Unit("t", "u")
+	key := unit.Key{CommitID: "c", UnitType: "t", Unit: "u"}
+	unit, err := ts.Unit(key)
 	if err != nil {
-		t.Errorf("%s: Unit(t, u): %s", ts, err)
+		t.Errorf("%s: Unit(%v): %s", ts, key, err)
 	}
 	if !reflect.DeepEqual(unit, want) {
-		t.Errorf("%s: Unit(t, u): got %v, want %v", ts, unit, want)
+		t.Errorf("%s: Unit(%v): got %v, want %v", ts, key, unit, want)
 	}
 }
 
@@ -161,15 +162,19 @@ func testTreeStore_Def(t *testing.T, ts treeStoreImporter) {
 		t.Errorf("%s: Def: got def %v, want nil", ts, def)
 	}
 
+	want := &graph.Def{
+		DefKey: graph.DefKey{UnitType: "t", Unit: "u", Path: "p"},
+		Name:   "n",
+	}
 	def, err = ts.Def(graph.DefKey{UnitType: "t", Unit: "u", Path: "p"})
 	if err != nil {
 		t.Errorf("%s: Def: %s", ts, err)
 	}
-	if want := data.Defs[0]; !reflect.DeepEqual(def, want) {
+	if !reflect.DeepEqual(def, want) {
 		t.Errorf("%s: Def: got def %v, want %v", ts, def, want)
 	}
 
-	def2, err := ts.Def(graph.DefKey{UnitType: "t", Unit: "u", Path: "p2"})
+	def2, err := ts.Def(graph.DefKey{UnitType: "t2", Unit: "u2", Path: "p"})
 	if !IsNotExist(err) {
 		t.Errorf("%s: Def: got err %v, want IsNotExist-satisfying err", ts, err)
 	}

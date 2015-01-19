@@ -1,0 +1,301 @@
+package store
+
+import (
+	"fmt"
+	"reflect"
+	"testing"
+
+	"sourcegraph.com/sourcegraph/srclib/graph"
+	"sourcegraph.com/sourcegraph/srclib/unit"
+)
+
+type repoStoreImporter interface {
+	RepoStore
+	RepoImporter
+}
+
+type labeledRepoStoreImporter struct {
+	repoStoreImporter
+	label string
+}
+
+func (s *labeledRepoStoreImporter) String() string {
+	return fmt.Sprintf("%s: %s", s.repoStoreImporter, s.label)
+}
+
+func testRepoStore(t *testing.T, newFn func() repoStoreImporter) {
+	testRepoStore_uninitialized(t, &labeledRepoStoreImporter{newFn(), "uninitialized"})
+	testRepoStore_Import_empty(t, &labeledRepoStoreImporter{newFn(), "import empty"})
+	testRepoStore_Import(t, &labeledRepoStoreImporter{newFn(), "import"})
+	testRepoStore_Unit(t, &labeledRepoStoreImporter{newFn(), "unit"})
+	testRepoStore_Units(t, &labeledRepoStoreImporter{newFn(), "unit"})
+	testRepoStore_Def(t, &labeledRepoStoreImporter{newFn(), "def"})
+	testRepoStore_Defs(t, &labeledRepoStoreImporter{newFn(), "defs"})
+	testRepoStore_Refs(t, &labeledRepoStoreImporter{newFn(), "refs"})
+}
+
+func testRepoStore_uninitialized(t *testing.T, rs repoStoreImporter) {
+	version, err := rs.Version("c")
+	if err == nil {
+		t.Errorf("%s: Version: got nil err", rs)
+	}
+	if version != nil {
+		t.Errorf("%s: Version: got version %v, want nil", rs, version)
+	}
+
+	versions, err := rs.Versions(nil)
+	if err == nil {
+		t.Errorf("%s: Versions(nil): got nil err", rs)
+	}
+	if len(versions) != 0 {
+		t.Errorf("%s: Versions(nil): got versions %v, want empty", rs, versions)
+	}
+
+	testTreeStore_uninitialized(t, rs)
+}
+
+func testRepoStore_Import_empty(t *testing.T, rs repoStoreImporter) {
+	if err := rs.Import("c", nil, graph.Output{}); err != nil {
+		t.Errorf("%s: Import(c, nil, empty): %s", rs, err)
+	}
+	testTreeStore_empty(t, rs)
+}
+
+func testRepoStore_Import(t *testing.T, rs repoStoreImporter) {
+	unit := &unit.SourceUnit{Type: "t", Name: "u"}
+	data := graph.Output{
+		Defs: []*graph.Def{
+			{
+				DefKey: graph.DefKey{Path: "p"},
+				Name:   "n",
+			},
+		},
+		Refs: []*graph.Ref{
+			{
+				DefPath: "p",
+				File:    "f",
+				Start:   1,
+				End:     2,
+			},
+		},
+	}
+	if err := rs.Import("c", unit, data); err != nil {
+		t.Errorf("%s: Import(c, %v, data): %s", rs, unit, err)
+	}
+}
+
+func testRepoStore_Version(t *testing.T, rs repoStoreImporter) {
+	unit := &unit.SourceUnit{Type: "t", Name: "u"}
+	if err := rs.Import("c", unit, graph.Output{}); err != nil {
+		t.Errorf("%s: Import(c, %v, empty data): %s", rs, unit, err)
+	}
+
+	want := &Version{CommitID: "c"}
+
+	version, err := rs.Version("c")
+	if err != nil {
+		t.Errorf("%s: Version(c): %s", rs, err)
+	}
+	if !reflect.DeepEqual(version, want) {
+		t.Errorf("%s: Version(c): got %v, want %v", rs, version, want)
+	}
+}
+
+func testRepoStore_Versions(t *testing.T, rs repoStoreImporter) {
+	for _, version := range []string{"c1", "c2"} {
+		unit := &unit.SourceUnit{Type: "t1", Name: "u1"}
+		if err := rs.Import(version, unit, graph.Output{}); err != nil {
+			t.Errorf("%s: Import(%s, %v, empty data): %s", rs, version, unit, err)
+		}
+	}
+
+	want := []*Version{{CommitID: "c1"}, {CommitID: "c2"}}
+
+	versions, err := rs.Versions(nil)
+	if err != nil {
+		t.Errorf("%s: Versions(nil): %s", rs, err)
+	}
+	if !reflect.DeepEqual(versions, want) {
+		t.Errorf("%s: Versions(nil): got %v, want %v", rs, versions, want)
+	}
+}
+
+func testRepoStore_Unit(t *testing.T, rs repoStoreImporter) {
+	want := &unit.SourceUnit{Type: "t", Name: "u"}
+	if err := rs.Import("c", want, graph.Output{}); err != nil {
+		t.Errorf("%s: Import(c, %v, empty data): %s", rs, want, err)
+	}
+
+	key := unit.Key{CommitID: "c", UnitType: "t", Unit: "u"}
+	unit, err := rs.Unit(key)
+	if err != nil {
+		t.Errorf("%s: Unit(%v): %s", rs, key, err)
+	}
+	if !reflect.DeepEqual(unit, want) {
+		t.Errorf("%s: Unit(%v): got %v, want %v", rs, key, unit, want)
+	}
+}
+
+func testRepoStore_Units(t *testing.T, rs repoStoreImporter) {
+	units := []*unit.SourceUnit{
+		{Type: "t1", Name: "u1"},
+		{Type: "t2", Name: "u2"},
+	}
+	for _, unit := range units {
+		if err := rs.Import("c", unit, graph.Output{}); err != nil {
+			t.Errorf("%s: Import(c, %v, empty data): %s", rs, unit, err)
+		}
+	}
+
+	want := []*unit.SourceUnit{
+		{CommitID: "c", Type: "t1", Name: "u1"},
+		{CommitID: "c", Type: "t2", Name: "u2"},
+	}
+
+	units, err := rs.Units(nil)
+	if err != nil {
+		t.Errorf("%s: Units(nil): %s", rs, err)
+	}
+	if !reflect.DeepEqual(units, want) {
+		t.Errorf("%s: Units(nil): got %v, want %v", rs, units, want)
+	}
+}
+
+func testRepoStore_Def(t *testing.T, rs repoStoreImporter) {
+	unit := &unit.SourceUnit{Type: "t", Name: "u"}
+	data := graph.Output{
+		Defs: []*graph.Def{
+			{
+				DefKey: graph.DefKey{Path: "p"},
+				Name:   "n",
+			},
+		},
+	}
+	if err := rs.Import("c", unit, data); err != nil {
+		t.Errorf("%s: Import(c, %v, data): %s", rs, unit, err)
+	}
+
+	def, err := rs.Def(graph.DefKey{Path: "p"})
+	if !IsNotExist(err) {
+		t.Errorf("%s: Def(no unit): got err %v, want IsNotExist-satisfying err", rs, err)
+	}
+	if def != nil {
+		t.Errorf("%s: Def: got def %v, want nil", rs, def)
+	}
+
+	def, err = rs.Def(graph.DefKey{UnitType: "t", Unit: "u", Path: "p"})
+	if !IsNotExist(err) {
+		t.Errorf("%s: Def(no unit): got err %v, want IsNotExist-satisfying err", rs, err)
+	}
+	if def != nil {
+		t.Errorf("%s: Def: got def %v, want nil", rs, def)
+	}
+
+	want := &graph.Def{
+		DefKey: graph.DefKey{CommitID: "c", UnitType: "t", Unit: "u", Path: "p"},
+		Name:   "n",
+	}
+	def, err = rs.Def(graph.DefKey{CommitID: "c", UnitType: "t", Unit: "u", Path: "p"})
+	if err != nil {
+		t.Errorf("%s: Def: %s", rs, err)
+	}
+	if !reflect.DeepEqual(def, want) {
+		t.Errorf("%s: Def: got def %v, want %v", rs, def, want)
+	}
+
+	def2, err := rs.Def(graph.DefKey{CommitID: "c2", UnitType: "t", Unit: "u", Path: "p"})
+	if !IsNotExist(err) {
+		t.Errorf("%s: Def: got err %v, want IsNotExist-satisfying err", rs, err)
+	}
+	if def2 != nil {
+		t.Errorf("%s: Def: got def %v, want nil", rs, def2)
+	}
+}
+
+func testRepoStore_Defs(t *testing.T, rs repoStoreImporter) {
+	unit := &unit.SourceUnit{Type: "t", Name: "u"}
+	data := graph.Output{
+		Defs: []*graph.Def{
+			{
+				DefKey: graph.DefKey{Path: "p1"},
+				Name:   "n1",
+			},
+			{
+				DefKey: graph.DefKey{Path: "p2"},
+				Name:   "n2",
+			},
+		},
+	}
+	if err := rs.Import("c", unit, data); err != nil {
+		t.Errorf("%s: Import(c, %v, data): %s", rs, unit, err)
+	}
+
+	want := []*graph.Def{
+		{
+			DefKey: graph.DefKey{CommitID: "c", UnitType: "t", Unit: "u", Path: "p1"},
+			Name:   "n1",
+		},
+		{
+			DefKey: graph.DefKey{CommitID: "c", UnitType: "t", Unit: "u", Path: "p2"},
+			Name:   "n2",
+		},
+	}
+
+	defs, err := rs.Defs(nil)
+	if err != nil {
+		t.Errorf("%s: Defs(nil): %s", rs, err)
+	}
+	if !reflect.DeepEqual(defs, want) {
+		t.Errorf("%s: Defs(nil): got defs %v, want %v", rs, defs, want)
+	}
+}
+
+func testRepoStore_Refs(t *testing.T, rs repoStoreImporter) {
+	unit := &unit.SourceUnit{Type: "t", Name: "u"}
+	data := graph.Output{
+		Refs: []*graph.Ref{
+			{
+				DefPath: "p1",
+				File:    "f1",
+				Start:   1,
+				End:     2,
+			},
+			{
+				DefPath: "p2",
+				File:    "f2",
+				Start:   2,
+				End:     3,
+			},
+		},
+	}
+	if err := rs.Import("c", unit, data); err != nil {
+		t.Errorf("%s: Import(c, %v, data): %s", rs, unit, err)
+	}
+
+	want := []*graph.Ref{
+		{
+			DefPath:  "p1",
+			File:     "f1",
+			Start:    1,
+			End:      2,
+			UnitType: "t", Unit: "u",
+			CommitID: "c",
+		},
+		{
+			DefPath:  "p2",
+			File:     "f2",
+			Start:    2,
+			End:      3,
+			UnitType: "t", Unit: "u",
+			CommitID: "c",
+		},
+	}
+
+	refs, err := rs.Refs(nil)
+	if err != nil {
+		t.Errorf("%s: Refs(nil): %s", rs, err)
+	}
+	if !reflect.DeepEqual(refs, want) {
+		t.Errorf("%s: Refs(nil): got refs %v, want %v", rs, refs, want)
+	}
+}

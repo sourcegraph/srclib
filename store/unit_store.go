@@ -1,6 +1,9 @@
 package store
 
-import "sourcegraph.com/sourcegraph/srclib/graph"
+import (
+	"sourcegraph.com/sourcegraph/srclib/graph"
+	"sourcegraph.com/sourcegraph/srclib/unit"
+)
 
 // A UnitStore stores and accesses srclib build data for a single
 // source unit.
@@ -32,6 +35,7 @@ type UnitImporter interface {
 // which the func returns true.
 type DefFilter func(*graph.Def) bool
 
+// allDefs is a DefFilter that selects all defs.
 func allDefs(*graph.Def) bool { return true }
 
 func defKeyFilter(key graph.DefKey) DefFilter {
@@ -50,13 +54,14 @@ func defPathFilter(path graph.DefPath) DefFilter {
 // which the func returns true.
 type RefFilter func(*graph.Ref) bool
 
+// allRefs is a RefFilter that selects all refs.
 func allRefs(*graph.Ref) bool { return true }
 
 // A multiUnitStore is a UnitStore whose methods call the
 // corresponding method on each of the unit stores returned by the
 // unitStores func.
 type multiUnitStore struct {
-	unitStores func() (map[unitKey]UnitStore, error)
+	unitStores func() (map[unit.Key]UnitStore, error)
 }
 
 var _ UnitStore = (*multiUnitStore)(nil)
@@ -78,6 +83,8 @@ func (s multiUnitStore) Def(key graph.DefKey) (*graph.Def, error) {
 			}
 			return nil, err
 		}
+		def.UnitType = unitKey.UnitType
+		def.Unit = unitKey.Unit
 		return def, nil
 	}
 	return nil, errDefNotExist
@@ -96,8 +103,8 @@ func (s multiUnitStore) Defs(f DefFilter) ([]*graph.Def, error) {
 	var allDefs []*graph.Def
 	for unitKey, us := range uss {
 		defs, err := us.Defs(func(def *graph.Def) bool {
-			def.UnitType = unitKey.typ
-			def.Unit = unitKey.name
+			def.UnitType = unitKey.UnitType
+			def.Unit = unitKey.Unit
 			return f(def)
 		})
 		if err != nil {
@@ -121,8 +128,8 @@ func (s multiUnitStore) Refs(f RefFilter) ([]*graph.Ref, error) {
 	var allRefs []*graph.Ref
 	for unitKey, us := range uss {
 		refs, err := us.Refs(func(ref *graph.Ref) bool {
-			ref.UnitType = unitKey.typ
-			ref.Unit = unitKey.name
+			ref.UnitType = unitKey.UnitType
+			ref.Unit = unitKey.Unit
 			return f(ref)
 		})
 		if err != nil {
