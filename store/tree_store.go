@@ -84,6 +84,9 @@ func (s multiTreeStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
 			}
 			return nil, err
 		}
+		if unit.CommitID == "" {
+			unit.CommitID = commitID
+		}
 		return unit, nil
 	}
 	return nil, errUnitNotExist
@@ -102,7 +105,9 @@ func (s multiTreeStore) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
 	var allUnits []*unit.SourceUnit
 	for commitID, ts := range tss {
 		units, err := ts.Units(func(unit *unit.SourceUnit) bool {
-			unit.CommitID = commitID
+			if unit.CommitID == "" {
+				unit.CommitID = commitID
+			}
 			return f(unit)
 		})
 		if err != nil {
@@ -130,7 +135,9 @@ func (s multiTreeStore) Def(key graph.DefKey) (*graph.Def, error) {
 			}
 			return nil, err
 		}
-		def.CommitID = commitID
+		if def.CommitID == "" {
+			def.CommitID = commitID
+		}
 		return def, nil
 	}
 	return nil, errDefNotExist
@@ -149,7 +156,9 @@ func (s multiTreeStore) Defs(f DefFilter) ([]*graph.Def, error) {
 	var allDefs []*graph.Def
 	for commitID, ts := range tss {
 		defs, err := ts.Defs(func(def *graph.Def) bool {
-			def.CommitID = commitID
+			if def.CommitID == "" {
+				def.CommitID = commitID
+			}
 			return f(def)
 		})
 		if err != nil {
@@ -169,11 +178,12 @@ func (s multiTreeStore) Refs(f RefFilter) ([]*graph.Ref, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	var allRefs []*graph.Ref
 	for commitID, ts := range tss {
 		refs, err := ts.Refs(func(ref *graph.Ref) bool {
-			ref.CommitID = commitID
+			if ref.CommitID == "" {
+				ref.CommitID = commitID
+			}
 			return f(ref)
 		})
 		if err != nil {
