@@ -40,3 +40,15 @@ func TestFlatFileRepoStore(t *testing.T) {
 		return NewFlatFileRepoStore(rwvfs.Sub(fs, "repo"), nil)
 	})
 }
+
+func TestFlatFileMultiRepoStore(t *testing.T) {
+	testMultiRepoStore(t, func() MultiRepoStoreImporter {
+		tmpDir, err := ioutil.TempDir("", "srclib-TestFlatFileMultiRepoStore")
+		if err != nil {
+			t.Fatal(err)
+		}
+		fs := rwvfs.OS(tmpDir)
+		setCreateParentDirs(fs)
+		return NewFlatFileMultiRepoStore(rwvfs.Sub(fs, "multirepo"), nil)
+	})
+}

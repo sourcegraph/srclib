@@ -22,8 +22,10 @@ func testRepoStore(t *testing.T, newFn func() RepoStoreImporter) {
 	testRepoStore_uninitialized(t, &labeledRepoStoreImporter{newFn(), "uninitialized"})
 	testRepoStore_Import_empty(t, &labeledRepoStoreImporter{newFn(), "import empty"})
 	testRepoStore_Import(t, &labeledRepoStoreImporter{newFn(), "import"})
+	testRepoStore_Version(t, &labeledRepoStoreImporter{newFn(), "version"})
+	testRepoStore_Versions(t, &labeledRepoStoreImporter{newFn(), "versions"})
 	testRepoStore_Unit(t, &labeledRepoStoreImporter{newFn(), "unit"})
-	testRepoStore_Units(t, &labeledRepoStoreImporter{newFn(), "unit"})
+	testRepoStore_Units(t, &labeledRepoStoreImporter{newFn(), "units"})
 	testRepoStore_Def(t, &labeledRepoStoreImporter{newFn(), "def"})
 	testRepoStore_Defs(t, &labeledRepoStoreImporter{newFn(), "defs"})
 	testRepoStore_Refs(t, &labeledRepoStoreImporter{newFn(), "refs"})
@@ -182,7 +184,7 @@ func testRepoStore_Def(t *testing.T, rs RepoStoreImporter) {
 
 	def, err = rs.Def(graph.DefKey{UnitType: "t", Unit: "u", Path: "p"})
 	if !IsNotExist(err) {
-		t.Errorf("%s: Def(no unit): got err %v, want IsNotExist-satisfying err", rs, err)
+		t.Errorf("%s: Def(no commit): got err %v, want IsNotExist-satisfying err", rs, err)
 	}
 	if def != nil {
 		t.Errorf("%s: Def: got def %v, want nil", rs, def)

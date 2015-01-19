@@ -79,3 +79,198 @@ func versionCommitIDFilter(commitID string) VersionFilter {
 		return version.CommitID == commitID
 	}
 }
+
+// A multiRepoStore is a RepoStore whose methods call the
+// corresponding method on each of the repo stores returned by the
+// repoStores func.
+//
+// A multiRepoStore is not a MultiRepoStore, but the name conflict is
+// unfortunate. A multiRepoStore implements RepoStore by combining
+// results from multiple RepoStores; a MultiRepoStore is an entirely
+// different layer of abstraction that offers additional functionality
+// beyond what a single RepoStore or even a combined multiRepoStore
+// offers.
+type multiRepoStore struct {
+	repoStores func() (map[string]RepoStore, error)
+}
+
+var _ RepoStore = (*multiRepoStore)(nil)
+
+func (s multiRepoStore) Version(key VersionKey) (*Version, error) {
+	rss, err := s.repoStores()
+	if err != nil {
+		return nil, err
+	}
+
+	for repo, rs := range rss {
+		if key.Repo != repo {
+			continue
+		}
+		version, err := rs.Version(key)
+		if err != nil {
+			if IsNotExist(err) {
+				continue
+			}
+			return nil, err
+		}
+		if version.Repo == "" {
+			version.Repo = repo
+		}
+		return version, nil
+	}
+	return nil, errVersionNotExist
+}
+
+func (s multiRepoStore) Versions(f VersionFilter) ([]*Version, error) {
+	if f == nil {
+		f = allVersions
+	}
+
+	rss, err := s.repoStores()
+	if err != nil {
+		return nil, err
+	}
+
+	var allVersions []*Version
+	for repo, rs := range rss {
+		versions, err := rs.Versions(func(version *Version) bool {
+			if version.Repo == "" {
+				version.Repo = repo
+			}
+			return f(version)
+		})
+		if err != nil {
+			return nil, err
+		}
+		allVersions = append(allVersions, versions...)
+	}
+	return allVersions, nil
+}
+
+func (s multiRepoStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
+	rss, err := s.repoStores()
+	if err != nil {
+		return nil, err
+	}
+
+	for repo, rs := range rss {
+		if key.Repo != repo {
+			continue
+		}
+		unit, err := rs.Unit(key)
+		if err != nil {
+			if IsNotExist(err) {
+				continue
+			}
+			return nil, err
+		}
+		if unit.Repo == "" {
+			unit.Repo = repo
+		}
+		return unit, nil
+	}
+	return nil, errUnitNotExist
+}
+
+func (s multiRepoStore) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
+	if f == nil {
+		f = allUnits
+	}
+
+	rss, err := s.repoStores()
+	if err != nil {
+		return nil, err
+	}
+
+	var allUnits []*unit.SourceUnit
+	for repo, rs := range rss {
+		units, err := rs.Units(func(unit *unit.SourceUnit) bool {
+			if unit.Repo == "" {
+				unit.Repo = repo
+			}
+			return f(unit)
+		})
+		if err != nil {
+			return nil, err
+		}
+		allUnits = append(allUnits, units...)
+	}
+	return allUnits, nil
+}
+
+func (s multiRepoStore) Def(key graph.DefKey) (*graph.Def, error) {
+	rss, err := s.repoStores()
+	if err != nil {
+		return nil, err
+	}
+
+	for repo, rs := range rss {
+		if key.Repo != repo {
+			continue
+		}
+		key.Repo = ""
+		def, err := rs.Def(key)
+		if err != nil {
+			if IsNotExist(err) {
+				continue
+			}
+			return nil, err
+		}
+		if def.Repo == "" {
+			def.Repo = repo
+		}
+		return def, nil
+	}
+	return nil, errDefNotExist
+}
+
+func (s multiRepoStore) Defs(f DefFilter) ([]*graph.Def, error) {
+	if f == nil {
+		f = allDefs
+	}
+
+	rss, err := s.repoStores()
+	if err != nil {
+		return nil, err
+	}
+
+	var allDefs []*graph.Def
+	for repo, rs := range rss {
+		defs, err := rs.Defs(func(def *graph.Def) bool {
+			if def.Repo == "" {
+				def.Repo = repo
+			}
+			return f(def)
+		})
+		if err != nil {
+			return nil, err
+		}
+		allDefs = append(allDefs, defs...)
+	}
+	return allDefs, nil
+}
+
+func (s multiRepoStore) Refs(f RefFilter) ([]*graph.Ref, error) {
+	if f == nil {
+		f = allRefs
+	}
+
+	rss, err := s.repoStores()
+	if err != nil {
+		return nil, err
+	}
+	var allRefs []*graph.Ref
+	for repo, rs := range rss {
+		refs, err := rs.Refs(func(ref *graph.Ref) bool {
+			if ref.Repo == "" {
+				ref.Repo = repo
+			}
+			return f(ref)
+		})
+		if err != nil {
+			return nil, err
+		}
+		allRefs = append(allRefs, refs...)
+	}
+	return allRefs, nil
+}
