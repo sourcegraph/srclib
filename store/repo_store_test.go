@@ -116,10 +116,12 @@ func testRepoStore_Versions(t *testing.T, rs RepoStoreImporter) {
 }
 
 func testRepoStore_Unit(t *testing.T, rs RepoStoreImporter) {
-	want := &unit.SourceUnit{Type: "t", Name: "u"}
-	if err := rs.Import("c", want, graph.Output{}); err != nil {
-		t.Errorf("%s: Import(c, %v, empty data): %s", rs, want, err)
+	u := &unit.SourceUnit{Type: "t", Name: "u"}
+	if err := rs.Import("c", u, graph.Output{}); err != nil {
+		t.Errorf("%s: Import(c, %v, empty data): %s", rs, u, err)
 	}
+
+	want := &unit.SourceUnit{CommitID: "c", Type: "t", Name: "u"}
 
 	key := unit.Key{CommitID: "c", UnitType: "t", Unit: "u"}
 	unit, err := rs.Unit(key)

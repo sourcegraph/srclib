@@ -83,8 +83,12 @@ func (s multiUnitStore) Def(key graph.DefKey) (*graph.Def, error) {
 			}
 			return nil, err
 		}
-		def.UnitType = unitKey.UnitType
-		def.Unit = unitKey.Unit
+		if def.UnitType == "" {
+			def.UnitType = unitKey.UnitType
+		}
+		if def.Unit == "" {
+			def.Unit = unitKey.Unit
+		}
 		return def, nil
 	}
 	return nil, errDefNotExist
@@ -103,8 +107,12 @@ func (s multiUnitStore) Defs(f DefFilter) ([]*graph.Def, error) {
 	var allDefs []*graph.Def
 	for unitKey, us := range uss {
 		defs, err := us.Defs(func(def *graph.Def) bool {
-			def.UnitType = unitKey.UnitType
-			def.Unit = unitKey.Unit
+			if def.UnitType == "" {
+				def.UnitType = unitKey.UnitType
+			}
+			if def.Unit == "" {
+				def.Unit = unitKey.Unit
+			}
 			return f(def)
 		})
 		if err != nil {
@@ -128,8 +136,12 @@ func (s multiUnitStore) Refs(f RefFilter) ([]*graph.Ref, error) {
 	var allRefs []*graph.Ref
 	for unitKey, us := range uss {
 		refs, err := us.Refs(func(ref *graph.Ref) bool {
-			ref.UnitType = unitKey.UnitType
-			ref.Unit = unitKey.Unit
+			if ref.UnitType == "" {
+				ref.UnitType = unitKey.UnitType
+			}
+			if ref.Unit == "" {
+				ref.Unit = unitKey.Unit
+			}
 			return f(ref)
 		})
 		if err != nil {
