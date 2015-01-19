@@ -144,6 +144,12 @@ func (s multiUnitStore) Refs(f RefFilter) ([]*graph.Ref, error) {
 			if ref.Unit == "" {
 				ref.Unit = unitKey.Unit
 			}
+			if ref.DefUnitType == "" {
+				ref.DefUnitType = unitKey.UnitType
+			}
+			if ref.DefUnit == "" {
+				ref.DefUnit = unitKey.Unit
+			}
 			return f(ref)
 		})
 		if err != nil {

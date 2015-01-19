@@ -245,18 +245,24 @@ func testTreeStore_Refs(t *testing.T, ts treeStoreImporter) {
 
 	want := []*graph.Ref{
 		{
-			DefPath:  "p1",
-			File:     "f1",
-			Start:    1,
-			End:      2,
-			UnitType: "t", Unit: "u",
+			DefUnitType: "t",
+			DefUnit:     "u",
+			DefPath:     "p1",
+			File:        "f1",
+			Start:       1,
+			End:         2,
+			UnitType:    "t",
+			Unit:        "u",
 		},
 		{
-			DefPath:  "p2",
-			File:     "f2",
-			Start:    2,
-			End:      3,
-			UnitType: "t", Unit: "u",
+			DefUnitType: "t",
+			DefUnit:     "u",
+			DefPath:     "p2",
+			File:        "f2",
+			Start:       2,
+			End:         3,
+			UnitType:    "t",
+			Unit:        "u",
 		},
 	}
 

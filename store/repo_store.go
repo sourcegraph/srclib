@@ -265,6 +265,9 @@ func (s multiRepoStore) Refs(f RefFilter) ([]*graph.Ref, error) {
 			if ref.Repo == "" {
 				ref.Repo = repo
 			}
+			if ref.DefRepo == "" {
+				ref.DefRepo = repo
+			}
 			return f(ref)
 		})
 		if err != nil {

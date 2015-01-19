@@ -273,20 +273,26 @@ func testRepoStore_Refs(t *testing.T, rs RepoStoreImporter) {
 
 	want := []*graph.Ref{
 		{
-			DefPath:  "p1",
-			File:     "f1",
-			Start:    1,
-			End:      2,
-			UnitType: "t", Unit: "u",
-			CommitID: "c",
+			DefUnitType: "t",
+			DefUnit:     "u",
+			DefPath:     "p1",
+			File:        "f1",
+			Start:       1,
+			End:         2,
+			UnitType:    "t",
+			Unit:        "u",
+			CommitID:    "c",
 		},
 		{
-			DefPath:  "p2",
-			File:     "f2",
-			Start:    2,
-			End:      3,
-			UnitType: "t", Unit: "u",
-			CommitID: "c",
+			DefUnitType: "t",
+			DefUnit:     "u",
+			DefPath:     "p2",
+			File:        "f2",
+			Start:       2,
+			End:         3,
+			UnitType:    "t",
+			Unit:        "u",
+			CommitID:    "c",
 		},
 	}
 
