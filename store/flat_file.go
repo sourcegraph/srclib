@@ -307,6 +307,7 @@ func (s *flatFileUnitStore) Refs(f RefFilter) ([]*graph.Ref, error) {
 }
 
 func (s *flatFileUnitStore) Import(data graph.Output) (err error) {
+	cleanForUnitStoreImport(&data)
 	f, err := s.fs.Create(flatFileUnitDataFilename)
 	if err != nil {
 		return err
