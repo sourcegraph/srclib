@@ -9,10 +9,10 @@ import (
 // (consisting of any number of commits, each of which have any number
 // of source units).
 type RepoStore interface {
-	// Version gets the tree for a single version (i.e., commit).
-	Version(commitID string) (*Version, error)
+	// Version gets a single commit.
+	Version(VersionKey) (*Version, error)
 
-	// Version gets the tree for a single version (i.e., commit).
+	// Versions returns all commits that match the VersionFilter.
 	Versions(VersionFilter) ([]*Version, error)
 
 	// TreeStore's methods call the corresponding methods on the
@@ -35,12 +35,29 @@ type RepoStoreImporter interface {
 	RepoImporter
 }
 
+// A VersionKey is a unique identifier for a version across all
+// repositories.
+type VersionKey struct {
+	// Repo is the URI of the commit's repository.
+	Repo string
+
+	// CommitID is the commit ID of the commit.
+	CommitID string
+}
+
 // A Version represents a revision (i.e., commit) of a repository.
 type Version struct {
+	// Repo is the URI of the repository that contains this commit.
+	Repo string
+
 	// CommitID is the commit ID of the VCS revision that this version
 	// represents. If blank, then this version refers to the current
 	// workspace.
 	CommitID string
+
+	// TODO(sqs): add build metadata fields (build logs, timings, what
+	// was actually built, incremental build tracking, diff/pack
+	// compression helper info, etc.)
 }
 
 // IsCurrentWorkspace returns a boolean indicating whether this

@@ -22,13 +22,13 @@ func newMemoryRepoStore() *memoryRepoStore {
 
 var errRepoNoInit = errors.New("repo not yet initialized")
 
-func (s *memoryRepoStore) Version(commitID string) (*Version, error) {
+func (s *memoryRepoStore) Version(key VersionKey) (*Version, error) {
 	if s.versions == nil {
 		return nil, errRepoNoInit
 	}
 
 	for _, version := range s.versions {
-		if version.CommitID == commitID {
+		if version.CommitID == key.CommitID {
 			return version, nil
 		}
 	}
