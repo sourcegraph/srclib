@@ -172,7 +172,7 @@ func (s *flatFileTreeStore) unitFilenames() ([]string, error) {
 }
 
 func (s *flatFileTreeStore) unitFilename(key unit.Key) string {
-	return path.Join(key.UnitType, key.Unit+unitFileSuffix)
+	return path.Join(key.Unit, key.UnitType+unitFileSuffix)
 }
 
 const unitFileSuffix = ".unit.json"
@@ -217,7 +217,7 @@ func (s *flatFileTreeStore) unitStores() (map[unit.Key]UnitStore, error) {
 	uss := make(map[unit.Key]UnitStore, len(unitFiles))
 	for _, unitFile := range unitFiles {
 		dir := strings.TrimSuffix(unitFile, unitFileSuffix)
-		unitKey := unit.Key{UnitType: path.Dir(dir), Unit: path.Base(dir)}
+		unitKey := unit.Key{UnitType: path.Base(dir), Unit: path.Dir(dir)}
 		uss[unitKey] = &flatFileUnitStore{fs: rwvfs.Sub(s.fs, dir)}
 	}
 	return uss, nil
