@@ -92,16 +92,7 @@ type buildDataSingleCommitCommonOpts struct {
 }
 
 func (c buildDataSingleCommitCommonOpts) getLocalFileSystem() (rwvfs.FileSystem, string, error) {
-	// Open local build data FS.
-	lrepo, err := openLocalRepo()
-	if lrepo == nil || lrepo.RootDir == "" || lrepo.CommitID == "" {
-		return nil, "", err
-	}
-	localStore, err := buildstore.LocalRepo(lrepo.RootDir)
-	if err != nil {
-		return nil, "", err
-	}
-	return localStore.Commit(lrepo.CommitID), fmt.Sprintf("local repository (root dir %s, commit %s)", lrepo.RootDir, lrepo.CommitID), nil
+	return getLocalBuildDataFS(c.CommitID)
 }
 
 func (c buildDataSingleCommitCommonOpts) getRemoteFileSystem() (rwvfs.FileSystem, string, sourcegraph.RepoRevSpec, error) {
@@ -111,17 +102,9 @@ func (c buildDataSingleCommitCommonOpts) getRemoteFileSystem() (rwvfs.FileSystem
 		return nil, "", sourcegraph.RepoRevSpec{}, err
 	}
 
-	// Reopen the local repo (even though getRemoteRepo also opens it)
-	// because we need the local commit ID, which getRemoteRepo
-	// doesn't return.
-	lrepo, err := openLocalRepo()
-	if err != nil {
-		return nil, "", sourcegraph.RepoRevSpec{}, err
-	}
-
-	repoRevSpec := sourcegraph.RepoRevSpec{RepoSpec: rrepo.RepoSpec(), Rev: lrepo.CommitID, CommitID: lrepo.CommitID}
+	repoRevSpec := sourcegraph.RepoRevSpec{RepoSpec: rrepo.RepoSpec(), Rev: c.CommitID, CommitID: c.CommitID}
 	fs, err := cl.BuildData.FileSystem(repoRevSpec)
-	return fs, fmt.Sprintf("remote repository (URI %s, commit %s)", rrepo.URI, lrepo.CommitID), repoRevSpec, err
+	return fs, fmt.Sprintf("remote repository (URI %s, commit %s)", rrepo.URI, c.CommitID), repoRevSpec, err
 }
 
 type buildDataSingleRepoCommonOpts struct {
@@ -132,10 +115,42 @@ type buildDataSingleRepoCommonOpts struct {
 // getFileSystem gets either the local or remote build data FS,
 // depending on the value of c.Local.
 func (c *buildDataSingleRepoCommonOpts) getFileSystem() (rwvfs.FileSystem, string, error) {
-	if c.Local {
-		return c.getLocalFileSystem()
+	lrepo, err := openLocalRepo()
+	if err != nil {
+		return nil, "", err
 	}
-	fs, label, _, err := c.getRemoteFileSystem()
+	return getBuildDataFS(c.Local, lrepo.URI(), c.CommitID)
+}
+
+func getLocalBuildDataFS(commitID string) (rwvfs.FileSystem, string, error) {
+	lrepo, err := openLocalRepo()
+	if lrepo == nil || lrepo.RootDir == "" || commitID == "" {
+		return nil, "", err
+	}
+	localStore, err := buildstore.LocalRepo(lrepo.RootDir)
+	if err != nil {
+		return nil, "", err
+	}
+	return localStore.Commit(commitID), fmt.Sprintf("local repository (root dir %s, commit %s)", lrepo.RootDir, commitID), nil
+}
+
+func getRemoteBuildDataFS(repo, commitID string) (rwvfs.FileSystem, string, sourcegraph.RepoRevSpec, error) {
+	cl := NewAPIClientWithAuthIfPresent()
+	rrepo, _, err := cl.Repos.Get(sourcegraph.RepoSpec{URI: repo}, nil)
+	if err != nil {
+		return nil, "", sourcegraph.RepoRevSpec{}, err
+	}
+
+	repoRevSpec := sourcegraph.RepoRevSpec{RepoSpec: rrepo.RepoSpec(), Rev: commitID, CommitID: commitID}
+	fs, err := cl.BuildData.FileSystem(repoRevSpec)
+	return fs, fmt.Sprintf("remote repository (URI %s, commit %s)", rrepo.URI, commitID), repoRevSpec, err
+}
+
+func getBuildDataFS(local bool, repo, commitID string) (rwvfs.FileSystem, string, error) {
+	if local {
+		return getLocalBuildDataFS(commitID)
+	}
+	fs, label, _, err := getRemoteBuildDataFS(repo, commitID)
 	return fs, label, err
 }
 
