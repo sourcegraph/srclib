@@ -58,16 +58,16 @@ func refUnitFilter(key unit.Key) RefFilter {
 	}
 }
 
-// A multiTreeStore is a TreeStore whose methods call the
+// A treeStores is a TreeStore whose methods call the
 // corresponding method on each of the tree stores returned by the
 // treeStores func.
-type multiTreeStore struct {
+type treeStores struct {
 	treeStores func() (map[string]TreeStore, error)
 }
 
-var _ TreeStore = (*multiTreeStore)(nil)
+var _ TreeStore = (*treeStores)(nil)
 
-func (s multiTreeStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
+func (s treeStores) Unit(key unit.Key) (*unit.SourceUnit, error) {
 	tss, err := s.treeStores()
 	if err != nil {
 		return nil, err
@@ -92,7 +92,7 @@ func (s multiTreeStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
 	return nil, errUnitNotExist
 }
 
-func (s multiTreeStore) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
+func (s treeStores) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
 	if f == nil {
 		f = allUnits
 	}
@@ -118,7 +118,7 @@ func (s multiTreeStore) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
 	return allUnits, nil
 }
 
-func (s multiTreeStore) Def(key graph.DefKey) (*graph.Def, error) {
+func (s treeStores) Def(key graph.DefKey) (*graph.Def, error) {
 	tss, err := s.treeStores()
 	if err != nil {
 		return nil, err
@@ -144,7 +144,7 @@ func (s multiTreeStore) Def(key graph.DefKey) (*graph.Def, error) {
 	return nil, errDefNotExist
 }
 
-func (s multiTreeStore) Defs(f DefFilter) ([]*graph.Def, error) {
+func (s treeStores) Defs(f DefFilter) ([]*graph.Def, error) {
 	if f == nil {
 		f = allDefs
 	}
@@ -170,7 +170,7 @@ func (s multiTreeStore) Defs(f DefFilter) ([]*graph.Def, error) {
 	return allDefs, nil
 }
 
-func (s multiTreeStore) Refs(f RefFilter) ([]*graph.Ref, error) {
+func (s treeStores) Refs(f RefFilter) ([]*graph.Ref, error) {
 	if f == nil {
 		f = allRefs
 	}

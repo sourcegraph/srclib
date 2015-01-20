@@ -80,23 +80,16 @@ func versionCommitIDFilter(commitID string) VersionFilter {
 	}
 }
 
-// A multiRepoStore is a RepoStore whose methods call the
+// A repoStores is a RepoStore whose methods call the
 // corresponding method on each of the repo stores returned by the
 // repoStores func.
-//
-// A multiRepoStore is not a MultiRepoStore, but the name conflict is
-// unfortunate. A multiRepoStore implements RepoStore by combining
-// results from multiple RepoStores; a MultiRepoStore is an entirely
-// different layer of abstraction that offers additional functionality
-// beyond what a single RepoStore or even a combined multiRepoStore
-// offers.
-type multiRepoStore struct {
+type repoStores struct {
 	repoStores func() (map[string]RepoStore, error)
 }
 
-var _ RepoStore = (*multiRepoStore)(nil)
+var _ RepoStore = (*repoStores)(nil)
 
-func (s multiRepoStore) Version(key VersionKey) (*Version, error) {
+func (s repoStores) Version(key VersionKey) (*Version, error) {
 	rss, err := s.repoStores()
 	if err != nil {
 		return nil, err
@@ -121,7 +114,7 @@ func (s multiRepoStore) Version(key VersionKey) (*Version, error) {
 	return nil, errVersionNotExist
 }
 
-func (s multiRepoStore) Versions(f VersionFilter) ([]*Version, error) {
+func (s repoStores) Versions(f VersionFilter) ([]*Version, error) {
 	if f == nil {
 		f = allVersions
 	}
@@ -147,7 +140,7 @@ func (s multiRepoStore) Versions(f VersionFilter) ([]*Version, error) {
 	return allVersions, nil
 }
 
-func (s multiRepoStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
+func (s repoStores) Unit(key unit.Key) (*unit.SourceUnit, error) {
 	rss, err := s.repoStores()
 	if err != nil {
 		return nil, err
@@ -172,7 +165,7 @@ func (s multiRepoStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
 	return nil, errUnitNotExist
 }
 
-func (s multiRepoStore) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
+func (s repoStores) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
 	if f == nil {
 		f = allUnits
 	}
@@ -198,7 +191,7 @@ func (s multiRepoStore) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
 	return allUnits, nil
 }
 
-func (s multiRepoStore) Def(key graph.DefKey) (*graph.Def, error) {
+func (s repoStores) Def(key graph.DefKey) (*graph.Def, error) {
 	rss, err := s.repoStores()
 	if err != nil {
 		return nil, err
@@ -224,7 +217,7 @@ func (s multiRepoStore) Def(key graph.DefKey) (*graph.Def, error) {
 	return nil, errDefNotExist
 }
 
-func (s multiRepoStore) Defs(f DefFilter) ([]*graph.Def, error) {
+func (s repoStores) Defs(f DefFilter) ([]*graph.Def, error) {
 	if f == nil {
 		f = allDefs
 	}
@@ -250,7 +243,7 @@ func (s multiRepoStore) Defs(f DefFilter) ([]*graph.Def, error) {
 	return allDefs, nil
 }
 
-func (s multiRepoStore) Refs(f RefFilter) ([]*graph.Ref, error) {
+func (s repoStores) Refs(f RefFilter) ([]*graph.Ref, error) {
 	if f == nil {
 		f = allRefs
 	}

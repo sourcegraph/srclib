@@ -12,12 +12,12 @@ import (
 type memoryMultiRepoStore struct {
 	repos map[string]*memoryRepoStore
 
-	multiRepoStore
+	repoStores
 }
 
 func newMemoryMultiRepoStore() *memoryMultiRepoStore {
 	mrs := &memoryMultiRepoStore{}
-	mrs.multiRepoStore = multiRepoStore{mrs.repoStores}
+	mrs.repoStores = repoStores{repoStores: mrs.getRepoStores}
 	return mrs
 }
 
@@ -53,7 +53,7 @@ func (s *memoryMultiRepoStore) Repos(f RepoFilter) ([]string, error) {
 	return repos, nil
 }
 
-func (s *memoryMultiRepoStore) repoStores() (map[string]RepoStore, error) {
+func (s *memoryMultiRepoStore) getRepoStores() (map[string]RepoStore, error) {
 	if s.repos == nil {
 		return nil, errMultiRepoStoreNoInit
 	}
@@ -81,12 +81,12 @@ func (s *memoryMultiRepoStore) String() string { return "memoryMultiRepoStore" }
 type memoryRepoStore struct {
 	versions []*Version
 	trees    map[string]*memoryTreeStore
-	multiTreeStore
+	treeStores
 }
 
 func newMemoryRepoStore() *memoryRepoStore {
 	rs := &memoryRepoStore{}
-	rs.multiTreeStore = multiTreeStore{treeStores: rs.treeStores}
+	rs.treeStores = treeStores{treeStores: rs.getTreeStores}
 	return rs
 }
 
@@ -135,7 +135,7 @@ func (s *memoryRepoStore) Import(commitID string, unit *unit.SourceUnit, data gr
 	return s.trees[commitID].Import(unit, data)
 }
 
-func (s *memoryRepoStore) treeStores() (map[string]TreeStore, error) {
+func (s *memoryRepoStore) getTreeStores() (map[string]TreeStore, error) {
 	if s.trees == nil {
 		return nil, errRepoNoInit
 	}
@@ -153,12 +153,12 @@ func (s *memoryRepoStore) String() string { return "memoryRepoStore" }
 type memoryTreeStore struct {
 	units []*unit.SourceUnit
 	data  map[unit.Key]*graph.Output
-	multiUnitStore
+	unitStores
 }
 
 func newMemoryTreeStore() *memoryTreeStore {
 	ts := &memoryTreeStore{}
-	ts.multiUnitStore = multiUnitStore{unitStores: ts.unitStores}
+	ts.unitStores = unitStores{unitStores: ts.getUnitStores}
 	return ts
 }
 
@@ -213,7 +213,7 @@ func (s *memoryTreeStore) Import(u *unit.SourceUnit, data graph.Output) error {
 	return nil
 }
 
-func (s *memoryTreeStore) unitStores() (map[unit.Key]UnitStore, error) {
+func (s *memoryTreeStore) getUnitStores() (map[unit.Key]UnitStore, error) {
 	if s.data == nil {
 		return nil, errTreeNoInit
 	}
