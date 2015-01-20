@@ -167,13 +167,13 @@ type byUnitFilter struct{ unitType, unit string }
 func (f byUnitFilter) ByUnitType() string { return f.unitType }
 func (f byUnitFilter) ByUnit() string     { return f.unit }
 func (f byUnitFilter) SelectDef(def *graph.Def) bool {
-	return def.Unit == f.unit && def.UnitType == f.unitType
+	return (def.Unit == "" || def.Unit == f.unit) && (def.UnitType == "" || def.UnitType == f.unitType)
 }
 func (f byUnitFilter) SelectRef(ref *graph.Ref) bool {
-	return ref.Unit == f.unit && ref.UnitType == f.unitType
+	return (ref.Unit == "" || ref.Unit == f.unit) && (ref.UnitType == "" || ref.UnitType == f.unitType)
 }
 func (f byUnitFilter) SelectUnit(unit *unit.SourceUnit) bool {
-	return unit.Name == f.unit && unit.Type == f.unitType
+	return (unit.Name == "" || unit.Name == f.unit) && (unit.Type == "" || unit.Type == f.unitType)
 }
 
 // ByCommitIDFilter is implemented by filters that restrict their
@@ -203,16 +203,16 @@ type byCommitIDFilter struct{ commitID string }
 
 func (f byCommitIDFilter) ByCommitID() string { return f.commitID }
 func (f byCommitIDFilter) SelectDef(def *graph.Def) bool {
-	return def.CommitID == f.commitID
+	return def.CommitID == "" || def.CommitID == f.commitID
 }
 func (f byCommitIDFilter) SelectRef(ref *graph.Ref) bool {
-	return ref.CommitID == f.commitID
+	return ref.CommitID == "" || ref.CommitID == f.commitID
 }
 func (f byCommitIDFilter) SelectUnit(unit *unit.SourceUnit) bool {
-	return unit.CommitID == f.commitID
+	return unit.CommitID == "" || unit.CommitID == f.commitID
 }
 func (f byCommitIDFilter) SelectVersion(version *Version) bool {
-	return version.CommitID == f.commitID
+	return version.CommitID == "" || version.CommitID == f.commitID
 }
 
 // ByRepoFilter is implemented by filters that restrict their
@@ -243,16 +243,16 @@ type byRepoFilter struct{ repo string }
 
 func (f byRepoFilter) ByRepo() string { return f.repo }
 func (f byRepoFilter) SelectDef(def *graph.Def) bool {
-	return def.Repo == f.repo
+	return def.Repo == "" || def.Repo == f.repo
 }
 func (f byRepoFilter) SelectRef(ref *graph.Ref) bool {
-	return ref.Repo == f.repo
+	return ref.Repo == "" || ref.Repo == f.repo
 }
 func (f byRepoFilter) SelectUnit(unit *unit.SourceUnit) bool {
-	return unit.Repo == f.repo
+	return unit.Repo == "" || unit.Repo == f.repo
 }
 func (f byRepoFilter) SelectVersion(version *Version) bool {
-	return version.Repo == f.repo
+	return version.Repo == "" || version.Repo == f.repo
 }
 func (f byRepoFilter) SelectRepo(repo string) bool {
 	return repo == f.repo
@@ -292,7 +292,7 @@ func (f byRepoAndCommitIDFilter) SelectUnit(unit *unit.SourceUnit) bool {
 	return (unit.Repo == "" || unit.Repo == f.repo) && (unit.CommitID == "" || unit.CommitID == f.commitID)
 }
 func (f byRepoAndCommitIDFilter) SelectVersion(version *Version) bool {
-	return (version.Repo == "" || version.Repo == f.repo) && version.CommitID == f.commitID
+	return (version.Repo == "" || version.Repo == f.repo) && (version.CommitID == "" || version.CommitID == f.commitID)
 }
 
 // ByUnitKey returns a filter by a source unit key. It panics if any
