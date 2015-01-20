@@ -221,6 +221,14 @@ type StoreReposCmd struct {
 	IDContains string `short:"i" long:"id-contains" description:"filter to repos whose ID contains this substring"`
 }
 
+func (c *StoreReposCmd) filters() []store.RepoFilter {
+	var fs []store.RepoFilter
+	if c.IDContains != "" {
+		fs = append(fs, store.RepoFilterFunc(func(repo string) bool { return strings.Contains(repo, c.IDContains) }))
+	}
+	return fs
+}
+
 var storeReposCmd StoreReposCmd
 
 func (c *StoreReposCmd) Execute(args []string) error {
@@ -234,13 +242,7 @@ func (c *StoreReposCmd) Execute(args []string) error {
 		return fmt.Errorf("store (type %T) does not implement listing repositories", s)
 	}
 
-	repos, err := mrs.Repos(func(repo string) bool {
-		v := true
-		if c.IDContains != "" {
-			v = v && strings.Contains(repo, c.IDContains)
-		}
-		return v
-	})
+	repos, err := mrs.Repos(c.filters()...)
 	if err != nil {
 		return err
 	}
@@ -253,6 +255,19 @@ func (c *StoreReposCmd) Execute(args []string) error {
 type StoreVersionsCmd struct {
 	Repo           string `long:"repo"`
 	CommitIDPrefix string `long:"commit" description:"commit ID prefix"`
+}
+
+func (c *StoreVersionsCmd) filters() []store.VersionFilter {
+	var fs []store.VersionFilter
+	if c.Repo != "" {
+		fs = append(fs, store.ByRepo(c.Repo))
+	}
+	if c.CommitIDPrefix != "" {
+		fs = append(fs, store.VersionFilterFunc(func(version *store.Version) bool {
+			return strings.HasPrefix(version.CommitID, c.CommitIDPrefix)
+		}))
+	}
+	return fs
 }
 
 var storeVersionsCmd StoreVersionsCmd
@@ -268,16 +283,7 @@ func (c *StoreVersionsCmd) Execute(args []string) error {
 		return fmt.Errorf("store (type %T) does not implement listing versions", s)
 	}
 
-	versions, err := rs.Versions(func(version *store.Version) bool {
-		v := true
-		if c.Repo != "" {
-			v = v && c.Repo == version.Repo
-		}
-		if c.CommitIDPrefix != "" {
-			v = v && strings.HasPrefix(version.CommitID, c.CommitIDPrefix)
-		}
-		return v
-	})
+	versions, err := rs.Versions(c.filters()...)
 	if err != nil {
 		return err
 	}
@@ -299,6 +305,34 @@ type StoreUnitsCmd struct {
 	File string `long:"file" description:"filter by units whose Files list contains this file"`
 }
 
+func (c *StoreUnitsCmd) filters() []store.UnitFilter {
+	var fs []store.UnitFilter
+	if c.Type != "" && c.Name != "" {
+		fs = append(fs, store.ByUnit(c.Type, c.Name))
+	}
+	if (c.Type != "" && c.Name == "") || (c.Type == "" && c.Name != "") {
+		log.Fatal("must specify either both or neither of --type and --name (to filter by source unit)")
+	}
+	if c.CommitID != "" {
+		fs = append(fs, store.ByCommitID(c.CommitID))
+	}
+	if c.Repo != "" {
+		fs = append(fs, store.ByRepo(c.Repo))
+	}
+	if c.File != "" {
+		c.File = filepath.Clean(c.File)
+		fs = append(fs, store.UnitFilterFunc(func(unit *unit.SourceUnit) bool {
+			for _, file := range unit.Files {
+				if filepath.Clean(file) == c.File {
+					return true
+				}
+			}
+			return false
+		}))
+	}
+	return fs
+}
+
 var storeUnitsCmd StoreUnitsCmd
 
 func (c *StoreUnitsCmd) Execute(args []string) error {
@@ -312,33 +346,7 @@ func (c *StoreUnitsCmd) Execute(args []string) error {
 		return fmt.Errorf("store (type %T) does not implement listing source units", s)
 	}
 
-	units, err := ts.Units(func(unit *unit.SourceUnit) bool {
-		v := true
-		if c.Type != "" {
-			v = v && c.Type == unit.Type
-		}
-		if c.Name != "" {
-			v = v && c.Name == unit.Name
-		}
-		if c.Repo != "" {
-			v = v && c.Repo == unit.Repo
-		}
-		if c.CommitID != "" {
-			v = v && c.CommitID == unit.CommitID
-		}
-		if c.File != "" {
-			hasFile := false
-			c.File = filepath.Clean(c.File)
-			for _, file := range unit.Files {
-				if filepath.Clean(file) == c.File {
-					hasFile = true
-					break
-				}
-			}
-			v = v && hasFile
-		}
-		return v
-	})
+	units, err := ts.Units(c.filters()...)
 	if err != nil {
 		return err
 	}
@@ -357,6 +365,38 @@ type StoreDefsCmd struct {
 	NamePrefix string `long:"name-prefix"`
 }
 
+func (c *StoreDefsCmd) filters() []store.DefFilter {
+	var fs []store.DefFilter
+	if c.UnitType != "" && c.Unit != "" {
+		fs = append(fs, store.ByUnit(c.UnitType, c.Unit))
+	}
+	if (c.UnitType != "" && c.Unit == "") || (c.UnitType == "" && c.Unit != "") {
+		log.Fatal("must specify either both or neither of --unit-type and --unit (to filter by source unit)")
+	}
+	if c.CommitID != "" {
+		fs = append(fs, store.ByCommitID(c.CommitID))
+	}
+	if c.Repo != "" {
+		fs = append(fs, store.ByRepo(c.Repo))
+	}
+	if c.Path != "" {
+		fs = append(fs, store.DefFilterFunc(func(def *graph.Def) bool {
+			return def.Path == c.Path
+		}))
+	}
+	if c.File != "" {
+		fs = append(fs, store.DefFilterFunc(func(def *graph.Def) bool {
+			return def.File == c.File
+		}))
+	}
+	if c.NamePrefix != "" {
+		fs = append(fs, store.DefFilterFunc(func(def *graph.Def) bool {
+			return strings.HasPrefix(def.Name, c.NamePrefix)
+		}))
+	}
+	return fs
+}
+
 var storeDefsCmd StoreDefsCmd
 
 func (c *StoreDefsCmd) Execute(args []string) error {
@@ -370,28 +410,7 @@ func (c *StoreDefsCmd) Execute(args []string) error {
 		return fmt.Errorf("store (type %T) does not implement listing defs", s)
 	}
 
-	defs, err := us.Defs(func(def *graph.Def) bool {
-		v := true
-		if c.Repo != "" {
-			v = v && c.Repo == string(def.Repo)
-		}
-		if c.Path != "" {
-			v = v && c.Path == string(def.Path)
-		}
-		if c.Unit != "" {
-			v = v && c.Unit == def.Unit
-		}
-		if c.File != "" {
-			v = v && c.File == def.File
-		}
-		if c.CommitID != "" {
-			v = v && c.CommitID == def.CommitID
-		}
-		if c.NamePrefix != "" {
-			v = v && strings.HasPrefix(def.Name, c.NamePrefix)
-		}
-		return v
-	})
+	defs, err := us.Defs(c.filters()...)
 	if err != nil {
 		return err
 	}
@@ -400,16 +419,58 @@ func (c *StoreDefsCmd) Execute(args []string) error {
 }
 
 type StoreRefsCmd struct {
-	DefRepo     string `long:"def-repo"`
-	DefUnitType string `long:"def-unit-type" `
-	DefUnit     string `long:"def-unit"`
-	DefPath     string `long:"def-path"`
-
 	Repo     string `long:"repo"`
 	UnitType string `long:"unit-type" `
 	Unit     string `long:"unit"`
 	File     string `long:"file"`
 	CommitID string `long:"commit"`
+
+	DefRepo     string `long:"def-repo"`
+	DefUnitType string `long:"def-unit-type" `
+	DefUnit     string `long:"def-unit"`
+	DefPath     string `long:"def-path"`
+}
+
+func (c *StoreRefsCmd) filters() []store.RefFilter {
+	var fs []store.RefFilter
+	if c.UnitType != "" && c.Unit != "" {
+		fs = append(fs, store.ByUnit(c.UnitType, c.Unit))
+	}
+	if (c.UnitType != "" && c.Unit == "") || (c.UnitType == "" && c.Unit != "") {
+		log.Fatal("must specify either both or neither of --unit-type and --unit (to filter by source unit)")
+	}
+	if c.CommitID != "" {
+		fs = append(fs, store.ByCommitID(c.CommitID))
+	}
+	if c.Repo != "" {
+		fs = append(fs, store.ByRepo(c.Repo))
+	}
+	if c.File != "" {
+		fs = append(fs, store.RefFilterFunc(func(ref *graph.Ref) bool {
+			return ref.File == c.File
+		}))
+	}
+	if c.DefRepo != "" {
+		fs = append(fs, store.RefFilterFunc(func(ref *graph.Ref) bool {
+			return ref.DefRepo == c.DefRepo
+		}))
+	}
+	if c.DefUnitType != "" {
+		fs = append(fs, store.RefFilterFunc(func(ref *graph.Ref) bool {
+			return ref.DefUnitType == c.DefUnitType
+		}))
+	}
+	if c.DefUnit != "" {
+		fs = append(fs, store.RefFilterFunc(func(ref *graph.Ref) bool {
+			return ref.DefUnit == c.DefUnit
+		}))
+	}
+	if c.DefPath != "" {
+		fs = append(fs, store.RefFilterFunc(func(ref *graph.Ref) bool {
+			return ref.DefPath == c.DefPath
+		}))
+	}
+	return fs
 }
 
 var storeRefsCmd StoreRefsCmd
@@ -425,37 +486,7 @@ func (c *StoreRefsCmd) Execute(args []string) error {
 		return fmt.Errorf("store (type %T) does not implement listing refs", s)
 	}
 
-	refs, err := us.Refs(func(ref *graph.Ref) bool {
-		v := true
-		if c.DefRepo != "" {
-			v = v && c.DefRepo == ref.DefRepo
-		}
-		if c.DefUnitType != "" {
-			v = v && c.DefUnitType == ref.DefUnitType
-		}
-		if c.DefUnit != "" {
-			v = v && c.DefUnit == ref.DefUnit
-		}
-		if c.DefPath != "" {
-			v = v && c.DefPath == ref.DefPath
-		}
-		if c.Repo != "" {
-			v = v && c.Repo == string(ref.Repo)
-		}
-		if c.UnitType != "" {
-			v = v && c.UnitType == ref.UnitType
-		}
-		if c.Unit != "" {
-			v = v && c.Unit == ref.Unit
-		}
-		if c.File != "" {
-			v = v && c.File == ref.File
-		}
-		if c.CommitID != "" {
-			v = v && c.CommitID == ref.CommitID
-		}
-		return v
-	})
+	refs, err := us.Refs(c.filters()...)
 	if err != nil {
 		return err
 	}
