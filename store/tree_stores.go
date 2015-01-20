@@ -9,7 +9,7 @@ package store
 // scopeTrees is used to select which TreeStores to query.
 //
 // TODO(sqs): return an error if the filters are mutually exclusive?
-func scopeTrees(filters ...storesFilter) ([]string, error) {
+func scopeTrees(filters []interface{}) ([]string, error) {
 	commitIDs := map[string]struct{}{}
 
 	for _, f := range filters {
@@ -45,8 +45,8 @@ type treeStoreOpener interface {
 
 // openCommitstores is a helper func that calls o.openTreeStore for
 // each tree returned by scopeTrees(filters...).
-func openTreeStores(o treeStoreOpener, filters ...storesFilter) (map[string]TreeStore, error) {
-	commitIDs, err := scopeTrees(filters...)
+func openTreeStores(o treeStoreOpener, filters interface{}) (map[string]TreeStore, error) {
+	commitIDs, err := scopeTrees(storeFilters(filters))
 	if err != nil {
 		return nil, err
 	}

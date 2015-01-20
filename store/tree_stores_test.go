@@ -10,7 +10,7 @@ import (
 
 type mockTreeStore struct {
 	Unit_  func(unit.Key) (*unit.SourceUnit, error)
-	Units_ func(UnitFilter) ([]*unit.SourceUnit, error)
+	Units_ func(...UnitFilter) ([]*unit.SourceUnit, error)
 	mockUnitStore
 }
 
@@ -18,8 +18,8 @@ func (m mockTreeStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
 	return m.Unit_(key)
 }
 
-func (m mockTreeStore) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
-	return m.Units_(f)
+func (m mockTreeStore) Units(f ...UnitFilter) ([]*unit.SourceUnit, error) {
+	return m.Units_(f...)
 }
 
 // mockNeverCalledTreeStore calls t.Error if any of its methods are
@@ -30,7 +30,7 @@ func mockNeverCalledTreeStore(t *testing.T) mockTreeStore {
 			t.Fatalf("(TreeStore).Unit called, but wanted it not to be called (arg key was %+v)", key)
 			return nil, nil
 		},
-		Units_: func(f UnitFilter) ([]*unit.SourceUnit, error) {
+		Units_: func(f ...UnitFilter) ([]*unit.SourceUnit, error) {
 			t.Fatalf("(TreeStore).Units called, but wanted it not to be called (arg f was %v)", f)
 			return nil, nil
 		},
@@ -44,7 +44,7 @@ func (m emptyTreeStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
 	return nil, errUnitNotExist
 }
 
-func (m emptyTreeStore) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
+func (m emptyTreeStore) Units(f ...UnitFilter) ([]*unit.SourceUnit, error) {
 	return []*unit.SourceUnit{}, nil
 }
 
@@ -120,7 +120,7 @@ func TestTreeStores_filterByCommit(t *testing.T) {
 
 func TestScopeTrees(t *testing.T) {
 	tests := []struct {
-		filters []storesFilter
+		filters []interface{}
 		want    []string
 	}{
 		{
@@ -128,80 +128,80 @@ func TestScopeTrees(t *testing.T) {
 			want:    nil,
 		},
 		{
-			filters: []storesFilter{ByCommitID("c")},
+			filters: []interface{}{ByCommitID("c")},
 			want:    []string{"c"},
 		},
 		{
-			filters: []storesFilter{nil, ByCommitID("c")},
+			filters: []interface{}{nil, ByCommitID("c")},
 			want:    []string{"c"},
 		},
 		{
-			filters: []storesFilter{ByCommitID("c"), nil},
+			filters: []interface{}{ByCommitID("c"), nil},
 			want:    []string{"c"},
 		},
 		{
-			filters: []storesFilter{nil, ByCommitID("c"), nil},
+			filters: []interface{}{nil, ByCommitID("c"), nil},
 			want:    []string{"c"},
 		},
 		{
-			filters: []storesFilter{ByCommitID("c"), ByCommitID("c")},
+			filters: []interface{}{ByCommitID("c"), ByCommitID("c")},
 			want:    []string{"c"},
 		},
 		{
-			filters: []storesFilter{ByCommitID("c1"), ByCommitID("c2")},
+			filters: []interface{}{ByCommitID("c1"), ByCommitID("c2")},
 			want:    []string{},
 		},
 		{
-			filters: []storesFilter{ByCommitID("c1"), ByCommitID("c2"), ByCommitID("c1")},
+			filters: []interface{}{ByCommitID("c1"), ByCommitID("c2"), ByCommitID("c1")},
 			want:    []string{},
 		},
 		{
-			filters: []storesFilter{ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"})},
+			filters: []interface{}{ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"})},
 			want:    []string{"c"},
 		},
 		{
-			filters: []storesFilter{
+			filters: []interface{}{
 				ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"}),
 				ByUnitKey(unit.Key{Repo: "r2", CommitID: "c", UnitType: "t2", Unit: "u2"}),
 			},
 			want: []string{"c"},
 		},
 		{
-			filters: []storesFilter{
+			filters: []interface{}{
 				ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"}),
 				ByUnitKey(unit.Key{Repo: "r", CommitID: "c2", UnitType: "t", Unit: "u"}),
 			},
 			want: []string{},
 		},
 		{
-			filters: []storesFilter{ByDefKey(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"})},
+			filters: []interface{}{ByDefKey(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"})},
 			want:    []string{"c"},
 		},
 		{
-			filters: []storesFilter{
+			filters: []interface{}{
 				ByDefKey(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"}),
 				ByDefKey(graph.DefKey{Repo: "r2", CommitID: "c", UnitType: "t2", Unit: "u2", Path: "p2"}),
 			},
 			want: []string{"c"},
 		},
 		{
-			filters: []storesFilter{
+			filters: []interface{}{
 				ByDefKey(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"}),
 				ByDefKey(graph.DefKey{Repo: "r", CommitID: "c2", UnitType: "t", Unit: "u", Path: "p"}),
 			},
 			want: []string{},
 		},
 		{
-			filters: []storesFilter{VersionFilterFunc(func(*Version) bool { return false })},
+			filters: []interface{}{VersionFilterFunc(func(*Version) bool { return false })},
 			want:    nil,
 		},
 		{
-			filters: []storesFilter{ByUnit("t", "u")},
+			filters: []interface{}{ByUnit("t", "u")},
 			want:    nil,
 		},
 	}
 	for _, test := range tests {
-		trees, err := scopeTrees(test.filters...)
+		trees, err := scopeTrees(test.filters)
 		if err != nil {
 			t.Errorf("%+v: %v", test.filters, err)
 			continue

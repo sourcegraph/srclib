@@ -44,12 +44,12 @@ func testMultiRepoStore_uninitialized(t *testing.T, mrs MultiRepoStoreImporter) 
 		t.Errorf("%s: Version: got version %v, want nil", mrs, version)
 	}
 
-	versions, err := mrs.Versions(nil)
+	versions, err := mrs.Versions()
 	if err == nil {
-		t.Errorf("%s: Versions(nil): got nil err", mrs)
+		t.Errorf("%s: Versions(): got nil err", mrs)
 	}
 	if len(versions) != 0 {
-		t.Errorf("%s: Versions(nil): got versions %v, want empty", mrs, versions)
+		t.Errorf("%s: Versions(): got versions %v, want empty", mrs, versions)
 	}
 
 	testTreeStore_uninitialized(t, mrs)
@@ -112,14 +112,14 @@ func testMultiRepoStore_Repos(t *testing.T, mrs MultiRepoStoreImporter) {
 
 	want := []string{"r1", "r2"}
 
-	repos, err := mrs.Repos(nil)
+	repos, err := mrs.Repos()
 	if err != nil {
-		t.Errorf("%s: Repos(nil): %s", mrs, err)
+		t.Errorf("%s: Repos(): %s", mrs, err)
 	}
 	sort.Strings(repos)
 	sort.Strings(want)
 	if !reflect.DeepEqual(repos, want) {
-		t.Errorf("%s: Repos(nil): got %v, want %v", mrs, repos, want)
+		t.Errorf("%s: Repos(): got %v, want %v", mrs, repos, want)
 	}
 }
 
@@ -150,12 +150,12 @@ func testMultiRepoStore_Versions(t *testing.T, mrs MultiRepoStoreImporter) {
 
 	want := []*Version{{Repo: "r", CommitID: "c1"}, {Repo: "r", CommitID: "c2"}}
 
-	versions, err := mrs.Versions(nil)
+	versions, err := mrs.Versions()
 	if err != nil {
-		t.Errorf("%s: Versions(nil): %s", mrs, err)
+		t.Errorf("%s: Versions(): %s", mrs, err)
 	}
 	if !reflect.DeepEqual(versions, want) {
-		t.Errorf("%s: Versions(nil): got %v, want %v", mrs, versions, want)
+		t.Errorf("%s: Versions(): got %v, want %v", mrs, versions, want)
 	}
 }
 
@@ -193,12 +193,12 @@ func testMultiRepoStore_Units(t *testing.T, mrs MultiRepoStoreImporter) {
 		{Repo: "r", CommitID: "c", Type: "t2", Name: "u2"},
 	}
 
-	units, err := mrs.Units(nil)
+	units, err := mrs.Units()
 	if err != nil {
-		t.Errorf("%s: Units(nil): %s", mrs, err)
+		t.Errorf("%s: Units(): %s", mrs, err)
 	}
 	if !reflect.DeepEqual(units, want) {
-		t.Errorf("%s: Units(nil): got %v, want %v", mrs, units, want)
+		t.Errorf("%s: Units(): got %v, want %v", mrs, units, want)
 	}
 }
 
@@ -290,12 +290,41 @@ func testMultiRepoStore_Defs(t *testing.T, mrs MultiRepoStoreImporter) {
 		},
 	}
 
-	defs, err := mrs.Defs(nil)
+	defs, err := mrs.Defs()
 	if err != nil {
-		t.Errorf("%s: Defs(nil): %s", mrs, err)
+		t.Errorf("%s: Defs(): %s", mrs, err)
 	}
 	if !reflect.DeepEqual(defs, want) {
-		t.Errorf("%s: Defs(nil): got defs %v, want %v", mrs, defs, want)
+		t.Errorf("%s: Defs(): got defs %v, want %v", mrs, defs, want)
+	}
+}
+
+func testMultiRepoStore_Defs_filter(t *testing.T, mrs MultiRepoStoreImporter) {
+	if err := mrs.Import("r", "c", &unit.SourceUnit{Type: "t", Name: "u"}, graph.Output{Defs: []*graph.Def{{DefKey: graph.DefKey{Path: "p"}}}}); err != nil {
+		t.Errorf("%s: Import: %s", mrs, err)
+	}
+	if err := mrs.Import("r", "c", &unit.SourceUnit{Type: "t", Name: "u"}, graph.Output{Defs: []*graph.Def{{DefKey: graph.DefKey{Path: "p2"}}}}); err != nil {
+		t.Errorf("%s: Import: %s", mrs, err)
+	}
+	if err := mrs.Import("r", "c2", &unit.SourceUnit{Type: "t", Name: "u"}, graph.Output{Defs: []*graph.Def{{DefKey: graph.DefKey{Path: "p"}}}}); err != nil {
+		t.Errorf("%s: Import: %s", mrs, err)
+	}
+	if err := mrs.Import("r2", "c2", &unit.SourceUnit{Type: "t", Name: "u"}, graph.Output{Defs: []*graph.Def{{DefKey: graph.DefKey{Path: "p"}}}}); err != nil {
+		t.Errorf("%s: Import: %s", mrs, err)
+	}
+
+	want := []*graph.Def{
+		{
+			DefKey: graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"},
+		},
+	}
+
+	defs, err := mrs.Defs(ByRepoAndCommitID("r", "c"), DefFilterFunc(func(def *graph.Def) bool { return def.Path == "p" }))
+	if err != nil {
+		t.Errorf("%s: Defs(): %s", mrs, err)
+	}
+	if !reflect.DeepEqual(defs, want) {
+		t.Errorf("%s: Defs(): got defs %v, want %v", mrs, defs, want)
 	}
 }
 
@@ -350,11 +379,11 @@ func testMultiRepoStore_Refs(t *testing.T, mrs MultiRepoStoreImporter) {
 		},
 	}
 
-	refs, err := mrs.Refs(nil)
+	refs, err := mrs.Refs()
 	if err != nil {
-		t.Errorf("%s: Refs(nil): %s", mrs, err)
+		t.Errorf("%s: Refs(): %s", mrs, err)
 	}
 	if !reflect.DeepEqual(refs, want) {
-		t.Errorf("%s: Refs(nil): got refs %v, want %v", mrs, refs, want)
+		t.Errorf("%s: Refs(): got refs %v, want %v", mrs, refs, want)
 	}
 }

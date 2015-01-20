@@ -13,7 +13,7 @@ type TreeStore interface {
 	Unit(unit.Key) (*unit.SourceUnit, error)
 
 	// Units returns all units that match the filter.
-	Units(UnitFilter) ([]*unit.SourceUnit, error)
+	Units(...UnitFilter) ([]*unit.SourceUnit, error)
 
 	// UnitStore's methods call the corresponding methods on the
 	// UnitStore of each source unit contained within this tree. The
@@ -70,19 +70,15 @@ func (s treeStores) Unit(key unit.Key) (*unit.SourceUnit, error) {
 	return nil, errUnitNotExist
 }
 
-func (s treeStores) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
+func (s treeStores) Units(f ...UnitFilter) ([]*unit.SourceUnit, error) {
 	tss, err := openTreeStores(s.opener, f)
 	if err != nil {
 		return nil, err
 	}
 
-	if f == nil {
-		f = allUnits
-	}
-
 	var allUnits []*unit.SourceUnit
 	for commitID, ts := range tss {
-		units, err := ts.Units(f)
+		units, err := ts.Units(f...)
 		if err != nil {
 			return nil, err
 		}
@@ -99,7 +95,7 @@ func (s treeStores) Def(key graph.DefKey) (*graph.Def, error) {
 		return nil, err
 	}
 
-	tss, err := openTreeStores(s.opener, ByCommitID(key.CommitID), ByUnit(key.UnitType, key.Unit))
+	tss, err := openTreeStores(s.opener, []interface{}{ByCommitID(key.CommitID), ByUnit(key.UnitType, key.Unit)})
 	if err != nil {
 		if isStoreNotExist(err) {
 			return nil, errDefNotExist
@@ -124,19 +120,15 @@ func (s treeStores) Def(key graph.DefKey) (*graph.Def, error) {
 	return nil, errDefNotExist
 }
 
-func (s treeStores) Defs(f DefFilter) ([]*graph.Def, error) {
+func (s treeStores) Defs(f ...DefFilter) ([]*graph.Def, error) {
 	tss, err := openTreeStores(s.opener, f)
 	if err != nil {
 		return nil, err
 	}
 
-	if f == nil {
-		f = allDefs
-	}
-
 	var allDefs []*graph.Def
 	for commitID, ts := range tss {
-		defs, err := ts.Defs(f)
+		defs, err := ts.Defs(f...)
 		if err != nil {
 			return nil, err
 		}
@@ -148,19 +140,15 @@ func (s treeStores) Defs(f DefFilter) ([]*graph.Def, error) {
 	return allDefs, nil
 }
 
-func (s treeStores) Refs(f RefFilter) ([]*graph.Ref, error) {
+func (s treeStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 	tss, err := openTreeStores(s.opener, f)
 	if err != nil {
 		return nil, err
 	}
 
-	if f == nil {
-		f = allRefs
-	}
-
 	var allRefs []*graph.Ref
 	for commitID, ts := range tss {
-		refs, err := ts.Refs(f)
+		refs, err := ts.Refs(f...)
 		if err != nil {
 			return nil, err
 		}

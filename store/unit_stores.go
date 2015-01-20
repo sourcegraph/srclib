@@ -9,7 +9,7 @@ type unitID struct{ unitType, unit string }
 // match, an empty slice is returned.
 //
 // TODO(sqs): return an error if the filters are mutually exclusive?
-func scopeUnits(filters ...storesFilter) ([]unitID, error) {
+func scopeUnits(filters []interface{}) ([]unitID, error) {
 	unitIDs := map[unitID]struct{}{}
 
 	for _, f := range filters {
@@ -46,8 +46,8 @@ type unitStoreOpener interface {
 
 // openUnitStores is a helper func that calls o.openUnitStore for each
 // unit returned by scopeUnits(filters...).
-func openUnitStores(o unitStoreOpener, filters ...storesFilter) (map[unitID]UnitStore, error) {
-	unitIDs, err := scopeUnits(filters...)
+func openUnitStores(o unitStoreOpener, filters interface{}) (map[unitID]UnitStore, error) {
+	unitIDs, err := scopeUnits(storeFilters(filters))
 	if err != nil {
 		return nil, err
 	}

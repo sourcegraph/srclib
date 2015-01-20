@@ -40,20 +40,20 @@ func testUnitStore_uninitialized(t *testing.T, us UnitStore) {
 		t.Errorf("%s: Def: got def %v, want nil", us, def)
 	}
 
-	defs, err := us.Defs(nil)
+	defs, err := us.Defs()
 	if err == nil {
-		t.Errorf("%s: Defs(nil): got nil err", us)
+		t.Errorf("%s: Defs(): got nil err", us)
 	}
 	if len(defs) != 0 {
-		t.Errorf("%s: Defs(nil): got defs %v, want empty", us, defs)
+		t.Errorf("%s: Defs(): got defs %v, want empty", us, defs)
 	}
 
-	refs, err := us.Refs(nil)
+	refs, err := us.Refs()
 	if err == nil {
-		t.Errorf("%s: Refs(nil): got nil err", us)
+		t.Errorf("%s: Refs(): got nil err", us)
 	}
 	if len(refs) != 0 {
-		t.Errorf("%s: Refs(nil): got refs %v, want empty", us, refs)
+		t.Errorf("%s: Refs(): got refs %v, want empty", us, refs)
 	}
 }
 
@@ -66,20 +66,20 @@ func testUnitStore_empty(t *testing.T, us UnitStore) {
 		t.Errorf("%s: Def: got def %v, want nil", us, def)
 	}
 
-	defs, err := us.Defs(nil)
+	defs, err := us.Defs()
 	if err != nil {
-		t.Errorf("%s: Defs(nil): %s", us, err)
+		t.Errorf("%s: Defs(): %s", us, err)
 	}
 	if len(defs) != 0 {
-		t.Errorf("%s: Defs(nil): got defs %v, want empty", us, defs)
+		t.Errorf("%s: Defs(): got defs %v, want empty", us, defs)
 	}
 
-	refs, err := us.Refs(nil)
+	refs, err := us.Refs()
 	if err != nil {
-		t.Errorf("%s: Refs(nil): %s", us, err)
+		t.Errorf("%s: Refs(): %s", us, err)
 	}
 	if len(refs) != 0 {
-		t.Errorf("%s: Refs(nil): got refs %v, want empty", us, refs)
+		t.Errorf("%s: Refs(): got refs %v, want empty", us, refs)
 	}
 }
 
@@ -163,12 +163,12 @@ func testUnitStore_Defs(t *testing.T, us unitStoreImporter) {
 		t.Errorf("%s: Import(data): %s", us, err)
 	}
 
-	defs, err := us.Defs(nil)
+	defs, err := us.Defs()
 	if err != nil {
-		t.Errorf("%s: Defs(nil): %s", us, err)
+		t.Errorf("%s: Defs(): %s", us, err)
 	}
 	if want := data.Defs; !reflect.DeepEqual(defs, want) {
-		t.Errorf("%s: Defs(nil): got defs %v, want %v", us, defs, want)
+		t.Errorf("%s: Defs(): got defs %v, want %v", us, defs, want)
 	}
 }
 
@@ -193,11 +193,11 @@ func testUnitStore_Refs(t *testing.T, us unitStoreImporter) {
 		t.Errorf("%s: Import(data): %s", us, err)
 	}
 
-	refs, err := us.Refs(nil)
+	refs, err := us.Refs()
 	if err != nil {
-		t.Errorf("%s: Refs(nil): %s", us, err)
+		t.Errorf("%s: Refs(): %s", us, err)
 	}
 	if want := data.Refs; !reflect.DeepEqual(refs, want) {
-		t.Errorf("%s: Refs(nil): got refs %v, want %v", us, refs, want)
+		t.Errorf("%s: Refs(): got refs %v, want %v", us, refs, want)
 	}
 }

@@ -7,7 +7,7 @@ package store
 // match, an empty slice is returned.
 //
 // TODO(sqs): return an error if the filters are mutually exclusive?
-func scopeRepos(filters ...storesFilter) ([]string, error) {
+func scopeRepos(filters []interface{}) ([]string, error) {
 	repos := map[string]struct{}{}
 
 	for _, f := range filters {
@@ -43,8 +43,8 @@ type repoStoreOpener interface {
 
 // openRepoStores is a helper func that calls o.openRepoStore for each
 // repo returned by scopeRepoStores(filters...).
-func openRepoStores(o repoStoreOpener, filters ...storesFilter) (map[string]RepoStore, error) {
-	repos, err := scopeRepos(filters...)
+func openRepoStores(o repoStoreOpener, filters interface{}) (map[string]RepoStore, error) {
+	repos, err := scopeRepos(storeFilters(filters))
 	if err != nil {
 		return nil, err
 	}
