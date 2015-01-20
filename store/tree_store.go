@@ -33,43 +33,21 @@ type TreeImporter interface {
 	Import(*unit.SourceUnit, graph.Output) error
 }
 
-// A UnitFilter is used to filter a list of units to only those for
-// which the func returns true.
-type UnitFilter func(*unit.SourceUnit) bool
-
-// allUnits is a UnitFilter that selects all units.
-func allUnits(*unit.SourceUnit) bool { return true }
-
-func unitKeyFilter(key unit.Key) UnitFilter {
-	return func(unit *unit.SourceUnit) bool {
-		return unit.Type == key.UnitType && unit.Name == key.Unit
-	}
-}
-
-func defUnitFilter(key unit.Key) DefFilter {
-	return func(def *graph.Def) bool {
-		return key.UnitType == def.UnitType && key.Unit == def.Unit
-	}
-}
-
-func refUnitFilter(key unit.Key) RefFilter {
-	return func(ref *graph.Ref) bool {
-		return key.UnitType == ref.UnitType && key.Unit == ref.Unit
-	}
-}
-
 // A treeStores is a TreeStore whose methods call the
 // corresponding method on each of the tree stores returned by the
 // treeStores func.
 type treeStores struct {
-	treeStores func() (map[string]TreeStore, error)
+	opener treeStoreOpener
 }
 
 var _ TreeStore = (*treeStores)(nil)
 
 func (s treeStores) Unit(key unit.Key) (*unit.SourceUnit, error) {
-	tss, err := s.treeStores()
+	tss, err := openTreeStores(s.opener, ByUnit(key.UnitType, key.Unit))
 	if err != nil {
+		if isStoreNotExist(err) {
+			return nil, errUnitNotExist
+		}
 		return nil, err
 	}
 
@@ -79,7 +57,7 @@ func (s treeStores) Unit(key unit.Key) (*unit.SourceUnit, error) {
 		}
 		unit, err := ts.Unit(key)
 		if err != nil {
-			if IsNotExist(err) {
+			if IsNotExist(err) || isStoreNotExist(err) {
 				continue
 			}
 			return nil, err
@@ -93,25 +71,23 @@ func (s treeStores) Unit(key unit.Key) (*unit.SourceUnit, error) {
 }
 
 func (s treeStores) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
-	if f == nil {
-		f = allUnits
-	}
-
-	tss, err := s.treeStores()
+	tss, err := openTreeStores(s.opener, f)
 	if err != nil {
 		return nil, err
 	}
 
+	if f == nil {
+		f = allUnits
+	}
+
 	var allUnits []*unit.SourceUnit
 	for commitID, ts := range tss {
-		units, err := ts.Units(func(unit *unit.SourceUnit) bool {
-			if unit.CommitID == "" {
-				unit.CommitID = commitID
-			}
-			return f(unit)
-		})
+		units, err := ts.Units(f)
 		if err != nil {
 			return nil, err
+		}
+		for _, unit := range units {
+			unit.CommitID = commitID
 		}
 		allUnits = append(allUnits, units...)
 	}
@@ -119,8 +95,15 @@ func (s treeStores) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
 }
 
 func (s treeStores) Def(key graph.DefKey) (*graph.Def, error) {
-	tss, err := s.treeStores()
+	if err := checkDefKeyValidForRepoStore(key); err != nil {
+		return nil, err
+	}
+
+	tss, err := openTreeStores(s.opener, ByCommitID(key.CommitID), ByUnit(key.UnitType, key.Unit))
 	if err != nil {
+		if isStoreNotExist(err) {
+			return nil, errDefNotExist
+		}
 		return nil, err
 	}
 
@@ -128,42 +111,37 @@ func (s treeStores) Def(key graph.DefKey) (*graph.Def, error) {
 		if key.CommitID != commitID {
 			continue
 		}
-		key.CommitID = ""
 		def, err := ts.Def(key)
 		if err != nil {
-			if IsNotExist(err) {
+			if IsNotExist(err) || isStoreNotExist(err) {
 				continue
 			}
 			return nil, err
 		}
-		if def.CommitID == "" {
-			def.CommitID = commitID
-		}
+		def.CommitID = commitID
 		return def, nil
 	}
 	return nil, errDefNotExist
 }
 
 func (s treeStores) Defs(f DefFilter) ([]*graph.Def, error) {
-	if f == nil {
-		f = allDefs
-	}
-
-	tss, err := s.treeStores()
+	tss, err := openTreeStores(s.opener, f)
 	if err != nil {
 		return nil, err
 	}
 
+	if f == nil {
+		f = allDefs
+	}
+
 	var allDefs []*graph.Def
 	for commitID, ts := range tss {
-		defs, err := ts.Defs(func(def *graph.Def) bool {
-			if def.CommitID == "" {
-				def.CommitID = commitID
-			}
-			return f(def)
-		})
+		defs, err := ts.Defs(f)
 		if err != nil {
 			return nil, err
+		}
+		for _, def := range defs {
+			def.CommitID = commitID
 		}
 		allDefs = append(allDefs, defs...)
 	}
@@ -171,26 +149,40 @@ func (s treeStores) Defs(f DefFilter) ([]*graph.Def, error) {
 }
 
 func (s treeStores) Refs(f RefFilter) ([]*graph.Ref, error) {
+	tss, err := openTreeStores(s.opener, f)
+	if err != nil {
+		return nil, err
+	}
+
 	if f == nil {
 		f = allRefs
 	}
 
-	tss, err := s.treeStores()
-	if err != nil {
-		return nil, err
-	}
 	var allRefs []*graph.Ref
 	for commitID, ts := range tss {
-		refs, err := ts.Refs(func(ref *graph.Ref) bool {
-			if ref.CommitID == "" {
-				ref.CommitID = commitID
-			}
-			return f(ref)
-		})
+		refs, err := ts.Refs(f)
 		if err != nil {
 			return nil, err
+		}
+		for _, ref := range refs {
+			ref.CommitID = commitID
 		}
 		allRefs = append(allRefs, refs...)
 	}
 	return allRefs, nil
+}
+
+// checkDefKeyValidForTreeStore returns an *InvalidKeyError if the def
+// key is underspecified for use in (TreeStore).Def.
+func checkDefKeyValidForTreeStore(key graph.DefKey) error {
+	if err := checkDefKeyValidForUnitStore(key); err != nil {
+		return err
+	}
+	if key.Unit == "" {
+		return &InvalidKeyError{"empty DefKey.Unit"}
+	}
+	if key.UnitType == "" {
+		return &InvalidKeyError{"empty DefKey.UnitType"}
+	}
+	return nil
 }

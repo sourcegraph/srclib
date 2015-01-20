@@ -65,33 +65,21 @@ type Version struct {
 // VCS commit.
 func (v Version) IsCurrentWorkspace() bool { return v.CommitID == "" }
 
-// A VersionFilter is used to filter a list of versions to only those
-// for which the func returns true.
-type VersionFilter func(*Version) bool
-
-// allVersions is a VersionFilter that selects all versions.
-func allVersions(*Version) bool { return true }
-
-// versionCommitIDFilter selects all versions whose CommitID equals
-// the given commitID.
-func versionCommitIDFilter(commitID string) VersionFilter {
-	return func(version *Version) bool {
-		return version.CommitID == commitID
-	}
-}
-
 // A repoStores is a RepoStore whose methods call the
 // corresponding method on each of the repo stores returned by the
 // repoStores func.
 type repoStores struct {
-	repoStores func() (map[string]RepoStore, error)
+	opener repoStoreOpener
 }
 
 var _ RepoStore = (*repoStores)(nil)
 
 func (s repoStores) Version(key VersionKey) (*Version, error) {
-	rss, err := s.repoStores()
+	rss, err := openRepoStores(s.opener, ByRepoAndCommitID(key.Repo, key.CommitID))
 	if err != nil {
+		if isStoreNotExist(err) {
+			return nil, errVersionNotExist
+		}
 		return nil, err
 	}
 
@@ -101,39 +89,35 @@ func (s repoStores) Version(key VersionKey) (*Version, error) {
 		}
 		version, err := rs.Version(key)
 		if err != nil {
-			if IsNotExist(err) {
+			if IsNotExist(err) || isStoreNotExist(err) {
 				continue
 			}
 			return nil, err
 		}
-		if version.Repo == "" {
-			version.Repo = repo
-		}
+		version.Repo = repo
 		return version, nil
 	}
 	return nil, errVersionNotExist
 }
 
 func (s repoStores) Versions(f VersionFilter) ([]*Version, error) {
-	if f == nil {
-		f = allVersions
-	}
-
-	rss, err := s.repoStores()
+	rss, err := openRepoStores(s.opener, f)
 	if err != nil {
 		return nil, err
 	}
 
+	if f == nil {
+		f = allVersions
+	}
+
 	var allVersions []*Version
 	for repo, rs := range rss {
-		versions, err := rs.Versions(func(version *Version) bool {
-			if version.Repo == "" {
-				version.Repo = repo
-			}
-			return f(version)
-		})
+		versions, err := rs.Versions(f)
 		if err != nil {
 			return nil, err
+		}
+		for _, version := range versions {
+			version.Repo = repo
 		}
 		allVersions = append(allVersions, versions...)
 	}
@@ -141,8 +125,11 @@ func (s repoStores) Versions(f VersionFilter) ([]*Version, error) {
 }
 
 func (s repoStores) Unit(key unit.Key) (*unit.SourceUnit, error) {
-	rss, err := s.repoStores()
+	rss, err := openRepoStores(s.opener, ByUnitKey(key))
 	if err != nil {
+		if isStoreNotExist(err) {
+			return nil, errUnitNotExist
+		}
 		return nil, err
 	}
 
@@ -152,39 +139,35 @@ func (s repoStores) Unit(key unit.Key) (*unit.SourceUnit, error) {
 		}
 		unit, err := rs.Unit(key)
 		if err != nil {
-			if IsNotExist(err) {
+			if IsNotExist(err) || isStoreNotExist(err) {
 				continue
 			}
 			return nil, err
 		}
-		if unit.Repo == "" {
-			unit.Repo = repo
-		}
+		unit.Repo = repo
 		return unit, nil
 	}
 	return nil, errUnitNotExist
 }
 
 func (s repoStores) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
-	if f == nil {
-		f = allUnits
-	}
-
-	rss, err := s.repoStores()
+	rss, err := openRepoStores(s.opener, f)
 	if err != nil {
 		return nil, err
 	}
 
+	if f == nil {
+		f = allUnits
+	}
+
 	var allUnits []*unit.SourceUnit
 	for repo, rs := range rss {
-		units, err := rs.Units(func(unit *unit.SourceUnit) bool {
-			if unit.Repo == "" {
-				unit.Repo = repo
-			}
-			return f(unit)
-		})
+		units, err := rs.Units(f)
 		if err != nil {
 			return nil, err
+		}
+		for _, unit := range units {
+			unit.Repo = repo
 		}
 		allUnits = append(allUnits, units...)
 	}
@@ -192,8 +175,15 @@ func (s repoStores) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
 }
 
 func (s repoStores) Def(key graph.DefKey) (*graph.Def, error) {
-	rss, err := s.repoStores()
+	if err := checkDefKeyValidForMultiRepoStore(key); err != nil {
+		return nil, err
+	}
+
+	rss, err := openRepoStores(s.opener, ByDefKey(key))
 	if err != nil {
+		if isStoreNotExist(err) {
+			return nil, errDefNotExist
+		}
 		return nil, err
 	}
 
@@ -201,42 +191,37 @@ func (s repoStores) Def(key graph.DefKey) (*graph.Def, error) {
 		if key.Repo != repo {
 			continue
 		}
-		key.Repo = ""
 		def, err := rs.Def(key)
 		if err != nil {
-			if IsNotExist(err) {
+			if IsNotExist(err) || isStoreNotExist(err) {
 				continue
 			}
 			return nil, err
 		}
-		if def.Repo == "" {
-			def.Repo = repo
-		}
+		def.Repo = repo
 		return def, nil
 	}
 	return nil, errDefNotExist
 }
 
 func (s repoStores) Defs(f DefFilter) ([]*graph.Def, error) {
-	if f == nil {
-		f = allDefs
-	}
-
-	rss, err := s.repoStores()
+	rss, err := openRepoStores(s.opener, f)
 	if err != nil {
 		return nil, err
 	}
 
+	if f == nil {
+		f = allDefs
+	}
+
 	var allDefs []*graph.Def
 	for repo, rs := range rss {
-		defs, err := rs.Defs(func(def *graph.Def) bool {
-			if def.Repo == "" {
-				def.Repo = repo
-			}
-			return f(def)
-		})
+		defs, err := rs.Defs(f)
 		if err != nil {
 			return nil, err
+		}
+		for _, def := range defs {
+			def.Repo = repo
 		}
 		allDefs = append(allDefs, defs...)
 	}
@@ -244,29 +229,40 @@ func (s repoStores) Defs(f DefFilter) ([]*graph.Def, error) {
 }
 
 func (s repoStores) Refs(f RefFilter) ([]*graph.Ref, error) {
+	rss, err := openRepoStores(s.opener, f)
+	if err != nil {
+		return nil, err
+	}
+
 	if f == nil {
 		f = allRefs
 	}
 
-	rss, err := s.repoStores()
-	if err != nil {
-		return nil, err
-	}
 	var allRefs []*graph.Ref
 	for repo, rs := range rss {
-		refs, err := rs.Refs(func(ref *graph.Ref) bool {
-			if ref.Repo == "" {
-				ref.Repo = repo
-			}
+		refs, err := rs.Refs(f)
+		if err != nil {
+			return nil, err
+		}
+		for _, ref := range refs {
+			ref.Repo = repo
 			if ref.DefRepo == "" {
 				ref.DefRepo = repo
 			}
-			return f(ref)
-		})
-		if err != nil {
-			return nil, err
 		}
 		allRefs = append(allRefs, refs...)
 	}
 	return allRefs, nil
+}
+
+// checkDefKeyValidForRepoStore returns an *InvalidKeyError if the def
+// key is underspecified for use in (RepoStore).Def.
+func checkDefKeyValidForRepoStore(key graph.DefKey) error {
+	if err := checkDefKeyValidForTreeStore(key); err != nil {
+		return err
+	}
+	if key.CommitID == "" {
+		return &InvalidKeyError{"empty DefKey.CommitID"}
+	}
+	return nil
 }

@@ -35,7 +35,7 @@ func testTreeStore(t *testing.T, newFn func() treeStoreImporter) {
 }
 
 func testTreeStore_uninitialized(t *testing.T, ts TreeStore) {
-	unit, err := ts.Unit(unit.Key{UnitType: "t", Unit: "u"})
+	unit, err := ts.Unit(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"})
 	if err == nil {
 		t.Errorf("%s: Unit: got nil err", ts)
 	}
@@ -55,7 +55,7 @@ func testTreeStore_uninitialized(t *testing.T, ts TreeStore) {
 }
 
 func testTreeStore_empty(t *testing.T, ts TreeStore) {
-	unit, err := ts.Unit(unit.Key{UnitType: "t", Unit: "u"})
+	unit, err := ts.Unit(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"})
 	if !IsNotExist(err) {
 		t.Errorf("%s: Unit: got err %v, want IsNotExist-satisfying err", ts, err)
 	}
@@ -155,8 +155,8 @@ func testTreeStore_Def(t *testing.T, ts treeStoreImporter) {
 	}
 
 	def, err := ts.Def(graph.DefKey{Path: "p"})
-	if !IsNotExist(err) {
-		t.Errorf("%s: Def(no unit): got err %v, want IsNotExist-satisfying err", ts, err)
+	if !isInvalidKey(err) {
+		t.Errorf("%s: Def(no unit): got err %v, want InvalidKeyError", ts, err)
 	}
 	if def != nil {
 		t.Errorf("%s: Def: got def %v, want nil", ts, def)

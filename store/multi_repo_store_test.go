@@ -36,7 +36,7 @@ func testMultiRepoStore(t *testing.T, newFn func() MultiRepoStoreImporter) {
 }
 
 func testMultiRepoStore_uninitialized(t *testing.T, mrs MultiRepoStoreImporter) {
-	version, err := mrs.Version(VersionKey{CommitID: "c"})
+	version, err := mrs.Version(VersionKey{Repo: "r", CommitID: "c"})
 	if err == nil {
 		t.Errorf("%s: Version: got nil err", mrs)
 	}
@@ -217,24 +217,24 @@ func testMultiRepoStore_Def(t *testing.T, mrs MultiRepoStoreImporter) {
 	}
 
 	def, err := mrs.Def(graph.DefKey{Path: "p"})
-	if !IsNotExist(err) {
-		t.Errorf("%s: Def(no unit): got err %v, want IsNotExist-satisfying err", mrs, err)
+	if !isInvalidKey(err) {
+		t.Errorf("%s: Def(no unit): got err %v, want InvalidKeyError", mrs, err)
 	}
 	if def != nil {
 		t.Errorf("%s: Def: got def %v, want nil", mrs, def)
 	}
 
 	def, err = mrs.Def(graph.DefKey{UnitType: "t", Unit: "u", Path: "p"})
-	if !IsNotExist(err) {
-		t.Errorf("%s: Def(no commit): got err %v, want IsNotExist-satisfying err", mrs, err)
+	if !isInvalidKey(err) {
+		t.Errorf("%s: Def(no commit): got err %v, want InvalidKeyError", mrs, err)
 	}
 	if def != nil {
 		t.Errorf("%s: Def: got def %v, want nil", mrs, def)
 	}
 
 	def, err = mrs.Def(graph.DefKey{CommitID: "c", UnitType: "t", Unit: "u", Path: "p"})
-	if !IsNotExist(err) {
-		t.Errorf("%s: Def(no repo): got err %v, want IsNotExist-satisfying err", mrs, err)
+	if !isInvalidKey(err) {
+		t.Errorf("%s: Def(no repo): got err %v, want InvalidKeyError", mrs, err)
 	}
 	if def != nil {
 		t.Errorf("%s: Def: got def %v, want nil", mrs, def)

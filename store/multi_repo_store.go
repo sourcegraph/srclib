@@ -39,11 +39,16 @@ type MultiRepoStoreImporter interface {
 	MultiRepoImporter
 }
 
-// A RepoFilter is used to filter a list of repos to only those for
-// which the func returns true.
-type RepoFilter func(string) bool
-
-// allRepos is a RepoFilter that selects all repos.
-func allRepos(string) bool { return true }
-
 // TODO(sqs): What should the Repo type be? Right now it is just string.
+
+// checkDefKeyValidForRepoStore returns an *InvalidKeyError if the def
+// key is underspecified for use in (RepoStore).Def.
+func checkDefKeyValidForMultiRepoStore(key graph.DefKey) error {
+	if err := checkDefKeyValidForRepoStore(key); err != nil {
+		return err
+	}
+	if key.Repo == "" {
+		return &InvalidKeyError{"empty DefKey.Repo"}
+	}
+	return nil
+}

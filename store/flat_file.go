@@ -52,12 +52,12 @@ func NewFlatFileMultiRepoStore(fs rwvfs.FileSystem, conf *FlatFileConfig) MultiR
 
 	setCreateParentDirs(fs)
 	mrs := &flatFileMultiRepoStore{fs: fs, codec: conf.Codec}
-	mrs.repoStores = repoStores{repoStores: mrs.getRepoStores}
+	mrs.repoStores = repoStores{mrs}
 	return mrs
 }
 
-func (s *flatFileMultiRepoStore) Repo(id string) (string, error) {
-	repos, err := s.Repos(func(repoPath string) bool { return repoPath == id })
+func (s *flatFileMultiRepoStore) Repo(repo string) (string, error) {
+	repos, err := s.Repos(ByRepo(repo))
 	if err != nil {
 		return "", err
 	}
@@ -83,7 +83,7 @@ func (s *flatFileMultiRepoStore) Repos(f RepoFilter) ([]string, error) {
 			if fi.Name() == SrclibStoreDir {
 				w.SkipDir()
 				repo := path.Dir(w.Path())
-				if f(repo) {
+				if f.SelectRepo(repo) {
 					repos = append(repos, repo)
 				}
 				continue
@@ -97,18 +97,28 @@ func (s *flatFileMultiRepoStore) Repos(f RepoFilter) ([]string, error) {
 	return repos, nil
 }
 
-func (s *flatFileMultiRepoStore) getRepoStores() (map[string]RepoStore, error) {
+func (s *flatFileMultiRepoStore) openRepoStore(repo string) (RepoStore, error) {
+	return NewFlatFileRepoStore(rwvfs.Sub(s.fs, path.Join(repo, SrclibStoreDir)), &FlatFileConfig{Codec: s.codec}), nil
+}
+
+func (s *flatFileMultiRepoStore) openAllRepoStores() (map[string]RepoStore, error) {
 	repos, err := s.Repos(nil)
 	if err != nil {
 		return nil, err
 	}
 
 	rss := make(map[string]RepoStore, len(repos))
-	for _, repoPath := range repos {
-		rss[repoPath] = NewFlatFileRepoStore(rwvfs.Sub(s.fs, path.Join(repoPath, SrclibStoreDir)), &FlatFileConfig{Codec: s.codec})
+	for _, repo := range repos {
+		var err error
+		rss[repo], err = s.openRepoStore(repo)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return rss, nil
 }
+
+var _ repoStoreOpener = (*flatFileMultiRepoStore)(nil)
 
 func (s *flatFileMultiRepoStore) Import(repo, commitID string, unit *unit.SourceUnit, data graph.Output) error {
 	repoPath := path.Join(repo, SrclibStoreDir)
@@ -138,12 +148,12 @@ func NewFlatFileRepoStore(fs rwvfs.FileSystem, conf *FlatFileConfig) RepoStoreIm
 
 	setCreateParentDirs(fs)
 	rs := &flatFileRepoStore{fs: fs, codec: conf.Codec}
-	rs.treeStores = treeStores{treeStores: rs.getTreeStores}
+	rs.treeStores = treeStores{rs}
 	return rs
 }
 
 func (s *flatFileRepoStore) Version(key VersionKey) (*Version, error) {
-	versions, err := s.Versions(versionCommitIDFilter(key.CommitID))
+	versions, err := s.Versions(ByCommitID(key.CommitID))
 	if err != nil {
 		return nil, err
 	}
@@ -166,7 +176,7 @@ func (s *flatFileRepoStore) Versions(f VersionFilter) ([]*Version, error) {
 	var versions []*Version
 	for _, dir := range versionDirs {
 		version := &Version{CommitID: path.Base(dir)}
-		if f(version) {
+		if f.SelectVersion(version) {
 			versions = append(versions, version)
 		}
 	}
@@ -186,11 +196,19 @@ func (s *flatFileRepoStore) versionDirs() ([]string, error) {
 }
 
 func (s *flatFileRepoStore) Import(commitID string, unit *unit.SourceUnit, data graph.Output) error {
-	ts := newFlatFileTreeStore(rwvfs.Sub(s.fs, commitID), &FlatFileConfig{Codec: s.codec})
+	ts := s.newTreeStore(commitID)
 	return ts.Import(unit, data)
 }
 
-func (s *flatFileRepoStore) getTreeStores() (map[string]TreeStore, error) {
+func (s *flatFileRepoStore) newTreeStore(commitID string) *flatFileTreeStore {
+	return newFlatFileTreeStore(rwvfs.Sub(s.fs, commitID), &FlatFileConfig{Codec: s.codec})
+}
+
+func (s *flatFileRepoStore) openTreeStore(commitID string) (TreeStore, error) {
+	return s.newTreeStore(commitID), nil
+}
+
+func (s *flatFileRepoStore) openAllTreeStores() (map[string]TreeStore, error) {
 	versionDirs, err := s.versionDirs()
 	if err != nil {
 		return nil, err
@@ -203,6 +221,8 @@ func (s *flatFileRepoStore) getTreeStores() (map[string]TreeStore, error) {
 	}
 	return tss, nil
 }
+
+var _ treeStoreOpener = (*flatFileRepoStore)(nil)
 
 func (s *flatFileRepoStore) String() string { return "flatFileRepoStore" }
 
@@ -224,12 +244,12 @@ func newFlatFileTreeStore(fs rwvfs.FileSystem, conf *FlatFileConfig) *flatFileTr
 	}
 
 	ts := &flatFileTreeStore{fs: fs, codec: conf.Codec}
-	ts.unitStores = unitStores{unitStores: ts.getUnitStores}
+	ts.unitStores = unitStores{ts}
 	return ts
 }
 
 func (s *flatFileTreeStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
-	units, err := s.Units(unitKeyFilter(key))
+	units, err := s.Units(ByUnit(key.UnitType, key.Unit))
 	if err != nil {
 		return nil, err
 	}
@@ -255,7 +275,7 @@ func (s *flatFileTreeStore) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
 		if err != nil {
 			return nil, err
 		}
-		if f(unit) {
+		if f.SelectUnit(unit) {
 			units = append(units, unit)
 		}
 	}
@@ -296,8 +316,8 @@ func (s *flatFileTreeStore) unitFilenames() ([]string, error) {
 	return files, nil
 }
 
-func (s *flatFileTreeStore) unitFilename(key unit.Key) string {
-	return path.Join(key.Unit, key.UnitType+unitFileSuffix)
+func (s *flatFileTreeStore) unitFilename(unitType, unit string) string {
+	return path.Join(unit, unitType+unitFileSuffix)
 }
 
 const unitFileSuffix = ".unit.json"
@@ -307,11 +327,11 @@ func (s *flatFileTreeStore) Import(unit *unit.SourceUnit, data graph.Output) (er
 		return rwvfs.MkdirAll(s.fs, ".")
 	}
 
-	filename := s.unitFilename(unit.Key())
-	if err := rwvfs.MkdirAll(s.fs, path.Dir(filename)); err != nil {
+	unitFilename := s.unitFilename(unit.Type, unit.Name)
+	if err := rwvfs.MkdirAll(s.fs, path.Dir(unitFilename)); err != nil {
 		return err
 	}
-	f, err := s.fs.Create(filename)
+	f, err := s.fs.Create(unitFilename)
 	if err != nil {
 		return err
 	}
@@ -325,7 +345,7 @@ func (s *flatFileTreeStore) Import(unit *unit.SourceUnit, data graph.Output) (er
 		return err
 	}
 
-	dir := strings.TrimSuffix(s.unitFilename(unit.Key()), unitFileSuffix)
+	dir := strings.TrimSuffix(unitFilename, unitFileSuffix)
 	if err := rwvfs.MkdirAll(s.fs, dir); err != nil {
 		return err
 	}
@@ -333,20 +353,28 @@ func (s *flatFileTreeStore) Import(unit *unit.SourceUnit, data graph.Output) (er
 	return us.Import(data)
 }
 
-func (s *flatFileTreeStore) getUnitStores() (map[unit.Key]UnitStore, error) {
+func (s *flatFileTreeStore) openUnitStore(u unitID) (UnitStore, error) {
+	filename := s.unitFilename(u.unitType, u.unit)
+	dir := strings.TrimSuffix(filename, unitFileSuffix)
+	return &flatFileUnitStore{fs: rwvfs.Sub(s.fs, dir), codec: s.codec}, nil
+}
+
+func (s *flatFileTreeStore) openAllUnitStores() (map[unitID]UnitStore, error) {
 	unitFiles, err := s.unitFilenames()
 	if err != nil {
 		return nil, err
 	}
 
-	uss := make(map[unit.Key]UnitStore, len(unitFiles))
+	uss := make(map[unitID]UnitStore, len(unitFiles))
 	for _, unitFile := range unitFiles {
 		dir := strings.TrimSuffix(unitFile, unitFileSuffix)
-		unitKey := unit.Key{UnitType: path.Base(dir), Unit: path.Dir(dir)}
-		uss[unitKey] = &flatFileUnitStore{fs: rwvfs.Sub(s.fs, dir), codec: s.codec}
+		unitID := unitID{unitType: path.Base(dir), unit: path.Dir(dir)}
+		uss[unitID] = &flatFileUnitStore{fs: rwvfs.Sub(s.fs, dir), codec: s.codec}
 	}
 	return uss, nil
 }
+
+var _ unitStoreOpener = (*flatFileTreeStore)(nil)
 
 func (s *flatFileTreeStore) String() string { return "flatFileTreeStore" }
 
@@ -361,6 +389,10 @@ type flatFileUnitStore struct {
 const flatFileUnitDataFilename = "data.json"
 
 func (s *flatFileUnitStore) Def(key graph.DefKey) (*graph.Def, error) {
+	if err := checkDefKeyValidForUnitStore(key); err != nil {
+		return nil, err
+	}
+
 	defs, err := s.Defs(defPathFilter(key.Path))
 	if err != nil {
 		return nil, err
@@ -382,7 +414,7 @@ func (s *flatFileUnitStore) Defs(f DefFilter) ([]*graph.Def, error) {
 	}
 	var defs []*graph.Def
 	for _, def := range o.Defs {
-		if f(def) {
+		if f.SelectDef(def) {
 			defs = append(defs, def)
 		}
 	}
@@ -400,7 +432,7 @@ func (s *flatFileUnitStore) Refs(f RefFilter) ([]*graph.Ref, error) {
 	}
 	var refs []*graph.Ref
 	for _, ref := range o.Refs {
-		if f(ref) {
+		if f.SelectRef(ref) {
 			refs = append(refs, ref)
 		}
 	}
