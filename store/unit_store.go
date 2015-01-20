@@ -57,16 +57,16 @@ type RefFilter func(*graph.Ref) bool
 // allRefs is a RefFilter that selects all refs.
 func allRefs(*graph.Ref) bool { return true }
 
-// A multiUnitStore is a UnitStore whose methods call the
+// A unitStores is a UnitStore whose methods call the
 // corresponding method on each of the unit stores returned by the
 // unitStores func.
-type multiUnitStore struct {
+type unitStores struct {
 	unitStores func() (map[unit.Key]UnitStore, error)
 }
 
-var _ UnitStore = (*multiUnitStore)(nil)
+var _ UnitStore = (*unitStores)(nil)
 
-func (s multiUnitStore) Def(key graph.DefKey) (*graph.Def, error) {
+func (s unitStores) Def(key graph.DefKey) (*graph.Def, error) {
 	uss, err := s.unitStores()
 	if err != nil {
 		return nil, err
@@ -96,7 +96,7 @@ func (s multiUnitStore) Def(key graph.DefKey) (*graph.Def, error) {
 	return nil, errDefNotExist
 }
 
-func (s multiUnitStore) Defs(f DefFilter) ([]*graph.Def, error) {
+func (s unitStores) Defs(f DefFilter) ([]*graph.Def, error) {
 	if f == nil {
 		f = allDefs
 	}
@@ -125,7 +125,7 @@ func (s multiUnitStore) Defs(f DefFilter) ([]*graph.Def, error) {
 	return allDefs, nil
 }
 
-func (s multiUnitStore) Refs(f RefFilter) ([]*graph.Ref, error) {
+func (s unitStores) Refs(f RefFilter) ([]*graph.Ref, error) {
 	if f == nil {
 		f = allRefs
 	}

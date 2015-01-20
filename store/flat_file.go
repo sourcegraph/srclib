@@ -23,7 +23,7 @@ const SrclibStoreDir = ".srclib-store"
 // flat files.
 type flatFileMultiRepoStore struct {
 	fs rwvfs.FileSystem
-	multiRepoStore
+	repoStores
 	codec Codec
 }
 
@@ -52,7 +52,7 @@ func NewFlatFileMultiRepoStore(fs rwvfs.FileSystem, conf *FlatFileConfig) MultiR
 
 	setCreateParentDirs(fs)
 	mrs := &flatFileMultiRepoStore{fs: fs, codec: conf.Codec}
-	mrs.multiRepoStore = multiRepoStore{repoStores: mrs.repoStores}
+	mrs.repoStores = repoStores{repoStores: mrs.getRepoStores}
 	return mrs
 }
 
@@ -97,7 +97,7 @@ func (s *flatFileMultiRepoStore) Repos(f RepoFilter) ([]string, error) {
 	return repos, nil
 }
 
-func (s *flatFileMultiRepoStore) repoStores() (map[string]RepoStore, error) {
+func (s *flatFileMultiRepoStore) getRepoStores() (map[string]RepoStore, error) {
 	repos, err := s.Repos(nil)
 	if err != nil {
 		return nil, err
@@ -121,7 +121,7 @@ func (s *flatFileMultiRepoStore) String() string { return "flatFileMultiRepoStor
 // A flatFileRepoStore is a RepoStore that stores data in flat files.
 type flatFileRepoStore struct {
 	fs rwvfs.FileSystem
-	multiTreeStore
+	treeStores
 
 	codec Codec
 }
@@ -138,7 +138,7 @@ func NewFlatFileRepoStore(fs rwvfs.FileSystem, conf *FlatFileConfig) RepoStoreIm
 
 	setCreateParentDirs(fs)
 	rs := &flatFileRepoStore{fs: fs, codec: conf.Codec}
-	rs.multiTreeStore = multiTreeStore{treeStores: rs.treeStores}
+	rs.treeStores = treeStores{treeStores: rs.getTreeStores}
 	return rs
 }
 
@@ -190,7 +190,7 @@ func (s *flatFileRepoStore) Import(commitID string, unit *unit.SourceUnit, data 
 	return ts.Import(unit, data)
 }
 
-func (s *flatFileRepoStore) treeStores() (map[string]TreeStore, error) {
+func (s *flatFileRepoStore) getTreeStores() (map[string]TreeStore, error) {
 	versionDirs, err := s.versionDirs()
 	if err != nil {
 		return nil, err
@@ -210,7 +210,7 @@ func (s *flatFileRepoStore) String() string { return "flatFileRepoStore" }
 // in a filesystem.
 type flatFileTreeStore struct {
 	fs rwvfs.FileSystem
-	multiUnitStore
+	unitStores
 
 	codec Codec
 }
@@ -224,7 +224,7 @@ func newFlatFileTreeStore(fs rwvfs.FileSystem, conf *FlatFileConfig) *flatFileTr
 	}
 
 	ts := &flatFileTreeStore{fs: fs, codec: conf.Codec}
-	ts.multiUnitStore = multiUnitStore{ts.unitStores}
+	ts.unitStores = unitStores{unitStores: ts.getUnitStores}
 	return ts
 }
 
@@ -333,7 +333,7 @@ func (s *flatFileTreeStore) Import(unit *unit.SourceUnit, data graph.Output) (er
 	return us.Import(data)
 }
 
-func (s *flatFileTreeStore) unitStores() (map[unit.Key]UnitStore, error) {
+func (s *flatFileTreeStore) getUnitStores() (map[unit.Key]UnitStore, error) {
 	unitFiles, err := s.unitFilenames()
 	if err != nil {
 		return nil, err
