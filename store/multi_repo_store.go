@@ -16,7 +16,7 @@ type MultiRepoStore interface {
 	Repo(string) (string, error)
 
 	// Repos returns all repositories that match the RepoFilter.
-	Repos(RepoFilter) ([]string, error)
+	Repos(...RepoFilter) ([]string, error)
 
 	// RepoStore's methods call the corresponding methods on the
 	// RepoStore of each repository contained within this multi-repo

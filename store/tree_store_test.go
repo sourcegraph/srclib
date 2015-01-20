@@ -43,12 +43,12 @@ func testTreeStore_uninitialized(t *testing.T, ts TreeStore) {
 		t.Errorf("%s: Unit: got unit %v, want nil", ts, unit)
 	}
 
-	units, err := ts.Units(nil)
+	units, err := ts.Units()
 	if err == nil {
-		t.Errorf("%s: Units(nil): got nil err", ts)
+		t.Errorf("%s: Units(): got nil err", ts)
 	}
 	if len(units) != 0 {
-		t.Errorf("%s: Units(nil): got units %v, want empty", ts, units)
+		t.Errorf("%s: Units(): got units %v, want empty", ts, units)
 	}
 
 	testUnitStore_uninitialized(t, ts)
@@ -63,12 +63,12 @@ func testTreeStore_empty(t *testing.T, ts TreeStore) {
 		t.Errorf("%s: Unit: got unit %v, want nil", ts, unit)
 	}
 
-	units, err := ts.Units(nil)
+	units, err := ts.Units()
 	if err != nil {
-		t.Errorf("%s: Units(nil): %s", ts, err)
+		t.Errorf("%s: Units(): %s", ts, err)
 	}
 	if len(units) != 0 {
-		t.Errorf("%s: Units(nil): got units %v, want empty", ts, units)
+		t.Errorf("%s: Units(): got units %v, want empty", ts, units)
 	}
 
 	testUnitStore_empty(t, ts)
@@ -131,12 +131,12 @@ func testTreeStore_Units(t *testing.T, ts treeStoreImporter) {
 		}
 	}
 
-	units, err := ts.Units(nil)
+	units, err := ts.Units()
 	if err != nil {
-		t.Errorf("%s: Units(nil): %s", ts, err)
+		t.Errorf("%s: Units(): %s", ts, err)
 	}
 	if !reflect.DeepEqual(units, want) {
-		t.Errorf("%s: Units(nil): got %v, want %v", ts, units, want)
+		t.Errorf("%s: Units(): got %v, want %v", ts, units, want)
 	}
 }
 
@@ -212,12 +212,12 @@ func testTreeStore_Defs(t *testing.T, ts treeStoreImporter) {
 		},
 	}
 
-	defs, err := ts.Defs(nil)
+	defs, err := ts.Defs()
 	if err != nil {
-		t.Errorf("%s: Defs(nil): %s", ts, err)
+		t.Errorf("%s: Defs(): %s", ts, err)
 	}
 	if !reflect.DeepEqual(defs, want) {
-		t.Errorf("%s: Defs(nil): got defs %v, want %v", ts, defs, want)
+		t.Errorf("%s: Defs(): got defs %v, want %v", ts, defs, want)
 	}
 }
 
@@ -266,11 +266,11 @@ func testTreeStore_Refs(t *testing.T, ts treeStoreImporter) {
 		},
 	}
 
-	refs, err := ts.Refs(nil)
+	refs, err := ts.Refs()
 	if err != nil {
-		t.Errorf("%s: Refs(nil): %s", ts, err)
+		t.Errorf("%s: Refs(): %s", ts, err)
 	}
 	if !reflect.DeepEqual(refs, want) {
-		t.Errorf("%s: Refs(nil): got refs %v, want %v", ts, refs, want)
+		t.Errorf("%s: Refs(): got refs %v, want %v", ts, refs, want)
 	}
 }

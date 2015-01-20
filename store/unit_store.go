@@ -10,10 +10,10 @@ type UnitStore interface {
 	Def(graph.DefKey) (*graph.Def, error)
 
 	// Defs returns all defs that match the filter.
-	Defs(DefFilter) ([]*graph.Def, error)
+	Defs(...DefFilter) ([]*graph.Def, error)
 
 	// Refs returns all refs that match the filter.
-	Refs(RefFilter) ([]*graph.Ref, error)
+	Refs(...RefFilter) ([]*graph.Ref, error)
 
 	// TODO(sqs): how to deal with depresolve and other non-graph
 	// data?
@@ -68,19 +68,15 @@ func (s unitStores) Def(key graph.DefKey) (*graph.Def, error) {
 	return nil, errDefNotExist
 }
 
-func (s unitStores) Defs(f DefFilter) ([]*graph.Def, error) {
+func (s unitStores) Defs(f ...DefFilter) ([]*graph.Def, error) {
 	uss, err := openUnitStores(s.opener, f)
 	if err != nil {
 		return nil, err
 	}
 
-	if f == nil {
-		f = allDefs
-	}
-
 	var allDefs []*graph.Def
 	for u, us := range uss {
-		defs, err := us.Defs(f)
+		defs, err := us.Defs(f...)
 		if err != nil {
 			return nil, err
 		}
@@ -93,19 +89,15 @@ func (s unitStores) Defs(f DefFilter) ([]*graph.Def, error) {
 	return allDefs, nil
 }
 
-func (s unitStores) Refs(f RefFilter) ([]*graph.Ref, error) {
+func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 	uss, err := openUnitStores(s.opener, f)
 	if err != nil {
 		return nil, err
 	}
 
-	if f == nil {
-		f = allRefs
-	}
-
 	var allRefs []*graph.Ref
 	for u, us := range uss {
-		refs, err := us.Refs(f)
+		refs, err := us.Refs(f...)
 		if err != nil {
 			return nil, err
 		}

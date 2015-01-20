@@ -35,18 +35,14 @@ func (s *memoryMultiRepoStore) Repo(repo string) (string, error) {
 	return repo, nil
 }
 
-func (s *memoryMultiRepoStore) Repos(f RepoFilter) ([]string, error) {
-	if f == nil {
-		f = allRepos
-	}
-
+func (s *memoryMultiRepoStore) Repos(f ...RepoFilter) ([]string, error) {
 	if s.repos == nil {
 		return nil, errMultiRepoStoreNoInit
 	}
 
 	var repos []string
 	for repo := range s.repos {
-		if f.SelectRepo(repo) {
+		if repoFilters(f).SelectRepo(repo) {
 			repos = append(repos, repo)
 		}
 	}
@@ -121,18 +117,14 @@ func (s *memoryRepoStore) Version(key VersionKey) (*Version, error) {
 	return nil, errVersionNotExist
 }
 
-func (s *memoryRepoStore) Versions(f VersionFilter) ([]*Version, error) {
-	if f == nil {
-		f = allVersions
-	}
-
+func (s *memoryRepoStore) Versions(f ...VersionFilter) ([]*Version, error) {
 	if s.versions == nil {
 		return nil, errRepoNoInit
 	}
 
 	var versions []*Version
 	for _, version := range s.versions {
-		if f.SelectVersion(version) {
+		if versionFilters(f).SelectVersion(version) {
 			versions = append(versions, version)
 		}
 
@@ -209,18 +201,14 @@ func (s *memoryTreeStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
 	return nil, errUnitNotExist
 }
 
-func (s *memoryTreeStore) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
-	if f == nil {
-		f = allUnits
-	}
-
+func (s *memoryTreeStore) Units(f ...UnitFilter) ([]*unit.SourceUnit, error) {
 	if s.units == nil {
 		return nil, errTreeNoInit
 	}
 
 	var units []*unit.SourceUnit
 	for _, unit := range s.units {
-		if f.SelectUnit(unit) {
+		if unitFilters(f).SelectUnit(unit) {
 			units = append(units, unit)
 		}
 
@@ -301,34 +289,28 @@ func (s *memoryUnitStore) Def(key graph.DefKey) (*graph.Def, error) {
 	return defs[0], nil
 }
 
-func (s *memoryUnitStore) Defs(f DefFilter) ([]*graph.Def, error) {
+func (s *memoryUnitStore) Defs(f ...DefFilter) ([]*graph.Def, error) {
 	if s.data == nil {
 		return nil, errUnitNoInit
 	}
 
-	if f == nil {
-		f = allDefs
-	}
 	var defs []*graph.Def
 	for _, def := range s.data.Defs {
-		if f.SelectDef(def) {
+		if defFilters(f).SelectDef(def) {
 			defs = append(defs, def)
 		}
 	}
 	return defs, nil
 }
 
-func (s *memoryUnitStore) Refs(f RefFilter) ([]*graph.Ref, error) {
+func (s *memoryUnitStore) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 	if s.data == nil {
 		return nil, errUnitNoInit
 	}
 
-	if f == nil {
-		f = allRefs
-	}
 	var refs []*graph.Ref
 	for _, ref := range s.data.Refs {
-		if f.SelectRef(ref) {
+		if refFilters(f).SelectRef(ref) {
 			refs = append(refs, ref)
 		}
 	}

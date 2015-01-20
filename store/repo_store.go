@@ -13,7 +13,7 @@ type RepoStore interface {
 	Version(VersionKey) (*Version, error)
 
 	// Versions returns all commits that match the VersionFilter.
-	Versions(VersionFilter) ([]*Version, error)
+	Versions(...VersionFilter) ([]*Version, error)
 
 	// TreeStore's methods call the corresponding methods on the
 	// TreeStore of each version contained within this repository. The
@@ -100,19 +100,15 @@ func (s repoStores) Version(key VersionKey) (*Version, error) {
 	return nil, errVersionNotExist
 }
 
-func (s repoStores) Versions(f VersionFilter) ([]*Version, error) {
+func (s repoStores) Versions(f ...VersionFilter) ([]*Version, error) {
 	rss, err := openRepoStores(s.opener, f)
 	if err != nil {
 		return nil, err
 	}
 
-	if f == nil {
-		f = allVersions
-	}
-
 	var allVersions []*Version
 	for repo, rs := range rss {
-		versions, err := rs.Versions(f)
+		versions, err := rs.Versions(f...)
 		if err != nil {
 			return nil, err
 		}
@@ -150,19 +146,15 @@ func (s repoStores) Unit(key unit.Key) (*unit.SourceUnit, error) {
 	return nil, errUnitNotExist
 }
 
-func (s repoStores) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
+func (s repoStores) Units(f ...UnitFilter) ([]*unit.SourceUnit, error) {
 	rss, err := openRepoStores(s.opener, f)
 	if err != nil {
 		return nil, err
 	}
 
-	if f == nil {
-		f = allUnits
-	}
-
 	var allUnits []*unit.SourceUnit
 	for repo, rs := range rss {
-		units, err := rs.Units(f)
+		units, err := rs.Units(f...)
 		if err != nil {
 			return nil, err
 		}
@@ -204,19 +196,15 @@ func (s repoStores) Def(key graph.DefKey) (*graph.Def, error) {
 	return nil, errDefNotExist
 }
 
-func (s repoStores) Defs(f DefFilter) ([]*graph.Def, error) {
+func (s repoStores) Defs(f ...DefFilter) ([]*graph.Def, error) {
 	rss, err := openRepoStores(s.opener, f)
 	if err != nil {
 		return nil, err
 	}
 
-	if f == nil {
-		f = allDefs
-	}
-
 	var allDefs []*graph.Def
 	for repo, rs := range rss {
-		defs, err := rs.Defs(f)
+		defs, err := rs.Defs(f...)
 		if err != nil {
 			return nil, err
 		}
@@ -228,19 +216,15 @@ func (s repoStores) Defs(f DefFilter) ([]*graph.Def, error) {
 	return allDefs, nil
 }
 
-func (s repoStores) Refs(f RefFilter) ([]*graph.Ref, error) {
+func (s repoStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 	rss, err := openRepoStores(s.opener, f)
 	if err != nil {
 		return nil, err
 	}
 
-	if f == nil {
-		f = allRefs
-	}
-
 	var allRefs []*graph.Ref
 	for repo, rs := range rss {
-		refs, err := rs.Refs(f)
+		refs, err := rs.Refs(f...)
 		if err != nil {
 			return nil, err
 		}

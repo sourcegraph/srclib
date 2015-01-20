@@ -67,11 +67,7 @@ func (s *flatFileMultiRepoStore) Repo(repo string) (string, error) {
 	return repos[0], nil
 }
 
-func (s *flatFileMultiRepoStore) Repos(f RepoFilter) ([]string, error) {
-	if f == nil {
-		f = allRepos
-	}
-
+func (s *flatFileMultiRepoStore) Repos(f ...RepoFilter) ([]string, error) {
 	var repos []string
 	w := fs.WalkFS(".", rwvfs.Walkable(s.fs))
 	for w.Step() {
@@ -83,7 +79,7 @@ func (s *flatFileMultiRepoStore) Repos(f RepoFilter) ([]string, error) {
 			if fi.Name() == SrclibStoreDir {
 				w.SkipDir()
 				repo := path.Dir(w.Path())
-				if f.SelectRepo(repo) {
+				if repoFilters(f).SelectRepo(repo) {
 					repos = append(repos, repo)
 				}
 				continue
@@ -102,7 +98,7 @@ func (s *flatFileMultiRepoStore) openRepoStore(repo string) (RepoStore, error) {
 }
 
 func (s *flatFileMultiRepoStore) openAllRepoStores() (map[string]RepoStore, error) {
-	repos, err := s.Repos(nil)
+	repos, err := s.Repos()
 	if err != nil {
 		return nil, err
 	}
@@ -163,11 +159,7 @@ func (s *flatFileRepoStore) Version(key VersionKey) (*Version, error) {
 	return versions[0], nil
 }
 
-func (s *flatFileRepoStore) Versions(f VersionFilter) ([]*Version, error) {
-	if f == nil {
-		f = allVersions
-	}
-
+func (s *flatFileRepoStore) Versions(f ...VersionFilter) ([]*Version, error) {
 	versionDirs, err := s.versionDirs()
 	if err != nil {
 		return nil, err
@@ -176,7 +168,7 @@ func (s *flatFileRepoStore) Versions(f VersionFilter) ([]*Version, error) {
 	var versions []*Version
 	for _, dir := range versionDirs {
 		version := &Version{CommitID: path.Base(dir)}
-		if f.SelectVersion(version) {
+		if versionFilters(f).SelectVersion(version) {
 			versions = append(versions, version)
 		}
 	}
@@ -259,11 +251,7 @@ func (s *flatFileTreeStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
 	return units[0], nil
 }
 
-func (s *flatFileTreeStore) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
-	if f == nil {
-		f = allUnits
-	}
-
+func (s *flatFileTreeStore) Units(f ...UnitFilter) ([]*unit.SourceUnit, error) {
 	unitFilenames, err := s.unitFilenames()
 	if err != nil {
 		return nil, err
@@ -275,7 +263,7 @@ func (s *flatFileTreeStore) Units(f UnitFilter) ([]*unit.SourceUnit, error) {
 		if err != nil {
 			return nil, err
 		}
-		if f.SelectUnit(unit) {
+		if unitFilters(f).SelectUnit(unit) {
 			units = append(units, unit)
 		}
 	}
@@ -403,36 +391,30 @@ func (s *flatFileUnitStore) Def(key graph.DefKey) (*graph.Def, error) {
 	return defs[0], nil
 }
 
-func (s *flatFileUnitStore) Defs(f DefFilter) ([]*graph.Def, error) {
+func (s *flatFileUnitStore) Defs(f ...DefFilter) ([]*graph.Def, error) {
 	o, err := s.open()
 	if err != nil {
 		return nil, err
 	}
 
-	if f == nil {
-		f = allDefs
-	}
 	var defs []*graph.Def
 	for _, def := range o.Defs {
-		if f.SelectDef(def) {
+		if defFilters(f).SelectDef(def) {
 			defs = append(defs, def)
 		}
 	}
 	return defs, nil
 }
 
-func (s *flatFileUnitStore) Refs(f RefFilter) ([]*graph.Ref, error) {
+func (s *flatFileUnitStore) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 	o, err := s.open()
 	if err != nil {
 		return nil, err
 	}
 
-	if f == nil {
-		f = allRefs
-	}
 	var refs []*graph.Ref
 	for _, ref := range o.Refs {
-		if f.SelectRef(ref) {
+		if refFilters(f).SelectRef(ref) {
 			refs = append(refs, ref)
 		}
 	}

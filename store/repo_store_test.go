@@ -40,12 +40,12 @@ func testRepoStore_uninitialized(t *testing.T, rs RepoStoreImporter) {
 		t.Errorf("%s: Version: got version %v, want nil", rs, version)
 	}
 
-	versions, err := rs.Versions(nil)
+	versions, err := rs.Versions()
 	if err == nil {
-		t.Errorf("%s: Versions(nil): got nil err", rs)
+		t.Errorf("%s: Versions(): got nil err", rs)
 	}
 	if len(versions) != 0 {
-		t.Errorf("%s: Versions(nil): got versions %v, want empty", rs, versions)
+		t.Errorf("%s: Versions(): got versions %v, want empty", rs, versions)
 	}
 
 	testTreeStore_uninitialized(t, rs)
@@ -108,12 +108,12 @@ func testRepoStore_Versions(t *testing.T, rs RepoStoreImporter) {
 
 	want := []*Version{{CommitID: "c1"}, {CommitID: "c2"}}
 
-	versions, err := rs.Versions(nil)
+	versions, err := rs.Versions()
 	if err != nil {
-		t.Errorf("%s: Versions(nil): %s", rs, err)
+		t.Errorf("%s: Versions(): %s", rs, err)
 	}
 	if !reflect.DeepEqual(versions, want) {
-		t.Errorf("%s: Versions(nil): got %v, want %v", rs, versions, want)
+		t.Errorf("%s: Versions(): got %v, want %v", rs, versions, want)
 	}
 }
 
@@ -151,12 +151,12 @@ func testRepoStore_Units(t *testing.T, rs RepoStoreImporter) {
 		{CommitID: "c", Type: "t2", Name: "u2"},
 	}
 
-	units, err := rs.Units(nil)
+	units, err := rs.Units()
 	if err != nil {
-		t.Errorf("%s: Units(nil): %s", rs, err)
+		t.Errorf("%s: Units(): %s", rs, err)
 	}
 	if !reflect.DeepEqual(units, want) {
-		t.Errorf("%s: Units(nil): got %v, want %v", rs, units, want)
+		t.Errorf("%s: Units(): got %v, want %v", rs, units, want)
 	}
 }
 
@@ -240,12 +240,12 @@ func testRepoStore_Defs(t *testing.T, rs RepoStoreImporter) {
 		},
 	}
 
-	defs, err := rs.Defs(nil)
+	defs, err := rs.Defs()
 	if err != nil {
-		t.Errorf("%s: Defs(nil): %s", rs, err)
+		t.Errorf("%s: Defs(): %s", rs, err)
 	}
 	if !reflect.DeepEqual(defs, want) {
-		t.Errorf("%s: Defs(nil): got defs %v, want %v", rs, defs, want)
+		t.Errorf("%s: Defs(): got defs %v, want %v", rs, defs, want)
 	}
 }
 
@@ -296,11 +296,11 @@ func testRepoStore_Refs(t *testing.T, rs RepoStoreImporter) {
 		},
 	}
 
-	refs, err := rs.Refs(nil)
+	refs, err := rs.Refs()
 	if err != nil {
-		t.Errorf("%s: Refs(nil): %s", rs, err)
+		t.Errorf("%s: Refs(): %s", rs, err)
 	}
 	if !reflect.DeepEqual(refs, want) {
-		t.Errorf("%s: Refs(nil): got refs %v, want %v", rs, refs, want)
+		t.Errorf("%s: Refs(): got refs %v, want %v", rs, refs, want)
 	}
 }

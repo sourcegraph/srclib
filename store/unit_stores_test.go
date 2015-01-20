@@ -10,20 +10,20 @@ import (
 
 type mockUnitStore struct {
 	Def_  func(graph.DefKey) (*graph.Def, error)
-	Defs_ func(DefFilter) ([]*graph.Def, error)
-	Refs_ func(RefFilter) ([]*graph.Ref, error)
+	Defs_ func(...DefFilter) ([]*graph.Def, error)
+	Refs_ func(...RefFilter) ([]*graph.Ref, error)
 }
 
 func (m mockUnitStore) Def(key graph.DefKey) (*graph.Def, error) {
 	return m.Def_(key)
 }
 
-func (m mockUnitStore) Defs(f DefFilter) ([]*graph.Def, error) {
-	return m.Defs_(f)
+func (m mockUnitStore) Defs(f ...DefFilter) ([]*graph.Def, error) {
+	return m.Defs_(f...)
 }
 
-func (m mockUnitStore) Refs(f RefFilter) ([]*graph.Ref, error) {
-	return m.Refs_(f)
+func (m mockUnitStore) Refs(f ...RefFilter) ([]*graph.Ref, error) {
+	return m.Refs_(f...)
 }
 
 // mockNeverCalledUnitStore calls t.Error if any of its methods are
@@ -34,11 +34,11 @@ func mockNeverCalledUnitStore(t *testing.T) mockUnitStore {
 			t.Fatalf("(UnitStore).Def called, but wanted it not to be called (arg key was %+v)", key)
 			return nil, nil
 		},
-		Defs_: func(f DefFilter) ([]*graph.Def, error) {
+		Defs_: func(f ...DefFilter) ([]*graph.Def, error) {
 			t.Fatalf("(UnitStore).Defs called, but wanted it not to be called (arg f was %v)", f)
 			return nil, nil
 		},
-		Refs_: func(f RefFilter) ([]*graph.Ref, error) {
+		Refs_: func(f ...RefFilter) ([]*graph.Ref, error) {
 			t.Fatalf("(UnitStore).Refs called, but wanted it not to be called (arg f was %v)", f)
 			return nil, nil
 		},
@@ -51,11 +51,11 @@ func (m emptyUnitStore) Def(key graph.DefKey) (*graph.Def, error) {
 	return nil, errDefNotExist
 }
 
-func (m emptyUnitStore) Defs(f DefFilter) ([]*graph.Def, error) {
+func (m emptyUnitStore) Defs(f ...DefFilter) ([]*graph.Def, error) {
 	return []*graph.Def{}, nil
 }
 
-func (m emptyUnitStore) Refs(f RefFilter) ([]*graph.Ref, error) {
+func (m emptyUnitStore) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 	return []*graph.Ref{}, nil
 }
 
@@ -122,7 +122,7 @@ func TestUnitStores_filterByUnit(t *testing.T) {
 
 func TestScopeUnits(t *testing.T) {
 	tests := []struct {
-		filters []storesFilter
+		filters []interface{}
 		want    []unitID
 	}{
 		{
@@ -130,88 +130,88 @@ func TestScopeUnits(t *testing.T) {
 			want:    nil,
 		},
 		{
-			filters: []storesFilter{ByUnit("t", "u")},
+			filters: []interface{}{ByUnit("t", "u")},
 			want:    []unitID{{"t", "u"}},
 		},
 		{
-			filters: []storesFilter{nil, ByUnit("t", "u")},
+			filters: []interface{}{nil, ByUnit("t", "u")},
 			want:    []unitID{{"t", "u"}},
 		},
 		{
-			filters: []storesFilter{ByUnit("t", "u"), nil},
+			filters: []interface{}{ByUnit("t", "u"), nil},
 			want:    []unitID{{"t", "u"}},
 		},
 		{
-			filters: []storesFilter{nil, ByUnit("t", "u"), nil},
+			filters: []interface{}{nil, ByUnit("t", "u"), nil},
 			want:    []unitID{{"t", "u"}},
 		},
 		{
-			filters: []storesFilter{ByUnit("t", "u"), ByUnit("t", "u")},
+			filters: []interface{}{ByUnit("t", "u"), ByUnit("t", "u")},
 			want:    []unitID{{"t", "u"}},
 		},
 		{
-			filters: []storesFilter{ByUnit("t1", "u1"), ByUnit("t2", "u2")},
+			filters: []interface{}{ByUnit("t1", "u1"), ByUnit("t2", "u2")},
 			want:    []unitID{},
 		},
 		{
-			filters: []storesFilter{ByUnit("t1", "u1"), ByUnit("t2", "u2"), ByUnit("t1", "u1")},
+			filters: []interface{}{ByUnit("t1", "u1"), ByUnit("t2", "u2"), ByUnit("t1", "u1")},
 			want:    []unitID{},
 		},
 		{
-			filters: []storesFilter{ByUnit("t", "u1"), ByUnit("t", "u2")},
+			filters: []interface{}{ByUnit("t", "u1"), ByUnit("t", "u2")},
 			want:    []unitID{},
 		},
 		{
-			filters: []storesFilter{ByUnit("t1", "u"), ByUnit("t2", "u")},
+			filters: []interface{}{ByUnit("t1", "u"), ByUnit("t2", "u")},
 			want:    []unitID{},
 		},
 		{
-			filters: []storesFilter{ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"})},
+			filters: []interface{}{ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"})},
 			want:    []unitID{{"t", "u"}},
 		},
 		{
-			filters: []storesFilter{
+			filters: []interface{}{
 				ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"}),
 				ByUnitKey(unit.Key{Repo: "r2", CommitID: "c2", UnitType: "t", Unit: "u"}),
 			},
 			want: []unitID{{"t", "u"}},
 		},
 		{
-			filters: []storesFilter{
+			filters: []interface{}{
 				ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"}),
 				ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t2", Unit: "u2"}),
 			},
 			want: []unitID{},
 		},
 		{
-			filters: []storesFilter{ByDefKey(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"})},
+			filters: []interface{}{ByDefKey(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"})},
 			want:    []unitID{{"t", "u"}},
 		},
 		{
-			filters: []storesFilter{
+			filters: []interface{}{
 				ByDefKey(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"}),
 				ByDefKey(graph.DefKey{Repo: "r2", CommitID: "c2", UnitType: "t", Unit: "u", Path: "p2"}),
 			},
 			want: []unitID{{"t", "u"}},
 		},
 		{
-			filters: []storesFilter{
+			filters: []interface{}{
 				ByDefKey(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"}),
 				ByDefKey(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t2", Unit: "u2", Path: "p"}),
 			},
 			want: []unitID{},
 		},
 		{
-			filters: []storesFilter{UnitFilterFunc(func(*unit.SourceUnit) bool { return false })},
+			filters: []interface{}{UnitFilterFunc(func(*unit.SourceUnit) bool { return false })},
 			want:    nil,
 		},
 		{
-			filters: []storesFilter{ByRepo("r")},
+			filters: []interface{}{ByRepo("r")},
 			want:    nil,
 		},
 	}
 	for _, test := range tests {
-		units, err := scopeUnits(test.filters...)
+		units, err := scopeUnits(test.filters)
 		if err != nil {
 			t.Errorf("%+v: %v", test.filters, err)
 			continue

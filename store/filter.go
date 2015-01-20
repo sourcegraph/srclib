@@ -2,6 +2,7 @@ package store
 
 import (
 	"log"
+	"reflect"
 	"strings"
 
 	"sourcegraph.com/sourcegraph/srclib/graph"
@@ -14,14 +15,23 @@ type DefFilter interface {
 	SelectDef(*graph.Def) bool
 }
 
+type defFilters []DefFilter
+
+func (fs defFilters) SelectDef(def *graph.Def) bool {
+	for _, f := range fs {
+		if !f.SelectDef(def) {
+			return false
+		}
+	}
+	return true
+}
+
 // A DefFilterFunc is a DefFilter that selects only those defs for
 // which the func returns true.
 type DefFilterFunc func(*graph.Def) bool
 
 // SelectDef calls f(def).
 func (f DefFilterFunc) SelectDef(def *graph.Def) bool { return f(def) }
-
-var allDefs = DefFilterFunc(func(*graph.Def) bool { return true })
 
 func defPathFilter(path string) DefFilter {
 	return DefFilterFunc(func(def *graph.Def) bool { return def.Path == path })
@@ -33,6 +43,17 @@ type RefFilter interface {
 	SelectRef(*graph.Ref) bool
 }
 
+type refFilters []RefFilter
+
+func (fs refFilters) SelectRef(ref *graph.Ref) bool {
+	for _, f := range fs {
+		if !f.SelectRef(ref) {
+			return false
+		}
+	}
+	return true
+}
+
 // A RefFilterFunc is a RefFilter that selects only those refs for
 // which the func returns true.
 type RefFilterFunc func(*graph.Ref) bool
@@ -40,12 +61,21 @@ type RefFilterFunc func(*graph.Ref) bool
 // SelectRef calls f(ref).
 func (f RefFilterFunc) SelectRef(ref *graph.Ref) bool { return f(ref) }
 
-var allRefs = RefFilterFunc(func(*graph.Ref) bool { return true })
-
 // A UnitFilter filters a set of units to only those for which Select
 // returns true.
 type UnitFilter interface {
 	SelectUnit(*unit.SourceUnit) bool
+}
+
+type unitFilters []UnitFilter
+
+func (fs unitFilters) SelectUnit(unit *unit.SourceUnit) bool {
+	for _, f := range fs {
+		if !f.SelectUnit(unit) {
+			return false
+		}
+	}
+	return true
 }
 
 // A UnitFilterFunc is a UnitFilter that selects only those units for
@@ -55,12 +85,21 @@ type UnitFilterFunc func(*unit.SourceUnit) bool
 // SelectUnit calls f(unit).
 func (f UnitFilterFunc) SelectUnit(unit *unit.SourceUnit) bool { return f(unit) }
 
-var allUnits = UnitFilterFunc(func(*unit.SourceUnit) bool { return true })
-
 // A VersionFilter filters a set of versions to only those for which SelectVersion
 // returns true.
 type VersionFilter interface {
 	SelectVersion(*Version) bool
+}
+
+type versionFilters []VersionFilter
+
+func (fs versionFilters) SelectVersion(version *Version) bool {
+	for _, f := range fs {
+		if !f.SelectVersion(version) {
+			return false
+		}
+	}
+	return true
 }
 
 // A VersionFilterFunc is a VersionFilter that selects only those
@@ -70,12 +109,21 @@ type VersionFilterFunc func(*Version) bool
 // SelectVersion calls f(version).
 func (f VersionFilterFunc) SelectVersion(version *Version) bool { return f(version) }
 
-var allVersions = VersionFilterFunc(func(*Version) bool { return true })
-
 // A RepoFilter filters a set of repos to only those for which SelectRepo
 // returns true.
 type RepoFilter interface {
 	SelectRepo(string) bool
+}
+
+type repoFilters []RepoFilter
+
+func (fs repoFilters) SelectRepo(repo string) bool {
+	for _, f := range fs {
+		if !f.SelectRepo(repo) {
+			return false
+		}
+	}
+	return true
 }
 
 // A RepoFilterFunc is a RepoFilter that selects only those repos for
@@ -84,8 +132,6 @@ type RepoFilterFunc func(string) bool
 
 // SelectRepo calls f(repo).
 func (f RepoFilterFunc) SelectRepo(repo string) bool { return f(repo) }
-
-var allRepos = RepoFilterFunc(func(string) bool { return true })
 
 // ByUnitFilter is implemented by filters that restrict their
 // selections to items from a specific source unit. It allows the
@@ -216,6 +262,10 @@ func (f byRepoFilter) SelectRepo(repo string) bool {
 // must match for an item to be selected by this filter). It panics if
 // either repo or commitID is empty.
 func ByRepoAndCommitID(repo, commitID string) interface {
+	DefFilter
+	RefFilter
+	UnitFilter
+	VersionFilter
 	ByRepoFilter
 	ByCommitIDFilter
 } {
@@ -336,3 +386,37 @@ func (f byDefKeyFilter) SelectDef(def *graph.Def) bool {
 // restrict the contents of the map they return. Otherwise the full
 // map of stores is returned.
 type storesFilter interface{}
+
+func storeFilters(anyFilters interface{}) []interface{} {
+	switch o := anyFilters.(type) {
+	case DefFilter:
+		return []interface{}{o}
+	case []DefFilter:
+		fs := make([]interface{}, len(o))
+		for i, f := range o {
+			fs[i] = f
+		}
+		return fs
+	}
+
+	v := reflect.ValueOf(anyFilters)
+	if !v.IsValid() {
+		// no filters
+		return nil
+	}
+
+	switch v.Kind() {
+	case reflect.Slice:
+		if v.Len() == 0 {
+			return nil
+		}
+		filters := make([]interface{}, v.Len())
+		for i := 0; i < v.Len(); i++ {
+			filters[i] = v.Index(i).Interface()
+		}
+		return filters
+
+	default:
+		return []interface{}{anyFilters}
+	}
+}

@@ -14,10 +14,10 @@ import (
 )
 
 var (
-	numVersions = flag.Int("bench.versions", 1, "number of versions (each of which has the denoted number of units & defs)")
-	numUnits    = flag.Int("bench.units", 1, "number of source units (each of which has the denoted number of defs)")
-	numFiles    = flag.Int("bench.files", 25, "number of distinct files (Def.File and Ref.File values)")
-	numRefDefs  = flag.Int("bench.refdefs", 100, "number of distinct defs that refs point to")
+	numVersions = flag.Int("bench.versions", 10, "number of versions (each of which has the denoted number of units & defs)")
+	numUnits    = flag.Int("bench.units", 10, "number of source units (each of which has the denoted number of defs)")
+	numFiles    = flag.Int("bench.files", 10, "number of distinct files (Def.File and Ref.File values)")
+	numRefDefs  = flag.Int("bench.refdefs", 10, "number of distinct defs that refs point to")
 
 	codec = flag.String("codec", "json", "flat file codec")
 )
@@ -36,6 +36,19 @@ func BenchmarkFlatFile_RefsByFile1(b *testing.B)     { benchmarkRefsByFile(b, re
 func BenchmarkFlatFile_RefsByFile500(b *testing.B)   { benchmarkRefsByFile(b, repoStore(), 500) }
 func BenchmarkFlatFile_RefsByFile5000(b *testing.B)  { benchmarkRefsByFile(b, repoStore(), 5000) }
 func BenchmarkFlatFile_RefsByFile50000(b *testing.B) { benchmarkRefsByFile(b, repoStore(), 50000) }
+
+func BenchmarkFlatFile_RefsByFile1_filterFunc(b *testing.B) {
+	benchmarkRefsByFile_filterFunc(b, repoStore(), 1)
+}
+func BenchmarkFlatFile_RefsByFile500_filterFunc(b *testing.B) {
+	benchmarkRefsByFile_filterFunc(b, repoStore(), 500)
+}
+func BenchmarkFlatFile_RefsByFile5000_filterFunc(b *testing.B) {
+	benchmarkRefsByFile_filterFunc(b, repoStore(), 5000)
+}
+func BenchmarkFlatFile_RefsByFile50000_filterFunc(b *testing.B) {
+	benchmarkRefsByFile_filterFunc(b, repoStore(), 50000)
+}
 
 func BenchmarkFlatFile_RefsByDefPath1(b *testing.B)     { benchmarkRefsByDefPath(b, repoStore(), 1) }
 func BenchmarkFlatFile_RefsByDefPath500(b *testing.B)   { benchmarkRefsByDefPath(b, repoStore(), 500) }
@@ -141,15 +154,18 @@ func benchmarkDefsByFile(b *testing.B, rs RepoStoreImporter, numDefs int) {
 	insertDefs(b, rs, numDefs)
 
 	commitID := fmt.Sprintf("commit%d", *numVersions/2)
-	defFilter := DefFilterFunc(func(def *graph.Def) bool {
-		return def.CommitID == commitID && def.File == "file0"
-	})
+	defFilter := []DefFilter{
+		ByCommitID(commitID),
+		DefFilterFunc(func(def *graph.Def) bool {
+			return def.File == "file0"
+		}),
+	}
 
 	runtime.GC()
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		_, err := rs.Defs(defFilter)
+		_, err := rs.Defs(defFilter...)
 		if err != nil {
 			b.Fatal(err)
 		}
@@ -157,6 +173,28 @@ func benchmarkDefsByFile(b *testing.B, rs RepoStoreImporter, numDefs int) {
 }
 
 func benchmarkRefsByFile(b *testing.B, rs RepoStoreImporter, numRefs int) {
+	insertRefs(b, rs, numRefs)
+
+	commitID := fmt.Sprintf("commit%d", *numVersions/2)
+	refFilter := []RefFilter{
+		ByCommitID(commitID),
+		RefFilterFunc(func(ref *graph.Ref) bool {
+			return ref.File == "file0"
+		}),
+	}
+
+	runtime.GC()
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		_, err := rs.Refs(refFilter...)
+		if err != nil {
+			b.Fatal(err)
+		}
+	}
+}
+
+func benchmarkRefsByFile_filterFunc(b *testing.B, rs RepoStoreImporter, numRefs int) {
 	insertRefs(b, rs, numRefs)
 
 	commitID := fmt.Sprintf("commit%d", *numVersions/2)
@@ -179,15 +217,18 @@ func benchmarkRefsByDefPath(b *testing.B, rs RepoStoreImporter, numRefs int) {
 	insertRefs(b, rs, numRefs)
 
 	commitID := fmt.Sprintf("commit%d", *numVersions/2)
-	refFilter := RefFilterFunc(func(ref *graph.Ref) bool {
-		return ref.CommitID == commitID && ref.DefPath == "path0"
-	})
+	refFilter := []RefFilter{
+		ByCommitID(commitID),
+		RefFilterFunc(func(ref *graph.Ref) bool {
+			return ref.DefPath == "path0"
+		}),
+	}
 
 	runtime.GC()
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		_, err := rs.Refs(refFilter)
+		_, err := rs.Refs(refFilter...)
 		if err != nil {
 			b.Fatal(err)
 		}
