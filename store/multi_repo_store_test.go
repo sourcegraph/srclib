@@ -32,7 +32,10 @@ func testMultiRepoStore(t *testing.T, newFn func() MultiRepoStoreImporter) {
 	testMultiRepoStore_Units(t, &labeledMultiRepoStoreImporter{newFn(), "units"})
 	testMultiRepoStore_Def(t, &labeledMultiRepoStoreImporter{newFn(), "def"})
 	testMultiRepoStore_Defs(t, &labeledMultiRepoStoreImporter{newFn(), "defs"})
+	testMultiRepoStore_Defs_filter(t, &labeledMultiRepoStoreImporter{newFn(), "defs filter"})
 	testMultiRepoStore_Refs(t, &labeledMultiRepoStoreImporter{newFn(), "refs"})
+	testMultiRepoStore_Refs_filterByRepoCommitAndFile(t, &labeledMultiRepoStoreImporter{newFn(), "refs filter-by-repo-commit-file"})
+	testMultiRepoStore_Refs_filterByDef(t, &labeledMultiRepoStoreImporter{newFn(), "refs filter-by-def"})
 }
 
 func testMultiRepoStore_uninitialized(t *testing.T, mrs MultiRepoStoreImporter) {
@@ -300,10 +303,10 @@ func testMultiRepoStore_Defs(t *testing.T, mrs MultiRepoStoreImporter) {
 }
 
 func testMultiRepoStore_Defs_filter(t *testing.T, mrs MultiRepoStoreImporter) {
-	if err := mrs.Import("r", "c", &unit.SourceUnit{Type: "t", Name: "u"}, graph.Output{Defs: []*graph.Def{{DefKey: graph.DefKey{Path: "p"}}}}); err != nil {
-		t.Errorf("%s: Import: %s", mrs, err)
-	}
-	if err := mrs.Import("r", "c", &unit.SourceUnit{Type: "t", Name: "u"}, graph.Output{Defs: []*graph.Def{{DefKey: graph.DefKey{Path: "p2"}}}}); err != nil {
+	if err := mrs.Import("r", "c", &unit.SourceUnit{Type: "t", Name: "u"}, graph.Output{Defs: []*graph.Def{
+		{DefKey: graph.DefKey{Path: "p"}},
+		{DefKey: graph.DefKey{Path: "p2"}},
+	}}); err != nil {
 		t.Errorf("%s: Import: %s", mrs, err)
 	}
 	if err := mrs.Import("r", "c2", &unit.SourceUnit{Type: "t", Name: "u"}, graph.Output{Defs: []*graph.Def{{DefKey: graph.DefKey{Path: "p"}}}}); err != nil {
@@ -380,6 +383,116 @@ func testMultiRepoStore_Refs(t *testing.T, mrs MultiRepoStoreImporter) {
 	}
 
 	refs, err := mrs.Refs()
+	if err != nil {
+		t.Errorf("%s: Refs(): %s", mrs, err)
+	}
+	if !reflect.DeepEqual(refs, want) {
+		t.Errorf("%s: Refs(): got refs %v, want %v", mrs, refs, want)
+	}
+}
+
+func testMultiRepoStore_Refs_filterByRepoCommitAndFile(t *testing.T, mrs MultiRepoStoreImporter) {
+	data1 := graph.Output{
+		Refs: []*graph.Ref{
+			{File: "f1"},
+			{File: "f2"},
+			{File: "f3"},
+		},
+	}
+	if err := mrs.Import("r", "c", &unit.SourceUnit{Type: "t", Name: "u"}, data1); err != nil {
+		t.Errorf("%s: Import: %s", mrs, err)
+	}
+	data2 := graph.Output{
+		Refs: []*graph.Ref{
+			{File: "f4"},
+			{File: "f5"},
+			{File: "f6"},
+		},
+	}
+	if err := mrs.Import("r", "c2", &unit.SourceUnit{Type: "t", Name: "u"}, data2); err != nil {
+		t.Errorf("%s: Import: %s", mrs, err)
+	}
+	data3 := graph.Output{
+		Refs: []*graph.Ref{
+			{File: "f7"},
+			{File: "f8"},
+			{File: "f9"},
+		},
+	}
+	if err := mrs.Import("r2", "c", &unit.SourceUnit{Type: "t", Name: "u"}, data3); err != nil {
+		t.Errorf("%s: Import: %s", mrs, err)
+	}
+
+	want := []*graph.Ref{
+		{
+			DefRepo:     "r",
+			DefUnitType: "t",
+			DefUnit:     "u",
+			File:        "f1",
+			CommitID:    "c",
+			Repo:        "r",
+			Unit:        "u",
+			UnitType:    "t",
+		},
+		{
+			DefRepo:     "r",
+			DefUnitType: "t",
+			DefUnit:     "u",
+			File:        "f3",
+			CommitID:    "c",
+			Repo:        "r",
+			Unit:        "u",
+			UnitType:    "t",
+		},
+	}
+
+	byFiles := RefFilterFunc(func(ref *graph.Ref) bool { return ref.File == "f1" || ref.File == "f3" })
+	refs, err := mrs.Refs(ByRepo("r"), ByCommitID("c"), byFiles)
+	if err != nil {
+		t.Errorf("%s: Refs(): %s", mrs, err)
+	}
+	if !reflect.DeepEqual(refs, want) {
+		t.Errorf("%s: Refs(): got refs %v, want %v", mrs, refs, want)
+	}
+}
+
+func testMultiRepoStore_Refs_filterByDef(t *testing.T, mrs MultiRepoStoreImporter) {
+	data := graph.Output{
+		Refs: []*graph.Ref{
+			{
+				DefRepo:     "",
+				DefUnitType: "",
+				DefUnit:     "",
+				DefPath:     "p",
+				File:        "f",
+			},
+		},
+	}
+	if err := mrs.Import("r", "c", &unit.SourceUnit{Type: "t", Name: "u"}, data); err != nil {
+		t.Errorf("%s: Import: %s", mrs, err)
+	}
+
+	want := []*graph.Ref{
+		{
+			DefRepo:     "r",
+			DefUnitType: "t",
+			DefUnit:     "u",
+			DefPath:     "p",
+			File:        "f",
+			CommitID:    "c",
+			Repo:        "r",
+			Unit:        "u",
+			UnitType:    "t",
+		},
+	}
+
+	// Note: this filter does not work because DefRepo is populated
+	// sparsely. See the docs on byRefDefFilter for more info.
+	//
+	//   RefFilterFunc(func(ref *graph.Ref) bool { return ref.DefRepo == "r" })
+	//
+
+	refs, err := mrs.Refs(ByRefDef(graph.RefDefKey{DefPath: "p", DefRepo: "r", DefUnitType: "t", DefUnit: "u"}))
 	if err != nil {
 		t.Errorf("%s: Refs(): %s", mrs, err)
 	}

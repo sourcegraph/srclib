@@ -148,6 +148,7 @@ func (s treeStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 
 	var allRefs []*graph.Ref
 	for commitID, ts := range tss {
+		setImpliedCommitID(f, commitID)
 		refs, err := ts.Refs(f...)
 		if err != nil {
 			return nil, err

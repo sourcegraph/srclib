@@ -450,25 +450,16 @@ func (c *StoreRefsCmd) filters() []store.RefFilter {
 			return ref.File == c.File
 		}))
 	}
-	if c.DefRepo != "" {
-		fs = append(fs, store.RefFilterFunc(func(ref *graph.Ref) bool {
-			return ref.DefRepo == c.DefRepo
+	if c.DefRepo != "" && c.DefUnitType != "" && c.DefUnit != "" && c.DefPath != "" {
+		fs = append(fs, store.ByRefDef(graph.RefDefKey{
+			DefRepo:     c.DefRepo,
+			DefUnitType: c.DefUnitType,
+			DefUnit:     c.DefUnit,
+			DefPath:     c.DefPath,
 		}))
 	}
-	if c.DefUnitType != "" {
-		fs = append(fs, store.RefFilterFunc(func(ref *graph.Ref) bool {
-			return ref.DefUnitType == c.DefUnitType
-		}))
-	}
-	if c.DefUnit != "" {
-		fs = append(fs, store.RefFilterFunc(func(ref *graph.Ref) bool {
-			return ref.DefUnit == c.DefUnit
-		}))
-	}
-	if c.DefPath != "" {
-		fs = append(fs, store.RefFilterFunc(func(ref *graph.Ref) bool {
-			return ref.DefPath == c.DefPath
-		}))
+	if (c.DefRepo != "" || c.DefUnitType != "" || c.DefUnit != "" || c.DefPath != "") && (c.DefRepo == "" || c.DefUnitType == "" || c.DefUnit == "" || c.DefPath == "") {
+		log.Fatal("must specify either all or neither of --def-repo, --def-unit-type, --def-unit, and --def-path (to filter by ref target def)")
 	}
 	return fs
 }

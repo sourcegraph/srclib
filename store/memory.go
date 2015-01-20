@@ -84,6 +84,9 @@ func (s *memoryMultiRepoStore) Import(repo, commitID string, unit *unit.SourceUn
 	if _, present := s.repos[repo]; !present {
 		s.repos[repo] = newMemoryRepoStore()
 	}
+	if unit != nil {
+		cleanForImport(&data, repo, unit.Type, unit.Name)
+	}
 	return s.repos[repo].Import(commitID, unit, data)
 }
 
@@ -139,6 +142,9 @@ func (s *memoryRepoStore) Import(commitID string, unit *unit.SourceUnit, data gr
 	}
 	if _, present := s.trees[commitID]; !present {
 		s.trees[commitID] = newMemoryTreeStore()
+	}
+	if unit != nil {
+		cleanForImport(&data, "", unit.Type, unit.Name)
 	}
 	return s.trees[commitID].Import(unit, data)
 }
@@ -226,6 +232,8 @@ func (s *memoryTreeStore) Import(u *unit.SourceUnit, data graph.Output) error {
 	if u == nil {
 		return nil
 	}
+
+	cleanForImport(&data, "", u.Type, u.Name)
 
 	s.units = append(s.units, u)
 	unitID := unitID{unitType: u.Type, unit: u.Name}
@@ -318,7 +326,7 @@ func (s *memoryUnitStore) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 }
 
 func (s *memoryUnitStore) Import(data graph.Output) error {
-	cleanForUnitStoreImport(&data)
+	cleanForImport(&data, "", "", "")
 	s.data = &data
 	return nil
 }
