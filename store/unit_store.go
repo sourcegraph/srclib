@@ -97,6 +97,7 @@ func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 
 	var allRefs []*graph.Ref
 	for u, us := range uss {
+		setImpliedUnit(f, u)
 		refs, err := us.Refs(f...)
 		if err != nil {
 			return nil, err
@@ -116,7 +117,7 @@ func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 	return allRefs, nil
 }
 
-func cleanForUnitStoreImport(data *graph.Output) {
+func cleanForImport(data *graph.Output, repo, unitType, unit string) {
 	for _, def := range data.Defs {
 		def.Unit = ""
 		def.UnitType = ""
@@ -128,6 +129,15 @@ func cleanForUnitStoreImport(data *graph.Output) {
 		ref.UnitType = ""
 		ref.Repo = ""
 		ref.CommitID = ""
+		if repo != "" && ref.DefRepo == repo {
+			ref.DefRepo = ""
+		}
+		if unitType != "" && ref.DefUnitType == unitType {
+			ref.DefUnitType = ""
+		}
+		if unit != "" && ref.DefUnit == unit {
+			ref.DefUnit = ""
+		}
 	}
 	for _, doc := range data.Docs {
 		doc.Unit = ""

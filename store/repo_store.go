@@ -224,6 +224,7 @@ func (s repoStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 
 	var allRefs []*graph.Ref
 	for repo, rs := range rss {
+		setImpliedRepo(f, repo)
 		refs, err := rs.Refs(f...)
 		if err != nil {
 			return nil, err

@@ -117,6 +117,9 @@ func (s *flatFileMultiRepoStore) openAllRepoStores() (map[string]RepoStore, erro
 var _ repoStoreOpener = (*flatFileMultiRepoStore)(nil)
 
 func (s *flatFileMultiRepoStore) Import(repo, commitID string, unit *unit.SourceUnit, data graph.Output) error {
+	if unit != nil {
+		cleanForImport(&data, repo, unit.Type, unit.Name)
+	}
 	repoPath := path.Join(repo, SrclibStoreDir)
 	rs := NewFlatFileRepoStore(rwvfs.Sub(s.fs, repoPath), &FlatFileConfig{Codec: s.codec})
 	return rs.Import(commitID, unit, data)
@@ -188,6 +191,9 @@ func (s *flatFileRepoStore) versionDirs() ([]string, error) {
 }
 
 func (s *flatFileRepoStore) Import(commitID string, unit *unit.SourceUnit, data graph.Output) error {
+	if unit != nil {
+		cleanForImport(&data, "", unit.Type, unit.Name)
+	}
 	ts := s.newTreeStore(commitID)
 	return ts.Import(unit, data)
 }
@@ -338,6 +344,7 @@ func (s *flatFileTreeStore) Import(unit *unit.SourceUnit, data graph.Output) (er
 		return err
 	}
 	us := &flatFileUnitStore{fs: rwvfs.Sub(s.fs, dir), codec: s.codec}
+	cleanForImport(&data, "", unit.Type, unit.Name)
 	return us.Import(data)
 }
 
@@ -422,7 +429,7 @@ func (s *flatFileUnitStore) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 }
 
 func (s *flatFileUnitStore) Import(data graph.Output) (err error) {
-	cleanForUnitStoreImport(&data)
+	cleanForImport(&data, "", "", "")
 	f, err := s.fs.Create(flatFileUnitDataFilename)
 	if err != nil {
 		return err

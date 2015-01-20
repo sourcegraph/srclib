@@ -379,13 +379,154 @@ func (f byDefKeyFilter) SelectDef(def *graph.Def) bool {
 		def.Path == f.key.Path
 }
 
-// A storesFilter is a named type that only exists for cosmetic
-// purposes. It is passed to the methods of repoStores, treeStores,
-// and unitStores that returns the map of stores. If it is a known
-// By*Filter type (e.g., ByRepoFilter), those methods use it to
-// restrict the contents of the map they return. Otherwise the full
-// map of stores is returned.
-type storesFilter interface{}
+// ByRefDefFilter is implemented by filters that restrict their
+// selection to refs with a specific target definition.
+type ByRefDefFilter interface {
+	ByDefRepo() string
+	ByDefUnitType() string
+	ByDefUnit() string
+	ByDefPath() string
+}
+
+// ByRefDef returns a filter by ref target def. It panics if any
+// fields on the target def are not set.
+func ByRefDef(def graph.RefDefKey) RefFilter {
+	if def.DefRepo == "" {
+		panic("def.DefRepo: empty")
+	}
+	if def.DefUnitType == "" {
+		panic("def.DefUnitType: empty")
+	}
+	if def.DefUnit == "" {
+		panic("def.DefUnit: empty")
+	}
+	if def.DefPath == "" {
+		panic("def.DefPath: empty")
+	}
+	return &byRefDefFilter{def: def}
+}
+
+type byRefDefFilter struct {
+	def graph.RefDefKey
+
+	// These fields hold the repo and source unit that the filter is
+	// being applied to. This workaround is necessary because
+	// otherwise the filter would have no way to match the Ref.DefXyz
+	// fields, since they are zeroed out if they equal the values for
+	// the current repo and source unit.
+	//
+	// Unlike for other filters, a ByRefDef filter can't be used
+	// (currently) to narrow the scope since a ref's def does not
+	// determine where the ref is stored.
+
+	impliedRepo     string // the implied DefRepo value when ref.DefRepo == ""
+	impliedUnitType string // the implied DefUnitType value when ref.DefUnitType == ""
+	impliedUnit     string // the implied DefUnit value when ref.DefUnit == ""
+}
+
+func (f *byRefDefFilter) ByDefRepo() string          { return f.def.DefRepo }
+func (f *byRefDefFilter) ByDefUnitType() string      { return f.def.DefUnitType }
+func (f *byRefDefFilter) ByDefUnit() string          { return f.def.DefUnit }
+func (f *byRefDefFilter) ByDefPath() string          { return f.def.DefPath }
+func (f *byRefDefFilter) setImpliedRepo(repo string) { f.impliedRepo = repo }
+func (f *byRefDefFilter) setImpliedUnit(u unitID) {
+	f.impliedUnitType, f.impliedUnit = u.unitType, u.unit
+}
+func (f *byRefDefFilter) SelectRef(ref *graph.Ref) bool {
+	return ((ref.DefRepo == "" && f.impliedRepo == f.def.DefRepo) || ref.DefRepo == f.def.DefRepo) &&
+		((ref.DefUnitType == "" && f.impliedUnitType == f.def.DefUnitType) || ref.DefUnitType == f.def.DefUnitType) &&
+		((ref.DefUnit == "" && f.impliedUnit == f.def.DefUnit) || ref.DefUnit == f.def.DefUnit) &&
+		ref.DefPath == f.def.DefPath
+}
+
+var _ impliedRepoSetter = (*byRefDefFilter)(nil)
+var _ impliedUnitSetter = (*byRefDefFilter)(nil)
+
+// An AbsRefFilterFunc creates a RefFilter that selects only those
+// refs for which the func returns true. Unlike RefFilterFunc, the
+// ref's Def{Repo,UnitType,Unit,Path}, Repo, and CommitID fields are
+// populated.
+//
+// AbsRefFilterFunc is less efficient than RefFilterFunc because it
+// must make a copy of each ref before passing it to the func. If you
+// don't need to access any of the fields it sets, use a
+// RefFilterFunc.
+func AbsRefFilterFunc(f RefFilterFunc) RefFilter {
+	if f == nil {
+		panic("AbsRefFilterFunc: f == nil")
+	}
+	return &absRefFilterFunc{f: f}
+}
+
+type absRefFilterFunc struct {
+	f RefFilterFunc
+
+	impliedRepo     string // the implied DefRepo/Repo value when those are empty
+	impliedCommitID string // the CommitID currently being filtered
+	impliedUnitType string // the implied DefUnitType/UnitType value when those are empty
+	impliedUnit     string // the implied DefUnit/Unit value when those are empty
+}
+
+func (f *absRefFilterFunc) setImpliedRepo(repo string)         { f.impliedRepo = repo }
+func (f *absRefFilterFunc) setImpliedCommitID(commitID string) { f.impliedCommitID = commitID }
+func (f *absRefFilterFunc) setImpliedUnit(u unitID) {
+	f.impliedUnitType, f.impliedUnit = u.unitType, u.unit
+}
+func (f *absRefFilterFunc) SelectRef(ref *graph.Ref) bool {
+	copy := *ref
+	copy.Repo = f.impliedRepo
+	copy.UnitType = f.impliedUnitType
+	copy.Unit = f.impliedUnit
+	copy.CommitID = f.impliedCommitID
+	if copy.DefRepo == "" {
+		copy.DefRepo = f.impliedRepo
+	}
+	if copy.DefUnitType == "" {
+		copy.DefUnitType = f.impliedUnitType
+	}
+	if copy.DefUnit == "" {
+		copy.DefUnit = f.impliedUnit
+	}
+	return f.f(&copy)
+}
+
+var _ impliedRepoSetter = (*absRefFilterFunc)(nil)
+var _ impliedCommitIDSetter = (*absRefFilterFunc)(nil)
+var _ impliedUnitSetter = (*absRefFilterFunc)(nil)
+
+type impliedRepoSetter interface {
+	setImpliedRepo(string)
+}
+type impliedCommitIDSetter interface {
+	setImpliedCommitID(string)
+}
+type impliedUnitSetter interface {
+	setImpliedUnit(unitID)
+}
+
+func setImpliedRepo(fs []RefFilter, repo string) {
+	for _, f := range fs {
+		if f, ok := f.(impliedRepoSetter); ok {
+			f.setImpliedRepo(repo)
+		}
+	}
+}
+
+func setImpliedCommitID(fs []RefFilter, commitID string) {
+	for _, f := range fs {
+		if f, ok := f.(impliedCommitIDSetter); ok {
+			f.setImpliedCommitID(commitID)
+		}
+	}
+}
+
+func setImpliedUnit(fs []RefFilter, u unitID) {
+	for _, f := range fs {
+		if f, ok := f.(impliedUnitSetter); ok {
+			f.setImpliedUnit(u)
+		}
+	}
+}
 
 func storeFilters(anyFilters interface{}) []interface{} {
 	switch o := anyFilters.(type) {
