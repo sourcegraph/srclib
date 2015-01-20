@@ -141,9 +141,9 @@ func benchmarkDefsByFile(b *testing.B, rs RepoStoreImporter, numDefs int) {
 	insertDefs(b, rs, numDefs)
 
 	commitID := fmt.Sprintf("commit%d", *numVersions/2)
-	defFilter := func(def *graph.Def) bool {
+	defFilter := DefFilterFunc(func(def *graph.Def) bool {
 		return def.CommitID == commitID && def.File == "file0"
-	}
+	})
 
 	runtime.GC()
 	b.ResetTimer()
@@ -160,9 +160,9 @@ func benchmarkRefsByFile(b *testing.B, rs RepoStoreImporter, numRefs int) {
 	insertRefs(b, rs, numRefs)
 
 	commitID := fmt.Sprintf("commit%d", *numVersions/2)
-	refFilter := func(ref *graph.Ref) bool {
+	refFilter := RefFilterFunc(func(ref *graph.Ref) bool {
 		return ref.CommitID == commitID && ref.File == "file0"
-	}
+	})
 
 	runtime.GC()
 	b.ResetTimer()
@@ -179,9 +179,9 @@ func benchmarkRefsByDefPath(b *testing.B, rs RepoStoreImporter, numRefs int) {
 	insertRefs(b, rs, numRefs)
 
 	commitID := fmt.Sprintf("commit%d", *numVersions/2)
-	refFilter := func(ref *graph.Ref) bool {
+	refFilter := RefFilterFunc(func(ref *graph.Ref) bool {
 		return ref.CommitID == commitID && ref.DefPath == "path0"
-	}
+	})
 
 	runtime.GC()
 	b.ResetTimer()

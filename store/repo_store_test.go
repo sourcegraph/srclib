@@ -175,16 +175,16 @@ func testRepoStore_Def(t *testing.T, rs RepoStoreImporter) {
 	}
 
 	def, err := rs.Def(graph.DefKey{Path: "p"})
-	if !IsNotExist(err) {
-		t.Errorf("%s: Def(no unit): got err %v, want IsNotExist-satisfying err", rs, err)
+	if !isInvalidKey(err) {
+		t.Errorf("%s: Def(no unit): got err %v, want InvalidKeyError", rs, err)
 	}
 	if def != nil {
 		t.Errorf("%s: Def: got def %v, want nil", rs, def)
 	}
 
 	def, err = rs.Def(graph.DefKey{UnitType: "t", Unit: "u", Path: "p"})
-	if !IsNotExist(err) {
-		t.Errorf("%s: Def(no commit): got err %v, want IsNotExist-satisfying err", rs, err)
+	if !isInvalidKey(err) {
+		t.Errorf("%s: Def(no repo): got err %v, want InvalidKeyError", rs, err)
 	}
 	if def != nil {
 		t.Errorf("%s: Def: got def %v, want nil", rs, def)

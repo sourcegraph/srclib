@@ -1,9 +1,6 @@
 package store
 
-import (
-	"sourcegraph.com/sourcegraph/srclib/graph"
-	"sourcegraph.com/sourcegraph/srclib/unit"
-)
+import "sourcegraph.com/sourcegraph/srclib/graph"
 
 // A UnitStore stores and accesses srclib build data for a single
 // source unit.
@@ -31,94 +28,65 @@ type UnitImporter interface {
 	Import(graph.Output) error
 }
 
-// A DefFilter is used to filter a list of defs to only those for
-// which the func returns true.
-type DefFilter func(*graph.Def) bool
-
-// allDefs is a DefFilter that selects all defs.
-func allDefs(*graph.Def) bool { return true }
-
-func defKeyFilter(key graph.DefKey) DefFilter {
-	return func(def *graph.Def) bool {
-		return def.DefKey == key
-	}
-}
-
-func defPathFilter(path string) DefFilter {
-	return func(def *graph.Def) bool {
-		return def.Path == path
-	}
-}
-
-// A RefFilter is used to filter a list of refs to only those for
-// which the func returns true.
-type RefFilter func(*graph.Ref) bool
-
-// allRefs is a RefFilter that selects all refs.
-func allRefs(*graph.Ref) bool { return true }
-
 // A unitStores is a UnitStore whose methods call the
 // corresponding method on each of the unit stores returned by the
 // unitStores func.
 type unitStores struct {
-	unitStores func() (map[unit.Key]UnitStore, error)
+	opener unitStoreOpener
 }
 
 var _ UnitStore = (*unitStores)(nil)
 
 func (s unitStores) Def(key graph.DefKey) (*graph.Def, error) {
-	uss, err := s.unitStores()
-	if err != nil {
+	if err := checkDefKeyValidForTreeStore(key); err != nil {
 		return nil, err
 	}
 
-	for unitKey, us := range uss {
-		if !defUnitFilter(unitKey)(&graph.Def{DefKey: key}) {
+	uss, err := openUnitStores(s.opener, ByUnit(key.UnitType, key.Unit))
+	if err != nil {
+		if isStoreNotExist(err) {
+			return nil, errDefNotExist
+		}
+		return nil, err
+	}
+
+	for u, us := range uss {
+		if key.UnitType != u.unitType || key.Unit != u.unit {
 			continue
 		}
-		key.UnitType = ""
-		key.Unit = ""
 		def, err := us.Def(key)
 		if err != nil {
-			if IsNotExist(err) {
+			if IsNotExist(err) || isStoreNotExist(err) {
 				continue
 			}
 			return nil, err
 		}
-		if def.UnitType == "" {
-			def.UnitType = unitKey.UnitType
-		}
-		if def.Unit == "" {
-			def.Unit = unitKey.Unit
-		}
+		def.UnitType = u.unitType
+		def.Unit = u.unit
 		return def, nil
 	}
 	return nil, errDefNotExist
 }
 
 func (s unitStores) Defs(f DefFilter) ([]*graph.Def, error) {
-	if f == nil {
-		f = allDefs
-	}
-
-	uss, err := s.unitStores()
+	uss, err := openUnitStores(s.opener, f)
 	if err != nil {
 		return nil, err
 	}
 
+	if f == nil {
+		f = allDefs
+	}
+
 	var allDefs []*graph.Def
-	for unitKey, us := range uss {
-		defs, err := us.Defs(func(def *graph.Def) bool {
-			if def.UnitType == "" {
-				def.UnitType = unitKey.UnitType
-			}
-			if def.Unit == "" {
-				def.Unit = unitKey.Unit
-			}
-			return f(def)
-		})
+	for u, us := range uss {
+		defs, err := us.Defs(f)
 		if err != nil {
 			return nil, err
+		}
+		for _, def := range defs {
+			def.UnitType = u.unitType
+			def.Unit = u.unit
 		}
 		allDefs = append(allDefs, defs...)
 	}
@@ -126,34 +94,30 @@ func (s unitStores) Defs(f DefFilter) ([]*graph.Def, error) {
 }
 
 func (s unitStores) Refs(f RefFilter) ([]*graph.Ref, error) {
-	if f == nil {
-		f = allRefs
-	}
-
-	uss, err := s.unitStores()
+	uss, err := openUnitStores(s.opener, f)
 	if err != nil {
 		return nil, err
 	}
 
+	if f == nil {
+		f = allRefs
+	}
+
 	var allRefs []*graph.Ref
-	for unitKey, us := range uss {
-		refs, err := us.Refs(func(ref *graph.Ref) bool {
-			if ref.UnitType == "" {
-				ref.UnitType = unitKey.UnitType
-			}
-			if ref.Unit == "" {
-				ref.Unit = unitKey.Unit
-			}
-			if ref.DefUnitType == "" {
-				ref.DefUnitType = unitKey.UnitType
-			}
-			if ref.DefUnit == "" {
-				ref.DefUnit = unitKey.Unit
-			}
-			return f(ref)
-		})
+	for u, us := range uss {
+		refs, err := us.Refs(f)
 		if err != nil {
 			return nil, err
+		}
+		for _, ref := range refs {
+			ref.UnitType = u.unitType
+			ref.Unit = u.unit
+			if ref.DefUnitType == "" {
+				ref.DefUnitType = u.unitType
+			}
+			if ref.DefUnit == "" {
+				ref.DefUnit = u.unit
+			}
 		}
 		allRefs = append(allRefs, refs...)
 	}
@@ -185,4 +149,13 @@ func cleanForUnitStoreImport(data *graph.Output) {
 		ann.Repo = ""
 		ann.CommitID = ""
 	}
+}
+
+// checkDefKeyValidForTreeStore returns an *InvalidKeyError if the def
+// key is underspecified for use in (UnitStore).Def.
+func checkDefKeyValidForUnitStore(key graph.DefKey) error {
+	if key.Path == "" {
+		return &InvalidKeyError{"empty DefKey.Path"}
+	}
+	return nil
 }

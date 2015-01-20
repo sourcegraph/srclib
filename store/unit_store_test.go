@@ -32,7 +32,7 @@ func testUnitStore(t *testing.T, newFn func() unitStoreImporter) {
 }
 
 func testUnitStore_uninitialized(t *testing.T, us UnitStore) {
-	def, err := us.Def(graph.DefKey{})
+	def, err := us.Def(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"})
 	if err == nil {
 		t.Errorf("%s: Def: got nil err", us)
 	}
@@ -58,7 +58,7 @@ func testUnitStore_uninitialized(t *testing.T, us UnitStore) {
 }
 
 func testUnitStore_empty(t *testing.T, us UnitStore) {
-	def, err := us.Def(graph.DefKey{})
+	def, err := us.Def(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"})
 	if !IsNotExist(err) {
 		t.Errorf("%s: Def: got err %v, want IsNotExist-satisfying err", us, err)
 	}
