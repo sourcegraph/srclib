@@ -3,7 +3,10 @@ package src
 import (
 	"fmt"
 	"log"
+	"net/url"
 	"path/filepath"
+
+	"github.com/sourcegraph/s3vfs"
 
 	"strings"
 
@@ -105,6 +108,8 @@ func init() {
 type StoreCmd struct {
 	Type string `short:"t" long:"type" description:"the (multi-)repo store type to use (RepoStore, MultiRepoStore, etc.)" default:"RepoStore"`
 	Root string `short:"r" long:"root" description:"the root of the store (repo clone dir for RepoStore, global path for MultiRepoStore, etc.)"`
+
+	RemoteStore bool `long:"remote-store" description:"root is an S3 file system path"`
 }
 
 var storeCmd StoreCmd
@@ -115,11 +120,21 @@ func (c *StoreCmd) Execute(args []string) error { return nil }
 // options.
 func (c *StoreCmd) store() (interface{}, error) {
 	conf := &store.FlatFileConfig{Codec: store.GobAndJSONGzipCodec{}}
+	var fs rwvfs.FileSystem
+	if c.RemoteStore {
+		u, err := url.Parse(c.Root)
+		if err != nil {
+			log.Fatalf("Error parsing remote directory %s: %v", c.Root, err)
+		}
+		fs = s3vfs.S3(u, nil)
+	} else {
+		fs = rwvfs.OS(c.Root)
+	}
 	switch c.Type {
 	case "RepoStore":
-		return store.NewFlatFileRepoStore(rwvfs.OS(c.Root), conf), nil
+		return store.NewFlatFileRepoStore(fs, conf), nil
 	case "MultiRepoStore":
-		return store.NewFlatFileMultiRepoStore(rwvfs.OS(c.Root), conf), nil
+		return store.NewFlatFileMultiRepoStore(fs, conf), nil
 	default:
 		return nil, fmt.Errorf("unrecognized store --type value: %q (valid values are RepoStore, MultiRepoStore)", c.Type)
 	}
@@ -133,7 +148,8 @@ type StoreImportCmd struct {
 	UnitType string `long:"unit-type" description:"only import source units with this type"`
 	CommitID string `long:"commit" description:"commit ID of commit whose data to import"`
 
-	RemoteBuildData bool `long:"remote" description:"import remote build data (not the local .srclib-cache build data)"`
+	BuildDataRepo   string `long:"build-data-repo" description:"the repo to import from. defaults to 'repo' if unset"`
+	RemoteBuildData bool   `long:"remote-build-data" description:"import remote build data (not the local .srclib-cache build data)"`
 }
 
 var storeImportCmd StoreImportCmd
@@ -149,7 +165,10 @@ func (c *StoreImportCmd) Execute(args []string) error {
 		return err
 	}
 
-	bdfs, label, err := getBuildDataFS(!c.RemoteBuildData, c.Repo, c.CommitID)
+	if c.BuildDataRepo == "" {
+		c.BuildDataRepo = c.Repo
+	}
+	bdfs, label, err := getBuildDataFS(!c.RemoteBuildData, c.BuildDataRepo, c.CommitID)
 	if err != nil {
 		return err
 	}
