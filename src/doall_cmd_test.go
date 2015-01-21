@@ -1,3 +1,5 @@
+// +build lgtest
+
 package src_test
 
 import (
