@@ -118,6 +118,9 @@ func NormalizeData(unitType, dir string, o *Output) error {
 	if err := ValidateDefs(o.Defs); err != nil {
 		return err
 	}
+	if err := ValidateDocs(o.Docs); err != nil {
+		return err
+	}
 
 	sortedOutput(o)
 	return nil
