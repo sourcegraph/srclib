@@ -5,12 +5,10 @@ import (
 	"log"
 	"net/url"
 	"path/filepath"
-
-	"github.com/sourcegraph/s3vfs"
-
 	"strings"
 
 	"sourcegraph.com/sourcegraph/rwvfs"
+	"sourcegraph.com/sourcegraph/s3vfs"
 	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/graph"
