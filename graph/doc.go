@@ -1,5 +1,7 @@
 package graph
 
+import "encoding/json"
+
 // START Doc OMIT
 // Docstring
 type Doc struct {
@@ -18,9 +20,26 @@ type Doc struct {
 	End   int
 }
 
+// Key returns the unique key for the doc.
+func (d *Doc) Key() DocKey {
+	return DocKey{DefKey: d.DefKey, Format: d.Format}
+}
+
+// DocKey is the unique key for a doc. Each doc within a source unit
+// must have a unique DocKey.
+type DocKey struct {
+	DefKey
+	Format string
+}
+
+func (d DocKey) String() string {
+	b, _ := json.Marshal(d)
+	return string(b)
+}
+
 // END Doc OMIT
 
-func (d *Doc) sortKey() string { return d.DefKey.String() }
+func (d *Doc) sortKey() string { return d.Key().String() }
 
 // Sorting
 
