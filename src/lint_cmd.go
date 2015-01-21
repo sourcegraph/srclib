@@ -297,6 +297,9 @@ func lintGraphOutput(baseDir, repoURI, unitType, unitName, path string, checkFil
 	// Check that defs and refs are unique.
 	addMultiErrorAsIssues(grapher.ValidateDefs(o.Defs))
 	addMultiErrorAsIssues(grapher.ValidateRefs(o.Refs))
+	addMultiErrorAsIssues(grapher.ValidateDocs(o.Docs))
+
+	// TODO(sqs): check that docs point to valid defs in the same source unit
 
 	unresolvedInternalRefsByDefKey := grapher.UnresolvedInternalRefs(repoURI, o.Refs, o.Defs)
 	for defKey, unresolvedIRefs := range unresolvedInternalRefsByDefKey {
