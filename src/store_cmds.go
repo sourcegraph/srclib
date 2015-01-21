@@ -121,7 +121,7 @@ func (c *StoreCmd) store() (interface{}, error) {
 	var fs rwvfs.FileSystem
 	// Attempt to parse Root as a url, and fallback to creating an
 	// OS file system if it isn't.
-	if u, err := url.Parse(c.Root); err == nil {
+	if u, err := url.Parse(c.Root); err == nil && strings.HasSuffix(u.Host, "amazonaws.com") {
 		fs = s3vfs.S3(u, nil)
 	} else {
 		fs = rwvfs.OS(c.Root)
