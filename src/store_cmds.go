@@ -108,8 +108,6 @@ func init() {
 type StoreCmd struct {
 	Type string `short:"t" long:"type" description:"the (multi-)repo store type to use (RepoStore, MultiRepoStore, etc.)" default:"RepoStore"`
 	Root string `short:"r" long:"root" description:"the root of the store (repo clone dir for RepoStore, global path for MultiRepoStore, etc.)"`
-
-	RemoteStore bool `long:"remote-store" description:"root is an S3 file system path"`
 }
 
 var storeCmd StoreCmd
@@ -121,11 +119,9 @@ func (c *StoreCmd) Execute(args []string) error { return nil }
 func (c *StoreCmd) store() (interface{}, error) {
 	conf := &store.FlatFileConfig{Codec: store.GobAndJSONGzipCodec{}}
 	var fs rwvfs.FileSystem
-	if c.RemoteStore {
-		u, err := url.Parse(c.Root)
-		if err != nil {
-			log.Fatalf("Error parsing remote directory %s: %v", c.Root, err)
-		}
+	// Attempt to parse Root as a url, and fallback to creating an
+	// OS file system if it isn't.
+	if u, err := url.Parse(c.Root); err == nil {
 		fs = s3vfs.S3(u, nil)
 	} else {
 		fs = rwvfs.OS(c.Root)
