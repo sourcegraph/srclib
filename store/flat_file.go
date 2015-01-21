@@ -401,6 +401,10 @@ func (s *flatFileUnitStore) Def(key graph.DefKey) (*graph.Def, error) {
 func (s *flatFileUnitStore) Defs(f ...DefFilter) ([]*graph.Def, error) {
 	o, err := s.open()
 	if err != nil {
+		if os.IsNotExist(err) {
+			// The data file not existing is equivalent to having no defs.
+			return nil, nil
+		}
 		return nil, err
 	}
 
@@ -416,6 +420,10 @@ func (s *flatFileUnitStore) Defs(f ...DefFilter) ([]*graph.Def, error) {
 func (s *flatFileUnitStore) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 	o, err := s.open()
 	if err != nil {
+		if os.IsNotExist(err) {
+			// The data file not existing is equivalent to having no refs.
+			return nil, nil
+		}
 		return nil, err
 	}
 
