@@ -8,28 +8,10 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
-type mockUnitStore struct {
-	Def_  func(graph.DefKey) (*graph.Def, error)
-	Defs_ func(...DefFilter) ([]*graph.Def, error)
-	Refs_ func(...RefFilter) ([]*graph.Ref, error)
-}
-
-func (m mockUnitStore) Def(key graph.DefKey) (*graph.Def, error) {
-	return m.Def_(key)
-}
-
-func (m mockUnitStore) Defs(f ...DefFilter) ([]*graph.Def, error) {
-	return m.Defs_(f...)
-}
-
-func (m mockUnitStore) Refs(f ...RefFilter) ([]*graph.Ref, error) {
-	return m.Refs_(f...)
-}
-
 // mockNeverCalledUnitStore calls t.Error if any of its methods are
 // called.
-func mockNeverCalledUnitStore(t *testing.T) mockUnitStore {
-	return mockUnitStore{
+func mockNeverCalledUnitStore(t *testing.T) MockUnitStore {
+	return MockUnitStore{
 		Def_: func(key graph.DefKey) (*graph.Def, error) {
 			t.Fatalf("(UnitStore).Def called, but wanted it not to be called (arg key was %+v)", key)
 			return nil, nil

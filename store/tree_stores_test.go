@@ -8,24 +8,10 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
-type mockTreeStore struct {
-	Unit_  func(unit.Key) (*unit.SourceUnit, error)
-	Units_ func(...UnitFilter) ([]*unit.SourceUnit, error)
-	mockUnitStore
-}
-
-func (m mockTreeStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
-	return m.Unit_(key)
-}
-
-func (m mockTreeStore) Units(f ...UnitFilter) ([]*unit.SourceUnit, error) {
-	return m.Units_(f...)
-}
-
 // mockNeverCalledTreeStore calls t.Error if any of its methods are
 // called.
-func mockNeverCalledTreeStore(t *testing.T) mockTreeStore {
-	return mockTreeStore{
+func mockNeverCalledTreeStore(t *testing.T) MockTreeStore {
+	return MockTreeStore{
 		Unit_: func(key unit.Key) (*unit.SourceUnit, error) {
 			t.Fatalf("(TreeStore).Unit called, but wanted it not to be called (arg key was %+v)", key)
 			return nil, nil
@@ -34,7 +20,7 @@ func mockNeverCalledTreeStore(t *testing.T) mockTreeStore {
 			t.Fatalf("(TreeStore).Units called, but wanted it not to be called (arg f was %v)", f)
 			return nil, nil
 		},
-		mockUnitStore: mockNeverCalledUnitStore(t),
+		MockUnitStore: mockNeverCalledUnitStore(t),
 	}
 }
 

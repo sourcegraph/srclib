@@ -8,24 +8,10 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
-type mockRepoStore struct {
-	Version_  func(VersionKey) (*Version, error)
-	Versions_ func(...VersionFilter) ([]*Version, error)
-	mockTreeStore
-}
-
-func (m mockRepoStore) Version(key VersionKey) (*Version, error) {
-	return m.Version_(key)
-}
-
-func (m mockRepoStore) Versions(f ...VersionFilter) ([]*Version, error) {
-	return m.Versions_(f...)
-}
-
 // mockNeverCalledRepoStore calls t.Error if any of its methods are
 // called.
 func mockNeverCalledRepoStore(t *testing.T) RepoStore {
-	return mockRepoStore{
+	return MockRepoStore{
 		Version_: func(key VersionKey) (*Version, error) {
 			t.Fatalf("(RepoStore).Version called, but wanted it not to be called (arg key was %+v)", key)
 			return nil, nil
@@ -34,7 +20,7 @@ func mockNeverCalledRepoStore(t *testing.T) RepoStore {
 			t.Fatalf("(RepoStore).Versions called, but wanted it not to be called (arg f was %v)", f)
 			return nil, nil
 		},
-		mockTreeStore: mockNeverCalledTreeStore(t),
+		MockTreeStore: mockNeverCalledTreeStore(t),
 	}
 }
 
