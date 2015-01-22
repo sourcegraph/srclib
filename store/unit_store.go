@@ -28,6 +28,12 @@ type UnitImporter interface {
 	Import(graph.Output) error
 }
 
+// A UnitStoreImporter implements both UnitStore and UnitImporter.
+type UnitStoreImporter interface {
+	UnitStore
+	UnitImporter
+}
+
 // A unitStores is a UnitStore whose methods call the
 // corresponding method on each of the unit stores returned by the
 // unitStores func.

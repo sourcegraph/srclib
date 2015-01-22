@@ -528,6 +528,31 @@ func setImpliedUnit(fs []RefFilter, u unitID) {
 	}
 }
 
+// ByDefPathFilter is implemented by filters that restrict their
+// selection to defs with a specific def path.
+type ByDefPathFilter interface {
+	ByDefPath() string
+}
+
+// ByDefPath returns a filter by def path. It panics if defPath is
+// empty.
+func ByDefPath(defPath string) interface {
+	DefFilter
+	ByDefPathFilter
+} {
+	if defPath == "" {
+		panic("defPath: empty")
+	}
+	return byDefPathFilter(defPath)
+}
+
+type byDefPathFilter string
+
+func (f byDefPathFilter) ByDefPath() string { return string(f) }
+func (f byDefPathFilter) SelectDef(def *graph.Def) bool {
+	return def.Path == string(f)
+}
+
 func storeFilters(anyFilters interface{}) []interface{} {
 	switch o := anyFilters.(type) {
 	case DefFilter:
