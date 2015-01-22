@@ -1,10 +1,6 @@
 package store
 
-import (
-	"os"
-
-	"sourcegraph.com/sourcegraph/srclib/graph"
-)
+import "sourcegraph.com/sourcegraph/srclib/graph"
 
 // A UnitStore stores and accesses srclib build data for a single
 // source unit.
@@ -75,10 +71,6 @@ func (s unitStores) Def(key graph.DefKey) (*graph.Def, error) {
 func (s unitStores) Defs(f ...DefFilter) ([]*graph.Def, error) {
 	uss, err := openUnitStores(s.opener, f)
 	if err != nil {
-		if os.IsNotExist(err) {
-			// The data file not existing is equivalent to having no defs.
-			return nil, nil
-		}
 		return nil, err
 	}
 
@@ -100,10 +92,6 @@ func (s unitStores) Defs(f ...DefFilter) ([]*graph.Def, error) {
 func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 	uss, err := openUnitStores(s.opener, f)
 	if err != nil {
-		if os.IsNotExist(err) {
-			// The data file not existing is equivalent to having no refs.
-			return nil, nil
-		}
 		return nil, err
 	}
 
