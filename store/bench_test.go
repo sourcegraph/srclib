@@ -55,6 +55,19 @@ func BenchmarkFlatFile_RefsByDefPath500(b *testing.B)   { benchmarkRefsByDefPath
 func BenchmarkFlatFile_RefsByDefPath5000(b *testing.B)  { benchmarkRefsByDefPath(b, repoStore(), 5000) }
 func BenchmarkFlatFile_RefsByDefPath50000(b *testing.B) { benchmarkRefsByDefPath(b, repoStore(), 50000) }
 
+func codecForBenchmark() Codec {
+	switch *codec {
+	case "gob-json":
+		return GobAndJSONCodec{}
+	case "json":
+		return JSONCodec{}
+	default:
+		fmt.Fprintln(os.Stderr, "Unknown -codec:", *codec)
+		os.Exit(1)
+		panic("unreachable")
+	}
+}
+
 func repoStore() RepoStoreImporter {
 	tmpDir, err := ioutil.TempDir("", "srclib-FlatFileRepoStore-bench")
 	if err != nil {
@@ -64,19 +77,7 @@ func repoStore() RepoStoreImporter {
 	setCreateParentDirs(fs)
 
 	var conf FlatFileConfig
-	switch *codec {
-	case "gob-json-gzip":
-		conf.Codec = GobAndJSONGzipCodec{}
-	case "gob-json":
-		conf.Codec = GobAndJSONCodec{}
-	case "json":
-		conf.Codec = JSONCodec{}
-	case "gob":
-		conf.Codec = GobCodec{}
-	default:
-		fmt.Fprintln(os.Stderr, "Unknown -codec:", *codec)
-		os.Exit(1)
-	}
+	conf.Codec = codecForBenchmark()
 
 	return NewFlatFileRepoStore(fs, &conf)
 }

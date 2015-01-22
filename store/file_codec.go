@@ -1,7 +1,6 @@
 package store
 
 import (
-	"compress/gzip"
 	"encoding/gob"
 	"encoding/json"
 	"io"
@@ -19,6 +18,28 @@ type Codec interface {
 	Decode(r io.Reader, v interface{}) error
 }
 
+type statefulCodec interface {
+	NewDecoder(io.Reader) decoder
+}
+
+type decoder interface {
+	Decode(interface{}) error
+}
+
+func newDecoder(c Codec, r io.Reader) decoder {
+	if sc, ok := c.(statefulCodec); ok {
+		return sc.NewDecoder(r)
+	}
+	return unstatefulDecoder{c, r}
+}
+
+type unstatefulDecoder struct {
+	c Codec
+	r io.Reader
+}
+
+func (d unstatefulDecoder) Decode(v interface{}) error { return d.c.Decode(d.r, v) }
+
 type JSONCodec struct{}
 
 func (JSONCodec) Encode(w io.Writer, v interface{}) error {
@@ -29,50 +50,11 @@ func (JSONCodec) Decode(r io.Reader, v interface{}) error {
 	return json.NewDecoder(r).Decode(v)
 }
 
-type GobCodec struct{}
-
-func (GobCodec) Encode(w io.Writer, v interface{}) error {
-	return gob.NewEncoder(w).Encode(v)
+func (JSONCodec) NewDecoder(r io.Reader) decoder {
+	return json.NewDecoder(r)
 }
 
-func (GobCodec) Decode(r io.Reader, v interface{}) error {
-	return gob.NewDecoder(r).Decode(v)
-}
-
-type GobAndJSONGzipCodec struct{}
-
-func (GobAndJSONGzipCodec) Encode(w io.Writer, v interface{}) (err error) {
-	gzw := gzip.NewWriter(w)
-	defer func() {
-		err2 := gzw.Close()
-		if err == nil {
-			err = err2
-		}
-	}()
-	switch v.(type) {
-	case *unit.SourceUnit:
-		return json.NewEncoder(gzw).Encode(v)
-	}
-	return gob.NewEncoder(gzw).Encode(v)
-}
-
-func (GobAndJSONGzipCodec) Decode(r io.Reader, v interface{}) (err error) {
-	gzr, err := gzip.NewReader(r)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		err2 := gzr.Close()
-		if err == nil {
-			err = err2
-		}
-	}()
-	switch v.(type) {
-	case *unit.SourceUnit:
-		return json.NewDecoder(gzr).Decode(v)
-	}
-	return gob.NewDecoder(gzr).Decode(v)
-}
+var _ statefulCodec = (*JSONCodec)(nil)
 
 type GobAndJSONCodec struct{}
 
@@ -91,3 +73,13 @@ func (GobAndJSONCodec) Decode(r io.Reader, v interface{}) (err error) {
 	}
 	return gob.NewDecoder(r).Decode(v)
 }
+
+func (GobAndJSONCodec) NewDecoder(r io.Reader) decoder {
+	// WARNING: this should really return a decoder type that
+	// type-switches on v to choose between gob and json, but it
+	// doesn't. and that works for now because only graph data calls
+	// NewDecoder.
+	return gob.NewDecoder(r)
+}
+
+var _ statefulCodec = (*GobAndJSONCodec)(nil)
