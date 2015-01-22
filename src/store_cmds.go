@@ -142,7 +142,7 @@ type StoreImportCmd struct {
 	UnitType string `long:"unit-type" description:"only import source units with this type"`
 	CommitID string `long:"commit" description:"commit ID of commit whose data to import"`
 
-	BuildDataRepo   string `long:"build-data-repo" description:"the repo to import from. defaults to 'repo' if unset"`
+	BuildDataRepo   string `long:"remote-build-data-repo" description:"the repo whose remote build data to import (defaults to '--repo' option value)"`
 	RemoteBuildData bool   `long:"remote-build-data" description:"import remote build data (not the local .srclib-cache build data)"`
 }
 
