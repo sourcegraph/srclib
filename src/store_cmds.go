@@ -74,7 +74,7 @@ func init() {
 		log.Fatal(err)
 	}
 
-	_, err = c.AddCommand("defs",
+	defsC, err := c.AddCommand("defs",
 		"list defs",
 		"The defs command lists all defs that match a filter.",
 		&storeDefsCmd,
@@ -82,6 +82,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defsC.Aliases = []string{"def"}
 
 	_, err = c.AddCommand("refs",
 		"list refs",
@@ -393,9 +394,7 @@ func (c *StoreDefsCmd) filters() []store.DefFilter {
 		fs = append(fs, store.ByRepo(c.Repo))
 	}
 	if c.Path != "" {
-		fs = append(fs, store.DefFilterFunc(func(def *graph.Def) bool {
-			return def.Path == c.Path
-		}))
+		fs = append(fs, store.ByDefPath(c.Path))
 	}
 	if c.File != "" {
 		fs = append(fs, store.DefFilterFunc(func(def *graph.Def) bool {
