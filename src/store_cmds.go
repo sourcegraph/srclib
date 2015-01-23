@@ -116,7 +116,7 @@ func (c *StoreCmd) Execute(args []string) error { return nil }
 // store returns the store specified by StoreCmd's Type and Root
 // options.
 func (c *StoreCmd) store() (interface{}, error) {
-	conf := &store.FlatFileConfig{Codec: store.GobAndJSONCodec{}}
+	conf := &store.FlatFileConfig{Codec: store.JSONCodec{}}
 	var fs rwvfs.FileSystem
 	// Attempt to parse Root as a url, and fallback to creating an
 	// OS file system if it isn't.
