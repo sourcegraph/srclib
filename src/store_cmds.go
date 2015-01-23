@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -369,12 +370,13 @@ func (c *StoreUnitsCmd) Execute(args []string) error {
 }
 
 type StoreDefsCmd struct {
-	Repo     string `long:"repo"`
-	Path     string `long:"path"`
-	UnitType string `long:"unit-type" `
-	Unit     string `long:"unit"`
-	File     string `long:"file"`
-	CommitID string `long:"commit"`
+	Repo           string `long:"repo"`
+	Path           string `long:"path"`
+	UnitType       string `long:"unit-type" `
+	Unit           string `long:"unit"`
+	File           string `long:"file"`
+	FilePathPrefix string `long:"file-path-prefix"`
+	CommitID       string `long:"commit"`
 
 	NamePrefix string `long:"name-prefix"`
 }
@@ -399,6 +401,12 @@ func (c *StoreDefsCmd) filters() []store.DefFilter {
 	if c.File != "" {
 		fs = append(fs, store.DefFilterFunc(func(def *graph.Def) bool {
 			return def.File == c.File
+		}))
+	}
+	if c.FilePathPrefix != "" {
+		c.FilePathPrefix = path.Clean(c.FilePathPrefix)
+		fs = append(fs, store.DefFilterFunc(func(def *graph.Def) bool {
+			return strings.HasPrefix(def.File, c.FilePathPrefix)
 		}))
 	}
 	if c.NamePrefix != "" {
