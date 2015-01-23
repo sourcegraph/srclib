@@ -13,19 +13,11 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
-// FlatFileConfig configures a flat file store.
-type FlatFileConfig struct {
-	Codec Codec
-}
-
-const SrclibStoreDir = ".srclib-store"
-
 // A flatFileMultiRepoStore is a MultiRepoStore that stores data in
 // flat files.
 type flatFileMultiRepoStore struct {
 	fs rwvfs.FileSystem
 	repoStores
-	codec Codec
 }
 
 // NewFlatFileMultiRepoStore creates a new repository store (that can
@@ -43,16 +35,9 @@ type flatFileMultiRepoStore struct {
 // searched for repos. If nil, it defaults to returning true if the
 // last path component is ".srclib-store" (which means it works with
 // the default repoPathFunc).
-func NewFlatFileMultiRepoStore(fs rwvfs.FileSystem, conf *FlatFileConfig) MultiRepoStoreImporter {
-	if conf == nil {
-		conf = &FlatFileConfig{}
-	}
-	if conf.Codec == nil {
-		conf.Codec = JSONCodec{}
-	}
-
+func NewFlatFileMultiRepoStore(fs rwvfs.FileSystem) MultiRepoStoreImporter {
 	setCreateParentDirs(fs)
-	mrs := &flatFileMultiRepoStore{fs: fs, codec: conf.Codec}
+	mrs := &flatFileMultiRepoStore{fs: fs}
 	mrs.repoStores = repoStores{mrs}
 	return mrs
 }
@@ -95,7 +80,7 @@ func (s *flatFileMultiRepoStore) Repos(f ...RepoFilter) ([]string, error) {
 }
 
 func (s *flatFileMultiRepoStore) openRepoStore(repo string) (RepoStore, error) {
-	return NewFlatFileRepoStore(rwvfs.Sub(s.fs, path.Join(repo, SrclibStoreDir)), &FlatFileConfig{Codec: s.codec}), nil
+	return NewFlatFileRepoStore(rwvfs.Sub(s.fs, path.Join(repo, SrclibStoreDir))), nil
 }
 
 func (s *flatFileMultiRepoStore) openAllRepoStores() (map[string]RepoStore, error) {
@@ -125,7 +110,7 @@ func (s *flatFileMultiRepoStore) Import(repo, commitID string, unit *unit.Source
 	if err := rwvfs.MkdirAll(s.fs, repoPath); err != nil && !os.IsExist(err) {
 		return err
 	}
-	rs := NewFlatFileRepoStore(rwvfs.Sub(s.fs, repoPath), &FlatFileConfig{Codec: s.codec})
+	rs := NewFlatFileRepoStore(rwvfs.Sub(s.fs, repoPath))
 	return rs.Import(commitID, unit, data)
 }
 
@@ -135,22 +120,16 @@ func (s *flatFileMultiRepoStore) String() string { return "flatFileMultiRepoStor
 type flatFileRepoStore struct {
 	fs rwvfs.FileSystem
 	treeStores
-
-	codec Codec
 }
+
+// SrclibStoreDir is the name of the directory under which a RepoStore's data is stored.
+const SrclibStoreDir = ".srclib-store"
 
 // NewFlatFileRepoStore creates a new repository store (that can be
 // imported into) that is backed by files on a filesystem.
-func NewFlatFileRepoStore(fs rwvfs.FileSystem, conf *FlatFileConfig) RepoStoreImporter {
-	if conf == nil {
-		conf = &FlatFileConfig{}
-	}
-	if conf.Codec == nil {
-		conf.Codec = JSONCodec{}
-	}
-
+func NewFlatFileRepoStore(fs rwvfs.FileSystem) RepoStoreImporter {
 	setCreateParentDirs(fs)
-	rs := &flatFileRepoStore{fs: fs, codec: conf.Codec}
+	rs := &flatFileRepoStore{fs: fs}
 	rs.treeStores = treeStores{rs}
 	return rs
 }
@@ -206,7 +185,7 @@ func (s *flatFileRepoStore) Import(commitID string, unit *unit.SourceUnit, data 
 }
 
 func (s *flatFileRepoStore) newTreeStore(commitID string) *flatFileTreeStore {
-	return newFlatFileTreeStore(rwvfs.Sub(s.fs, commitID), &FlatFileConfig{Codec: s.codec})
+	return newFlatFileTreeStore(rwvfs.Sub(s.fs, commitID))
 }
 
 func (s *flatFileRepoStore) openTreeStore(commitID string) (TreeStore, error) {
@@ -222,7 +201,7 @@ func (s *flatFileRepoStore) openAllTreeStores() (map[string]TreeStore, error) {
 	tss := make(map[string]TreeStore, len(versionDirs))
 	for _, dir := range versionDirs {
 		commitID := path.Base(dir)
-		tss[commitID] = newFlatFileTreeStore(rwvfs.Sub(s.fs, commitID), &FlatFileConfig{Codec: s.codec})
+		tss[commitID] = newFlatFileTreeStore(rwvfs.Sub(s.fs, commitID))
 	}
 	return tss, nil
 }
@@ -236,19 +215,10 @@ func (s *flatFileRepoStore) String() string { return "flatFileRepoStore" }
 type flatFileTreeStore struct {
 	fs rwvfs.FileSystem
 	unitStores
-
-	codec Codec
 }
 
-func newFlatFileTreeStore(fs rwvfs.FileSystem, conf *FlatFileConfig) *flatFileTreeStore {
-	if conf == nil {
-		conf = &FlatFileConfig{}
-	}
-	if conf.Codec == nil {
-		conf.Codec = JSONCodec{}
-	}
-
-	ts := &flatFileTreeStore{fs: fs, codec: conf.Codec}
+func newFlatFileTreeStore(fs rwvfs.FileSystem) *flatFileTreeStore {
+	ts := &flatFileTreeStore{fs: fs}
 	ts.unitStores = unitStores{ts}
 	return ts
 }
@@ -299,7 +269,7 @@ func (s *flatFileTreeStore) openUnitFile(filename string) (*unit.SourceUnit, err
 	}()
 
 	var unit unit.SourceUnit
-	return &unit, s.codec.Decode(f, &unit)
+	return &unit, Codec.Decode(f, &unit)
 }
 
 func (s *flatFileTreeStore) unitFilenames() ([]string, error) {
@@ -342,7 +312,7 @@ func (s *flatFileTreeStore) Import(unit *unit.SourceUnit, data graph.Output) (er
 			err = err2
 		}
 	}()
-	if err := s.codec.Encode(f, unit); err != nil {
+	if err := Codec.Encode(f, unit); err != nil {
 		return err
 	}
 
@@ -368,9 +338,9 @@ func (s *flatFileTreeStore) openUnitStore(u unitID) (UnitStore, error) {
 	filename := s.unitFilename(u.unitType, u.unit)
 	dir := strings.TrimSuffix(filename, unitFileSuffix)
 	if useIndexedUnitStore {
-		return newIndexedUnitStore(rwvfs.Sub(s.fs, dir), s.codec), nil
+		return newIndexedUnitStore(rwvfs.Sub(s.fs, dir)), nil
 	}
-	return &flatFileUnitStore{fs: rwvfs.Sub(s.fs, dir), codec: s.codec}, nil
+	return &flatFileUnitStore{fs: rwvfs.Sub(s.fs, dir)}, nil
 }
 
 func (s *flatFileTreeStore) openAllUnitStores() (map[unitID]UnitStore, error) {
@@ -410,8 +380,6 @@ type flatFileUnitStore struct {
 	// written to and read from. The store may create multiple files
 	// and arbitrary directory trees in fs (for indexes, etc.).
 	fs rwvfs.FileSystem
-
-	codec Codec
 }
 
 const (
@@ -446,7 +414,7 @@ func (s *flatFileUnitStore) Defs(fs ...DefFilter) (defs []*graph.Def, err error)
 		}
 	}()
 
-	dec := newDecoder(s.codec, f)
+	dec := newDecoder(Codec, f)
 	for {
 		var def *graph.Def
 		if err := dec.Decode(&def); err == io.EOF {
@@ -473,7 +441,7 @@ func (s *flatFileUnitStore) Refs(fs ...RefFilter) (refs []*graph.Ref, err error)
 		}
 	}()
 
-	dec := newDecoder(s.codec, f)
+	dec := newDecoder(Codec, f)
 	for {
 		var ref *graph.Ref
 		if err := dec.Decode(&ref); err == io.EOF {
@@ -518,7 +486,7 @@ func (s *flatFileUnitStore) writeDefs(data *graph.Output) (ofs byteOffsets, err 
 	ofs = make(byteOffsets, len(data.Defs))
 	for i, def := range data.Defs {
 		ofs[i] = cw.n
-		if err := s.codec.Encode(cw, def); err != nil {
+		if err := Codec.Encode(cw, def); err != nil {
 			return nil, err
 		}
 	}
@@ -542,7 +510,7 @@ func (s *flatFileUnitStore) writeRefs(data *graph.Output) (ofs byteOffsets, err 
 	ofs = make(byteOffsets, len(data.Refs))
 	for i, ref := range data.Refs {
 		ofs[i] = cw.n
-		if err := s.codec.Encode(cw, ref); err != nil {
+		if err := Codec.Encode(cw, ref); err != nil {
 			return nil, err
 		}
 	}
