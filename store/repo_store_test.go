@@ -28,6 +28,7 @@ func testRepoStore(t *testing.T, newFn func() RepoStoreImporter) {
 	testRepoStore_Units(t, &labeledRepoStoreImporter{newFn(), "units"})
 	testRepoStore_Def(t, &labeledRepoStoreImporter{newFn(), "def"})
 	testRepoStore_Defs(t, &labeledRepoStoreImporter{newFn(), "defs"})
+	testRepoStore_Defs_ByCommitID_ByFile(t, &labeledRepoStoreImporter{newFn(), "Defs(ByCommitID,ByFile)"})
 	testRepoStore_Refs(t, &labeledRepoStoreImporter{newFn(), "refs"})
 }
 
@@ -59,7 +60,7 @@ func testRepoStore_Import_empty(t *testing.T, rs RepoStoreImporter) {
 }
 
 func testRepoStore_Import(t *testing.T, rs RepoStoreImporter) {
-	unit := &unit.SourceUnit{Type: "t", Name: "u"}
+	unit := &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f"}}
 	data := graph.Output{
 		Defs: []*graph.Def{
 			{
@@ -249,8 +250,46 @@ func testRepoStore_Defs(t *testing.T, rs RepoStoreImporter) {
 	}
 }
 
+func testRepoStore_Defs_ByCommitID_ByFile(t *testing.T, rs RepoStoreImporter) {
+	const numCommits = 2
+	for c := 1; c <= numCommits; c++ {
+		unit := &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f1", "f2"}}
+		data := graph.Output{
+			Defs: []*graph.Def{
+				{DefKey: graph.DefKey{Path: "p1"}, File: "f1"},
+				{DefKey: graph.DefKey{Path: "p2"}, File: "f2"},
+			},
+		}
+		commitID := fmt.Sprintf("c%d", c)
+		if err := rs.Import(commitID, unit, data); err != nil {
+			t.Errorf("%s: Import(%s, %v, data): %s", rs, commitID, unit, err)
+		}
+	}
+
+	want := []*graph.Def{
+		{DefKey: graph.DefKey{CommitID: "c2", UnitType: "t", Unit: "u", Path: "p1"}, File: "f1"},
+	}
+
+	c_unitFilesIndex_getByPath = 0
+	defs, err := rs.Defs(ByCommitID("c2"), ByFiles("f1"))
+	if err != nil {
+		t.Fatalf("%s: Defs: %s", rs, err)
+	}
+	if !reflect.DeepEqual(defs, want) {
+		t.Errorf("%s: Defs: got defs %v, want %v", rs, defs, want)
+	}
+	if isIndexedStore(rs) {
+		if want := 1; c_unitFilesIndex_getByPath != want {
+			t.Errorf("%s: Defs: got %d unitFilesIndex hits, want %d", rs, c_unitFilesIndex_getByPath, want)
+		}
+		if want := 2; c_defFilesIndex_getByPath != want {
+			t.Errorf("%s: Defs: got %d defFilesIndex hits, want %d", rs, c_defFilesIndex_getByPath, want)
+		}
+	}
+}
+
 func testRepoStore_Refs(t *testing.T, rs RepoStoreImporter) {
-	unit := &unit.SourceUnit{Type: "t", Name: "u"}
+	unit := &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f1", "f2"}}
 	data := graph.Output{
 		Refs: []*graph.Ref{
 			{

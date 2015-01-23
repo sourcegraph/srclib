@@ -39,6 +39,8 @@ func isIndexedStore(s interface{}) bool {
 		return true
 	case *indexedUnitStore:
 		return true
+	case *flatFileRepoStore:
+		return useIndexedStore
 	default:
 		return false
 	}
@@ -107,7 +109,7 @@ func testTreeStore_Import_empty(t *testing.T, ts treeStoreImporter) {
 }
 
 func testTreeStore_Import(t *testing.T, ts treeStoreImporter) {
-	unit := &unit.SourceUnit{Type: "t", Name: "u"}
+	unit := &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f"}}
 	data := graph.Output{
 		Defs: []*graph.Def{
 			{
@@ -350,12 +352,11 @@ func testTreeStore_Defs_ByFiles(t *testing.T, ts treeStoreImporter) {
 		}
 	}
 
-	c_unitFilesIndex_getByPath = 0
-
 	want := []*graph.Def{
 		{DefKey: graph.DefKey{UnitType: "t2", Unit: "u2", Path: "p2"}, File: "f2"},
 	}
 
+	c_unitFilesIndex_getByPath = 0
 	defs, err := ts.Defs(ByFiles("f2"))
 	if err != nil {
 		t.Errorf("%s: Defs(ByFiles f2): %s", ts, err)
@@ -371,7 +372,7 @@ func testTreeStore_Defs_ByFiles(t *testing.T, ts treeStoreImporter) {
 }
 
 func testTreeStore_Refs(t *testing.T, ts treeStoreImporter) {
-	unit := &unit.SourceUnit{Type: "t", Name: "u"}
+	unit := &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f1", "f2"}}
 	data := graph.Output{
 		Refs: []*graph.Ref{
 			{

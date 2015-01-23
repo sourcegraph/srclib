@@ -2,6 +2,7 @@ package store
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"path"
 
@@ -24,12 +25,16 @@ var _ interface {
 
 var c_unitFilesIndex_getByPath = 0 // counter
 
+func (x *unitFilesIndex) String() string { return fmt.Sprintf("unitFilesIndex(ready=%v)", x.ready) }
+
 // getByFile returns a list of source units that contain the file
 // specified by the path. The path can also be a directory, in which
 // case all source units that contain files underneath that directory
 // are returned.
 func (x *unitFilesIndex) getByPath(path string) ([]unit.ID2, bool, error) {
+	vlog.Printf("unitFilesIndex.getByPath(%s)", path)
 	c_unitFilesIndex_getByPath++
+
 	if x.mph == nil {
 		panic("mph not built/read")
 	}
@@ -75,6 +80,8 @@ func (x *unitFilesIndex) Units(fs ...UnitFilter) ([]unit.ID2, error) {
 			for u := range umap {
 				us = append(us, u)
 			}
+
+			vlog.Printf("unitFilesIndex(%v): Found units %v using indexed.", fs, us)
 			return us, nil
 		}
 	}

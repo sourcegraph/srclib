@@ -409,18 +409,10 @@ type ByRefDefFilter interface {
 	ByDefPath() string
 }
 
-// ByRefDef returns a filter by ref target def. It panics if any
-// fields on the target def are not set.
+// ByRefDef returns a filter by ref target def. It panics if
+// def.DefPath is empty. If other fields are empty, they are assumed
+// to match any value.
 func ByRefDef(def graph.RefDefKey) RefFilter {
-	if def.DefRepo == "" {
-		panic("def.DefRepo: empty")
-	}
-	if def.DefUnitType == "" {
-		panic("def.DefUnitType: empty")
-	}
-	if def.DefUnit == "" {
-		panic("def.DefUnit: empty")
-	}
 	if def.DefPath == "" {
 		panic("def.DefPath: empty")
 	}
@@ -656,6 +648,7 @@ type limiter struct {
 
 func (l *limiter) String() string { return fmt.Sprintf("Limit(%d [def=%d/%d])", l.n, len(l.def), l.n) }
 func (l *limiter) SelectDef(def *graph.Def) bool {
+	log.Println(def)
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	if l.def == nil {

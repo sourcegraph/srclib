@@ -3,9 +3,13 @@ package store
 import (
 	"errors"
 	"fmt"
+	"log"
 	"runtime"
 
 	"code.google.com/p/rog-go/parallel"
+
+	"sort"
+	"strings"
 
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib/graph"
@@ -53,6 +57,8 @@ var errNotIndexed = errors.New("no index satisfies query")
 // If indexOnly is specified, only the index will be consulted. If a
 // full scan would otherwise occur, errNotIndexed is returned.
 func (s *indexedTreeStore) unitIDs(indexOnly bool, fs ...UnitFilter) ([]unit.ID2, error) {
+	vlog.Printf("indexedTreeStore.unitIDs(indexOnly=%v, %v)", indexOnly, fs)
+
 	// Try to find an index that covers this query.
 	if dx := bestCoverageUnitIndex(s.indexes, fs); dx != nil {
 		if px, ok := dx.(persistedIndex); ok && !px.Ready() {
@@ -60,6 +66,7 @@ func (s *indexedTreeStore) unitIDs(indexOnly bool, fs ...UnitFilter) ([]unit.ID2
 				return nil, err
 			}
 		}
+		vlog.Printf("indexedTreeStore.unitIDs(%v): Found covering index %v.", fs, dx)
 		return dx.Units(fs...)
 	}
 	if indexOnly {
@@ -67,6 +74,7 @@ func (s *indexedTreeStore) unitIDs(indexOnly bool, fs ...UnitFilter) ([]unit.ID2
 	}
 
 	// Fall back to full scan.
+	vlog.Printf("indexedTreeStore.unitIDs(%v): No covering indexes found; performing full scan.", fs)
 	var unitIDs []unit.ID2
 	units, err := s.flatFileTreeStore.Units(fs...)
 	if err != nil {
@@ -93,6 +101,8 @@ func (s *indexedTreeStore) Units(fs ...UnitFilter) ([]*unit.SourceUnit, error) {
 }
 
 func (s *indexedTreeStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
+	vlog.Printf("indexedTreeStore.Defs(%v)", fs)
+
 	// We have File->Unit index (that tells us which source units
 	// include a given file). If there's a ByFiles DefFilter, then we
 	// can convert that filter into a ByUnits scope filter (which is
@@ -108,6 +118,7 @@ func (s *indexedTreeStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 	// No indexes found that we can exploit here; forward to the
 	// underlying store.
 	if len(ufs) == 0 {
+		vlog.Printf("indexedTreeStore.Defs(%v): No unit indexes found to narrow scope; forwarding to underlying store.", fs)
 		return s.flatFileTreeStore.Defs(fs...)
 	}
 
@@ -123,6 +134,7 @@ func (s *indexedTreeStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 	//
 	// If scopeUnits is empty, the empty ByUnits filter will result in
 	// the query matching nothing, which is the desired behavior.
+	vlog.Printf("indexedTreeStore.Defs(%v): Adding equivalent ByUnits filters to scope to units %+v.", fs, scopeUnits)
 	fs = append(fs, ByUnits(scopeUnits...))
 
 	// Pass the now more narrowly scoped query onto the underlying store.
@@ -171,11 +183,52 @@ func (s *indexedTreeStore) Import(u *unit.SourceUnit, data graph.Output) error {
 		return err
 	}
 
+	s.checkSourceUnitFiles(u, data)
+
 	if err := s.writeUnitIndexes(u); err != nil {
 		return err
 	}
 
 	return nil
+}
+
+// checkSourceUnitFiles warns if any files appear in graph data but
+// are not in u.Files.
+func (s *indexedTreeStore) checkSourceUnitFiles(u *unit.SourceUnit, data graph.Output) {
+	if u == nil {
+		return
+	}
+
+	graphFiles := make(map[string]struct{}, len(u.Files))
+	for _, def := range data.Defs {
+		graphFiles[def.File] = struct{}{}
+	}
+	for _, ref := range data.Refs {
+		graphFiles[ref.File] = struct{}{}
+	}
+	for _, doc := range data.Docs {
+		graphFiles[doc.File] = struct{}{}
+	}
+	for _, ann := range data.Anns {
+		graphFiles[ann.File] = struct{}{}
+	}
+	delete(graphFiles, "")
+
+	unitFiles := make(map[string]struct{}, len(u.Files))
+	for _, f := range u.Files {
+		unitFiles[f] = struct{}{}
+	}
+
+	var missingFiles []string
+	for f := range graphFiles {
+		if _, present := unitFiles[f]; !present {
+			missingFiles = append(missingFiles, f)
+		}
+	}
+	if len(missingFiles) > 0 {
+		sort.Strings(missingFiles)
+		log.Printf("Warning: The graph output (defs/refs/docs/anns) for source unit %+v contain %d references to files that are not present in the source unit's Files list. Indexed lookups by any of these missing files will return no results. To fix this, ensure that the source unit's Files list includes all files that appear in the graph output. The missing files are: %s.", u.ID2(), len(missingFiles), strings.Join(missingFiles, " "))
+	}
 }
 
 // writeUnitIndexes builds every unit index in s.indexes and writes
@@ -190,6 +243,8 @@ func (s *indexedTreeStore) writeUnitIndexes(u *unit.SourceUnit) error {
 	if err != nil {
 		return err
 	}
+
+	vlog.Printf("indexedTreeStore.writeUnitIndexes(%v): building indexes for all units: %v", u, units)
 
 	par := parallel.NewRun(runtime.GOMAXPROCS(0))
 	for _, x := range s.indexes {
