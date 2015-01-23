@@ -182,7 +182,7 @@ func (s *memoryRepoStore) String() string { return "memoryRepoStore" }
 // A memoryTreeStore is a TreeStore that stores data in memory.
 type memoryTreeStore struct {
 	units []*unit.SourceUnit
-	data  map[unitID]*graph.Output
+	data  map[unit.ID2]*graph.Output
 	unitStores
 }
 
@@ -227,7 +227,7 @@ func (s *memoryTreeStore) Import(u *unit.SourceUnit, data graph.Output) error {
 		s.units = []*unit.SourceUnit{}
 	}
 	if s.data == nil {
-		s.data = map[unitID]*graph.Output{}
+		s.data = map[unit.ID2]*graph.Output{}
 	}
 	if u == nil {
 		return nil
@@ -236,12 +236,12 @@ func (s *memoryTreeStore) Import(u *unit.SourceUnit, data graph.Output) error {
 	cleanForImport(&data, "", u.Type, u.Name)
 
 	s.units = append(s.units, u)
-	unitID := unitID{unitType: u.Type, unit: u.Name}
+	unitID := unit.ID2{Type: u.Type, Name: u.Name}
 	s.data[unitID] = &data
 	return nil
 }
 
-func (s *memoryTreeStore) openUnitStore(u unitID) (UnitStore, error) {
+func (s *memoryTreeStore) openUnitStore(u unit.ID2) (UnitStore, error) {
 	if s.data == nil {
 		return nil, errTreeNoInit
 	}
@@ -251,15 +251,15 @@ func (s *memoryTreeStore) openUnitStore(u unitID) (UnitStore, error) {
 	return nil, errUnitNoInit
 }
 
-func (s *memoryTreeStore) openAllUnitStores() (map[unitID]UnitStore, error) {
+func (s *memoryTreeStore) openAllUnitStores() (map[unit.ID2]UnitStore, error) {
 	if s.data == nil {
 		return nil, errTreeNoInit
 	}
 
-	uss := make(map[unitID]UnitStore, len(s.data))
-	for unitID := range s.data {
+	uss := make(map[unit.ID2]UnitStore, len(s.data))
+	for u := range s.data {
 		var err error
-		uss[unitID], err = s.openUnitStore(unitID)
+		uss[u], err = s.openUnitStore(u)
 		if err != nil {
 			return nil, err
 		}

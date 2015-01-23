@@ -155,6 +155,10 @@ func (u SourceUnit) ID() ID {
 	return ID(fmt.Sprintf("%s%s%s", url.QueryEscape(u.Name), idSeparator, u.Type))
 }
 
+func (u *SourceUnit) ID2() ID2 {
+	return ID2{Type: u.Type, Name: u.Name}
+}
+
 func (u SourceUnit) String() string {
 	b, _ := json.Marshal(u)
 	return string(b)
@@ -176,8 +180,14 @@ func ParseID(unitID string) (name, typ string, err error) {
 	return name, typ, nil
 }
 
-// ID is a source unit ID.
+// ID is a source unit ID. It is only unique within a repository.
 type ID string
+
+// ID2 is a source unit ID. It is only unique within a repository.
+type ID2 struct {
+	Type string
+	Name string
+}
 
 // ExpandPaths interprets paths, which contains paths (optionally with
 // filepath.Glob-compatible globs) that are relative to base. A list of actual

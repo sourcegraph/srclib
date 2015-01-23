@@ -57,7 +57,7 @@ func (s unitStores) Def(key graph.DefKey) (*graph.Def, error) {
 	}
 
 	for u, us := range uss {
-		if key.UnitType != u.unitType || key.Unit != u.unit {
+		if key.UnitType != u.Type || key.Unit != u.Name {
 			continue
 		}
 		def, err := us.Def(key)
@@ -67,8 +67,8 @@ func (s unitStores) Def(key graph.DefKey) (*graph.Def, error) {
 			}
 			return nil, err
 		}
-		def.UnitType = u.unitType
-		def.Unit = u.unit
+		def.UnitType = u.Type
+		def.Unit = u.Name
 		return def, nil
 	}
 	return nil, errDefNotExist
@@ -87,8 +87,8 @@ func (s unitStores) Defs(f ...DefFilter) ([]*graph.Def, error) {
 			return nil, err
 		}
 		for _, def := range defs {
-			def.UnitType = u.unitType
-			def.Unit = u.unit
+			def.UnitType = u.Type
+			def.Unit = u.Name
 		}
 		allDefs = append(allDefs, defs...)
 	}
@@ -109,13 +109,13 @@ func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 			return nil, err
 		}
 		for _, ref := range refs {
-			ref.UnitType = u.unitType
-			ref.Unit = u.unit
+			ref.UnitType = u.Type
+			ref.Unit = u.Name
 			if ref.DefUnitType == "" {
-				ref.DefUnitType = u.unitType
+				ref.DefUnitType = u.Type
 			}
 			if ref.DefUnit == "" {
-				ref.DefUnit = u.unit
+				ref.DefUnit = u.Name
 			}
 		}
 		allRefs = append(allRefs, refs...)

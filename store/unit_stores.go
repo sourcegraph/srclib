@@ -1,6 +1,6 @@
 package store
 
-type unitID struct{ unitType, unit string }
+import "sourcegraph.com/sourcegraph/srclib/unit"
 
 // scopeUnits returns a list of units that are matched by the
 // filters. If potentially all units could match, or if enough units
@@ -9,18 +9,18 @@ type unitID struct{ unitType, unit string }
 // match, an empty slice is returned.
 //
 // TODO(sqs): return an error if the filters are mutually exclusive?
-func scopeUnits(filters []interface{}) ([]unitID, error) {
-	unitIDs := map[unitID]struct{}{}
+func scopeUnits(filters []interface{}) ([]unit.ID2, error) {
+	unitIDs := map[unit.ID2]struct{}{}
 
 	for _, f := range filters {
 		switch f := f.(type) {
 		case ByUnitFilter:
-			u := unitID{unitType: f.ByUnitType(), unit: f.ByUnit()}
+			u := unit.ID2{Type: f.ByUnitType(), Name: f.ByUnit()}
 			if len(unitIDs) == 0 {
 				unitIDs[u] = struct{}{}
 			} else if _, dup := unitIDs[u]; !dup {
 				// Mutually exclusive unit IDs.
-				return []unitID{}, nil
+				return []unit.ID2{}, nil
 			}
 		}
 	}
@@ -30,9 +30,9 @@ func scopeUnits(filters []interface{}) ([]unitID, error) {
 		return nil, nil
 	}
 
-	ids := make([]unitID, 0, len(unitIDs))
-	for unitID := range unitIDs {
-		ids = append(ids, unitID)
+	ids := make([]unit.ID2, 0, len(unitIDs))
+	for u := range unitIDs {
+		ids = append(ids, u)
 	}
 	return ids, nil
 }
@@ -40,13 +40,13 @@ func scopeUnits(filters []interface{}) ([]unitID, error) {
 // A unitStoreOpener opens the UnitStore for the specified source
 // unit.
 type unitStoreOpener interface {
-	openUnitStore(unitID) (UnitStore, error)
-	openAllUnitStores() (map[unitID]UnitStore, error)
+	openUnitStore(unit.ID2) (UnitStore, error)
+	openAllUnitStores() (map[unit.ID2]UnitStore, error)
 }
 
 // openUnitStores is a helper func that calls o.openUnitStore for each
 // unit returned by scopeUnits(filters...).
-func openUnitStores(o unitStoreOpener, filters interface{}) (map[unitID]UnitStore, error) {
+func openUnitStores(o unitStoreOpener, filters interface{}) (map[unit.ID2]UnitStore, error) {
 	unitIDs, err := scopeUnits(storeFilters(filters))
 	if err != nil {
 		return nil, err
@@ -56,7 +56,7 @@ func openUnitStores(o unitStoreOpener, filters interface{}) (map[unitID]UnitStor
 		return o.openAllUnitStores()
 	}
 
-	uss := make(map[unitID]UnitStore, len(unitIDs))
+	uss := make(map[unit.ID2]UnitStore, len(unitIDs))
 	for _, u := range unitIDs {
 		var err error
 		uss[u], err = o.openUnitStore(u)
