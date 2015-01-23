@@ -1,6 +1,9 @@
 package store
 
-import "sourcegraph.com/sourcegraph/srclib/graph"
+import (
+	"sourcegraph.com/sourcegraph/srclib/graph"
+	"sourcegraph.com/sourcegraph/srclib/unit"
+)
 
 // A UnitStore stores and accesses srclib build data for a single
 // source unit.
@@ -48,7 +51,7 @@ func (s unitStores) Def(key graph.DefKey) (*graph.Def, error) {
 		return nil, err
 	}
 
-	uss, err := openUnitStores(s.opener, ByUnit(key.UnitType, key.Unit))
+	uss, err := openUnitStores(s.opener, ByUnits(unit.ID2{Type: key.UnitType, Name: key.Unit}))
 	if err != nil {
 		if isStoreNotExist(err) {
 			return nil, errDefNotExist

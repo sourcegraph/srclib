@@ -133,47 +133,57 @@ type RepoFilterFunc func(string) bool
 // SelectRepo calls f(repo).
 func (f RepoFilterFunc) SelectRepo(repo string) bool { return f(repo) }
 
-// ByUnitFilter is implemented by filters that restrict their
-// selections to items from a specific source unit. It allows the
-// store to optimize calls by skipping data that it knows is not in
-// the specified source unit.
-type ByUnitFilter interface {
-	ByUnitType() string
-	ByUnit() string
+// ByUnitsFilter is implemented by filters that restrict their
+// selections to items that are in a set of source units. It allows
+// the store to optimize calls by skipping data that it knows is not
+// any of the the specified source units.
+type ByUnitsFilter interface {
+	ByUnits() []unit.ID2
 }
 
-// ByUnit creates a new filter by source unit name and type. It panics
-// if either unit or unitType is empty.
-func ByUnit(unitType, unit string) interface {
+// ByUnits creates a new filter that matches objects in any of the
+// given source units. It panics if any of the unit IDs' names or
+// types are empty.
+func ByUnits(units ...unit.ID2) interface {
 	DefFilter
 	RefFilter
 	UnitFilter
-	ByUnitFilter
+	ByUnitsFilter
 } {
-	if unit == "" {
-		panic("unit: empty")
+	for _, u := range units {
+		if u.Name == "" {
+			panic("unit.Name: empty")
+		}
+		if u.Type == "" {
+			panic("unit.Type: empty")
+		}
+		if strings.Contains(u.Type, "/") {
+			log.Printf("WARNING: srclib store.ByUnits was called with a source unit type of %q, which resembles a unit *name*. Did you mix up the order of ByUnits's arguments?", u.Type)
+		}
 	}
-	if unitType == "" {
-		panic("unitType: empty")
-	}
-	if strings.Contains(unitType, "/") {
-		log.Printf("WARNING: srclib store.ByUnit was called with a source unit type of %q, which resembles a unit *name*. Did you mix up the order of ByUnit's arguments?", unitType)
-	}
-	return byUnitFilter{unitType, unit}
+	return byUnitFilter(units)
 }
 
-type byUnitFilter struct{ unitType, unit string }
+type byUnitFilter []unit.ID2
 
-func (f byUnitFilter) ByUnitType() string { return f.unitType }
-func (f byUnitFilter) ByUnit() string     { return f.unit }
+func (f byUnitFilter) contains(u unit.ID2) bool {
+	for _, uu := range f {
+		if uu == u {
+			return true
+		}
+	}
+	return false
+}
+
+func (f byUnitFilter) ByUnits() []unit.ID2 { return f }
 func (f byUnitFilter) SelectDef(def *graph.Def) bool {
-	return (def.Unit == "" || def.Unit == f.unit) && (def.UnitType == "" || def.UnitType == f.unitType)
+	return (def.Unit == "" && def.UnitType == "") || f.contains(unit.ID2{Type: def.UnitType, Name: def.Unit})
 }
 func (f byUnitFilter) SelectRef(ref *graph.Ref) bool {
-	return (ref.Unit == "" || ref.Unit == f.unit) && (ref.UnitType == "" || ref.UnitType == f.unitType)
+	return (ref.Unit == "" && ref.UnitType == "") || f.contains(unit.ID2{Type: ref.UnitType, Name: ref.Unit})
 }
 func (f byUnitFilter) SelectUnit(unit *unit.SourceUnit) bool {
-	return (unit.Name == "" || unit.Name == f.unit) && (unit.Type == "" || unit.Type == f.unitType)
+	return (unit.Type == "" && unit.Name == "") || f.contains(unit.ID2())
 }
 
 // ByCommitIDFilter is implemented by filters that restrict their
@@ -297,14 +307,14 @@ func (f byRepoAndCommitIDFilter) SelectVersion(version *Version) bool {
 
 // ByUnitKey returns a filter by a source unit key. It panics if any
 // fields on the unit key are not set. To filter by only source unit
-// name and type, use ByUnit.
+// name and type, use ByUnits.
 func ByUnitKey(key unit.Key) interface {
 	DefFilter
 	RefFilter
 	UnitFilter
 	ByRepoFilter
 	ByCommitIDFilter
-	ByUnitFilter
+	ByUnitsFilter
 } {
 	if key.Repo == "" {
 		panic("key.Repo: empty")
@@ -323,10 +333,9 @@ func ByUnitKey(key unit.Key) interface {
 
 type byUnitKeyFilter struct{ key unit.Key }
 
-func (f byUnitKeyFilter) ByRepo() string     { return f.key.Repo }
-func (f byUnitKeyFilter) ByCommitID() string { return f.key.CommitID }
-func (f byUnitKeyFilter) ByUnitType() string { return f.key.UnitType }
-func (f byUnitKeyFilter) ByUnit() string     { return f.key.Unit }
+func (f byUnitKeyFilter) ByRepo() string      { return f.key.Repo }
+func (f byUnitKeyFilter) ByCommitID() string  { return f.key.CommitID }
+func (f byUnitKeyFilter) ByUnits() []unit.ID2 { return []unit.ID2{f.key.ID2()} }
 func (f byUnitKeyFilter) SelectDef(def *graph.Def) bool {
 	return (def.Repo == "" || def.Repo == f.key.Repo) && (def.CommitID == "" || def.CommitID == f.key.CommitID) &&
 		(def.UnitType == "" || def.UnitType == f.key.UnitType) && (def.Unit == "" || def.Unit == f.key.Unit)
@@ -346,7 +355,7 @@ func ByDefKey(key graph.DefKey) interface {
 	DefFilter
 	ByRepoFilter
 	ByCommitIDFilter
-	ByUnitFilter
+	ByUnitsFilter
 } {
 	if key.Repo == "" {
 		panic("key.Repo: empty")
@@ -370,9 +379,10 @@ type byDefKeyFilter struct{ key graph.DefKey }
 
 func (f byDefKeyFilter) ByRepo() string     { return f.key.Repo }
 func (f byDefKeyFilter) ByCommitID() string { return f.key.CommitID }
-func (f byDefKeyFilter) ByUnitType() string { return f.key.UnitType }
-func (f byDefKeyFilter) ByUnit() string     { return f.key.Unit }
-func (f byDefKeyFilter) ByDefPath() string  { return f.key.Path }
+func (f byDefKeyFilter) ByUnits() []unit.ID2 {
+	return []unit.ID2{{Type: f.key.UnitType, Name: f.key.Unit}}
+}
+func (f byDefKeyFilter) ByDefPath() string { return f.key.Path }
 func (f byDefKeyFilter) SelectDef(def *graph.Def) bool {
 	return (def.Repo == "" || def.Repo == f.key.Repo) && (def.CommitID == "" || def.CommitID == f.key.CommitID) &&
 		(def.UnitType == "" || def.UnitType == f.key.UnitType) && (def.Unit == "" || def.Unit == f.key.Unit) &&

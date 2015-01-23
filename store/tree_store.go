@@ -43,7 +43,7 @@ type treeStores struct {
 var _ TreeStore = (*treeStores)(nil)
 
 func (s treeStores) Unit(key unit.Key) (*unit.SourceUnit, error) {
-	tss, err := openTreeStores(s.opener, ByUnit(key.UnitType, key.Unit))
+	tss, err := openTreeStores(s.opener, ByUnits(key.ID2()))
 	if err != nil {
 		if isStoreNotExist(err) {
 			return nil, errUnitNotExist
@@ -95,7 +95,7 @@ func (s treeStores) Def(key graph.DefKey) (*graph.Def, error) {
 		return nil, err
 	}
 
-	tss, err := openTreeStores(s.opener, []interface{}{ByCommitID(key.CommitID), ByUnit(key.UnitType, key.Unit)})
+	tss, err := openTreeStores(s.opener, []interface{}{ByCommitID(key.CommitID), ByUnits(unit.ID2{Type: key.UnitType, Name: key.Unit})})
 	if err != nil {
 		if isStoreNotExist(err) {
 			return nil, errDefNotExist

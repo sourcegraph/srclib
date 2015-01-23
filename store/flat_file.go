@@ -224,7 +224,7 @@ func newFlatFileTreeStore(fs rwvfs.FileSystem) *flatFileTreeStore {
 }
 
 func (s *flatFileTreeStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
-	units, err := s.Units(ByUnit(key.UnitType, key.Unit))
+	units, err := s.Units(ByUnits(key.ID2()))
 	if err != nil {
 		return nil, err
 	}

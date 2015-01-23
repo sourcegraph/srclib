@@ -159,6 +159,10 @@ func (u *SourceUnit) ID2() ID2 {
 	return ID2{Type: u.Type, Name: u.Name}
 }
 
+func (u Key) ID2() ID2 {
+	return ID2{Type: u.UnitType, Name: u.Unit}
+}
+
 func (u SourceUnit) String() string {
 	b, _ := json.Marshal(u)
 	return string(b)
@@ -189,6 +193,8 @@ type ID2 struct {
 	Name string
 }
 
+func (v ID2) String() string { return fmt.Sprintf("{%s %s}", v.Type, v.Name) }
+
 // ExpandPaths interprets paths, which contains paths (optionally with
 // filepath.Glob-compatible globs) that are relative to base. A list of actual
 // files that are referenced is returned.
@@ -203,3 +209,9 @@ func ExpandPaths(base string, paths []string) ([]string, error) {
 	}
 	return expanded, nil
 }
+
+type SourceUnits []*SourceUnit
+
+func (v SourceUnits) Len() int           { return len(v) }
+func (v SourceUnits) Less(i, j int) bool { return v[i].String() < v[j].String() }
+func (v SourceUnits) Swap(i, j int)      { v[i], v[j] = v[j], v[i] }
