@@ -398,15 +398,10 @@ func (c *StoreDefsCmd) filters() []store.DefFilter {
 		fs = append(fs, store.ByDefPath(c.Path))
 	}
 	if c.File != "" {
-		fs = append(fs, store.DefFilterFunc(func(def *graph.Def) bool {
-			return def.File == c.File
-		}))
+		fs = append(fs, store.ByFile(path.Clean(c.File)))
 	}
 	if c.FilePathPrefix != "" {
-		c.FilePathPrefix = path.Clean(c.FilePathPrefix)
-		fs = append(fs, store.DefFilterFunc(func(def *graph.Def) bool {
-			return strings.HasPrefix(def.File, c.FilePathPrefix)
-		}))
+		fs = append(fs, store.ByFile(path.Clean(c.FilePathPrefix)))
 	}
 	if c.NamePrefix != "" {
 		fs = append(fs, store.DefFilterFunc(func(def *graph.Def) bool {

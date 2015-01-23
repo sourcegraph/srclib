@@ -4,6 +4,7 @@ import (
 	"io"
 
 	"sourcegraph.com/sourcegraph/srclib/graph"
+	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
 // A persistedIndex is an index that can be serialized and
@@ -30,7 +31,7 @@ type persistedIndex interface {
 
 type byteOffsets []int64
 
-type indexBuilder interface {
+type graphIndexBuilder interface {
 	Build(*graph.Output, byteOffsets) error
 }
 
@@ -52,6 +53,37 @@ func bestCoverageDefIndex(defIndexes []interface{}, fs []DefFilter) defIndex {
 	var maxX defIndex
 	for _, x := range defIndexes {
 		if x, ok := x.(defIndex); ok {
+			cov := x.Covers(fs)
+			if cov > maxCov {
+				maxCov = cov
+				maxX = x
+			}
+		}
+	}
+	return maxX
+}
+
+type unitIndex interface {
+	// Covers returns the number of filters that this index
+	// covers. Indexes with greater coverage are selected over others
+	// with lesser coverage.
+	Covers([]UnitFilter) int
+
+	// Units returns the unit IDs units that match the unit filters.
+	Units(...UnitFilter) ([]unit.ID2, error)
+}
+
+type unitIndexBuilder interface {
+	Build([]*unit.SourceUnit) error
+}
+
+// bestCoverageUnitIndex returns the index that has the greatest
+// coverage for the given unit filters, or nil if no indexes have any coverage.
+func bestCoverageUnitIndex(unitIndexes []interface{}, fs []UnitFilter) unitIndex {
+	maxCov := 0
+	var maxX unitIndex
+	for _, x := range unitIndexes {
+		if x, ok := x.(unitIndex); ok {
 			cov := x.Covers(fs)
 			if cov > maxCov {
 				maxCov = cov

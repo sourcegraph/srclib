@@ -2,6 +2,7 @@ package store
 
 import (
 	"log"
+	"path"
 	"reflect"
 	"strings"
 
@@ -555,6 +556,48 @@ type byDefPathFilter string
 func (f byDefPathFilter) ByDefPath() string { return string(f) }
 func (f byDefPathFilter) SelectDef(def *graph.Def) bool {
 	return def.Path == string(f)
+}
+
+// ByFileFilter is implemented by filters that restrict their
+// selection to defs, refs, etc., in a certain file.
+type ByFileFilter interface {
+	ByFile() string
+}
+
+// ByFile returns a filter by def path. It panics if file is empty, or
+// if the file path has not been cleaned (i.e., if file !=
+// path.Clean(file)).
+func ByFile(file string) interface {
+	DefFilter
+	RefFilter
+	UnitFilter
+	ByFileFilter
+} {
+	if file == "" {
+		panic("file: empty")
+	}
+	if file != path.Clean(file) {
+		panic("file: not cleaned (file != path.Clean(file))")
+	}
+	return byFileFilter(file)
+}
+
+type byFileFilter string
+
+func (f byFileFilter) ByFile() string { return string(f) }
+func (f byFileFilter) SelectDef(def *graph.Def) bool {
+	return def.File == string(f)
+}
+func (f byFileFilter) SelectRef(ref *graph.Ref) bool {
+	return ref.File == string(f)
+}
+func (f byFileFilter) SelectUnit(unit *unit.SourceUnit) bool {
+	for _, unitFile := range unit.Files {
+		if string(f) == unitFile {
+			return true
+		}
+	}
+	return false
 }
 
 func storeFilters(anyFilters interface{}) []interface{} {

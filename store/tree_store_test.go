@@ -25,15 +25,36 @@ func (s *labeledTreeStoreImporter) String() string {
 	return fmt.Sprintf("%s: %s", s.treeStoreImporter, s.label)
 }
 
+func isIndexedStore(s interface{}) bool {
+	switch s := s.(type) {
+	case *labeledUnitStoreImporter:
+		return isIndexedStore(s.unitStoreImporter)
+	case *labeledTreeStoreImporter:
+		return isIndexedStore(s.treeStoreImporter)
+	case *labeledRepoStoreImporter:
+		return isIndexedStore(s.RepoStoreImporter)
+	case *labeledMultiRepoStoreImporter:
+		return isIndexedStore(s.MultiRepoStoreImporter)
+	case *indexedTreeStore:
+		return true
+	case *indexedUnitStore:
+		return true
+	default:
+		return false
+	}
+}
+
 func testTreeStore(t *testing.T, newFn func() treeStoreImporter) {
 	testTreeStore_uninitialized(t, &labeledTreeStoreImporter{newFn(), "uninitialized"})
 	testTreeStore_Import_empty(t, &labeledTreeStoreImporter{newFn(), "import empty"})
 	testTreeStore_Import(t, &labeledTreeStoreImporter{newFn(), "import"})
 	testTreeStore_Unit(t, &labeledTreeStoreImporter{newFn(), "unit"})
 	testTreeStore_Units(t, &labeledTreeStoreImporter{newFn(), "unit"})
+	testTreeStore_Units_ByFile(t, &labeledTreeStoreImporter{newFn(), "units by file"})
 	testTreeStore_Def(t, &labeledTreeStoreImporter{newFn(), "def"})
 	testTreeStore_Defs(t, &labeledTreeStoreImporter{newFn(), "defs"})
 	testTreeStore_Defs_ByUnits(t, &labeledTreeStoreImporter{newFn(), "defs by units"})
+	testTreeStore_Defs_ByFiles(t, &labeledTreeStoreImporter{newFn(), "defs by files"})
 	testTreeStore_Refs(t, &labeledTreeStoreImporter{newFn(), "refs"})
 }
 
@@ -158,6 +179,50 @@ func testTreeStore_Units(t *testing.T, ts treeStoreImporter) {
 	}
 }
 
+func testTreeStore_Units_ByFile(t *testing.T, ts treeStoreImporter) {
+	want := []*unit.SourceUnit{
+		{Type: "t1", Name: "u1", Files: []string{"f1"}},
+		{Type: "t2", Name: "u2", Files: []string{"f1", "f2"}},
+		{Type: "t3", Name: "u3", Files: []string{"f1", "f3"}},
+	}
+	for _, unit := range want {
+		if err := ts.Import(unit, graph.Output{}); err != nil {
+			t.Errorf("%s: Import(%v, empty data): %s", ts, unit, err)
+		}
+	}
+
+	c_unitFilesIndex_getByPath = 0
+	units, err := ts.Units(ByFile("f1"))
+	if err != nil {
+		t.Errorf("%s: Units(ByFile f1): %s", ts, err)
+	}
+	if !reflect.DeepEqual(units, want) {
+		t.Errorf("%s: Units(ByFile f1): got %v, want %v", ts, units, want)
+	}
+	if isIndexedStore(ts) {
+		if want := 1; c_unitFilesIndex_getByPath != want {
+			t.Errorf("%s: Units(ByFile f1): got %d index hits, want %d", ts, c_unitFilesIndex_getByPath, want)
+		}
+	}
+
+	c_unitFilesIndex_getByPath = 0
+	units2, err := ts.Units(ByFile("f2"))
+	if err != nil {
+		t.Errorf("%s: Units(ByFile f2): %s", ts, err)
+	}
+	want2 := []*unit.SourceUnit{
+		{Type: "t2", Name: "u2", Files: []string{"f1", "f2"}},
+	}
+	if !reflect.DeepEqual(units2, want2) {
+		t.Errorf("%s: Units(ByFile f2): got %v, want %v", ts, units2, want2)
+	}
+	if isIndexedStore(ts) {
+		if want := 1; c_unitFilesIndex_getByPath != want {
+			t.Errorf("%s: Units(ByFile f1): got %d index hits, want %d", ts, c_unitFilesIndex_getByPath, want)
+		}
+	}
+}
+
 func testTreeStore_Def(t *testing.T, ts treeStoreImporter) {
 	unit := &unit.SourceUnit{Type: "t", Name: "u"}
 	data := graph.Output{
@@ -261,12 +326,46 @@ func testTreeStore_Defs_ByUnits(t *testing.T, ts treeStoreImporter) {
 
 	defs, err := ts.Defs(ByUnits(unit.ID2{Type: "t3", Name: "u3"}, unit.ID2{Type: "t1", Name: "u1"}))
 	if err != nil {
-		t.Errorf("%s: Defs(): %s", ts, err)
+		t.Errorf("%s: Defs(ByUnits): %s", ts, err)
 	}
 	sort.Sort(graph.Defs(defs))
 	sort.Sort(graph.Defs(want))
 	if !reflect.DeepEqual(defs, want) {
-		t.Errorf("%s: Defs(): got defs %v, want %v", ts, defs, want)
+		t.Errorf("%s: Defs(ByUnits): got defs %v, want %v", ts, defs, want)
+	}
+}
+
+func testTreeStore_Defs_ByFiles(t *testing.T, ts treeStoreImporter) {
+	units := []*unit.SourceUnit{
+		{Type: "t1", Name: "u1", Files: []string{"f1"}},
+		{Type: "t2", Name: "u2", Files: []string{"f2"}},
+	}
+	for i, unit := range units {
+		data := graph.Output{
+			Defs: []*graph.Def{{DefKey: graph.DefKey{Path: fmt.Sprintf("p%d", i+1)}, File: fmt.Sprintf("f%d", i+1)}},
+		}
+		if err := ts.Import(unit, data); err != nil {
+			t.Errorf("%s: Import(%v, data): %s", ts, unit, err)
+		}
+	}
+
+	c_unitFilesIndex_getByPath = 0
+
+	want := []*graph.Def{
+		{DefKey: graph.DefKey{UnitType: "t2", Unit: "u2", Path: "p2"}, File: "f2"},
+	}
+
+	defs, err := ts.Defs(ByFile("f2"))
+	if err != nil {
+		t.Errorf("%s: Defs(ByFile f2): %s", ts, err)
+	}
+	if !reflect.DeepEqual(defs, want) {
+		t.Errorf("%s: Defs(ByFile f2): got defs %v, want %v", ts, defs, want)
+	}
+	if isIndexedStore(ts) {
+		if want := 1; c_unitFilesIndex_getByPath != want {
+			t.Errorf("%s: Defs(ByFile f2): got %d index hits, want %d", ts, c_unitFilesIndex_getByPath, want)
+		}
 	}
 }
 
