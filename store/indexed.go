@@ -29,16 +29,13 @@ type indexedUnitStore struct {
 var _ UnitStore = (*indexedUnitStore)(nil)
 
 // newIndexedUnitStore creates a new indexed unit store that stores
-// data and indexes in fs and encodes data using the given codec.
-func newIndexedUnitStore(fs rwvfs.FileSystem, c Codec) UnitStoreImporter {
+// data and indexes in fs.
+func newIndexedUnitStore(fs rwvfs.FileSystem) UnitStoreImporter {
 	return &indexedUnitStore{
 		indexes: []interface{}{
 			&defPathIndex{},
 		},
-		flatFileUnitStore: &flatFileUnitStore{
-			fs:    fs,
-			codec: c,
-		},
+		flatFileUnitStore: &flatFileUnitStore{fs: fs},
 	}
 }
 
@@ -93,7 +90,7 @@ func (s *indexedUnitStore) defsAtOffsets(ofs byteOffsets) ([]*graph.Def, error) 
 		if _, err := f.Seek(ofs, 0); err != nil {
 			return nil, err
 		}
-		if err := s.codec.Decode(f, &defs[i]); err != nil {
+		if err := Codec.Decode(f, &defs[i]); err != nil {
 			return nil, err
 		}
 	}

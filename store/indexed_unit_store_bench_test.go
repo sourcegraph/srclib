@@ -46,12 +46,12 @@ func BenchmarkIndexedUnitStore_Defs_byFile(b *testing.B) {
 
 func ffUnitStore() UnitStoreImporter {
 	fs := rwvfs.Map(map[string]string{})
-	return &flatFileUnitStore{fs: fs, codec: codecForBenchmark()}
+	return &flatFileUnitStore{fs: fs}
 }
 
 func idxUnitStore() UnitStoreImporter {
 	fs := rwvfs.Map(map[string]string{})
-	return newIndexedUnitStore(fs, codecForBenchmark())
+	return newIndexedUnitStore(fs)
 }
 
 func benchmarkUnitStore_Def(b *testing.B, us UnitStoreImporter, numDefs int) {
