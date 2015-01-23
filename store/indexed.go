@@ -57,7 +57,7 @@ func (s *indexedUnitStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 	// Try to find an index that covers this query.
 	if dx := bestCoverageDefIndex(s.indexes, fs); dx != nil {
 		if px, ok := dx.(persistedIndex); ok && !px.Ready() {
-			if err := s.readIndex(px); err != nil {
+			if err := readIndex(s.fs, px); err != nil {
 				return nil, err
 			}
 		}
@@ -68,33 +68,8 @@ func (s *indexedUnitStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 		return s.defsAtOffsets(ofs)
 	}
 
+	// Fall back to full scan.
 	return s.flatFileUnitStore.Defs(fs...)
-}
-
-// defsAtOffsets reads the defs at the given serialized byte offsets
-// from the main def data file and returns them in arbitrary order.
-func (s *indexedUnitStore) defsAtOffsets(ofs byteOffsets) ([]*graph.Def, error) {
-	f, err := s.fs.Open(unitDefsFilename)
-	if err != nil {
-		return nil, err
-	}
-	defer func() {
-		err2 := f.Close()
-		if err == nil {
-			err = err2
-		}
-	}()
-
-	defs := make([]*graph.Def, len(ofs))
-	for i, ofs := range ofs {
-		if _, err := f.Seek(ofs, 0); err != nil {
-			return nil, err
-		}
-		if err := Codec.Decode(f, &defs[i]); err != nil {
-			return nil, err
-		}
-	}
-	return defs, nil
 }
 
 // Refs implements UnitStore.
@@ -141,17 +116,7 @@ func (s *indexedUnitStore) writeDefIndexes(data *graph.Output, ofs byteOffsets) 
 						return err
 					}
 					if px, ok := x.(persistedIndex); ok {
-						pf, err := s.fs.Create(fmt.Sprintf(indexFilename, px.Name()))
-						if err != nil {
-							return err
-						}
-						defer func() {
-							err2 := pf.Close()
-							if err == nil {
-								err = err2
-							}
-						}()
-						if err := px.Write(pf); err != nil {
+						if err := writeIndex(s.fs, px); err != nil {
 							return err
 						}
 					}
@@ -170,13 +135,28 @@ func (s *indexedUnitStore) writeRefIndexes(data *graph.Output, ofs byteOffsets) 
 	return nil
 }
 
+// writeIndex calls x.Write with the index's backing file.
+func writeIndex(fs rwvfs.FileSystem, x persistedIndex) (err error) {
+	f, err := fs.Create(fmt.Sprintf(indexFilename, x.Name()))
+	if err != nil {
+		return err
+	}
+	defer func() {
+		err2 := f.Close()
+		if err == nil {
+			err = err2
+		}
+	}()
+	return x.Write(f)
+}
+
 // readIndex calls x.Read with the index's backing file.
-func (s *indexedUnitStore) readIndex(x persistedIndex) (err error) {
+func readIndex(fs rwvfs.FileSystem, x persistedIndex) (err error) {
 	if x.Ready() {
 		panic("x is already Ready; attempted to read it again")
 	}
 
-	f, err := s.fs.Open(fmt.Sprintf(indexFilename, x.Name()))
+	f, err := fs.Open(fmt.Sprintf(indexFilename, x.Name()))
 	if err != nil {
 		return err
 	}
