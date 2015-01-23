@@ -1,6 +1,7 @@
 package store
 
 import (
+	"fmt"
 	"log"
 	"path"
 	"reflect"
@@ -163,12 +164,12 @@ func ByUnits(units ...unit.ID2) interface {
 			log.Printf("WARNING: srclib store.ByUnits was called with a source unit type of %q, which resembles a unit *name*. Did you mix up the order of ByUnits's arguments?", u.Type)
 		}
 	}
-	return byUnitFilter(units)
+	return byUnitsFilter(units)
 }
 
-type byUnitFilter []unit.ID2
+type byUnitsFilter []unit.ID2
 
-func (f byUnitFilter) contains(u unit.ID2) bool {
+func (f byUnitsFilter) contains(u unit.ID2) bool {
 	for _, uu := range f {
 		if uu == u {
 			return true
@@ -177,14 +178,15 @@ func (f byUnitFilter) contains(u unit.ID2) bool {
 	return false
 }
 
-func (f byUnitFilter) ByUnits() []unit.ID2 { return f }
-func (f byUnitFilter) SelectDef(def *graph.Def) bool {
+func (f byUnitsFilter) String() string      { return fmt.Sprintf("ByUnits(%v)", ([]unit.ID2)(f)) }
+func (f byUnitsFilter) ByUnits() []unit.ID2 { return f }
+func (f byUnitsFilter) SelectDef(def *graph.Def) bool {
 	return (def.Unit == "" && def.UnitType == "") || f.contains(unit.ID2{Type: def.UnitType, Name: def.Unit})
 }
-func (f byUnitFilter) SelectRef(ref *graph.Ref) bool {
+func (f byUnitsFilter) SelectRef(ref *graph.Ref) bool {
 	return (ref.Unit == "" && ref.UnitType == "") || f.contains(unit.ID2{Type: ref.UnitType, Name: ref.Unit})
 }
-func (f byUnitFilter) SelectUnit(unit *unit.SourceUnit) bool {
+func (f byUnitsFilter) SelectUnit(unit *unit.SourceUnit) bool {
 	return (unit.Type == "" && unit.Name == "") || f.contains(unit.ID2())
 }
 
@@ -213,6 +215,7 @@ func ByCommitID(commitID string) interface {
 
 type byCommitIDFilter struct{ commitID string }
 
+func (f byCommitIDFilter) String() string     { return fmt.Sprintf("ByCommitID(%s)", f.commitID) }
 func (f byCommitIDFilter) ByCommitID() string { return f.commitID }
 func (f byCommitIDFilter) SelectDef(def *graph.Def) bool {
 	return def.CommitID == "" || def.CommitID == f.commitID
@@ -253,6 +256,7 @@ func ByRepo(repo string) interface {
 
 type byRepoFilter struct{ repo string }
 
+func (f byRepoFilter) String() string { return fmt.Sprintf("ByRepo(%s)", f.repo) }
 func (f byRepoFilter) ByRepo() string { return f.repo }
 func (f byRepoFilter) SelectDef(def *graph.Def) bool {
 	return def.Repo == "" || def.Repo == f.repo
@@ -292,6 +296,9 @@ func ByRepoAndCommitID(repo, commitID string) interface {
 
 type byRepoAndCommitIDFilter struct{ repo, commitID string }
 
+func (f byRepoAndCommitIDFilter) String() string {
+	return fmt.Sprintf("ByRepoAndCommitID(%s, %s)", f.repo, f.commitID)
+}
 func (f byRepoAndCommitIDFilter) ByRepo() string     { return f.repo }
 func (f byRepoAndCommitIDFilter) ByCommitID() string { return f.commitID }
 func (f byRepoAndCommitIDFilter) SelectDef(def *graph.Def) bool {
@@ -335,6 +342,7 @@ func ByUnitKey(key unit.Key) interface {
 
 type byUnitKeyFilter struct{ key unit.Key }
 
+func (f byUnitKeyFilter) String() string      { return fmt.Sprintf("ByUnitKey(%+v)", f.key) }
 func (f byUnitKeyFilter) ByRepo() string      { return f.key.Repo }
 func (f byUnitKeyFilter) ByCommitID() string  { return f.key.CommitID }
 func (f byUnitKeyFilter) ByUnits() []unit.ID2 { return []unit.ID2{f.key.ID2()} }
@@ -379,6 +387,7 @@ func ByDefKey(key graph.DefKey) interface {
 
 type byDefKeyFilter struct{ key graph.DefKey }
 
+func (f byDefKeyFilter) String() string     { return fmt.Sprintf("ByDefKey(%+v)", f.key) }
 func (f byDefKeyFilter) ByRepo() string     { return f.key.Repo }
 func (f byDefKeyFilter) ByCommitID() string { return f.key.CommitID }
 func (f byDefKeyFilter) ByUnits() []unit.ID2 {
@@ -435,6 +444,9 @@ type byRefDefFilter struct {
 	impliedUnit unit.ID2 // the implied DefUnit{,Type} value when ref.DefUnit{,Type} == ""
 }
 
+func (f *byRefDefFilter) String() string {
+	return fmt.Sprintf("ByRefDef(%+v, impliedRepo=%q, impliedUnit=%+v)", f.def, f.impliedRepo, f.impliedUnit)
+}
 func (f *byRefDefFilter) ByDefRepo() string          { return f.def.DefRepo }
 func (f *byRefDefFilter) ByDefUnitType() string      { return f.def.DefUnitType }
 func (f *byRefDefFilter) ByDefUnit() string          { return f.def.DefUnit }
@@ -475,6 +487,9 @@ type absRefFilterFunc struct {
 	impliedUnit     unit.ID2 // the implied DefUnitType/UnitType value when those are empty
 }
 
+func (f *absRefFilterFunc) String() string {
+	return fmt.Sprintf("AbsRefFilterFunc(func %p, impliedRepo=%q, impliedCommitID=%q, impliedUnit=%+v)", f.f, f.impliedRepo, f.impliedCommitID, f.impliedUnit)
+}
 func (f *absRefFilterFunc) setImpliedRepo(repo string)         { f.impliedRepo = repo }
 func (f *absRefFilterFunc) setImpliedCommitID(commitID string) { f.impliedCommitID = commitID }
 func (f *absRefFilterFunc) setImpliedUnit(u unit.ID2)          { f.impliedUnit = u }
@@ -554,6 +569,7 @@ func ByDefPath(defPath string) interface {
 
 type byDefPathFilter string
 
+func (f byDefPathFilter) String() string    { return fmt.Sprintf("ByDefPath(%s)", string(f)) }
 func (f byDefPathFilter) ByDefPath() string { return string(f) }
 func (f byDefPathFilter) SelectDef(def *graph.Def) bool {
 	return def.Path == string(f)
@@ -589,6 +605,7 @@ func ByFiles(files ...string) interface {
 
 type byFilesFilter []string
 
+func (f byFilesFilter) String() string    { return fmt.Sprintf("ByFiles(%v)", ([]string)(f)) }
 func (f byFilesFilter) ByFiles() []string { return f }
 func (f byFilesFilter) SelectDef(def *graph.Def) bool {
 	for _, ff := range f {
@@ -637,6 +654,7 @@ type limiter struct {
 	def map[*graph.Def]struct{} // seen defs
 }
 
+func (l *limiter) String() string { return fmt.Sprintf("Limit(%d [def=%d/%d])", l.n, len(l.def), l.n) }
 func (l *limiter) SelectDef(def *graph.Def) bool {
 	l.mu.Lock()
 	defer l.mu.Unlock()
