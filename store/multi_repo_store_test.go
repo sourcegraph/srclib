@@ -66,7 +66,7 @@ func testMultiRepoStore_Import_empty(t *testing.T, mrs MultiRepoStoreImporter) {
 }
 
 func testMultiRepoStore_Import(t *testing.T, mrs MultiRepoStoreImporter) {
-	unit := &unit.SourceUnit{Type: "t", Name: "u"}
+	unit := &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f"}}
 	data := graph.Output{
 		Defs: []*graph.Def{
 			{
@@ -332,7 +332,7 @@ func testMultiRepoStore_Defs_filter(t *testing.T, mrs MultiRepoStoreImporter) {
 }
 
 func testMultiRepoStore_Refs(t *testing.T, mrs MultiRepoStoreImporter) {
-	unit := &unit.SourceUnit{Type: "t", Name: "u"}
+	unit := &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f1", "f2"}}
 	data := graph.Output{
 		Refs: []*graph.Ref{
 			{
@@ -399,7 +399,7 @@ func testMultiRepoStore_Refs_filterByRepoCommitAndFile(t *testing.T, mrs MultiRe
 			{File: "f3"},
 		},
 	}
-	if err := mrs.Import("r", "c", &unit.SourceUnit{Type: "t", Name: "u"}, data1); err != nil {
+	if err := mrs.Import("r", "c", &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f1", "f2", "f3"}}, data1); err != nil {
 		t.Errorf("%s: Import: %s", mrs, err)
 	}
 	data2 := graph.Output{
@@ -409,7 +409,7 @@ func testMultiRepoStore_Refs_filterByRepoCommitAndFile(t *testing.T, mrs MultiRe
 			{File: "f6"},
 		},
 	}
-	if err := mrs.Import("r", "c2", &unit.SourceUnit{Type: "t", Name: "u"}, data2); err != nil {
+	if err := mrs.Import("r", "c2", &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f4", "f5", "f6"}}, data2); err != nil {
 		t.Errorf("%s: Import: %s", mrs, err)
 	}
 	data3 := graph.Output{
@@ -419,7 +419,7 @@ func testMultiRepoStore_Refs_filterByRepoCommitAndFile(t *testing.T, mrs MultiRe
 			{File: "f9"},
 		},
 	}
-	if err := mrs.Import("r2", "c", &unit.SourceUnit{Type: "t", Name: "u"}, data3); err != nil {
+	if err := mrs.Import("r2", "c", &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f7", "f8", "f9"}}, data3); err != nil {
 		t.Errorf("%s: Import: %s", mrs, err)
 	}
 
@@ -468,7 +468,7 @@ func testMultiRepoStore_Refs_filterByDef(t *testing.T, mrs MultiRepoStoreImporte
 			},
 		},
 	}
-	if err := mrs.Import("r", "c", &unit.SourceUnit{Type: "t", Name: "u"}, data); err != nil {
+	if err := mrs.Import("r", "c", &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f"}}, data); err != nil {
 		t.Errorf("%s: Import: %s", mrs, err)
 	}
 

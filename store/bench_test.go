@@ -15,7 +15,7 @@ import (
 var (
 	numVersions = flag.Int("bench.versions", 2, "number of versions (each of which has the denoted number of units & defs)")
 	numUnits    = flag.Int("bench.units", 2, "number of source units (each of which has the denoted number of defs)")
-	numFiles    = flag.Int("bench.files", 10, "number of distinct files (Def.File and Ref.File values)")
+	numPerFile  = flag.Int("bench.per-file", 25, "number of refs/defs/etc. per file")
 	numRefDefs  = flag.Int("bench.refdefs", 10, "number of distinct defs that refs point to")
 )
 
@@ -73,8 +73,9 @@ func insertDefs(b *testing.B, rs RepoStoreImporter, numDefs int) {
 				data.Defs[d] = &graph.Def{
 					DefKey: graph.DefKey{Path: fmt.Sprintf("path%d", d)},
 					Name:   fmt.Sprintf("name%d", d),
-					File:   fmt.Sprintf("file%d", d%*numFiles),
+					File:   fmt.Sprintf("file%d", d%(1 + numDefs / *numPerFile)),
 				}
+				addSourceUnitFiles(unit, data.Defs[d].File)
 			}
 			if err := rs.Import(version.CommitID, unit, data); err != nil {
 				b.Fatal(err)
@@ -92,16 +93,26 @@ func insertRefs(b *testing.B, rs RepoStoreImporter, numRefs int) {
 			for r := 0; r < numRefs; r++ {
 				data.Refs[r] = &graph.Ref{
 					DefPath: fmt.Sprintf("path%d", r%*numRefDefs),
-					File:    fmt.Sprintf("file%d", r%*numFiles),
+					File:    fmt.Sprintf("file%d", r%(1 + numRefs / *numPerFile)),
 					Start:   r % 1000,
 					End:     (r + 7) % 1000,
 				}
+				addSourceUnitFiles(unit, data.Refs[r].File)
 			}
 			if err := rs.Import(version.CommitID, unit, data); err != nil {
 				b.Fatal(err)
 			}
 		}
 	}
+}
+
+func addSourceUnitFiles(u *unit.SourceUnit, file string) {
+	for _, f := range u.Files {
+		if f == file {
+			return
+		}
+	}
+	u.Files = append(u.Files, file)
 }
 
 func benchmarkDef(b *testing.B, rs RepoStoreImporter, numDefs int) {
@@ -124,6 +135,9 @@ func benchmarkDef(b *testing.B, rs RepoStoreImporter, numDefs int) {
 		if err != nil {
 			b.Fatal(err)
 		}
+		if def == nil {
+			b.Fatalf("not found: %v", defKey)
+		}
 		if checkCorrectness {
 			if def.DefKey != defKey {
 				b.Fatalf("got DefKey %v, want %v", def.DefKey, defKey)
@@ -138,18 +152,19 @@ func benchmarkDefsByFile(b *testing.B, rs RepoStoreImporter, numDefs int) {
 	commitID := fmt.Sprintf("commit%d", *numVersions/2)
 	defFilter := []DefFilter{
 		ByCommitID(commitID),
-		DefFilterFunc(func(def *graph.Def) bool {
-			return def.File == "file0"
-		}),
+		ByFiles("file0"),
 	}
 
 	runtime.GC()
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		_, err := rs.Defs(defFilter...)
+		defs, err := rs.Defs(defFilter...)
 		if err != nil {
 			b.Fatal(err)
+		}
+		if len(defs) == 0 {
+			b.Fatalf("no results: %v", defFilter)
 		}
 	}
 }
@@ -160,18 +175,19 @@ func benchmarkRefsByFile(b *testing.B, rs RepoStoreImporter, numRefs int) {
 	commitID := fmt.Sprintf("commit%d", *numVersions/2)
 	refFilter := []RefFilter{
 		ByCommitID(commitID),
-		RefFilterFunc(func(ref *graph.Ref) bool {
-			return ref.File == "file0"
-		}),
+		ByFiles("file0"),
 	}
 
 	runtime.GC()
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		_, err := rs.Refs(refFilter...)
+		refs, err := rs.Refs(refFilter...)
 		if err != nil {
 			b.Fatal(err)
+		}
+		if len(refs) == 0 {
+			b.Fatalf("no results: %v", refFilter)
 		}
 	}
 }
@@ -188,9 +204,12 @@ func benchmarkRefsByFile_filterFunc(b *testing.B, rs RepoStoreImporter, numRefs 
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		_, err := rs.Refs(refFilter)
+		refs, err := rs.Refs(refFilter)
 		if err != nil {
 			b.Fatal(err)
+		}
+		if len(refs) == 0 {
+			b.Fatalf("no results: %v", refFilter)
 		}
 	}
 }
@@ -201,18 +220,19 @@ func benchmarkRefsByDefPath(b *testing.B, rs RepoStoreImporter, numRefs int) {
 	commitID := fmt.Sprintf("commit%d", *numVersions/2)
 	refFilter := []RefFilter{
 		ByCommitID(commitID),
-		RefFilterFunc(func(ref *graph.Ref) bool {
-			return ref.DefPath == "path0"
-		}),
+		ByRefDef(graph.RefDefKey{DefPath: "path0"}),
 	}
 
 	runtime.GC()
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		_, err := rs.Refs(refFilter...)
+		refs, err := rs.Refs(refFilter...)
 		if err != nil {
 			b.Fatal(err)
+		}
+		if len(refs) == 0 {
+			b.Fatalf("no results: %v", refFilter)
 		}
 	}
 }
