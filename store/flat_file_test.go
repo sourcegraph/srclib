@@ -1,54 +1,31 @@
 package store
 
-import (
-	"io/ioutil"
-	"testing"
-
-	"sourcegraph.com/sourcegraph/rwvfs"
-)
+import "testing"
 
 func TestFlatFileUnitStore(t *testing.T) {
+	useIndexedUnitStore = false
 	testUnitStore(t, func() unitStoreImporter {
-		tmpDir, err := ioutil.TempDir("", "srclib-TestFlatFileUnitStore")
-		if err != nil {
-			t.Fatal(err)
-		}
-		return &flatFileUnitStore{fs: rwvfs.OS(tmpDir), codec: JSONCodec{}}
+		return &flatFileUnitStore{fs: newTestFS(), codec: JSONCodec{}}
 	})
 }
 
 func TestFlatFileTreeStore(t *testing.T) {
+	useIndexedUnitStore = false
 	testTreeStore(t, func() treeStoreImporter {
-		tmpDir, err := ioutil.TempDir("", "srclib-TestFlatFileTreeStore")
-		if err != nil {
-			t.Fatal(err)
-		}
-		fs := rwvfs.OS(tmpDir)
-		setCreateParentDirs(fs)
-		return newFlatFileTreeStore(rwvfs.Sub(fs, "tree"), nil)
+		return newFlatFileTreeStore(newTestFS(), nil)
 	})
 }
 
 func TestFlatFileRepoStore(t *testing.T) {
+	useIndexedUnitStore = false
 	testRepoStore(t, func() RepoStoreImporter {
-		tmpDir, err := ioutil.TempDir("", "srclib-TestFlatFileRepoStore")
-		if err != nil {
-			t.Fatal(err)
-		}
-		fs := rwvfs.OS(tmpDir)
-		setCreateParentDirs(fs)
-		return NewFlatFileRepoStore(rwvfs.Sub(fs, "repo"), nil)
+		return NewFlatFileRepoStore(newTestFS(), nil)
 	})
 }
 
 func TestFlatFileMultiRepoStore(t *testing.T) {
+	useIndexedUnitStore = false
 	testMultiRepoStore(t, func() MultiRepoStoreImporter {
-		tmpDir, err := ioutil.TempDir("", "srclib-TestFlatFileMultiRepoStore")
-		if err != nil {
-			t.Fatal(err)
-		}
-		fs := rwvfs.OS(tmpDir)
-		setCreateParentDirs(fs)
-		return NewFlatFileMultiRepoStore(rwvfs.Sub(fs, "multirepo"), nil)
+		return NewFlatFileMultiRepoStore(newTestFS(), nil)
 	})
 }

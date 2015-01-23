@@ -14,8 +14,8 @@ import (
 )
 
 var (
-	numVersions = flag.Int("bench.versions", 10, "number of versions (each of which has the denoted number of units & defs)")
-	numUnits    = flag.Int("bench.units", 10, "number of source units (each of which has the denoted number of defs)")
+	numVersions = flag.Int("bench.versions", 2, "number of versions (each of which has the denoted number of units & defs)")
+	numUnits    = flag.Int("bench.units", 2, "number of source units (each of which has the denoted number of defs)")
 	numFiles    = flag.Int("bench.files", 10, "number of distinct files (Def.File and Ref.File values)")
 	numRefDefs  = flag.Int("bench.refdefs", 10, "number of distinct defs that refs point to")
 
@@ -78,6 +78,8 @@ func repoStore() RepoStoreImporter {
 
 	var conf FlatFileConfig
 	conf.Codec = codecForBenchmark()
+
+	useIndexedUnitStore = true
 
 	return NewFlatFileRepoStore(fs, &conf)
 }

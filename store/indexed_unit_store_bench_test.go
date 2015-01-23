@@ -17,20 +17,30 @@ var (
 	numRefs = flag.Int("bench.refs", 500, "number of refs")
 )
 
-func BenchmarkFlatFileUnitStore_Def(b *testing.B) { benchmarkUnitStore_Def(b, ffUnitStore(), *numDefs) }
-func BenchmarkIndexedUnitStore_Def(b *testing.B)  { benchmarkUnitStore_Def(b, idxUnitStore(), *numDefs) }
+func BenchmarkFlatFileUnitStore_Def(b *testing.B) {
+	useIndexedUnitStore = false
+	benchmarkUnitStore_Def(b, ffUnitStore(), *numDefs)
+}
+func BenchmarkIndexedUnitStore_Def(b *testing.B) {
+	useIndexedUnitStore = true
+	benchmarkUnitStore_Def(b, idxUnitStore(), *numDefs)
+}
 
 func BenchmarkFlatFileUnitStore_Defs_all(b *testing.B) {
+	useIndexedUnitStore = false
 	benchmarkUnitStore_Defs_all(b, ffUnitStore(), *numDefs)
 }
 func BenchmarkIndexedUnitStore_Defs_all(b *testing.B) {
+	useIndexedUnitStore = true
 	benchmarkUnitStore_Defs_all(b, idxUnitStore(), *numDefs)
 }
 
 func BenchmarkFlatFileUnitStore_Defs_byFile(b *testing.B) {
+	useIndexedUnitStore = false
 	benchmarkUnitStore_Defs_byFile(b, ffUnitStore(), *numDefs)
 }
 func BenchmarkIndexedUnitStore_Defs_byFile(b *testing.B) {
+	useIndexedUnitStore = true
 	benchmarkUnitStore_Defs_byFile(b, idxUnitStore(), *numDefs)
 }
 
