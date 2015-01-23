@@ -4,6 +4,8 @@ import (
 	"reflect"
 	"testing"
 
+	"sort"
+
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -70,7 +72,7 @@ func (m *recordingUnitStoreOpener) openAllUnitStores() (map[unit.ID2]UnitStore, 
 }
 func (m *recordingUnitStoreOpener) reset() { m.opened = map[unit.ID2]int{}; m.openedAll = 0 }
 
-func TestUnitStores_filterByUnit(t *testing.T) {
+func TestUnitStores_filterByUnits(t *testing.T) {
 	// Test that filters by source unit cause unit stores for other
 	// source units to not be called.
 
@@ -89,13 +91,13 @@ func TestUnitStores_filterByUnit(t *testing.T) {
 	}
 	o.reset()
 
-	if defs, err := uss.Defs(ByUnit("t", "u")); err != nil {
+	if defs, err := uss.Defs(ByUnits(unit.ID2{Type: "t", Name: "u"})); err != nil {
 		t.Error(err)
 	} else if len(defs) > 0 {
 		t.Errorf("got defs %v, want none", defs)
 	}
 
-	if refs, err := uss.Refs(ByUnit("t", "u")); err != nil {
+	if refs, err := uss.Refs(ByUnits(unit.ID2{Type: "t", Name: "u"})); err != nil {
 		t.Error(err)
 	} else if len(refs) > 0 {
 		t.Errorf("got refs %v, want none", refs)
@@ -112,39 +114,43 @@ func TestScopeUnits(t *testing.T) {
 			want:    nil,
 		},
 		{
-			filters: []interface{}{ByUnit("t", "u")},
+			filters: []interface{}{ByUnits(unit.ID2{Type: "t", Name: "u"})},
 			want:    []unit.ID2{{"t", "u"}},
 		},
 		{
-			filters: []interface{}{nil, ByUnit("t", "u")},
+			filters: []interface{}{nil, ByUnits(unit.ID2{Type: "t", Name: "u"})},
 			want:    []unit.ID2{{"t", "u"}},
 		},
 		{
-			filters: []interface{}{ByUnit("t", "u"), nil},
+			filters: []interface{}{ByUnits(unit.ID2{Type: "t", Name: "u"}), nil},
 			want:    []unit.ID2{{"t", "u"}},
 		},
 		{
-			filters: []interface{}{nil, ByUnit("t", "u"), nil},
+			filters: []interface{}{ByUnits(unit.ID2{Type: "t", Name: "u"}, unit.ID2{Type: "t2", Name: "u2"}), nil},
+			want:    []unit.ID2{{"t", "u"}, {"t2", "u2"}},
+		},
+		{
+			filters: []interface{}{nil, ByUnits(unit.ID2{Type: "t", Name: "u"}), nil},
 			want:    []unit.ID2{{"t", "u"}},
 		},
 		{
-			filters: []interface{}{ByUnit("t", "u"), ByUnit("t", "u")},
+			filters: []interface{}{ByUnits(unit.ID2{Type: "t", Name: "u"}), ByUnits(unit.ID2{Type: "t", Name: "u"})},
 			want:    []unit.ID2{{"t", "u"}},
 		},
 		{
-			filters: []interface{}{ByUnit("t1", "u1"), ByUnit("t2", "u2")},
+			filters: []interface{}{ByUnits(unit.ID2{Type: "t1", Name: "u1"}), ByUnits(unit.ID2{Type: "t2", Name: "u2"})},
 			want:    []unit.ID2{},
 		},
 		{
-			filters: []interface{}{ByUnit("t1", "u1"), ByUnit("t2", "u2"), ByUnit("t1", "u1")},
+			filters: []interface{}{ByUnits(unit.ID2{Type: "t1", Name: "u1"}), ByUnits(unit.ID2{Type: "t2", Name: "u2"}), ByUnits(unit.ID2{Type: "t1", Name: "u1"})},
 			want:    []unit.ID2{},
 		},
 		{
-			filters: []interface{}{ByUnit("t", "u1"), ByUnit("t", "u2")},
+			filters: []interface{}{ByUnits(unit.ID2{Type: "t", Name: "u1"}), ByUnits(unit.ID2{Type: "t", Name: "u2"})},
 			want:    []unit.ID2{},
 		},
 		{
-			filters: []interface{}{ByUnit("t1", "u"), ByUnit("t2", "u")},
+			filters: []interface{}{ByUnits(unit.ID2{Type: "t", Name: "u1"}), ByUnits(unit.ID2{Type: "t2", Name: "u"})},
 			want:    []unit.ID2{},
 		},
 		{
@@ -198,8 +204,16 @@ func TestScopeUnits(t *testing.T) {
 			t.Errorf("%+v: %v", test.filters, err)
 			continue
 		}
+		sort.Sort(unitID2s(units))
+		sort.Sort(unitID2s(test.want))
 		if !reflect.DeepEqual(units, test.want) {
 			t.Errorf("%+v: got units %v, want %v", test.filters, units, test.want)
 		}
 	}
 }
+
+type unitID2s []unit.ID2
+
+func (v unitID2s) Len() int           { return len(v) }
+func (v unitID2s) Less(i, j int) bool { return v[i].String() < v[j].String() }
+func (v unitID2s) Swap(i, j int)      { v[i], v[j] = v[j], v[i] }

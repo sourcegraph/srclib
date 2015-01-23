@@ -11,22 +11,32 @@ import "sourcegraph.com/sourcegraph/srclib/unit"
 // TODO(sqs): return an error if the filters are mutually exclusive?
 func scopeUnits(filters []interface{}) ([]unit.ID2, error) {
 	unitIDs := map[unit.ID2]struct{}{}
+	everHadAny := false // whether unitIDs ever contained any units
 
 	for _, f := range filters {
 		switch f := f.(type) {
-		case ByUnitFilter:
-			u := unit.ID2{Type: f.ByUnitType(), Name: f.ByUnit()}
-			if len(unitIDs) == 0 {
-				unitIDs[u] = struct{}{}
-			} else if _, dup := unitIDs[u]; !dup {
-				// Mutually exclusive unit IDs.
-				return []unit.ID2{}, nil
+		case ByUnitsFilter:
+			if len(unitIDs) == 0 && !everHadAny {
+				everHadAny = true
+				for _, u := range f.ByUnits() {
+					unitIDs[u] = struct{}{}
+				}
+			} else {
+				// Intersect.
+				newUnitIDs := make(map[unit.ID2]struct{}, (len(unitIDs)+len(f.ByUnits()))/2)
+				for _, u := range f.ByUnits() {
+					if _, present := unitIDs[u]; present {
+						newUnitIDs[u] = struct{}{}
+					}
+				}
+				unitIDs = newUnitIDs
 			}
 		}
 	}
 
-	if len(unitIDs) == 0 {
-		// Scope includes potentially all units.
+	if len(unitIDs) == 0 && !everHadAny {
+		// No unit scoping filters were present, so scope includes
+		// potentially all units.
 		return nil, nil
 	}
 

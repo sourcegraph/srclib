@@ -182,7 +182,7 @@ func TestScopeTrees(t *testing.T) {
 			want:    nil,
 		},
 		{
-			filters: []interface{}{ByUnit("t", "u")},
+			filters: []interface{}{ByUnits(unit.ID2{Type: "t", Name: "u"})},
 			want:    nil,
 		},
 	}

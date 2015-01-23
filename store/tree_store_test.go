@@ -5,6 +5,8 @@ import (
 	"reflect"
 	"testing"
 
+	"sort"
+
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -31,6 +33,7 @@ func testTreeStore(t *testing.T, newFn func() treeStoreImporter) {
 	testTreeStore_Units(t, &labeledTreeStoreImporter{newFn(), "unit"})
 	testTreeStore_Def(t, &labeledTreeStoreImporter{newFn(), "def"})
 	testTreeStore_Defs(t, &labeledTreeStoreImporter{newFn(), "defs"})
+	testTreeStore_Defs_ByUnits(t, &labeledTreeStoreImporter{newFn(), "defs by units"})
 	testTreeStore_Refs(t, &labeledTreeStoreImporter{newFn(), "refs"})
 }
 
@@ -124,6 +127,7 @@ func testTreeStore_Units(t *testing.T, ts treeStoreImporter) {
 	want := []*unit.SourceUnit{
 		{Type: "t1", Name: "u1"},
 		{Type: "t2", Name: "u2"},
+		{Type: "t3", Name: "u3"},
 	}
 	for _, unit := range want {
 		if err := ts.Import(unit, graph.Output{}); err != nil {
@@ -137,6 +141,20 @@ func testTreeStore_Units(t *testing.T, ts treeStoreImporter) {
 	}
 	if !reflect.DeepEqual(units, want) {
 		t.Errorf("%s: Units(): got %v, want %v", ts, units, want)
+	}
+
+	units2, err := ts.Units(ByUnits(unit.ID2{Type: "t3", Name: "u3"}, unit.ID2{Type: "t1", Name: "u1"}))
+	if err != nil {
+		t.Errorf("%s: Units(3 and 1): %s", ts, err)
+	}
+	want2 := []*unit.SourceUnit{
+		{Type: "t1", Name: "u1"},
+		{Type: "t3", Name: "u3"},
+	}
+	sort.Sort(unit.SourceUnits(units2))
+	sort.Sort(unit.SourceUnits(want2))
+	if !reflect.DeepEqual(units2, want2) {
+		t.Errorf("%s: Units(3 and 1): got %v, want %v", ts, units2, want2)
 	}
 }
 
@@ -216,6 +234,37 @@ func testTreeStore_Defs(t *testing.T, ts treeStoreImporter) {
 	if err != nil {
 		t.Errorf("%s: Defs(): %s", ts, err)
 	}
+	if !reflect.DeepEqual(defs, want) {
+		t.Errorf("%s: Defs(): got defs %v, want %v", ts, defs, want)
+	}
+}
+
+func testTreeStore_Defs_ByUnits(t *testing.T, ts treeStoreImporter) {
+	units := []*unit.SourceUnit{
+		{Type: "t1", Name: "u1"},
+		{Type: "t2", Name: "u2"},
+		{Type: "t3", Name: "u3"},
+	}
+	for i, unit := range units {
+		data := graph.Output{
+			Defs: []*graph.Def{{DefKey: graph.DefKey{Path: fmt.Sprintf("p%d", i+1)}}},
+		}
+		if err := ts.Import(unit, data); err != nil {
+			t.Errorf("%s: Import(%v, data): %s", ts, unit, err)
+		}
+	}
+
+	want := []*graph.Def{
+		{DefKey: graph.DefKey{UnitType: "t1", Unit: "u1", Path: "p1"}},
+		{DefKey: graph.DefKey{UnitType: "t3", Unit: "u3", Path: "p3"}},
+	}
+
+	defs, err := ts.Defs(ByUnits(unit.ID2{Type: "t3", Name: "u3"}, unit.ID2{Type: "t1", Name: "u1"}))
+	if err != nil {
+		t.Errorf("%s: Defs(): %s", ts, err)
+	}
+	sort.Sort(graph.Defs(defs))
+	sort.Sort(graph.Defs(want))
 	if !reflect.DeepEqual(defs, want) {
 		t.Errorf("%s: Defs(): got defs %v, want %v", ts, defs, want)
 	}

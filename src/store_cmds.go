@@ -322,7 +322,7 @@ type StoreUnitsCmd struct {
 func (c *StoreUnitsCmd) filters() []store.UnitFilter {
 	var fs []store.UnitFilter
 	if c.Type != "" && c.Name != "" {
-		fs = append(fs, store.ByUnit(c.Type, c.Name))
+		fs = append(fs, store.ByUnits(unit.ID2{Type: c.Type, Name: c.Name}))
 	}
 	if (c.Type != "" && c.Name == "") || (c.Type == "" && c.Name != "") {
 		log.Fatal("must specify either both or neither of --type and --name (to filter by source unit)")
@@ -383,7 +383,7 @@ type StoreDefsCmd struct {
 func (c *StoreDefsCmd) filters() []store.DefFilter {
 	var fs []store.DefFilter
 	if c.UnitType != "" && c.Unit != "" {
-		fs = append(fs, store.ByUnit(c.UnitType, c.Unit))
+		fs = append(fs, store.ByUnits(unit.ID2{Type: c.UnitType, Name: c.Unit}))
 	}
 	if (c.UnitType != "" && c.Unit == "") || (c.UnitType == "" && c.Unit != "") {
 		log.Fatal("must specify either both or neither of --unit-type and --unit (to filter by source unit)")
@@ -453,7 +453,7 @@ type StoreRefsCmd struct {
 func (c *StoreRefsCmd) filters() []store.RefFilter {
 	var fs []store.RefFilter
 	if c.UnitType != "" && c.Unit != "" {
-		fs = append(fs, store.ByUnit(c.UnitType, c.Unit))
+		fs = append(fs, store.ByUnits(unit.ID2{Type: c.UnitType, Name: c.Unit}))
 	}
 	if (c.UnitType != "" && c.Unit == "") || (c.UnitType == "" && c.Unit != "") {
 		log.Fatal("must specify either both or neither of --unit-type and --unit (to filter by source unit)")
