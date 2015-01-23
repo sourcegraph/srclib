@@ -107,7 +107,7 @@ func init() {
 
 type StoreCmd struct {
 	Type string `short:"t" long:"type" description:"the (multi-)repo store type to use (RepoStore, MultiRepoStore, etc.)" default:"RepoStore"`
-	Root string `short:"r" long:"root" description:"the root of the store (repo clone dir for RepoStore, global path for MultiRepoStore, etc.)"`
+	Root string `short:"r" long:"root" description:"the root of the store (repo clone dir for RepoStore, global path for MultiRepoStore, etc.)" default:".srclib-store"`
 }
 
 var storeCmd StoreCmd
