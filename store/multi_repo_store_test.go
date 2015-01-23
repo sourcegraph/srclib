@@ -322,7 +322,7 @@ func testMultiRepoStore_Defs_filter(t *testing.T, mrs MultiRepoStoreImporter) {
 		},
 	}
 
-	defs, err := mrs.Defs(ByRepoAndCommitID("r", "c"), DefFilterFunc(func(def *graph.Def) bool { return def.Path == "p" }))
+	defs, err := mrs.Defs(ByRepoAndCommitID("r", "c"), ByDefPath("p"))
 	if err != nil {
 		t.Errorf("%s: Defs(): %s", mrs, err)
 	}
