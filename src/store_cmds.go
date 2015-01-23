@@ -370,6 +370,8 @@ type StoreDefsCmd struct {
 	CommitID       string `long:"commit"`
 
 	NamePrefix string `long:"name-prefix"`
+
+	Limit int `short:"n" long:"limit" description:"max results to return (0 for all)"`
 }
 
 func (c *StoreDefsCmd) filters() []store.DefFilter {
@@ -399,6 +401,9 @@ func (c *StoreDefsCmd) filters() []store.DefFilter {
 		fs = append(fs, store.DefFilterFunc(func(def *graph.Def) bool {
 			return strings.HasPrefix(def.Name, c.NamePrefix)
 		}))
+	}
+	if c.Limit != 0 {
+		fs = append(fs, store.Limit(c.Limit))
 	}
 	return fs
 }
