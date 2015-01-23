@@ -94,7 +94,7 @@ func (s *indexedTreeStore) Units(fs ...UnitFilter) ([]*unit.SourceUnit, error) {
 
 func (s *indexedTreeStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 	// We have File->Unit index (that tells us which source units
-	// include a given file). If there's a ByFile DefFilter, then we
+	// include a given file). If there's a ByFiles DefFilter, then we
 	// can convert that filter into a ByUnits scope filter (which is
 	// more efficient) by consulting the File->Unit index.
 
@@ -118,7 +118,7 @@ func (s *indexedTreeStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 		return nil, err
 	}
 
-	// Add ByUnits filters that were implied by ByFile (and other
+	// Add ByUnits filters that were implied by ByFiles (and other
 	// UnitFilters).
 	//
 	// If scopeUnits is empty, the empty ByUnits filter will result in
@@ -131,7 +131,7 @@ func (s *indexedTreeStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 
 func (s *indexedTreeStore) Refs(fs ...RefFilter) ([]*graph.Ref, error) {
 	// We have File->Unit index (that tells us which source units
-	// include a given file). If there's a ByFile RefFilter, then we
+	// include a given file). If there's a ByFiles RefFilter, then we
 	// can convert that filter into a ByUnits scope filter (which is
 	// more efficient) by consulting the File->Unit index.
 
@@ -155,7 +155,7 @@ func (s *indexedTreeStore) Refs(fs ...RefFilter) ([]*graph.Ref, error) {
 		return nil, err
 	}
 
-	// Add ByUnits filters that were implied by ByFile (and other
+	// Add ByUnits filters that were implied by ByFiles (and other
 	// UnitFilters).
 	//
 	// If scopeUnits is empty, the empty ByUnits filter will result in

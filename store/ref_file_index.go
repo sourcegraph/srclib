@@ -49,7 +49,7 @@ func (x *refFileIndex) Covers(fs []RefFilter) int {
 	// (when those are added).
 	cov := 0
 	for _, f := range fs {
-		if _, ok := f.(ByFileFilter); ok {
+		if _, ok := f.(ByFilesFilter); ok {
 			cov++
 		}
 	}
@@ -59,12 +59,19 @@ func (x *refFileIndex) Covers(fs []RefFilter) int {
 // Refs implements refIndex.
 func (x *refFileIndex) Refs(fs ...RefFilter) ([]byteRanges, error) {
 	for _, f := range fs {
-		if ff, ok := f.(ByFileFilter); ok {
-			br, found, err := x.getByFile(ff.ByFile())
-			if !found || err != nil {
-				return nil, err
+		if ff, ok := f.(ByFilesFilter); ok {
+			files := ff.ByFiles()
+			brs := make([]byteRanges, 0, len(files))
+			for _, file := range files {
+				br, found, err := x.getByFile(file)
+				if err != nil {
+					return nil, err
+				}
+				if found {
+					brs = append(brs, br)
+				}
 			}
-			return []byteRanges{br}, nil
+			return brs, nil
 		}
 	}
 	return nil, nil

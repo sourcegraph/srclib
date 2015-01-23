@@ -31,7 +31,7 @@ func testUnitStore(t *testing.T, newFn func() unitStoreImporter) {
 	testUnitStore_Def(t, &labeledUnitStoreImporter{newFn(), "def"})
 	testUnitStore_Defs(t, &labeledUnitStoreImporter{newFn(), "defs"})
 	testUnitStore_Refs(t, &labeledUnitStoreImporter{newFn(), "refs"})
-	testUnitStore_Refs_ByFile(t, &labeledUnitStoreImporter{newFn(), "refs by file"})
+	testUnitStore_Refs_ByFiles(t, &labeledUnitStoreImporter{newFn(), "refs by file"})
 }
 
 func testUnitStore_uninitialized(t *testing.T, us UnitStore) {
@@ -205,7 +205,7 @@ func testUnitStore_Refs(t *testing.T, us unitStoreImporter) {
 	}
 }
 
-func testUnitStore_Refs_ByFile(t *testing.T, us unitStoreImporter) {
+func testUnitStore_Refs_ByFiles(t *testing.T, us unitStoreImporter) {
 	refsByFile := map[string][]*graph.Ref{
 		"f1": {
 			{DefPath: "p1", Start: 0, End: 5},
@@ -234,18 +234,18 @@ func testUnitStore_Refs_ByFile(t *testing.T, us unitStoreImporter) {
 
 	for file, wantRefs := range refsByFile {
 		c_refFileIndex_getByFile = 0
-		refs, err := us.Refs(ByFile(file))
+		refs, err := us.Refs(ByFiles(file))
 		if err != nil {
-			t.Fatalf("%s: Refs(ByFile %s): %s", us, file, err)
+			t.Fatalf("%s: Refs(ByFiles %s): %s", us, file, err)
 		}
 		sort.Sort(refsByFileStartEnd(refs))
 		sort.Sort(refsByFileStartEnd(wantRefs))
 		if want := wantRefs; !reflect.DeepEqual(refs, want) {
-			t.Errorf("%s: Refs(ByFile %s): got refs %v, want %v", us, file, refs, want)
+			t.Errorf("%s: Refs(ByFiles %s): got refs %v, want %v", us, file, refs, want)
 		}
 		if isIndexedStore(us) {
 			if want := 1; c_refFileIndex_getByFile != want {
-				t.Errorf("%s: Refs(ByFile %s): got %d index hits, want %d", us, file, c_refFileIndex_getByFile, want)
+				t.Errorf("%s: Refs(ByFiles %s): got %d index hits, want %d", us, file, c_refFileIndex_getByFile, want)
 			}
 		}
 	}

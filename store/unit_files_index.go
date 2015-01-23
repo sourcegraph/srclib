@@ -49,7 +49,7 @@ func (x *unitFilesIndex) getByPath(path string) ([]unit.ID2, bool, error) {
 func (x *unitFilesIndex) Covers(fs []UnitFilter) int {
 	cov := 0
 	for _, f := range fs {
-		if _, ok := f.(ByFileFilter); ok {
+		if _, ok := f.(ByFilesFilter); ok {
 			cov++
 		}
 	}
@@ -59,12 +59,23 @@ func (x *unitFilesIndex) Covers(fs []UnitFilter) int {
 // Defs implements unitIndex.
 func (x *unitFilesIndex) Units(fs ...UnitFilter) ([]unit.ID2, error) {
 	for _, f := range fs {
-		if ff, ok := f.(ByFileFilter); ok {
-			u, found, err := x.getByPath(ff.ByFile())
-			if !found || err != nil {
-				return nil, err
+		if ff, ok := f.(ByFilesFilter); ok {
+			files := ff.ByFiles()
+			umap := map[unit.ID2]struct{}{}
+			for _, file := range files {
+				u, _, err := x.getByPath(file)
+				if err != nil {
+					return nil, err
+				}
+				for _, uu := range u {
+					umap[uu] = struct{}{}
+				}
 			}
-			return u, nil
+			us := make([]unit.ID2, 0, len(umap))
+			for u := range umap {
+				us = append(us, u)
+			}
+			return us, nil
 		}
 	}
 	return nil, nil
