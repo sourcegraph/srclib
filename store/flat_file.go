@@ -429,6 +429,32 @@ func (s *flatFileUnitStore) Defs(fs ...DefFilter) (defs []*graph.Def, err error)
 	return defs, nil
 }
 
+// defsAtOffsets reads the defs at the given serialized byte offsets
+// from the def data file and returns them in arbitrary order.
+func (s *flatFileUnitStore) defsAtOffsets(ofs byteOffsets) ([]*graph.Def, error) {
+	f, err := s.fs.Open(unitDefsFilename)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		err2 := f.Close()
+		if err == nil {
+			err = err2
+		}
+	}()
+
+	defs := make([]*graph.Def, len(ofs))
+	for i, ofs := range ofs {
+		if _, err := f.Seek(ofs, 0); err != nil {
+			return nil, err
+		}
+		if err := Codec.Decode(f, &defs[i]); err != nil {
+			return nil, err
+		}
+	}
+	return defs, nil
+}
+
 func (s *flatFileUnitStore) Refs(fs ...RefFilter) (refs []*graph.Ref, err error) {
 	f, err := s.fs.Open(unitRefsFilename)
 	if err != nil {
