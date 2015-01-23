@@ -5,6 +5,7 @@ import (
 	"path"
 	"reflect"
 	"strings"
+	"sync"
 
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/unit"
@@ -612,6 +613,42 @@ func (f byFilesFilter) SelectUnit(unit *unit.SourceUnit) bool {
 				return true
 			}
 		}
+	}
+	return false
+}
+
+// Limit is an EXPERIMENTAL filter for limiting the number of
+// results. It currently only works for defs. It is not correct
+// because it assumes that if it is called on an object, it gets to
+// decide whether that object appears in the final results. In
+// reality, other filters could reject the object, and then those
+// would count toward the limit for this filter but would never get
+// returned. We could guarantee that Limit always runs last (after all
+// other filters have accepted something).
+func Limit(n int) interface {
+	DefFilter
+} {
+	return &limiter{n: n}
+}
+
+type limiter struct {
+	n   int
+	mu  sync.Mutex
+	def map[*graph.Def]struct{} // seen defs
+}
+
+func (l *limiter) SelectDef(def *graph.Def) bool {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	if l.def == nil {
+		l.def = map[*graph.Def]struct{}{}
+	}
+	if _, seen := l.def[def]; seen {
+		return true
+	}
+	if len(l.def) < l.n {
+		l.def[def] = struct{}{}
+		return true
 	}
 	return false
 }
