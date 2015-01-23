@@ -334,15 +334,7 @@ func (c *StoreUnitsCmd) filters() []store.UnitFilter {
 		fs = append(fs, store.ByRepo(c.Repo))
 	}
 	if c.File != "" {
-		c.File = filepath.Clean(c.File)
-		fs = append(fs, store.UnitFilterFunc(func(unit *unit.SourceUnit) bool {
-			for _, file := range unit.Files {
-				if filepath.Clean(file) == c.File {
-					return true
-				}
-			}
-			return false
-		}))
+		fs = append(fs, store.ByFile(path.Clean(c.File)))
 	}
 	return fs
 }
@@ -439,6 +431,9 @@ type StoreRefsCmd struct {
 	File     string `long:"file"`
 	CommitID string `long:"commit"`
 
+	Start int `long:"start"`
+	End   int `long:"end"`
+
 	DefRepo     string `long:"def-repo"`
 	DefUnitType string `long:"def-unit-type" `
 	DefUnit     string `long:"def-unit"`
@@ -460,8 +455,16 @@ func (c *StoreRefsCmd) filters() []store.RefFilter {
 		fs = append(fs, store.ByRepo(c.Repo))
 	}
 	if c.File != "" {
+		fs = append(fs, store.ByFile(path.Clean(c.File)))
+	}
+	if c.Start != 0 {
 		fs = append(fs, store.RefFilterFunc(func(ref *graph.Ref) bool {
-			return ref.File == c.File
+			return ref.Start >= c.Start
+		}))
+	}
+	if c.End != 0 {
+		fs = append(fs, store.RefFilterFunc(func(ref *graph.Ref) bool {
+			return ref.End <= c.End
 		}))
 	}
 	if c.DefRepo != "" && c.DefUnitType != "" && c.DefUnit != "" && c.DefPath != "" {

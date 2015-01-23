@@ -63,6 +63,72 @@ func bestCoverageDefIndex(defIndexes []interface{}, fs []DefFilter) defIndex {
 	return maxX
 }
 
+// fileByteRanges maps from filename to the byte ranges in a byte
+// array that pertain to that file. It's used to index into the ref
+// data to quickly read all of the refs in a given file.
+type fileByteRanges map[string]byteRanges
+
+// byteRanges' encodes the byte offsets of multiple objects. The first
+// element is the byte offset within a file. Subsequent elements are
+// the byte length of each object in the file.
+type byteRanges []int64
+
+// start is the offset of the first byte of the first object, relative
+// to the beginning of the file.
+func (br byteRanges) start() int64 { return br[0] }
+
+// byteRange's first element is the byte offset within a file, and its
+// second element is number of bytes in the range.
+type byteRange [2]int64
+
+// refsByFileStartEnd sorts refs by (file, start, end).
+type refsByFileStartEnd []*graph.Ref
+
+func (v refsByFileStartEnd) Len() int { return len(v) }
+func (v refsByFileStartEnd) Less(i, j int) bool {
+	a, b := v[i], v[j]
+	if a.File == b.File {
+		if a.Start == b.Start {
+			return a.End < b.End
+		}
+		return a.Start < b.Start
+	}
+	return a.File < b.File
+}
+func (v refsByFileStartEnd) Swap(i, j int) { v[i], v[j] = v[j], v[i] }
+
+type refIndex interface {
+	// Covers returns the number of filters that this index
+	// covers. Indexes with greater coverage are selected over others
+	// with lesser coverage.
+	Covers([]RefFilter) int
+
+	// Refs returns the byte ranges (in the ref data file) of matching
+	// refs, or errNotIndexed if no indexes can be used to satisfy the
+	// query.
+	Refs(...RefFilter) ([]byteRanges, error)
+
+	// Build constructs the index.
+	Build(*graph.Output, fileByteRanges) error
+}
+
+// bestCoverageRefIndex returns the index that has the greatest
+// coverage for the given ref filters, or nil if no indexes have any coverage.
+func bestCoverageRefIndex(refIndexes []interface{}, fs []RefFilter) refIndex {
+	maxCov := 0
+	var maxX refIndex
+	for _, x := range refIndexes {
+		if x, ok := x.(refIndex); ok {
+			cov := x.Covers(fs)
+			if cov > maxCov {
+				maxCov = cov
+				maxX = x
+			}
+		}
+	}
+	return maxX
+}
+
 type unitIndex interface {
 	// Covers returns the number of filters that this index
 	// covers. Indexes with greater coverage are selected over others

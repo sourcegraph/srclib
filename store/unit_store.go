@@ -98,14 +98,18 @@ func (s unitStores) Defs(f ...DefFilter) ([]*graph.Def, error) {
 	return allDefs, nil
 }
 
+var c_unitStores_Refs_last_numUnitsQueried = 0
+
 func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 	uss, err := openUnitStores(s.opener, f)
 	if err != nil {
 		return nil, err
 	}
 
+	c_unitStores_Refs_last_numUnitsQueried = 0
 	var allRefs []*graph.Ref
 	for u, us := range uss {
+		c_unitStores_Refs_last_numUnitsQueried++
 		setImpliedUnit(f, u)
 		refs, err := us.Refs(f...)
 		if err != nil {

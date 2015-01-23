@@ -129,6 +129,43 @@ func (s *indexedTreeStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 	return s.flatFileTreeStore.Defs(fs...)
 }
 
+func (s *indexedTreeStore) Refs(fs ...RefFilter) ([]*graph.Ref, error) {
+	// We have File->Unit index (that tells us which source units
+	// include a given file). If there's a ByFile RefFilter, then we
+	// can convert that filter into a ByUnits scope filter (which is
+	// more efficient) by consulting the File->Unit index.
+
+	var ufs []UnitFilter
+	for _, f := range fs {
+		if uf, ok := f.(UnitFilter); ok {
+			ufs = append(ufs, uf)
+		}
+	}
+
+	// No indexes found that we can exploit here; forward to the
+	// underlying store.
+	if len(ufs) == 0 {
+		return s.flatFileTreeStore.Refs(fs...)
+	}
+
+	// Find which source units match the unit filters; we'll restrict
+	// our refs query to those source units.
+	scopeUnits, err := s.unitIDs(false, ufs...)
+	if err != nil {
+		return nil, err
+	}
+
+	// Add ByUnits filters that were implied by ByFile (and other
+	// UnitFilters).
+	//
+	// If scopeUnits is empty, the empty ByUnits filter will result in
+	// the query matching nothing, which is the desired behavior.
+	fs = append(fs, ByUnits(scopeUnits...))
+
+	// Pass the now more narrowly scoped query onto the underlying store.
+	return s.flatFileTreeStore.Refs(fs...)
+}
+
 func (s *indexedTreeStore) Import(u *unit.SourceUnit, data graph.Output) error {
 	if err := s.flatFileTreeStore.Import(u, data); err != nil {
 		return err
@@ -201,6 +238,7 @@ func newIndexedUnitStore(fs rwvfs.FileSystem) UnitStoreImporter {
 	return &indexedUnitStore{
 		indexes: []interface{}{
 			&defPathIndex{},
+			&refFileIndex{},
 		},
 		flatFileUnitStore: &flatFileUnitStore{fs: fs},
 	}
@@ -241,7 +279,21 @@ func (s *indexedUnitStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 
 // Refs implements UnitStore.
 func (s *indexedUnitStore) Refs(fs ...RefFilter) ([]*graph.Ref, error) {
-	// TODO(sqs): look up in ref indexes
+	// Try to find an index that covers this query.
+	if dx := bestCoverageRefIndex(s.indexes, fs); dx != nil {
+		if px, ok := dx.(persistedIndex); ok && !px.Ready() {
+			if err := readIndex(s.fs, px); err != nil {
+				return nil, err
+			}
+		}
+		brs, err := dx.Refs(fs...)
+		if err != nil {
+			return nil, err
+		}
+		return s.refsAtByteRanges(brs)
+	}
+
+	// Fall back to full scan.
 	return s.flatFileUnitStore.Refs(fs...)
 }
 
@@ -260,11 +312,11 @@ func (s *indexedUnitStore) Import(data graph.Output) error {
 		return err
 	}
 
-	refOfs, err := s.flatFileUnitStore.writeRefs(&data)
+	fbr, err := s.flatFileUnitStore.writeRefs(&data)
 	if err != nil {
 		return err
 	}
-	if err := s.writeRefIndexes(&data, refOfs); err != nil {
+	if err := s.writeRefIndexes(&data, fbr); err != nil {
 		return err
 	}
 
@@ -297,9 +349,24 @@ func (s *indexedUnitStore) writeDefIndexes(data *graph.Output, ofs byteOffsets) 
 
 // writeRefIndexes builds every ref index in s.indexes and writes them
 // to their backing files.
-func (s *indexedUnitStore) writeRefIndexes(data *graph.Output, ofs byteOffsets) error {
-	// TODO(sqs): implement ref indexes
-	return nil
+func (s *indexedUnitStore) writeRefIndexes(data *graph.Output, fbr fileByteRanges) error {
+	par := parallel.NewRun(runtime.GOMAXPROCS(0))
+	for _, x := range s.indexes {
+		if x, ok := x.(refIndex); ok {
+			par.Do(func() error {
+				if err := x.Build(data, fbr); err != nil {
+					return err
+				}
+				if px, ok := x.(persistedIndex); ok {
+					if err := writeIndex(s.fs, px); err != nil {
+						return err
+					}
+				}
+				return nil
+			})
+		}
+	}
+	return par.Wait()
 }
 
 // writeIndex calls x.Write with the index's backing file.

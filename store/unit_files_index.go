@@ -60,8 +60,8 @@ func (x *unitFilesIndex) Covers(fs []UnitFilter) int {
 func (x *unitFilesIndex) Units(fs ...UnitFilter) ([]unit.ID2, error) {
 	for _, f := range fs {
 		if ff, ok := f.(ByFileFilter); ok {
-			u, _, err := x.getByPath(ff.ByFile())
-			if err != nil {
+			u, found, err := x.getByPath(ff.ByFile())
+			if !found || err != nil {
 				return nil, err
 			}
 			return u, nil
