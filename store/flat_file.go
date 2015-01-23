@@ -1,12 +1,16 @@
 package store
 
 import (
+	"bytes"
 	"io"
+	"io/ioutil"
 	"os"
 	"path"
 	"strings"
 
 	"github.com/kr/fs"
+
+	"sort"
 
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib/graph"
@@ -490,6 +494,53 @@ func (s *flatFileUnitStore) Refs(fs ...RefFilter) (refs []*graph.Ref, err error)
 	return refs, nil
 }
 
+func (s *flatFileUnitStore) refsAtByteRanges(brs []byteRanges) (refs []*graph.Ref, err error) {
+	f, err := s.fs.Open(unitRefsFilename)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		err2 := f.Close()
+		if err == nil {
+			err = err2
+		}
+	}()
+
+	// See how many bytes we need to read to get the refs in all
+	// byteRanges.
+	readLengths := make([]int64, len(brs))
+	totalRefs := 0
+	for i, br := range brs {
+		var n int64
+		for _, b := range br[1:] {
+			n += b
+			totalRefs++
+		}
+		readLengths[i] = n
+	}
+
+	refs = make([]*graph.Ref, totalRefs)
+	addedRefs := 0
+	for i, br := range brs {
+		if _, err := f.Seek(br.start(), 0); err != nil {
+			return nil, err
+		}
+		b, err := ioutil.ReadAll(io.LimitReader(f, readLengths[i]))
+		if err != nil {
+			return nil, err
+		}
+
+		dec := newDecoder(Codec, bytes.NewReader(b))
+		for range br[1:] {
+			if err := dec.Decode(&refs[addedRefs]); err != nil {
+				return nil, err
+			}
+			addedRefs++
+		}
+	}
+	return refs, nil
+}
+
 func (s *flatFileUnitStore) Import(data graph.Output) error {
 	cleanForImport(&data, "", "", "")
 	if _, err := s.writeDefs(&data); err != nil {
@@ -528,7 +579,7 @@ func (s *flatFileUnitStore) writeDefs(data *graph.Output) (ofs byteOffsets, err 
 }
 
 // writeDefs writes the ref data file.
-func (s *flatFileUnitStore) writeRefs(data *graph.Output) (ofs byteOffsets, err error) {
+func (s *flatFileUnitStore) writeRefs(data *graph.Output) (fbr fileByteRanges, err error) {
 	f, err := s.fs.Create(unitRefsFilename)
 	if err != nil {
 		return nil, err
@@ -540,15 +591,35 @@ func (s *flatFileUnitStore) writeRefs(data *graph.Output) (ofs byteOffsets, err 
 		}
 	}()
 
+	// Sort refs by file and start byte so that we can use streaming
+	// reads to efficiently read in all of the refs that exist in a
+	// file.
+	sort.Sort(refsByFileStartEnd(data.Refs))
+
 	cw := &countingWriter{Writer: f}
-	ofs = make(byteOffsets, len(data.Refs))
-	for i, ref := range data.Refs {
-		ofs[i] = cw.n
+	fbr = fileByteRanges{}
+	lastFile := ""
+	lastFileByteRanges := byteRanges{}
+	for _, ref := range data.Refs {
+		if lastFile != ref.File {
+			if lastFile != "" {
+				fbr[lastFile] = lastFileByteRanges
+			}
+			lastFile = ref.File
+			lastFileByteRanges = byteRanges{cw.n}
+		}
+		before := cw.n
 		if err := Codec.Encode(cw, ref); err != nil {
 			return nil, err
 		}
+
+		// Record the byte length of this encoded ref.
+		lastFileByteRanges = append(lastFileByteRanges, cw.n-before)
 	}
-	return ofs, nil
+	if lastFile != "" {
+		fbr[lastFile] = lastFileByteRanges
+	}
+	return fbr, nil
 }
 
 func (s *flatFileUnitStore) String() string { return "flatFileUnitStore" }

@@ -56,6 +56,7 @@ func testTreeStore(t *testing.T, newFn func() treeStoreImporter) {
 	testTreeStore_Defs_ByUnits(t, &labeledTreeStoreImporter{newFn(), "defs by units"})
 	testTreeStore_Defs_ByFiles(t, &labeledTreeStoreImporter{newFn(), "defs by files"})
 	testTreeStore_Refs(t, &labeledTreeStoreImporter{newFn(), "refs"})
+	testTreeStore_Refs_ByFile(t, &labeledTreeStoreImporter{newFn(), "refs by file"})
 }
 
 func testTreeStore_uninitialized(t *testing.T, ts TreeStore) {
@@ -420,5 +421,72 @@ func testTreeStore_Refs(t *testing.T, ts treeStoreImporter) {
 	}
 	if !reflect.DeepEqual(refs, want) {
 		t.Errorf("%s: Refs(): got refs %v, want %v", ts, refs, want)
+	}
+}
+
+func testTreeStore_Refs_ByFile(t *testing.T, ts treeStoreImporter) {
+	refsByUnitByFile := map[string]map[string][]*graph.Ref{
+		"u1": {
+			"f1": {
+				{DefPath: "p1", Start: 0, End: 5},
+			},
+			"f2": {
+				{DefPath: "p1", Start: 0, End: 5},
+				{DefPath: "p2", Start: 5, End: 10},
+			},
+		},
+		"u2": {
+			"f1": {
+				{DefPath: "p1", Start: 5, End: 10},
+			},
+		},
+	}
+	refsByFile := map[string][]*graph.Ref{}
+	for unitName, refsByFile0 := range refsByUnitByFile {
+		u := &unit.SourceUnit{Type: "t", Name: unitName}
+		var data graph.Output
+		for file, refs := range refsByFile0 {
+			u.Files = append(u.Files, file)
+			for _, ref := range refs {
+				ref.File = file
+			}
+			data.Refs = append(data.Refs, refs...)
+			refsByFile[file] = append(refsByFile[file], refs...)
+		}
+		if err := ts.Import(u, data); err != nil {
+			t.Errorf("%s: Import(%v, data): %s", ts, u, err)
+		}
+	}
+
+	for file, wantRefs := range refsByFile {
+		c_unitStores_Refs_last_numUnitsQueried = 0
+		c_refFileIndex_getByFile = 0
+		refs, err := ts.Refs(ByFile(file))
+		if err != nil {
+			t.Fatalf("%s: Refs(ByFile %s): %s", ts, file, err)
+		}
+
+		distinctRefUnits := map[string]struct{}{}
+		for _, ref := range refs {
+			distinctRefUnits[ref.Unit] = struct{}{}
+		}
+
+		// for test equality
+		sort.Sort(refsByFileStartEnd(refs))
+		sort.Sort(refsByFileStartEnd(wantRefs))
+		cleanForImport(&graph.Output{Refs: refs}, "", "t", "u1")
+		cleanForImport(&graph.Output{Refs: refs}, "", "t", "u2")
+
+		if want := wantRefs; !reflect.DeepEqual(refs, want) {
+			t.Errorf("%s: Refs(ByFile %s): got refs %v, want %v", ts, file, refs, want)
+		}
+		if isIndexedStore(ts) {
+			if want := len(distinctRefUnits); c_refFileIndex_getByFile != want {
+				t.Errorf("%s: Refs(ByFile %s): got %d index hits, want %d", ts, file, c_refFileIndex_getByFile, want)
+			}
+			if want := len(distinctRefUnits); c_unitStores_Refs_last_numUnitsQueried != want {
+				t.Errorf("%s: Refs(ByFile %s): got %d units queried, want %d", ts, file, c_unitStores_Refs_last_numUnitsQueried, want)
+			}
+		}
 	}
 }
