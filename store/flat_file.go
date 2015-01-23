@@ -293,12 +293,12 @@ func (s *flatFileTreeStore) unitFilename(unitType, unit string) string {
 
 const unitFileSuffix = ".unit.json"
 
-func (s *flatFileTreeStore) Import(unit *unit.SourceUnit, data graph.Output) (err error) {
-	if unit == nil {
+func (s *flatFileTreeStore) Import(u *unit.SourceUnit, data graph.Output) (err error) {
+	if u == nil {
 		return rwvfs.MkdirAll(s.fs, ".")
 	}
 
-	unitFilename := s.unitFilename(unit.Type, unit.Name)
+	unitFilename := s.unitFilename(u.Type, u.Name)
 	if err := rwvfs.MkdirAll(s.fs, path.Dir(unitFilename)); err != nil {
 		return err
 	}
@@ -312,7 +312,7 @@ func (s *flatFileTreeStore) Import(unit *unit.SourceUnit, data graph.Output) (er
 			err = err2
 		}
 	}()
-	if err := Codec.Encode(f, unit); err != nil {
+	if err := Codec.Encode(f, u); err != nil {
 		return err
 	}
 
@@ -320,11 +320,11 @@ func (s *flatFileTreeStore) Import(unit *unit.SourceUnit, data graph.Output) (er
 	if err := rwvfs.MkdirAll(s.fs, dir); err != nil {
 		return err
 	}
-	us, err := s.openUnitStore(unitID{unitType: unit.Type, unit: unit.Name})
+	us, err := s.openUnitStore(unit.ID2{Type: u.Type, Name: u.Name})
 	if err != nil {
 		return err
 	}
-	cleanForImport(&data, "", unit.Type, unit.Name)
+	cleanForImport(&data, "", u.Type, u.Name)
 	return us.(UnitStoreImporter).Import(data)
 }
 
@@ -334,8 +334,8 @@ func (s *flatFileTreeStore) Import(unit *unit.SourceUnit, data graph.Output) (er
 // for all filters).
 var useIndexedUnitStore = true
 
-func (s *flatFileTreeStore) openUnitStore(u unitID) (UnitStore, error) {
-	filename := s.unitFilename(u.unitType, u.unit)
+func (s *flatFileTreeStore) openUnitStore(u unit.ID2) (UnitStore, error) {
+	filename := s.unitFilename(u.Type, u.Name)
 	dir := strings.TrimSuffix(filename, unitFileSuffix)
 	if useIndexedUnitStore {
 		return newIndexedUnitStore(rwvfs.Sub(s.fs, dir)), nil
@@ -343,18 +343,18 @@ func (s *flatFileTreeStore) openUnitStore(u unitID) (UnitStore, error) {
 	return &flatFileUnitStore{fs: rwvfs.Sub(s.fs, dir)}, nil
 }
 
-func (s *flatFileTreeStore) openAllUnitStores() (map[unitID]UnitStore, error) {
+func (s *flatFileTreeStore) openAllUnitStores() (map[unit.ID2]UnitStore, error) {
 	unitFiles, err := s.unitFilenames()
 	if err != nil {
 		return nil, err
 	}
 
-	uss := make(map[unitID]UnitStore, len(unitFiles))
+	uss := make(map[unit.ID2]UnitStore, len(unitFiles))
 	for _, unitFile := range unitFiles {
 		// TODO(sqs): duplicated code both here and in openUnitStore
 		// for "dir" and "u".
 		dir := strings.TrimSuffix(unitFile, unitFileSuffix)
-		u := unitID{unitType: path.Base(dir), unit: path.Dir(dir)}
+		u := unit.ID2{Type: path.Base(dir), Name: path.Dir(dir)}
 		var err error
 		uss[u], err = s.openUnitStore(u)
 		if err != nil {

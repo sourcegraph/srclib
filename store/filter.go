@@ -419,9 +419,8 @@ type byRefDefFilter struct {
 	// (currently) to narrow the scope since a ref's def does not
 	// determine where the ref is stored.
 
-	impliedRepo     string // the implied DefRepo value when ref.DefRepo == ""
-	impliedUnitType string // the implied DefUnitType value when ref.DefUnitType == ""
-	impliedUnit     string // the implied DefUnit value when ref.DefUnit == ""
+	impliedRepo string   // the implied DefRepo value when ref.DefRepo == ""
+	impliedUnit unit.ID2 // the implied DefUnit{,Type} value when ref.DefUnit{,Type} == ""
 }
 
 func (f *byRefDefFilter) ByDefRepo() string          { return f.def.DefRepo }
@@ -429,13 +428,11 @@ func (f *byRefDefFilter) ByDefUnitType() string      { return f.def.DefUnitType 
 func (f *byRefDefFilter) ByDefUnit() string          { return f.def.DefUnit }
 func (f *byRefDefFilter) ByDefPath() string          { return f.def.DefPath }
 func (f *byRefDefFilter) setImpliedRepo(repo string) { f.impliedRepo = repo }
-func (f *byRefDefFilter) setImpliedUnit(u unitID) {
-	f.impliedUnitType, f.impliedUnit = u.unitType, u.unit
-}
+func (f *byRefDefFilter) setImpliedUnit(u unit.ID2)  { f.impliedUnit = u }
 func (f *byRefDefFilter) SelectRef(ref *graph.Ref) bool {
 	return ((ref.DefRepo == "" && f.impliedRepo == f.def.DefRepo) || ref.DefRepo == f.def.DefRepo) &&
-		((ref.DefUnitType == "" && f.impliedUnitType == f.def.DefUnitType) || ref.DefUnitType == f.def.DefUnitType) &&
-		((ref.DefUnit == "" && f.impliedUnit == f.def.DefUnit) || ref.DefUnit == f.def.DefUnit) &&
+		((ref.DefUnitType == "" && f.impliedUnit.Type == f.def.DefUnitType) || ref.DefUnitType == f.def.DefUnitType) &&
+		((ref.DefUnit == "" && f.impliedUnit.Name == f.def.DefUnit) || ref.DefUnit == f.def.DefUnit) &&
 		ref.DefPath == f.def.DefPath
 }
 
@@ -461,31 +458,28 @@ func AbsRefFilterFunc(f RefFilterFunc) RefFilter {
 type absRefFilterFunc struct {
 	f RefFilterFunc
 
-	impliedRepo     string // the implied DefRepo/Repo value when those are empty
-	impliedCommitID string // the CommitID currently being filtered
-	impliedUnitType string // the implied DefUnitType/UnitType value when those are empty
-	impliedUnit     string // the implied DefUnit/Unit value when those are empty
+	impliedRepo     string   // the implied DefRepo/Repo value when those are empty
+	impliedCommitID string   // the CommitID currently being filtered
+	impliedUnit     unit.ID2 // the implied DefUnitType/UnitType value when those are empty
 }
 
 func (f *absRefFilterFunc) setImpliedRepo(repo string)         { f.impliedRepo = repo }
 func (f *absRefFilterFunc) setImpliedCommitID(commitID string) { f.impliedCommitID = commitID }
-func (f *absRefFilterFunc) setImpliedUnit(u unitID) {
-	f.impliedUnitType, f.impliedUnit = u.unitType, u.unit
-}
+func (f *absRefFilterFunc) setImpliedUnit(u unit.ID2)          { f.impliedUnit = u }
 func (f *absRefFilterFunc) SelectRef(ref *graph.Ref) bool {
 	copy := *ref
 	copy.Repo = f.impliedRepo
-	copy.UnitType = f.impliedUnitType
-	copy.Unit = f.impliedUnit
+	copy.UnitType = f.impliedUnit.Type
+	copy.Unit = f.impliedUnit.Name
 	copy.CommitID = f.impliedCommitID
 	if copy.DefRepo == "" {
 		copy.DefRepo = f.impliedRepo
 	}
 	if copy.DefUnitType == "" {
-		copy.DefUnitType = f.impliedUnitType
+		copy.DefUnitType = f.impliedUnit.Type
 	}
 	if copy.DefUnit == "" {
-		copy.DefUnit = f.impliedUnit
+		copy.DefUnit = f.impliedUnit.Name
 	}
 	return f.f(&copy)
 }
@@ -501,7 +495,7 @@ type impliedCommitIDSetter interface {
 	setImpliedCommitID(string)
 }
 type impliedUnitSetter interface {
-	setImpliedUnit(unitID)
+	setImpliedUnit(unit.ID2)
 }
 
 func setImpliedRepo(fs []RefFilter, repo string) {
@@ -520,7 +514,7 @@ func setImpliedCommitID(fs []RefFilter, commitID string) {
 	}
 }
 
-func setImpliedUnit(fs []RefFilter, u unitID) {
+func setImpliedUnit(fs []RefFilter, u unit.ID2) {
 	for _, f := range fs {
 		if f, ok := f.(impliedUnitSetter); ok {
 			f.setImpliedUnit(u)

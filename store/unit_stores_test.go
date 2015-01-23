@@ -41,50 +41,50 @@ func (m emptyUnitStore) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 	return []*graph.Ref{}, nil
 }
 
-type mapUnitStoreOpener map[unitID]UnitStore
+type mapUnitStoreOpener map[unit.ID2]UnitStore
 
-func (m mapUnitStoreOpener) openUnitStore(u unitID) (UnitStore, error) {
+func (m mapUnitStoreOpener) openUnitStore(u unit.ID2) (UnitStore, error) {
 	if us, present := m[u]; present {
 		return us, nil
 	}
 	return nil, errUnitNoInit
 }
-func (m mapUnitStoreOpener) openAllUnitStores() (map[unitID]UnitStore, error) { return m, nil }
+func (m mapUnitStoreOpener) openAllUnitStores() (map[unit.ID2]UnitStore, error) { return m, nil }
 
 type recordingUnitStoreOpener struct {
-	opened    map[unitID]int // how many times openUnitStore was called for each unit
-	openedAll int            // how many times openAllUnitStores was called
+	opened    map[unit.ID2]int // how many times openUnitStore was called for each unit
+	openedAll int              // how many times openAllUnitStores was called
 	unitStoreOpener
 }
 
-func (m *recordingUnitStoreOpener) openUnitStore(u unitID) (UnitStore, error) {
+func (m *recordingUnitStoreOpener) openUnitStore(u unit.ID2) (UnitStore, error) {
 	if m.opened == nil {
-		m.opened = map[unitID]int{}
+		m.opened = map[unit.ID2]int{}
 	}
 	m.opened[u]++
 	return m.unitStoreOpener.openUnitStore(u)
 }
-func (m *recordingUnitStoreOpener) openAllUnitStores() (map[unitID]UnitStore, error) {
+func (m *recordingUnitStoreOpener) openAllUnitStores() (map[unit.ID2]UnitStore, error) {
 	m.openedAll++
 	return m.unitStoreOpener.openAllUnitStores()
 }
-func (m *recordingUnitStoreOpener) reset() { m.opened = map[unitID]int{}; m.openedAll = 0 }
+func (m *recordingUnitStoreOpener) reset() { m.opened = map[unit.ID2]int{}; m.openedAll = 0 }
 
 func TestUnitStores_filterByUnit(t *testing.T) {
 	// Test that filters by source unit cause unit stores for other
 	// source units to not be called.
 
 	o := &recordingUnitStoreOpener{unitStoreOpener: mapUnitStoreOpener{
-		unitID{"t", "u"}:  emptyUnitStore{},
-		unitID{"t", "u2"}: mockNeverCalledUnitStore(t),
-		unitID{"t2", "u"}: mockNeverCalledUnitStore(t),
+		unit.ID2{"t", "u"}:  emptyUnitStore{},
+		unit.ID2{"t", "u2"}: mockNeverCalledUnitStore(t),
+		unit.ID2{"t2", "u"}: mockNeverCalledUnitStore(t),
 	}}
 	uss := unitStores{opener: o}
 
 	if _, err := uss.Def(graph.DefKey{UnitType: "t", Unit: "u", Path: "p"}); !IsNotExist(err) {
 		t.Errorf("got err %v, want IsNotExist-satisfying", err)
 	}
-	if want := map[unitID]int{unitID{"t", "u"}: 1}; !reflect.DeepEqual(o.opened, want) {
+	if want := map[unit.ID2]int{unit.ID2{"t", "u"}: 1}; !reflect.DeepEqual(o.opened, want) {
 		t.Errorf("got opened %v, want %v", o.opened, want)
 	}
 	o.reset()
@@ -105,7 +105,7 @@ func TestUnitStores_filterByUnit(t *testing.T) {
 func TestScopeUnits(t *testing.T) {
 	tests := []struct {
 		filters []interface{}
-		want    []unitID
+		want    []unit.ID2
 	}{
 		{
 			filters: nil,
@@ -113,75 +113,75 @@ func TestScopeUnits(t *testing.T) {
 		},
 		{
 			filters: []interface{}{ByUnit("t", "u")},
-			want:    []unitID{{"t", "u"}},
+			want:    []unit.ID2{{"t", "u"}},
 		},
 		{
 			filters: []interface{}{nil, ByUnit("t", "u")},
-			want:    []unitID{{"t", "u"}},
+			want:    []unit.ID2{{"t", "u"}},
 		},
 		{
 			filters: []interface{}{ByUnit("t", "u"), nil},
-			want:    []unitID{{"t", "u"}},
+			want:    []unit.ID2{{"t", "u"}},
 		},
 		{
 			filters: []interface{}{nil, ByUnit("t", "u"), nil},
-			want:    []unitID{{"t", "u"}},
+			want:    []unit.ID2{{"t", "u"}},
 		},
 		{
 			filters: []interface{}{ByUnit("t", "u"), ByUnit("t", "u")},
-			want:    []unitID{{"t", "u"}},
+			want:    []unit.ID2{{"t", "u"}},
 		},
 		{
 			filters: []interface{}{ByUnit("t1", "u1"), ByUnit("t2", "u2")},
-			want:    []unitID{},
+			want:    []unit.ID2{},
 		},
 		{
 			filters: []interface{}{ByUnit("t1", "u1"), ByUnit("t2", "u2"), ByUnit("t1", "u1")},
-			want:    []unitID{},
+			want:    []unit.ID2{},
 		},
 		{
 			filters: []interface{}{ByUnit("t", "u1"), ByUnit("t", "u2")},
-			want:    []unitID{},
+			want:    []unit.ID2{},
 		},
 		{
 			filters: []interface{}{ByUnit("t1", "u"), ByUnit("t2", "u")},
-			want:    []unitID{},
+			want:    []unit.ID2{},
 		},
 		{
 			filters: []interface{}{ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"})},
-			want:    []unitID{{"t", "u"}},
+			want:    []unit.ID2{{"t", "u"}},
 		},
 		{
 			filters: []interface{}{
 				ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"}),
 				ByUnitKey(unit.Key{Repo: "r2", CommitID: "c2", UnitType: "t", Unit: "u"}),
 			},
-			want: []unitID{{"t", "u"}},
+			want: []unit.ID2{{"t", "u"}},
 		},
 		{
 			filters: []interface{}{
 				ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"}),
 				ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t2", Unit: "u2"}),
 			},
-			want: []unitID{},
+			want: []unit.ID2{},
 		},
 		{
 			filters: []interface{}{ByDefKey(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"})},
-			want:    []unitID{{"t", "u"}},
+			want:    []unit.ID2{{"t", "u"}},
 		},
 		{
 			filters: []interface{}{
 				ByDefKey(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"}),
 				ByDefKey(graph.DefKey{Repo: "r2", CommitID: "c2", UnitType: "t", Unit: "u", Path: "p2"}),
 			},
-			want: []unitID{{"t", "u"}},
+			want: []unit.ID2{{"t", "u"}},
 		},
 		{
 			filters: []interface{}{
 				ByDefKey(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"}),
 				ByDefKey(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t2", Unit: "u2", Path: "p"}),
 			},
-			want: []unitID{},
+			want: []unit.ID2{},
 		},
 		{
 			filters: []interface{}{UnitFilterFunc(func(*unit.SourceUnit) bool { return false })},
