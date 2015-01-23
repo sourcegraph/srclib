@@ -558,43 +558,59 @@ func (f byDefPathFilter) SelectDef(def *graph.Def) bool {
 	return def.Path == string(f)
 }
 
-// ByFileFilter is implemented by filters that restrict their
-// selection to defs, refs, etc., in a certain file.
-type ByFileFilter interface {
-	ByFile() string
+// ByFilesFilter is implemented by filters that restrict their
+// selection to defs, refs, etc., that exist in any file in a set, or
+// source units that contain any of the files in the set.
+type ByFilesFilter interface {
+	ByFiles() []string
 }
 
-// ByFile returns a filter by def path. It panics if file is empty, or
-// if the file path has not been cleaned (i.e., if file !=
+// ByFiles returns a filter that selects objects that are defined in
+// or contain any of the listed files. It panics if any file path is
+// empty, or if the file path has not been cleaned (i.e., if file !=
 // path.Clean(file)).
-func ByFile(file string) interface {
+func ByFiles(files ...string) interface {
 	DefFilter
 	RefFilter
 	UnitFilter
-	ByFileFilter
+	ByFilesFilter
 } {
-	if file == "" {
-		panic("file: empty")
+	for _, f := range files {
+		if f == "" {
+			panic("file: empty")
+		}
+		if f != path.Clean(f) {
+			panic("file: not cleaned (file != path.Clean(file))")
+		}
 	}
-	if file != path.Clean(file) {
-		panic("file: not cleaned (file != path.Clean(file))")
-	}
-	return byFileFilter(file)
+	return byFilesFilter(files)
 }
 
-type byFileFilter string
+type byFilesFilter []string
 
-func (f byFileFilter) ByFile() string { return string(f) }
-func (f byFileFilter) SelectDef(def *graph.Def) bool {
-	return def.File == string(f)
-}
-func (f byFileFilter) SelectRef(ref *graph.Ref) bool {
-	return ref.File == string(f)
-}
-func (f byFileFilter) SelectUnit(unit *unit.SourceUnit) bool {
-	for _, unitFile := range unit.Files {
-		if string(f) == unitFile {
+func (f byFilesFilter) ByFiles() []string { return f }
+func (f byFilesFilter) SelectDef(def *graph.Def) bool {
+	for _, ff := range f {
+		if def.File == ff {
 			return true
+		}
+	}
+	return false
+}
+func (f byFilesFilter) SelectRef(ref *graph.Ref) bool {
+	for _, ff := range f {
+		if ref.File == ff {
+			return true
+		}
+	}
+	return false
+}
+func (f byFilesFilter) SelectUnit(unit *unit.SourceUnit) bool {
+	for _, unitFile := range unit.Files {
+		for _, ff := range f {
+			if ff == unitFile {
+				return true
+			}
 		}
 	}
 	return false

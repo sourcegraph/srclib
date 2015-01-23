@@ -334,7 +334,7 @@ func (c *StoreUnitsCmd) filters() []store.UnitFilter {
 		fs = append(fs, store.ByRepo(c.Repo))
 	}
 	if c.File != "" {
-		fs = append(fs, store.ByFile(path.Clean(c.File)))
+		fs = append(fs, store.ByFiles(path.Clean(c.File)))
 	}
 	return fs
 }
@@ -390,10 +390,10 @@ func (c *StoreDefsCmd) filters() []store.DefFilter {
 		fs = append(fs, store.ByDefPath(c.Path))
 	}
 	if c.File != "" {
-		fs = append(fs, store.ByFile(path.Clean(c.File)))
+		fs = append(fs, store.ByFiles(path.Clean(c.File)))
 	}
 	if c.FilePathPrefix != "" {
-		fs = append(fs, store.ByFile(path.Clean(c.FilePathPrefix)))
+		fs = append(fs, store.ByFiles(path.Clean(c.FilePathPrefix)))
 	}
 	if c.NamePrefix != "" {
 		fs = append(fs, store.DefFilterFunc(func(def *graph.Def) bool {
@@ -455,7 +455,7 @@ func (c *StoreRefsCmd) filters() []store.RefFilter {
 		fs = append(fs, store.ByRepo(c.Repo))
 	}
 	if c.File != "" {
-		fs = append(fs, store.ByFile(path.Clean(c.File)))
+		fs = append(fs, store.ByFiles(path.Clean(c.File)))
 	}
 	if c.Start != 0 {
 		fs = append(fs, store.RefFilterFunc(func(ref *graph.Ref) bool {
