@@ -126,6 +126,14 @@ func TestScopeUnits(t *testing.T) {
 			want:    []unit.ID2{{"t", "u"}},
 		},
 		{
+			filters: []interface{}{ByUnits(), nil},
+			want:    []unit.ID2{},
+		},
+		{
+			filters: []interface{}{ByUnits(unit.ID2{Type: "t", Name: "u"}), ByUnits(), nil},
+			want:    []unit.ID2{},
+		},
+		{
 			filters: []interface{}{ByUnits(unit.ID2{Type: "t", Name: "u"}, unit.ID2{Type: "t2", Name: "u2"}), nil},
 			want:    []unit.ID2{{"t", "u"}, {"t2", "u2"}},
 		},

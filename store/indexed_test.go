@@ -1,34 +1,37 @@
 package store
 
-import (
-	"testing"
-
-	"sourcegraph.com/sourcegraph/rwvfs"
-)
+import "testing"
 
 func TestIndexedUnitStore(t *testing.T) {
-	useIndexedUnitStore = true
+	useIndexedStore = true
 	testUnitStore(t, func() unitStoreImporter {
-		return newIndexedUnitStore(rwvfs.Map(map[string]string{}))
+		return newIndexedUnitStore(newTestFS())
+	})
+}
+
+func TestIndexedTreeStore(t *testing.T) {
+	useIndexedStore = true
+	testTreeStore(t, func() treeStoreImporter {
+		return newIndexedTreeStore(newTestFS())
 	})
 }
 
 func TestIndexedFlatFileTreeStore(t *testing.T) {
-	useIndexedUnitStore = true
+	useIndexedStore = true
 	testTreeStore(t, func() treeStoreImporter {
 		return newFlatFileTreeStore(newTestFS())
 	})
 }
 
 func TestIndexedFlatFileRepoStore(t *testing.T) {
-	useIndexedUnitStore = true
+	useIndexedStore = true
 	testRepoStore(t, func() RepoStoreImporter {
 		return NewFlatFileRepoStore(newTestFS())
 	})
 }
 
 func TestIndexedFlatFileMultiRepoStore(t *testing.T) {
-	useIndexedUnitStore = true
+	useIndexedStore = true
 	testMultiRepoStore(t, func() MultiRepoStoreImporter {
 		return NewFlatFileMultiRepoStore(newTestFS())
 	})

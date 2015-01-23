@@ -59,7 +59,7 @@ func repoStore() RepoStoreImporter {
 	}
 	fs := rwvfs.OS(tmpDir)
 	setCreateParentDirs(fs)
-	useIndexedUnitStore = true
+	useIndexedStore = true
 	return NewFlatFileRepoStore(fs)
 }
 

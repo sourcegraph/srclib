@@ -15,7 +15,7 @@ type defPathIndex struct {
 
 var _ interface {
 	persistedIndex
-	indexBuilder
+	graphIndexBuilder
 	defIndex
 } = (*defPathIndex)(nil)
 
@@ -63,7 +63,7 @@ func (x *defPathIndex) Defs(f ...DefFilter) (byteOffsets, error) {
 	return nil, nil
 }
 
-// Build implements indexBuilder.
+// Build implements defIndexBuilder.
 func (x *defPathIndex) Build(data *graph.Output, ofs byteOffsets) error {
 	b := mph.Builder()
 	for i, def := range data.Defs {

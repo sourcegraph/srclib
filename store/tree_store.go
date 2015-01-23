@@ -33,6 +33,12 @@ type TreeImporter interface {
 	Import(*unit.SourceUnit, graph.Output) error
 }
 
+// A TreeStoreImporter implements both TreeStore and TreeImporter.
+type TreeStoreImporter interface {
+	TreeStore
+	TreeImporter
+}
+
 // A treeStores is a TreeStore whose methods call the
 // corresponding method on each of the tree stores returned by the
 // treeStores func.

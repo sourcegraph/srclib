@@ -13,6 +13,11 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
+// useIndexedStore indicates whether the indexed{Unit,Tree}Stores
+// should be used. If it's false, only the flat-file stores are used
+// (which requires full scans for all filters).
+var useIndexedStore = true
+
 // A flatFileMultiRepoStore is a MultiRepoStore that stores data in
 // flat files.
 type flatFileMultiRepoStore struct {
@@ -178,14 +183,19 @@ func (s *flatFileRepoStore) Import(commitID string, unit *unit.SourceUnit, data 
 		cleanForImport(&data, "", unit.Type, unit.Name)
 	}
 	ts := s.newTreeStore(commitID)
-	if err := ts.fs.Mkdir("."); err != nil && !os.IsExist(err) {
-		return err
-	}
 	return ts.Import(unit, data)
 }
 
-func (s *flatFileRepoStore) newTreeStore(commitID string) *flatFileTreeStore {
-	return newFlatFileTreeStore(rwvfs.Sub(s.fs, commitID))
+func (s *flatFileRepoStore) treeStoreFS(commitID string) rwvfs.FileSystem {
+	return rwvfs.Sub(s.fs, commitID)
+}
+
+func (s *flatFileRepoStore) newTreeStore(commitID string) TreeStoreImporter {
+	fs := s.treeStoreFS(commitID)
+	if useIndexedStore {
+		return newIndexedTreeStore(fs)
+	}
+	return newFlatFileTreeStore(fs)
 }
 
 func (s *flatFileRepoStore) openTreeStore(commitID string) (TreeStore, error) {
@@ -201,7 +211,11 @@ func (s *flatFileRepoStore) openAllTreeStores() (map[string]TreeStore, error) {
 	tss := make(map[string]TreeStore, len(versionDirs))
 	for _, dir := range versionDirs {
 		commitID := path.Base(dir)
-		tss[commitID] = newFlatFileTreeStore(rwvfs.Sub(s.fs, commitID))
+		var err error
+		tss[commitID], err = s.openTreeStore(commitID)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return tss, nil
 }
@@ -253,7 +267,7 @@ func (s *flatFileTreeStore) Units(f ...UnitFilter) ([]*unit.SourceUnit, error) {
 	return units, nil
 }
 
-func (s *flatFileTreeStore) openUnitFile(filename string) (*unit.SourceUnit, error) {
+func (s *flatFileTreeStore) openUnitFile(filename string) (u *unit.SourceUnit, err error) {
 	f, err := s.fs.Open(filename)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -328,16 +342,10 @@ func (s *flatFileTreeStore) Import(u *unit.SourceUnit, data graph.Output) (err e
 	return us.(UnitStoreImporter).Import(data)
 }
 
-// useIndexedUnitStore indicates whether the indexedUnitStore should
-// be used to access data (defs, refs, etc.) in source units. If it's
-// false, the flat-file unit store is used (which requires full scans
-// for all filters).
-var useIndexedUnitStore = true
-
 func (s *flatFileTreeStore) openUnitStore(u unit.ID2) (UnitStore, error) {
 	filename := s.unitFilename(u.Type, u.Name)
 	dir := strings.TrimSuffix(filename, unitFileSuffix)
-	if useIndexedUnitStore {
+	if useIndexedStore {
 		return newIndexedUnitStore(rwvfs.Sub(s.fs, dir)), nil
 	}
 	return &flatFileUnitStore{fs: rwvfs.Sub(s.fs, dir)}, nil
