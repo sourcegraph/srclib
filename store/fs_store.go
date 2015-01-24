@@ -28,30 +28,37 @@ var (
 
 // A fsMultiRepoStore is a MultiRepoStore that stores data on a VFS.
 type fsMultiRepoStore struct {
-	fs rwvfs.FileSystem
+	fs rwvfs.WalkableFileSystem
+	FSMultiRepoStoreConf
 	repoStores
 }
 
+var _ MultiRepoStoreImporter = (*fsMultiRepoStore)(nil)
+
 // NewFSMultiRepoStore creates a new repository store (that can be
 // imported into) that is backed by files on a filesystem.
-//
-// The repoPathFunc takes a repo ID (URI) and returns the
-// slash-delimited subpath where its data should be stored in the
-// multi-repo store. If nil, it defaults to a function that returns
-// the string passed in plus "/.srclib-store".
-//
-// The isRepoPathFunc takes a subpath and returns true if it is a repo
-// path returned by repoPathFunc. This is used when listing all repos
-// (in the Repos method). Repos may not be nested, so if
-// isRepoPathFunc returns true for a dir, it is not recursively
-// searched for repos. If nil, it defaults to returning true if the
-// last path component is ".srclib-store" (which means it works with
-// the default repoPathFunc).
-func NewFSMultiRepoStore(fs rwvfs.FileSystem) MultiRepoStoreImporter {
+func NewFSMultiRepoStore(fs rwvfs.WalkableFileSystem, conf *FSMultiRepoStoreConf) MultiRepoStoreImporter {
+	if conf == nil {
+		conf = &FSMultiRepoStoreConf{}
+	}
+	if conf.RepoPaths == nil {
+		conf.RepoPaths = DefaultRepoPaths
+	}
+
 	setCreateParentDirs(fs)
-	mrs := &fsMultiRepoStore{fs: fs}
+	mrs := &fsMultiRepoStore{fs: fs, FSMultiRepoStoreConf: *conf}
 	mrs.repoStores = repoStores{mrs}
 	return mrs
+}
+
+// FSMultiRepoStoreConf configures an FS-backed multi-repo store. Pass
+// it to NewFSMultiRepoStore to construct a new store with the
+// specified options.
+type FSMultiRepoStoreConf struct {
+	// RepoPathConfig specifies where the multi-repo store stores
+	// repository data. If nil, DefaultRepoPaths is used, which stores
+	// repos at "${REPO}/.srclib-store".
+	RepoPaths
 }
 
 func (s *fsMultiRepoStore) Repo(repo string) (string, error) {
@@ -66,33 +73,49 @@ func (s *fsMultiRepoStore) Repo(repo string) (string, error) {
 }
 
 func (s *fsMultiRepoStore) Repos(f ...RepoFilter) ([]string, error) {
-	var repos []string
-	w := fs.WalkFS(".", rwvfs.Walkable(s.fs))
-	for w.Step() {
-		if err := w.Err(); err != nil {
-			return nil, err
+	scopeRepos, err := scopeRepos(storeFilters(f))
+	if err != nil {
+		return nil, err
+	}
+
+	// Multiple repos are mutually exclusive.
+	if len(scopeRepos) > 1 {
+		return nil, nil
+	}
+
+	var after string
+	var max int
+	if len(scopeRepos) == 1 {
+		afterComps := s.RepoToPath(scopeRepos[0])
+		if len(afterComps) > 0 {
+			lastComp := afterComps[len(afterComps)-1]
+			// We want to include the scoped repo, so make "after"
+			// into a string that sorts lexicographically BEFORE the
+			// scoped repo.
+			lastComp = lastComp[:len(lastComp)-1] + string([]rune{rune(lastComp[len(lastComp)-1]) - rune(1)}) + "\xff"
+			afterComps[len(afterComps)-1] = lastComp
 		}
-		fi := w.Stat()
-		if fi.Mode().IsDir() {
-			if fi.Name() == SrclibStoreDir {
-				w.SkipDir()
-				repo := path.Dir(w.Path())
-				if repoFilters(f).SelectRepo(repo) {
-					repos = append(repos, repo)
-				}
-				continue
-			}
-			if strings.HasPrefix(fi.Name(), ".") {
-				w.SkipDir()
-				continue
-			}
+		after = s.fs.Join(afterComps...)
+		max = 1
+	}
+
+	paths, err := s.ListRepoPaths(s.fs, after, max)
+	if err != nil {
+		return nil, err
+	}
+	var repos []string
+	for _, path := range paths {
+		repo := s.PathToRepo(path)
+		if repoFilters(f).SelectRepo(repo) {
+			repos = append(repos, repo)
 		}
 	}
 	return repos, nil
 }
 
 func (s *fsMultiRepoStore) openRepoStore(repo string) (RepoStore, error) {
-	return NewFSRepoStore(rwvfs.Sub(s.fs, path.Join(repo, SrclibStoreDir))), nil
+	subpath := s.fs.Join(s.RepoToPath(repo)...)
+	return NewFSRepoStore(rwvfs.Sub(s.fs, subpath)), nil
 }
 
 func (s *fsMultiRepoStore) openAllRepoStores() (map[string]RepoStore, error) {
@@ -118,12 +141,15 @@ func (s *fsMultiRepoStore) Import(repo, commitID string, unit *unit.SourceUnit, 
 	if unit != nil {
 		cleanForImport(&data, repo, unit.Type, unit.Name)
 	}
-	repoPath := path.Join(repo, SrclibStoreDir)
-	if err := rwvfs.MkdirAll(s.fs, repoPath); err != nil && !os.IsExist(err) {
+	subpath := s.fs.Join(s.RepoToPath(repo)...)
+	if err := rwvfs.MkdirAll(s.fs, subpath); err != nil {
 		return err
 	}
-	rs := NewFSRepoStore(rwvfs.Sub(s.fs, repoPath))
-	return rs.Import(commitID, unit, data)
+	rs, err := s.openRepoStore(repo)
+	if err != nil {
+		return err
+	}
+	return rs.(RepoImporter).Import(commitID, unit, data)
 }
 
 func (s *fsMultiRepoStore) String() string { return "fsMultiRepoStore" }

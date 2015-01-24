@@ -126,6 +126,54 @@ func testMultiRepoStore_Repos(t *testing.T, mrs MultiRepoStoreImporter) {
 	}
 }
 
+func TestFSMultiRepoStore_Repos_customPathFuncs(t *testing.T) {
+	tests := map[string]struct{ conf *FSMultiRepoStoreConf }{
+		"nil struct":         {conf: nil},
+		"evenly distributed": {conf: &FSMultiRepoStoreConf{RepoPaths: &EvenlyDistributedRepoPaths{}}},
+	}
+	for label, test := range tests {
+		mrs := NewFSMultiRepoStore(newTestFS(), test.conf)
+
+		allRepos := []string{"r1", "r2", "r3"}
+		for _, repo := range allRepos {
+			unit := &unit.SourceUnit{Type: "t1", Name: "u1"}
+			if err := mrs.Import(repo, "c", unit, graph.Output{}); err != nil {
+				t.Errorf("%s: Import(%s, c, %v, empty data): %s", label, repo, unit, err)
+				continue
+			}
+		}
+
+		repos, err := mrs.Repos()
+		if err != nil {
+			t.Errorf("%s: Repos(): %s", label, err)
+		}
+		sort.Strings(repos)
+		if want := allRepos; !reflect.DeepEqual(repos, want) {
+			t.Errorf("%s: Repos(): got %v, want %v", label, repos, want)
+		}
+
+		for _, repo := range allRepos {
+			repo2, err := mrs.Repo(repo)
+			if err != nil {
+				t.Errorf("%s: Repo(%s): %s", label, repo, err)
+				continue
+			}
+			if repo2 != repo {
+				t.Errorf("%s: Repo(%s): got %v, want %v", label, repo, repo2, repo)
+			}
+
+			repos, err := mrs.Repos(ByRepo(repo))
+			if err != nil {
+				t.Errorf("%s: Repos(ByRepo %s): %s", label, repo, err)
+				continue
+			}
+			if want := []string{repo}; !reflect.DeepEqual(repos, want) {
+				t.Errorf("%s: Repos(ByRepo %s): got %v, want %v", label, repo, repos, want)
+			}
+		}
+	}
+}
+
 func testMultiRepoStore_Version(t *testing.T, mrs MultiRepoStoreImporter) {
 	unit := &unit.SourceUnit{Type: "t", Name: "u"}
 	if err := mrs.Import("r", "c", unit, graph.Output{}); err != nil {
