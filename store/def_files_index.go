@@ -18,6 +18,9 @@ type defFilesIndex struct {
 	// of the filters.
 	filters []DefFilter
 
+	// perFile is the number of defs per file to index.
+	perFile int
+
 	mph   *mph.CHD
 	ready bool
 }
@@ -100,7 +103,9 @@ func (x *defFilesIndex) Build(data *graph.Output, ofs byteOffsets) error {
 	filesToDefOfs := make(map[string]byteOffsets, len(data.Defs)/50)
 	for i, def := range data.Defs {
 		if defFilters(x.filters).SelectDef(def) {
-			filesToDefOfs[def.File] = append(filesToDefOfs[def.File], ofs[i])
+			if len(filesToDefOfs) < x.perFile {
+				filesToDefOfs[def.File] = append(filesToDefOfs[def.File], ofs[i])
+			}
 		}
 	}
 	for file, defOfs := range filesToDefOfs {
