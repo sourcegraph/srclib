@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"path"
 
 	"github.com/alecthomas/mph"
 	"sourcegraph.com/sourcegraph/srclib/graph"
@@ -100,15 +101,13 @@ func (x *defFilesIndex) Defs(fs ...DefFilter) (byteOffsets, error) {
 // Build implements graphIndexBuilder.
 func (x *defFilesIndex) Build(data *graph.Output, ofs byteOffsets) error {
 	b := mph.Builder()
-	filesToDefOfs := make(map[string]byteOffsets, len(data.Defs)/50)
+	f2ofs := make(filesToDefOfs, len(data.Defs)/50)
 	for i, def := range data.Defs {
-		if defFilters(x.filters).SelectDef(def) {
-			if len(filesToDefOfs) < x.perFile {
-				filesToDefOfs[def.File] = append(filesToDefOfs[def.File], ofs[i])
-			}
+		if len(f2ofs[def.File]) < x.perFile && defFilters(x.filters).SelectDef(def) {
+			f2ofs.add(def.File, ofs[i], x.perFile)
 		}
 	}
-	for file, defOfs := range filesToDefOfs {
+	for file, defOfs := range f2ofs {
 		ob, err := json.Marshal(defOfs)
 		if err != nil {
 			return err
@@ -122,6 +121,28 @@ func (x *defFilesIndex) Build(data *graph.Output, ofs byteOffsets) error {
 	x.mph = h
 	x.ready = true
 	return nil
+}
+
+// filesToDefOfs is a helper type used by defFilesIndex.Build that
+// adds parent dirs of each file to the mapping as well.
+//
+// TODO(sqs): lots of duplication with filesToUnits
+type filesToDefOfs map[string]byteOffsets
+
+// add appends ofs to file's list of def offsets, as well as the list
+// of def offsets for each of file's ancestor dirs. If an entry has
+// more than perFile offsets already, no more are appended.
+func (v filesToDefOfs) add(file string, ofs int64, perFile int) {
+	file = path.Clean(file)
+	if len(v[file]) >= perFile {
+		return
+	}
+	v[file] = append(v[file], ofs)
+	for _, dir := range ancestorDirsExceptRoot(file) {
+		if len(v[dir]) < perFile {
+			v[dir] = append(v[dir], ofs)
+		}
+	}
 }
 
 // Write implements persistedIndex.

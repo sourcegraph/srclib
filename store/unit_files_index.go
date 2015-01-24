@@ -93,14 +93,13 @@ func (x *unitFilesIndex) Units(fs ...UnitFilter) ([]unit.ID2, error) {
 // Build implements unitIndexBuilder.
 func (x *unitFilesIndex) Build(units []*unit.SourceUnit) error {
 	b := mph.Builder()
-	filesToUnits := make(map[string][]unit.ID2, len(units)*10)
+	f2u := make(filesToUnits, len(units)*10)
 	for _, u := range units {
 		for _, f := range u.Files {
-			f = path.Clean(f)
-			filesToUnits[f] = append(filesToUnits[f], u.ID2())
+			f2u.add(f, u.ID2())
 		}
 	}
-	for file, fileUnits := range filesToUnits {
+	for file, fileUnits := range f2u {
 		ub, err := json.Marshal(fileUnits)
 		if err != nil {
 			return err
@@ -114,6 +113,52 @@ func (x *unitFilesIndex) Build(units []*unit.SourceUnit) error {
 	x.mph = h
 	x.ready = true
 	return nil
+}
+
+// filesToUnits is a helper type used by unitFilesIndex.Build that
+// adds parent dirs of each file to the mapping as well.
+//
+// TODO(sqs): lots of duplication with filesToDefOfs
+type filesToUnits map[string][]unit.ID2
+
+// add appends u to file's list of units, as well as the list of units
+// for each of file's ancestor dirs.
+func (v filesToUnits) add(file string, u unit.ID2) {
+	file = path.Clean(file)
+	v[file] = append(v[file], u)
+	for _, dir := range ancestorDirsExceptRoot(file) {
+		v.addIfNotExists(dir, u)
+	}
+}
+
+// addIfNotExists appends u to dir's list of units, if u is not
+// already present in the list.
+func (v filesToUnits) addIfNotExists(dir string, u unit.ID2) {
+	for _, uu := range v[dir] {
+		if u == uu {
+			return
+		}
+	}
+	v[dir] = append(v[dir], u)
+}
+
+// ancestorDirsExceptRoot returns a list of p's ancestor directories
+// excluding the root ("." or "/").
+func ancestorDirsExceptRoot(p string) []string {
+	if p == "" {
+		return nil
+	}
+	if len(p) == 1 && p[0] == '.' || p[0] == '/' {
+		return nil
+	}
+
+	var dirs []string
+	for i, c := range p {
+		if c == '/' {
+			dirs = append(dirs, p[:i])
+		}
+	}
+	return dirs
 }
 
 // Write implements persistedIndex.

@@ -601,7 +601,7 @@ func (f byFilesFilter) String() string    { return fmt.Sprintf("ByFiles(%v)", ([
 func (f byFilesFilter) ByFiles() []string { return f }
 func (f byFilesFilter) SelectDef(def *graph.Def) bool {
 	for _, ff := range f {
-		if def.File == ff {
+		if def.File == ff || strings.HasPrefix(def.File, ff+"/") {
 			return true
 		}
 	}
@@ -609,7 +609,7 @@ func (f byFilesFilter) SelectDef(def *graph.Def) bool {
 }
 func (f byFilesFilter) SelectRef(ref *graph.Ref) bool {
 	for _, ff := range f {
-		if ref.File == ff {
+		if ref.File == ff || strings.HasPrefix(ref.File, ff+"/") {
 			return true
 		}
 	}
@@ -618,7 +618,7 @@ func (f byFilesFilter) SelectRef(ref *graph.Ref) bool {
 func (f byFilesFilter) SelectUnit(unit *unit.SourceUnit) bool {
 	for _, unitFile := range unit.Files {
 		for _, ff := range f {
-			if ff == unitFile {
+			if ff == unitFile || strings.HasPrefix(unitFile, ff+"/") {
 				return true
 			}
 		}
