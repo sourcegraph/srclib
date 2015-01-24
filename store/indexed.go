@@ -218,6 +218,9 @@ func (s *indexedTreeStore) checkSourceUnitFiles(u *unit.SourceUnit, data graph.O
 	for _, f := range u.Files {
 		unitFiles[f] = struct{}{}
 	}
+	if u.Dir != "" {
+		unitFiles[u.Dir] = struct{}{}
+	}
 
 	var missingFiles []string
 	for f := range graphFiles {
