@@ -19,48 +19,48 @@ var (
 	numRefDefs  = flag.Int("bench.refdefs", 10, "number of distinct defs that refs point to")
 )
 
-func BenchmarkFlatFile_Def1(b *testing.B)     { benchmarkDef(b, repoStore(), 1) }
-func BenchmarkFlatFile_Def500(b *testing.B)   { benchmarkDef(b, repoStore(), 500) }
-func BenchmarkFlatFile_Def5000(b *testing.B)  { benchmarkDef(b, repoStore(), 5000) }
-func BenchmarkFlatFile_Def50000(b *testing.B) { benchmarkDef(b, repoStore(), 50000) }
+func BenchmarkFS_Def1(b *testing.B)     { benchmarkDef(b, repoStore(), 1) }
+func BenchmarkFS_Def500(b *testing.B)   { benchmarkDef(b, repoStore(), 500) }
+func BenchmarkFS_Def5000(b *testing.B)  { benchmarkDef(b, repoStore(), 5000) }
+func BenchmarkFS_Def50000(b *testing.B) { benchmarkDef(b, repoStore(), 50000) }
 
-func BenchmarkFlatFile_DefsByFile1(b *testing.B)     { benchmarkDefsByFile(b, repoStore(), 1) }
-func BenchmarkFlatFile_DefsByFile500(b *testing.B)   { benchmarkDefsByFile(b, repoStore(), 500) }
-func BenchmarkFlatFile_DefsByFile5000(b *testing.B)  { benchmarkDefsByFile(b, repoStore(), 5000) }
-func BenchmarkFlatFile_DefsByFile50000(b *testing.B) { benchmarkDefsByFile(b, repoStore(), 50000) }
+func BenchmarkFS_DefsByFile1(b *testing.B)     { benchmarkDefsByFile(b, repoStore(), 1) }
+func BenchmarkFS_DefsByFile500(b *testing.B)   { benchmarkDefsByFile(b, repoStore(), 500) }
+func BenchmarkFS_DefsByFile5000(b *testing.B)  { benchmarkDefsByFile(b, repoStore(), 5000) }
+func BenchmarkFS_DefsByFile50000(b *testing.B) { benchmarkDefsByFile(b, repoStore(), 50000) }
 
-func BenchmarkFlatFile_RefsByFile1(b *testing.B)     { benchmarkRefsByFile(b, repoStore(), 1) }
-func BenchmarkFlatFile_RefsByFile500(b *testing.B)   { benchmarkRefsByFile(b, repoStore(), 500) }
-func BenchmarkFlatFile_RefsByFile5000(b *testing.B)  { benchmarkRefsByFile(b, repoStore(), 5000) }
-func BenchmarkFlatFile_RefsByFile50000(b *testing.B) { benchmarkRefsByFile(b, repoStore(), 50000) }
+func BenchmarkFS_RefsByFile1(b *testing.B)     { benchmarkRefsByFile(b, repoStore(), 1) }
+func BenchmarkFS_RefsByFile500(b *testing.B)   { benchmarkRefsByFile(b, repoStore(), 500) }
+func BenchmarkFS_RefsByFile5000(b *testing.B)  { benchmarkRefsByFile(b, repoStore(), 5000) }
+func BenchmarkFS_RefsByFile50000(b *testing.B) { benchmarkRefsByFile(b, repoStore(), 50000) }
 
-func BenchmarkFlatFile_RefsByFile1_filterFunc(b *testing.B) {
+func BenchmarkFS_RefsByFile1_filterFunc(b *testing.B) {
 	benchmarkRefsByFile_filterFunc(b, repoStore(), 1)
 }
-func BenchmarkFlatFile_RefsByFile500_filterFunc(b *testing.B) {
+func BenchmarkFS_RefsByFile500_filterFunc(b *testing.B) {
 	benchmarkRefsByFile_filterFunc(b, repoStore(), 500)
 }
-func BenchmarkFlatFile_RefsByFile5000_filterFunc(b *testing.B) {
+func BenchmarkFS_RefsByFile5000_filterFunc(b *testing.B) {
 	benchmarkRefsByFile_filterFunc(b, repoStore(), 5000)
 }
-func BenchmarkFlatFile_RefsByFile50000_filterFunc(b *testing.B) {
+func BenchmarkFS_RefsByFile50000_filterFunc(b *testing.B) {
 	benchmarkRefsByFile_filterFunc(b, repoStore(), 50000)
 }
 
-func BenchmarkFlatFile_RefsByDefPath1(b *testing.B)     { benchmarkRefsByDefPath(b, repoStore(), 1) }
-func BenchmarkFlatFile_RefsByDefPath500(b *testing.B)   { benchmarkRefsByDefPath(b, repoStore(), 500) }
-func BenchmarkFlatFile_RefsByDefPath5000(b *testing.B)  { benchmarkRefsByDefPath(b, repoStore(), 5000) }
-func BenchmarkFlatFile_RefsByDefPath50000(b *testing.B) { benchmarkRefsByDefPath(b, repoStore(), 50000) }
+func BenchmarkFS_RefsByDefPath1(b *testing.B)     { benchmarkRefsByDefPath(b, repoStore(), 1) }
+func BenchmarkFS_RefsByDefPath500(b *testing.B)   { benchmarkRefsByDefPath(b, repoStore(), 500) }
+func BenchmarkFS_RefsByDefPath5000(b *testing.B)  { benchmarkRefsByDefPath(b, repoStore(), 5000) }
+func BenchmarkFS_RefsByDefPath50000(b *testing.B) { benchmarkRefsByDefPath(b, repoStore(), 50000) }
 
 func repoStore() RepoStoreImporter {
-	tmpDir, err := ioutil.TempDir("", "srclib-FlatFileRepoStore-bench")
+	tmpDir, err := ioutil.TempDir("", "srclib-FSRepoStore-bench")
 	if err != nil {
 		panic(err)
 	}
 	fs := rwvfs.OS(tmpDir)
 	setCreateParentDirs(fs)
 	useIndexedStore = true
-	return NewFlatFileRepoStore(fs)
+	return NewFSRepoStore(fs)
 }
 
 func insertDefs(b *testing.B, rs RepoStoreImporter, numDefs int) {

@@ -39,7 +39,7 @@ func isIndexedStore(s interface{}) bool {
 		return true
 	case *indexedUnitStore:
 		return true
-	case *flatFileRepoStore:
+	case *fsRepoStore:
 		return useIndexedStore
 	default:
 		return false

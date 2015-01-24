@@ -19,22 +19,21 @@ import (
 )
 
 // useIndexedStore indicates whether the indexed{Unit,Tree}Stores
-// should be used. If it's false, only the flat-file stores are used
+// should be used. If it's false, only the FS-backed stores are used
 // (which requires full scans for all filters).
 var (
 	noIndex, _      = strconv.ParseBool(os.Getenv("NOINDEX"))
 	useIndexedStore = !noIndex
 )
 
-// A flatFileMultiRepoStore is a MultiRepoStore that stores data in
-// flat files.
-type flatFileMultiRepoStore struct {
+// A fsMultiRepoStore is a MultiRepoStore that stores data on a VFS.
+type fsMultiRepoStore struct {
 	fs rwvfs.FileSystem
 	repoStores
 }
 
-// NewFlatFileMultiRepoStore creates a new repository store (that can
-// be imported into) that is backed by files on a filesystem.
+// NewFSMultiRepoStore creates a new repository store (that can be
+// imported into) that is backed by files on a filesystem.
 //
 // The repoPathFunc takes a repo ID (URI) and returns the
 // slash-delimited subpath where its data should be stored in the
@@ -48,14 +47,14 @@ type flatFileMultiRepoStore struct {
 // searched for repos. If nil, it defaults to returning true if the
 // last path component is ".srclib-store" (which means it works with
 // the default repoPathFunc).
-func NewFlatFileMultiRepoStore(fs rwvfs.FileSystem) MultiRepoStoreImporter {
+func NewFSMultiRepoStore(fs rwvfs.FileSystem) MultiRepoStoreImporter {
 	setCreateParentDirs(fs)
-	mrs := &flatFileMultiRepoStore{fs: fs}
+	mrs := &fsMultiRepoStore{fs: fs}
 	mrs.repoStores = repoStores{mrs}
 	return mrs
 }
 
-func (s *flatFileMultiRepoStore) Repo(repo string) (string, error) {
+func (s *fsMultiRepoStore) Repo(repo string) (string, error) {
 	repos, err := s.Repos(ByRepo(repo))
 	if err != nil {
 		return "", err
@@ -66,7 +65,7 @@ func (s *flatFileMultiRepoStore) Repo(repo string) (string, error) {
 	return repos[0], nil
 }
 
-func (s *flatFileMultiRepoStore) Repos(f ...RepoFilter) ([]string, error) {
+func (s *fsMultiRepoStore) Repos(f ...RepoFilter) ([]string, error) {
 	var repos []string
 	w := fs.WalkFS(".", rwvfs.Walkable(s.fs))
 	for w.Step() {
@@ -92,11 +91,11 @@ func (s *flatFileMultiRepoStore) Repos(f ...RepoFilter) ([]string, error) {
 	return repos, nil
 }
 
-func (s *flatFileMultiRepoStore) openRepoStore(repo string) (RepoStore, error) {
-	return NewFlatFileRepoStore(rwvfs.Sub(s.fs, path.Join(repo, SrclibStoreDir))), nil
+func (s *fsMultiRepoStore) openRepoStore(repo string) (RepoStore, error) {
+	return NewFSRepoStore(rwvfs.Sub(s.fs, path.Join(repo, SrclibStoreDir))), nil
 }
 
-func (s *flatFileMultiRepoStore) openAllRepoStores() (map[string]RepoStore, error) {
+func (s *fsMultiRepoStore) openAllRepoStores() (map[string]RepoStore, error) {
 	repos, err := s.Repos()
 	if err != nil {
 		return nil, err
@@ -113,9 +112,9 @@ func (s *flatFileMultiRepoStore) openAllRepoStores() (map[string]RepoStore, erro
 	return rss, nil
 }
 
-var _ repoStoreOpener = (*flatFileMultiRepoStore)(nil)
+var _ repoStoreOpener = (*fsMultiRepoStore)(nil)
 
-func (s *flatFileMultiRepoStore) Import(repo, commitID string, unit *unit.SourceUnit, data graph.Output) error {
+func (s *fsMultiRepoStore) Import(repo, commitID string, unit *unit.SourceUnit, data graph.Output) error {
 	if unit != nil {
 		cleanForImport(&data, repo, unit.Type, unit.Name)
 	}
@@ -123,14 +122,14 @@ func (s *flatFileMultiRepoStore) Import(repo, commitID string, unit *unit.Source
 	if err := rwvfs.MkdirAll(s.fs, repoPath); err != nil && !os.IsExist(err) {
 		return err
 	}
-	rs := NewFlatFileRepoStore(rwvfs.Sub(s.fs, repoPath))
+	rs := NewFSRepoStore(rwvfs.Sub(s.fs, repoPath))
 	return rs.Import(commitID, unit, data)
 }
 
-func (s *flatFileMultiRepoStore) String() string { return "flatFileMultiRepoStore" }
+func (s *fsMultiRepoStore) String() string { return "fsMultiRepoStore" }
 
-// A flatFileRepoStore is a RepoStore that stores data in flat files.
-type flatFileRepoStore struct {
+// A fsRepoStore is a RepoStore that stores data on a VFS.
+type fsRepoStore struct {
 	fs rwvfs.FileSystem
 	treeStores
 }
@@ -138,16 +137,16 @@ type flatFileRepoStore struct {
 // SrclibStoreDir is the name of the directory under which a RepoStore's data is stored.
 const SrclibStoreDir = ".srclib-store"
 
-// NewFlatFileRepoStore creates a new repository store (that can be
+// NewFSRepoStore creates a new repository store (that can be
 // imported into) that is backed by files on a filesystem.
-func NewFlatFileRepoStore(fs rwvfs.FileSystem) RepoStoreImporter {
+func NewFSRepoStore(fs rwvfs.FileSystem) RepoStoreImporter {
 	setCreateParentDirs(fs)
-	rs := &flatFileRepoStore{fs: fs}
+	rs := &fsRepoStore{fs: fs}
 	rs.treeStores = treeStores{rs}
 	return rs
 }
 
-func (s *flatFileRepoStore) Version(key VersionKey) (*Version, error) {
+func (s *fsRepoStore) Version(key VersionKey) (*Version, error) {
 	versions, err := s.Versions(ByCommitID(key.CommitID))
 	if err != nil {
 		return nil, err
@@ -158,7 +157,7 @@ func (s *flatFileRepoStore) Version(key VersionKey) (*Version, error) {
 	return versions[0], nil
 }
 
-func (s *flatFileRepoStore) Versions(f ...VersionFilter) ([]*Version, error) {
+func (s *fsRepoStore) Versions(f ...VersionFilter) ([]*Version, error) {
 	versionDirs, err := s.versionDirs()
 	if err != nil {
 		return nil, err
@@ -174,7 +173,7 @@ func (s *flatFileRepoStore) Versions(f ...VersionFilter) ([]*Version, error) {
 	return versions, nil
 }
 
-func (s *flatFileRepoStore) versionDirs() ([]string, error) {
+func (s *fsRepoStore) versionDirs() ([]string, error) {
 	entries, err := s.fs.ReadDir(".")
 	if err != nil {
 		return nil, err
@@ -186,7 +185,7 @@ func (s *flatFileRepoStore) versionDirs() ([]string, error) {
 	return dirs, nil
 }
 
-func (s *flatFileRepoStore) Import(commitID string, unit *unit.SourceUnit, data graph.Output) error {
+func (s *fsRepoStore) Import(commitID string, unit *unit.SourceUnit, data graph.Output) error {
 	if unit != nil {
 		cleanForImport(&data, "", unit.Type, unit.Name)
 	}
@@ -194,23 +193,23 @@ func (s *flatFileRepoStore) Import(commitID string, unit *unit.SourceUnit, data 
 	return ts.Import(unit, data)
 }
 
-func (s *flatFileRepoStore) treeStoreFS(commitID string) rwvfs.FileSystem {
+func (s *fsRepoStore) treeStoreFS(commitID string) rwvfs.FileSystem {
 	return rwvfs.Sub(s.fs, commitID)
 }
 
-func (s *flatFileRepoStore) newTreeStore(commitID string) TreeStoreImporter {
+func (s *fsRepoStore) newTreeStore(commitID string) TreeStoreImporter {
 	fs := s.treeStoreFS(commitID)
 	if useIndexedStore {
 		return newIndexedTreeStore(fs)
 	}
-	return newFlatFileTreeStore(fs)
+	return newFSTreeStore(fs)
 }
 
-func (s *flatFileRepoStore) openTreeStore(commitID string) (TreeStore, error) {
+func (s *fsRepoStore) openTreeStore(commitID string) (TreeStore, error) {
 	return s.newTreeStore(commitID), nil
 }
 
-func (s *flatFileRepoStore) openAllTreeStores() (map[string]TreeStore, error) {
+func (s *fsRepoStore) openAllTreeStores() (map[string]TreeStore, error) {
 	versionDirs, err := s.versionDirs()
 	if err != nil {
 		return nil, err
@@ -228,24 +227,23 @@ func (s *flatFileRepoStore) openAllTreeStores() (map[string]TreeStore, error) {
 	return tss, nil
 }
 
-var _ treeStoreOpener = (*flatFileRepoStore)(nil)
+var _ treeStoreOpener = (*fsRepoStore)(nil)
 
-func (s *flatFileRepoStore) String() string { return "flatFileRepoStore" }
+func (s *fsRepoStore) String() string { return "fsRepoStore" }
 
-// A flatFileTreeStore is a TreeStore that stores data in flat files
-// in a filesystem.
-type flatFileTreeStore struct {
+// A fsTreeStore is a TreeStore that stores data on a VFS.
+type fsTreeStore struct {
 	fs rwvfs.FileSystem
 	unitStores
 }
 
-func newFlatFileTreeStore(fs rwvfs.FileSystem) *flatFileTreeStore {
-	ts := &flatFileTreeStore{fs: fs}
+func newFSTreeStore(fs rwvfs.FileSystem) *fsTreeStore {
+	ts := &fsTreeStore{fs: fs}
 	ts.unitStores = unitStores{ts}
 	return ts
 }
 
-func (s *flatFileTreeStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
+func (s *fsTreeStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
 	units, err := s.Units(ByUnits(key.ID2()))
 	if err != nil {
 		return nil, err
@@ -256,7 +254,7 @@ func (s *flatFileTreeStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
 	return units[0], nil
 }
 
-func (s *flatFileTreeStore) Units(f ...UnitFilter) ([]*unit.SourceUnit, error) {
+func (s *fsTreeStore) Units(f ...UnitFilter) ([]*unit.SourceUnit, error) {
 	unitFilenames, err := s.unitFilenames()
 	if err != nil {
 		return nil, err
@@ -275,7 +273,7 @@ func (s *flatFileTreeStore) Units(f ...UnitFilter) ([]*unit.SourceUnit, error) {
 	return units, nil
 }
 
-func (s *flatFileTreeStore) openUnitFile(filename string) (u *unit.SourceUnit, err error) {
+func (s *fsTreeStore) openUnitFile(filename string) (u *unit.SourceUnit, err error) {
 	f, err := s.fs.Open(filename)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -294,7 +292,7 @@ func (s *flatFileTreeStore) openUnitFile(filename string) (u *unit.SourceUnit, e
 	return &unit, Codec.Decode(f, &unit)
 }
 
-func (s *flatFileTreeStore) unitFilenames() ([]string, error) {
+func (s *fsTreeStore) unitFilenames() ([]string, error) {
 	var files []string
 	w := fs.WalkFS(".", rwvfs.Walkable(s.fs))
 	for w.Step() {
@@ -309,13 +307,13 @@ func (s *flatFileTreeStore) unitFilenames() ([]string, error) {
 	return files, nil
 }
 
-func (s *flatFileTreeStore) unitFilename(unitType, unit string) string {
+func (s *fsTreeStore) unitFilename(unitType, unit string) string {
 	return path.Join(unit, unitType+unitFileSuffix)
 }
 
 const unitFileSuffix = ".unit.json"
 
-func (s *flatFileTreeStore) Import(u *unit.SourceUnit, data graph.Output) (err error) {
+func (s *fsTreeStore) Import(u *unit.SourceUnit, data graph.Output) (err error) {
 	if u == nil {
 		return rwvfs.MkdirAll(s.fs, ".")
 	}
@@ -350,16 +348,16 @@ func (s *flatFileTreeStore) Import(u *unit.SourceUnit, data graph.Output) (err e
 	return us.(UnitStoreImporter).Import(data)
 }
 
-func (s *flatFileTreeStore) openUnitStore(u unit.ID2) (UnitStore, error) {
+func (s *fsTreeStore) openUnitStore(u unit.ID2) (UnitStore, error) {
 	filename := s.unitFilename(u.Type, u.Name)
 	dir := strings.TrimSuffix(filename, unitFileSuffix)
 	if useIndexedStore {
 		return newIndexedUnitStore(rwvfs.Sub(s.fs, dir)), nil
 	}
-	return &flatFileUnitStore{fs: rwvfs.Sub(s.fs, dir)}, nil
+	return &fsUnitStore{fs: rwvfs.Sub(s.fs, dir)}, nil
 }
 
-func (s *flatFileTreeStore) openAllUnitStores() (map[unit.ID2]UnitStore, error) {
+func (s *fsTreeStore) openAllUnitStores() (map[unit.ID2]UnitStore, error) {
 	unitFiles, err := s.unitFilenames()
 	if err != nil {
 		return nil, err
@@ -380,19 +378,18 @@ func (s *flatFileTreeStore) openAllUnitStores() (map[unit.ID2]UnitStore, error) 
 	return uss, nil
 }
 
-var _ unitStoreOpener = (*flatFileTreeStore)(nil)
+var _ unitStoreOpener = (*fsTreeStore)(nil)
 
-func (s *flatFileTreeStore) String() string { return "flatFileTreeStore" }
+func (s *fsTreeStore) String() string { return "fsTreeStore" }
 
-// A flatFileUnitStore is a UnitStore that stores data in flat files
-// in a filesystem.
+// A fsUnitStore is a UnitStore that stores data on a VFS.
 //
 // It is typically wrapped by an indexedUnitStore, which provides fast
 // responses to indexed queries and passes non-indexed queries through
-// to this underlying flatFileUnitStore.
-type flatFileUnitStore struct {
+// to this underlying fsUnitStore.
+type fsUnitStore struct {
 	// fs is the filesystem where data (and indexes, if
-	// flatFileUnitStore is wrapped by an indexedUnitStore) are
+	// fsUnitStore is wrapped by an indexedUnitStore) are
 	// written to and read from. The store may create multiple files
 	// and arbitrary directory trees in fs (for indexes, etc.).
 	fs rwvfs.FileSystem
@@ -403,7 +400,7 @@ const (
 	unitRefsFilename = "ref.dat"
 )
 
-func (s *flatFileUnitStore) Def(key graph.DefKey) (*graph.Def, error) {
+func (s *fsUnitStore) Def(key graph.DefKey) (*graph.Def, error) {
 	if err := checkDefKeyValidForUnitStore(key); err != nil {
 		return nil, err
 	}
@@ -418,7 +415,7 @@ func (s *flatFileUnitStore) Def(key graph.DefKey) (*graph.Def, error) {
 	return defs[0], nil
 }
 
-func (s *flatFileUnitStore) Defs(fs ...DefFilter) (defs []*graph.Def, err error) {
+func (s *fsUnitStore) Defs(fs ...DefFilter) (defs []*graph.Def, err error) {
 	f, err := s.fs.Open(unitDefsFilename)
 	if err != nil {
 		return nil, err
@@ -447,7 +444,7 @@ func (s *flatFileUnitStore) Defs(fs ...DefFilter) (defs []*graph.Def, err error)
 
 // defsAtOffsets reads the defs at the given serialized byte offsets
 // from the def data file and returns them in arbitrary order.
-func (s *flatFileUnitStore) defsAtOffsets(ofs byteOffsets, fs []DefFilter) (defs []*graph.Def, err error) {
+func (s *fsUnitStore) defsAtOffsets(ofs byteOffsets, fs []DefFilter) (defs []*graph.Def, err error) {
 	f, err := s.fs.Open(unitDefsFilename)
 	if err != nil {
 		return nil, err
@@ -476,7 +473,7 @@ func (s *flatFileUnitStore) defsAtOffsets(ofs byteOffsets, fs []DefFilter) (defs
 	return defs, nil
 }
 
-func (s *flatFileUnitStore) Refs(fs ...RefFilter) (refs []*graph.Ref, err error) {
+func (s *fsUnitStore) Refs(fs ...RefFilter) (refs []*graph.Ref, err error) {
 	f, err := s.fs.Open(unitRefsFilename)
 	if err != nil {
 		return nil, err
@@ -503,7 +500,7 @@ func (s *flatFileUnitStore) Refs(fs ...RefFilter) (refs []*graph.Ref, err error)
 	return refs, nil
 }
 
-func (s *flatFileUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs []*graph.Ref, err error) {
+func (s *fsUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs []*graph.Ref, err error) {
 	f, err := s.fs.Open(unitRefsFilename)
 	if err != nil {
 		return nil, err
@@ -553,7 +550,7 @@ func (s *flatFileUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (
 	return refs, nil
 }
 
-func (s *flatFileUnitStore) Import(data graph.Output) error {
+func (s *fsUnitStore) Import(data graph.Output) error {
 	cleanForImport(&data, "", "", "")
 	if _, err := s.writeDefs(&data); err != nil {
 		return err
@@ -567,7 +564,7 @@ func (s *flatFileUnitStore) Import(data graph.Output) error {
 // writeDefs writes the def data file. It also tracks (in ofs) the
 // serialized byte offset where each def's serialized representation
 // begins (which is used during index construction).
-func (s *flatFileUnitStore) writeDefs(data *graph.Output) (ofs byteOffsets, err error) {
+func (s *fsUnitStore) writeDefs(data *graph.Output) (ofs byteOffsets, err error) {
 	f, err := s.fs.Create(unitDefsFilename)
 	if err != nil {
 		return nil, err
@@ -591,7 +588,7 @@ func (s *flatFileUnitStore) writeDefs(data *graph.Output) (ofs byteOffsets, err 
 }
 
 // writeDefs writes the ref data file.
-func (s *flatFileUnitStore) writeRefs(data *graph.Output) (fbr fileByteRanges, err error) {
+func (s *fsUnitStore) writeRefs(data *graph.Output) (fbr fileByteRanges, err error) {
 	f, err := s.fs.Create(unitRefsFilename)
 	if err != nil {
 		return nil, err
@@ -634,7 +631,7 @@ func (s *flatFileUnitStore) writeRefs(data *graph.Output) (fbr fileByteRanges, e
 	return fbr, nil
 }
 
-func (s *flatFileUnitStore) String() string { return "flatFileUnitStore" }
+func (s *fsUnitStore) String() string { return "fsUnitStore" }
 
 // countingWriter wraps an io.Writer, counting the number of bytes
 // write.

@@ -127,9 +127,9 @@ func (c *StoreCmd) store() (interface{}, error) {
 	}
 	switch c.Type {
 	case "RepoStore":
-		return store.NewFlatFileRepoStore(fs), nil
+		return store.NewFSRepoStore(fs), nil
 	case "MultiRepoStore":
-		return store.NewFlatFileMultiRepoStore(fs), nil
+		return store.NewFSMultiRepoStore(fs), nil
 	default:
 		return nil, fmt.Errorf("unrecognized store --type value: %q (valid values are RepoStore, MultiRepoStore)", c.Type)
 	}
