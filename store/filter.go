@@ -648,7 +648,6 @@ type limiter struct {
 
 func (l *limiter) String() string { return fmt.Sprintf("Limit(%d [def=%d/%d])", l.n, len(l.def), l.n) }
 func (l *limiter) SelectDef(def *graph.Def) bool {
-	log.Println(def)
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	if l.def == nil {

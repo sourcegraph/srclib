@@ -239,7 +239,7 @@ func (s *indexedTreeStore) writeUnitIndexes(u *unit.SourceUnit) error {
 	// TODO(sqs): there's a race condition here if multiple imports
 	// are running concurrently, they could clobber each other's
 	// indexes. (S3 is eventually consistent.)
-	units, err := s.Units()
+	units, err := s.flatFileTreeStore.Units()
 	if err != nil {
 		return err
 	}
@@ -294,6 +294,14 @@ func newIndexedUnitStore(fs rwvfs.FileSystem) UnitStoreImporter {
 		indexes: []interface{}{
 			&defPathIndex{},
 			&refFileIndex{},
+			&defFilesIndex{
+				filters: []DefFilter{
+					DefFilterFunc(func(def *graph.Def) bool {
+						return def.Exported || !def.Local
+					}),
+					Limit(10),
+				},
+			},
 		},
 		flatFileUnitStore: &flatFileUnitStore{fs: fs},
 	}
@@ -405,6 +413,9 @@ func (s *indexedUnitStore) writeDefIndexes(data *graph.Output, ofs byteOffsets) 
 // writeRefIndexes builds every ref index in s.indexes and writes them
 // to their backing files.
 func (s *indexedUnitStore) writeRefIndexes(data *graph.Output, fbr fileByteRanges) error {
+	if len(s.indexes) == 0 {
+		return nil
+	}
 	par := parallel.NewRun(runtime.GOMAXPROCS(0))
 	for _, x := range s.indexes {
 		if x, ok := x.(refIndex); ok {

@@ -10,6 +10,8 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
+// NOTE(sqs): There is a lot of duplication here with defFilesIndex.
+
 // unitFilesIndex makes it fast to determine which source units
 // contain a file (or files in a dir).
 type unitFilesIndex struct {
@@ -50,7 +52,7 @@ func (x *unitFilesIndex) getByPath(path string) ([]unit.ID2, bool, error) {
 	return us, true, nil
 }
 
-// Covers implements defIndex.
+// Covers implements unitIndex.
 func (x *unitFilesIndex) Covers(fs []UnitFilter) int {
 	cov := 0
 	for _, f := range fs {
@@ -61,7 +63,7 @@ func (x *unitFilesIndex) Covers(fs []UnitFilter) int {
 	return cov
 }
 
-// Defs implements unitIndex.
+// Units implements unitIndex.
 func (x *unitFilesIndex) Units(fs ...UnitFilter) ([]unit.ID2, error) {
 	for _, f := range fs {
 		if ff, ok := f.(ByFilesFilter); ok {
@@ -81,7 +83,7 @@ func (x *unitFilesIndex) Units(fs ...UnitFilter) ([]unit.ID2, error) {
 				us = append(us, u)
 			}
 
-			vlog.Printf("unitFilesIndex(%v): Found units %v using indexed.", fs, us)
+			vlog.Printf("unitFilesIndex(%v): Found units %v using index.", fs, us)
 			return us, nil
 		}
 	}
