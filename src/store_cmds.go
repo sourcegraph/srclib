@@ -143,8 +143,8 @@ type StoreImportCmd struct {
 	UnitType string `long:"unit-type" description:"only import source units with this type"`
 	CommitID string `long:"commit" description:"commit ID of commit whose data to import"`
 
-	BuildDataRepo   string `long:"remote-build-data-repo" description:"the repo whose remote build data to import (defaults to '--repo' option value)"`
-	RemoteBuildData bool   `long:"remote-build-data" description:"import remote build data (not the local .srclib-cache build data)"`
+	RemoteBuildDataRepo string `long:"remote-build-data-repo" description:"the repo whose remote build data to import (defaults to '--repo' option value)"`
+	RemoteBuildData     bool   `long:"remote-build-data" description:"import remote build data (not the local .srclib-cache build data)"`
 }
 
 var storeImportCmd StoreImportCmd
@@ -160,10 +160,10 @@ func (c *StoreImportCmd) Execute(args []string) error {
 		return err
 	}
 
-	if c.BuildDataRepo == "" {
-		c.BuildDataRepo = c.Repo
+	if c.RemoteBuildDataRepo == "" {
+		c.RemoteBuildDataRepo = c.Repo
 	}
-	bdfs, label, err := getBuildDataFS(!c.RemoteBuildData, c.BuildDataRepo, c.CommitID)
+	bdfs, label, err := getBuildDataFS(!c.RemoteBuildData, c.RemoteBuildDataRepo, c.CommitID)
 	if err != nil {
 		return err
 	}
