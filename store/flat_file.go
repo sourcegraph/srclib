@@ -443,7 +443,7 @@ func (s *flatFileUnitStore) Defs(fs ...DefFilter) (defs []*graph.Def, err error)
 
 // defsAtOffsets reads the defs at the given serialized byte offsets
 // from the def data file and returns them in arbitrary order.
-func (s *flatFileUnitStore) defsAtOffsets(ofs byteOffsets) ([]*graph.Def, error) {
+func (s *flatFileUnitStore) defsAtOffsets(ofs byteOffsets, fs []DefFilter) (defs []*graph.Def, err error) {
 	f, err := s.fs.Open(unitDefsFilename)
 	if err != nil {
 		return nil, err
@@ -455,13 +455,18 @@ func (s *flatFileUnitStore) defsAtOffsets(ofs byteOffsets) ([]*graph.Def, error)
 		}
 	}()
 
-	defs := make([]*graph.Def, len(ofs))
-	for i, ofs := range ofs {
+	ffs := defFilters(fs)
+
+	for _, ofs := range ofs {
 		if _, err := f.Seek(ofs, 0); err != nil {
 			return nil, err
 		}
-		if err := Codec.Decode(f, &defs[i]); err != nil {
+		var def *graph.Def
+		if err := Codec.Decode(f, &def); err != nil {
 			return nil, err
+		}
+		if ffs.SelectDef(def) {
+			defs = append(defs, def)
 		}
 	}
 	return defs, nil
@@ -494,7 +499,7 @@ func (s *flatFileUnitStore) Refs(fs ...RefFilter) (refs []*graph.Ref, err error)
 	return refs, nil
 }
 
-func (s *flatFileUnitStore) refsAtByteRanges(brs []byteRanges) (refs []*graph.Ref, err error) {
+func (s *flatFileUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs []*graph.Ref, err error) {
 	f, err := s.fs.Open(unitRefsFilename)
 	if err != nil {
 		return nil, err
@@ -519,8 +524,8 @@ func (s *flatFileUnitStore) refsAtByteRanges(brs []byteRanges) (refs []*graph.Re
 		readLengths[i] = n
 	}
 
-	refs = make([]*graph.Ref, totalRefs)
-	addedRefs := 0
+	ffs := refFilters(fs)
+
 	for i, br := range brs {
 		if _, err := f.Seek(br.start(), 0); err != nil {
 			return nil, err
@@ -532,10 +537,13 @@ func (s *flatFileUnitStore) refsAtByteRanges(brs []byteRanges) (refs []*graph.Re
 
 		dec := newDecoder(Codec, bytes.NewReader(b))
 		for range br[1:] {
-			if err := dec.Decode(&refs[addedRefs]); err != nil {
+			var ref *graph.Ref
+			if err := dec.Decode(&ref); err != nil {
 				return nil, err
 			}
-			addedRefs++
+			if ffs.SelectRef(ref) {
+				refs = append(refs, ref)
+			}
 		}
 	}
 	return refs, nil
