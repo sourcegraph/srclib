@@ -10,11 +10,11 @@ import (
 
 var fsType = flag.String("test.fs", "map", "vfs type to use for tests (map|os)")
 
-func newTestFS() rwvfs.FileSystem {
+func newTestFS() rwvfs.WalkableFileSystem {
 	switch *fsType {
 	case "map":
 		fs := rwvfs.Map(map[string]string{})
-		return rwvfs.Sub(fs, "/testdata")
+		return rwvfs.Walkable(rwvfs.Sub(fs, "/testdata"))
 	case "os":
 		tmpDir, err := ioutil.TempDir("", "srclib-test")
 		if err != nil {
@@ -22,7 +22,7 @@ func newTestFS() rwvfs.FileSystem {
 		}
 		fs := rwvfs.OS(tmpDir)
 		setCreateParentDirs(fs)
-		return fs
+		return rwvfs.Walkable(fs)
 	default:
 		log.Fatalf("unrecognized -test.fs option: %q", *fsType)
 		panic("unreachable")

@@ -1,6 +1,7 @@
 package src
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/url"
@@ -106,8 +107,9 @@ func init() {
 }
 
 type StoreCmd struct {
-	Type string `short:"t" long:"type" description:"the (multi-)repo store type to use (RepoStore, MultiRepoStore, etc.)" default:"RepoStore"`
-	Root string `short:"r" long:"root" description:"the root of the store (repo clone dir for RepoStore, global path for MultiRepoStore, etc.)" default:".srclib-store"`
+	Type   string `short:"t" long:"type" description:"the (multi-)repo store type to use (RepoStore, MultiRepoStore, etc.)" default:"RepoStore"`
+	Root   string `short:"r" long:"root" description:"the root of the store (repo clone dir for RepoStore, global path for MultiRepoStore, etc.)" default:".srclib-store"`
+	Config string `long:"config" description:"(rarely used) JSON-encoded config for extra config, specific to each store type"`
 }
 
 var storeCmd StoreCmd
@@ -129,7 +131,20 @@ func (c *StoreCmd) store() (interface{}, error) {
 	case "RepoStore":
 		return store.NewFSRepoStore(fs), nil
 	case "MultiRepoStore":
-		return store.NewFSMultiRepoStore(fs), nil
+		var conf *store.FSMultiRepoStoreConf
+		if c.Config != "" {
+			// Only really allows configuring EvenlyDistributedRepoPaths right now.
+			var conf2 struct {
+				RepoPaths string
+			}
+			if err := json.Unmarshal([]byte(c.Config), &conf2); err != nil {
+				return nil, fmt.Errorf("--config %q: %s", c.Config, err)
+			}
+			if conf2.RepoPaths == "EvenlyDistributedRepoPaths" {
+				conf = &store.FSMultiRepoStoreConf{RepoPaths: &store.EvenlyDistributedRepoPaths{}}
+			}
+		}
+		return store.NewFSMultiRepoStore(rwvfs.Walkable(fs), conf), nil
 	default:
 		return nil, fmt.Errorf("unrecognized store --type value: %q (valid values are RepoStore, MultiRepoStore)", c.Type)
 	}

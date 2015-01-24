@@ -26,6 +26,13 @@ func TestFSRepoStore(t *testing.T) {
 func TestFSMultiRepoStore(t *testing.T) {
 	useIndexedStore = false
 	testMultiRepoStore(t, func() MultiRepoStoreImporter {
-		return NewFSMultiRepoStore(newTestFS())
+		return NewFSMultiRepoStore(newTestFS(), nil)
+	})
+}
+
+func TestFSMultiRepoStore_EvenlyDistributedRepoPaths(t *testing.T) {
+	useIndexedStore = false
+	testMultiRepoStore(t, func() MultiRepoStoreImporter {
+		return NewFSMultiRepoStore(newTestFS(), &FSMultiRepoStoreConf{RepoPaths: &EvenlyDistributedRepoPaths{}})
 	})
 }
