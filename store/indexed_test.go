@@ -16,23 +16,23 @@ func TestIndexedTreeStore(t *testing.T) {
 	})
 }
 
-func TestIndexedFlatFileTreeStore(t *testing.T) {
+func TestIndexedFSTreeStore(t *testing.T) {
 	useIndexedStore = true
 	testTreeStore(t, func() treeStoreImporter {
-		return newFlatFileTreeStore(newTestFS())
+		return newFSTreeStore(newTestFS())
 	})
 }
 
-func TestIndexedFlatFileRepoStore(t *testing.T) {
+func TestIndexedFSRepoStore(t *testing.T) {
 	useIndexedStore = true
 	testRepoStore(t, func() RepoStoreImporter {
-		return NewFlatFileRepoStore(newTestFS())
+		return NewFSRepoStore(newTestFS())
 	})
 }
 
-func TestIndexedFlatFileMultiRepoStore(t *testing.T) {
+func TestIndexedFSMultiRepoStore(t *testing.T) {
 	useIndexedStore = true
 	testMultiRepoStore(t, func() MultiRepoStoreImporter {
-		return NewFlatFileMultiRepoStore(newTestFS())
+		return NewFSMultiRepoStore(newTestFS())
 	})
 }

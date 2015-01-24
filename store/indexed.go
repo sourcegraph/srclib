@@ -19,7 +19,7 @@ import (
 // An indexedTreeStore is a VFS-backed tree store that generates
 // indexes to provide efficient lookups.
 //
-// It wraps a flatFileTreeStore and intercepts calls to Def, Defs,
+// It wraps a fsTreeStore and intercepts calls to Def, Defs,
 // Refs, etc., using its indexes to satisfy those queries efficiently
 // where possible. Otherwise it invokes the underlying store to
 // perform a full scan (over all source units in the tree).
@@ -29,7 +29,7 @@ type indexedTreeStore struct {
 	// (e.g., def indexes, ref indexes, etc.).
 	indexes []interface{}
 
-	*flatFileTreeStore
+	*fsTreeStore
 }
 
 var _ TreeStore = (*indexedTreeStore)(nil)
@@ -41,7 +41,7 @@ func newIndexedTreeStore(fs rwvfs.FileSystem) TreeStoreImporter {
 		indexes: []interface{}{
 			&unitFilesIndex{},
 		},
-		flatFileTreeStore: newFlatFileTreeStore(fs),
+		fsTreeStore: newFSTreeStore(fs),
 	}
 }
 
@@ -76,7 +76,7 @@ func (s *indexedTreeStore) unitIDs(indexOnly bool, fs ...UnitFilter) ([]unit.ID2
 	// Fall back to full scan.
 	vlog.Printf("indexedTreeStore.unitIDs(%v): No covering indexes found; performing full scan.", fs)
 	var unitIDs []unit.ID2
-	units, err := s.flatFileTreeStore.Units(fs...)
+	units, err := s.fsTreeStore.Units(fs...)
 	if err != nil {
 		return nil, err
 	}
@@ -91,13 +91,13 @@ func (s *indexedTreeStore) Units(fs ...UnitFilter) ([]*unit.SourceUnit, error) {
 	scopeUnits, err := s.unitIDs(false, fs...)
 	if err != nil {
 		if err == errNotIndexed {
-			return s.flatFileTreeStore.Units(fs...)
+			return s.fsTreeStore.Units(fs...)
 		}
 		return nil, err
 	}
 
 	fs = append(fs, ByUnits(scopeUnits...))
-	return s.flatFileTreeStore.Units(fs...)
+	return s.fsTreeStore.Units(fs...)
 }
 
 func (s *indexedTreeStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
@@ -119,7 +119,7 @@ func (s *indexedTreeStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 	// underlying store.
 	if len(ufs) == 0 {
 		vlog.Printf("indexedTreeStore.Defs(%v): No unit indexes found to narrow scope; forwarding to underlying store.", fs)
-		return s.flatFileTreeStore.Defs(fs...)
+		return s.fsTreeStore.Defs(fs...)
 	}
 
 	// Find which source units match the unit filters; we'll restrict
@@ -138,7 +138,7 @@ func (s *indexedTreeStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 	fs = append(fs, ByUnits(scopeUnits...))
 
 	// Pass the now more narrowly scoped query onto the underlying store.
-	return s.flatFileTreeStore.Defs(fs...)
+	return s.fsTreeStore.Defs(fs...)
 }
 
 func (s *indexedTreeStore) Refs(fs ...RefFilter) ([]*graph.Ref, error) {
@@ -157,7 +157,7 @@ func (s *indexedTreeStore) Refs(fs ...RefFilter) ([]*graph.Ref, error) {
 	// No indexes found that we can exploit here; forward to the
 	// underlying store.
 	if len(ufs) == 0 {
-		return s.flatFileTreeStore.Refs(fs...)
+		return s.fsTreeStore.Refs(fs...)
 	}
 
 	// Find which source units match the unit filters; we'll restrict
@@ -175,11 +175,11 @@ func (s *indexedTreeStore) Refs(fs ...RefFilter) ([]*graph.Ref, error) {
 	fs = append(fs, ByUnits(scopeUnits...))
 
 	// Pass the now more narrowly scoped query onto the underlying store.
-	return s.flatFileTreeStore.Refs(fs...)
+	return s.fsTreeStore.Refs(fs...)
 }
 
 func (s *indexedTreeStore) Import(u *unit.SourceUnit, data graph.Output) error {
-	if err := s.flatFileTreeStore.Import(u, data); err != nil {
+	if err := s.fsTreeStore.Import(u, data); err != nil {
 		return err
 	}
 
@@ -242,7 +242,7 @@ func (s *indexedTreeStore) writeUnitIndexes(u *unit.SourceUnit) error {
 	// TODO(sqs): there's a race condition here if multiple imports
 	// are running concurrently, they could clobber each other's
 	// indexes. (S3 is eventually consistent.)
-	units, err := s.flatFileTreeStore.Units()
+	units, err := s.fsTreeStore.Units()
 	if err != nil {
 		return err
 	}
@@ -275,7 +275,7 @@ func (s *indexedTreeStore) writeUnitIndexes(u *unit.SourceUnit) error {
 // An indexedUnitStore is a VFS-backed unit store that generates
 // indexes to provide efficient lookups.
 //
-// It wraps a flatFileUnitStore and intercepts calls to Def, Defs,
+// It wraps a fsUnitStore and intercepts calls to Def, Defs,
 // Refs, etc., using its indexes to satisfy those queries efficiently
 // where possible. Otherwise it invokes the underlying store to
 // perform a full scan.
@@ -285,7 +285,7 @@ type indexedUnitStore struct {
 	// (e.g., def indexes, ref indexes, etc.).
 	indexes []interface{}
 
-	*flatFileUnitStore
+	*fsUnitStore
 }
 
 var _ UnitStore = (*indexedUnitStore)(nil)
@@ -306,7 +306,7 @@ func newIndexedUnitStore(fs rwvfs.FileSystem) UnitStoreImporter {
 				perFile: 7,
 			},
 		},
-		flatFileUnitStore: &flatFileUnitStore{fs: fs},
+		fsUnitStore: &fsUnitStore{fs: fs},
 	}
 }
 
@@ -340,7 +340,7 @@ func (s *indexedUnitStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 	}
 
 	// Fall back to full scan.
-	return s.flatFileUnitStore.Defs(fs...)
+	return s.fsUnitStore.Defs(fs...)
 }
 
 // Refs implements UnitStore.
@@ -360,17 +360,17 @@ func (s *indexedUnitStore) Refs(fs ...RefFilter) ([]*graph.Ref, error) {
 	}
 
 	// Fall back to full scan.
-	return s.flatFileUnitStore.Refs(fs...)
+	return s.fsUnitStore.Refs(fs...)
 }
 
-// Import calls to the underlying flatFileUnitStore to write the def
+// Import calls to the underlying fsUnitStore to write the def
 // and ref data files. It also builds and writes the indexes.
 func (s *indexedUnitStore) Import(data graph.Output) error {
 	cleanForImport(&data, "", "", "")
 
 	// TODO(sqs): parallelize
 
-	defOfs, err := s.flatFileUnitStore.writeDefs(&data)
+	defOfs, err := s.fsUnitStore.writeDefs(&data)
 	if err != nil {
 		return err
 	}
@@ -378,7 +378,7 @@ func (s *indexedUnitStore) Import(data graph.Output) error {
 		return err
 	}
 
-	fbr, err := s.flatFileUnitStore.writeRefs(&data)
+	fbr, err := s.fsUnitStore.writeRefs(&data)
 	if err != nil {
 		return err
 	}

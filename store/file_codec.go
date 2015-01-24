@@ -5,12 +5,12 @@ import (
 	"io"
 )
 
-// Codec is the codec used by all file-backed stores. It should only
-// be set at init time or when you can guarantee that no stores will
-// be using the codec.
+// Codec is the codec used by all file-backed stores. It should only be
+// set at init time or when you can guarantee that no stores will be
+// using the codec.
 var Codec codec = JSONCodec{}
 
-// A codec is an encoder and decoder pair used by the flat file store
+// A codec is an encoder and decoder pair used by the FS-backed store
 // to encode and decode data stored in files.
 type codec interface {
 	// Encode encodes v into w.
