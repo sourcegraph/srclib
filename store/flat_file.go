@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 
 	"github.com/kr/fs"
@@ -20,7 +21,10 @@ import (
 // useIndexedStore indicates whether the indexed{Unit,Tree}Stores
 // should be used. If it's false, only the flat-file stores are used
 // (which requires full scans for all filters).
-var useIndexedStore = true
+var (
+	noIndex, _      = strconv.ParseBool(os.Getenv("NOINDEX"))
+	useIndexedStore = !noIndex
+)
 
 // A flatFileMultiRepoStore is a MultiRepoStore that stores data in
 // flat files.
