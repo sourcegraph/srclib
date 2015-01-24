@@ -302,8 +302,8 @@ func newIndexedUnitStore(fs rwvfs.FileSystem) UnitStoreImporter {
 					DefFilterFunc(func(def *graph.Def) bool {
 						return def.Exported || !def.Local
 					}),
-					Limit(10),
 				},
+				perFile: 7,
 			},
 		},
 		flatFileUnitStore: &flatFileUnitStore{fs: fs},
