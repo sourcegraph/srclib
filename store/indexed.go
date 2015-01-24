@@ -333,7 +333,7 @@ func (s *indexedUnitStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 		if err != nil {
 			return nil, err
 		}
-		return s.defsAtOffsets(ofs)
+		return s.defsAtOffsets(ofs, fs)
 	}
 
 	// Fall back to full scan.
@@ -353,7 +353,7 @@ func (s *indexedUnitStore) Refs(fs ...RefFilter) ([]*graph.Ref, error) {
 		if err != nil {
 			return nil, err
 		}
-		return s.refsAtByteRanges(brs)
+		return s.refsAtByteRanges(brs, fs)
 	}
 
 	// Fall back to full scan.
