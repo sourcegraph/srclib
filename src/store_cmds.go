@@ -334,6 +334,9 @@ func doStoreIndexesCmd(crit store.IndexCriteria, opt storeIndexOptions, f func(i
 			for x := range indexChan {
 				if isMultiRepo {
 					if x.Repo != lastRepo {
+						if lastRepo != "" {
+							fmt.Println()
+						}
 						fmt.Println(x.Repo)
 					}
 				}
