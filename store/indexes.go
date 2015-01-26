@@ -81,7 +81,9 @@ func BuildIndexes(store interface{}, c IndexCriteria, indexChan chan<- IndexStat
 			start := time.Now()
 			err := sx.store.BuildIndex(sx.status.Name, sx.index)
 			sx.status.BuildDuration = time.Since(start)
-			if err != nil {
+			if err == nil {
+				sx.status.Stale = false
+			} else {
 				sx.status.BuildError = err.Error()
 			}
 			built = append(built, sx.status)
