@@ -3,6 +3,7 @@ package store
 import (
 	"os"
 	"reflect"
+	"time"
 
 	"strings"
 
@@ -47,11 +48,18 @@ type IndexStatus struct {
 	// Error is the error encountered while determining this index's
 	// status, if any.
 	Error string `json:",omitempty"`
+
+	// BuildError is the error encountered while building this index,
+	// if any. It is only returned by BuildIndexes (not Indexes).
+	BuildError string `json:",omitempty"`
+
+	// BuildDuration is how long it took to build the index. It is
+	// only returned by BuildIndexes (not Indexes).
+	BuildDuration time.Duration `json:",omitempty"`
 }
 
-// IndexCriteria restricts the list of indexes returned by Indexes to
-// only those that match the criteria. Non-empty conditions are ANDed
-// together.
+// IndexCriteria restricts a set of indexes to only those that match
+// the criteria. Non-empty conditions are ANDed together.
 type IndexCriteria struct {
 	Repo     string
 	CommitID string
@@ -61,32 +69,75 @@ type IndexCriteria struct {
 	Stale    *bool
 }
 
-// Indexes returns a list of indexes and their statuses for s and its
-// lower-level stores.  If indexChan is non-nil, it receives indexes
-// as soon as they are found; when all matching indexes have been
-// found, the func returns and all indexes are included in the
-// returned slice.
-func Indexes(store interface{}, c IndexCriteria, indexChan chan<- IndexStatus) ([]IndexStatus, error) {
-	var xs []IndexStatus
-	indexChan2 := make(chan IndexStatus)
+// BuildIndexes builds all indexes on store and its lower-level stores
+// that match the specified criteria. It returns the status of each
+// index that was built (or rebuilt).
+func BuildIndexes(store interface{}, c IndexCriteria, indexChan chan<- IndexStatus) ([]IndexStatus, error) {
+	var built []IndexStatus
+	indexChan2 := make(chan storeIndex)
+	done := make(chan struct{})
 	go func() {
-		for x := range indexChan2 {
-			xs = append(xs, x)
+		for sx := range indexChan2 {
+			start := time.Now()
+			err := sx.store.BuildIndex(sx.status.Name, sx.index)
+			sx.status.BuildDuration = time.Since(start)
+			if err != nil {
+				sx.status.BuildError = err.Error()
+			}
+			built = append(built, sx.status)
 			if indexChan != nil {
-				indexChan <- x
+				indexChan <- sx.status
 			}
 		}
+		done <- struct{}{}
 	}()
 	err := listIndexes(store, c, indexChan2, nil)
 	close(indexChan2)
+	<-done
+	return built, err
+}
+
+// Indexes returns a list of indexes and their statuses for store and
+// its lower-level stores. Only indexes matching the criteria are
+// returned. If indexChan is non-nil, it receives indexes as soon as
+// they are found; when all matching indexes have been found, the func
+// returns and all indexes are included in the returned slice.
+//
+// The caller is responsible for closing indexChan after Indexes
+// returns (if desired).
+func Indexes(store interface{}, c IndexCriteria, indexChan chan<- IndexStatus) ([]IndexStatus, error) {
+	var xs []IndexStatus
+	indexChan2 := make(chan storeIndex)
+	done := make(chan struct{})
+	go func() {
+		for sx := range indexChan2 {
+			xs = append(xs, sx.status)
+			if indexChan != nil {
+				indexChan <- sx.status
+			}
+		}
+		done <- struct{}{}
+	}()
+	err := listIndexes(store, c, indexChan2, nil)
+	close(indexChan2)
+	<-done
 	return xs, err
+}
+
+// storeIndex is a (store,index) pair that makes it easy to perform
+// both both index status listing and index creation. It is sent on
+// the channel by listIndexes to its callers.
+type storeIndex struct {
+	store  indexedStore
+	status IndexStatus
+	index  Index
 }
 
 // listIndexes lists indexes in s (a store) asynchronously, sending
 // status objects to ch. If f != nil, it is called to set/modify
-// fields on each status object before the status object is sent to
+// fields on each status object before the storeIndex object is sent to
 // the channel.
-func listIndexes(s interface{}, c IndexCriteria, ch chan<- IndexStatus, f func(*IndexStatus)) error {
+func listIndexes(s interface{}, c IndexCriteria, ch chan<- storeIndex, f func(*IndexStatus)) error {
 	switch s := s.(type) {
 	case indexedStore:
 		xx := s.Indexes()
@@ -119,7 +170,7 @@ func listIndexes(s interface{}, c IndexCriteria, ch chan<- IndexStatus, f func(*
 			if f != nil {
 				f(&st)
 			}
-			ch <- st
+			ch <- storeIndex{store: s, status: st, index: x}
 		}
 
 		switch s := s.(type) {
