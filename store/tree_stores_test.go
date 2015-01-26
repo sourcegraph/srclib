@@ -12,10 +12,6 @@ import (
 // called.
 func mockNeverCalledTreeStore(t *testing.T) MockTreeStore {
 	return MockTreeStore{
-		Unit_: func(key unit.Key) (*unit.SourceUnit, error) {
-			t.Fatalf("(TreeStore).Unit called, but wanted it not to be called (arg key was %+v)", key)
-			return nil, nil
-		},
 		Units_: func(f ...UnitFilter) ([]*unit.SourceUnit, error) {
 			t.Fatalf("(TreeStore).Units called, but wanted it not to be called (arg f was %v)", f)
 			return nil, nil
@@ -26,21 +22,14 @@ func mockNeverCalledTreeStore(t *testing.T) MockTreeStore {
 
 type emptyTreeStore struct{ emptyUnitStore }
 
-func (m emptyTreeStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
-	return nil, errUnitNotExist
-}
-
 func (m emptyTreeStore) Units(f ...UnitFilter) ([]*unit.SourceUnit, error) {
 	return []*unit.SourceUnit{}, nil
 }
 
 type mapTreeStoreOpener map[string]TreeStore
 
-func (m mapTreeStoreOpener) openTreeStore(commitID string) (TreeStore, error) {
-	if ts, present := m[commitID]; present {
-		return ts, nil
-	}
-	return nil, errTreeNoInit
+func (m mapTreeStoreOpener) openTreeStore(commitID string) TreeStore {
+	return m[commitID]
 }
 func (m mapTreeStoreOpener) openAllTreeStores() (map[string]TreeStore, error) { return m, nil }
 
@@ -50,7 +39,7 @@ type recordingTreeStoreOpener struct {
 	treeStoreOpener
 }
 
-func (m *recordingTreeStoreOpener) openTreeStore(commitID string) (TreeStore, error) {
+func (m *recordingTreeStoreOpener) openTreeStore(commitID string) TreeStore {
 	if m.opened == nil {
 		m.opened = map[string]int{}
 	}
@@ -73,8 +62,10 @@ func TestTreeStores_filterByCommit(t *testing.T) {
 	}}
 	tss := treeStores{opener: o}
 
-	if _, err := tss.Def(graph.DefKey{CommitID: "c", UnitType: "t", Unit: "u", Path: "p"}); !IsNotExist(err) {
-		t.Errorf("got err %v, want IsNotExist-satisfying", err)
+	if defs, err := tss.Defs(ByCommitID("c"), ByUnits(unit.ID2{Type: "t", Name: "u"}), ByDefPath("p")); err != nil {
+		t.Error(err)
+	} else if len(defs) > 0 {
+		t.Errorf("got defs %v, want none", defs)
 	}
 	if want := map[string]int{"c": 1}; !reflect.DeepEqual(o.opened, want) {
 		t.Errorf("got opened %v, want %v", o.opened, want)
@@ -93,8 +84,10 @@ func TestTreeStores_filterByCommit(t *testing.T) {
 		t.Errorf("got refs %v, want none", refs)
 	}
 
-	if _, err := tss.Unit(unit.Key{CommitID: "c", UnitType: "t", Unit: "u"}); !IsNotExist(err) {
-		t.Errorf("got err %v, want IsNotExist-satisfying", err)
+	if units, err := tss.Units(ByCommitID("c"), ByUnits(unit.ID2{Type: "t", Name: "u"})); err != nil {
+		t.Error(err)
+	} else if len(units) > 0 {
+		t.Errorf("got units %v, want none", units)
 	}
 
 	if units, err := tss.Units(ByCommitID("c")); err != nil {

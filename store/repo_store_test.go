@@ -22,25 +22,14 @@ func testRepoStore(t *testing.T, newFn func() RepoStoreImporter) {
 	testRepoStore_uninitialized(t, &labeledRepoStoreImporter{newFn(), "uninitialized"})
 	testRepoStore_Import_empty(t, &labeledRepoStoreImporter{newFn(), "import empty"})
 	testRepoStore_Import(t, &labeledRepoStoreImporter{newFn(), "import"})
-	testRepoStore_Version(t, &labeledRepoStoreImporter{newFn(), "version"})
 	testRepoStore_Versions(t, &labeledRepoStoreImporter{newFn(), "versions"})
-	testRepoStore_Unit(t, &labeledRepoStoreImporter{newFn(), "unit"})
 	testRepoStore_Units(t, &labeledRepoStoreImporter{newFn(), "units"})
-	testRepoStore_Def(t, &labeledRepoStoreImporter{newFn(), "def"})
 	testRepoStore_Defs(t, &labeledRepoStoreImporter{newFn(), "defs"})
 	testRepoStore_Defs_ByCommitID_ByFile(t, &labeledRepoStoreImporter{newFn(), "Defs(ByCommitID,ByFile)"})
 	testRepoStore_Refs(t, &labeledRepoStoreImporter{newFn(), "refs"})
 }
 
 func testRepoStore_uninitialized(t *testing.T, rs RepoStoreImporter) {
-	version, err := rs.Version(VersionKey{CommitID: "c"})
-	if err == nil {
-		t.Errorf("%s: Version: got nil err", rs)
-	}
-	if version != nil {
-		t.Errorf("%s: Version: got version %v, want nil", rs, version)
-	}
-
 	versions, err := rs.Versions()
 	if err == nil {
 		t.Errorf("%s: Versions(): got nil err", rs)
@@ -82,23 +71,6 @@ func testRepoStore_Import(t *testing.T, rs RepoStoreImporter) {
 	}
 }
 
-func testRepoStore_Version(t *testing.T, rs RepoStoreImporter) {
-	unit := &unit.SourceUnit{Type: "t", Name: "u"}
-	if err := rs.Import("c", unit, graph.Output{}); err != nil {
-		t.Errorf("%s: Import(c, %v, empty data): %s", rs, unit, err)
-	}
-
-	want := &Version{CommitID: "c"}
-
-	version, err := rs.Version(VersionKey{CommitID: "c"})
-	if err != nil {
-		t.Errorf("%s: Version(c): %s", rs, err)
-	}
-	if !reflect.DeepEqual(version, want) {
-		t.Errorf("%s: Version(c): got %v, want %v", rs, version, want)
-	}
-}
-
 func testRepoStore_Versions(t *testing.T, rs RepoStoreImporter) {
 	for _, version := range []string{"c1", "c2"} {
 		unit := &unit.SourceUnit{Type: "t1", Name: "u1"}
@@ -116,23 +88,13 @@ func testRepoStore_Versions(t *testing.T, rs RepoStoreImporter) {
 	if !reflect.DeepEqual(versions, want) {
 		t.Errorf("%s: Versions(): got %v, want %v", rs, versions, want)
 	}
-}
 
-func testRepoStore_Unit(t *testing.T, rs RepoStoreImporter) {
-	u := &unit.SourceUnit{Type: "t", Name: "u"}
-	if err := rs.Import("c", u, graph.Output{}); err != nil {
-		t.Errorf("%s: Import(c, %v, empty data): %s", rs, u, err)
-	}
-
-	want := &unit.SourceUnit{CommitID: "c", Type: "t", Name: "u"}
-
-	key := unit.Key{CommitID: "c", UnitType: "t", Unit: "u"}
-	unit, err := rs.Unit(key)
+	versions, err = rs.Versions(ByCommitID("c2"))
 	if err != nil {
-		t.Errorf("%s: Unit(%v): %s", rs, key, err)
+		t.Errorf("%s: Versions(c2): %s", rs, err)
 	}
-	if !reflect.DeepEqual(unit, want) {
-		t.Errorf("%s: Unit(%v): got %v, want %v", rs, key, unit, want)
+	if want := []*Version{{CommitID: "c2"}}; !reflect.DeepEqual(versions, want) {
+		t.Errorf("%s: Versions(c2): got %v, want %v", rs, versions, want)
 	}
 }
 
@@ -159,61 +121,24 @@ func testRepoStore_Units(t *testing.T, rs RepoStoreImporter) {
 	if !reflect.DeepEqual(units, want) {
 		t.Errorf("%s: Units(): got %v, want %v", rs, units, want)
 	}
-}
 
-func testRepoStore_Def(t *testing.T, rs RepoStoreImporter) {
-	unit := &unit.SourceUnit{Type: "t", Name: "u"}
-	data := graph.Output{
-		Defs: []*graph.Def{
-			{
-				DefKey: graph.DefKey{Path: "p"},
-				Name:   "n",
-			},
-		},
-	}
-	if err := rs.Import("c", unit, data); err != nil {
-		t.Errorf("%s: Import(c, %v, data): %s", rs, unit, err)
-	}
-
-	def, err := rs.Def(graph.DefKey{Path: "p"})
-	if !isInvalidKey(err) {
-		t.Errorf("%s: Def(no unit): got err %v, want InvalidKeyError", rs, err)
-	}
-	if def != nil {
-		t.Errorf("%s: Def: got def %v, want nil", rs, def)
-	}
-
-	def, err = rs.Def(graph.DefKey{UnitType: "t", Unit: "u", Path: "p"})
-	if !isInvalidKey(err) {
-		t.Errorf("%s: Def(no repo): got err %v, want InvalidKeyError", rs, err)
-	}
-	if def != nil {
-		t.Errorf("%s: Def: got def %v, want nil", rs, def)
-	}
-
-	want := &graph.Def{
-		DefKey: graph.DefKey{CommitID: "c", UnitType: "t", Unit: "u", Path: "p"},
-		Name:   "n",
-	}
-	def, err = rs.Def(graph.DefKey{CommitID: "c", UnitType: "t", Unit: "u", Path: "p"})
+	units, err = rs.Units(ByCommitID("c"), ByUnits(unit.ID2{Type: "t2", Name: "u2"}))
 	if err != nil {
-		t.Errorf("%s: Def: %s", rs, err)
+		t.Errorf("%s: Units: %s", rs, err)
 	}
-	if !reflect.DeepEqual(def, want) {
-		t.Errorf("%s: Def: got def %v, want %v", rs, def, want)
+	if want := []*unit.SourceUnit{{CommitID: "c", Type: "t2", Name: "u2"}}; !reflect.DeepEqual(units, want) {
+		t.Errorf("%s: Units: got %v, want %v", rs, units, want)
 	}
 
-	def2, err := rs.Def(graph.DefKey{CommitID: "c2", UnitType: "t", Unit: "u", Path: "p"})
-	if !IsNotExist(err) {
-		t.Errorf("%s: Def: got err %v, want IsNotExist-satisfying err", rs, err)
-	}
-	if def2 != nil {
-		t.Errorf("%s: Def: got def %v, want nil", rs, def2)
+	if units, err = rs.Units(ByCommitID("c"), ByUnits(unit.ID2{Type: "t3", Name: "u3"})); err != nil {
+		t.Errorf("%s: Units: %s", rs, err)
+	} else if len(units) != 0 {
+		t.Errorf("%s: Units: got %v, want none", rs, units)
 	}
 }
 
 func testRepoStore_Defs(t *testing.T, rs RepoStoreImporter) {
-	unit := &unit.SourceUnit{Type: "t", Name: "u"}
+	u := &unit.SourceUnit{Type: "t", Name: "u"}
 	data := graph.Output{
 		Defs: []*graph.Def{
 			{
@@ -226,8 +151,8 @@ func testRepoStore_Defs(t *testing.T, rs RepoStoreImporter) {
 			},
 		},
 	}
-	if err := rs.Import("c", unit, data); err != nil {
-		t.Errorf("%s: Import(c, %v, data): %s", rs, unit, err)
+	if err := rs.Import("c", u, data); err != nil {
+		t.Errorf("%s: Import(c, %v, data): %s", rs, u, err)
 	}
 
 	want := []*graph.Def{
@@ -247,6 +172,20 @@ func testRepoStore_Defs(t *testing.T, rs RepoStoreImporter) {
 	}
 	if !reflect.DeepEqual(defs, want) {
 		t.Errorf("%s: Defs(): got defs %v, want %v", rs, defs, want)
+	}
+
+	want = []*graph.Def{
+		{
+			DefKey: graph.DefKey{CommitID: "c", UnitType: "t", Unit: "u", Path: "p1"},
+			Name:   "n1",
+		},
+	}
+	defs, err = rs.Defs(ByCommitID("c"), ByUnits(unit.ID2{Type: "t", Name: "u"}), ByDefPath("p1"))
+	if err != nil {
+		t.Errorf("%s: Defs: %s", rs, err)
+	}
+	if !reflect.DeepEqual(defs, want) {
+		t.Errorf("%s: Defs: got defs %v, want %v", rs, defs, want)
 	}
 }
 

@@ -12,9 +12,6 @@ import (
 // RepoStore allows aliasing repository URIs and supporting both ID
 // and URI lookups.
 type MultiRepoStore interface {
-	// Repo gets a single repository from the store.
-	Repo(string) (string, error)
-
 	// Repos returns all repositories that match the RepoFilter.
 	Repos(...RepoFilter) ([]string, error)
 
@@ -40,15 +37,3 @@ type MultiRepoStoreImporter interface {
 }
 
 // TODO(sqs): What should the Repo type be? Right now it is just string.
-
-// checkDefKeyValidForRepoStore returns an *InvalidKeyError if the def
-// key is underspecified for use in (RepoStore).Def.
-func checkDefKeyValidForMultiRepoStore(key graph.DefKey) error {
-	if err := checkDefKeyValidForRepoStore(key); err != nil {
-		return err
-	}
-	if key.Repo == "" {
-		return &InvalidKeyError{"empty DefKey.Repo"}
-	}
-	return nil
-}

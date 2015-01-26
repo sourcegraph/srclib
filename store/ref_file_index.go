@@ -16,8 +16,10 @@ type refFileIndex struct {
 }
 
 var _ interface {
+	Index
 	persistedIndex
 	refIndex
+	refIndexBuilder
 } = (*refFileIndex)(nil)
 
 var c_refFileIndex_getByFile = 0 // counter
@@ -44,11 +46,11 @@ func (x *refFileIndex) getByFile(file string) (byteRanges, bool, error) {
 }
 
 // Covers implements defIndex.
-func (x *refFileIndex) Covers(fs []RefFilter) int {
+func (x *refFileIndex) Covers(filters interface{}) int {
 	// TODO(sqs): this index also covers RefStart/End range filters
 	// (when those are added).
 	cov := 0
-	for _, f := range fs {
+	for _, f := range storeFilters(filters) {
 		if _, ok := f.(ByFilesFilter); ok {
 			cov++
 		}
@@ -78,7 +80,7 @@ func (x *refFileIndex) Refs(fs ...RefFilter) ([]byteRanges, error) {
 }
 
 // Build creates the refFileIndex.
-func (x *refFileIndex) Build(data *graph.Output, fbr fileByteRanges) error {
+func (x *refFileIndex) Build(ref []*graph.Ref, fbr fileByteRanges) error {
 	b := mph.Builder()
 	for file, br := range fbr {
 		v, err := json.Marshal(br)
@@ -114,6 +116,3 @@ func (x *refFileIndex) Read(r io.Reader) error {
 
 // Ready implements persistedIndex.
 func (x *refFileIndex) Ready() bool { return x.ready }
-
-// Name implements persistedIndex.
-func (x *refFileIndex) Name() string { return "ref-file" }

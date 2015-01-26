@@ -61,17 +61,6 @@ type FSMultiRepoStoreConf struct {
 	RepoPaths
 }
 
-func (s *fsMultiRepoStore) Repo(repo string) (string, error) {
-	repos, err := s.Repos(ByRepo(repo))
-	if err != nil {
-		return "", err
-	}
-	if len(repos) == 0 {
-		return "", errRepoNotExist
-	}
-	return repos[0], nil
-}
-
 func (s *fsMultiRepoStore) Repos(f ...RepoFilter) ([]string, error) {
 	scopeRepos, err := scopeRepos(storeFilters(f))
 	if err != nil {
@@ -113,9 +102,9 @@ func (s *fsMultiRepoStore) Repos(f ...RepoFilter) ([]string, error) {
 	return repos, nil
 }
 
-func (s *fsMultiRepoStore) openRepoStore(repo string) (RepoStore, error) {
+func (s *fsMultiRepoStore) openRepoStore(repo string) RepoStore {
 	subpath := s.fs.Join(s.RepoToPath(repo)...)
-	return NewFSRepoStore(rwvfs.Sub(s.fs, subpath)), nil
+	return NewFSRepoStore(rwvfs.Sub(s.fs, subpath))
 }
 
 func (s *fsMultiRepoStore) openAllRepoStores() (map[string]RepoStore, error) {
@@ -126,11 +115,7 @@ func (s *fsMultiRepoStore) openAllRepoStores() (map[string]RepoStore, error) {
 
 	rss := make(map[string]RepoStore, len(repos))
 	for _, repo := range repos {
-		var err error
-		rss[repo], err = s.openRepoStore(repo)
-		if err != nil {
-			return nil, err
-		}
+		rss[repo] = s.openRepoStore(repo)
 	}
 	return rss, nil
 }
@@ -145,11 +130,7 @@ func (s *fsMultiRepoStore) Import(repo, commitID string, unit *unit.SourceUnit, 
 	if err := rwvfs.MkdirAll(s.fs, subpath); err != nil {
 		return err
 	}
-	rs, err := s.openRepoStore(repo)
-	if err != nil {
-		return err
-	}
-	return rs.(RepoImporter).Import(commitID, unit, data)
+	return s.openRepoStore(repo).(RepoImporter).Import(commitID, unit, data)
 }
 
 func (s *fsMultiRepoStore) String() string { return "fsMultiRepoStore" }
@@ -170,17 +151,6 @@ func NewFSRepoStore(fs rwvfs.FileSystem) RepoStoreImporter {
 	rs := &fsRepoStore{fs: fs}
 	rs.treeStores = treeStores{rs}
 	return rs
-}
-
-func (s *fsRepoStore) Version(key VersionKey) (*Version, error) {
-	versions, err := s.Versions(ByCommitID(key.CommitID))
-	if err != nil {
-		return nil, err
-	}
-	if len(versions) == 0 {
-		return nil, errVersionNotExist
-	}
-	return versions[0], nil
 }
 
 func (s *fsRepoStore) Versions(f ...VersionFilter) ([]*Version, error) {
@@ -231,8 +201,8 @@ func (s *fsRepoStore) newTreeStore(commitID string) TreeStoreImporter {
 	return newFSTreeStore(fs)
 }
 
-func (s *fsRepoStore) openTreeStore(commitID string) (TreeStore, error) {
-	return s.newTreeStore(commitID), nil
+func (s *fsRepoStore) openTreeStore(commitID string) TreeStore {
+	return s.newTreeStore(commitID)
 }
 
 func (s *fsRepoStore) openAllTreeStores() (map[string]TreeStore, error) {
@@ -244,11 +214,7 @@ func (s *fsRepoStore) openAllTreeStores() (map[string]TreeStore, error) {
 	tss := make(map[string]TreeStore, len(versionDirs))
 	for _, dir := range versionDirs {
 		commitID := path.Base(dir)
-		var err error
-		tss[commitID], err = s.openTreeStore(commitID)
-		if err != nil {
-			return nil, err
-		}
+		tss[commitID] = s.openTreeStore(commitID)
 	}
 	return tss, nil
 }
@@ -267,17 +233,6 @@ func newFSTreeStore(fs rwvfs.FileSystem) *fsTreeStore {
 	ts := &fsTreeStore{fs: fs}
 	ts.unitStores = unitStores{ts}
 	return ts
-}
-
-func (s *fsTreeStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
-	units, err := s.Units(ByUnits(key.ID2()))
-	if err != nil {
-		return nil, err
-	}
-	if len(units) == 0 {
-		return nil, errUnitNotExist
-	}
-	return units[0], nil
 }
 
 func (s *fsTreeStore) Units(f ...UnitFilter) ([]*unit.SourceUnit, error) {
@@ -303,7 +258,7 @@ func (s *fsTreeStore) openUnitFile(filename string) (u *unit.SourceUnit, err err
 	f, err := s.fs.Open(filename)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return nil, errUnitNotExist
+			return nil, errUnitNoInit
 		}
 		return nil, err
 	}
@@ -366,21 +321,17 @@ func (s *fsTreeStore) Import(u *unit.SourceUnit, data graph.Output) (err error) 
 	if err := rwvfs.MkdirAll(s.fs, dir); err != nil {
 		return err
 	}
-	us, err := s.openUnitStore(unit.ID2{Type: u.Type, Name: u.Name})
-	if err != nil {
-		return err
-	}
 	cleanForImport(&data, "", u.Type, u.Name)
-	return us.(UnitStoreImporter).Import(data)
+	return s.openUnitStore(unit.ID2{Type: u.Type, Name: u.Name}).(UnitStoreImporter).Import(data)
 }
 
-func (s *fsTreeStore) openUnitStore(u unit.ID2) (UnitStore, error) {
+func (s *fsTreeStore) openUnitStore(u unit.ID2) UnitStore {
 	filename := s.unitFilename(u.Type, u.Name)
 	dir := strings.TrimSuffix(filename, unitFileSuffix)
 	if useIndexedStore {
-		return newIndexedUnitStore(rwvfs.Sub(s.fs, dir)), nil
+		return newIndexedUnitStore(rwvfs.Sub(s.fs, dir))
 	}
-	return &fsUnitStore{fs: rwvfs.Sub(s.fs, dir)}, nil
+	return &fsUnitStore{fs: rwvfs.Sub(s.fs, dir)}
 }
 
 func (s *fsTreeStore) openAllUnitStores() (map[unit.ID2]UnitStore, error) {
@@ -395,11 +346,7 @@ func (s *fsTreeStore) openAllUnitStores() (map[unit.ID2]UnitStore, error) {
 		// for "dir" and "u".
 		dir := strings.TrimSuffix(unitFile, unitFileSuffix)
 		u := unit.ID2{Type: path.Base(dir), Name: path.Dir(dir)}
-		var err error
-		uss[u], err = s.openUnitStore(u)
-		if err != nil {
-			return nil, err
-		}
+		uss[u] = s.openUnitStore(u)
 	}
 	return uss, nil
 }
@@ -426,21 +373,6 @@ const (
 	unitRefsFilename = "ref.dat"
 )
 
-func (s *fsUnitStore) Def(key graph.DefKey) (*graph.Def, error) {
-	if err := checkDefKeyValidForUnitStore(key); err != nil {
-		return nil, err
-	}
-
-	defs, err := s.Defs(defPathFilter(key.Path))
-	if err != nil {
-		return nil, err
-	}
-	if len(defs) == 0 {
-		return nil, errDefNotExist
-	}
-	return defs[0], nil
-}
-
 func (s *fsUnitStore) Defs(fs ...DefFilter) (defs []*graph.Def, err error) {
 	f, err := s.fs.Open(unitDefsFilename)
 	if err != nil {
@@ -453,10 +385,9 @@ func (s *fsUnitStore) Defs(fs ...DefFilter) (defs []*graph.Def, err error) {
 		}
 	}()
 
-	dec := newDecoder(Codec, f)
 	for {
 		var def *graph.Def
-		if err := dec.Decode(&def); err == io.EOF {
+		if err := Codec.Decode(f, &def); err == io.EOF {
 			break
 		} else if err != nil {
 			return nil, err
@@ -499,6 +430,37 @@ func (s *fsUnitStore) defsAtOffsets(ofs byteOffsets, fs []DefFilter) (defs []*gr
 	return defs, nil
 }
 
+// readDefs reads all defs from the def data file and returns them
+// along with their serialized byte offsets.
+func (s *fsUnitStore) readDefs() (defs []*graph.Def, ofs byteOffsets, err error) {
+	f, err := s.fs.Open(unitDefsFilename)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer func() {
+		err2 := f.Close()
+		if err == nil {
+			err = err2
+		}
+	}()
+
+	cr := &countingReader{Reader: f}
+	for {
+		o := cr.n
+
+		var def *graph.Def
+		if err := Codec.Decode(cr, &def); err == io.EOF {
+			break
+		} else if err != nil {
+			return nil, nil, err
+		}
+
+		ofs = append(ofs, o)
+		defs = append(defs, def)
+	}
+	return defs, ofs, nil
+}
+
 func (s *fsUnitStore) Refs(fs ...RefFilter) (refs []*graph.Ref, err error) {
 	f, err := s.fs.Open(unitRefsFilename)
 	if err != nil {
@@ -511,10 +473,9 @@ func (s *fsUnitStore) Refs(fs ...RefFilter) (refs []*graph.Ref, err error) {
 		}
 	}()
 
-	dec := newDecoder(Codec, f)
 	for {
 		var ref *graph.Ref
-		if err := dec.Decode(&ref); err == io.EOF {
+		if err := Codec.Decode(f, &ref); err == io.EOF {
 			break
 		} else if err != nil {
 			return nil, err
@@ -526,6 +487,8 @@ func (s *fsUnitStore) Refs(fs ...RefFilter) (refs []*graph.Ref, err error) {
 	return refs, nil
 }
 
+// refsAtByteRanges reads the refs at the given serialized byte ranges
+// from the ref data file and returns them in arbitrary order.
 func (s *fsUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs []*graph.Ref, err error) {
 	f, err := s.fs.Open(unitRefsFilename)
 	if err != nil {
@@ -562,10 +525,10 @@ func (s *fsUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs [
 			return nil, err
 		}
 
-		dec := newDecoder(Codec, bytes.NewReader(b))
+		r := bytes.NewReader(b)
 		for range br[1:] {
 			var ref *graph.Ref
-			if err := dec.Decode(&ref); err != nil {
+			if err := Codec.Decode(r, &ref); err != nil {
 				return nil, err
 			}
 			if ffs.SelectRef(ref) {
@@ -576,12 +539,61 @@ func (s *fsUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs [
 	return refs, nil
 }
 
+// readDefs reads all defs from the def data file and returns them
+// along with their serialized byte offsets.
+func (s *fsUnitStore) readRefs() (refs []*graph.Ref, fbrs fileByteRanges, err error) {
+	f, err := s.fs.Open(unitRefsFilename)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer func() {
+		err2 := f.Close()
+		if err == nil {
+			err = err2
+		}
+	}()
+
+	cr := &countingReader{Reader: f}
+	fbrs = fileByteRanges{}
+	lastFile := ""
+	for {
+		o := cr.n
+
+		var ref *graph.Ref
+		if err := Codec.Decode(cr, &ref); err == io.EOF {
+			break
+		} else if err != nil {
+			return nil, nil, err
+		}
+
+		var lastFileRefStartOffset int64
+		if brs, present := fbrs[ref.File]; present {
+			lastFileRefStartOffset = brs[len(brs)-1]
+		}
+		if lastFile != "" && ref.File != lastFile {
+			fbrs[lastFile] = append(fbrs[lastFile], o-lastFileRefStartOffset)
+		}
+		fbrs[ref.File] = append(fbrs[ref.File], o-lastFileRefStartOffset)
+		refs = append(refs, ref)
+		lastFile = ref.File
+	}
+	if lastFile != "" {
+		var lastFileRefStartOffset int64
+		if brs, present := fbrs[lastFile]; present {
+			lastFileRefStartOffset = brs[len(brs)-1]
+		}
+		fbrs[lastFile] = append(fbrs[lastFile], cr.n-lastFileRefStartOffset)
+	}
+	return refs, fbrs, nil
+
+}
+
 func (s *fsUnitStore) Import(data graph.Output) error {
 	cleanForImport(&data, "", "", "")
-	if _, err := s.writeDefs(&data); err != nil {
+	if _, err := s.writeDefs(data.Defs); err != nil {
 		return err
 	}
-	if _, err := s.writeRefs(&data); err != nil {
+	if _, err := s.writeRefs(data.Refs); err != nil {
 		return err
 	}
 	return nil
@@ -590,7 +602,7 @@ func (s *fsUnitStore) Import(data graph.Output) error {
 // writeDefs writes the def data file. It also tracks (in ofs) the
 // serialized byte offset where each def's serialized representation
 // begins (which is used during index construction).
-func (s *fsUnitStore) writeDefs(data *graph.Output) (ofs byteOffsets, err error) {
+func (s *fsUnitStore) writeDefs(defs []*graph.Def) (ofs byteOffsets, err error) {
 	f, err := s.fs.Create(unitDefsFilename)
 	if err != nil {
 		return nil, err
@@ -603,8 +615,8 @@ func (s *fsUnitStore) writeDefs(data *graph.Output) (ofs byteOffsets, err error)
 	}()
 
 	cw := &countingWriter{Writer: f}
-	ofs = make(byteOffsets, len(data.Defs))
-	for i, def := range data.Defs {
+	ofs = make(byteOffsets, len(defs))
+	for i, def := range defs {
 		ofs[i] = cw.n
 		if err := Codec.Encode(cw, def); err != nil {
 			return nil, err
@@ -614,7 +626,7 @@ func (s *fsUnitStore) writeDefs(data *graph.Output) (ofs byteOffsets, err error)
 }
 
 // writeDefs writes the ref data file.
-func (s *fsUnitStore) writeRefs(data *graph.Output) (fbr fileByteRanges, err error) {
+func (s *fsUnitStore) writeRefs(refs []*graph.Ref) (fbr fileByteRanges, err error) {
 	f, err := s.fs.Create(unitRefsFilename)
 	if err != nil {
 		return nil, err
@@ -629,13 +641,13 @@ func (s *fsUnitStore) writeRefs(data *graph.Output) (fbr fileByteRanges, err err
 	// Sort refs by file and start byte so that we can use streaming
 	// reads to efficiently read in all of the refs that exist in a
 	// file.
-	sort.Sort(refsByFileStartEnd(data.Refs))
+	sort.Sort(refsByFileStartEnd(refs))
 
 	cw := &countingWriter{Writer: f}
 	fbr = fileByteRanges{}
 	lastFile := ""
 	lastFileByteRanges := byteRanges{}
-	for _, ref := range data.Refs {
+	for _, ref := range refs {
 		if lastFile != ref.File {
 			if lastFile != "" {
 				fbr[lastFile] = lastFileByteRanges
@@ -660,7 +672,7 @@ func (s *fsUnitStore) writeRefs(data *graph.Output) (fbr fileByteRanges, err err
 func (s *fsUnitStore) String() string { return "fsUnitStore" }
 
 // countingWriter wraps an io.Writer, counting the number of bytes
-// write.
+// written.
 type countingWriter struct {
 	io.Writer
 	n int64
@@ -668,6 +680,19 @@ type countingWriter struct {
 
 func (cr *countingWriter) Write(p []byte) (n int, err error) {
 	n, err = cr.Writer.Write(p)
+	cr.n += int64(n)
+	return
+}
+
+// countingReader wraps an io.Reader, counting the number of bytes
+// read.
+type countingReader struct {
+	io.Reader
+	n int64
+}
+
+func (cr *countingReader) Read(p []byte) (n int, err error) {
+	n, err = cr.Reader.Read(p)
 	cr.n += int64(n)
 	return
 }

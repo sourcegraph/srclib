@@ -27,8 +27,9 @@ type defFilesIndex struct {
 }
 
 var _ interface {
+	Index
 	persistedIndex
-	graphIndexBuilder
+	defIndexBuilder
 	defIndex
 } = (*defFilesIndex)(nil)
 
@@ -62,14 +63,14 @@ func (x *defFilesIndex) getByPath(path string) (byteOffsets, bool, error) {
 }
 
 // Covers implements defIndex.
-func (x *defFilesIndex) Covers(fs []DefFilter) int {
+func (x *defFilesIndex) Covers(filters interface{}) int {
 	// TODO(sqs): ensure that x.filters is equivalent to fs (might
 	// require an equals() method on filters, for filters with
 	// internal state that we don't necessarily want to use when
 	// testing equality). Otherwise this just assumes that fs has a
 	// Limit, an Exported=true/Nonlocal=true filter, etc.
 	cov := 0
-	for _, f := range fs {
+	for _, f := range storeFilters(filters) {
 		if _, ok := f.(ByFilesFilter); ok {
 			cov++
 		}
@@ -98,11 +99,11 @@ func (x *defFilesIndex) Defs(fs ...DefFilter) (byteOffsets, error) {
 	return nil, nil
 }
 
-// Build implements graphIndexBuilder.
-func (x *defFilesIndex) Build(data *graph.Output, ofs byteOffsets) error {
+// Build implements defIndexBuilder.
+func (x *defFilesIndex) Build(defs []*graph.Def, ofs byteOffsets) error {
 	b := mph.Builder()
-	f2ofs := make(filesToDefOfs, len(data.Defs)/50)
-	for i, def := range data.Defs {
+	f2ofs := make(filesToDefOfs, len(defs)/50)
+	for i, def := range defs {
 		if len(f2ofs[def.File]) < x.perFile && defFilters(x.filters).SelectDef(def) {
 			f2ofs.add(def.File, ofs[i], x.perFile)
 		}
@@ -163,7 +164,3 @@ func (x *defFilesIndex) Read(r io.Reader) error {
 
 // Ready implements persistedIndex.
 func (x *defFilesIndex) Ready() bool { return x.ready }
-
-// Name implements persistedIndex. TODO(sqs): add some string repr of
-// x.filters to this name so we can have multiple such indexes.
-func (x *defFilesIndex) Name() string { return "def-file" }

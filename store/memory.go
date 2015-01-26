@@ -23,18 +23,6 @@ func newMemoryMultiRepoStore() *memoryMultiRepoStore {
 
 var errMultiRepoStoreNoInit = errors.New("multi-repo store not yet initialized")
 
-func (s *memoryMultiRepoStore) Repo(repo string) (string, error) {
-	if s.repos == nil {
-		return "", errMultiRepoStoreNoInit
-	}
-
-	_, present := s.repos[repo]
-	if !present {
-		return "", errRepoNotExist
-	}
-	return repo, nil
-}
-
 func (s *memoryMultiRepoStore) Repos(f ...RepoFilter) ([]string, error) {
 	if s.repos == nil {
 		return nil, errMultiRepoStoreNoInit
@@ -49,14 +37,11 @@ func (s *memoryMultiRepoStore) Repos(f ...RepoFilter) ([]string, error) {
 	return repos, nil
 }
 
-func (s *memoryMultiRepoStore) openRepoStore(repo string) (RepoStore, error) {
-	if s.repos == nil {
-		return nil, errMultiRepoStoreNoInit
-	}
+func (s *memoryMultiRepoStore) openRepoStore(repo string) RepoStore {
 	if rs, present := s.repos[repo]; present {
-		return rs, nil
+		return rs
 	}
-	return nil, errRepoNoInit
+	return nil
 }
 
 func (s *memoryMultiRepoStore) openAllRepoStores() (map[string]RepoStore, error) {
@@ -66,11 +51,7 @@ func (s *memoryMultiRepoStore) openAllRepoStores() (map[string]RepoStore, error)
 
 	rss := make(map[string]RepoStore, len(s.repos))
 	for repo := range s.repos {
-		var err error
-		rss[repo], err = s.openRepoStore(repo)
-		if err != nil {
-			return nil, err
-		}
+		rss[repo] = s.openRepoStore(repo)
 	}
 	return rss, nil
 }
@@ -107,19 +88,6 @@ func newMemoryRepoStore() *memoryRepoStore {
 
 var errRepoNoInit = errors.New("repo not yet initialized")
 
-func (s *memoryRepoStore) Version(key VersionKey) (*Version, error) {
-	if s.versions == nil {
-		return nil, errRepoNoInit
-	}
-
-	for _, version := range s.versions {
-		if version.CommitID == key.CommitID {
-			return version, nil
-		}
-	}
-	return nil, errVersionNotExist
-}
-
 func (s *memoryRepoStore) Versions(f ...VersionFilter) ([]*Version, error) {
 	if s.versions == nil {
 		return nil, errRepoNoInit
@@ -149,14 +117,11 @@ func (s *memoryRepoStore) Import(commitID string, unit *unit.SourceUnit, data gr
 	return s.trees[commitID].Import(unit, data)
 }
 
-func (s *memoryRepoStore) openTreeStore(commitID string) (TreeStore, error) {
-	if s.trees == nil {
-		return nil, errRepoNoInit
-	}
+func (s *memoryRepoStore) openTreeStore(commitID string) TreeStore {
 	if ts, present := s.trees[commitID]; present {
-		return ts, nil
+		return ts
 	}
-	return nil, errTreeNoInit
+	return nil
 }
 
 func (s *memoryRepoStore) openAllTreeStores() (map[string]TreeStore, error) {
@@ -166,11 +131,7 @@ func (s *memoryRepoStore) openAllTreeStores() (map[string]TreeStore, error) {
 
 	tss := make(map[string]TreeStore, len(s.trees))
 	for commitID := range s.trees {
-		var err error
-		tss[commitID], err = s.openTreeStore(commitID)
-		if err != nil {
-			return nil, err
-		}
+		tss[commitID] = s.openTreeStore(commitID)
 	}
 	return tss, nil
 }
@@ -193,19 +154,6 @@ func newMemoryTreeStore() *memoryTreeStore {
 }
 
 var errTreeNoInit = errors.New("tree not yet initialized")
-
-func (s *memoryTreeStore) Unit(key unit.Key) (*unit.SourceUnit, error) {
-	if s.units == nil {
-		return nil, errTreeNoInit
-	}
-
-	for _, unit := range s.units {
-		if unit.Type == key.UnitType && unit.Name == key.Unit {
-			return unit, nil
-		}
-	}
-	return nil, errUnitNotExist
-}
 
 func (s *memoryTreeStore) Units(f ...UnitFilter) ([]*unit.SourceUnit, error) {
 	if s.units == nil {
@@ -241,14 +189,11 @@ func (s *memoryTreeStore) Import(u *unit.SourceUnit, data graph.Output) error {
 	return nil
 }
 
-func (s *memoryTreeStore) openUnitStore(u unit.ID2) (UnitStore, error) {
-	if s.data == nil {
-		return nil, errTreeNoInit
+func (s *memoryTreeStore) openUnitStore(u unit.ID2) UnitStore {
+	if dat, present := s.data[u]; present {
+		return &memoryUnitStore{data: dat}
 	}
-	if data, present := s.data[u]; present {
-		return &memoryUnitStore{data: data}, nil
-	}
-	return nil, errUnitNoInit
+	return nil
 }
 
 func (s *memoryTreeStore) openAllUnitStores() (map[unit.ID2]UnitStore, error) {
@@ -258,11 +203,7 @@ func (s *memoryTreeStore) openAllUnitStores() (map[unit.ID2]UnitStore, error) {
 
 	uss := make(map[unit.ID2]UnitStore, len(s.data))
 	for u := range s.data {
-		var err error
-		uss[u], err = s.openUnitStore(u)
-		if err != nil {
-			return nil, err
-		}
+		uss[u] = s.openUnitStore(u)
 	}
 	return uss, nil
 }
@@ -277,25 +218,6 @@ type memoryUnitStore struct {
 }
 
 var errUnitNoInit = errors.New("unit not yet initialized")
-
-func (s *memoryUnitStore) Def(key graph.DefKey) (*graph.Def, error) {
-	if s.data == nil {
-		return nil, errUnitNoInit
-	}
-
-	if err := checkDefKeyValidForUnitStore(key); err != nil {
-		return nil, err
-	}
-
-	defs, err := s.Defs(defPathFilter(key.Path))
-	if err != nil {
-		return nil, err
-	}
-	if len(defs) == 0 {
-		return nil, errDefNotExist
-	}
-	return defs[0], nil
-}
 
 func (s *memoryUnitStore) Defs(f ...DefFilter) ([]*graph.Def, error) {
 	if s.data == nil {

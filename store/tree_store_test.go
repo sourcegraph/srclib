@@ -62,14 +62,6 @@ func testTreeStore(t *testing.T, newFn func() treeStoreImporter) {
 }
 
 func testTreeStore_uninitialized(t *testing.T, ts TreeStore) {
-	unit, err := ts.Unit(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"})
-	if err == nil {
-		t.Errorf("%s: Unit: got nil err", ts)
-	}
-	if unit != nil {
-		t.Errorf("%s: Unit: got unit %v, want nil", ts, unit)
-	}
-
 	units, err := ts.Units()
 	if err == nil {
 		t.Errorf("%s: Units(): got nil err", ts)
@@ -82,14 +74,6 @@ func testTreeStore_uninitialized(t *testing.T, ts TreeStore) {
 }
 
 func testTreeStore_empty(t *testing.T, ts TreeStore) {
-	unit, err := ts.Unit(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"})
-	if !IsNotExist(err) {
-		t.Errorf("%s: Unit: got err %v, want IsNotExist-satisfying err", ts, err)
-	}
-	if unit != nil {
-		t.Errorf("%s: Unit: got unit %v, want nil", ts, unit)
-	}
-
 	units, err := ts.Units()
 	if err != nil {
 		t.Errorf("%s: Units(): %s", ts, err)
@@ -132,18 +116,16 @@ func testTreeStore_Import(t *testing.T, ts treeStoreImporter) {
 }
 
 func testTreeStore_Unit(t *testing.T, ts treeStoreImporter) {
-	want := &unit.SourceUnit{Type: "t", Name: "u"}
-	if err := ts.Import(want, graph.Output{}); err != nil {
-		t.Errorf("%s: Import(%v, empty data): %s", ts, want, err)
+	if err := ts.Import(&unit.SourceUnit{Type: "t", Name: "u"}, graph.Output{}); err != nil {
+		t.Errorf("%s: Import(empty data): %s", ts, err)
 	}
 
-	key := unit.Key{CommitID: "c", UnitType: "t", Unit: "u"}
-	unit, err := ts.Unit(key)
+	units, err := ts.Units(ByCommitID("c"), ByUnits(unit.ID2{Type: "t", Name: "u"}))
 	if err != nil {
-		t.Errorf("%s: Unit(%v): %s", ts, key, err)
+		t.Errorf("%s: Units: %s", ts, err)
 	}
-	if !reflect.DeepEqual(unit, want) {
-		t.Errorf("%s: Unit(%v): got %v, want %v", ts, key, unit, want)
+	if want := []*unit.SourceUnit{{Type: "t", Name: "u"}}; !reflect.DeepEqual(units, want) {
+		t.Errorf("%s: Units: got %v, want %v", ts, units, want)
 	}
 }
 
@@ -227,7 +209,7 @@ func testTreeStore_Units_ByFile(t *testing.T, ts treeStoreImporter) {
 }
 
 func testTreeStore_Def(t *testing.T, ts treeStoreImporter) {
-	unit := &unit.SourceUnit{Type: "t", Name: "u"}
+	u := &unit.SourceUnit{Type: "t", Name: "u"}
 	data := graph.Output{
 		Defs: []*graph.Def{
 			{
@@ -236,36 +218,39 @@ func testTreeStore_Def(t *testing.T, ts treeStoreImporter) {
 			},
 		},
 	}
-	if err := ts.Import(unit, data); err != nil {
-		t.Errorf("%s: Import(%v, data): %s", ts, unit, err)
+	if err := ts.Import(u, data); err != nil {
+		t.Errorf("%s: Import(%v, data): %s", ts, u, err)
 	}
 
-	def, err := ts.Def(graph.DefKey{Path: "p"})
-	if !isInvalidKey(err) {
-		t.Errorf("%s: Def(no unit): got err %v, want InvalidKeyError", ts, err)
-	}
-	if def != nil {
-		t.Errorf("%s: Def: got def %v, want nil", ts, def)
+	want := []*graph.Def{
+		{
+			DefKey: graph.DefKey{UnitType: "t", Unit: "u", Path: "p"},
+			Name:   "n",
+		},
 	}
 
-	want := &graph.Def{
-		DefKey: graph.DefKey{UnitType: "t", Unit: "u", Path: "p"},
-		Name:   "n",
-	}
-	def, err = ts.Def(graph.DefKey{UnitType: "t", Unit: "u", Path: "p"})
+	defs, err := ts.Defs(ByDefPath("p"))
 	if err != nil {
-		t.Errorf("%s: Def: %s", ts, err)
+		t.Fatalf("%s: Defs: %s", ts, err)
 	}
-	if !reflect.DeepEqual(def, want) {
-		t.Errorf("%s: Def: got def %v, want %v", ts, def, want)
+	if !reflect.DeepEqual(defs, want) {
+		t.Errorf("%s: Defs: got defs %v, want %v", ts, defs, want)
 	}
 
-	def2, err := ts.Def(graph.DefKey{UnitType: "t2", Unit: "u2", Path: "p"})
-	if !IsNotExist(err) {
-		t.Errorf("%s: Def: got err %v, want IsNotExist-satisfying err", ts, err)
+	defs, err = ts.Defs(ByUnits(unit.ID2{Type: "t", Name: "u"}), ByDefPath("p"))
+	if err != nil {
+		t.Errorf("%s: Defs: %s", ts, err)
 	}
-	if def2 != nil {
-		t.Errorf("%s: Def: got def %v, want nil", ts, def2)
+	if !reflect.DeepEqual(defs, want) {
+		t.Errorf("%s: Defs: got defs %v, want %v", ts, defs, want)
+	}
+
+	defs, err = ts.Defs(ByUnits(unit.ID2{Type: "t2", Name: "u2"}), ByDefPath("p"))
+	if err != nil {
+		t.Fatalf("%s: Defs: %s", ts, err)
+	}
+	if len(defs) != 0 {
+		t.Errorf("%s: Defs: got defs %v, want none", ts, defs)
 	}
 }
 

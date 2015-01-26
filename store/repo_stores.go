@@ -37,7 +37,7 @@ func scopeRepos(filters []interface{}) ([]string, error) {
 
 // A repoStoreOpener opens the RepoStore for the specified repo.
 type repoStoreOpener interface {
-	openRepoStore(repo string) (RepoStore, error)
+	openRepoStore(repo string) RepoStore
 	openAllRepoStores() (map[string]RepoStore, error)
 }
 
@@ -55,11 +55,7 @@ func openRepoStores(o repoStoreOpener, filters interface{}) (map[string]RepoStor
 
 	rss := make(map[string]RepoStore, len(repos))
 	for _, repo := range repos {
-		var err error
-		rss[repo], err = o.openRepoStore(repo)
-		if err != nil {
-			return nil, err
-		}
+		rss[repo] = o.openRepoStore(repo)
 	}
 	return rss, nil
 }

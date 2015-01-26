@@ -4,9 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"runtime"
-
-	"code.google.com/p/rog-go/parallel"
 
 	"sort"
 	"strings"
@@ -15,6 +12,14 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
+
+type indexedStore interface {
+	// Indexes lists all indexes that have been built.
+	Indexes() map[string]Index
+
+	// BuildIndex builds the index with the specified name.
+	BuildIndex(name string, x Index) error
+}
 
 // An indexedTreeStore is a VFS-backed tree store that generates
 // indexes to provide efficient lookups.
@@ -27,19 +32,22 @@ type indexedTreeStore struct {
 	// indexes is all of the indexes that should be built, written,
 	// and read from. It contains all indexes for all types of data
 	// (e.g., def indexes, ref indexes, etc.).
-	indexes []interface{}
+	indexes map[string]Index
 
 	*fsTreeStore
 }
 
-var _ TreeStore = (*indexedTreeStore)(nil)
+var _ interface {
+	TreeStore
+	indexedStore
+} = (*indexedTreeStore)(nil)
 
 // newIndexedTreeStore creates a new indexed tree store that stores
 // data and indexes in fs.
 func newIndexedTreeStore(fs rwvfs.FileSystem) TreeStoreImporter {
 	return &indexedTreeStore{
-		indexes: []interface{}{
-			&unitFilesIndex{},
+		indexes: map[string]Index{
+			"file_to_units": &unitFilesIndex{},
 		},
 		fsTreeStore: newFSTreeStore(fs),
 	}
@@ -60,14 +68,12 @@ func (s *indexedTreeStore) unitIDs(indexOnly bool, fs ...UnitFilter) ([]unit.ID2
 	vlog.Printf("indexedTreeStore.unitIDs(indexOnly=%v, %v)", indexOnly, fs)
 
 	// Try to find an index that covers this query.
-	if dx := bestCoverageUnitIndex(s.indexes, fs); dx != nil {
-		if px, ok := dx.(persistedIndex); ok && !px.Ready() {
-			if err := readIndex(s.fs, px); err != nil {
-				return nil, err
-			}
+	if xname, bx := bestCoverageIndex(s.indexes, fs, isUnitIndex); bx != nil {
+		if err := prepareIndex(s.fs, xname, bx); err != nil {
+			return nil, err
 		}
-		vlog.Printf("indexedTreeStore.unitIDs(%v): Found covering index %v.", fs, dx)
-		return dx.Units(fs...)
+		vlog.Printf("indexedTreeStore.unitIDs(%v): Found covering index %q (%v).", fs, xname, bx)
+		return bx.(unitIndex).Units(fs...)
 	}
 	if indexOnly {
 		return nil, errNotIndexed
@@ -157,6 +163,7 @@ func (s *indexedTreeStore) Refs(fs ...RefFilter) ([]*graph.Ref, error) {
 	// No indexes found that we can exploit here; forward to the
 	// underlying store.
 	if len(ufs) == 0 {
+		vlog.Printf("indexedTreeStore.Refs(%v): No unit indexes found to narrow scope; forwarding to underlying store.", fs)
 		return s.fsTreeStore.Refs(fs...)
 	}
 
@@ -172,6 +179,7 @@ func (s *indexedTreeStore) Refs(fs ...RefFilter) ([]*graph.Ref, error) {
 	//
 	// If scopeUnits is empty, the empty ByUnits filter will result in
 	// the query matching nothing, which is the desired behavior.
+	vlog.Printf("indexedTreeStore.Refs(%v): Adding equivalent ByUnits filters to scope to units %+v.", fs, scopeUnits)
 	fs = append(fs, ByUnits(scopeUnits...))
 
 	// Pass the now more narrowly scoped query onto the underlying store.
@@ -185,12 +193,14 @@ func (s *indexedTreeStore) Import(u *unit.SourceUnit, data graph.Output) error {
 
 	s.checkSourceUnitFiles(u, data)
 
-	if err := s.writeUnitIndexes(u); err != nil {
+	if err := s.buildIndexes(); err != nil {
 		return err
 	}
 
 	return nil
 }
+
+func (s *indexedTreeStore) Indexes() map[string]Index { return s.indexes }
 
 // checkSourceUnitFiles warns if any files appear in graph data but
 // are not in u.Files.
@@ -234,43 +244,43 @@ func (s *indexedTreeStore) checkSourceUnitFiles(u *unit.SourceUnit, data graph.O
 	}
 }
 
-// writeUnitIndexes builds every unit index in s.indexes and writes
-// them to their backing files. Because imports are performed on a
-// per-unit basis, it rebuilds the index from scratch after each
-// source unit is finished importing.
-func (s *indexedTreeStore) writeUnitIndexes(u *unit.SourceUnit) error {
-	// TODO(sqs): there's a race condition here if multiple imports
-	// are running concurrently, they could clobber each other's
-	// indexes. (S3 is eventually consistent.)
-	units, err := s.fsTreeStore.Units()
-	if err != nil {
-		return err
-	}
-
-	vlog.Printf("indexedTreeStore.writeUnitIndexes(%v): building indexes for all units: %v", u, units)
-
-	par := parallel.NewRun(runtime.GOMAXPROCS(0))
-	for _, x := range s.indexes {
-		if x, ok := x.(unitIndex); ok {
-			if bx, ok := x.(unitIndexBuilder); ok {
-				par.Do(func() error {
-					if err := bx.Build(units); err != nil {
-						return err
-					}
-					if px, ok := x.(persistedIndex); ok {
-						if err := writeIndex(s.fs, px); err != nil {
-							return err
-						}
-					}
-					return nil
-				})
-			}
+func (s *indexedTreeStore) buildIndexes() error {
+	for name, x := range s.Indexes() {
+		if err := s.BuildIndex(name, x); err != nil {
+			return err
 		}
 	}
-	return par.Wait()
+	return nil
 }
 
-//func defsAtUnitOffsets(o unitStoreOpener
+func (s *indexedTreeStore) BuildIndex(name string, x Index) error {
+	switch x := x.(type) {
+	case unitIndexBuilder:
+		// TODO(sqs): there's a race condition here if multiple imports
+		// are running concurrently, they could clobber each other's
+		// indexes. (S3 is eventually consistent.)
+		//
+		// TODO(sqs): also, if multiple BuildIndexes are called by
+		// buildIndexes (if we have more than 1 index here in the
+		// future), then we do redundant work in this call to
+		// Units. We could add another layer of indirection and cache
+		// the Units result.
+		allUnits, err := s.fsTreeStore.Units()
+		if err != nil {
+			return err
+		}
+		if err := x.Build(allUnits); err != nil {
+			return err
+		}
+		if px, ok := x.(persistedIndex); ok {
+			if err := writeIndex(s.fs, name, px); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+	return fmt.Errorf("don't know how to build index %q of type %T", name, x)
+}
 
 // An indexedUnitStore is a VFS-backed unit store that generates
 // indexes to provide efficient lookups.
@@ -283,21 +293,24 @@ type indexedUnitStore struct {
 	// indexes is all of the indexes that should be built, written,
 	// and read from. It contains all indexes for all types of data
 	// (e.g., def indexes, ref indexes, etc.).
-	indexes []interface{}
+	indexes map[string]Index
 
 	*fsUnitStore
 }
 
-var _ UnitStore = (*indexedUnitStore)(nil)
+var _ interface {
+	UnitStore
+	indexedStore
+} = (*indexedUnitStore)(nil)
 
 // newIndexedUnitStore creates a new indexed unit store that stores
 // data and indexes in fs.
 func newIndexedUnitStore(fs rwvfs.FileSystem) UnitStoreImporter {
 	return &indexedUnitStore{
-		indexes: []interface{}{
-			&defPathIndex{},
-			&refFileIndex{},
-			&defFilesIndex{
+		indexes: map[string]Index{
+			"path_to_def":  &defPathIndex{},
+			"file_to_refs": &refFileIndex{},
+			"file_to_7_exported_non_local_defs": &defFilesIndex{
 				filters: []DefFilter{
 					DefFilterFunc(func(def *graph.Def) bool {
 						return def.Exported || !def.Local
@@ -312,27 +325,14 @@ func newIndexedUnitStore(fs rwvfs.FileSystem) UnitStoreImporter {
 
 const indexFilename = "%s.idx"
 
-// Def implements UnitStore.
-func (s *indexedUnitStore) Def(key graph.DefKey) (def *graph.Def, err error) {
-	defs, err := s.Defs(ByDefPath(key.Path))
-	if err != nil {
-		return nil, err
-	}
-	if len(defs) == 0 {
-		return nil, errDefNotExist
-	}
-	return defs[0], nil
-}
-
 func (s *indexedUnitStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 	// Try to find an index that covers this query.
-	if dx := bestCoverageDefIndex(s.indexes, fs); dx != nil {
-		if px, ok := dx.(persistedIndex); ok && !px.Ready() {
-			if err := readIndex(s.fs, px); err != nil {
-				return nil, err
-			}
+	if xname, bx := bestCoverageIndex(s.indexes, fs, isDefIndex); bx != nil {
+		if err := prepareIndex(s.fs, xname, bx); err != nil {
+			return nil, err
 		}
-		ofs, err := dx.Defs(fs...)
+		vlog.Printf("indexedUnitStore.Defs(%v): Found covering index %q (%v).", fs, xname, bx)
+		ofs, err := bx.(defIndex).Defs(fs...)
 		if err != nil {
 			return nil, err
 		}
@@ -346,13 +346,12 @@ func (s *indexedUnitStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 // Refs implements UnitStore.
 func (s *indexedUnitStore) Refs(fs ...RefFilter) ([]*graph.Ref, error) {
 	// Try to find an index that covers this query.
-	if dx := bestCoverageRefIndex(s.indexes, fs); dx != nil {
-		if px, ok := dx.(persistedIndex); ok && !px.Ready() {
-			if err := readIndex(s.fs, px); err != nil {
-				return nil, err
-			}
+	if xname, bx := bestCoverageIndex(s.indexes, fs, isRefIndex); bx != nil {
+		if err := prepareIndex(s.fs, xname, bx); err != nil {
+			return nil, err
 		}
-		brs, err := dx.Refs(fs...)
+		vlog.Printf("indexedUnitStore.Refs(%v): Found covering index %q (%v).", fs, xname, bx)
+		brs, err := bx.(refIndex).Refs(fs...)
 		if err != nil {
 			return nil, err
 		}
@@ -370,77 +369,56 @@ func (s *indexedUnitStore) Import(data graph.Output) error {
 
 	// TODO(sqs): parallelize
 
-	defOfs, err := s.fsUnitStore.writeDefs(&data)
-	if err != nil {
+	if _, err := s.fsUnitStore.writeDefs(data.Defs); err != nil {
 		return err
 	}
-	if err := s.writeDefIndexes(&data, defOfs); err != nil {
+	if _, err := s.fsUnitStore.writeRefs(data.Refs); err != nil {
 		return err
 	}
 
-	fbr, err := s.fsUnitStore.writeRefs(&data)
-	if err != nil {
-		return err
-	}
-	if err := s.writeRefIndexes(&data, fbr); err != nil {
-		return err
+	for name, x := range s.Indexes() {
+		if err := s.BuildIndex(name, x); err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-// writeDefIndexes builds every def index in s.indexes and writes them
-// to their backing files.
-func (s *indexedUnitStore) writeDefIndexes(data *graph.Output, ofs byteOffsets) error {
-	par := parallel.NewRun(runtime.GOMAXPROCS(0))
-	for _, x := range s.indexes {
-		if x, ok := x.(defIndex); ok {
-			if bx, ok := x.(graphIndexBuilder); ok {
-				par.Do(func() error {
-					if err := bx.Build(data, ofs); err != nil {
-						return err
-					}
-					if px, ok := x.(persistedIndex); ok {
-						if err := writeIndex(s.fs, px); err != nil {
-							return err
-						}
-					}
-					return nil
-				})
-			}
-		}
-	}
-	return par.Wait()
-}
+func (s *indexedUnitStore) Indexes() map[string]Index { return s.indexes }
 
-// writeRefIndexes builds every ref index in s.indexes and writes them
-// to their backing files.
-func (s *indexedUnitStore) writeRefIndexes(data *graph.Output, fbr fileByteRanges) error {
-	if len(s.indexes) == 0 {
-		return nil
-	}
-	par := parallel.NewRun(runtime.GOMAXPROCS(0))
-	for _, x := range s.indexes {
-		if x, ok := x.(refIndex); ok {
-			par.Do(func() error {
-				if err := x.Build(data, fbr); err != nil {
-					return err
-				}
-				if px, ok := x.(persistedIndex); ok {
-					if err := writeIndex(s.fs, px); err != nil {
-						return err
-					}
-				}
-				return nil
-			})
+func (s *indexedUnitStore) BuildIndex(name string, x Index) error {
+	// TODO(sqs): during import, we already have all of the data
+	// necessary to construct the index, so we should add a fast-path
+	// that doesn't require us to re-read all of the data from the fs.
+	switch x := x.(type) {
+	case defIndexBuilder:
+		defs, ofs, err := s.fsUnitStore.readDefs()
+		if err != nil {
+			return err
+		}
+		if err := x.Build(defs, ofs); err != nil {
+			return err
+		}
+	case refIndexBuilder:
+		refs, fbrs, err := s.fsUnitStore.readRefs()
+		if err != nil {
+			return err
+		}
+		if err := x.Build(refs, fbrs); err != nil {
+			return err
 		}
 	}
-	return par.Wait()
+
+	if x, ok := x.(persistedIndex); ok {
+		return writeIndex(s.fs, name, x)
+	}
+	return nil
 }
 
 // writeIndex calls x.Write with the index's backing file.
-func writeIndex(fs rwvfs.FileSystem, x persistedIndex) (err error) {
-	f, err := fs.Create(fmt.Sprintf(indexFilename, x.Name()))
+func writeIndex(fs rwvfs.FileSystem, name string, x persistedIndex) (err error) {
+	f, err := fs.Create(fmt.Sprintf(indexFilename, name))
 	if err != nil {
 		return err
 	}
@@ -453,13 +431,29 @@ func writeIndex(fs rwvfs.FileSystem, x persistedIndex) (err error) {
 	return x.Write(f)
 }
 
-// readIndex calls x.Read with the index's backing file.
-func readIndex(fs rwvfs.FileSystem, x persistedIndex) (err error) {
+// prepareIndex prepares an index to be used. If it is already Ready,
+// nothing happens. If it's not Ready and it's a persistedIndex,
+// prepareIndex calls readIndex(fs, name, x). Otherwise an
+// *errIndexNotReady is returned.
+func prepareIndex(fs rwvfs.FileSystem, name string, x Index) error {
 	if x.Ready() {
-		panic("x is already Ready; attempted to read it again")
+		return nil
 	}
+	if x, ok := x.(persistedIndex); ok {
+		return readIndex(fs, name, x)
+	}
+	return &errIndexNotReady{name: name}
+}
 
-	f, err := fs.Open(fmt.Sprintf(indexFilename, x.Name()))
+type errIndexNotReady struct {
+	name string
+}
+
+func (e *errIndexNotReady) Error() string { return fmt.Sprintf("index not ready: %s", e.name) }
+
+// readIndex calls x.Read with the index's backing file.
+func readIndex(fs rwvfs.FileSystem, name string, x persistedIndex) (err error) {
+	f, err := fs.Open(fmt.Sprintf(indexFilename, name))
 	if err != nil {
 		return err
 	}

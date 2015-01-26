@@ -39,7 +39,7 @@ func scopeTrees(filters []interface{}) ([]string, error) {
 
 // A treeStoreOpener opens the TreeStore for the specified tree.
 type treeStoreOpener interface {
-	openTreeStore(commitID string) (TreeStore, error)
+	openTreeStore(commitID string) TreeStore
 	openAllTreeStores() (map[string]TreeStore, error)
 }
 
@@ -57,11 +57,7 @@ func openTreeStores(o treeStoreOpener, filters interface{}) (map[string]TreeStor
 
 	tss := make(map[string]TreeStore, len(commitIDs))
 	for _, commitID := range commitIDs {
-		var err error
-		tss[commitID], err = o.openTreeStore(commitID)
-		if err != nil {
-			return nil, err
-		}
+		tss[commitID] = o.openTreeStore(commitID)
 	}
 	return tss, nil
 }
