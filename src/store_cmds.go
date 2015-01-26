@@ -51,8 +51,17 @@ func init() {
 
 	_, err = c.AddCommand("indexes",
 		"list indexes",
-		"The indexes command lists all of a store's indexes.",
+		"The indexes command lists all of a store's indexes that match the specified criteria.",
 		&storeIndexesCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = c.AddCommand("index",
+		"build indexes",
+		"The index command builds indexes that match the specified index criteria. Built indexes are printed to stdout.",
+		&storeIndexCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -255,28 +264,19 @@ func (c *StoreImportCmd) Execute(args []string) error {
 	return nil
 }
 
-type StoreIndexesCmd struct {
-	Repo     string `long:"repo" description:"only show indexes for this repo"`
-	CommitID string `long:"commit" description:"only show indexes for this commit ID"`
-	UnitType string `long:"unit-type" description:"only show indexes for this source unit type"`
-	Unit     string `long:"unit" description:"only show indexes for this source unit name"`
-	Name     string `long:"name" description:"only show indexes whose name contains this substring"`
-	Type     string `long:"type" description:"only show indexes whose Go type contains this substring"`
+type storeIndexCriteria struct {
+	Repo     string `long:"repo" description:"only indexes for this repo"`
+	CommitID string `long:"commit" description:"only indexes for this commit ID"`
+	UnitType string `long:"unit-type" description:"only indexes for this source unit type"`
+	Unit     string `long:"unit" description:"only indexes for this source unit name"`
+	Name     string `long:"name" description:"only indexes whose name contains this substring"`
+	Type     string `long:"type" description:"only indexes whose Go type contains this substring"`
 
-	Stale    bool `long:"stale" description:"only show stale indexes"`
-	NotStale bool `long:"not-stale" description:"only show non-stale indexes"`
-
-	Output string `short:"o" long:"output" description:"output format (text|json)" default:"text"`
+	Stale    bool `long:"stale" description:"only stale indexes"`
+	NotStale bool `long:"not-stale" description:"only non-stale indexes"`
 }
 
-var storeIndexesCmd StoreIndexesCmd
-
-func (c *StoreIndexesCmd) Execute(args []string) error {
-	s, err := storeCmd.store()
-	if err != nil {
-		return err
-	}
-
+func (c storeIndexCriteria) IndexCriteria() store.IndexCriteria {
 	crit := store.IndexCriteria{
 		Repo:     c.Repo,
 		CommitID: c.CommitID,
@@ -300,14 +300,26 @@ func (c *StoreIndexesCmd) Execute(args []string) error {
 			log.Fatal("must specify either both or neither of --unit-type and --unit (to filter by source unit)")
 		}
 	}
+	return crit
+}
 
+// doStoreIndexesCmd is invoked by both StoreIndexesCmd.Execute and
+// StoreBuildIndexesCmd.Execute.
+func doStoreIndexesCmd(crit store.IndexCriteria, opt storeIndexOptions, f func(interface{}, store.IndexCriteria, chan<- store.IndexStatus) ([]store.IndexStatus, error)) error {
+	s, err := storeCmd.store()
+	if err != nil {
+		return err
+	}
+
+	done := make(chan struct{})
 	indexChan := make(chan store.IndexStatus)
-	switch c.Output {
+	switch opt.Output {
 	case "json":
 		go func() {
 			for x := range indexChan {
 				PrintJSON(x, "")
 			}
+			done <- struct{}{}
 		}()
 	case "text":
 		_, isMultiRepo := s.(store.MultiRepoStore)
@@ -350,25 +362,56 @@ func (c *StoreIndexesCmd) Execute(args []string) error {
 				if x.Error != "" {
 					fmt.Printf("(ERROR: %s) ", x.Error)
 				}
+				if x.BuildDuration != 0 {
+					fmt.Printf("- build took %s ", x.BuildDuration)
+				}
 				fmt.Println()
 
 				lastRepo = x.Repo
 				lastCommitID = x.CommitID
 				lastUnit = x.Unit
 			}
+			done <- struct{}{}
 		}()
 	default:
-		return fmt.Errorf("unexpected --output value: %q", c.Output)
+		return fmt.Errorf("unexpected --output value: %q", opt.Output)
 	}
 
-	_, err = store.Indexes(s, crit, indexChan)
+	_, err = f(s, crit, indexChan)
 	defer func() {
 		close(indexChan)
+		<-done
 	}()
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+type storeIndexOptions struct {
+	Output string `short:"o" long:"output" description:"output format (text|json)" default:"text"`
+}
+
+type StoreIndexesCmd struct {
+	storeIndexCriteria
+	storeIndexOptions
+}
+
+var storeIndexesCmd StoreIndexesCmd
+
+func (c *StoreIndexesCmd) Execute(args []string) error {
+	return doStoreIndexesCmd(c.IndexCriteria(), c.storeIndexOptions, store.Indexes)
+}
+
+type StoreIndexCmd struct {
+	storeIndexCriteria
+	storeIndexOptions
+}
+
+var storeIndexCmd StoreIndexCmd
+
+func (c *StoreIndexCmd) Execute(args []string) error {
+	return doStoreIndexesCmd(c.IndexCriteria(), c.storeIndexOptions, store.BuildIndexes)
 }
 
 type StoreReposCmd struct {
