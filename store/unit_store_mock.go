@@ -3,13 +3,8 @@ package store
 import "sourcegraph.com/sourcegraph/srclib/graph"
 
 type MockUnitStore struct {
-	Def_  func(graph.DefKey) (*graph.Def, error)
 	Defs_ func(...DefFilter) ([]*graph.Def, error)
 	Refs_ func(...RefFilter) ([]*graph.Ref, error)
-}
-
-func (m MockUnitStore) Def(key graph.DefKey) (*graph.Def, error) {
-	return m.Def_(key)
 }
 
 func (m MockUnitStore) Defs(f ...DefFilter) ([]*graph.Def, error) {

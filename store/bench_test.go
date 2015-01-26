@@ -119,6 +119,7 @@ func benchmarkDef(b *testing.B, rs RepoStoreImporter, numDefs int) {
 	insertDefs(b, rs, numDefs)
 
 	defKey := graph.DefKey{
+		Repo:     "r", // dummy, must be filled in
 		CommitID: fmt.Sprintf("commit%d", *numVersions/2),
 		Unit:     fmt.Sprintf("unit%d", *numUnits/2),
 		UnitType: fmt.Sprintf("type%d", *numUnits/2),
@@ -131,13 +132,14 @@ func benchmarkDef(b *testing.B, rs RepoStoreImporter, numDefs int) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		def, err := rs.Def(defKey)
+		defs, err := rs.Defs(ByDefKey(defKey))
 		if err != nil {
 			b.Fatal(err)
 		}
-		if def == nil {
+		if len(defs) == 0 {
 			b.Fatalf("not found: %v", defKey)
 		}
+		def := defs[0]
 		if checkCorrectness {
 			if def.DefKey != defKey {
 				b.Fatalf("got DefKey %v, want %v", def.DefKey, defKey)

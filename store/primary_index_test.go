@@ -3,18 +3,18 @@ package store
 import "testing"
 
 func TestDefPathIndex_Covers(t *testing.T) {
-	dx := &defPathIndex{}
-	c := dx.Covers([]DefFilter{ByDefPath("p")})
+	x := &defPathIndex{}
+	c := x.Covers([]DefFilter{ByDefPath("p")})
 	if want := 1; c != want {
 		t.Errorf("got coverage %d, want %d", c, want)
 	}
 
-	c = dx.Covers([]DefFilter{})
+	c = x.Covers([]DefFilter{})
 	if want := 0; c != want {
 		t.Errorf("got coverage %d, want %d", c, want)
 	}
 
-	c = dx.Covers([]DefFilter{ByRepo("r")})
+	c = x.Covers([]DefFilter{ByRepo("r")})
 	if want := 0; c != want {
 		t.Errorf("got coverage %d, want %d", c, want)
 	}

@@ -1,62 +1,81 @@
 package store
 
-import "testing"
+import (
+	"testing"
+
+	"sourcegraph.com/sourcegraph/srclib/unit"
+)
 
 type mockDefIndex struct {
-	Covers_ func([]DefFilter) int
+	Covers_ func(interface{}) int
 	Defs_   func(...DefFilter) (byteOffsets, error)
-	name    string
 }
 
-func (m mockDefIndex) Covers(fs []DefFilter) int                 { return m.Covers_(fs) }
+func (m mockDefIndex) Covers(fs interface{}) int                 { return m.Covers_(fs) }
 func (m mockDefIndex) Defs(fs ...DefFilter) (byteOffsets, error) { return m.Defs_(fs...) }
+func (m mockDefIndex) Ready() bool                               { return true }
 
-func TestBestCoverageDefIndex(t *testing.T) {
+type mockUnitIndex struct {
+	Covers_ func(interface{}) int
+	Units_  func(...UnitFilter) ([]unit.ID2, error)
+}
+
+func (m mockUnitIndex) Covers(fs interface{}) int                  { return m.Covers_(fs) }
+func (m mockUnitIndex) Units(fs ...UnitFilter) ([]unit.ID2, error) { return m.Units_(fs...) }
+func (m mockUnitIndex) Ready() bool                                { return true }
+
+func TestBestCoverageIndex(t *testing.T) {
 	tests := map[string]struct {
-		indexes           []interface{}
-		wantBestIndexName string
+		indexes      map[string]Index
+		test         func(interface{}) bool
+		wantBestName string
 	}{
 		"empty indexes": {
-			indexes:           []interface{}{},
-			wantBestIndexName: "",
+			indexes:      map[string]Index{},
+			wantBestName: "",
 		},
 		"coverage 0": {
-			indexes:           []interface{}{mockDefIndex{Covers_: func([]DefFilter) int { return 0 }}},
-			wantBestIndexName: "",
+			indexes:      map[string]Index{"a": mockDefIndex{Covers_: func(interface{}) int { return 0 }}},
+			wantBestName: "",
 		},
 		"coverage 1": {
-			indexes: []interface{}{
-				mockDefIndex{
-					Covers_: func([]DefFilter) int { return 1 },
-					name:    "1",
+			indexes: map[string]Index{
+				"a": mockDefIndex{
+					Covers_: func(interface{}) int { return 1 },
 				},
 			},
-			wantBestIndexName: "1",
+			wantBestName: "a",
 		},
 		"choose index with highest coverage": {
-			indexes: []interface{}{
-				mockDefIndex{
-					Covers_: func([]DefFilter) int { return 2 },
-					name:    "2",
+			indexes: map[string]Index{
+				"a": mockDefIndex{
+					Covers_: func(interface{}) int { return 1 },
 				},
-				mockDefIndex{
-					Covers_: func([]DefFilter) int { return 1 },
-					name:    "1",
+				"b": mockDefIndex{
+					Covers_: func(interface{}) int { return 2 },
 				},
 			},
-			wantBestIndexName: "2",
+			wantBestName: "b",
+		},
+		"choose index of specified type": {
+			indexes: map[string]Index{
+				"a": mockDefIndex{
+					Covers_: func(interface{}) int { return 2 },
+				},
+				"b": mockUnitIndex{
+					Covers_: func(interface{}) int { return 1 },
+				},
+			},
+			test:         func(x interface{}) bool { _, ok := x.(unitIndex); return ok },
+			wantBestName: "b",
 		},
 	}
 	for label, test := range tests {
 		// Filters don't matter for this test since we just call
 		// (defIndex).Covers.
-		dx := bestCoverageDefIndex(test.indexes, nil)
-		var name string
-		if dx != nil {
-			name = dx.(mockDefIndex).name
-		}
-		if name != test.wantBestIndexName {
-			t.Errorf("%s: got best index %q, want %q", label, name, test.wantBestIndexName)
+		name, _ := bestCoverageIndex(test.indexes, nil, test.test)
+		if name != test.wantBestName {
+			t.Errorf("%s: got best index %q, want %q", label, name, test.wantBestName)
 		}
 	}
 }

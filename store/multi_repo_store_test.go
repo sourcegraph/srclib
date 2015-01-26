@@ -24,11 +24,8 @@ func testMultiRepoStore(t *testing.T, newFn func() MultiRepoStoreImporter) {
 	testMultiRepoStore_uninitialized(t, &labeledMultiRepoStoreImporter{newFn(), "uninitialized"})
 	testMultiRepoStore_Import_empty(t, &labeledMultiRepoStoreImporter{newFn(), "import empty"})
 	testMultiRepoStore_Import(t, &labeledMultiRepoStoreImporter{newFn(), "import"})
-	testMultiRepoStore_Repo(t, &labeledMultiRepoStoreImporter{newFn(), "repo"})
 	testMultiRepoStore_Repos(t, &labeledMultiRepoStoreImporter{newFn(), "repos"})
-	testMultiRepoStore_Version(t, &labeledMultiRepoStoreImporter{newFn(), "version"})
 	testMultiRepoStore_Versions(t, &labeledMultiRepoStoreImporter{newFn(), "versions"})
-	testMultiRepoStore_Unit(t, &labeledMultiRepoStoreImporter{newFn(), "unit"})
 	testMultiRepoStore_Units(t, &labeledMultiRepoStoreImporter{newFn(), "units"})
 	testMultiRepoStore_Def(t, &labeledMultiRepoStoreImporter{newFn(), "def"})
 	testMultiRepoStore_Defs(t, &labeledMultiRepoStoreImporter{newFn(), "defs"})
@@ -39,14 +36,6 @@ func testMultiRepoStore(t *testing.T, newFn func() MultiRepoStoreImporter) {
 }
 
 func testMultiRepoStore_uninitialized(t *testing.T, mrs MultiRepoStoreImporter) {
-	version, err := mrs.Version(VersionKey{Repo: "r", CommitID: "c"})
-	if err == nil {
-		t.Errorf("%s: Version: got nil err", mrs)
-	}
-	if version != nil {
-		t.Errorf("%s: Version: got version %v, want nil", mrs, version)
-	}
-
 	versions, err := mrs.Versions()
 	if err == nil {
 		t.Errorf("%s: Versions(): got nil err", mrs)
@@ -88,23 +77,6 @@ func testMultiRepoStore_Import(t *testing.T, mrs MultiRepoStoreImporter) {
 	}
 }
 
-func testMultiRepoStore_Repo(t *testing.T, mrs MultiRepoStoreImporter) {
-	unit := &unit.SourceUnit{Type: "t", Name: "u"}
-	if err := mrs.Import("r", "c", unit, graph.Output{}); err != nil {
-		t.Errorf("%s: Import(r, c, %v, empty data): %s", mrs, unit, err)
-	}
-
-	want := "r"
-
-	repo, err := mrs.Repo("r")
-	if err != nil {
-		t.Errorf("%s: Repo(r): %s", mrs, err)
-	}
-	if !reflect.DeepEqual(repo, want) {
-		t.Errorf("%s: Repo(r): got %v, want %v", mrs, repo, want)
-	}
-}
-
 func testMultiRepoStore_Repos(t *testing.T, mrs MultiRepoStoreImporter) {
 	for _, repo := range []string{"r1", "r2"} {
 		unit := &unit.SourceUnit{Type: "t1", Name: "u1"}
@@ -123,6 +95,14 @@ func testMultiRepoStore_Repos(t *testing.T, mrs MultiRepoStoreImporter) {
 	sort.Strings(want)
 	if !reflect.DeepEqual(repos, want) {
 		t.Errorf("%s: Repos(): got %v, want %v", mrs, repos, want)
+	}
+
+	repos2, err := mrs.Repos(ByRepo("r1"))
+	if err != nil {
+		t.Fatalf("%s: Repos(ByRepo r1): %s", mrs, err)
+	}
+	if want := []string{"r1"}; !reflect.DeepEqual(repos2, want) {
+		t.Errorf("%s: Repos(ByRepo r1): got %v, want %v", mrs, repos2, want)
 	}
 }
 
@@ -153,15 +133,6 @@ func TestFSMultiRepoStore_Repos_customPathFuncs(t *testing.T) {
 		}
 
 		for _, repo := range allRepos {
-			repo2, err := mrs.Repo(repo)
-			if err != nil {
-				t.Errorf("%s: Repo(%s): %s", label, repo, err)
-				continue
-			}
-			if repo2 != repo {
-				t.Errorf("%s: Repo(%s): got %v, want %v", label, repo, repo2, repo)
-			}
-
 			repos, err := mrs.Repos(ByRepo(repo))
 			if err != nil {
 				t.Errorf("%s: Repos(ByRepo %s): %s", label, repo, err)
@@ -171,23 +142,6 @@ func TestFSMultiRepoStore_Repos_customPathFuncs(t *testing.T) {
 				t.Errorf("%s: Repos(ByRepo %s): got %v, want %v", label, repo, repos, want)
 			}
 		}
-	}
-}
-
-func testMultiRepoStore_Version(t *testing.T, mrs MultiRepoStoreImporter) {
-	unit := &unit.SourceUnit{Type: "t", Name: "u"}
-	if err := mrs.Import("r", "c", unit, graph.Output{}); err != nil {
-		t.Errorf("%s: Import(c, %v, empty data): %s", mrs, unit, err)
-	}
-
-	want := &Version{Repo: "r", CommitID: "c"}
-
-	version, err := mrs.Version(VersionKey{Repo: "r", CommitID: "c"})
-	if err != nil {
-		t.Errorf("%s: Version(c): %s", mrs, err)
-	}
-	if !reflect.DeepEqual(version, want) {
-		t.Errorf("%s: Version(c): got %v, want %v", mrs, version, want)
 	}
 }
 
@@ -208,23 +162,13 @@ func testMultiRepoStore_Versions(t *testing.T, mrs MultiRepoStoreImporter) {
 	if !reflect.DeepEqual(versions, want) {
 		t.Errorf("%s: Versions(): got %v, want %v", mrs, versions, want)
 	}
-}
 
-func testMultiRepoStore_Unit(t *testing.T, mrs MultiRepoStoreImporter) {
-	u := &unit.SourceUnit{Type: "t", Name: "u"}
-	if err := mrs.Import("r", "c", u, graph.Output{}); err != nil {
-		t.Errorf("%s: Import(c, %v, empty data): %s", mrs, u, err)
-	}
-
-	want := &unit.SourceUnit{Repo: "r", CommitID: "c", Type: "t", Name: "u"}
-
-	key := unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"}
-	unit, err := mrs.Unit(key)
+	versions2, err := mrs.Versions(ByCommitID("c2"))
 	if err != nil {
-		t.Errorf("%s: Unit(%v): %s", mrs, key, err)
+		t.Errorf("%s: Versionss(ByCommitID c2): %s", mrs, err)
 	}
-	if !reflect.DeepEqual(unit, want) {
-		t.Errorf("%s: Unit(%v): got %v, want %v", mrs, key, unit, want)
+	if want := []*Version{{Repo: "r", CommitID: "c2"}}; !reflect.DeepEqual(versions2, want) {
+		t.Errorf("%s: Versions(ByCommitID c2): got %v, want %v", mrs, versions2, want)
 	}
 }
 
@@ -251,6 +195,14 @@ func testMultiRepoStore_Units(t *testing.T, mrs MultiRepoStoreImporter) {
 	if !reflect.DeepEqual(units, want) {
 		t.Errorf("%s: Units(): got %v, want %v", mrs, units, want)
 	}
+
+	units2, err := mrs.Units(ByUnits(unit.ID2{Type: "t2", Name: "u2"}))
+	if err != nil {
+		t.Errorf("%s: Units(t2 u2): %s", mrs, err)
+	}
+	if want := []*unit.SourceUnit{{Repo: "r", CommitID: "c", Type: "t2", Name: "u2"}}; !reflect.DeepEqual(units2, want) {
+		t.Errorf("%s: Units(t2 u2): got %v, want %v", mrs, units2, want)
+	}
 }
 
 func testMultiRepoStore_Def(t *testing.T, mrs MultiRepoStoreImporter) {
@@ -267,48 +219,26 @@ func testMultiRepoStore_Def(t *testing.T, mrs MultiRepoStoreImporter) {
 		t.Errorf("%s: Import(c, %v, data): %s", mrs, unit, err)
 	}
 
-	def, err := mrs.Def(graph.DefKey{Path: "p"})
-	if !isInvalidKey(err) {
-		t.Errorf("%s: Def(no unit): got err %v, want InvalidKeyError", mrs, err)
+	want := []*graph.Def{
+		{
+			DefKey: graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"},
+			Name:   "n",
+		},
 	}
-	if def != nil {
-		t.Errorf("%s: Def: got def %v, want nil", mrs, def)
-	}
-
-	def, err = mrs.Def(graph.DefKey{UnitType: "t", Unit: "u", Path: "p"})
-	if !isInvalidKey(err) {
-		t.Errorf("%s: Def(no commit): got err %v, want InvalidKeyError", mrs, err)
-	}
-	if def != nil {
-		t.Errorf("%s: Def: got def %v, want nil", mrs, def)
-	}
-
-	def, err = mrs.Def(graph.DefKey{CommitID: "c", UnitType: "t", Unit: "u", Path: "p"})
-	if !isInvalidKey(err) {
-		t.Errorf("%s: Def(no repo): got err %v, want InvalidKeyError", mrs, err)
-	}
-	if def != nil {
-		t.Errorf("%s: Def: got def %v, want nil", mrs, def)
-	}
-
-	want := &graph.Def{
-		DefKey: graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"},
-		Name:   "n",
-	}
-	def, err = mrs.Def(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"})
+	defs, err := mrs.Defs(ByDefKey(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"}))
 	if err != nil {
-		t.Errorf("%s: Def: %s", mrs, err)
+		t.Errorf("%s: Defs: %s", mrs, err)
 	}
-	if !reflect.DeepEqual(def, want) {
-		t.Errorf("%s: Def: got def %v, want %v", mrs, def, want)
+	if !reflect.DeepEqual(defs, want) {
+		t.Errorf("%s: Defs: got defs %v, want %v", mrs, defs, want)
 	}
 
-	def2, err := mrs.Def(graph.DefKey{Repo: "r2", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"})
-	if !IsNotExist(err) {
-		t.Errorf("%s: Def: got err %v, want IsNotExist-satisfying err", mrs, err)
+	defs2, err := mrs.Defs(ByDefKey(graph.DefKey{Repo: "r2", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"}))
+	if err != nil {
+		t.Errorf("%s: Defs: %s", mrs, err)
 	}
-	if def2 != nil {
-		t.Errorf("%s: Def: got def %v, want nil", mrs, def2)
+	if len(defs2) != 0 {
+		t.Errorf("%s: Defs: got defs %v, want none", mrs, defs2)
 	}
 }
 

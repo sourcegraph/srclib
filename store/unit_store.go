@@ -1,17 +1,10 @@
 package store
 
-import (
-	"sourcegraph.com/sourcegraph/srclib/graph"
-	"sourcegraph.com/sourcegraph/srclib/unit"
-)
+import "sourcegraph.com/sourcegraph/srclib/graph"
 
 // A UnitStore stores and accesses srclib build data for a single
 // source unit.
 type UnitStore interface {
-	// Def gets a single def by its key. If no such def exists, an
-	// error satisfying IsNotExist is returned.
-	Def(graph.DefKey) (*graph.Def, error)
-
 	// Defs returns all defs that match the filter.
 	Defs(...DefFilter) ([]*graph.Def, error)
 
@@ -46,37 +39,6 @@ type unitStores struct {
 
 var _ UnitStore = (*unitStores)(nil)
 
-func (s unitStores) Def(key graph.DefKey) (*graph.Def, error) {
-	if err := checkDefKeyValidForTreeStore(key); err != nil {
-		return nil, err
-	}
-
-	uss, err := openUnitStores(s.opener, ByUnits(unit.ID2{Type: key.UnitType, Name: key.Unit}))
-	if err != nil {
-		if isStoreNotExist(err) {
-			return nil, errDefNotExist
-		}
-		return nil, err
-	}
-
-	for u, us := range uss {
-		if key.UnitType != u.Type || key.Unit != u.Name {
-			continue
-		}
-		def, err := us.Def(key)
-		if err != nil {
-			if IsNotExist(err) || isStoreNotExist(err) {
-				continue
-			}
-			return nil, err
-		}
-		def.UnitType = u.Type
-		def.Unit = u.Name
-		return def, nil
-	}
-	return nil, errDefNotExist
-}
-
 func (s unitStores) Defs(f ...DefFilter) ([]*graph.Def, error) {
 	uss, err := openUnitStores(s.opener, f)
 	if err != nil {
@@ -85,8 +47,12 @@ func (s unitStores) Defs(f ...DefFilter) ([]*graph.Def, error) {
 
 	var allDefs []*graph.Def
 	for u, us := range uss {
+		if us == nil {
+			continue
+		}
+
 		defs, err := us.Defs(f...)
-		if err != nil {
+		if err != nil && !isStoreNotExist(err) {
 			return nil, err
 		}
 		for _, def := range defs {
@@ -109,10 +75,14 @@ func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 	c_unitStores_Refs_last_numUnitsQueried = 0
 	var allRefs []*graph.Ref
 	for u, us := range uss {
+		if us == nil {
+			continue
+		}
+
 		c_unitStores_Refs_last_numUnitsQueried++
 		setImpliedUnit(f, u)
 		refs, err := us.Refs(f...)
-		if err != nil {
+		if err != nil && !isStoreNotExist(err) {
 			return nil, err
 		}
 		for _, ref := range refs {
@@ -164,13 +134,4 @@ func cleanForImport(data *graph.Output, repo, unitType, unit string) {
 		ann.Repo = ""
 		ann.CommitID = ""
 	}
-}
-
-// checkDefKeyValidForTreeStore returns an *InvalidKeyError if the def
-// key is underspecified for use in (UnitStore).Def.
-func checkDefKeyValidForUnitStore(key graph.DefKey) error {
-	if key.Path == "" {
-		return &InvalidKeyError{"empty DefKey.Path"}
-	}
-	return nil
 }

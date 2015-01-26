@@ -12,10 +12,6 @@ import (
 // called.
 func mockNeverCalledRepoStore(t *testing.T) RepoStore {
 	return MockRepoStore{
-		Version_: func(key VersionKey) (*Version, error) {
-			t.Fatalf("(RepoStore).Version called, but wanted it not to be called (arg key was %+v)", key)
-			return nil, nil
-		},
 		Versions_: func(f ...VersionFilter) ([]*Version, error) {
 			t.Fatalf("(RepoStore).Versions called, but wanted it not to be called (arg f was %v)", f)
 			return nil, nil
@@ -26,21 +22,14 @@ func mockNeverCalledRepoStore(t *testing.T) RepoStore {
 
 type emptyRepoStore struct{ emptyTreeStore }
 
-func (m emptyRepoStore) Version(key VersionKey) (*Version, error) {
-	return nil, errVersionNotExist
-}
-
 func (m emptyRepoStore) Versions(f ...VersionFilter) ([]*Version, error) {
 	return []*Version{}, nil
 }
 
 type mapRepoStoreOpener map[string]RepoStore
 
-func (m mapRepoStoreOpener) openRepoStore(repo string) (RepoStore, error) {
-	if rs, present := m[repo]; present {
-		return rs, nil
-	}
-	return nil, errRepoNoInit
+func (m mapRepoStoreOpener) openRepoStore(repo string) RepoStore {
+	return m[repo]
 }
 func (m mapRepoStoreOpener) openAllRepoStores() (map[string]RepoStore, error) { return m, nil }
 
@@ -50,7 +39,7 @@ type recordingRepoStoreOpener struct {
 	repoStoreOpener
 }
 
-func (m *recordingRepoStoreOpener) openRepoStore(repo string) (RepoStore, error) {
+func (m *recordingRepoStoreOpener) openRepoStore(repo string) RepoStore {
 	if m.opened == nil {
 		m.opened = map[string]int{}
 	}
@@ -73,8 +62,10 @@ func TestRepoStores_filterByRepo(t *testing.T) {
 	}}
 	rss := repoStores{opener: o}
 
-	if _, err := rss.Def(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"}); !IsNotExist(err) {
-		t.Errorf("got err %v, want IsNotExist-satisfying", err)
+	if defs, err := rss.Defs(ByDefKey(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"})); err != nil {
+		t.Fatal(err)
+	} else if len(defs) != 0 {
+		t.Errorf("got defs %v, want none", defs)
 	}
 	if want := map[string]int{"r": 1}; !reflect.DeepEqual(o.opened, want) {
 		t.Errorf("got opened %v, want %v", o.opened, want)
@@ -93,8 +84,10 @@ func TestRepoStores_filterByRepo(t *testing.T) {
 		t.Errorf("got refs %v, want none", refs)
 	}
 
-	if _, err := rss.Unit(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"}); !IsNotExist(err) {
-		t.Errorf("got err %v, want IsNotExist-satisfying", err)
+	if units, err := rss.Units(ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"})); err != nil {
+		t.Fatal(err)
+	} else if len(units) != 0 {
+		t.Errorf("got units %v, want none", units)
 	}
 
 	if units, err := rss.Units(ByRepo("r")); err != nil {
@@ -103,8 +96,10 @@ func TestRepoStores_filterByRepo(t *testing.T) {
 		t.Errorf("got units %v, want none", units)
 	}
 
-	if _, err := rss.Version(VersionKey{Repo: "r", CommitID: "c"}); !IsNotExist(err) {
-		t.Errorf("got err %v, want IsNotExist-satisfying", err)
+	if versions, err := rss.Versions(ByRepo("r"), ByCommitID("c")); err != nil {
+		t.Fatal(err)
+	} else if len(versions) != 0 {
+		t.Errorf("got versions %v, want none", versions)
 	}
 
 	if versions, err := rss.Versions(ByRepo("r")); err != nil {

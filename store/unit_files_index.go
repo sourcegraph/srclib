@@ -20,6 +20,7 @@ type unitFilesIndex struct {
 }
 
 var _ interface {
+	Index
 	persistedIndex
 	unitIndexBuilder
 	unitIndex
@@ -53,9 +54,9 @@ func (x *unitFilesIndex) getByPath(path string) ([]unit.ID2, bool, error) {
 }
 
 // Covers implements unitIndex.
-func (x *unitFilesIndex) Covers(fs []UnitFilter) int {
+func (x *unitFilesIndex) Covers(filters interface{}) int {
 	cov := 0
-	for _, f := range fs {
+	for _, f := range storeFilters(filters) {
 		if _, ok := f.(ByFilesFilter); ok {
 			cov++
 		}
@@ -179,6 +180,3 @@ func (x *unitFilesIndex) Read(r io.Reader) error {
 
 // Ready implements persistedIndex.
 func (x *unitFilesIndex) Ready() bool { return x.ready }
-
-// Name implements persistedIndex.
-func (x *unitFilesIndex) Name() string { return "file" }

@@ -50,7 +50,7 @@ func scopeUnits(filters []interface{}) ([]unit.ID2, error) {
 // A unitStoreOpener opens the UnitStore for the specified source
 // unit.
 type unitStoreOpener interface {
-	openUnitStore(unit.ID2) (UnitStore, error)
+	openUnitStore(unit.ID2) UnitStore
 	openAllUnitStores() (map[unit.ID2]UnitStore, error)
 }
 
@@ -68,11 +68,7 @@ func openUnitStores(o unitStoreOpener, filters interface{}) (map[unit.ID2]UnitSt
 
 	uss := make(map[unit.ID2]UnitStore, len(unitIDs))
 	for _, u := range unitIDs {
-		var err error
-		uss[u], err = o.openUnitStore(u)
-		if err != nil {
-			return nil, err
-		}
+		uss[u] = o.openUnitStore(u)
 	}
 	return uss, nil
 }

@@ -1,6 +1,7 @@
 package store
 
 import (
+	"encoding/binary"
 	"encoding/json"
 	"io"
 )
@@ -20,43 +21,26 @@ type codec interface {
 	Decode(r io.Reader, v interface{}) error
 }
 
-// A statefulCodec is a codec whose decoder reads beyond the most
-// recently decoded object. These decoders must store state (the
-// buffered portion of the byte stream).
-type statefulCodec interface {
-	NewDecoder(io.Reader) decoder
-}
-
-type decoder interface {
-	Decode(interface{}) error
-}
-
-func newDecoder(c codec, r io.Reader) decoder {
-	if sc, ok := c.(statefulCodec); ok {
-		return sc.NewDecoder(r)
-	}
-	return unstatefulDecoder{c, r}
-}
-
-type unstatefulDecoder struct {
-	c codec
-	r io.Reader
-}
-
-func (d unstatefulDecoder) Decode(v interface{}) error { return d.c.Decode(d.r, v) }
-
 type JSONCodec struct{}
 
 func (JSONCodec) Encode(w io.Writer, v interface{}) error {
-	return json.NewEncoder(w).Encode(v)
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	if err := binary.Write(w, binary.LittleEndian, int64(len(b))); err != nil {
+		return err
+	}
+	if _, err := w.Write(b); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (JSONCodec) Decode(r io.Reader, v interface{}) error {
-	return json.NewDecoder(r).Decode(v)
+	var n int64
+	if err := binary.Read(r, binary.LittleEndian, &n); err != nil {
+		return err
+	}
+	return json.NewDecoder(io.LimitReader(r, n)).Decode(v)
 }
-
-func (JSONCodec) NewDecoder(r io.Reader) decoder {
-	return json.NewDecoder(r)
-}
-
-var _ statefulCodec = (*JSONCodec)(nil)

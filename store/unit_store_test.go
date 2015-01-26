@@ -35,14 +35,6 @@ func testUnitStore(t *testing.T, newFn func() unitStoreImporter) {
 }
 
 func testUnitStore_uninitialized(t *testing.T, us UnitStore) {
-	def, err := us.Def(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"})
-	if err == nil {
-		t.Errorf("%s: Def: got nil err", us)
-	}
-	if def != nil {
-		t.Errorf("%s: Def: got def %v, want nil", us, def)
-	}
-
 	defs, err := us.Defs()
 	if err == nil {
 		t.Errorf("%s: Defs(): got nil err", us)
@@ -61,14 +53,6 @@ func testUnitStore_uninitialized(t *testing.T, us UnitStore) {
 }
 
 func testUnitStore_empty(t *testing.T, us UnitStore) {
-	def, err := us.Def(graph.DefKey{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u", Path: "p"})
-	if !IsNotExist(err) {
-		t.Errorf("%s: Def: got err %v, want IsNotExist-satisfying err", us, err)
-	}
-	if def != nil {
-		t.Errorf("%s: Def: got def %v, want nil", us, def)
-	}
-
 	defs, err := us.Defs()
 	if err != nil {
 		t.Errorf("%s: Defs(): %s", us, err)
@@ -132,20 +116,20 @@ func testUnitStore_Def(t *testing.T, us unitStoreImporter) {
 		t.Errorf("%s: Import(data): %s", us, err)
 	}
 
-	def, err := us.Def(graph.DefKey{Path: "p"})
+	defs, err := us.Defs(ByDefPath("p"))
 	if err != nil {
-		t.Errorf("%s: Def: %s", us, err)
+		t.Errorf("%s: Defs: %s", us, err)
 	}
-	if want := data.Defs[0]; !reflect.DeepEqual(def, want) {
-		t.Errorf("%s: Def: got def %v, want %v", us, def, want)
+	if want := data.Defs; !reflect.DeepEqual(defs, want) {
+		t.Errorf("%s: Defs: got def %v, want %v", us, defs, want)
 	}
 
-	def2, err := us.Def(graph.DefKey{Path: "p2"})
-	if !IsNotExist(err) {
-		t.Errorf("%s: Def: got err %v, want IsNotExist-satisfying err", us, err)
+	defs, err = us.Defs(ByDefPath("p2"))
+	if err != nil {
+		t.Errorf("%s: Defs: %s", us, err)
 	}
-	if def2 != nil {
-		t.Errorf("%s: Def: got def %v, want nil", us, def2)
+	if len(defs) != 0 {
+		t.Errorf("%s: Defs: got defs %v, want none", us, defs)
 	}
 }
 

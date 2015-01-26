@@ -663,7 +663,12 @@ func (l *limiter) SelectDef(def *graph.Def) bool {
 	return false
 }
 
+// storeFilters converts from slice-of-filter-type (e.g., []DefFilter,
+// []UnitFilter) to []interface{}. It enables us to write generic
+// functions that operate on any type of filter list without having
+// duplicate verbose conversion code.
 func storeFilters(anyFilters interface{}) []interface{} {
+	// Optimized special cases for known filter types.
 	switch o := anyFilters.(type) {
 	case DefFilter:
 		return []interface{}{o}

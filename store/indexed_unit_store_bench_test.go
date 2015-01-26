@@ -66,10 +66,14 @@ func benchmarkUnitStore_Def(b *testing.B, us UnitStoreImporter, numDefs int) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		def, err := us.Def(defKey)
+		defs, err := us.Defs(ByDefPath(defKey.Path))
 		if err != nil {
 			b.Fatal(err)
 		}
+		if len(defs) == 0 {
+			b.Fatalf("empty defs")
+		}
+		def := defs[0]
 		if def.Path != defKey.Path {
 			b.Fatalf("def paths do not match: got %q, want %q", def.Path, defKey.Path)
 		}

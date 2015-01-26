@@ -14,8 +14,9 @@ type defPathIndex struct {
 }
 
 var _ interface {
+	Index
 	persistedIndex
-	graphIndexBuilder
+	defIndexBuilder
 	defIndex
 } = (*defPathIndex)(nil)
 
@@ -34,14 +35,10 @@ func (x *defPathIndex) getByPath(defPath string) (int64, bool) {
 	return ofs, true
 }
 
-func (x *defPathIndex) Def(key graph.DefKey) (int64, bool) {
-	return x.getByPath(key.Path)
-}
-
 // Covers implements defIndex.
-func (x *defPathIndex) Covers(fs []DefFilter) int {
+func (x *defPathIndex) Covers(filters interface{}) int {
 	cov := 0
-	for _, f := range fs {
+	for _, f := range storeFilters(filters) {
 		if _, ok := f.(ByDefPathFilter); ok {
 			cov++
 		}
@@ -64,9 +61,9 @@ func (x *defPathIndex) Defs(f ...DefFilter) (byteOffsets, error) {
 }
 
 // Build implements defIndexBuilder.
-func (x *defPathIndex) Build(data *graph.Output, ofs byteOffsets) error {
+func (x *defPathIndex) Build(defs []*graph.Def, ofs byteOffsets) error {
 	b := mph.Builder()
-	for i, def := range data.Defs {
+	for i, def := range defs {
 		b.Add([]byte(def.Path), []byte(strconv.FormatInt(ofs[i], 36)))
 	}
 	h, err := b.Build()
@@ -96,6 +93,3 @@ func (x *defPathIndex) Read(r io.Reader) error {
 
 // Ready implements persistedIndex.
 func (x *defPathIndex) Ready() bool { return x.ready }
-
-// Name implements persistedIndex.
-func (x *defPathIndex) Name() string { return "path" }
