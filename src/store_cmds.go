@@ -49,6 +49,15 @@ func init() {
 	setDefaultRepoURIOpt(importC)
 	setDefaultCommitIDOpt(importC)
 
+	_, err = c.AddCommand("indexes",
+		"list indexes",
+		"The indexes command lists all of a store's indexes.",
+		&storeIndexesCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	_, err = c.AddCommand("repos",
 		"list repos",
 		"The repos command lists all repos that match a filter.",
@@ -243,6 +252,112 @@ func (c *StoreImportCmd) Execute(args []string) error {
 		}
 	}
 
+	return nil
+}
+
+type StoreIndexesCmd struct {
+	Repo     string `long:"repo" description:"only show indexes for this repo"`
+	CommitID string `long:"commit" description:"only show indexes for this commit ID"`
+	UnitType string `long:"unit-type" description:"only show indexes for this source unit type"`
+	Unit     string `long:"unit" description:"only show indexes for this source unit name"`
+	Name     string `long:"name" description:"only show indexes whose name contains this substring"`
+	Type     string `long:"type" description:"only show indexes whose Go type contains this substring"`
+
+	Stale    bool `long:"stale" description:"only show stale indexes"`
+	NotStale bool `long:"not-stale" description:"only show non-stale indexes"`
+
+	Output string `short:"o" long:"output" description:"output format (text|json)" default:"text"`
+}
+
+var storeIndexesCmd StoreIndexesCmd
+
+func (c *StoreIndexesCmd) Execute(args []string) error {
+	s, err := storeCmd.store()
+	if err != nil {
+		return err
+	}
+
+	crit := store.IndexCriteria{
+		Repo:     c.Repo,
+		CommitID: c.CommitID,
+		Name:     c.Name,
+		Type:     c.Type,
+	}
+	if c.Stale && c.NotStale {
+		log.Fatal("must specify exactly one of --stale and --not-stale")
+	}
+	if c.Stale {
+		t := true
+		crit.Stale = &t
+	}
+	if c.NotStale {
+		f := false
+		crit.Stale = &f
+	}
+	if c.UnitType != "" || c.Unit != "" {
+		crit.Unit = &unit.ID2{Type: c.UnitType, Name: c.Unit}
+		if crit.Unit.Type == "" || crit.Unit.Name == "" {
+			log.Fatal("must specify either both or neither of --unit-type and --unit (to filter by source unit)")
+		}
+	}
+
+	xs, err := store.Indexes(s, crit)
+	if err != nil {
+		return err
+	}
+
+	switch c.Output {
+	case "json":
+		PrintJSON(xs, "  ")
+	case "text":
+		_, isMultiRepo := s.(store.MultiRepoStore)
+		var repoTab string
+		if isMultiRepo {
+			repoTab = "\t"
+		}
+
+		var lastRepo, lastCommitID string
+		var lastUnit *unit.ID2
+		for _, x := range xs {
+			if isMultiRepo {
+				if x.Repo != lastRepo {
+					fmt.Println(x.Repo)
+				}
+			}
+			if x.CommitID != lastCommitID {
+				fmt.Print(repoTab, x.CommitID, "\n")
+			}
+			if x.Unit != lastUnit && x.Unit != nil {
+				if x.Repo == lastRepo && x.CommitID == lastCommitID {
+					fmt.Println()
+				}
+				fmt.Print(repoTab, "\t", x.Unit.Name, " ", x.Unit.Type, "\n")
+			}
+
+			if x.Unit != nil {
+				fmt.Print("\t")
+			}
+
+			fmt.Print(repoTab, "\t")
+			fmt.Printf("%s (%s) ", x.Name, x.Type)
+			if x.Stale {
+				fmt.Print("STALE ")
+			}
+			if x.Size != 0 {
+				fmt.Print(bytesString(uint64(x.Size)), " ")
+			}
+			if x.Error != "" {
+				fmt.Printf("(ERROR: %s) ", x.Error)
+			}
+			fmt.Println()
+
+			lastRepo = x.Repo
+			lastCommitID = x.CommitID
+			lastUnit = x.Unit
+		}
+	default:
+		return fmt.Errorf("unexpected --output value: %q", c.Output)
+	}
 	return nil
 }
 
