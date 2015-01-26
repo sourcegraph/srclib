@@ -301,14 +301,14 @@ func (c *StoreIndexesCmd) Execute(args []string) error {
 		}
 	}
 
-	xs, err := store.Indexes(s, crit)
-	if err != nil {
-		return err
-	}
-
+	indexChan := make(chan store.IndexStatus)
 	switch c.Output {
 	case "json":
-		PrintJSON(xs, "  ")
+		go func() {
+			for x := range indexChan {
+				PrintJSON(x, "")
+			}
+		}()
 	case "text":
 		_, isMultiRepo := s.(store.MultiRepoStore)
 		var repoTab string
@@ -316,47 +316,57 @@ func (c *StoreIndexesCmd) Execute(args []string) error {
 			repoTab = "\t"
 		}
 
-		var lastRepo, lastCommitID string
-		var lastUnit *unit.ID2
-		for _, x := range xs {
-			if isMultiRepo {
-				if x.Repo != lastRepo {
-					fmt.Println(x.Repo)
+		go func() {
+			var lastRepo, lastCommitID string
+			var lastUnit *unit.ID2
+			for x := range indexChan {
+				if isMultiRepo {
+					if x.Repo != lastRepo {
+						fmt.Println(x.Repo)
+					}
 				}
-			}
-			if x.CommitID != lastCommitID {
-				fmt.Print(repoTab, x.CommitID, "\n")
-			}
-			if x.Unit != lastUnit && x.Unit != nil {
-				if x.Repo == lastRepo && x.CommitID == lastCommitID {
-					fmt.Println()
+				if x.CommitID != lastCommitID {
+					fmt.Print(repoTab, x.CommitID, "\n")
 				}
-				fmt.Print(repoTab, "\t", x.Unit.Name, " ", x.Unit.Type, "\n")
-			}
+				if x.Unit != lastUnit && x.Unit != nil {
+					if x.Repo == lastRepo && x.CommitID == lastCommitID {
+						fmt.Println()
+					}
+					fmt.Print(repoTab, "\t", x.Unit.Name, " ", x.Unit.Type, "\n")
+				}
 
-			if x.Unit != nil {
-				fmt.Print("\t")
-			}
+				if x.Unit != nil {
+					fmt.Print("\t")
+				}
 
-			fmt.Print(repoTab, "\t")
-			fmt.Printf("%s (%s) ", x.Name, x.Type)
-			if x.Stale {
-				fmt.Print("STALE ")
-			}
-			if x.Size != 0 {
-				fmt.Print(bytesString(uint64(x.Size)), " ")
-			}
-			if x.Error != "" {
-				fmt.Printf("(ERROR: %s) ", x.Error)
-			}
-			fmt.Println()
+				fmt.Print(repoTab, "\t")
+				fmt.Printf("%s (%s) ", x.Name, x.Type)
+				if x.Stale {
+					fmt.Print("STALE ")
+				}
+				if x.Size != 0 {
+					fmt.Print(bytesString(uint64(x.Size)), " ")
+				}
+				if x.Error != "" {
+					fmt.Printf("(ERROR: %s) ", x.Error)
+				}
+				fmt.Println()
 
-			lastRepo = x.Repo
-			lastCommitID = x.CommitID
-			lastUnit = x.Unit
-		}
+				lastRepo = x.Repo
+				lastCommitID = x.CommitID
+				lastUnit = x.Unit
+			}
+		}()
 	default:
 		return fmt.Errorf("unexpected --output value: %q", c.Output)
+	}
+
+	_, err = store.Indexes(s, crit, indexChan)
+	defer func() {
+		close(indexChan)
+	}()
+	if err != nil {
+		return err
 	}
 	return nil
 }

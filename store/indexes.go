@@ -62,10 +62,31 @@ type IndexCriteria struct {
 }
 
 // Indexes returns a list of indexes and their statuses for s and its
-// lower-level stores.
-func Indexes(s interface{}, c IndexCriteria) ([]IndexStatus, error) {
-	xs := []IndexStatus{}
+// lower-level stores.  If indexChan is non-nil, it receives indexes
+// as soon as they are found; when all matching indexes have been
+// found, the func returns and all indexes are included in the
+// returned slice.
+func Indexes(store interface{}, c IndexCriteria, indexChan chan<- IndexStatus) ([]IndexStatus, error) {
+	var xs []IndexStatus
+	indexChan2 := make(chan IndexStatus)
+	go func() {
+		for x := range indexChan2 {
+			xs = append(xs, x)
+			if indexChan != nil {
+				indexChan <- x
+			}
+		}
+	}()
+	err := listIndexes(store, c, indexChan2, nil)
+	close(indexChan2)
+	return xs, err
+}
 
+// listIndexes lists indexes in s (a store) asynchronously, sending
+// status objects to ch. If f != nil, it is called to set/modify
+// fields on each status object before the status object is sent to
+// the channel.
+func listIndexes(s interface{}, c IndexCriteria, ch chan<- IndexStatus, f func(*IndexStatus)) error {
 	switch s := s.(type) {
 	case indexedStore:
 		xx := s.Indexes()
@@ -95,22 +116,21 @@ func Indexes(s interface{}, c IndexCriteria) ([]IndexStatus, error) {
 				continue
 			}
 
-			xs = append(xs, st)
+			if f != nil {
+				f(&st)
+			}
+			ch <- st
 		}
 
 		switch s := s.(type) {
 		case *indexedTreeStore:
-			xxs, err := Indexes(s.fsTreeStore, c)
-			if err != nil {
-				return nil, err
+			if err := listIndexes(s.fsTreeStore, c, ch, f); err != nil {
+				return err
 			}
-			xs = append(xs, xxs...)
 		case *indexedUnitStore:
-			xxs, err := Indexes(s.fsUnitStore, c)
-			if err != nil {
-				return nil, err
+			if err := listIndexes(s.fsUnitStore, c, ch, f); err != nil {
+				return err
 			}
-			xs = append(xs, xxs...)
 		}
 
 	case repoStoreOpener:
@@ -119,19 +139,20 @@ func Indexes(s interface{}, c IndexCriteria) ([]IndexStatus, error) {
 			var err error
 			rss, err = s.openAllRepoStores()
 			if err != nil && !isStoreNotExist(err) {
-				return nil, err
+				return err
 			}
 		} else {
 			rss = map[string]RepoStore{c.Repo: s.openRepoStore(c.Repo)}
 		}
 		for repo, rs := range rss {
-			xxs, err := Indexes(rs, c)
-			if err != nil {
-				return nil, err
-			}
-			for _, x := range xxs {
+			err := listIndexes(rs, c, ch, func(x *IndexStatus) {
 				x.Repo = repo
-				xs = append(xs, x)
+				if f != nil {
+					f(x)
+				}
+			})
+			if err != nil {
+				return err
 			}
 		}
 
@@ -141,19 +162,20 @@ func Indexes(s interface{}, c IndexCriteria) ([]IndexStatus, error) {
 			var err error
 			tss, err = s.openAllTreeStores()
 			if err != nil && !isStoreNotExist(err) {
-				return nil, err
+				return err
 			}
 		} else {
 			tss = map[string]TreeStore{c.CommitID: s.openTreeStore(c.CommitID)}
 		}
-		for tree, ts := range tss {
-			xxs, err := Indexes(ts, c)
+		for commitID, ts := range tss {
+			err := listIndexes(ts, c, ch, func(x *IndexStatus) {
+				x.CommitID = commitID
+				if f != nil {
+					f(x)
+				}
+			})
 			if err != nil {
-				return nil, err
-			}
-			for _, x := range xxs {
-				x.CommitID = tree
-				xs = append(xs, x)
+				return err
 			}
 		}
 
@@ -163,23 +185,24 @@ func Indexes(s interface{}, c IndexCriteria) ([]IndexStatus, error) {
 			var err error
 			uss, err = s.openAllUnitStores()
 			if err != nil && !isStoreNotExist(err) {
-				return nil, err
+				return err
 			}
 		} else {
 			uss = map[unit.ID2]UnitStore{*c.Unit: s.openUnitStore(*c.Unit)}
 		}
 		for unit, us := range uss {
-			xxs, err := Indexes(us, c)
-			if err != nil {
-				return nil, err
-			}
 			unitCopy := unit
-			for _, x := range xxs {
+			err := listIndexes(us, c, ch, func(x *IndexStatus) {
 				x.Unit = &unitCopy
-				xs = append(xs, x)
+				if f != nil {
+					f(x)
+				}
+			})
+			if err != nil {
+				return err
 			}
 		}
 
 	}
-	return xs, nil
+	return nil
 }
