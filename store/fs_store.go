@@ -270,7 +270,8 @@ func (s *fsTreeStore) openUnitFile(filename string) (u *unit.SourceUnit, err err
 	}()
 
 	var unit unit.SourceUnit
-	return &unit, Codec.Decode(f, &unit)
+	_, err = Codec.NewDecoder(f).Decode(&unit)
+	return &unit, err
 }
 
 func (s *fsTreeStore) unitFilenames() ([]string, error) {
@@ -385,9 +386,10 @@ func (s *fsUnitStore) Defs(fs ...DefFilter) (defs []*graph.Def, err error) {
 		}
 	}()
 
+	dec := Codec.NewDecoder(f)
 	for {
-		var def *graph.Def
-		if err := Codec.Decode(f, &def); err == io.EOF {
+		def := &graph.Def{}
+		if _, err := dec.Decode(def); err == io.EOF {
 			break
 		} else if err != nil {
 			return nil, err
@@ -415,16 +417,17 @@ func (s *fsUnitStore) defsAtOffsets(ofs byteOffsets, fs []DefFilter) (defs []*gr
 
 	ffs := defFilters(fs)
 
+	dec := Codec.NewDecoder(f)
 	for _, ofs := range ofs {
 		if _, err := f.Seek(ofs, 0); err != nil {
 			return nil, err
 		}
-		var def *graph.Def
-		if err := Codec.Decode(f, &def); err != nil {
+		var def graph.Def
+		if _, err := dec.Decode(&def); err != nil {
 			return nil, err
 		}
-		if ffs.SelectDef(def) {
-			defs = append(defs, def)
+		if ffs.SelectDef(&def) {
+			defs = append(defs, &def)
 		}
 	}
 	return defs, nil
@@ -444,19 +447,21 @@ func (s *fsUnitStore) readDefs() (defs []*graph.Def, ofs byteOffsets, err error)
 		}
 	}()
 
-	cr := &countingReader{Reader: f}
+	n := uint32(0)
+	dec := Codec.NewDecoder(f)
 	for {
-		o := cr.n
-
-		var def *graph.Def
-		if err := Codec.Decode(cr, &def); err == io.EOF {
+		var def graph.Def
+		o, err := dec.Decode(&def)
+		if err == io.EOF {
 			break
 		} else if err != nil {
 			return nil, nil, err
 		}
 
-		ofs = append(ofs, o)
-		defs = append(defs, def)
+		ofs = append(ofs, int64(n))
+		defs = append(defs, &def)
+
+		n += o
 	}
 	return defs, ofs, nil
 }
@@ -473,15 +478,16 @@ func (s *fsUnitStore) Refs(fs ...RefFilter) (refs []*graph.Ref, err error) {
 		}
 	}()
 
+	dec := Codec.NewDecoder(f)
 	for {
-		var ref *graph.Ref
-		if err := Codec.Decode(f, &ref); err == io.EOF {
+		var ref graph.Ref
+		if _, err := dec.Decode(&ref); err == io.EOF {
 			break
 		} else if err != nil {
 			return nil, err
 		}
-		if refFilters(fs).SelectRef(ref) {
-			refs = append(refs, ref)
+		if refFilters(fs).SelectRef(&ref) {
+			refs = append(refs, &ref)
 		}
 	}
 	return refs, nil
@@ -520,19 +526,21 @@ func (s *fsUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs [
 		if _, err := f.Seek(br.start(), 0); err != nil {
 			return nil, err
 		}
+
 		b, err := ioutil.ReadAll(io.LimitReader(f, readLengths[i]))
 		if err != nil {
 			return nil, err
 		}
 
 		r := bytes.NewReader(b)
+		dec := Codec.NewDecoder(r)
 		for range br[1:] {
-			var ref *graph.Ref
-			if err := Codec.Decode(r, &ref); err != nil {
+			var ref graph.Ref
+			if _, err := dec.Decode(&ref); err != nil {
 				return nil, err
 			}
-			if ffs.SelectRef(ref) {
-				refs = append(refs, ref)
+			if ffs.SelectRef(&ref) {
+				refs = append(refs, &ref)
 			}
 		}
 	}
@@ -553,14 +561,14 @@ func (s *fsUnitStore) readRefs() (refs []*graph.Ref, fbrs fileByteRanges, err er
 		}
 	}()
 
-	cr := &countingReader{Reader: f}
+	o := int64(0)
+	dec := Codec.NewDecoder(f)
 	fbrs = fileByteRanges{}
 	lastFile := ""
 	for {
-		o := cr.n
-
-		var ref *graph.Ref
-		if err := Codec.Decode(cr, &ref); err == io.EOF {
+		var ref graph.Ref
+		n, err := dec.Decode(&ref)
+		if err == io.EOF {
 			break
 		} else if err != nil {
 			return nil, nil, err
@@ -574,15 +582,17 @@ func (s *fsUnitStore) readRefs() (refs []*graph.Ref, fbrs fileByteRanges, err er
 			fbrs[lastFile] = append(fbrs[lastFile], o-lastFileRefStartOffset)
 		}
 		fbrs[ref.File] = append(fbrs[ref.File], o-lastFileRefStartOffset)
-		refs = append(refs, ref)
+		refs = append(refs, &ref)
 		lastFile = ref.File
+
+		o += int64(n)
 	}
 	if lastFile != "" {
 		var lastFileRefStartOffset int64
 		if brs, present := fbrs[lastFile]; present {
 			lastFileRefStartOffset = brs[len(brs)-1]
 		}
-		fbrs[lastFile] = append(fbrs[lastFile], cr.n-lastFileRefStartOffset)
+		fbrs[lastFile] = append(fbrs[lastFile], o-lastFileRefStartOffset)
 	}
 	return refs, fbrs, nil
 
@@ -680,19 +690,6 @@ type countingWriter struct {
 
 func (cr *countingWriter) Write(p []byte) (n int, err error) {
 	n, err = cr.Writer.Write(p)
-	cr.n += int64(n)
-	return
-}
-
-// countingReader wraps an io.Reader, counting the number of bytes
-// read.
-type countingReader struct {
-	io.Reader
-	n int64
-}
-
-func (cr *countingReader) Read(p []byte) (n int, err error) {
-	n, err = cr.Reader.Read(p)
 	cr.n += int64(n)
 	return
 }

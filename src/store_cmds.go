@@ -632,8 +632,8 @@ type StoreRefsCmd struct {
 	File     string `long:"file"`
 	CommitID string `long:"commit"`
 
-	Start int `long:"start"`
-	End   int `long:"end"`
+	Start uint32 `long:"start"`
+	End   uint32 `long:"end"`
 
 	DefRepo     string `long:"def-repo"`
 	DefUnitType string `long:"def-unit-type" `

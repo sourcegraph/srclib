@@ -1,121 +1,9 @@
 package graph
 
 import (
-	"encoding/json"
 	"fmt"
 	"regexp"
-
-	"sourcegraph.com/sourcegraph/srclib/ann"
 )
-
-// START DefKey OMIT
-// DefKey specifies a definition, either concretely or abstractly. A concrete
-// definition key has a non-empty CommitID and refers to a definition defined in a
-// specific commit. An abstract definition key has an empty CommitID and is
-// considered to refer to definitions from any number of commits (so long as the
-// Repo, UnitType, Unit, and Path match).
-//
-// You can think of CommitID as the time dimension. With an empty CommitID, you
-// are referring to a definition that may or may not exist at various times. With a
-// non-empty CommitID, you are referring to a specific definition of a definition at
-// the time specified by the CommitID.
-type DefKey struct {
-	// Repo is the VCS repository that defines this definition. Its Elasticsearch mapping is defined
-	// separately.
-	Repo string `json:",omitempty"`
-
-	// CommitID is the ID of the VCS commit that this definition was defined in. The
-	// CommitID is always a full commit ID (40 hexadecimal characters for git
-	// and hg), never a branch or tag name.
-	CommitID string `json:",omitempty"`
-
-	// UnitType is the type name of the source unit (obtained from unit.Type(u))
-	// that this definition was defined in.
-	UnitType string `json:",omitempty"`
-
-	// Unit is the name of the source unit (obtained from u.Name()) that this
-	// definition was defined in.
-	Unit string `json:",omitempty"`
-
-	// Path is a unique identifier for the def, relative to the source unit.
-	// It should remain stable across commits as long as the def is the
-	// "same" def. Its Elasticsearch mapping is defined separately (because
-	// it is a multi_field, which the struct tag can't currently represent).
-	//
-	// Path encodes no structural semantics. Its only meaning is to be a stable
-	// unique identifier within a given source unit. In many languages, it is
-	// convenient to use the namespace hierarchy (with some modifications) as
-	// the Path, but this may not always be the case. I.e., don't rely on Path
-	// to find parents or children or any other structural propreties of the
-	// def hierarchy). See Def.TreePath instead.
-	Path string
-}
-
-// END DefKey OMIT
-
-func (s DefKey) String() string {
-	b, err := json.Marshal(s)
-	if err != nil {
-		panic("DefKey.String: " + err.Error())
-	}
-	return string(b)
-}
-
-// START Def OMIT
-type Def struct {
-	// DefKey is the natural unique key for a def. It is stable
-	// (subsequent runs of a grapher will emit the same defs with the same
-	// DefKeys).
-	DefKey
-
-	// TreePath is a structurally significant path descriptor for a def. For
-	// many languages, it may be identical or similar to DefKey.Path.
-	// However, it has the following constraints, which allow it to define a
-	// def tree.
-	//
-	// A tree-path is a chain of '/'-delimited components. A component is either a
-	// def name or a ghost component.
-	// - A def name satifies the regex [^/-][^/]*
-	// - A ghost component satisfies the regex -[^/]*
-	// Any prefix of a tree-path that terminates in a def name must be a valid
-	// tree-path for some def.
-	// The following regex captures the children of a tree-path X: X(/-[^/]*)*(/[^/-][^/]*)
-	TreePath string `json:",omitempty"`
-
-	// Name of the definition. This need not be unique.
-	Name string
-
-	// Kind is the kind of thing this definition is. This is
-	// language-specific. Possible values include "type", "func",
-	// "var", etc.
-	Kind string `json:",omitempty"`
-
-	File string
-
-	DefStart int
-	DefEnd   int
-
-	// Exported is whether this def is part of a source unit's
-	// public API. For example, in Java a "public" field is
-	// Exported.
-	Exported bool
-
-	// Local is whether this def is local to a function or some
-	// other inner scope. Local defs do *not* have module,
-	// package, or file scope. For example, in Java a function's
-	// args are Local, but fields with "private" scope are not
-	// Local.
-	Local bool
-
-	// Test is whether this def is defined in test code (as opposed to main
-	// code). For example, definitions in Go *_test.go files have Test = true.
-	Test bool `json:",omitempty"`
-
-	// Data contains additional language- and toolchain-specific information
-	// about the def. Data is used to construct function signatures,
-	// import/require statements, language-specific type descriptions, etc.
-	Data json.RawMessage `json:",omitempty"`
-}
 
 // END Def OMIT
 
@@ -200,13 +88,6 @@ type Propagate struct {
 	DstUnitType string
 }
 
-// Debugging
-
-func (x Def) String() string {
-	s, _ := json.Marshal(x)
-	return string(s)
-}
-
 // Sorting
 
 type Defs []*Def
@@ -233,14 +114,3 @@ func (defs Defs) KeySet() (keys map[DefKey]struct{}, err error) {
 	}
 	return keys, nil
 }
-
-// START Output OMIT
-// Output is produced by grapher tools.
-type Output struct {
-	Defs []*Def     `json:",omitempty"`
-	Refs []*Ref     `json:",omitempty"`
-	Docs []*Doc     `json:",omitempty"`
-	Anns []*ann.Ann `json:",omitempty"`
-}
-
-// END Output OMIT

@@ -5,7 +5,10 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/kr/pretty"
+
 	"sort"
+	"strings"
 
 	"sourcegraph.com/sourcegraph/srclib/graph"
 )
@@ -156,6 +159,7 @@ func testUnitStore_Defs(t *testing.T, us unitStoreImporter) {
 	}
 	if want := data.Defs; !reflect.DeepEqual(defs, want) {
 		t.Errorf("%s: Defs(): got defs %v, want %v", us, defs, want)
+		t.Log(strings.Join(pretty.Diff(defs[0], want[0]), "\n"))
 	}
 }
 
