@@ -56,7 +56,7 @@ message Def {
     // DefKey is the natural unique key for a def. It is stable
     // (subsequent runs of a grapher will emit the same defs with the same
     // DefKeys).
-    required DefKey key = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true];
+    required DefKey key = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true, (gogoproto.jsontag) = ""];
 
     // Name of the definition. This need not be unique.
     optional string name = 2 [(gogoproto.nullable) = false, (gogoproto.jsontag) = "Name"];
@@ -90,7 +90,7 @@ message Def {
     // import/require statements, language-specific type descriptions, etc.
     //
     // To use json.RawMessage:
-    //   optional bytes data = 10 [(gogoproto.nullable) = false, (gogoproto.customtype) = "encoding/json.RawMessage", (gogoproto.jsontag) = "Data,omitempty"];
+    //optional bytes data = 10 [(gogoproto.nullable) = false, (gogoproto.customtype) = "encoding/json.RawMessage", (gogoproto.jsontag) = "Data,omitempty"];
     optional bytes data = 10 [(gogoproto.nullable) = false, (gogoproto.jsontag) = "Data,omitempty"];
 
     // TreePath is a structurally significant path descriptor for a def. For

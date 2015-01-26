@@ -15,7 +15,7 @@
 		DefKey
 		Def
 */
-package graph
+package graph;import "encoding/json"
 
 import proto "github.com/gogo/protobuf/proto"
 import math "math"
@@ -81,7 +81,7 @@ type Def struct {
 	// DefKey is the natural unique key for a def. It is stable
 	// (subsequent runs of a grapher will emit the same defs with the same
 	// DefKeys).
-	DefKey `protobuf:"bytes,1,req,name=key,embedded=key" json:"key"`
+	DefKey `protobuf:"bytes,1,req,name=key,embedded=key" json:""`
 	// Name of the definition. This need not be unique.
 	Name string `protobuf:"bytes,2,opt,name=name" json:"Name"`
 	// Kind is the kind of thing this definition is. This is
@@ -109,8 +109,8 @@ type Def struct {
 	// import/require statements, language-specific type descriptions, etc.
 	//
 	// To use json.RawMessage:
-	//   optional bytes data = 10 [(gogoproto.nullable) = false, (gogoproto.customtype) = "encoding/json.RawMessage", (gogoproto.jsontag) = "Data,omitempty"];
-	Data []byte `protobuf:"bytes,10,opt,name=data" json:"Data,omitempty"`
+	// optional bytes data = 10 [(gogoproto.nullable) = false, (gogoproto.customtype) = "encoding/json.RawMessage", (gogoproto.jsontag) = "Data,omitempty"];
+	Data json.RawMessage `protobuf:"bytes,10,opt,name=data" json:"Data,omitempty"`
 	// TreePath is a structurally significant path descriptor for a def. For
 	// many languages, it may be identical or similar to DefKey.Path.
 	// However, it has the following constraints, which allow it to define a
