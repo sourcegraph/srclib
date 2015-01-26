@@ -13,7 +13,7 @@ func TestIndexes(t *testing.T) {
 		want  []IndexStatus
 	}{}
 	for _, test := range tests {
-		xs, err := Indexes(test.store, IndexCriteria{})
+		xs, err := Indexes(test.store, IndexCriteria{}, nil)
 		if err != nil {
 			t.Errorf("%s: Indexes: %s", test.store, err)
 			continue
