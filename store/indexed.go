@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"os"
 
 	"sort"
 	"strings"
@@ -19,6 +20,10 @@ type indexedStore interface {
 
 	// BuildIndex builds the index with the specified name.
 	BuildIndex(name string, x Index) error
+
+	// statIndex calls vfs.Stat on the index's backing file or
+	// directory.
+	statIndex(name string) (os.FileInfo, error)
 }
 
 // An indexedTreeStore is a VFS-backed tree store that generates
@@ -282,6 +287,10 @@ func (s *indexedTreeStore) BuildIndex(name string, x Index) error {
 	return fmt.Errorf("don't know how to build index %q of type %T", name, x)
 }
 
+func (s *indexedTreeStore) statIndex(name string) (os.FileInfo, error) {
+	return statIndex(s.fs, name)
+}
+
 // An indexedUnitStore is a VFS-backed unit store that generates
 // indexes to provide efficient lookups.
 //
@@ -416,6 +425,12 @@ func (s *indexedUnitStore) BuildIndex(name string, x Index) error {
 	return nil
 }
 
+func (s *indexedUnitStore) statIndex(name string) (os.FileInfo, error) {
+	return statIndex(s.fs, name)
+}
+
+func (s *indexedUnitStore) String() string { return "indexedUnitStore" }
+
 // writeIndex calls x.Write with the index's backing file.
 func writeIndex(fs rwvfs.FileSystem, name string, x persistedIndex) (err error) {
 	f, err := fs.Create(fmt.Sprintf(indexFilename, name))
@@ -467,4 +482,7 @@ func readIndex(fs rwvfs.FileSystem, name string, x persistedIndex) (err error) {
 	return x.Read(f)
 }
 
-func (s *indexedUnitStore) String() string { return "indexedUnitStore" }
+// statIndex calls fs.Stat on the index's backing file or dir.
+func statIndex(fs rwvfs.FileSystem, name string) (os.FileInfo, error) {
+	return fs.Stat(fmt.Sprintf(indexFilename, name))
+}

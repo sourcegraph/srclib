@@ -6,12 +6,14 @@ import (
 )
 
 func TestIndexes(t *testing.T) {
+	t.Skip("TODO(sqs): add test cases")
+
 	tests := []struct {
 		store interface{}
 		want  []IndexStatus
 	}{}
 	for _, test := range tests {
-		xs, err := Indexes(test.store)
+		xs, err := Indexes(test.store, IndexCriteria{})
 		if err != nil {
 			t.Errorf("%s: Indexes: %s", test.store, err)
 			continue
