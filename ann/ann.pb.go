@@ -11,7 +11,7 @@
 	It has these top-level messages:
 		Ann
 */
-package ann
+package ann;import "encoding/json"
 
 import proto "github.com/gogo/protobuf/proto"
 import math "math"
@@ -56,7 +56,7 @@ type Ann struct {
 	Type string `protobuf:"bytes,8,opt,name=type" json:"Type"`
 	// Data contains arbitrary JSON data that is specific to this
 	// annotation type (e.g., the link URL for Link annotations).
-	Data []byte `protobuf:"bytes,9,opt,name=data" json:"Data,omitempty"`
+	Data json.RawMessage `protobuf:"bytes,9,opt,name=data" json:"Data,omitempty"`
 }
 
 func (m *Ann) Reset()         { *m = Ann{} }
