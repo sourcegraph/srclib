@@ -8,46 +8,6 @@ import (
 	"strings"
 )
 
-// An Ann is a source code annotation.
-//
-// Annotations are unique on (Repo, CommitID, UnitType, Unit, File,
-// Start, End, Type).
-type Ann struct {
-	// Repo is the URI of the repository that contains this annotation.
-	Repo string `json:",omitempty"`
-
-	// CommitID refers to the commit that contains this annotation.
-	CommitID string `json:",omitempty"`
-
-	// UnitType is the source unit type that the annotation exists
-	// on. It is either the source unit type during whose processing
-	// the annotation was detected/created. Multiple annotations may
-	// exist on the same file from different source unit types if a
-	// file is contained in multiple source units.
-	UnitType string `json:",omitempty"`
-
-	// Unit is the source unit name that the annotation exists on. See
-	// UnitType for more information.
-	Unit string `json:",omitempty"`
-
-	// Type is the type of the annotation. See this package's type
-	// constants for a list of possible types.
-	Type string
-
-	// File is the filename that contains this annotation.
-	File string
-
-	// Start is the byte offset of the first byte in the file.
-	Start int
-
-	// End is the byte offset of the last byte in the annotation.
-	End int `json:",omitempty"`
-
-	// Data contains arbitrary JSON data that is specific to this
-	// annotation type (e.g., the link URL for Link annotations).
-	Data json.RawMessage `json:",omitempty"`
-}
-
 const (
 	// Link is a type of annotation that refers to an arbitrary URL
 	// (typically pointing to an external web page).
@@ -97,7 +57,7 @@ func (e *ErrType) Error() string {
 }
 
 func (a *Ann) sortKey() string {
-	return strings.Join([]string{a.Repo, a.CommitID, a.UnitType, a.Unit, a.Type, a.File, strconv.Itoa(a.Start), strconv.Itoa(a.End)}, ":")
+	return strings.Join([]string{a.Repo, a.CommitID, a.UnitType, a.Unit, a.Type, a.File, strconv.Itoa(int(a.Start)), strconv.Itoa(int(a.End))}, ":")
 }
 
 // Sorting

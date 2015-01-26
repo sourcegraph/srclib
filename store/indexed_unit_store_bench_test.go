@@ -131,8 +131,8 @@ func createUnitStoreBenchmarkData(b *testing.B, numDefs, numRefs int) graph.Outp
 			Name:     fmt.Sprintf("name%d", d),
 			File:     fmt.Sprintf("file%d", d%(1+(numDefs/53))),
 			Kind:     kinds[d%len(kinds)],
-			DefStart: d % 10000,
-			DefEnd:   (d % 10000) + (d % 15),
+			DefStart: uint32(d % 10000),
+			DefEnd:   uint32((d % 10000) + (d % 15)),
 			Data:     []byte(`"` + strings.Repeat("x", 150) + `"`),
 		}
 	}

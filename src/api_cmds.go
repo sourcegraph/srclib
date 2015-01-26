@@ -77,7 +77,7 @@ func (c *APICmd) Execute(args []string) error { return nil }
 
 type APIDescribeCmd struct {
 	File      string `long:"file" required:"yes" value-name:"FILE"`
-	StartByte int    `long:"start-byte" required:"yes" value-name:"BYTE"`
+	StartByte uint32 `long:"start-byte" required:"yes" value-name:"BYTE"`
 
 	NoExamples bool `long:"no-examples" describe:"don't show examples from Sourcegraph.com"`
 }
@@ -348,7 +348,7 @@ OuterLoop:
 						ref.DefUnitType = u.Type
 					}
 					break OuterLoop
-				} else if GlobalOpt.Verbose && abs(ref2.Start-c.StartByte) < 25 {
+				} else if GlobalOpt.Verbose && abs(int(ref2.Start)-int(c.StartByte)) < 25 {
 					nearbyRefs = append(nearbyRefs, ref2)
 				}
 			}
@@ -374,12 +374,12 @@ OuterLoop:
 					log.Fatalf("Error reading source file: %s.", err)
 				}
 				start := c.StartByte
-				if start < 0 || start > len(b)-1 {
+				if start < 0 || int(start) > len(b)-1 {
 					log.Fatalf("Start byte %d is out of file bounds.", c.StartByte)
 				}
 				end := c.StartByte + 50
-				if end > len(b)-1 {
-					end = len(b) - 1
+				if int(end) > len(b)-1 {
+					end = uint32(len(b) - 1)
 				}
 				log.Printf("Surrounding source is:\n\n%s", b[start:end])
 			} else {

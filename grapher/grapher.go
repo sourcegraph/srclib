@@ -41,7 +41,7 @@ func ensureOffsetsAreByteOffsets(dir string, output *graph.Output) {
 		return f
 	}
 
-	fix := func(filename string, offsets ...*int) {
+	fix := func(filename string, offsets ...*uint32) {
 		defer func() {
 			if e := recover(); e != nil {
 				log.Printf("failed to convert unicode offset to byte offset in file %s (did grapher output a nonexistent byte offset?) continuing anyway...", filename)
@@ -59,11 +59,11 @@ func ensureOffsetsAreByteOffsets(dir string, output *graph.Output) {
 			if *offset == 0 {
 				continue
 			}
-			before, after := *offset, f.ByteOffsetOfRune(*offset)
+			before, after := *offset, uint32(f.ByteOffsetOfRune(int(*offset)))
 			if before != after {
 				log.Printf("Changed pos %d to %d in %s", before, after, filename)
 			}
-			*offset = f.ByteOffsetOfRune(*offset)
+			*offset = uint32(f.ByteOffsetOfRune(int(*offset)))
 		}
 	}
 

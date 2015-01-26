@@ -94,8 +94,8 @@ func insertRefs(b *testing.B, rs RepoStoreImporter, numRefs int) {
 				data.Refs[r] = &graph.Ref{
 					DefPath: fmt.Sprintf("path%d", r%*numRefDefs),
 					File:    fmt.Sprintf("file%d", r%(1 + numRefs / *numPerFile)),
-					Start:   r % 1000,
-					End:     (r + 7) % 1000,
+					Start:   uint32(r % 1000),
+					End:     uint32((r + 7) % 1000),
 				}
 				addSourceUnitFiles(unit, data.Refs[r].File)
 			}
