@@ -2,6 +2,7 @@ package src
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/url"
@@ -311,6 +312,7 @@ func doStoreIndexesCmd(crit store.IndexCriteria, opt storeIndexOptions, f func(i
 		return err
 	}
 
+	hasError := false
 	done := make(chan struct{})
 	indexChan := make(chan store.IndexStatus)
 	switch opt.Output {
@@ -364,6 +366,11 @@ func doStoreIndexesCmd(crit store.IndexCriteria, opt storeIndexOptions, f func(i
 				}
 				if x.Error != "" {
 					fmt.Printf("(ERROR: %s) ", x.Error)
+					hasError = true
+				}
+				if x.BuildError != "" {
+					fmt.Printf("(BUILD ERROR: %s) ", x.BuildError)
+					hasError = true
 				}
 				if x.BuildDuration != 0 {
 					fmt.Printf("- build took %s ", x.BuildDuration)
@@ -387,6 +394,9 @@ func doStoreIndexesCmd(crit store.IndexCriteria, opt storeIndexOptions, f func(i
 	}()
 	if err != nil {
 		return err
+	}
+	if hasError {
+		return errors.New("\nindex listing or index building errors occurred (see above)")
 	}
 	return nil
 }
