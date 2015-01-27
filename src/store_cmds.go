@@ -190,9 +190,10 @@ func (c *StoreCmd) store() (interface{}, error) {
 type StoreImportCmd struct {
 	DryRun bool `short:"n" long:"dry-run" description:"print what would be done but don't do anything"`
 
-	Sample     bool `long:"sample" description:"import sample data, not .srclib-cache data"`
-	SampleDefs int  `long:"sample-defs" description:"number of sample defs to import" default:"100"`
-	SampleRefs int  `long:"sample-refs" description:"number of sample refs to import" default:"100"`
+	Sample           bool `long:"sample" description:"(sample data) import sample data, not .srclib-cache data"`
+	SampleDefs       int  `long:"sample-defs" description:"(sample data) number of sample defs to import" default:"100"`
+	SampleRefs       int  `long:"sample-refs" description:"(sample data) number of sample refs to import" default:"100"`
+	SampleImportOnly bool `long:"sample-import-only" description:"(sample data) only import, don't demonstrate listing data"`
 
 	Repo     string `long:"repo" description:"only import for this repo"`
 	Unit     string `long:"unit" description:"only import source units with this name"`
@@ -369,6 +370,10 @@ func (c *StoreImportCmd) sample(s interface{}) error {
 		return fmt.Errorf("store (type %T) does not implement importing", s)
 	}
 	log.Printf("Import took %s (~%s per def/ref)", time.Since(start), time.Duration(int64(time.Since(start))/int64(len(data.Defs)+len(data.Refs))))
+
+	if c.SampleImportOnly {
+		return nil
+	}
 
 	log.Println()
 	log.Printf("Running some commands to list sample data")
