@@ -507,6 +507,7 @@ func (s *indexedUnitStore) String() string { return "indexedUnitStore" }
 
 // writeIndex calls x.Write with the index's backing file.
 func writeIndex(fs rwvfs.FileSystem, name string, x persistedIndex) (err error) {
+	vlog.Printf("%s: writing index...", name)
 	f, err := fs.Create(fmt.Sprintf(indexFilename, name))
 	if err != nil {
 		return err
@@ -517,7 +518,12 @@ func writeIndex(fs rwvfs.FileSystem, name string, x persistedIndex) (err error) 
 			err = err2
 		}
 	}()
-	return x.Write(f)
+
+	if err := x.Write(f); err != nil {
+		return err
+	}
+	vlog.Printf("%s: done writing index.", name)
+	return nil
 }
 
 // prepareIndex prepares an index to be used. If it is already Ready,
@@ -542,6 +548,7 @@ func (e *errIndexNotReady) Error() string { return fmt.Sprintf("index not ready:
 
 // readIndex calls x.Read with the index's backing file.
 func readIndex(fs rwvfs.FileSystem, name string, x persistedIndex) (err error) {
+	vlog.Printf("%s: reading index...", name)
 	f, err := fs.Open(fmt.Sprintf(indexFilename, name))
 	if err != nil {
 		return err
@@ -553,7 +560,11 @@ func readIndex(fs rwvfs.FileSystem, name string, x persistedIndex) (err error) {
 		}
 	}()
 
-	return x.Read(f)
+	if err := x.Read(f); err != nil {
+		return err
+	}
+	vlog.Printf("%s: done reading index.", name)
+	return nil
 }
 
 // statIndex calls fs.Stat on the index's backing file or dir.
