@@ -25,7 +25,7 @@ var _ = math.Inf
 // Doc is documentation on a Def.
 type Doc struct {
 	// DefKey points to the Def that this documentation pertains to.
-	DefKey `protobuf:"bytes,1,req,name=key,embedded=key" json:"key"`
+	DefKey `protobuf:"bytes,1,req,name=key,embedded=key" json:""`
 	// Format is the the MIME-type that the documentation is stored
 	// in. Valid formats include 'text/html', 'text/plain',
 	// 'text/x-markdown', text/x-rst'.
