@@ -1,6 +1,8 @@
 package store
 
 import (
+	"encoding/binary"
+	"errors"
 	"io"
 
 	"sourcegraph.com/sourcegraph/srclib/graph"
@@ -89,6 +91,32 @@ type fileByteRanges map[string]byteRanges
 // the byte length of each object in the file.
 type byteRanges []int64
 
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (b *byteRanges) UnmarshalBinary(data []byte) error {
+	for {
+		v, n := binary.Varint(data)
+		if n == 0 {
+			break
+		}
+		if n < 0 {
+			return errors.New("byteRanges varint error")
+		}
+		*b = append(*b, v)
+		data = data[n:]
+	}
+	return nil
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (b byteRanges) MarshalBinary() ([]byte, error) {
+	data := make([]byte, len(b)*binary.MaxVarintLen64)
+	var n int
+	for _, v := range b {
+		n += binary.PutVarint(data[n:], v)
+	}
+	return data[:n], nil
+}
+
 // start is the offset of the first byte of the first object, relative
 // to the beginning of the file.
 func (br byteRanges) start() int64 { return br[0] }
@@ -102,6 +130,10 @@ type refsByFileStartEnd []*graph.Ref
 
 func (v refsByFileStartEnd) Len() int { return len(v) }
 func (v refsByFileStartEnd) Less(i, j int) bool {
+	a, b := v[i], v[j]
+	return a.File < b.File || (a.File == b.File && a.Start < b.Start) || (a.File == b.File && a.Start == b.Start && a.End < b.End)
+}
+func (v refsByFileStartEnd) Less2(i, j int) bool {
 	a, b := v[i], v[j]
 	if a.File == b.File {
 		if a.Start == b.Start {

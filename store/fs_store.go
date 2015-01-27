@@ -1,6 +1,7 @@
 package store
 
 import (
+	"bufio"
 	"bytes"
 	"io"
 	"io/ioutil"
@@ -8,6 +9,7 @@ import (
 	"path"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/kr/fs"
 
@@ -314,7 +316,7 @@ func (s *fsTreeStore) Import(u *unit.SourceUnit, data graph.Output) (err error) 
 			err = err2
 		}
 	}()
-	if err := Codec.Encode(f, u); err != nil {
+	if _, err := Codec.NewEncoder(f).Encode(u); err != nil {
 		return err
 	}
 
@@ -452,7 +454,7 @@ func (s *fsUnitStore) readDefs() (defs []*graph.Def, ofs byteOffsets, err error)
 		}
 	}()
 
-	n := uint32(0)
+	n := uint64(0)
 	dec := Codec.NewDecoder(f)
 	for {
 		var def graph.Def
@@ -637,13 +639,20 @@ func (s *fsUnitStore) writeDefs(defs []*graph.Def) (ofs byteOffsets, err error) 
 		}
 	}()
 
-	cw := &countingWriter{Writer: f}
+	bw := bufio.NewWriter(f)
+	enc := Codec.NewEncoder(bw)
 	ofs = make(byteOffsets, len(defs))
+	var o uint64 // number of bytes read
 	for i, def := range defs {
-		ofs[i] = cw.n
-		if err := Codec.Encode(cw, def); err != nil {
+		ofs[i] = int64(o)
+		n, err := enc.Encode(def)
+		if err != nil {
 			return nil, err
 		}
+		o += n
+	}
+	if err := bw.Flush(); err != nil {
+		return nil, err
 	}
 	vlog.Printf("fsUnitStore: done writing %d defs.", len(defs))
 	return ofs, nil
@@ -666,9 +675,15 @@ func (s *fsUnitStore) writeRefs(refs []*graph.Ref) (fbr fileByteRanges, err erro
 	// Sort refs by file and start byte so that we can use streaming
 	// reads to efficiently read in all of the refs that exist in a
 	// file.
+	t0 := time.Now()
 	sort.Sort(refsByFileStartEnd(refs))
+	if d := time.Since(t0); d > time.Millisecond*200 {
+		vlog.Printf("fsUnitStore: sorting %d refs took %s.", len(refs), d)
+	}
 
-	cw := &countingWriter{Writer: f}
+	bw := bufio.NewWriter(f)
+	enc := Codec.NewEncoder(bw)
+	var o uint64
 	fbr = fileByteRanges{}
 	lastFile := ""
 	lastFileByteRanges := byteRanges{}
@@ -678,18 +693,23 @@ func (s *fsUnitStore) writeRefs(refs []*graph.Ref) (fbr fileByteRanges, err erro
 				fbr[lastFile] = lastFileByteRanges
 			}
 			lastFile = ref.File
-			lastFileByteRanges = byteRanges{cw.n}
+			lastFileByteRanges = byteRanges{int64(o)}
 		}
-		before := cw.n
-		if err := Codec.Encode(cw, ref); err != nil {
+		before := o
+		n, err := enc.Encode(ref)
+		if err != nil {
 			return nil, err
 		}
+		o += n
 
 		// Record the byte length of this encoded ref.
-		lastFileByteRanges = append(lastFileByteRanges, cw.n-before)
+		lastFileByteRanges = append(lastFileByteRanges, int64(o-before))
 	}
 	if lastFile != "" {
 		fbr[lastFile] = lastFileByteRanges
+	}
+	if err := bw.Flush(); err != nil {
+		return nil, err
 	}
 	vlog.Printf("fsUnitStore: done writing %d refs.", len(refs))
 	return fbr, nil

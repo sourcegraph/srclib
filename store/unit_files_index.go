@@ -6,7 +6,7 @@ import (
 	"io"
 	"path"
 
-	"github.com/alecthomas/mph"
+	"sourcegraph.com/sourcegraph/srclib/store/phtable"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
@@ -15,8 +15,8 @@ import (
 // unitFilesIndex makes it fast to determine which source units
 // contain a file (or files in a dir).
 type unitFilesIndex struct {
-	mph   *mph.CHD
-	ready bool
+	phtable *phtable.CHD
+	ready   bool
 }
 
 var _ interface {
@@ -38,10 +38,10 @@ func (x *unitFilesIndex) getByPath(path string) ([]unit.ID2, bool, error) {
 	vlog.Printf("unitFilesIndex.getByPath(%s)", path)
 	c_unitFilesIndex_getByPath++
 
-	if x.mph == nil {
-		panic("mph not built/read")
+	if x.phtable == nil {
+		panic("phtable not built/read")
 	}
-	v := x.mph.Get([]byte(path))
+	v := x.phtable.Get([]byte(path))
 	if v == nil {
 		return nil, false, nil
 	}
@@ -94,13 +94,13 @@ func (x *unitFilesIndex) Units(fs ...UnitFilter) ([]unit.ID2, error) {
 // Build implements unitIndexBuilder.
 func (x *unitFilesIndex) Build(units []*unit.SourceUnit) error {
 	vlog.Printf("unitFilesIndex: building index...")
-	b := mph.Builder()
 	f2u := make(filesToUnits, len(units)*10)
 	for _, u := range units {
 		for _, f := range u.Files {
 			f2u.add(f, u.ID2())
 		}
 	}
+	b := phtable.Builder(len(f2u))
 	for file, fileUnits := range f2u {
 		ub, err := json.Marshal(fileUnits)
 		if err != nil {
@@ -112,7 +112,7 @@ func (x *unitFilesIndex) Build(units []*unit.SourceUnit) error {
 	if err != nil {
 		return err
 	}
-	x.mph = h
+	x.phtable = h
 	x.ready = true
 	vlog.Printf("unitFilesIndex: done building index.")
 	return nil
@@ -166,16 +166,16 @@ func ancestorDirsExceptRoot(p string) []string {
 
 // Write implements persistedIndex.
 func (x *unitFilesIndex) Write(w io.Writer) error {
-	if x.mph == nil {
-		panic("no mph to write")
+	if x.phtable == nil {
+		panic("no phtable to write")
 	}
-	return x.mph.Write(w)
+	return x.phtable.Write(w)
 }
 
 // Read implements persistedIndex.
 func (x *unitFilesIndex) Read(r io.Reader) error {
 	var err error
-	x.mph, err = mph.Read(r)
+	x.phtable, err = phtable.Read(r)
 	x.ready = (err == nil)
 	return err
 }

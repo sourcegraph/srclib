@@ -1,18 +1,19 @@
 package store
 
 import (
-	"encoding/json"
 	"io"
 
-	"github.com/alecthomas/mph"
+	"github.com/alecthomas/binary"
+
 	"sourcegraph.com/sourcegraph/srclib/graph"
+	"sourcegraph.com/sourcegraph/srclib/store/phtable"
 )
 
 // refFileIndex makes it fast to determine which refs (within in a
 // source unit) are in a file.
 type refFileIndex struct {
-	mph   *mph.CHD
-	ready bool
+	phtable *phtable.CHD
+	ready   bool
 }
 
 var _ interface {
@@ -29,17 +30,17 @@ var c_refFileIndex_getByFile = 0 // counter
 // byteRanges refer to offsets within the ref data file.
 func (x *refFileIndex) getByFile(file string) (byteRanges, bool, error) {
 	c_refFileIndex_getByFile++
-	if x.mph == nil {
-		panic("mph not built/read")
+	if x.phtable == nil {
+		panic("phtable not built/read")
 	}
-	v := x.mph.Get([]byte(file))
+	v := x.phtable.Get([]byte(file))
 	if v == nil {
 		return nil, false, nil
 	}
 
 	// TODO(sqs): using JSON for this is really inefficient and stupid
 	var br byteRanges
-	if err := json.Unmarshal(v, &br); err != nil {
+	if err := binary.Unmarshal(v, &br); err != nil {
 		return nil, true, err
 	}
 	return br, true, nil
@@ -82,9 +83,9 @@ func (x *refFileIndex) Refs(fs ...RefFilter) ([]byteRanges, error) {
 // Build creates the refFileIndex.
 func (x *refFileIndex) Build(ref []*graph.Ref, fbr fileByteRanges) error {
 	vlog.Printf("refFilesIndex: building index...")
-	b := mph.Builder()
+	b := phtable.Builder(len(fbr))
 	for file, br := range fbr {
-		v, err := json.Marshal(br)
+		v, err := binary.Marshal(br)
 		if err != nil {
 			return err
 		}
@@ -94,7 +95,7 @@ func (x *refFileIndex) Build(ref []*graph.Ref, fbr fileByteRanges) error {
 	if err != nil {
 		return err
 	}
-	x.mph = h
+	x.phtable = h
 	x.ready = true
 	vlog.Printf("refFilesIndex: done building index.")
 	return nil
@@ -102,16 +103,16 @@ func (x *refFileIndex) Build(ref []*graph.Ref, fbr fileByteRanges) error {
 
 // Write implements persistedIndex.
 func (x *refFileIndex) Write(w io.Writer) error {
-	if x.mph == nil {
-		panic("no mph to write")
+	if x.phtable == nil {
+		panic("no phtable to write")
 	}
-	return x.mph.Write(w)
+	return x.phtable.Write(w)
 }
 
 // Read implements persistedIndex.
 func (x *refFileIndex) Read(r io.Reader) error {
 	var err error
-	x.mph, err = mph.Read(r)
+	x.phtable, err = phtable.Read(r)
 	x.ready = (err == nil)
 	return err
 }

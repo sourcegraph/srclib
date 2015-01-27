@@ -2,15 +2,14 @@ package store
 
 import (
 	"io"
-	"strconv"
 
-	"github.com/alecthomas/mph"
 	"sourcegraph.com/sourcegraph/srclib/graph"
+	"sourcegraph.com/sourcegraph/srclib/store/phtable"
 )
 
 type defPathIndex struct {
-	mph   *mph.CHD
-	ready bool
+	phtable *phtable.CHD
+	ready   bool
 }
 
 var _ interface {
@@ -21,18 +20,11 @@ var _ interface {
 } = (*defPathIndex)(nil)
 
 func (x *defPathIndex) getByPath(defPath string) (int64, bool) {
-	if x.mph == nil {
-		panic("mph not built/read")
+	if x.phtable == nil {
+		panic("phtable not built/read")
 	}
-	v := x.mph.Get([]byte(defPath))
-	if v == nil {
-		return 0, false
-	}
-	ofs, err := strconv.ParseInt(string(v), 36, 64)
-	if err != nil {
-		panic(err)
-	}
-	return ofs, true
+	v, found := x.phtable.GetUint64([]byte(defPath))
+	return int64(v), found
 }
 
 // Covers implements defIndex.
@@ -62,33 +54,35 @@ func (x *defPathIndex) Defs(f ...DefFilter) (byteOffsets, error) {
 
 // Build implements defIndexBuilder.
 func (x *defPathIndex) Build(defs []*graph.Def, ofs byteOffsets) error {
-	vlog.Printf("defPathIndex: building index...")
-	b := mph.Builder()
+	vlog.Printf("defPathIndex: building index... (%d defs)", len(defs))
+	b := phtable.Uvarint64Builder(len(defs))
 	for i, def := range defs {
-		b.Add([]byte(def.Path), []byte(strconv.FormatInt(ofs[i], 36)))
+		b.AddUvarint64([]byte(def.Path), uint64(ofs[i]))
 	}
+	vlog.Printf("defPathIndex: done adding index (%d defs).", len(defs))
 	h, err := b.Build()
 	if err != nil {
 		return err
 	}
-	x.mph = h
+	h.ValuesAreVarints = true
+	x.phtable = h
 	x.ready = true
-	vlog.Printf("defPathIndex: done building index.")
+	vlog.Printf("defPathIndex: done building index (%d defs).", len(defs))
 	return nil
 }
 
 // Write implements persistedIndex.
 func (x *defPathIndex) Write(w io.Writer) error {
-	if x.mph == nil {
-		panic("no mph to write")
+	if x.phtable == nil {
+		panic("no phtable to write")
 	}
-	return x.mph.Write(w)
+	return x.phtable.Write(w)
 }
 
 // Read implements persistedIndex.
 func (x *defPathIndex) Read(r io.Reader) error {
 	var err error
-	x.mph, err = mph.Read(r)
+	x.phtable, err = phtable.ReadVarints(r)
 	x.ready = (err == nil)
 	return err
 }
