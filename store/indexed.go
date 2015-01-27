@@ -1,6 +1,7 @@
 package store
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"log"
@@ -519,7 +520,11 @@ func writeIndex(fs rwvfs.FileSystem, name string, x persistedIndex) (err error) 
 		}
 	}()
 
-	if err := x.Write(f); err != nil {
+	bw := bufio.NewWriter(f)
+	if err := x.Write(bw); err != nil {
+		return err
+	}
+	if err := bw.Flush(); err != nil {
 		return err
 	}
 	vlog.Printf("%s: done writing index.", name)

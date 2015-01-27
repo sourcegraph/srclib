@@ -14,6 +14,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"sourcegraph.com/sourcegraph/rwvfs"
@@ -207,6 +208,8 @@ type StoreImportCmd struct {
 var storeImportCmd StoreImportCmd
 
 func (c *StoreImportCmd) Execute(args []string) error {
+	start := time.Now()
+
 	s, err := storeCmd.store()
 	if err != nil {
 		return err
@@ -289,52 +292,82 @@ func (c *StoreImportCmd) Execute(args []string) error {
 		}
 	}
 
+	log.Printf("# Import completed in %s.", time.Since(start))
 	return nil
 }
 
 // sample imports sample data (when the --sample option is given).
 func (c *StoreImportCmd) sample(s interface{}) error {
+	dataString := []byte(`"abcdabcdabcdabcdabcdcdabcdabcdabcdabcdabcdabcdabcdabcdcdabcdabcdabcdabcdabcdabcdabcdabcdcdabcdabcdabcdabcdabcdabcdabcdabcdcdabcdabcdabcdabcdabcdabcdabcdabcdcdabcdabcdabcdabcdabcdabcdabcdabcdcdabcdabcdabcdabcdabcdabcdabcdabcdcdabcdabcdabcd"`)
 	makeGraphData := func(numDefs, numRefs int) *graph.Output {
+		defs := make([]graph.Def, numDefs)
+		refs := make([]graph.Ref, numRefs)
+
 		data := graph.Output{
 			Defs: make([]*graph.Def, numDefs),
 			Refs: make([]*graph.Ref, numRefs),
 		}
-		for i := 0; i < numDefs; i++ {
-			data.Defs[i] = &graph.Def{
-				DefKey:   graph.DefKey{Path: fmt.Sprintf("def-path-%d", i)},
-				Name:     fmt.Sprintf("def-name-%d", i),
-				Kind:     "mykind",
-				DefStart: uint32((i % 53) * 37),
-				DefEnd:   uint32((i%53)*37 + (i % 20)),
-				File:     fmt.Sprintf("dir%d/subdir%d/subsubdir%d/file-%d.foo", i%5, i%3, i%7, i%11),
-				Exported: i%5 == 0,
-				Local:    i%3 == 0,
-				Data:     []byte(`"` + strings.Repeat("abcd", 50) + `"`),
-			}
-		}
-		for i := 0; i < numRefs; i++ {
-			data.Refs[i] = &graph.Ref{
-				DefPath: fmt.Sprintf("ref-path-%d", i),
-				Def:     i%5 == 0,
-				Start:   uint32((i % 51) * 39),
-				End:     uint32((i%51)*37 + (int(i) % 18)),
-				File:    fmt.Sprintf("dir%d/subdir%d/subsubdir%d/file-%d.foo", i%3, i%5, i%7, i%11),
-			}
-			if i%3 == 0 {
-				data.Refs[i].DefUnit = fmt.Sprintf("def-unit-%d", i%17)
-				data.Refs[i].DefUnitType = fmt.Sprintf("def-unit-type-%d", i%3)
-				if i%7 == 0 {
-					data.Refs[i].DefRepo = fmt.Sprintf("def-repo-%d", i%13)
+
+		var wg sync.WaitGroup
+
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for i := 0; i < numDefs; i++ {
+				defs[i] = graph.Def{
+					DefKey:   graph.DefKey{Path: fmt.Sprintf("def-path-%d", i)},
+					Name:     fmt.Sprintf("def-name-%d", i),
+					Kind:     "mykind",
+					DefStart: uint32((i % 53) * 37),
+					DefEnd:   uint32((i%53)*37 + (i % 20)),
+					File:     fmt.Sprintf("dir%d/subdir%d/subsubdir%d/file-%d.foo", i%5, i%3, i%7, i%11),
+					Exported: i%5 == 0,
+					Local:    i%3 == 0,
+					Data:     dataString,
 				}
 			}
-		}
+		}()
+
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for i := 0; i < numRefs; i++ {
+				refs[i] = graph.Ref{
+					DefPath: fmt.Sprintf("ref-path-%d", i),
+					Def:     i%5 == 0,
+					Start:   uint32((i % 51) * 39),
+					End:     uint32((i%51)*37 + (int(i) % 18)),
+					File:    fmt.Sprintf("dir%d/subdir%d/subsubdir%d/file-%d.foo", i%3, i%5, i%7, i%11),
+				}
+				if i%3 == 0 {
+					refs[i].DefUnit = fmt.Sprintf("def-unit-%d", i%17)
+					refs[i].DefUnitType = fmt.Sprintf("def-unit-type-%d", i%3)
+					if i%7 == 0 {
+						refs[i].DefRepo = fmt.Sprintf("def-repo-%d", i%13)
+					}
+				}
+			}
+		}()
+
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for i := range defs {
+				data.Defs[i] = &defs[i]
+			}
+			for i := range refs {
+				data.Refs[i] = &refs[i]
+			}
+		}()
+
+		wg.Wait()
 		return &data
 	}
 
+	start := time.Now()
+	log.Printf("Making sample data (%d defs, %d refs)", c.SampleDefs, c.SampleRefs)
 	data := makeGraphData(c.SampleDefs, c.SampleRefs)
-
 	unit := &unit.SourceUnit{Type: "MyUnitType", Name: "MyUnit"}
-
 	files := map[string]struct{}{}
 	for _, def := range data.Defs {
 		files[def.File] = struct{}{}
@@ -345,16 +378,19 @@ func (c *StoreImportCmd) sample(s interface{}) error {
 	for f := range files {
 		unit.Files = append(unit.Files, f)
 	}
+	if d := time.Since(start); d > time.Millisecond*250 {
+		log.Printf("Done making sample data (took %s).", d)
+	}
 
-	cw := &countingWriter{Writer: ioutil.Discard}
-	if err := store.Codec.Encode(cw, data); err != nil {
+	size, err := store.Codec.NewEncoder(ioutil.Discard).Encode(data)
+	if err != nil {
 		return err
 	}
-	log.Printf("Encoded data is %s", bytesString(cw.n))
+	log.Printf("Encoded data is %s", bytesString(size))
 
 	commitID := strings.Repeat("f", 40)
 	log.Printf("Importing %d defs and %d refs into the source unit %+v at commit %s", len(data.Defs), len(data.Refs), unit.ID2(), commitID)
-	start := time.Now()
+	start = time.Now()
 	switch imp := s.(type) {
 	case store.RepoImporter:
 		if err := imp.Import(commitID, unit, *data); err != nil {

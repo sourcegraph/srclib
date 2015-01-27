@@ -31,7 +31,7 @@ func TestCodec(t *testing.T) {
 			orig := makeGraphData(t, n)
 
 			var buf bytes.Buffer
-			if err := test.codec.Encode(&buf, &orig); err != nil {
+			if _, err := test.codec.NewEncoder(&buf).Encode(&orig); err != nil {
 				t.Errorf("%T (%d): Encode: %s", test.codec, n, err)
 				continue
 			}
@@ -134,12 +134,13 @@ func makeGraphData(t testing.TB, n int) graph.Output {
 
 func benchmarkCodec_Encode(b *testing.B, c codec, n int) {
 	orig := makeGraphData(b, n)
+	enc := c.NewEncoder(ioutil.Discard)
 
 	runtime.GC()
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		if err := c.Encode(ioutil.Discard, &orig); err != nil {
+		if _, err := enc.Encode(&orig); err != nil {
 			b.Fatalf("%T (%d): Encode: %s", c, n, err)
 		}
 	}
@@ -148,7 +149,7 @@ func benchmarkCodec_Encode(b *testing.B, c codec, n int) {
 func benchmarkCodec_Decode(b *testing.B, c codec, n int) {
 	orig := makeGraphData(b, n)
 	var buf bytes.Buffer
-	if err := c.Encode(&buf, &orig); err != nil {
+	if _, err := c.NewEncoder(&buf).Encode(&orig); err != nil {
 		b.Errorf("%T (%d): Encode: %s", c, n, err)
 	}
 	bb := buf.Bytes()

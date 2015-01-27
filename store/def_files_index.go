@@ -1,13 +1,14 @@
 package store
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"path"
 
-	"github.com/alecthomas/mph"
+	"github.com/alecthomas/binary"
+
 	"sourcegraph.com/sourcegraph/srclib/graph"
+	"sourcegraph.com/sourcegraph/srclib/store/phtable"
 )
 
 // NOTE(sqs): There is a lot of duplication here with unitFilesIndex.
@@ -22,8 +23,8 @@ type defFilesIndex struct {
 	// perFile is the number of defs per file to index.
 	perFile int
 
-	mph   *mph.CHD
-	ready bool
+	phtable *phtable.CHD
+	ready   bool
 }
 
 var _ interface {
@@ -47,16 +48,16 @@ func (x *defFilesIndex) getByPath(path string) (byteOffsets, bool, error) {
 	vlog.Printf("defFilesIndex.getByPath(%s)", path)
 	c_defFilesIndex_getByPath++
 
-	if x.mph == nil {
-		panic("mph not built/read")
+	if x.phtable == nil {
+		panic("phtable not built/read")
 	}
-	v := x.mph.Get([]byte(path))
+	v := x.phtable.Get([]byte(path))
 	if v == nil {
 		return nil, false, nil
 	}
 
 	var ofs byteOffsets
-	if err := json.Unmarshal(v, &ofs); err != nil {
+	if err := binary.Unmarshal(v, &ofs); err != nil {
 		return nil, true, err
 	}
 	return ofs, true, nil
@@ -102,15 +103,15 @@ func (x *defFilesIndex) Defs(fs ...DefFilter) (byteOffsets, error) {
 // Build implements defIndexBuilder.
 func (x *defFilesIndex) Build(defs []*graph.Def, ofs byteOffsets) error {
 	vlog.Printf("defFilesIndex: building index...")
-	b := mph.Builder()
 	f2ofs := make(filesToDefOfs, len(defs)/50)
 	for i, def := range defs {
 		if len(f2ofs[def.File]) < x.perFile && defFilters(x.filters).SelectDef(def) {
 			f2ofs.add(def.File, ofs[i], x.perFile)
 		}
 	}
+	b := phtable.Builder(len(f2ofs))
 	for file, defOfs := range f2ofs {
-		ob, err := json.Marshal(defOfs)
+		ob, err := binary.Marshal(defOfs)
 		if err != nil {
 			return err
 		}
@@ -120,7 +121,7 @@ func (x *defFilesIndex) Build(defs []*graph.Def, ofs byteOffsets) error {
 	if err != nil {
 		return err
 	}
-	x.mph = h
+	x.phtable = h
 	x.ready = true
 	vlog.Printf("defFilesIndex: done building index.")
 	return nil
@@ -150,16 +151,16 @@ func (v filesToDefOfs) add(file string, ofs int64, perFile int) {
 
 // Write implements persistedIndex.
 func (x *defFilesIndex) Write(w io.Writer) error {
-	if x.mph == nil {
-		panic("no mph to write")
+	if x.phtable == nil {
+		panic("no phtable to write")
 	}
-	return x.mph.Write(w)
+	return x.phtable.Write(w)
 }
 
 // Read implements persistedIndex.
 func (x *defFilesIndex) Read(r io.Reader) error {
 	var err error
-	x.mph, err = mph.Read(r)
+	x.phtable, err = phtable.Read(r)
 	x.ready = (err == nil)
 	return err
 }
