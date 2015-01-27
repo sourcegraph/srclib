@@ -3,6 +3,8 @@ package store
 import (
 	"io"
 
+	"strings"
+
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/store/phtable"
 )
@@ -54,6 +56,8 @@ func (x *defPathIndex) Defs(f ...DefFilter) (byteOffsets, error) {
 
 // Build implements defIndexBuilder.
 func (x *defPathIndex) Build(defs []*graph.Def, ofs byteOffsets) error {
+	tries := 0
+retry:
 	vlog.Printf("defPathIndex: building index... (%d defs)", len(defs))
 	b := phtable.Uvarint64Builder(len(defs))
 	for i, def := range defs {
@@ -62,6 +66,10 @@ func (x *defPathIndex) Build(defs []*graph.Def, ofs byteOffsets) error {
 	vlog.Printf("defPathIndex: done adding index (%d defs).", len(defs))
 	h, err := b.Build()
 	if err != nil {
+		if tries < 10 && strings.Contains(err.Error(), "failed to find a collision-free hash function") {
+			tries++
+			goto retry
+		}
 		return err
 	}
 	h.ValuesAreVarints = true
