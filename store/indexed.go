@@ -6,8 +6,11 @@ import (
 	"log"
 	"os"
 
+	"code.google.com/p/rog-go/parallel"
+
 	"sort"
 	"strings"
+	"sync"
 
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib/graph"
@@ -198,7 +201,7 @@ func (s *indexedTreeStore) Import(u *unit.SourceUnit, data graph.Output) error {
 
 	s.checkSourceUnitFiles(u, data)
 
-	if err := s.buildIndexes(); err != nil {
+	if err := s.buildIndexes(s.Indexes(), nil); err != nil {
 		return err
 	}
 
@@ -249,42 +252,52 @@ func (s *indexedTreeStore) checkSourceUnitFiles(u *unit.SourceUnit, data graph.O
 	}
 }
 
-func (s *indexedTreeStore) buildIndexes() error {
-	for name, x := range s.Indexes() {
-		if err := s.BuildIndex(name, x); err != nil {
-			return err
-		}
-	}
-	return nil
+func (s *indexedTreeStore) BuildIndex(name string, x Index) error {
+	return s.buildIndexes(map[string]Index{name: x}, nil)
 }
 
-func (s *indexedTreeStore) BuildIndex(name string, x Index) error {
-	switch x := x.(type) {
-	case unitIndexBuilder:
+func (s *indexedTreeStore) buildIndexes(xs map[string]Index, units []*unit.SourceUnit) error {
+	getUnits := func() ([]*unit.SourceUnit, error) {
+		// Don't refetch if passed in as arg or if getUnits was
+		// already called.
+		if units != nil {
+			return units, nil
+		}
+
 		// TODO(sqs): there's a race condition here if multiple imports
 		// are running concurrently, they could clobber each other's
 		// indexes. (S3 is eventually consistent.)
-		//
-		// TODO(sqs): also, if multiple BuildIndexes are called by
-		// buildIndexes (if we have more than 1 index here in the
-		// future), then we do redundant work in this call to
-		// Units. We could add another layer of indirection and cache
-		// the Units result.
-		allUnits, err := s.fsTreeStore.Units()
-		if err != nil {
-			return err
+		var err error
+		units, err = s.fsTreeStore.Units()
+		if units == nil {
+			// Make units non-nil so we don't refetch (and thereby
+			// cache errors).
+			units = []*unit.SourceUnit{}
 		}
-		if err := x.Build(allUnits); err != nil {
-			return err
+		return units, err
+	}
+
+	// TODO(sqs): parallelize
+	for name, x := range xs {
+		switch x := x.(type) {
+		case unitIndexBuilder:
+			units, err := getUnits()
+			if err != nil {
+				return err
+			}
+			if err := x.Build(units); err != nil {
+				return err
+			}
+		default:
+			return fmt.Errorf("don't know how to build index %q of type %T", name, x)
 		}
-		if px, ok := x.(persistedIndex); ok {
-			if err := writeIndex(s.fs, name, px); err != nil {
+		if x, ok := x.(persistedIndex); ok {
+			if err := writeIndex(s.fs, name, x); err != nil {
 				return err
 			}
 		}
-		return nil
 	}
-	return fmt.Errorf("don't know how to build index %q of type %T", name, x)
+	return nil
 }
 
 func (s *indexedTreeStore) statIndex(name string) (os.FileInfo, error) {
@@ -377,52 +390,106 @@ func (s *indexedUnitStore) Import(data graph.Output) error {
 	cleanForImport(&data, "", "", "")
 
 	// TODO(sqs): parallelize
-
-	if _, err := s.fsUnitStore.writeDefs(data.Defs); err != nil {
+	defOfs, err := s.fsUnitStore.writeDefs(data.Defs)
+	if err != nil {
 		return err
 	}
-	if _, err := s.fsUnitStore.writeRefs(data.Refs); err != nil {
+	refFBRs, err := s.fsUnitStore.writeRefs(data.Refs)
+	if err != nil {
 		return err
 	}
-
-	for name, x := range s.Indexes() {
-		if err := s.BuildIndex(name, x); err != nil {
-			return err
-		}
+	if err := s.buildIndexes(s.Indexes(), &data, defOfs, refFBRs); err != nil {
+		return err
 	}
-
 	return nil
 }
 
 func (s *indexedUnitStore) Indexes() map[string]Index { return s.indexes }
 
 func (s *indexedUnitStore) BuildIndex(name string, x Index) error {
-	// TODO(sqs): during import, we already have all of the data
-	// necessary to construct the index, so we should add a fast-path
-	// that doesn't require us to re-read all of the data from the fs.
-	switch x := x.(type) {
-	case defIndexBuilder:
-		defs, ofs, err := s.fsUnitStore.readDefs()
-		if err != nil {
-			return err
+	return s.buildIndexes(map[string]Index{name: x}, nil, nil, nil)
+}
+
+func (s *indexedUnitStore) buildIndexes(xs map[string]Index, data *graph.Output, defOfs byteOffsets, refFBRs fileByteRanges) error {
+	var defs []*graph.Def
+	var refs []*graph.Ref
+	if data != nil {
+		// Allow us to distinguish between empty (empty slice) and not-yet-fetched (nil).
+		defs = data.Defs
+		if defs == nil {
+			defs = []*graph.Def{}
 		}
-		if err := x.Build(defs, ofs); err != nil {
-			return err
-		}
-	case refIndexBuilder:
-		refs, fbrs, err := s.fsUnitStore.readRefs()
-		if err != nil {
-			return err
-		}
-		if err := x.Build(refs, fbrs); err != nil {
-			return err
+		refs = data.Refs
+		if refs == nil {
+			refs = []*graph.Ref{}
 		}
 	}
 
-	if x, ok := x.(persistedIndex); ok {
-		return writeIndex(s.fs, name, x)
+	var getDefsErr error
+	var getDefsOnce sync.Once
+	getDefs := func() ([]*graph.Def, byteOffsets, error) {
+		getDefsOnce.Do(func() {
+			// Don't refetch if passed in as arg or if getData was
+			// already called.
+			if defs == nil {
+				defs, defOfs, getDefsErr = s.fsUnitStore.readDefs()
+			}
+			if defs == nil {
+				defs = []*graph.Def{}
+			}
+		})
+		return defs, defOfs, getDefsErr
 	}
-	return nil
+
+	var getRefsErr error
+	var getRefsOnce sync.Once
+	getRefs := func() ([]*graph.Ref, fileByteRanges, error) {
+		getRefsOnce.Do(func() {
+			// Don't refetch if passed in as arg or if getData was
+			// already called.
+			if refs == nil {
+				refs, refFBRs, getRefsErr = s.fsUnitStore.readRefs()
+			}
+			if refs == nil {
+				refs = []*graph.Ref{}
+			}
+		})
+		return refs, refFBRs, getRefsErr
+	}
+
+	par := parallel.NewRun(len(xs))
+	for name_, x_ := range xs {
+		name, x := name_, x_
+		par.Do(func() error {
+			switch x := x.(type) {
+			case defIndexBuilder:
+				defs, defOfs, err := getDefs()
+				if err != nil {
+					return err
+				}
+				if err := x.Build(defs, defOfs); err != nil {
+					return err
+				}
+			case refIndexBuilder:
+				refs, refFBRs, err := getRefs()
+				if err != nil {
+					return err
+				}
+				if err := x.Build(refs, refFBRs); err != nil {
+					return err
+				}
+			default:
+				return fmt.Errorf("don't know how to build index %q of type %T", name, x)
+			}
+			if x, ok := x.(persistedIndex); ok {
+				if err := writeIndex(s.fs, name, x); err != nil {
+					return err
+				}
+			}
+			return nil
+		})
+	}
+	return par.Wait()
 }
 
 func (s *indexedUnitStore) statIndex(name string) (os.FileInfo, error) {
