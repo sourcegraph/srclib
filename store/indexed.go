@@ -389,15 +389,22 @@ func (s *indexedUnitStore) Refs(fs ...RefFilter) ([]*graph.Ref, error) {
 func (s *indexedUnitStore) Import(data graph.Output) error {
 	cleanForImport(&data, "", "", "")
 
-	// TODO(sqs): parallelize
-	defOfs, err := s.fsUnitStore.writeDefs(data.Defs)
-	if err != nil {
+	var defOfs byteOffsets
+	var refFBRs fileByteRanges
+
+	par := parallel.NewRun(2)
+	par.Do(func() (err error) {
+		defOfs, err = s.fsUnitStore.writeDefs(data.Defs)
+		return err
+	})
+	par.Do(func() (err error) {
+		refFBRs, err = s.fsUnitStore.writeRefs(data.Refs)
+		return err
+	})
+	if err := par.Wait(); err != nil {
 		return err
 	}
-	refFBRs, err := s.fsUnitStore.writeRefs(data.Refs)
-	if err != nil {
-		return err
-	}
+
 	if err := s.buildIndexes(s.Indexes(), &data, defOfs, refFBRs); err != nil {
 		return err
 	}
