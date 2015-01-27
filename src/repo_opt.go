@@ -2,6 +2,7 @@ package src
 
 import (
 	"log"
+	"os"
 	"path/filepath"
 
 	"sourcegraph.com/sourcegraph/go-flags"
@@ -44,6 +45,10 @@ func setDefaultCommitIDOpt(c *flags.Command) {
 func setDefaultRepoSubdirOpt(c *flags.Command) {
 	openLocalRepo()
 	if localRepo != nil {
+		absDir, err := os.Getwd()
+		if err != nil {
+			log.Fatal(err)
+		}
 		subdir, err := filepath.Rel(localRepo.RootDir, absDir)
 		if err != nil {
 			log.Fatal(err)

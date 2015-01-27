@@ -1,14 +1,20 @@
 package src
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"log"
 	"net/url"
+	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/s3vfs"
@@ -33,6 +39,10 @@ func init() {
 	}
 	lrepo, _ := openLocalRepo()
 	if lrepo != nil && lrepo.RootDir != "" {
+		absDir, err := os.Getwd()
+		if err != nil {
+			log.Fatal(err)
+		}
 		relDir, err := filepath.Rel(absDir, lrepo.RootDir)
 		if err == nil {
 			SetOptionDefaultValue(c.Group, "root", filepath.Join(relDir, store.SrclibStoreDir))
@@ -146,6 +156,14 @@ func (c *StoreCmd) store() (interface{}, error) {
 	} else {
 		fs = rwvfs.OS(c.Root)
 	}
+
+	type createParents interface {
+		CreateParentDirs(bool)
+	}
+	if fs, ok := fs.(createParents); ok {
+		fs.CreateParentDirs(true)
+	}
+
 	switch c.Type {
 	case "RepoStore":
 		return store.NewFSRepoStore(fs), nil
@@ -172,6 +190,10 @@ func (c *StoreCmd) store() (interface{}, error) {
 type StoreImportCmd struct {
 	DryRun bool `short:"n" long:"dry-run" description:"print what would be done but don't do anything"`
 
+	Sample     bool `long:"sample" description:"import sample data, not .srclib-cache data"`
+	SampleDefs int  `long:"sample-defs" description:"number of sample defs to import" default:"100"`
+	SampleRefs int  `long:"sample-refs" description:"number of sample refs to import" default:"100"`
+
 	Repo     string `long:"repo" description:"only import for this repo"`
 	Unit     string `long:"unit" description:"only import source units with this name"`
 	UnitType string `long:"unit-type" description:"only import source units with this type"`
@@ -184,12 +206,16 @@ type StoreImportCmd struct {
 var storeImportCmd StoreImportCmd
 
 func (c *StoreImportCmd) Execute(args []string) error {
-	lrepo, err := openLocalRepo()
+	s, err := storeCmd.store()
 	if err != nil {
 		return err
 	}
 
-	s, err := storeCmd.store()
+	if c.Sample {
+		return c.sample(s)
+	}
+
+	lrepo, err := openLocalRepo()
 	if err != nil {
 		return err
 	}
@@ -263,6 +289,142 @@ func (c *StoreImportCmd) Execute(args []string) error {
 	}
 
 	return nil
+}
+
+// sample imports sample data (when the --sample option is given).
+func (c *StoreImportCmd) sample(s interface{}) error {
+	makeGraphData := func(numDefs, numRefs int) *graph.Output {
+		data := graph.Output{
+			Defs: make([]*graph.Def, numDefs),
+			Refs: make([]*graph.Ref, numRefs),
+		}
+		for i := 0; i < numDefs; i++ {
+			data.Defs[i] = &graph.Def{
+				DefKey:   graph.DefKey{Path: fmt.Sprintf("def-path-%d", i)},
+				Name:     fmt.Sprintf("def-name-%d", i),
+				Kind:     "mykind",
+				DefStart: uint32((i % 53) * 37),
+				DefEnd:   uint32((i%53)*37 + (i % 20)),
+				File:     fmt.Sprintf("dir%d/subdir%d/subsubdir%d/file-%d.foo", i%5, i%3, i%7, i%11),
+				Exported: i%5 == 0,
+				Local:    i%3 == 0,
+				Data:     []byte(`"` + strings.Repeat("abcd", 50) + `"`),
+			}
+		}
+		for i := 0; i < numRefs; i++ {
+			data.Refs[i] = &graph.Ref{
+				DefPath: fmt.Sprintf("ref-path-%d", i),
+				Def:     i%5 == 0,
+				Start:   uint32((i % 51) * 39),
+				End:     uint32((i%51)*37 + (int(i) % 18)),
+				File:    fmt.Sprintf("dir%d/subdir%d/subsubdir%d/file-%d.foo", i%3, i%5, i%7, i%11),
+			}
+			if i%3 == 0 {
+				data.Refs[i].DefUnit = fmt.Sprintf("def-unit-%d", i%17)
+				data.Refs[i].DefUnitType = fmt.Sprintf("def-unit-type-%d", i%3)
+				if i%7 == 0 {
+					data.Refs[i].DefRepo = fmt.Sprintf("def-repo-%d", i%13)
+				}
+			}
+		}
+		return &data
+	}
+
+	data := makeGraphData(c.SampleDefs, c.SampleRefs)
+
+	unit := &unit.SourceUnit{Type: "MyUnitType", Name: "MyUnit"}
+
+	files := map[string]struct{}{}
+	for _, def := range data.Defs {
+		files[def.File] = struct{}{}
+	}
+	for _, ref := range data.Refs {
+		files[ref.File] = struct{}{}
+	}
+	for f := range files {
+		unit.Files = append(unit.Files, f)
+	}
+
+	cw := &countingWriter{Writer: ioutil.Discard}
+	if err := store.Codec.Encode(cw, data); err != nil {
+		return err
+	}
+	log.Printf("Encoded data is %s", bytesString(cw.n))
+
+	commitID := strings.Repeat("f", 40)
+	log.Printf("Importing %d defs and %d refs into the source unit %+v at commit %s", len(data.Defs), len(data.Refs), unit.ID2(), commitID)
+	start := time.Now()
+	switch imp := s.(type) {
+	case store.RepoImporter:
+		if err := imp.Import(commitID, unit, *data); err != nil {
+			return err
+		}
+	case store.MultiRepoImporter:
+		repo := "example.com/my/repo"
+		log.Printf(" - repo %s", repo)
+		if err := imp.Import(repo, commitID, unit, *data); err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("store (type %T) does not implement importing", s)
+	}
+	log.Printf("Import took %s (~%s per def/ref)", time.Since(start), time.Duration(int64(time.Since(start))/int64(len(data.Defs)+len(data.Refs))))
+
+	log.Println()
+	log.Printf("Running some commands to list sample data")
+
+	runCmd := func(args ...string) error {
+		start := time.Now()
+		var b bytes.Buffer
+		c := exec.Command(args[0], args[1:]...)
+		c.Stdout = &b
+		c.Stderr = &b
+		log.Println()
+		log.Println(strings.Join(c.Args, " "))
+		if err := c.Run(); err != nil {
+			return fmt.Errorf("command %v failed\n\noutput was:\n%s", c.Args, b.String())
+		}
+		if GlobalOpt.Verbose {
+			log.Println(b.String())
+		} else {
+			log.Printf("-> printed %d lines of output (run with `src -v` to view)", bytes.Count(b.Bytes(), []byte{'\n'}))
+		}
+		log.Printf("-> took %s", time.Since(start))
+		return nil
+	}
+	if err := runCmd("src", "store", "versions"); err != nil {
+		return err
+	}
+	if err := runCmd("src", "store", "units"); err != nil {
+		return err
+	}
+	if err := runCmd("src", "store", "units", "--file", data.Defs[len(data.Defs)/2+1].File); err != nil {
+		return err
+	}
+	if err := runCmd("src", "store", "units", "--file", data.Refs[len(data.Refs)/2+1].File); err != nil {
+		return err
+	}
+	if err := runCmd("src", "store", "defs", "--file", data.Defs[len(data.Defs)/3+1].File); err != nil {
+		return err
+	}
+	if err := runCmd("src", "store", "refs", "--file", data.Refs[len(data.Refs)/2+1].File); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// countingWriter wraps an io.Writer, counting the number of bytes
+// written.
+type countingWriter struct {
+	io.Writer
+	n uint64
+}
+
+func (cr *countingWriter) Write(p []byte) (n int, err error) {
+	n, err = cr.Writer.Write(p)
+	cr.n += uint64(n)
+	return
 }
 
 type storeIndexCriteria struct {

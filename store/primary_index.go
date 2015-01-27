@@ -62,6 +62,7 @@ func (x *defPathIndex) Defs(f ...DefFilter) (byteOffsets, error) {
 
 // Build implements defIndexBuilder.
 func (x *defPathIndex) Build(defs []*graph.Def, ofs byteOffsets) error {
+	vlog.Printf("defPathIndex: building index...")
 	b := mph.Builder()
 	for i, def := range defs {
 		b.Add([]byte(def.Path), []byte(strconv.FormatInt(ofs[i], 36)))
@@ -72,6 +73,7 @@ func (x *defPathIndex) Build(defs []*graph.Def, ofs byteOffsets) error {
 	}
 	x.mph = h
 	x.ready = true
+	vlog.Printf("defPathIndex: done building index.")
 	return nil
 }
 

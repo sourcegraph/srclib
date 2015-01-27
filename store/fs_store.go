@@ -613,6 +613,7 @@ func (s *fsUnitStore) Import(data graph.Output) error {
 // serialized byte offset where each def's serialized representation
 // begins (which is used during index construction).
 func (s *fsUnitStore) writeDefs(defs []*graph.Def) (ofs byteOffsets, err error) {
+	vlog.Printf("fsUnitStore: writing %d defs...", len(defs))
 	f, err := s.fs.Create(unitDefsFilename)
 	if err != nil {
 		return nil, err
@@ -632,11 +633,13 @@ func (s *fsUnitStore) writeDefs(defs []*graph.Def) (ofs byteOffsets, err error) 
 			return nil, err
 		}
 	}
+	vlog.Printf("fsUnitStore: done writing %d defs.", len(defs))
 	return ofs, nil
 }
 
 // writeDefs writes the ref data file.
 func (s *fsUnitStore) writeRefs(refs []*graph.Ref) (fbr fileByteRanges, err error) {
+	vlog.Printf("fsUnitStore: writing %d refs...", len(refs))
 	f, err := s.fs.Create(unitRefsFilename)
 	if err != nil {
 		return nil, err
@@ -676,6 +679,7 @@ func (s *fsUnitStore) writeRefs(refs []*graph.Ref) (fbr fileByteRanges, err erro
 	if lastFile != "" {
 		fbr[lastFile] = lastFileByteRanges
 	}
+	vlog.Printf("fsUnitStore: done writing %d refs.", len(refs))
 	return fbr, nil
 }
 

@@ -116,18 +116,6 @@ func newAPIClientWithAuth(cache bool) *sourcegraph.Client {
 	return newAPIClient(ua, cache)
 }
 
-var (
-	absDir string
-)
-
-func init() {
-	var err error
-	absDir, err = os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
 func Main() error {
 	log.SetFlags(0)
 	log.SetPrefix("")

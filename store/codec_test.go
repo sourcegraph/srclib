@@ -109,7 +109,7 @@ func makeGraphData(t testing.TB, n int) graph.Output {
 			Kind:     "mykind",
 			DefStart: uint32((i % 53) * 37),
 			DefEnd:   uint32((i%53)*37 + (i % 20)),
-			File:     fmt.Sprintf("dir%d/subdir%d/subsubdir%d/def-file-%d.foo", i%39, i%29, i%19, i%101),
+			File:     fmt.Sprintf("dir%d/subdir%d/subsubdir%d/file-%d.foo", i%5, i%3, i%7, i%5),
 			Exported: i%5 == 0,
 			Local:    i%3 == 0,
 			Data:     []byte(`"` + strings.Repeat("abcd", 50) + `"`),
@@ -119,7 +119,7 @@ func makeGraphData(t testing.TB, n int) graph.Output {
 			Def:     i%5 == 0,
 			Start:   uint32((i % 51) * 39),
 			End:     uint32((i%51)*37 + (int(i) % 18)),
-			File:    fmt.Sprintf("dir%d/subdir%d/subsubdir%d/ref-file-%d.foo", i%37, i%27, i%17, i%101),
+			File:    fmt.Sprintf("dir%d/subdir%d/subsubdir%d/file-%d.foo", i%3, i%5, i%7, i%5),
 		}
 		if i%3 == 0 {
 			data.Refs[i].DefUnit = fmt.Sprintf("def-unit-%d", i%17)
