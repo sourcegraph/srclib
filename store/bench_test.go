@@ -3,11 +3,11 @@ package store
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"runtime"
 	"testing"
 
-	"sourcegraph.com/sourcegraph/rwvfs"
+	"sort"
+
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -19,49 +19,39 @@ var (
 	numRefDefs  = flag.Int("bench.refdefs", 10, "number of distinct defs that refs point to")
 )
 
-func BenchmarkFS_Def1(b *testing.B)     { benchmarkDef(b, repoStore(), 1) }
-func BenchmarkFS_Def500(b *testing.B)   { benchmarkDef(b, repoStore(), 500) }
-func BenchmarkFS_Def5000(b *testing.B)  { benchmarkDef(b, repoStore(), 5000) }
-func BenchmarkFS_Def50000(b *testing.B) { benchmarkDef(b, repoStore(), 50000) }
-
-func BenchmarkFS_DefsByFile1(b *testing.B)     { benchmarkDefsByFile(b, repoStore(), 1) }
-func BenchmarkFS_DefsByFile500(b *testing.B)   { benchmarkDefsByFile(b, repoStore(), 500) }
-func BenchmarkFS_DefsByFile5000(b *testing.B)  { benchmarkDefsByFile(b, repoStore(), 5000) }
-func BenchmarkFS_DefsByFile50000(b *testing.B) { benchmarkDefsByFile(b, repoStore(), 50000) }
-
-func BenchmarkFS_RefsByFile1(b *testing.B)     { benchmarkRefsByFile(b, repoStore(), 1) }
-func BenchmarkFS_RefsByFile500(b *testing.B)   { benchmarkRefsByFile(b, repoStore(), 500) }
-func BenchmarkFS_RefsByFile5000(b *testing.B)  { benchmarkRefsByFile(b, repoStore(), 5000) }
-func BenchmarkFS_RefsByFile50000(b *testing.B) { benchmarkRefsByFile(b, repoStore(), 50000) }
-
-func BenchmarkFS_RefsByFile1_filterFunc(b *testing.B) {
-	benchmarkRefsByFile_filterFunc(b, repoStore(), 1)
+func BenchmarkFSRepoStore_Import(b *testing.B) { benchmarkImport(b, newFSRepoStore()) }
+func BenchmarkFSRepoStore_Def(b *testing.B)    { benchmarkDef(b, newFSRepoStore(), *numDefs) }
+func BenchmarkFSRepoStore_Defs_ByFile(b *testing.B) {
+	benchmarkDefsByFile(b, newFSRepoStore(), *numDefs)
 }
-func BenchmarkFS_RefsByFile500_filterFunc(b *testing.B) {
-	benchmarkRefsByFile_filterFunc(b, repoStore(), 500)
+func BenchmarkFSRepoStore_Refs_ByFile(b *testing.B) {
+	benchmarkRefsByFile(b, newFSRepoStore(), *numRefs)
 }
-func BenchmarkFS_RefsByFile5000_filterFunc(b *testing.B) {
-	benchmarkRefsByFile_filterFunc(b, repoStore(), 5000)
+func BenchmarkFSRepoStore_Refs_ByFile_filterFunc(b *testing.B) {
+	benchmarkRefsByFile_filterFunc(b, newFSRepoStore(), *numRefs)
 }
-func BenchmarkFS_RefsByFile50000_filterFunc(b *testing.B) {
-	benchmarkRefsByFile_filterFunc(b, repoStore(), 50000)
+func BenchmarkFSRepoStore_Refs_ByDefPath(b *testing.B) {
+	benchmarkRefsByDefPath(b, newFSRepoStore(), *numRefs)
 }
 
-func BenchmarkFS_RefsByDefPath1(b *testing.B)     { benchmarkRefsByDefPath(b, repoStore(), 1) }
-func BenchmarkFS_RefsByDefPath500(b *testing.B)   { benchmarkRefsByDefPath(b, repoStore(), 500) }
-func BenchmarkFS_RefsByDefPath5000(b *testing.B)  { benchmarkRefsByDefPath(b, repoStore(), 5000) }
-func BenchmarkFS_RefsByDefPath50000(b *testing.B) { benchmarkRefsByDefPath(b, repoStore(), 50000) }
-
-func repoStore() RepoStoreImporter {
-	tmpDir, err := ioutil.TempDir("", "srclib-FSRepoStore-bench")
-	if err != nil {
-		panic(err)
-	}
-	fs := rwvfs.OS(tmpDir)
-	setCreateParentDirs(fs)
-	useIndexedStore = true
-	return NewFSRepoStore(fs)
+func BenchmarkIndexedRepoStore_Import(b *testing.B) { benchmarkImport(b, newIdxRepoStore()) }
+func BenchmarkIndexedRepoStore_Def(b *testing.B)    { benchmarkDef(b, newIdxRepoStore(), *numDefs) }
+func BenchmarkIndexedRepoStore_Defs_ByFile(b *testing.B) {
+	benchmarkDefsByFile(b, newIdxRepoStore(), *numDefs)
 }
+func BenchmarkIndexedRepoStore_Refs_ByFile(b *testing.B) {
+	benchmarkRefsByFile(b, newIdxRepoStore(), *numRefs)
+}
+func BenchmarkIndexedRepoStore_Refs_ByFile_filterFunc(b *testing.B) {
+	benchmarkRefsByFile_filterFunc(b, newIdxRepoStore(), *numRefs)
+}
+func BenchmarkIndexedRepoStore_Refs_ByDefPath(b *testing.B) {
+	benchmarkRefsByDefPath(b, newIdxRepoStore(), *numRefs)
+}
+
+func newFSRepoStore() RepoStoreImporter { useIndexedStore = false; return NewFSRepoStore(newTestFS()) }
+
+func newIdxRepoStore() RepoStoreImporter { useIndexedStore = true; return NewFSRepoStore(newTestFS()) }
 
 func insertDefs(b *testing.B, rs RepoStoreImporter, numDefs int) {
 	for v := 0; v < *numVersions; v++ {
@@ -113,6 +103,35 @@ func addSourceUnitFiles(u *unit.SourceUnit, file string) {
 		}
 	}
 	u.Files = append(u.Files, file)
+}
+
+func addSourceUnitFilesFromData(u *unit.SourceUnit, data *graph.Output) {
+	files := map[string]struct{}{}
+	for _, def := range data.Defs {
+		files[def.File] = struct{}{}
+	}
+	for _, ref := range data.Refs {
+		files[ref.File] = struct{}{}
+	}
+	for f := range files {
+		u.Files = append(u.Files, f)
+	}
+	sort.Strings(u.Files)
+}
+
+func benchmarkImport(b *testing.B, rs RepoStoreImporter) {
+	data := makeGraphData(b, *numDefs)
+	u := &unit.SourceUnit{Type: "t", Name: "u"}
+	addSourceUnitFilesFromData(u, &data)
+
+	runtime.GC()
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		if err := rs.Import("c", u, data); err != nil {
+			b.Fatal(err)
+		}
+	}
 }
 
 func benchmarkDef(b *testing.B, rs RepoStoreImporter, numDefs int) {

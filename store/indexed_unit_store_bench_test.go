@@ -19,7 +19,7 @@ var (
 
 func BenchmarkFSUnitStore_Def(b *testing.B) {
 	useIndexedStore = false
-	benchmarkUnitStore_Def(b, ffUnitStore(), *numDefs)
+	benchmarkUnitStore_Def(b, newFSUnitStore(), *numDefs)
 }
 func BenchmarkIndexedUnitStore_Def(b *testing.B) {
 	useIndexedStore = true
@@ -28,7 +28,7 @@ func BenchmarkIndexedUnitStore_Def(b *testing.B) {
 
 func BenchmarkFSUnitStore_Defs_all(b *testing.B) {
 	useIndexedStore = false
-	benchmarkUnitStore_Defs_all(b, ffUnitStore(), *numDefs)
+	benchmarkUnitStore_Defs_all(b, newFSUnitStore(), *numDefs)
 }
 func BenchmarkIndexedUnitStore_Defs_all(b *testing.B) {
 	useIndexedStore = true
@@ -37,14 +37,14 @@ func BenchmarkIndexedUnitStore_Defs_all(b *testing.B) {
 
 func BenchmarkFSUnitStore_Defs_byFile(b *testing.B) {
 	useIndexedStore = false
-	benchmarkUnitStore_Defs_byFile(b, ffUnitStore(), *numDefs)
+	benchmarkUnitStore_Defs_byFile(b, newFSUnitStore(), *numDefs)
 }
 func BenchmarkIndexedUnitStore_Defs_byFile(b *testing.B) {
 	useIndexedStore = true
 	benchmarkUnitStore_Defs_byFile(b, idxUnitStore(), *numDefs)
 }
 
-func ffUnitStore() UnitStoreImporter {
+func newFSUnitStore() UnitStoreImporter {
 	fs := rwvfs.Map(map[string]string{})
 	return &fsUnitStore{fs: fs}
 }
