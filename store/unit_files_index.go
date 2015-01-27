@@ -93,6 +93,7 @@ func (x *unitFilesIndex) Units(fs ...UnitFilter) ([]unit.ID2, error) {
 
 // Build implements unitIndexBuilder.
 func (x *unitFilesIndex) Build(units []*unit.SourceUnit) error {
+	vlog.Printf("unitFilesIndex: building index...")
 	b := mph.Builder()
 	f2u := make(filesToUnits, len(units)*10)
 	for _, u := range units {
@@ -113,6 +114,7 @@ func (x *unitFilesIndex) Build(units []*unit.SourceUnit) error {
 	}
 	x.mph = h
 	x.ready = true
+	vlog.Printf("unitFilesIndex: done building index.")
 	return nil
 }
 
@@ -149,7 +151,7 @@ func ancestorDirsExceptRoot(p string) []string {
 	if p == "" {
 		return nil
 	}
-	if len(p) == 1 && p[0] == '.' || p[0] == '/' {
+	if len(p) == 1 && (p[0] == '.' || p[0] == '/') {
 		return nil
 	}
 

@@ -81,6 +81,7 @@ func (x *refFileIndex) Refs(fs ...RefFilter) ([]byteRanges, error) {
 
 // Build creates the refFileIndex.
 func (x *refFileIndex) Build(ref []*graph.Ref, fbr fileByteRanges) error {
+	vlog.Printf("refFilesIndex: building index...")
 	b := mph.Builder()
 	for file, br := range fbr {
 		v, err := json.Marshal(br)
@@ -95,6 +96,7 @@ func (x *refFileIndex) Build(ref []*graph.Ref, fbr fileByteRanges) error {
 	}
 	x.mph = h
 	x.ready = true
+	vlog.Printf("refFilesIndex: done building index.")
 	return nil
 }
 

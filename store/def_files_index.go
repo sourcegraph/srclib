@@ -101,6 +101,7 @@ func (x *defFilesIndex) Defs(fs ...DefFilter) (byteOffsets, error) {
 
 // Build implements defIndexBuilder.
 func (x *defFilesIndex) Build(defs []*graph.Def, ofs byteOffsets) error {
+	vlog.Printf("defFilesIndex: building index...")
 	b := mph.Builder()
 	f2ofs := make(filesToDefOfs, len(defs)/50)
 	for i, def := range defs {
@@ -121,6 +122,7 @@ func (x *defFilesIndex) Build(defs []*graph.Def, ofs byteOffsets) error {
 	}
 	x.mph = h
 	x.ready = true
+	vlog.Printf("defFilesIndex: done building index.")
 	return nil
 }
 
