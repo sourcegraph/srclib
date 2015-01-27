@@ -113,7 +113,7 @@ func tryHash(hasher *chdHasher, seen map[uint64]struct{}, keys [][]byte, values 
 
 func (b *CHDBuilder) Build() (*CHD, error) {
 	// HACKY - see https://github.com/alecthomas/mph/issues/6.
-	minimal := len(b.keys) > 25
+	minimal := len(b.keys) > 75
 	var m, n uint64
 	if minimal {
 		n = uint64(len(b.keys))
