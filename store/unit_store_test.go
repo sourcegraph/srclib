@@ -28,12 +28,12 @@ func (s *labeledUnitStoreImporter) String() string {
 }
 
 func testUnitStore(t *testing.T, newFn func() unitStoreImporter) {
-	testUnitStore_uninitialized(t, &labeledUnitStoreImporter{newFn(), "uninitialized"})
-	testUnitStore_Import_empty(t, &labeledUnitStoreImporter{newFn(), "import empty"})
-	testUnitStore_Import(t, &labeledUnitStoreImporter{newFn(), "import"})
-	testUnitStore_Def(t, &labeledUnitStoreImporter{newFn(), "def"})
-	testUnitStore_Defs(t, &labeledUnitStoreImporter{newFn(), "defs"})
-	testUnitStore_Refs(t, &labeledUnitStoreImporter{newFn(), "refs"})
+	// testUnitStore_uninitialized(t, &labeledUnitStoreImporter{newFn(), "uninitialized"})
+	// testUnitStore_Import_empty(t, &labeledUnitStoreImporter{newFn(), "import empty"})
+	// testUnitStore_Import(t, &labeledUnitStoreImporter{newFn(), "import"})
+	// testUnitStore_Def(t, &labeledUnitStoreImporter{newFn(), "def"})
+	// testUnitStore_Defs(t, &labeledUnitStoreImporter{newFn(), "defs"})
+	// testUnitStore_Refs(t, &labeledUnitStoreImporter{newFn(), "refs"})
 	testUnitStore_Refs_ByFiles(t, &labeledUnitStoreImporter{newFn(), "refs by file"})
 }
 
