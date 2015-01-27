@@ -375,6 +375,7 @@ const (
 )
 
 func (s *fsUnitStore) Defs(fs ...DefFilter) (defs []*graph.Def, err error) {
+	vlog.Printf("fsUnitStore: reading defs with filters %v...", fs)
 	f, err := s.fs.Open(unitDefsFilename)
 	if err != nil {
 		return nil, err
@@ -398,12 +399,14 @@ func (s *fsUnitStore) Defs(fs ...DefFilter) (defs []*graph.Def, err error) {
 			defs = append(defs, def)
 		}
 	}
+	vlog.Printf("fsUnitStore: read %v defs with filters %v.", len(defs), fs)
 	return defs, nil
 }
 
 // defsAtOffsets reads the defs at the given serialized byte offsets
 // from the def data file and returns them in arbitrary order.
 func (s *fsUnitStore) defsAtOffsets(ofs byteOffsets, fs []DefFilter) (defs []*graph.Def, err error) {
+	vlog.Printf("fsUnitStore: reading defs at offsets %v with filters %v...", ofs, fs)
 	f, err := s.fs.Open(unitDefsFilename)
 	if err != nil {
 		return nil, err
@@ -430,12 +433,14 @@ func (s *fsUnitStore) defsAtOffsets(ofs byteOffsets, fs []DefFilter) (defs []*gr
 			defs = append(defs, &def)
 		}
 	}
+	vlog.Printf("fsUnitStore: read %v defs at offsets %v with filters %v.", len(defs), ofs, fs)
 	return defs, nil
 }
 
 // readDefs reads all defs from the def data file and returns them
 // along with their serialized byte offsets.
 func (s *fsUnitStore) readDefs() (defs []*graph.Def, ofs byteOffsets, err error) {
+	vlog.Printf("fsUnitStore: reading defs and byte offsets...")
 	f, err := s.fs.Open(unitDefsFilename)
 	if err != nil {
 		return nil, nil, err
@@ -463,10 +468,12 @@ func (s *fsUnitStore) readDefs() (defs []*graph.Def, ofs byteOffsets, err error)
 
 		n += o
 	}
+	vlog.Printf("fsUnitStore: read %d defs and byte ranges.", len(defs))
 	return defs, ofs, nil
 }
 
 func (s *fsUnitStore) Refs(fs ...RefFilter) (refs []*graph.Ref, err error) {
+	vlog.Printf("fsUnitStore: reading refs with filters %v...", fs)
 	f, err := s.fs.Open(unitRefsFilename)
 	if err != nil {
 		return nil, err
@@ -490,12 +497,14 @@ func (s *fsUnitStore) Refs(fs ...RefFilter) (refs []*graph.Ref, err error) {
 			refs = append(refs, &ref)
 		}
 	}
+	vlog.Printf("fsUnitStore: read %d refs with filters %v.", len(refs), fs)
 	return refs, nil
 }
 
 // refsAtByteRanges reads the refs at the given serialized byte ranges
 // from the ref data file and returns them in arbitrary order.
 func (s *fsUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs []*graph.Ref, err error) {
+	vlog.Printf("fsUnitStore: reading refs at byte ranges %v with filters %v...", brs, fs)
 	f, err := s.fs.Open(unitRefsFilename)
 	if err != nil {
 		return nil, err
@@ -544,12 +553,14 @@ func (s *fsUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs [
 			}
 		}
 	}
+	vlog.Printf("fsUnitStore: read %d refs at byte ranges %v with filters %v.", len(refs), brs, fs)
 	return refs, nil
 }
 
 // readDefs reads all defs from the def data file and returns them
 // along with their serialized byte offsets.
 func (s *fsUnitStore) readRefs() (refs []*graph.Ref, fbrs fileByteRanges, err error) {
+	vlog.Println("fsUnitStore: reading all refs and byte ranges...")
 	f, err := s.fs.Open(unitRefsFilename)
 	if err != nil {
 		return nil, nil, err
@@ -594,6 +605,7 @@ func (s *fsUnitStore) readRefs() (refs []*graph.Ref, fbrs fileByteRanges, err er
 		}
 		fbrs[lastFile] = append(fbrs[lastFile], o-lastFileRefStartOffset)
 	}
+	vlog.Printf("fsUnitStore: read %d refs and byte ranges.", len(refs))
 	return refs, fbrs, nil
 
 }
