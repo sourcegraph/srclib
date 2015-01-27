@@ -115,7 +115,8 @@ func (b *CHDBuilder) Build() (*CHD, error) {
 	// HACKY - see https://github.com/alecthomas/mph/issues/6.
 	minimal := len(b.keys) > 75
 	var m, n uint64
-	if minimal {
+	// TODO(sqs): fix this!
+	if minimal && false {
 		n = uint64(len(b.keys))
 		m = n / 2
 	} else {
