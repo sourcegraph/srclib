@@ -14,6 +14,7 @@
 	It has these top-level messages:
 		DefKey
 		Def
+		DefDoc
 */
 package graph;import "encoding/json"
 
@@ -111,6 +112,10 @@ type Def struct {
 	// To use json.RawMessage:
 	// optional bytes data = 10 [(gogoproto.nullable) = false, (gogoproto.customtype) = "encoding/json.RawMessage", (gogoproto.jsontag) = "Data,omitempty"];
 	Data json.RawMessage `protobuf:"bytes,10,opt,name=data" json:"Data,omitempty"`
+	// Docs are docstrings for this Def. This field is not set in the
+	// Defs produced by graphers; they should emit docs in the
+	// separate Docs field on the graph.Output struct.
+	Docs []DefDoc `protobuf:"bytes,11,rep,name=docs" json:"Docs,omitempty"`
 	// TreePath is a structurally significant path descriptor for a def. For
 	// many languages, it may be identical or similar to DefKey.Path.
 	// However, it has the following constraints, which allow it to define a
@@ -129,6 +134,20 @@ type Def struct {
 func (m *Def) Reset()         { *m = Def{} }
 func (m *Def) String() string { return proto.CompactTextString(m) }
 func (*Def) ProtoMessage()    {}
+
+// DefDoc is documentation on a Def.
+type DefDoc struct {
+	// Format is the the MIME-type that the documentation is stored
+	// in. Valid formats include 'text/html', 'text/plain',
+	// 'text/x-markdown', text/x-rst'.
+	Format string `protobuf:"bytes,1,req,name=format" json:"Format"`
+	// Data is the actual documentation text.
+	Data string `protobuf:"bytes,2,opt,name=data" json:"Data"`
+}
+
+func (m *DefDoc) Reset()         { *m = DefDoc{} }
+func (m *DefDoc) String() string { return proto.CompactTextString(m) }
+func (*DefDoc) ProtoMessage()    {}
 
 func init() {
 }
@@ -495,6 +514,29 @@ func (m *Def) Unmarshal(data []byte) error {
 			}
 			m.Data = append([]byte{}, data[index:postIndex]...)
 			index = postIndex
+		case 11:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Docs", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if index >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[index]
+				index++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			postIndex := index + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Docs = append(m.Docs, DefDoc{})
+			m.Docs[len(m.Docs)-1].Unmarshal(data[index:postIndex])
+			index = postIndex
 		case 17:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field TreePath", wireType)
@@ -516,6 +558,91 @@ func (m *Def) Unmarshal(data []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.TreePath = string(data[index:postIndex])
+			index = postIndex
+		default:
+			var sizeOfWire int
+			for {
+				sizeOfWire++
+				wire >>= 7
+				if wire == 0 {
+					break
+				}
+			}
+			index -= sizeOfWire
+			skippy, err := github_com_gogo_protobuf_proto.Skip(data[index:])
+			if err != nil {
+				return err
+			}
+			if (index + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			index += skippy
+		}
+	}
+	return nil
+}
+func (m *DefDoc) Unmarshal(data []byte) error {
+	l := len(data)
+	index := 0
+	for index < l {
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if index >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := data[index]
+			index++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Format", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if index >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[index]
+				index++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			postIndex := index + int(stringLen)
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Format = string(data[index:postIndex])
+			index = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if index >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[index]
+				index++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			postIndex := index + int(stringLen)
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Data = string(data[index:postIndex])
 			index = postIndex
 		default:
 			var sizeOfWire int
@@ -575,8 +702,24 @@ func (m *Def) Size() (n int) {
 		l = len(m.Data)
 		n += 1 + l + sovDef(uint64(l))
 	}
+	if len(m.Docs) > 0 {
+		for _, e := range m.Docs {
+			l = e.Size()
+			n += 1 + l + sovDef(uint64(l))
+		}
+	}
 	l = len(m.TreePath)
 	n += 2 + l + sovDef(uint64(l))
+	return n
+}
+
+func (m *DefDoc) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Format)
+	n += 1 + l + sovDef(uint64(l))
+	l = len(m.Data)
+	n += 1 + l + sovDef(uint64(l))
 	return n
 }
 
@@ -702,12 +845,50 @@ func (m *Def) MarshalTo(data []byte) (n int, err error) {
 		i = encodeVarintDef(data, i, uint64(len(m.Data)))
 		i += copy(data[i:], m.Data)
 	}
+	if len(m.Docs) > 0 {
+		for _, msg := range m.Docs {
+			data[i] = 0x5a
+			i++
+			i = encodeVarintDef(data, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(data[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
 	data[i] = 0x8a
 	i++
 	data[i] = 0x1
 	i++
 	i = encodeVarintDef(data, i, uint64(len(m.TreePath)))
 	i += copy(data[i:], m.TreePath)
+	return i, nil
+}
+
+func (m *DefDoc) Marshal() (data []byte, err error) {
+	size := m.Size()
+	data = make([]byte, size)
+	n, err := m.MarshalTo(data)
+	if err != nil {
+		return nil, err
+	}
+	return data[:n], nil
+}
+
+func (m *DefDoc) MarshalTo(data []byte) (n int, err error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	data[i] = 0xa
+	i++
+	i = encodeVarintDef(data, i, uint64(len(m.Format)))
+	i += copy(data[i:], m.Format)
+	data[i] = 0x12
+	i++
+	i = encodeVarintDef(data, i, uint64(len(m.Data)))
+	i += copy(data[i:], m.Data)
 	return i, nil
 }
 
@@ -765,7 +946,17 @@ func (this *Def) GoString() string {
 		`Local:` + fmt.Sprintf("%#v", this.Local),
 		`Test:` + fmt.Sprintf("%#v", this.Test),
 		`Data:` + fmt.Sprintf("%#v", this.Data),
+		`Docs:` + strings.Replace(fmt.Sprintf("%#v", this.Docs), `&`, ``, 1),
 		`TreePath:` + fmt.Sprintf("%#v", this.TreePath) + `}`}, ", ")
+	return s
+}
+func (this *DefDoc) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&graph.DefDoc{` +
+		`Format:` + fmt.Sprintf("%#v", this.Format),
+		`Data:` + fmt.Sprintf("%#v", this.Data) + `}`}, ", ")
 	return s
 }
 func valueToGoStringDef(v interface{}, typ string) string {

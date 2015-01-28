@@ -93,6 +93,11 @@ message Def {
     //optional bytes data = 10 [(gogoproto.nullable) = false, (gogoproto.customtype) = "encoding/json.RawMessage", (gogoproto.jsontag) = "Data,omitempty"];
     optional bytes data = 10 [(gogoproto.nullable) = false, (gogoproto.jsontag) = "Data,omitempty"];
 
+    // Docs are docstrings for this Def. This field is not set in the
+    // Defs produced by graphers; they should emit docs in the
+    // separate Docs field on the graph.Output struct.
+    repeated DefDoc docs = 11 [(gogoproto.nullable) = false, (gogoproto.jsontag) = "Docs,omitempty"];
+
     // TreePath is a structurally significant path descriptor for a def. For
     // many languages, it may be identical or similar to DefKey.Path.
     // However, it has the following constraints, which allow it to define a
@@ -106,4 +111,15 @@ message Def {
     // tree-path for some def.
     // The following regex captures the children of a tree-path X: X(/-[^/]*)*(/[^/-][^/]*)
     optional string tree_path = 17 [(gogoproto.nullable) = false, (gogoproto.customname) = "TreePath", (gogoproto.jsontag) = "TreePath,omitempty"];
+};
+
+// DefDoc is documentation on a Def.
+message DefDoc {
+    // Format is the the MIME-type that the documentation is stored
+    // in. Valid formats include 'text/html', 'text/plain',
+    // 'text/x-markdown', text/x-rst'.
+    required string format = 1 [(gogoproto.nullable) = false, (gogoproto.jsontag) = "Format"];
+
+    // Data is the actual documentation text.
+    optional string data = 2 [(gogoproto.nullable) = false, (gogoproto.jsontag) = "Data"];
 };
