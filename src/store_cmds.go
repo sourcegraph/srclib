@@ -19,11 +19,9 @@ import (
 
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/s3vfs"
-	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/grapher"
-	"sourcegraph.com/sourcegraph/srclib/graphstore"
 	"sourcegraph.com/sourcegraph/srclib/plan"
 	"sourcegraph.com/sourcegraph/srclib/store"
 	"sourcegraph.com/sourcegraph/srclib/unit"
@@ -121,16 +119,6 @@ func init() {
 		"The refs command lists all refs that match a filter.",
 		&storeRefsCmd,
 	)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-var graphStore *graphstore.Store
-
-func init() {
-	var err error
-	graphStore, err = graphstore.NewLocal(filepath.Join(srclib.Path, graphstore.Name))
 	if err != nil {
 		log.Fatal(err)
 	}
