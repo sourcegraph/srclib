@@ -277,6 +277,17 @@ func (c *StoreImportCmd) Execute(args []string) error {
 				}
 			}
 
+			// HACK: Transfer docs to [def].Docs.
+			docsByPath := make(map[string]*graph.Doc, len(data.Docs))
+			for _, doc := range data.Docs {
+				docsByPath[doc.Path] = doc
+			}
+			for _, def := range data.Defs {
+				if doc, present := docsByPath[def.Path]; present {
+					def.Docs = append(def.Docs, graph.DefDoc{Format: doc.Format, Data: doc.Data})
+				}
+			}
+
 			switch imp := s.(type) {
 			case store.RepoImporter:
 				if err := imp.Import(c.CommitID, rule.Unit, data); err != nil {
