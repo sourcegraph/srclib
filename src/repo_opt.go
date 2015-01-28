@@ -51,7 +51,8 @@ func setDefaultRepoSubdirOpt(c *flags.Command) {
 		}
 		subdir, err := filepath.Rel(localRepo.RootDir, absDir)
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("WARNING: not setting subdir: %s", err)
+			return
 		}
 		SetOptionDefaultValue(c.Group, "subdir", subdir)
 	}
