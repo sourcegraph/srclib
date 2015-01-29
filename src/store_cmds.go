@@ -17,6 +17,7 @@ import (
 
 	"golang.org/x/tools/godoc/vfs"
 
+	"sourcegraph.com/sourcegraph/go-flags"
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/graph"
@@ -27,7 +28,7 @@ import (
 )
 
 func init() {
-	c, err := CLI.AddCommand("store",
+	storeC, err := CLI.AddCommand("store",
 		"graph store commands",
 		"",
 		&storeCmd,
@@ -43,10 +44,14 @@ func init() {
 		}
 		relDir, err := filepath.Rel(absDir, lrepo.RootDir)
 		if err == nil {
-			SetOptionDefaultValue(c.Group, "root", filepath.Join(relDir, store.SrclibStoreDir))
+			SetOptionDefaultValue(storeC.Group, "root", filepath.Join(relDir, store.SrclibStoreDir))
 		}
 	}
 
+	InitStoreCmds(storeC)
+}
+
+func InitStoreCmds(c *flags.Command) {
 	importC, err := c.AddCommand("import",
 		"import data",
 		`The import command imports data (from .srclib-cache) into the store.`,
@@ -123,6 +128,10 @@ func init() {
 	}
 }
 
+// OpenStore is called by all of the store subcommands to open the
+// store.
+var OpenStore func() (interface{}, error) = storeCmd.store
+
 type StoreCmd struct {
 	Type   string `short:"t" long:"type" description:"the (multi-)repo store type to use (RepoStore, MultiRepoStore, etc.)" default:"RepoStore"`
 	Root   string `short:"r" long:"root" description:"the root of the store (repo clone dir for RepoStore, global path for MultiRepoStore, etc.)" default:".srclib-store"`
@@ -171,7 +180,7 @@ var storeImportCmd StoreImportCmd
 func (c *StoreImportCmd) Execute(args []string) error {
 	start := time.Now()
 
-	s, err := storeCmd.store()
+	s, err := OpenStore()
 	if err != nil {
 		return err
 	}
@@ -492,7 +501,7 @@ func (c storeIndexCriteria) IndexCriteria() store.IndexCriteria {
 // doStoreIndexesCmd is invoked by both StoreIndexesCmd.Execute and
 // StoreBuildIndexesCmd.Execute.
 func doStoreIndexesCmd(crit store.IndexCriteria, opt storeIndexOptions, f func(interface{}, store.IndexCriteria, chan<- store.IndexStatus) ([]store.IndexStatus, error)) error {
-	s, err := storeCmd.store()
+	s, err := OpenStore()
 	if err != nil {
 		return err
 	}
@@ -627,7 +636,7 @@ func (c *StoreReposCmd) filters() []store.RepoFilter {
 var storeReposCmd StoreReposCmd
 
 func (c *StoreReposCmd) Execute(args []string) error {
-	s, err := storeCmd.store()
+	s, err := OpenStore()
 	if err != nil {
 		return err
 	}
@@ -668,7 +677,7 @@ func (c *StoreVersionsCmd) filters() []store.VersionFilter {
 var storeVersionsCmd StoreVersionsCmd
 
 func (c *StoreVersionsCmd) Execute(args []string) error {
-	s, err := storeCmd.store()
+	s, err := OpenStore()
 	if err != nil {
 		return err
 	}
@@ -723,7 +732,7 @@ func (c *StoreUnitsCmd) filters() []store.UnitFilter {
 var storeUnitsCmd StoreUnitsCmd
 
 func (c *StoreUnitsCmd) Execute(args []string) error {
-	s, err := storeCmd.store()
+	s, err := OpenStore()
 	if err != nil {
 		return err
 	}
@@ -792,7 +801,7 @@ func (c *StoreDefsCmd) filters() []store.DefFilter {
 var storeDefsCmd StoreDefsCmd
 
 func (c *StoreDefsCmd) Execute(args []string) error {
-	s, err := storeCmd.store()
+	s, err := OpenStore()
 	if err != nil {
 		return err
 	}
@@ -870,7 +879,7 @@ func (c *StoreRefsCmd) filters() []store.RefFilter {
 var storeRefsCmd StoreRefsCmd
 
 func (c *StoreRefsCmd) Execute(args []string) error {
-	s, err := storeCmd.store()
+	s, err := OpenStore()
 	if err != nil {
 		return err
 	}
