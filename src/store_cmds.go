@@ -2,13 +2,11 @@ package src
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
-	"net/url"
 	"os"
 	"os/exec"
 	"path"
@@ -20,7 +18,6 @@ import (
 	"golang.org/x/tools/godoc/vfs"
 
 	"sourcegraph.com/sourcegraph/rwvfs"
-	"sourcegraph.com/sourcegraph/s3vfs"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/grapher"
@@ -139,14 +136,7 @@ func (c *StoreCmd) Execute(args []string) error { return nil }
 // store returns the store specified by StoreCmd's Type and Root
 // options.
 func (c *StoreCmd) store() (interface{}, error) {
-	var fs rwvfs.FileSystem
-	// Attempt to parse Root as a url, and fallback to creating an
-	// OS file system if it isn't.
-	if u, err := url.Parse(c.Root); err == nil && strings.HasSuffix(u.Host, "amazonaws.com") {
-		fs = s3vfs.S3(u, nil)
-	} else {
-		fs = rwvfs.OS(c.Root)
-	}
+	fs := rwvfs.OS(c.Root)
 
 	type createParents interface {
 		CreateParentDirs(bool)
@@ -159,20 +149,7 @@ func (c *StoreCmd) store() (interface{}, error) {
 	case "RepoStore":
 		return store.NewFSRepoStore(fs), nil
 	case "MultiRepoStore":
-		var conf *store.FSMultiRepoStoreConf
-		if c.Config != "" {
-			// Only really allows configuring EvenlyDistributedRepoPaths right now.
-			var conf2 struct {
-				RepoPaths string
-			}
-			if err := json.Unmarshal([]byte(c.Config), &conf2); err != nil {
-				return nil, fmt.Errorf("--config %q: %s", c.Config, err)
-			}
-			if conf2.RepoPaths == "EvenlyDistributedRepoPaths" {
-				conf = &store.FSMultiRepoStoreConf{RepoPaths: &store.EvenlyDistributedRepoPaths{}}
-			}
-		}
-		return store.NewFSMultiRepoStore(rwvfs.Walkable(fs), conf), nil
+		return store.NewFSMultiRepoStore(rwvfs.Walkable(fs), nil), nil
 	default:
 		return nil, fmt.Errorf("unrecognized store --type value: %q (valid values are RepoStore, MultiRepoStore)", c.Type)
 	}
