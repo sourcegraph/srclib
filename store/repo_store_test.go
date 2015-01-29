@@ -29,11 +29,8 @@ func testRepoStore(t *testing.T, newFn func() RepoStoreImporter) {
 	testRepoStore_Refs(t, &labeledRepoStoreImporter{newFn(), "refs"})
 }
 
-func testRepoStore_uninitialized(t *testing.T, rs RepoStoreImporter) {
-	versions, err := rs.Versions()
-	if err == nil {
-		t.Errorf("%s: Versions(): got nil err", rs)
-	}
+func testRepoStore_uninitialized(t *testing.T, rs RepoStore) {
+	versions, _ := rs.Versions()
 	if len(versions) != 0 {
 		t.Errorf("%s: Versions(): got versions %v, want empty", rs, versions)
 	}

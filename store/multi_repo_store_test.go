@@ -35,16 +35,13 @@ func testMultiRepoStore(t *testing.T, newFn func() MultiRepoStoreImporter) {
 	testMultiRepoStore_Refs_filterByDef(t, &labeledMultiRepoStoreImporter{newFn(), "refs filter-by-def"})
 }
 
-func testMultiRepoStore_uninitialized(t *testing.T, mrs MultiRepoStoreImporter) {
-	versions, err := mrs.Versions()
-	if err == nil {
-		t.Errorf("%s: Versions(): got nil err", mrs)
-	}
-	if len(versions) != 0 {
-		t.Errorf("%s: Versions(): got versions %v, want empty", mrs, versions)
+func testMultiRepoStore_uninitialized(t *testing.T, mrs MultiRepoStore) {
+	repos, _ := mrs.Repos()
+	if len(repos) != 0 {
+		t.Errorf("%s: Repos(): got repos %v, want empty", mrs, repos)
 	}
 
-	testTreeStore_uninitialized(t, mrs)
+	testRepoStore_uninitialized(t, mrs)
 }
 
 func testMultiRepoStore_Import_empty(t *testing.T, mrs MultiRepoStoreImporter) {
