@@ -17,6 +17,8 @@ import (
 	"sync"
 	"time"
 
+	"golang.org/x/tools/godoc/vfs"
+
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/s3vfs"
 	"sourcegraph.com/sourcegraph/srclib/config"
@@ -177,17 +179,12 @@ func (c *StoreCmd) store() (interface{}, error) {
 }
 
 type StoreImportCmd struct {
-	DryRun bool `short:"n" long:"dry-run" description:"print what would be done but don't do anything"`
+	ImportOpt
 
 	Sample           bool `long:"sample" description:"(sample data) import sample data, not .srclib-cache data"`
 	SampleDefs       int  `long:"sample-defs" description:"(sample data) number of sample defs to import" default:"100"`
 	SampleRefs       int  `long:"sample-refs" description:"(sample data) number of sample refs to import" default:"100"`
 	SampleImportOnly bool `long:"sample-import-only" description:"(sample data) only import, don't demonstrate listing data"`
-
-	Repo     string `long:"repo" description:"only import for this repo"`
-	Unit     string `long:"unit" description:"only import source units with this name"`
-	UnitType string `long:"unit-type" description:"only import source units with this type"`
-	CommitID string `long:"commit" description:"commit ID of commit whose data to import"`
 
 	RemoteBuildData bool `long:"remote-build-data" description:"import remote build data (not the local .srclib-cache build data)"`
 }
@@ -206,11 +203,6 @@ func (c *StoreImportCmd) Execute(args []string) error {
 		return c.sample(s)
 	}
 
-	lrepo, err := openLocalRepo()
-	if err != nil {
-		return err
-	}
-
 	bdfs, label, err := getBuildDataFS(!c.RemoteBuildData, c.Repo, c.CommitID)
 	if err != nil {
 		return err
@@ -219,26 +211,46 @@ func (c *StoreImportCmd) Execute(args []string) error {
 		log.Printf("# Importing build data for %s (commit %s) from %s", c.Repo, c.CommitID, label)
 	}
 
+	if err := Import(bdfs, s, c.ImportOpt); err != nil {
+		return err
+	}
+	log.Printf("# Import completed in %s.", time.Since(start))
+	return nil
+}
+
+type ImportOpt struct {
+	DryRun bool `short:"n" long:"dry-run" description:"print what would be done but don't do anything"`
+
+	Repo     string `long:"repo" description:"only import for this repo"`
+	Unit     string `long:"unit" description:"only import source units with this name"`
+	UnitType string `long:"unit-type" description:"only import source units with this type"`
+	CommitID string `long:"commit" description:"commit ID of commit whose data to import"`
+
+	Verbose bool
+}
+
+// Import imports build data into a RepoStore or MultiRepoStore.
+func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 	// Traverse the build data directory for this repo and commit to
 	// create the makefile that lists the targets (which are the data
 	// files we will import).
-	treeConfig, err := config.ReadCached(bdfs)
+	treeConfig, err := config.ReadCached(buildDataFS)
 	if err != nil {
 		return err
 	}
-	mf, err := plan.CreateMakefile(".", nil, lrepo.VCSType, treeConfig, plan.Options{NoCache: true})
+	mf, err := plan.CreateMakefile(".", nil, "", treeConfig, plan.Options{NoCache: true})
 	if err != nil {
 		return err
 	}
 
 	for _, rule := range mf.Rules {
-		if c.Unit != "" || c.UnitType != "" {
+		if opt.Unit != "" || opt.UnitType != "" {
 			type ruleForSourceUnit interface {
 				SourceUnit() *unit.SourceUnit
 			}
 			if rule, ok := rule.(ruleForSourceUnit); ok {
 				u := rule.SourceUnit()
-				if (c.Unit != "" && u.Name != c.Unit) || (c.UnitType != "" && u.Type != c.UnitType) {
+				if (opt.Unit != "" && u.Name != opt.Unit) || (opt.UnitType != "" && u.Type != opt.UnitType) {
 					continue
 				}
 			} else {
@@ -251,12 +263,12 @@ func (c *StoreImportCmd) Execute(args []string) error {
 		switch rule := rule.(type) {
 		case *grapher.GraphUnitRule:
 			var data graph.Output
-			if err := readJSONFileFS(bdfs, rule.Target(), &data); err != nil {
+			if err := readJSONFileFS(buildDataFS, rule.Target(), &data); err != nil {
 				return err
 			}
-			if c.DryRun || GlobalOpt.Verbose {
+			if opt.DryRun || GlobalOpt.Verbose {
 				log.Printf("# Importing graph data (%d defs, %d refs, %d docs, %d anns) for unit %s %s", len(data.Defs), len(data.Refs), len(data.Docs), len(data.Anns), rule.Unit.Type, rule.Unit.Name)
-				if c.DryRun {
+				if opt.DryRun {
 					continue
 				}
 			}
@@ -272,22 +284,20 @@ func (c *StoreImportCmd) Execute(args []string) error {
 				}
 			}
 
-			switch imp := s.(type) {
+			switch imp := stor.(type) {
 			case store.RepoImporter:
-				if err := imp.Import(c.CommitID, rule.Unit, data); err != nil {
+				if err := imp.Import(opt.CommitID, rule.Unit, data); err != nil {
 					return err
 				}
 			case store.MultiRepoImporter:
-				if err := imp.Import(c.Repo, c.CommitID, rule.Unit, data); err != nil {
+				if err := imp.Import(opt.Repo, opt.CommitID, rule.Unit, data); err != nil {
 					return err
 				}
 			default:
-				return fmt.Errorf("store (type %T) does not implement importing", s)
+				return fmt.Errorf("store (type %T) does not implement importing", stor)
 			}
 		}
 	}
-
-	log.Printf("# Import completed in %s.", time.Since(start))
 	return nil
 }
 
