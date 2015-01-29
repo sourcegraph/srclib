@@ -62,10 +62,7 @@ func testTreeStore(t *testing.T, newFn func() treeStoreImporter) {
 }
 
 func testTreeStore_uninitialized(t *testing.T, ts TreeStore) {
-	units, err := ts.Units()
-	if err == nil {
-		t.Errorf("%s: Units(): got nil err", ts)
-	}
+	units, _ := ts.Units()
 	if len(units) != 0 {
 		t.Errorf("%s: Units(): got units %v, want empty", ts, units)
 	}
