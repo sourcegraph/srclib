@@ -380,6 +380,7 @@ func (c *StoreImportCmd) sample(s interface{}) error {
 	log.Printf("Encoded data is %s", bytesString(size))
 
 	commitID := strings.Repeat("f", 40)
+	var repo string
 	log.Printf("Importing %d defs and %d refs into the source unit %+v at commit %s", len(data.Defs), len(data.Refs), unit.ID2(), commitID)
 	start = time.Now()
 	switch imp := s.(type) {
@@ -388,7 +389,7 @@ func (c *StoreImportCmd) sample(s interface{}) error {
 			return err
 		}
 	case store.MultiRepoImporter:
-		repo := "example.com/my/repo"
+		repo = "example.com/my/repo"
 		log.Printf(" - repo %s", repo)
 		if err := imp.Import(repo, commitID, unit, *data); err != nil {
 			return err
@@ -403,7 +404,7 @@ func (c *StoreImportCmd) sample(s interface{}) error {
 	}
 
 	log.Println()
-	log.Printf("Running some commands to list sample data")
+	log.Printf("Running some commands to list sample data...")
 
 	runCmd := func(args ...string) error {
 		start := time.Now()
@@ -424,22 +425,33 @@ func (c *StoreImportCmd) sample(s interface{}) error {
 		log.Printf("-> took %s", time.Since(start))
 		return nil
 	}
-	if err := runCmd("src", "store", "versions"); err != nil {
+
+	prog := os.Args[0]
+	storeCmdArgs := func(subcmd, repo string, args ...string) []string {
+		x := []string{prog, "store", subcmd}
+		if repo != "" {
+			x = append(x, "--repo", repo)
+		}
+		x = append(x, args...)
+		return x
+	}
+
+	if err := runCmd(storeCmdArgs("versions", repo)...); err != nil {
 		return err
 	}
-	if err := runCmd("src", "store", "units"); err != nil {
+	if err := runCmd(storeCmdArgs("units", repo)...); err != nil {
 		return err
 	}
-	if err := runCmd("src", "store", "units", "--file", data.Defs[len(data.Defs)/2+1].File); err != nil {
+	if err := runCmd(storeCmdArgs("units", repo, "--file", data.Defs[len(data.Defs)/2+1].File)...); err != nil {
 		return err
 	}
-	if err := runCmd("src", "store", "units", "--file", data.Refs[len(data.Refs)/2+1].File); err != nil {
+	if err := runCmd(storeCmdArgs("units", repo, "--file", data.Refs[len(data.Refs)/2+1].File)...); err != nil {
 		return err
 	}
-	if err := runCmd("src", "store", "defs", "--file", data.Defs[len(data.Defs)/3+1].File); err != nil {
+	if err := runCmd(storeCmdArgs("defs", repo, "--file", data.Defs[len(data.Defs)/3+1].File)...); err != nil {
 		return err
 	}
-	if err := runCmd("src", "store", "refs", "--file", data.Refs[len(data.Refs)/2+1].File); err != nil {
+	if err := runCmd(storeCmdArgs("refs", repo, "--file", data.Refs[len(data.Refs)/2+1].File)...); err != nil {
 		return err
 	}
 
