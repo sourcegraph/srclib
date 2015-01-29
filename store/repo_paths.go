@@ -74,7 +74,7 @@ func (defaultRepoPaths) ListRepoPaths(vfs rwvfs.WalkableFileSystem, after string
 				}
 				continue
 			}
-			if strings.HasPrefix(fi.Name(), ".") {
+			if fi.Name() != "." && strings.HasPrefix(fi.Name(), ".") {
 				w.SkipDir()
 				continue
 			}
