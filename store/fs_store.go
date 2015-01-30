@@ -425,7 +425,7 @@ func (s *fsUnitStore) defsAtOffsets(ofs byteOffsets, fs []DefFilter) (defs []*gr
 	ffs := defFilters(fs)
 
 	var defsLock sync.Mutex
-	par := parallel.NewRun(parFetches(fs))
+	par := parallel.NewRun(parFetches(s.fs, fs))
 	for _, ofs_ := range ofs {
 		ofs := ofs_
 		par.Do(func() error {
@@ -593,7 +593,7 @@ func (s *fsUnitStore) refsAtOffsets(ofs byteOffsets, fs []RefFilter) (refs []*gr
 	ffs := refFilters(fs)
 
 	var refsLock sync.Mutex
-	par := parallel.NewRun(parFetches(fs))
+	par := parallel.NewRun(parFetches(s.fs, fs))
 	for _, ofs_ := range ofs {
 		ofs := ofs_
 		par.Do(func() error {
@@ -632,8 +632,14 @@ func (s *fsUnitStore) refsAtOffsets(ofs byteOffsets, fs []RefFilter) (refs []*gr
 const maxNetPar = 4
 
 // parFetches returns the number of parallel fetches that should be
-// attempted given the filters.
-func parFetches(filters interface{}) int {
+// attempted given the VFS and filters.
+func parFetches(fs rwvfs.FileSystem, filters interface{}) int {
+	// It's almost always faster to read local files serially
+	// (FetcherOpener is currently only implemented by network VFSs).
+	if _, ok := fs.(rwvfs.FetcherOpener); !ok {
+		return 1
+	}
+
 	n, moreOK := LimitRemaining(filters)
 	if moreOK {
 		if n == 0 {
