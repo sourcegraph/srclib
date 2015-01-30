@@ -420,7 +420,7 @@ func (c *StoreImportCmd) sample(s interface{}) error {
 		if GlobalOpt.Verbose {
 			log.Println(b.String())
 		} else {
-			log.Printf("-> printed %d lines of output (run with `src -v` to view)", bytes.Count(b.Bytes(), []byte{'\n'}))
+			log.Printf("-> printed %d lines of output (run with `%s -v` to view)", bytes.Count(b.Bytes(), []byte{'\n'}), os.Args[0])
 		}
 		log.Printf("-> took %s", time.Since(start))
 		return nil
@@ -432,6 +432,7 @@ func (c *StoreImportCmd) sample(s interface{}) error {
 		if repo != "" {
 			x = append(x, "--repo", repo)
 		}
+		x = append(x, "--commit", commitID)
 		x = append(x, args...)
 		return x
 	}
