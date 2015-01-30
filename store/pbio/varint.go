@@ -115,7 +115,7 @@ func (r *varintReader) ReadMsg(msg proto.Message) (uint64, error) {
 func readUvarint(r io.ByteReader) (int, uint64, error) {
 	var x uint64
 	var s uint
-	for i := 0; ; i++ {
+	for i := 1; ; i++ {
 		b, err := r.ReadByte()
 		if err != nil {
 			return i, x, err

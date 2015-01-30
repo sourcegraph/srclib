@@ -7,6 +7,8 @@ import (
 	"os"
 	"runtime"
 
+	"golang.org/x/tools/godoc/vfs"
+
 	"compress/gzip"
 
 	"code.google.com/p/rog-go/parallel"
@@ -533,7 +535,7 @@ func (s *indexedUnitStore) buildIndexes(xs map[string]Index, data *graph.Output,
 
 	var getRefsErr error
 	var getRefsOnce sync.Once
-	getRefs := func() ([]*graph.Ref, fileByteRanges, error) {
+	getRefs := func() ([]*graph.Ref, fileByteRanges, byteOffsets, error) {
 		getRefsOnce.Do(func() {
 			// Don't refetch if passed in as arg or if getData was
 			// already called.
@@ -544,7 +546,7 @@ func (s *indexedUnitStore) buildIndexes(xs map[string]Index, data *graph.Output,
 				refs = []*graph.Ref{}
 			}
 		})
-		return refs, refFBRs, getRefsErr
+		return refs, refFBRs, refOfs, getRefsErr
 	}
 
 	par := parallel.NewRun(len(xs))
@@ -561,7 +563,7 @@ func (s *indexedUnitStore) buildIndexes(xs map[string]Index, data *graph.Output,
 					return err
 				}
 			case refIndexBuilder:
-				refs, refFBRs, err := getRefs()
+				refs, refFBRs, refOfs, err := getRefs()
 				if err != nil {
 					return err
 				}
@@ -637,12 +639,22 @@ type errIndexNotReady struct {
 
 func (e *errIndexNotReady) Error() string { return fmt.Sprintf("index not ready: %s", e.name) }
 
+type errIndexNotExist struct {
+	name string
+	err  error
+}
+
+func (e *errIndexNotExist) Error() string {
+	return fmt.Sprintf("index %q does not exist: %s", e.name, e.err)
+}
+
 // readIndex calls x.Read with the index's backing file.
 func readIndex(fs rwvfs.FileSystem, name string, x persistedIndex) (err error) {
 	vlog.Printf("%s: reading index...", name)
-	f, err := fs.Open(fmt.Sprintf(indexFilename, name))
+	var f vfs.ReadSeekCloser
+	f, err = fs.Open(fmt.Sprintf(indexFilename, name))
 	if err != nil {
-		return err
+		return &errIndexNotExist{name: name, err: err}
 	}
 	defer func() {
 		err2 := f.Close()

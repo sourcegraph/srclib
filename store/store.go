@@ -11,5 +11,8 @@ func isStoreNotExist(err error) bool {
 	if err == nil {
 		return false
 	}
+	if _, ok := err.(*errIndexNotExist); ok {
+		return true
+	}
 	return os.IsNotExist(err) || err == errRepoNoInit || err == errTreeNoInit || err == errMultiRepoStoreNoInit || err == errUnitNoInit
 }
