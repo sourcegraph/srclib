@@ -15,6 +15,8 @@ import (
 	"sync"
 	"time"
 
+	"code.google.com/p/rog-go/parallel"
+
 	"golang.org/x/tools/godoc/vfs"
 
 	"sourcegraph.com/sourcegraph/go-flags"
@@ -230,7 +232,10 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 		return err
 	}
 
-	for _, rule := range mf.Rules {
+	par := parallel.NewRun(10)
+	for _, rule_ := range mf.Rules {
+		rule := rule_
+
 		if opt.Unit != "" || opt.UnitType != "" {
 			type ruleForSourceUnit interface {
 				SourceUnit() *unit.SourceUnit
@@ -247,43 +252,49 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 			}
 		}
 
-		switch rule := rule.(type) {
-		case *grapher.GraphUnitRule:
-			var data graph.Output
-			if err := readJSONFileFS(buildDataFS, rule.Target(), &data); err != nil {
-				return err
-			}
-			if opt.DryRun || GlobalOpt.Verbose {
-				log.Printf("# Importing graph data (%d defs, %d refs, %d docs, %d anns) for unit %s %s", len(data.Defs), len(data.Refs), len(data.Docs), len(data.Anns), rule.Unit.Type, rule.Unit.Name)
-				if opt.DryRun {
-					continue
-				}
-			}
-
-			// HACK: Transfer docs to [def].Docs.
-			docsByPath := make(map[string]*graph.Doc, len(data.Docs))
-			for _, doc := range data.Docs {
-				docsByPath[doc.Path] = doc
-			}
-			for _, def := range data.Defs {
-				if doc, present := docsByPath[def.Path]; present {
-					def.Docs = append(def.Docs, graph.DefDoc{Format: doc.Format, Data: doc.Data})
-				}
-			}
-
-			switch imp := stor.(type) {
-			case store.RepoImporter:
-				if err := imp.Import(opt.CommitID, rule.Unit, data); err != nil {
+		par.Do(func() error {
+			switch rule := rule.(type) {
+			case *grapher.GraphUnitRule:
+				var data graph.Output
+				if err := readJSONFileFS(buildDataFS, rule.Target(), &data); err != nil {
 					return err
 				}
-			case store.MultiRepoImporter:
-				if err := imp.Import(opt.Repo, opt.CommitID, rule.Unit, data); err != nil {
-					return err
+				if opt.DryRun || GlobalOpt.Verbose {
+					log.Printf("# Importing graph data (%d defs, %d refs, %d docs, %d anns) for unit %s %s", len(data.Defs), len(data.Refs), len(data.Docs), len(data.Anns), rule.Unit.Type, rule.Unit.Name)
+					if opt.DryRun {
+						return nil
+					}
 				}
-			default:
-				return fmt.Errorf("store (type %T) does not implement importing", stor)
+
+				// HACK: Transfer docs to [def].Docs.
+				docsByPath := make(map[string]*graph.Doc, len(data.Docs))
+				for _, doc := range data.Docs {
+					docsByPath[doc.Path] = doc
+				}
+				for _, def := range data.Defs {
+					if doc, present := docsByPath[def.Path]; present {
+						def.Docs = append(def.Docs, graph.DefDoc{Format: doc.Format, Data: doc.Data})
+					}
+				}
+
+				switch imp := stor.(type) {
+				case store.RepoImporter:
+					if err := imp.Import(opt.CommitID, rule.Unit, data); err != nil {
+						return err
+					}
+				case store.MultiRepoImporter:
+					if err := imp.Import(opt.Repo, opt.CommitID, rule.Unit, data); err != nil {
+						return err
+					}
+				default:
+					return fmt.Errorf("store (type %T) does not implement importing", stor)
+				}
 			}
-		}
+			return nil
+		})
+	}
+	if err := par.Wait(); err != nil {
+		return err
 	}
 
 	if !opt.NoIndex {
