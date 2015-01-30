@@ -2,9 +2,7 @@ package store
 
 import (
 	"bufio"
-	"bytes"
 	"io"
-	"io/ioutil"
 	"os"
 	"path"
 	"strconv"
@@ -12,6 +10,7 @@ import (
 	"time"
 
 	"github.com/kr/fs"
+	"golang.org/x/tools/godoc/vfs"
 
 	"sort"
 
@@ -409,7 +408,7 @@ func (s *fsUnitStore) Defs(fs ...DefFilter) (defs []*graph.Def, err error) {
 // from the def data file and returns them in arbitrary order.
 func (s *fsUnitStore) defsAtOffsets(ofs byteOffsets, fs []DefFilter) (defs []*graph.Def, err error) {
 	vlog.Printf("fsUnitStore: reading defs at offsets %v with filters %v...", ofs, fs)
-	f, err := s.fs.Open(unitDefsFilename)
+	f, err := openFetcherOrOpen(s.fs, unitDefsFilename)
 	if err != nil {
 		return nil, err
 	}
@@ -422,11 +421,15 @@ func (s *fsUnitStore) defsAtOffsets(ofs byteOffsets, fs []DefFilter) (defs []*gr
 
 	ffs := defFilters(fs)
 
-	dec := Codec.NewDecoder(f)
 	for _, ofs := range ofs {
-		if _, err := f.Seek(ofs, 0); err != nil {
+		// Guess how many bytes this def is. The s3vfs (if that's the
+		// VFS impl in use) will autofetch beyond that if needed.
+		const byteEstimate = 5000
+		r, err := rangeReader(f, ofs, byteEstimate)
+		if err != nil {
 			return nil, err
 		}
+		dec := Codec.NewDecoder(r)
 		var def graph.Def
 		if _, err := dec.Decode(&def); err != nil {
 			return nil, err
@@ -507,7 +510,7 @@ func (s *fsUnitStore) Refs(fs ...RefFilter) (refs []*graph.Ref, err error) {
 // from the ref data file and returns them in arbitrary order.
 func (s *fsUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs []*graph.Ref, err error) {
 	vlog.Printf("fsUnitStore: reading refs at byte ranges %v with filters %v...", brs, fs)
-	f, err := s.fs.Open(unitRefsFilename)
+	f, err := openFetcherOrOpen(s.fs, unitRefsFilename)
 	if err != nil {
 		return nil, err
 	}
@@ -534,16 +537,10 @@ func (s *fsUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs [
 	ffs := refFilters(fs)
 
 	for i, br := range brs {
-		if _, err := f.Seek(br.start(), 0); err != nil {
-			return nil, err
-		}
-
-		b, err := ioutil.ReadAll(io.LimitReader(f, readLengths[i]))
+		r, err := rangeReader(f, br.start(), readLengths[i])
 		if err != nil {
 			return nil, err
 		}
-
-		r := bytes.NewReader(b)
 		dec := Codec.NewDecoder(r)
 		for range br[1:] {
 			var ref graph.Ref
@@ -557,6 +554,29 @@ func (s *fsUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs [
 	}
 	vlog.Printf("fsUnitStore: read %d refs at byte ranges %v with filters %v.", len(refs), brs, fs)
 	return refs, nil
+}
+
+// openFetcher calls fs.OpenFetcher if it implemented the
+// FetcherOpener interface; otherwise it calls fs.Open.
+func openFetcherOrOpen(fs rwvfs.FileSystem, name string) (vfs.ReadSeekCloser, error) {
+	if fo, ok := fs.(rwvfs.FetcherOpener); ok {
+		return fo.OpenFetcher(name)
+	}
+	return fs.Open(name)
+}
+
+// rangeReader calls ioutil.ReadAll on the given byte range [start, n). It uses
+// optimizations for different kinds of VFSs.
+func rangeReader(f io.ReadSeeker, start, n int64) (io.Reader, error) {
+	if ff, ok := f.(rwvfs.Fetcher); ok {
+		if err := ff.Fetch(start, start+n); err != nil {
+			return nil, err
+		}
+	}
+	if _, err := f.Seek(start, 0); err != nil {
+		return nil, err
+	}
+	return f, nil
 }
 
 // readDefs reads all defs from the def data file and returns them
