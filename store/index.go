@@ -79,7 +79,13 @@ func bestCoverageIndex(indexes map[string]Index, filters interface{}, test func(
 
 func isUnitIndex(x interface{}) bool { _, ok := x.(unitIndex); return ok }
 func isDefIndex(x interface{}) bool  { _, ok := x.(defIndex); return ok }
-func isRefIndex(x interface{}) bool  { _, ok := x.(refIndex); return ok }
+func isRefIndex(x interface{}) bool {
+	switch x.(type) {
+	case refIndexByteRanges, refIndexByteOffsets:
+		return true
+	}
+	return false
+}
 
 // fileByteRanges maps from filename to the byte ranges in a byte
 // array that pertain to that file. It's used to index into the ref
@@ -145,16 +151,23 @@ func (v refsByFileStartEnd) Less2(i, j int) bool {
 }
 func (v refsByFileStartEnd) Swap(i, j int) { v[i], v[j] = v[j], v[i] }
 
-type refIndex interface {
+type refIndexByteRanges interface {
 	// Refs returns the byte ranges (in the ref data file) of matching
 	// refs, or errNotIndexed if no indexes can be used to satisfy the
 	// query.
 	Refs(...RefFilter) ([]byteRanges, error)
 }
 
+type refIndexByteOffsets interface {
+	// Refs returns the byte offsets (in the ref data file) of matching
+	// refs, or errNotIndexed if no indexes can be used to satisfy the
+	// query.
+	Refs(...RefFilter) (byteOffsets, error)
+}
+
 type refIndexBuilder interface {
 	// Build constructs the index in memory.
-	Build([]*graph.Ref, fileByteRanges) error
+	Build([]*graph.Ref, fileByteRanges, byteOffsets) error
 }
 
 type unitIndex interface {
@@ -165,4 +178,22 @@ type unitIndex interface {
 type unitIndexBuilder interface {
 	// Build constructs the index in memory.
 	Build([]*unit.SourceUnit) error
+}
+
+type unitRefIndexBuilder interface {
+	Build(map[unit.ID2]*defRefsIndex) error
+}
+
+// unitIndexOnlyFilter wraps a non-UnitFilter that can be used by an
+// IndexedUnitStore to scope the list of source units. Currently there
+// is only a RefFilter that does this, so we simplify it by using that
+// concrete type as the field type.
+type unitIndexOnlyFilter struct{ ByRefDefFilter }
+
+func (f unitIndexOnlyFilter) SelectUnit(u *unit.SourceUnit) bool {
+	// Index-only filter; can't determine selection with information
+	// available to filter. So assume that if this filter is being
+	// used, the index has already scoped the results and u was
+	// selected.
+	return true
 }

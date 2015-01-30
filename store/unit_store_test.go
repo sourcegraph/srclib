@@ -35,6 +35,7 @@ func testUnitStore(t *testing.T, newFn func() unitStoreImporter) {
 	testUnitStore_Defs(t, &labeledUnitStoreImporter{newFn(), "defs"})
 	testUnitStore_Refs(t, &labeledUnitStoreImporter{newFn(), "refs"})
 	testUnitStore_Refs_ByFiles(t, &labeledUnitStoreImporter{newFn(), "refs by file"})
+	testUnitStore_Refs_ByDef(t, &labeledUnitStoreImporter{newFn(), "refs by def"})
 }
 
 func testUnitStore_uninitialized(t *testing.T, us UnitStore) {
@@ -234,6 +235,52 @@ func testUnitStore_Refs_ByFiles(t *testing.T, us unitStoreImporter) {
 		if isIndexedStore(us) {
 			if want := 1; c_refFileIndex_getByFile != want {
 				t.Errorf("%s: Refs(ByFiles %s): got %d index hits, want %d", us, file, c_refFileIndex_getByFile, want)
+			}
+		}
+	}
+}
+
+func testUnitStore_Refs_ByDef(t *testing.T, us unitStoreImporter) {
+	refsByDef := map[string][]*graph.Ref{
+		"p1": {
+			{File: "f1", Start: 0, End: 5},
+		},
+		"p2": {
+			{File: "f1", Start: 0, End: 5},
+			{File: "f2", Start: 5, End: 10},
+		},
+		"p3": {
+			{File: "f3", Start: 0, End: 5},
+			{File: "f1", Start: 5, End: 10},
+			{File: "f1", Start: 10, End: 15},
+		},
+	}
+	var data graph.Output
+	for defPath, refs := range refsByDef {
+		for _, ref := range refs {
+			ref.DefPath = defPath
+		}
+		data.Refs = append(data.Refs, refs...)
+	}
+
+	if err := us.Import(data); err != nil {
+		t.Errorf("%s: Import(data): %s", us, err)
+	}
+
+	for defPath, wantRefs := range refsByDef {
+		c_defRefsIndex_getByDef = 0
+		refs, err := us.Refs(ByRefDef(graph.RefDefKey{DefPath: defPath}))
+		if err != nil {
+			t.Fatalf("%s: Refs(ByDefs %s): %s", us, defPath, err)
+		}
+		sort.Sort(refsByFileStartEnd(refs))
+		sort.Sort(refsByFileStartEnd(wantRefs))
+		if want := wantRefs; !reflect.DeepEqual(refs, want) {
+			t.Errorf("%s: Refs(ByDefs %s): got refs %v, want %v", us, defPath, refs, want)
+		}
+		if isIndexedStore(us) {
+			if want := 1; c_defRefsIndex_getByDef != want {
+				t.Errorf("%s: Refs(ByDefs %s): got %d index hits, want %d", us, defPath, c_defRefsIndex_getByDef, want)
 			}
 		}
 	}

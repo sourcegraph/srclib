@@ -407,6 +407,8 @@ type ByRefDefFilter interface {
 	ByDefUnitType() string
 	ByDefUnit() string
 	ByDefPath() string
+
+	withEmptyImpliedValues() graph.RefDefKey // see docstring on impl method
 }
 
 // ByRefDef returns a filter by ref target def. It panics if
@@ -450,6 +452,29 @@ func (f *byRefDefFilter) SelectRef(ref *graph.Ref) bool {
 		((ref.DefUnitType == "" && f.impliedUnit.Type == f.def.DefUnitType) || ref.DefUnitType == f.def.DefUnitType) &&
 		((ref.DefUnit == "" && f.impliedUnit.Name == f.def.DefUnit) || ref.DefUnit == f.def.DefUnit) &&
 		ref.DefPath == f.def.DefPath
+}
+
+// withEmptyImpliedValues returns the RefDefKey with empty field
+// values for fields whose value in f.def matches the implied value.
+//
+// This is useful because in the index, the RefDefKey keys use the
+// standard implicit values: a ref to a def in the same repo has an
+// empty DefRepo, etc. But the ByRefDefFilter might have the def repo
+// specified, since it was created at a higher level. Only set those
+// values if they are not the same as the implicit ones (because the
+// implicit ones should be blank).
+func (f *byRefDefFilter) withEmptyImpliedValues() graph.RefDefKey {
+	def := graph.RefDefKey{DefPath: f.ByDefPath()}
+	if f.ByDefRepo() != f.impliedRepo {
+		def.DefRepo = f.ByDefRepo()
+	}
+	if f.ByDefUnitType() != f.impliedUnit.Type {
+		def.DefUnitType = f.ByDefUnitType()
+	}
+	if f.ByDefUnit() != f.impliedUnit.Name {
+		def.DefUnit = f.ByDefUnit()
+	}
+	return def
 }
 
 var _ impliedRepoSetter = (*byRefDefFilter)(nil)

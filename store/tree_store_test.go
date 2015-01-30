@@ -59,6 +59,7 @@ func testTreeStore(t *testing.T, newFn func() treeStoreImporter) {
 	testTreeStore_Defs_ByFiles(t, &labeledTreeStoreImporter{newFn(), "defs by files"})
 	testTreeStore_Refs(t, &labeledTreeStoreImporter{newFn(), "refs"})
 	testTreeStore_Refs_ByFiles(t, &labeledTreeStoreImporter{newFn(), "refs by file"})
+	testTreeStore_Refs_ByDef(t, &labeledTreeStoreImporter{newFn(), "refs by def"})
 }
 
 func testTreeStore_uninitialized(t *testing.T, ts TreeStore) {
@@ -469,6 +470,81 @@ func testTreeStore_Refs_ByFiles(t *testing.T, ts treeStoreImporter) {
 			}
 			if want := len(distinctRefUnits); c_unitStores_Refs_last_numUnitsQueried != want {
 				t.Errorf("%s: Refs(ByFiles %s): got %d units queried, want %d", ts, file, c_unitStores_Refs_last_numUnitsQueried, want)
+			}
+		}
+	}
+}
+
+func testTreeStore_Refs_ByDef(t *testing.T, ts treeStoreImporter) {
+	refsByUnit := map[string][]*graph.Ref{
+		"u1": {
+			{DefPath: "p1", Start: 0, End: 1},
+			{DefPath: "p1", Unit: "u2", Start: 1, End: 2},
+			{DefPath: "p2", Start: 0, End: 2},
+			{DefPath: "p2", Unit: "u2", Start: 2, End: 4},
+			{DefPath: "p2", Unit: "u2", Start: 4, End: 6},
+		},
+		"u2": {
+			{DefPath: "p1", Start: 0, End: 1},
+			{DefPath: "p1", Unit: "u1", Start: 1, End: 2},
+			{DefPath: "p1", Unit: "u1", Start: 2, End: 3},
+		},
+	}
+	refsByDefUnitByDefPath := map[string]map[string][]*graph.Ref{}
+	for unitName, refs := range refsByUnit {
+		u := &unit.SourceUnit{Type: "t", Name: unitName}
+		data := graph.Output{Refs: refs}
+		for _, ref := range data.Refs {
+			defUnit := ref.DefUnit
+			if defUnit == "" {
+				defUnit = unitName
+			}
+			if _, present := refsByDefUnitByDefPath[defUnit]; !present {
+				refsByDefUnitByDefPath[defUnit] = map[string][]*graph.Ref{}
+			}
+			refsByDefUnitByDefPath[defUnit][ref.DefPath] = append(refsByDefUnitByDefPath[defUnit][ref.DefPath], ref)
+		}
+		if err := ts.Import(u, data); err != nil {
+			t.Errorf("%s: Import(%v, data): %s", ts, u, err)
+		}
+	}
+
+	for defUnit, refsByDefPath := range refsByDefUnitByDefPath {
+		for defPath, wantRefs := range refsByDefPath {
+			defLabel := defUnit + ":" + defPath
+
+			c_unitStores_Refs_last_numUnitsQueried = 0
+			c_defRefsIndex_getByDef = 0
+			c_defRefUnitsIndex_getByDef = 0
+			refs, err := ts.Refs(ByRefDef(graph.RefDefKey{DefUnitType: "t", DefUnit: defUnit, DefPath: defPath}))
+			if err != nil {
+				t.Fatalf("%s: Refs(ByDef %s): %s", ts, defLabel, err)
+			}
+
+			distinctRefUnits := map[string]struct{}{}
+			for _, ref := range refs {
+				distinctRefUnits[ref.Unit] = struct{}{}
+			}
+
+			// for test equality
+			sort.Sort(refsByFileStartEnd(refs))
+			sort.Sort(refsByFileStartEnd(wantRefs))
+			cleanForImport(&graph.Output{Refs: refs}, "", "t", "u1")
+			cleanForImport(&graph.Output{Refs: refs}, "", "t", "u2")
+
+			if want := wantRefs; !reflect.DeepEqual(refs, want) {
+				t.Errorf("%s: Refs(ByDef %s): got refs %v, want %v", ts, defLabel, refs, want)
+			}
+			if isIndexedStore(ts) {
+				if want := len(distinctRefUnits); c_defRefsIndex_getByDef != want {
+					t.Errorf("%s: Refs(ByDef %s): got %d c_defRefsIndex_getByDef index hits, want %d", ts, defLabel, c_defRefsIndex_getByDef, want)
+				}
+				if want := 1; c_defRefUnitsIndex_getByDef != want {
+					t.Errorf("%s: Refs(ByDef %s): got %d c_defRefUnitsIndex_getByDef index hits, want %d", ts, defLabel, c_defRefUnitsIndex_getByDef, want)
+				}
+				if want := len(distinctRefUnits); c_unitStores_Refs_last_numUnitsQueried != want {
+					t.Errorf("%s: Refs(ByDef %s): got %d units queried, want %d", ts, defLabel, c_unitStores_Refs_last_numUnitsQueried, want)
+				}
 			}
 		}
 	}

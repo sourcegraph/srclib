@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime"
 
 	"compress/gzip"
 
@@ -57,7 +58,8 @@ var _ interface {
 func newIndexedTreeStore(fs rwvfs.FileSystem) TreeStoreImporter {
 	return &indexedTreeStore{
 		indexes: map[string]Index{
-			"file_to_units": &unitFilesIndex{},
+			"file_to_units":    &unitFilesIndex{},
+			"def_to_ref_units": &defRefUnitsIndex{},
 		},
 		fsTreeStore: newFSTreeStore(fs),
 	}
@@ -165,8 +167,14 @@ func (s *indexedTreeStore) Refs(fs ...RefFilter) ([]*graph.Ref, error) {
 
 	var ufs []UnitFilter
 	for _, f := range fs {
-		if uf, ok := f.(UnitFilter); ok {
-			ufs = append(ufs, uf)
+		switch f := f.(type) {
+		case UnitFilter:
+			ufs = append(ufs, f)
+
+		case ByRefDefFilter:
+			// HACK: Special-case the defRefUnitsIndex. It doesn't fit cleanly
+			// into our existing index selection scheme.
+			ufs = append(ufs, unitIndexOnlyFilter{f})
 		}
 	}
 
@@ -203,7 +211,7 @@ func (s *indexedTreeStore) Import(u *unit.SourceUnit, data graph.Output) error {
 
 	s.checkSourceUnitFiles(u, data)
 
-	if err := s.buildIndexes(s.Indexes(), nil); err != nil {
+	if err := s.buildIndexes(s.Indexes(), nil, nil); err != nil {
 		return err
 	}
 
@@ -255,51 +263,111 @@ func (s *indexedTreeStore) checkSourceUnitFiles(u *unit.SourceUnit, data graph.O
 }
 
 func (s *indexedTreeStore) BuildIndex(name string, x Index) error {
-	return s.buildIndexes(map[string]Index{name: x}, nil)
+	return s.buildIndexes(map[string]Index{name: x}, nil, nil)
 }
 
-func (s *indexedTreeStore) buildIndexes(xs map[string]Index, units []*unit.SourceUnit) error {
+func (s *indexedTreeStore) buildIndexes(xs map[string]Index, units []*unit.SourceUnit, unitRefIndexes map[unit.ID2]*defRefsIndex) error {
+	// TODO(sqs): there's a race condition here if multiple imports
+	// are running concurrently, they could clobber each other's
+	// indexes. (S3 is eventually consistent.)
+
+	var getUnitsErr error
+	var getUnitsOnce sync.Once
 	getUnits := func() ([]*unit.SourceUnit, error) {
-		// Don't refetch if passed in as arg or if getUnits was
-		// already called.
-		if units != nil {
-			return units, nil
-		}
-
-		// TODO(sqs): there's a race condition here if multiple imports
-		// are running concurrently, they could clobber each other's
-		// indexes. (S3 is eventually consistent.)
-		var err error
-		units, err = s.fsTreeStore.Units()
-		if units == nil {
-			// Make units non-nil so we don't refetch (and thereby
-			// cache errors).
-			units = []*unit.SourceUnit{}
-		}
-		return units, err
+		getUnitsOnce.Do(func() {
+			if getUnitsErr == nil && units == nil {
+				units, getUnitsErr = s.fsTreeStore.Units()
+			}
+			if units == nil {
+				units = []*unit.SourceUnit{}
+			}
+		})
+		return units, getUnitsErr
 	}
 
-	// TODO(sqs): parallelize
-	for name, x := range xs {
-		switch x := x.(type) {
-		case unitIndexBuilder:
-			units, err := getUnits()
-			if err != nil {
-				return err
+	var getUnitRefIndexesErr error
+	var getUnitRefIndexesOnce sync.Once
+	var unitRefIndexesLock sync.Mutex
+	getUnitRefIndexes := func() (map[unit.ID2]*defRefsIndex, error) {
+		getUnitRefIndexesOnce.Do(func() {
+			if getUnitRefIndexesErr == nil && unitRefIndexes == nil {
+				// Read in the defRefsIndex for all source units.
+				units, err := getUnits()
+				if err != nil {
+					getUnitRefIndexesErr = err
+					return
+				}
+
+				// Use openUnitStore on the list from getUnits so we
+				// don't need to traverse the FS tree to enumerate all
+				// the source units again (which is slow).
+				uss := make(map[unit.ID2]UnitStore, len(units))
+				for _, u := range units {
+					uss[u.ID2()] = s.fsTreeStore.openUnitStore(u.ID2())
+				}
+
+				unitRefIndexes = make(map[unit.ID2]*defRefsIndex, len(units))
+				par := parallel.NewRun(runtime.GOMAXPROCS(0))
+				for u_, us_ := range uss {
+					u := u_
+					us, ok := us_.(*indexedUnitStore)
+					if !ok {
+						continue
+					}
+
+					par.Do(func() error {
+						x := us.indexes[defToRefsIndexName]
+						if err := prepareIndex(us.fs, defToRefsIndexName, x); err != nil {
+							return err
+						}
+						unitRefIndexesLock.Lock()
+						defer unitRefIndexesLock.Unlock()
+						unitRefIndexes[u] = x.(*defRefsIndex)
+						return nil
+					})
+				}
+				getUnitRefIndexesErr = par.Wait()
 			}
-			if err := x.Build(units); err != nil {
-				return err
+			if unitRefIndexes == nil {
+				unitRefIndexes = map[unit.ID2]*defRefsIndex{}
 			}
-		default:
-			return fmt.Errorf("don't know how to build index %q of type %T", name, x)
-		}
-		if x, ok := x.(persistedIndex); ok {
-			if err := writeIndex(s.fs, name, x); err != nil {
-				return err
-			}
-		}
+		})
+		return unitRefIndexes, getUnitRefIndexesErr
 	}
-	return nil
+
+	par := parallel.NewRun(len(xs))
+	for name_, x_ := range xs {
+		name, x := name_, x_
+		par.Do(func() error {
+			switch x := x.(type) {
+			case unitIndexBuilder:
+				units, err := getUnits()
+				if err != nil {
+					return err
+				}
+				if err := x.Build(units); err != nil {
+					return err
+				}
+			case unitRefIndexBuilder:
+				unitRefIndexes, err := getUnitRefIndexes()
+				if err != nil {
+					return err
+				}
+				if err := x.Build(unitRefIndexes); err != nil {
+					return err
+				}
+			default:
+				return fmt.Errorf("don't know how to build index %q of type %T", name, x)
+			}
+			if x, ok := x.(persistedIndex); ok {
+				if err := writeIndex(s.fs, name, x); err != nil {
+					return err
+				}
+			}
+			return nil
+		})
+	}
+	return par.Wait()
 }
 
 func (s *indexedTreeStore) statIndex(name string) (os.FileInfo, error) {
@@ -342,12 +410,16 @@ func newIndexedUnitStore(fs rwvfs.FileSystem) UnitStoreImporter {
 				},
 				perFile: 7,
 			},
+			defToRefsIndexName: &defRefsIndex{},
 		},
 		fsUnitStore: &fsUnitStore{fs: fs},
 	}
 }
 
-const indexFilename = "%s.idx"
+const (
+	defToRefsIndexName = "def_to_refs"
+	indexFilename      = "%s.idx"
+)
 
 func (s *indexedUnitStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 	// Try to find an index that covers this query.
@@ -375,11 +447,20 @@ func (s *indexedUnitStore) Refs(fs ...RefFilter) ([]*graph.Ref, error) {
 			return nil, err
 		}
 		vlog.Printf("indexedUnitStore.Refs(%v): Found covering index %q (%v).", fs, xname, bx)
-		brs, err := bx.(refIndex).Refs(fs...)
-		if err != nil {
-			return nil, err
+		switch bx := bx.(type) {
+		case refIndexByteRanges:
+			brs, err := bx.Refs(fs...)
+			if err != nil {
+				return nil, err
+			}
+			return s.refsAtByteRanges(brs, fs)
+		case refIndexByteOffsets:
+			ofs, err := bx.Refs(fs...)
+			if err != nil {
+				return nil, err
+			}
+			return s.refsAtOffsets(ofs, fs)
 		}
-		return s.refsAtByteRanges(brs, fs)
 	}
 
 	// Fall back to full scan.
@@ -391,7 +472,7 @@ func (s *indexedUnitStore) Refs(fs ...RefFilter) ([]*graph.Ref, error) {
 func (s *indexedUnitStore) Import(data graph.Output) error {
 	cleanForImport(&data, "", "", "")
 
-	var defOfs byteOffsets
+	var defOfs, refOfs byteOffsets
 	var refFBRs fileByteRanges
 
 	par := parallel.NewRun(2)
@@ -400,14 +481,14 @@ func (s *indexedUnitStore) Import(data graph.Output) error {
 		return err
 	})
 	par.Do(func() (err error) {
-		refFBRs, err = s.fsUnitStore.writeRefs(data.Refs)
+		refFBRs, refOfs, err = s.fsUnitStore.writeRefs(data.Refs)
 		return err
 	})
 	if err := par.Wait(); err != nil {
 		return err
 	}
 
-	if err := s.buildIndexes(s.Indexes(), &data, defOfs, refFBRs); err != nil {
+	if err := s.buildIndexes(s.Indexes(), &data, defOfs, refFBRs, refOfs); err != nil {
 		return err
 	}
 	return nil
@@ -416,10 +497,10 @@ func (s *indexedUnitStore) Import(data graph.Output) error {
 func (s *indexedUnitStore) Indexes() map[string]Index { return s.indexes }
 
 func (s *indexedUnitStore) BuildIndex(name string, x Index) error {
-	return s.buildIndexes(map[string]Index{name: x}, nil, nil, nil)
+	return s.buildIndexes(map[string]Index{name: x}, nil, nil, nil, nil)
 }
 
-func (s *indexedUnitStore) buildIndexes(xs map[string]Index, data *graph.Output, defOfs byteOffsets, refFBRs fileByteRanges) error {
+func (s *indexedUnitStore) buildIndexes(xs map[string]Index, data *graph.Output, defOfs byteOffsets, refFBRs fileByteRanges, refOfs byteOffsets) error {
 	var defs []*graph.Def
 	var refs []*graph.Ref
 	if data != nil {
@@ -457,7 +538,7 @@ func (s *indexedUnitStore) buildIndexes(xs map[string]Index, data *graph.Output,
 			// Don't refetch if passed in as arg or if getData was
 			// already called.
 			if refs == nil {
-				refs, refFBRs, getRefsErr = s.fsUnitStore.readRefs()
+				refs, refFBRs, refOfs, getRefsErr = s.fsUnitStore.readRefs()
 			}
 			if refs == nil {
 				refs = []*graph.Ref{}
@@ -484,7 +565,7 @@ func (s *indexedUnitStore) buildIndexes(xs map[string]Index, data *graph.Output,
 				if err != nil {
 					return err
 				}
-				if err := x.Build(refs, refFBRs); err != nil {
+				if err := x.Build(refs, refFBRs, refOfs); err != nil {
 					return err
 				}
 			default:

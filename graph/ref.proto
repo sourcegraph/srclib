@@ -52,3 +52,10 @@ message Ref {
     // End is the byte offset of this ref's last byte in File.
     optional uint32 end = 12 [(gogoproto.nullable) = false, (gogoproto.jsontag) = "End"];
 };
+
+message RefDefKey {
+    optional string def_repo = 1 [(gogoproto.nullable) = false, (gogoproto.customname) = "DefRepo", (gogoproto.jsontag) = "DefRepo,omitempty"];
+    optional string def_unit_type = 3 [(gogoproto.nullable) = false, (gogoproto.customname) = "DefUnitType", (gogoproto.jsontag) = "DefUnitType,omitempty"];
+    optional string def_unit = 4 [(gogoproto.nullable) = false, (gogoproto.customname) = "DefUnit", (gogoproto.jsontag) = "DefUnit,omitempty"];
+    optional string def_path = 5 [(gogoproto.nullable) = false, (gogoproto.customname) = "DefPath", (gogoproto.jsontag) = "DefPath"];
+};

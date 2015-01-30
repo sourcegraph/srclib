@@ -19,7 +19,7 @@ type refFileIndex struct {
 var _ interface {
 	Index
 	persistedIndex
-	refIndex
+	refIndexByteRanges
 	refIndexBuilder
 } = (*refFileIndex)(nil)
 
@@ -38,7 +38,6 @@ func (x *refFileIndex) getByFile(file string) (byteRanges, bool, error) {
 		return nil, false, nil
 	}
 
-	// TODO(sqs): using JSON for this is really inefficient and stupid
 	var br byteRanges
 	if err := binary.Unmarshal(v, &br); err != nil {
 		return nil, true, err
@@ -59,7 +58,7 @@ func (x *refFileIndex) Covers(filters interface{}) int {
 	return cov
 }
 
-// Refs implements refIndex.
+// Refs implements refIndexByteRanges.
 func (x *refFileIndex) Refs(fs ...RefFilter) ([]byteRanges, error) {
 	for _, f := range fs {
 		if ff, ok := f.(ByFilesFilter); ok {
@@ -81,7 +80,7 @@ func (x *refFileIndex) Refs(fs ...RefFilter) ([]byteRanges, error) {
 }
 
 // Build creates the refFileIndex.
-func (x *refFileIndex) Build(ref []*graph.Ref, fbr fileByteRanges) error {
+func (x *refFileIndex) Build(_ []*graph.Ref, fbr fileByteRanges, _ byteOffsets) error {
 	vlog.Printf("refFilesIndex: building index...")
 	b := phtable.Builder(len(fbr))
 	for file, br := range fbr {
