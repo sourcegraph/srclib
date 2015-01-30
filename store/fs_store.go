@@ -439,8 +439,13 @@ func (s *fsUnitStore) defsAtOffsets(ofs byteOffsets, fs []DefFilter) (defs []*gr
 
 	ffs := defFilters(fs)
 
+	p := parFetches(s.fs, fs)
+	if p == 0 {
+		return nil, nil
+	}
+
 	var defsLock sync.Mutex
-	par := parallel.NewRun(parFetches(s.fs, fs))
+	par := parallel.NewRun(p)
 	for _, ofs_ := range ofs {
 		ofs := ofs_
 		par.Do(func() error {
@@ -555,6 +560,13 @@ func (s *fsUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs [
 		}
 	}()
 
+	ffs := refFilters(fs)
+
+	p := parFetches(s.fs, fs)
+	if p == 0 {
+		return nil, nil
+	}
+
 	// See how many bytes we need to read to get the refs in all
 	// byteRanges.
 	readLengths := make([]int64, len(brs))
@@ -568,28 +580,38 @@ func (s *fsUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs [
 		readLengths[i] = n
 	}
 
-	ffs := refFilters(fs)
-
-	for i, br := range brs {
-		if _, moreOK := LimitRemaining(fs); !moreOK {
-			break
-		}
-
-		r, err := rangeReader(s.fs, unitRefsFilename, f, br.start(), readLengths[i])
-		if err != nil {
-			return nil, err
-		}
-		dec := Codec.NewDecoder(r)
-		for range br[1:] {
-			var ref graph.Ref
-			if _, err := dec.Decode(&ref); err != nil {
-				return nil, err
+	var refsLock sync.Mutex
+	par := parallel.NewRun(p)
+	for i_, br_ := range brs {
+		i, br := i_, br_
+		par.Do(func() error {
+			if _, moreOK := LimitRemaining(fs); !moreOK {
+				return nil
 			}
-			if ffs.SelectRef(&ref) {
-				refs = append(refs, &ref)
+
+			r, err := rangeReader(s.fs, unitRefsFilename, f, br.start(), readLengths[i])
+			if err != nil {
+				return err
 			}
-		}
+			dec := Codec.NewDecoder(r)
+			for range br[1:] {
+				var ref graph.Ref
+				if _, err := dec.Decode(&ref); err != nil {
+					return err
+				}
+				if ffs.SelectRef(&ref) {
+					refsLock.Lock()
+					refs = append(refs, &ref)
+					refsLock.Unlock()
+				}
+			}
+			return nil
+		})
 	}
+	if err := par.Wait(); err != nil {
+		return refs, err
+	}
+	sort.Sort(refsByFileStartEnd(refs))
 	vlog.Printf("fsUnitStore: read %d refs at byte ranges %v with filters %v.", len(refs), brs, fs)
 	return refs, nil
 }
@@ -611,8 +633,13 @@ func (s *fsUnitStore) refsAtOffsets(ofs byteOffsets, fs []RefFilter) (refs []*gr
 
 	ffs := refFilters(fs)
 
+	p := parFetches(s.fs, fs)
+	if p == 0 {
+		return nil, nil
+	}
+
 	var refsLock sync.Mutex
-	par := parallel.NewRun(parFetches(s.fs, fs))
+	par := parallel.NewRun(p)
 	for _, ofs_ := range ofs {
 		ofs := ofs_
 		par.Do(func() error {
