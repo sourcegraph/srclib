@@ -139,18 +139,18 @@ func (s *indexedTreeStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 
 	// Find which source units match the unit filters; we'll restrict
 	// our defs query to those source units.
-	scopeUnits, err := s.unitIDs(false, ufs...)
-	if err != nil {
+	scopeUnits, err := s.unitIDs(true, ufs...)
+	if err != nil && err != errNotIndexed {
 		return nil, err
+	} else if err == nil {
+		// Add ByUnits filters that were implied by ByFiles (and other
+		// UnitFilters).
+		//
+		// If scopeUnits is empty, the empty ByUnits filter will result in
+		// the query matching nothing, which is the desired behavior.
+		vlog.Printf("indexedTreeStore.Defs(%v): Adding equivalent ByUnits filters to scope to units %+v.", fs, scopeUnits)
+		fs = append(fs, ByUnits(scopeUnits...))
 	}
-
-	// Add ByUnits filters that were implied by ByFiles (and other
-	// UnitFilters).
-	//
-	// If scopeUnits is empty, the empty ByUnits filter will result in
-	// the query matching nothing, which is the desired behavior.
-	vlog.Printf("indexedTreeStore.Defs(%v): Adding equivalent ByUnits filters to scope to units %+v.", fs, scopeUnits)
-	fs = append(fs, ByUnits(scopeUnits...))
 
 	// Pass the now more narrowly scoped query onto the underlying store.
 	return s.fsTreeStore.Defs(fs...)
