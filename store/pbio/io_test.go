@@ -79,7 +79,7 @@ func iotest(writer Writer, reader Reader) error {
 func TestVarintNormal(t *testing.T) {
 	var buf bytes.Buffer
 	writer := NewDelimitedWriter(&buf)
-	reader := NewDelimitedReader(&buf, 1024*1024)
+	reader := NewDelimitedReader(&buf, 100, 1024*1024)
 	if err := iotest(writer, reader); err != nil {
 		t.Error(err)
 	}
@@ -89,7 +89,7 @@ func TestVarintNormal(t *testing.T) {
 func TestVarintMaxSize(t *testing.T) {
 	var buf bytes.Buffer
 	writer := NewDelimitedWriter(&buf)
-	reader := NewDelimitedReader(&buf, 20)
+	reader := NewDelimitedReader(&buf, 100, 20)
 	if err := iotest(writer, reader); err != io.ErrShortBuffer {
 		t.Error(err)
 	} else {
@@ -100,7 +100,7 @@ func TestVarintMaxSize(t *testing.T) {
 func TestVarintError(t *testing.T) {
 	var buf bytes.Buffer
 	buf.Write([]byte{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f})
-	reader := NewDelimitedReader(&buf, 1024*1024)
+	reader := NewDelimitedReader(&buf, 100, 1024*1024)
 	msg := &test.NinOptNative{}
 	if _, err := reader.ReadMsg(msg); err == nil {
 		t.Fatalf("Expected error")

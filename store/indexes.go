@@ -49,6 +49,10 @@ type IndexStatus struct {
 	// status, if any.
 	Error string `json:",omitempty"`
 
+	// DependsOnChildren is true if this index needs its child indexes
+	// to be built first before it can be built.
+	DependsOnChildren bool `json:",omitempty"`
+
 	// BuildError is the error encountered while building this index,
 	// if any. It is only returned by BuildIndexes (not Indexes).
 	BuildError string `json:",omitempty"`
@@ -143,6 +147,7 @@ func listIndexes(s interface{}, c IndexCriteria, ch chan<- storeIndex, f func(*I
 	switch s := s.(type) {
 	case indexedStore:
 		xx := s.Indexes()
+		var waitingOnChildren []storeIndex
 		for name, x := range xx {
 			st := IndexStatus{
 				Name: name,
@@ -165,14 +170,24 @@ func listIndexes(s interface{}, c IndexCriteria, ch chan<- storeIndex, f func(*I
 				st.Size = fi.Size()
 			}
 
+			switch x.(type) {
+			case unitRefIndexBuilder:
+				st.DependsOnChildren = true
+			}
+
 			if c.Stale != nil && st.Stale != *c.Stale {
 				continue
 			}
 
+			si := storeIndex{store: s, status: st, index: x}
 			if f != nil {
-				f(&st)
+				f(&si.status)
 			}
-			ch <- storeIndex{store: s, status: st, index: x}
+			if st.DependsOnChildren {
+				waitingOnChildren = append(waitingOnChildren, si)
+			} else {
+				ch <- si
+			}
 		}
 
 		switch s := s.(type) {
@@ -184,6 +199,10 @@ func listIndexes(s interface{}, c IndexCriteria, ch chan<- storeIndex, f func(*I
 			if err := listIndexes(s.fsUnitStore, c, ch, f); err != nil {
 				return err
 			}
+		}
+
+		for _, si := range waitingOnChildren {
+			ch <- si
 		}
 
 	case repoStoreOpener:
