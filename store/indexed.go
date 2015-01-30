@@ -1,11 +1,12 @@
 package store
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
 	"log"
 	"os"
+
+	"compress/gzip"
 
 	"code.google.com/p/rog-go/parallel"
 
@@ -520,11 +521,15 @@ func writeIndex(fs rwvfs.FileSystem, name string, x persistedIndex) (err error) 
 		}
 	}()
 
-	bw := bufio.NewWriter(f)
-	if err := x.Write(bw); err != nil {
+	w := gzip.NewWriter(f)
+
+	if err := x.Write(w); err != nil {
 		return err
 	}
-	if err := bw.Flush(); err != nil {
+	if err := w.Flush(); err != nil {
+		return err
+	}
+	if err := w.Close(); err != nil {
 		return err
 	}
 	vlog.Printf("%s: done writing index.", name)
@@ -565,7 +570,15 @@ func readIndex(fs rwvfs.FileSystem, name string, x persistedIndex) (err error) {
 		}
 	}()
 
-	if err := x.Read(f); err != nil {
+	r, err := gzip.NewReader(f)
+	if err != nil {
+		return err
+	}
+
+	if err := x.Read(r); err != nil {
+		return err
+	}
+	if err := r.Close(); err != nil {
 		return err
 	}
 	vlog.Printf("%s: done reading index.", name)
