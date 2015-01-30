@@ -147,7 +147,9 @@ type refsSortableByRefDefKey struct{ refs []*graph.Ref }
 func (rs refsSortableByRefDefKey) Len() int      { return len(rs.refs) }
 func (rs refsSortableByRefDefKey) Swap(i, j int) { rs.refs[i], rs.refs[j] = rs.refs[j], rs.refs[i] }
 func (rs refsSortableByRefDefKey) Less(i, j int) bool {
-	return rs.refs[i].RefDefKey().String() < rs.refs[j].RefDefKey().String()
+	a := rs.refs[i].RefDefKey()
+	b := rs.refs[j].RefDefKey()
+	return a.String() < b.String()
 }
 
 type refsSortableByRepo struct{ refs []*graph.Ref }
