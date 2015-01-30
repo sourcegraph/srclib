@@ -78,8 +78,8 @@ func (w *varintWriter) WriteMsg(msg proto.Message) (uint64, error) {
 	return uint64(n) + length, err
 }
 
-func NewDelimitedReader(r io.Reader, maxSize int) Reader {
-	return &varintReader{bufio.NewReader(r), nil, maxSize}
+func NewDelimitedReader(r io.Reader, bufSize, maxSize int) Reader {
+	return &varintReader{bufio.NewReaderSize(r, bufSize), nil, maxSize}
 }
 
 type varintReader struct {

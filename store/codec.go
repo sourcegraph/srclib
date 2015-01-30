@@ -117,6 +117,8 @@ type protobufDecoder struct {
 	pbr pbio.Reader
 }
 
+const decodeBufSize = 4096
+
 func (d *protobufDecoder) Decode(v interface{}) (uint64, error) {
 	switch v := v.(type) {
 	case *unit.SourceUnit:
@@ -126,7 +128,7 @@ func (d *protobufDecoder) Decode(v interface{}) (uint64, error) {
 		return d.j.Decode(v)
 	default:
 		if d.pbr == nil {
-			d.pbr = pbio.NewDelimitedReader(d.r, 2*1024*1024)
+			d.pbr = pbio.NewDelimitedReader(d.r, decodeBufSize, 2*1024*1024)
 		}
 		return d.pbr.ReadMsg(v.(proto.Message))
 	}
