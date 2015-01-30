@@ -1,7 +1,6 @@
 package store
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 
@@ -13,29 +12,15 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/graph"
 )
 
-type unitStoreImporter interface {
-	UnitStore
-	UnitImporter
-}
-
-type labeledUnitStoreImporter struct {
-	unitStoreImporter
-	label string
-}
-
-func (s *labeledUnitStoreImporter) String() string {
-	return fmt.Sprintf("%s: %s", s.unitStoreImporter, s.label)
-}
-
-func testUnitStore(t *testing.T, newFn func() unitStoreImporter) {
-	testUnitStore_uninitialized(t, &labeledUnitStoreImporter{newFn(), "uninitialized"})
-	testUnitStore_Import_empty(t, &labeledUnitStoreImporter{newFn(), "import empty"})
-	testUnitStore_Import(t, &labeledUnitStoreImporter{newFn(), "import"})
-	testUnitStore_Def(t, &labeledUnitStoreImporter{newFn(), "def"})
-	testUnitStore_Defs(t, &labeledUnitStoreImporter{newFn(), "defs"})
-	testUnitStore_Refs(t, &labeledUnitStoreImporter{newFn(), "refs"})
-	testUnitStore_Refs_ByFiles(t, &labeledUnitStoreImporter{newFn(), "refs by file"})
-	testUnitStore_Refs_ByDef(t, &labeledUnitStoreImporter{newFn(), "refs by def"})
+func testUnitStore(t *testing.T, newFn func() UnitStoreImporter) {
+	testUnitStore_uninitialized(t, newFn())
+	testUnitStore_Import_empty(t, newFn())
+	testUnitStore_Import(t, newFn())
+	testUnitStore_Def(t, newFn())
+	testUnitStore_Defs(t, newFn())
+	testUnitStore_Refs(t, newFn())
+	testUnitStore_Refs_ByFiles(t, newFn())
+	testUnitStore_Refs_ByDef(t, newFn())
 }
 
 func testUnitStore_uninitialized(t *testing.T, us UnitStore) {
@@ -74,7 +59,7 @@ func testUnitStore_empty(t *testing.T, us UnitStore) {
 	}
 }
 
-func testUnitStore_Import_empty(t *testing.T, us unitStoreImporter) {
+func testUnitStore_Import_empty(t *testing.T, us UnitStoreImporter) {
 	data := graph.Output{
 		Defs: []*graph.Def{},
 		Refs: []*graph.Ref{},
@@ -85,7 +70,7 @@ func testUnitStore_Import_empty(t *testing.T, us unitStoreImporter) {
 	testUnitStore_empty(t, us)
 }
 
-func testUnitStore_Import(t *testing.T, us unitStoreImporter) {
+func testUnitStore_Import(t *testing.T, us UnitStoreImporter) {
 	data := graph.Output{
 		Defs: []*graph.Def{
 			{
@@ -107,7 +92,7 @@ func testUnitStore_Import(t *testing.T, us unitStoreImporter) {
 	}
 }
 
-func testUnitStore_Def(t *testing.T, us unitStoreImporter) {
+func testUnitStore_Def(t *testing.T, us UnitStoreImporter) {
 	data := graph.Output{
 		Defs: []*graph.Def{
 			{
@@ -137,7 +122,7 @@ func testUnitStore_Def(t *testing.T, us unitStoreImporter) {
 	}
 }
 
-func testUnitStore_Defs(t *testing.T, us unitStoreImporter) {
+func testUnitStore_Defs(t *testing.T, us UnitStoreImporter) {
 	data := graph.Output{
 		Defs: []*graph.Def{
 			{
@@ -164,7 +149,7 @@ func testUnitStore_Defs(t *testing.T, us unitStoreImporter) {
 	}
 }
 
-func testUnitStore_Refs(t *testing.T, us unitStoreImporter) {
+func testUnitStore_Refs(t *testing.T, us UnitStoreImporter) {
 	data := graph.Output{
 		Refs: []*graph.Ref{
 			{
@@ -194,7 +179,7 @@ func testUnitStore_Refs(t *testing.T, us unitStoreImporter) {
 	}
 }
 
-func testUnitStore_Refs_ByFiles(t *testing.T, us unitStoreImporter) {
+func testUnitStore_Refs_ByFiles(t *testing.T, us UnitStoreImporter) {
 	refsByFile := map[string][]*graph.Ref{
 		"f1": {
 			{DefPath: "p1", Start: 0, End: 5},
@@ -240,7 +225,7 @@ func testUnitStore_Refs_ByFiles(t *testing.T, us unitStoreImporter) {
 	}
 }
 
-func testUnitStore_Refs_ByDef(t *testing.T, us unitStoreImporter) {
+func testUnitStore_Refs_ByDef(t *testing.T, us UnitStoreImporter) {
 	refsByDef := map[string][]*graph.Ref{
 		"p1": {
 			{File: "f1", Start: 0, End: 5},

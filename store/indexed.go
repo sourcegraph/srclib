@@ -207,17 +207,15 @@ func (s *indexedTreeStore) Refs(fs ...RefFilter) ([]*graph.Ref, error) {
 }
 
 func (s *indexedTreeStore) Import(u *unit.SourceUnit, data graph.Output) error {
+	s.checkSourceUnitFiles(u, data)
 	if err := s.fsTreeStore.Import(u, data); err != nil {
 		return err
 	}
-
-	s.checkSourceUnitFiles(u, data)
-
-	if err := s.buildIndexes(s.Indexes(), nil, nil); err != nil {
-		return err
-	}
-
 	return nil
+}
+
+func (s *indexedTreeStore) Index() error {
+	return s.buildIndexes(s.Indexes(), nil, nil)
 }
 
 func (s *indexedTreeStore) Indexes() map[string]Index { return s.indexes }

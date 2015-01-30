@@ -26,6 +26,11 @@ type RepoImporter interface {
 	Import(commitID string, unit *unit.SourceUnit, data graph.Output) error
 }
 
+type RepoIndexer interface {
+	// Index builds indexes for the store.
+	Index(commitID string) error
+}
+
 // A RepoStoreImporter implements both RepoStore and RepoImporter.
 type RepoStoreImporter interface {
 	RepoStore

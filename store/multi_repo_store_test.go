@@ -21,18 +21,18 @@ func (s *labeledMultiRepoStoreImporter) String() string {
 }
 
 func testMultiRepoStore(t *testing.T, newFn func() MultiRepoStoreImporter) {
-	testMultiRepoStore_uninitialized(t, &labeledMultiRepoStoreImporter{newFn(), "uninitialized"})
-	testMultiRepoStore_Import_empty(t, &labeledMultiRepoStoreImporter{newFn(), "import empty"})
-	testMultiRepoStore_Import(t, &labeledMultiRepoStoreImporter{newFn(), "import"})
-	testMultiRepoStore_Repos(t, &labeledMultiRepoStoreImporter{newFn(), "repos"})
-	testMultiRepoStore_Versions(t, &labeledMultiRepoStoreImporter{newFn(), "versions"})
-	testMultiRepoStore_Units(t, &labeledMultiRepoStoreImporter{newFn(), "units"})
-	testMultiRepoStore_Def(t, &labeledMultiRepoStoreImporter{newFn(), "def"})
-	testMultiRepoStore_Defs(t, &labeledMultiRepoStoreImporter{newFn(), "defs"})
-	testMultiRepoStore_Defs_filter(t, &labeledMultiRepoStoreImporter{newFn(), "defs filter"})
-	testMultiRepoStore_Refs(t, &labeledMultiRepoStoreImporter{newFn(), "refs"})
-	testMultiRepoStore_Refs_filterByRepoCommitAndFile(t, &labeledMultiRepoStoreImporter{newFn(), "refs filter-by-repo-commit-file"})
-	testMultiRepoStore_Refs_filterByDef(t, &labeledMultiRepoStoreImporter{newFn(), "refs filter-by-def"})
+	testMultiRepoStore_uninitialized(t, newFn())
+	testMultiRepoStore_Import_empty(t, newFn())
+	testMultiRepoStore_Import(t, newFn())
+	testMultiRepoStore_Repos(t, newFn())
+	testMultiRepoStore_Versions(t, newFn())
+	testMultiRepoStore_Units(t, newFn())
+	testMultiRepoStore_Def(t, newFn())
+	testMultiRepoStore_Defs(t, newFn())
+	testMultiRepoStore_Defs_filter(t, newFn())
+	testMultiRepoStore_Refs(t, newFn())
+	testMultiRepoStore_Refs_filterByRepoCommitAndFile(t, newFn())
+	testMultiRepoStore_Refs_filterByDef(t, newFn())
 }
 
 func testMultiRepoStore_uninitialized(t *testing.T, mrs MultiRepoStore) {
@@ -445,6 +445,11 @@ func testMultiRepoStore_Refs_filterByDef(t *testing.T, mrs MultiRepoStoreImporte
 	}
 	if err := mrs.Import("r", "c", &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f"}}, data); err != nil {
 		t.Errorf("%s: Import: %s", mrs, err)
+	}
+	if mrs, ok := mrs.(MultiRepoIndexer); ok {
+		if err := mrs.Index("r", "c"); err != nil {
+			t.Fatalf("%s: Index: %s", mrs, err)
+		}
 	}
 
 	want := []*graph.Ref{
