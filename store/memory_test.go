@@ -3,13 +3,13 @@ package store
 import "testing"
 
 func TestMemoryUnitStore(t *testing.T) {
-	testUnitStore(t, func() unitStoreImporter {
+	testUnitStore(t, func() UnitStoreImporter {
 		return &memoryUnitStore{}
 	})
 }
 
 func TestMemoryTreeStore(t *testing.T) {
-	testTreeStore(t, func() treeStoreImporter {
+	testTreeStore(t, func() TreeStoreImporter {
 		return newMemoryTreeStore()
 	})
 }

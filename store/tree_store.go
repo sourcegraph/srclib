@@ -35,6 +35,12 @@ type TreeStoreImporter interface {
 	TreeImporter
 }
 
+type TreeIndexer interface {
+	// Index builds indexes for the store, which may include data from
+	// multiple source units in the tree.
+	Index() error
+}
+
 // A treeStores is a TreeStore whose methods call the
 // corresponding method on each of the tree stores returned by the
 // treeStores func.

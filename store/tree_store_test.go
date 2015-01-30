@@ -11,30 +11,8 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
-type treeStoreImporter interface {
-	TreeStore
-	TreeImporter
-}
-
-type labeledTreeStoreImporter struct {
-	treeStoreImporter
-	label string
-}
-
-func (s *labeledTreeStoreImporter) String() string {
-	return fmt.Sprintf("%s: %s", s.treeStoreImporter, s.label)
-}
-
 func isIndexedStore(s interface{}) bool {
-	switch s := s.(type) {
-	case *labeledUnitStoreImporter:
-		return isIndexedStore(s.unitStoreImporter)
-	case *labeledTreeStoreImporter:
-		return isIndexedStore(s.treeStoreImporter)
-	case *labeledRepoStoreImporter:
-		return isIndexedStore(s.RepoStoreImporter)
-	case *labeledMultiRepoStoreImporter:
-		return isIndexedStore(s.MultiRepoStoreImporter)
+	switch s.(type) {
 	case *indexedTreeStore:
 		return true
 	case *indexedUnitStore:
@@ -46,20 +24,20 @@ func isIndexedStore(s interface{}) bool {
 	}
 }
 
-func testTreeStore(t *testing.T, newFn func() treeStoreImporter) {
-	testTreeStore_uninitialized(t, &labeledTreeStoreImporter{newFn(), "uninitialized"})
-	testTreeStore_Import_empty(t, &labeledTreeStoreImporter{newFn(), "import empty"})
-	testTreeStore_Import(t, &labeledTreeStoreImporter{newFn(), "import"})
-	testTreeStore_Unit(t, &labeledTreeStoreImporter{newFn(), "unit"})
-	testTreeStore_Units(t, &labeledTreeStoreImporter{newFn(), "unit"})
-	testTreeStore_Units_ByFile(t, &labeledTreeStoreImporter{newFn(), "units by file"})
-	testTreeStore_Def(t, &labeledTreeStoreImporter{newFn(), "def"})
-	testTreeStore_Defs(t, &labeledTreeStoreImporter{newFn(), "defs"})
-	testTreeStore_Defs_ByUnits(t, &labeledTreeStoreImporter{newFn(), "defs by units"})
-	testTreeStore_Defs_ByFiles(t, &labeledTreeStoreImporter{newFn(), "defs by files"})
-	testTreeStore_Refs(t, &labeledTreeStoreImporter{newFn(), "refs"})
-	testTreeStore_Refs_ByFiles(t, &labeledTreeStoreImporter{newFn(), "refs by file"})
-	testTreeStore_Refs_ByDef(t, &labeledTreeStoreImporter{newFn(), "refs by def"})
+func testTreeStore(t *testing.T, newFn func() TreeStoreImporter) {
+	testTreeStore_uninitialized(t, newFn())
+	testTreeStore_Import_empty(t, newFn())
+	testTreeStore_Import(t, newFn())
+	testTreeStore_Unit(t, newFn())
+	testTreeStore_Units(t, newFn())
+	testTreeStore_Units_ByFile(t, newFn())
+	testTreeStore_Def(t, newFn())
+	testTreeStore_Defs(t, newFn())
+	testTreeStore_Defs_ByUnits(t, newFn())
+	testTreeStore_Defs_ByFiles(t, newFn())
+	testTreeStore_Refs(t, newFn())
+	testTreeStore_Refs_ByFiles(t, newFn())
+	testTreeStore_Refs_ByDef(t, newFn())
 }
 
 func testTreeStore_uninitialized(t *testing.T, ts TreeStore) {
@@ -83,14 +61,19 @@ func testTreeStore_empty(t *testing.T, ts TreeStore) {
 	testUnitStore_empty(t, ts)
 }
 
-func testTreeStore_Import_empty(t *testing.T, ts treeStoreImporter) {
+func testTreeStore_Import_empty(t *testing.T, ts TreeStoreImporter) {
 	if err := ts.Import(nil, graph.Output{}); err != nil {
 		t.Errorf("%s: Import(nil, empty): %s", ts, err)
+	}
+	if ts, ok := ts.(TreeIndexer); ok {
+		if err := ts.Index(); err != nil {
+			t.Fatalf("%s: Index: %s", ts, err)
+		}
 	}
 	testTreeStore_empty(t, ts)
 }
 
-func testTreeStore_Import(t *testing.T, ts treeStoreImporter) {
+func testTreeStore_Import(t *testing.T, ts TreeStoreImporter) {
 	unit := &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f"}}
 	data := graph.Output{
 		Defs: []*graph.Def{
@@ -111,9 +94,14 @@ func testTreeStore_Import(t *testing.T, ts treeStoreImporter) {
 	if err := ts.Import(unit, data); err != nil {
 		t.Errorf("%s: Import(%v, data): %s", ts, unit, err)
 	}
+	if ts, ok := ts.(TreeIndexer); ok {
+		if err := ts.Index(); err != nil {
+			t.Fatalf("%s: Index: %s", ts, err)
+		}
+	}
 }
 
-func testTreeStore_Unit(t *testing.T, ts treeStoreImporter) {
+func testTreeStore_Unit(t *testing.T, ts TreeStoreImporter) {
 	if err := ts.Import(&unit.SourceUnit{Type: "t", Name: "u"}, graph.Output{}); err != nil {
 		t.Errorf("%s: Import(empty data): %s", ts, err)
 	}
@@ -127,7 +115,7 @@ func testTreeStore_Unit(t *testing.T, ts treeStoreImporter) {
 	}
 }
 
-func testTreeStore_Units(t *testing.T, ts treeStoreImporter) {
+func testTreeStore_Units(t *testing.T, ts TreeStoreImporter) {
 	want := []*unit.SourceUnit{
 		{Type: "t1", Name: "u1"},
 		{Type: "t2", Name: "u2"},
@@ -136,6 +124,11 @@ func testTreeStore_Units(t *testing.T, ts treeStoreImporter) {
 	for _, unit := range want {
 		if err := ts.Import(unit, graph.Output{}); err != nil {
 			t.Errorf("%s: Import(%v, empty data): %s", ts, unit, err)
+		}
+	}
+	if ts, ok := ts.(TreeIndexer); ok {
+		if err := ts.Index(); err != nil {
+			t.Fatalf("%s: Index: %s", ts, err)
 		}
 	}
 
@@ -162,7 +155,7 @@ func testTreeStore_Units(t *testing.T, ts treeStoreImporter) {
 	}
 }
 
-func testTreeStore_Units_ByFile(t *testing.T, ts treeStoreImporter) {
+func testTreeStore_Units_ByFile(t *testing.T, ts TreeStoreImporter) {
 	want := []*unit.SourceUnit{
 		{Type: "t1", Name: "u1", Files: []string{"f1"}},
 		{Type: "t2", Name: "u2", Files: []string{"f1", "f2"}},
@@ -171,6 +164,11 @@ func testTreeStore_Units_ByFile(t *testing.T, ts treeStoreImporter) {
 	for _, unit := range want {
 		if err := ts.Import(unit, graph.Output{}); err != nil {
 			t.Errorf("%s: Import(%v, empty data): %s", ts, unit, err)
+		}
+	}
+	if ts, ok := ts.(TreeIndexer); ok {
+		if err := ts.Index(); err != nil {
+			t.Fatalf("%s: Index: %s", ts, err)
 		}
 	}
 
@@ -206,7 +204,7 @@ func testTreeStore_Units_ByFile(t *testing.T, ts treeStoreImporter) {
 	}
 }
 
-func testTreeStore_Def(t *testing.T, ts treeStoreImporter) {
+func testTreeStore_Def(t *testing.T, ts TreeStoreImporter) {
 	u := &unit.SourceUnit{Type: "t", Name: "u"}
 	data := graph.Output{
 		Defs: []*graph.Def{
@@ -218,6 +216,11 @@ func testTreeStore_Def(t *testing.T, ts treeStoreImporter) {
 	}
 	if err := ts.Import(u, data); err != nil {
 		t.Errorf("%s: Import(%v, data): %s", ts, u, err)
+	}
+	if ts, ok := ts.(TreeIndexer); ok {
+		if err := ts.Index(); err != nil {
+			t.Fatalf("%s: Index: %s", ts, err)
+		}
 	}
 
 	want := []*graph.Def{
@@ -252,7 +255,7 @@ func testTreeStore_Def(t *testing.T, ts treeStoreImporter) {
 	}
 }
 
-func testTreeStore_Defs(t *testing.T, ts treeStoreImporter) {
+func testTreeStore_Defs(t *testing.T, ts TreeStoreImporter) {
 	unit := &unit.SourceUnit{Type: "t", Name: "u"}
 	data := graph.Output{
 		Defs: []*graph.Def{
@@ -268,6 +271,11 @@ func testTreeStore_Defs(t *testing.T, ts treeStoreImporter) {
 	}
 	if err := ts.Import(unit, data); err != nil {
 		t.Errorf("%s: Import(%v, data): %s", ts, unit, err)
+	}
+	if ts, ok := ts.(TreeIndexer); ok {
+		if err := ts.Index(); err != nil {
+			t.Fatalf("%s: Index: %s", ts, err)
+		}
 	}
 
 	want := []*graph.Def{
@@ -290,7 +298,7 @@ func testTreeStore_Defs(t *testing.T, ts treeStoreImporter) {
 	}
 }
 
-func testTreeStore_Defs_ByUnits(t *testing.T, ts treeStoreImporter) {
+func testTreeStore_Defs_ByUnits(t *testing.T, ts TreeStoreImporter) {
 	units := []*unit.SourceUnit{
 		{Type: "t1", Name: "u1"},
 		{Type: "t2", Name: "u2"},
@@ -302,6 +310,11 @@ func testTreeStore_Defs_ByUnits(t *testing.T, ts treeStoreImporter) {
 		}
 		if err := ts.Import(unit, data); err != nil {
 			t.Errorf("%s: Import(%v, data): %s", ts, unit, err)
+		}
+	}
+	if ts, ok := ts.(TreeIndexer); ok {
+		if err := ts.Index(); err != nil {
+			t.Fatalf("%s: Index: %s", ts, err)
 		}
 	}
 
@@ -321,7 +334,7 @@ func testTreeStore_Defs_ByUnits(t *testing.T, ts treeStoreImporter) {
 	}
 }
 
-func testTreeStore_Defs_ByFiles(t *testing.T, ts treeStoreImporter) {
+func testTreeStore_Defs_ByFiles(t *testing.T, ts TreeStoreImporter) {
 	units := []*unit.SourceUnit{
 		{Type: "t1", Name: "u1", Files: []string{"f1"}},
 		{Type: "t2", Name: "u2", Files: []string{"f2"}},
@@ -332,6 +345,11 @@ func testTreeStore_Defs_ByFiles(t *testing.T, ts treeStoreImporter) {
 		}
 		if err := ts.Import(unit, data); err != nil {
 			t.Errorf("%s: Import(%v, data): %s", ts, unit, err)
+		}
+	}
+	if ts, ok := ts.(TreeIndexer); ok {
+		if err := ts.Index(); err != nil {
+			t.Fatalf("%s: Index: %s", ts, err)
 		}
 	}
 
@@ -354,7 +372,7 @@ func testTreeStore_Defs_ByFiles(t *testing.T, ts treeStoreImporter) {
 	}
 }
 
-func testTreeStore_Refs(t *testing.T, ts treeStoreImporter) {
+func testTreeStore_Refs(t *testing.T, ts TreeStoreImporter) {
 	unit := &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f1", "f2"}}
 	data := graph.Output{
 		Refs: []*graph.Ref{
@@ -374,6 +392,11 @@ func testTreeStore_Refs(t *testing.T, ts treeStoreImporter) {
 	}
 	if err := ts.Import(unit, data); err != nil {
 		t.Errorf("%s: Import(%v, data): %s", ts, unit, err)
+	}
+	if ts, ok := ts.(TreeIndexer); ok {
+		if err := ts.Index(); err != nil {
+			t.Fatalf("%s: Index: %s", ts, err)
+		}
 	}
 
 	want := []*graph.Ref{
@@ -408,7 +431,7 @@ func testTreeStore_Refs(t *testing.T, ts treeStoreImporter) {
 	}
 }
 
-func testTreeStore_Refs_ByFiles(t *testing.T, ts treeStoreImporter) {
+func testTreeStore_Refs_ByFiles(t *testing.T, ts TreeStoreImporter) {
 	refsByUnitByFile := map[string]map[string][]*graph.Ref{
 		"u1": {
 			"f1": {
@@ -439,6 +462,11 @@ func testTreeStore_Refs_ByFiles(t *testing.T, ts treeStoreImporter) {
 		}
 		if err := ts.Import(u, data); err != nil {
 			t.Errorf("%s: Import(%v, data): %s", ts, u, err)
+		}
+	}
+	if ts, ok := ts.(TreeIndexer); ok {
+		if err := ts.Index(); err != nil {
+			t.Fatalf("%s: Index: %s", ts, err)
 		}
 	}
 
@@ -475,7 +503,7 @@ func testTreeStore_Refs_ByFiles(t *testing.T, ts treeStoreImporter) {
 	}
 }
 
-func testTreeStore_Refs_ByDef(t *testing.T, ts treeStoreImporter) {
+func testTreeStore_Refs_ByDef(t *testing.T, ts TreeStoreImporter) {
 	refsByUnit := map[string][]*graph.Ref{
 		"u1": {
 			{DefPath: "p1", Start: 0, End: 1},
@@ -506,6 +534,11 @@ func testTreeStore_Refs_ByDef(t *testing.T, ts treeStoreImporter) {
 		}
 		if err := ts.Import(u, data); err != nil {
 			t.Errorf("%s: Import(%v, data): %s", ts, u, err)
+		}
+	}
+	if ts, ok := ts.(TreeIndexer); ok {
+		if err := ts.Index(); err != nil {
+			t.Fatalf("%s: Index: %s", ts, err)
 		}
 	}
 

@@ -137,6 +137,14 @@ func (s *fsMultiRepoStore) Import(repo, commitID string, unit *unit.SourceUnit, 
 	return s.openRepoStore(repo).(RepoImporter).Import(commitID, unit, data)
 }
 
+func (s *fsMultiRepoStore) Index(repo, commitID string) error {
+	switch rs := s.openRepoStore(repo).(type) {
+	case RepoIndexer:
+		return rs.Index(commitID)
+	}
+	return nil
+}
+
 func (s *fsMultiRepoStore) String() string { return "fsMultiRepoStore" }
 
 // A fsRepoStore is a RepoStore that stores data on a VFS.
@@ -191,6 +199,13 @@ func (s *fsRepoStore) Import(commitID string, unit *unit.SourceUnit, data graph.
 	}
 	ts := s.newTreeStore(commitID)
 	return ts.Import(unit, data)
+}
+
+func (s *fsRepoStore) Index(commitID string) error {
+	if xs, ok := s.newTreeStore(commitID).(*indexedTreeStore); ok {
+		return xs.Index()
+	}
+	return nil // nothing to do
 }
 
 func (s *fsRepoStore) treeStoreFS(commitID string) rwvfs.FileSystem {

@@ -205,7 +205,8 @@ func (c *StoreImportCmd) Execute(args []string) error {
 }
 
 type ImportOpt struct {
-	DryRun bool `short:"n" long:"dry-run" description:"print what would be done but don't do anything"`
+	DryRun  bool `short:"n" long:"dry-run" description:"print what would be done but don't do anything"`
+	NoIndex bool `long:"no-index" description:"don't build indexes (indexes inside a single source unit are always built)"`
 
 	Repo     string `long:"repo" description:"only import for this repo"`
 	Unit     string `long:"unit" description:"only import source units with this name"`
@@ -284,6 +285,23 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 			}
 		}
 	}
+
+	if !opt.NoIndex {
+		if GlobalOpt.Verbose {
+			log.Printf("# Building indexes")
+		}
+		switch s := stor.(type) {
+		case store.RepoIndexer:
+			if err := s.Index(opt.CommitID); err != nil {
+				return err
+			}
+		case store.MultiRepoIndexer:
+			if err := s.Index(opt.Repo, opt.CommitID); err != nil {
+				return err
+			}
+		}
+	}
+
 	return nil
 }
 

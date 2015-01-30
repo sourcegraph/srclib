@@ -4,21 +4,21 @@ import "testing"
 
 func TestIndexedUnitStore(t *testing.T) {
 	useIndexedStore = true
-	testUnitStore(t, func() unitStoreImporter {
+	testUnitStore(t, func() UnitStoreImporter {
 		return newIndexedUnitStore(newTestFS())
 	})
 }
 
 func TestIndexedTreeStore(t *testing.T) {
 	useIndexedStore = true
-	testTreeStore(t, func() treeStoreImporter {
+	testTreeStore(t, func() TreeStoreImporter {
 		return newIndexedTreeStore(newTestFS())
 	})
 }
 
 func TestIndexedFSTreeStore(t *testing.T) {
 	useIndexedStore = true
-	testTreeStore(t, func() treeStoreImporter {
+	testTreeStore(t, func() TreeStoreImporter {
 		return newFSTreeStore(newTestFS())
 	})
 }

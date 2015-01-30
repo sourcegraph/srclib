@@ -29,6 +29,11 @@ type MultiRepoImporter interface {
 	Import(repo, commitID string, unit *unit.SourceUnit, data graph.Output) error
 }
 
+type MultiRepoIndexer interface {
+	// Index builds indexes for the store.
+	Index(repo, commitID string) error
+}
+
 // A MultiRepoStoreImporter implements both MultiRepoStore and
 // MultiRepoImporter.
 type MultiRepoStoreImporter interface {

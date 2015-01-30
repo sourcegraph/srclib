@@ -9,24 +9,15 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
-type labeledRepoStoreImporter struct {
-	RepoStoreImporter
-	label string
-}
-
-func (s *labeledRepoStoreImporter) String() string {
-	return fmt.Sprintf("%s: %s", s.RepoStoreImporter, s.label)
-}
-
 func testRepoStore(t *testing.T, newFn func() RepoStoreImporter) {
-	testRepoStore_uninitialized(t, &labeledRepoStoreImporter{newFn(), "uninitialized"})
-	testRepoStore_Import_empty(t, &labeledRepoStoreImporter{newFn(), "import empty"})
-	testRepoStore_Import(t, &labeledRepoStoreImporter{newFn(), "import"})
-	testRepoStore_Versions(t, &labeledRepoStoreImporter{newFn(), "versions"})
-	testRepoStore_Units(t, &labeledRepoStoreImporter{newFn(), "units"})
-	testRepoStore_Defs(t, &labeledRepoStoreImporter{newFn(), "defs"})
-	testRepoStore_Defs_ByCommitID_ByFile(t, &labeledRepoStoreImporter{newFn(), "Defs(ByCommitID,ByFile)"})
-	testRepoStore_Refs(t, &labeledRepoStoreImporter{newFn(), "refs"})
+	testRepoStore_uninitialized(t, newFn())
+	testRepoStore_Import_empty(t, newFn())
+	testRepoStore_Import(t, newFn())
+	testRepoStore_Versions(t, newFn())
+	testRepoStore_Units(t, newFn())
+	testRepoStore_Defs(t, newFn())
+	testRepoStore_Defs_ByCommitID_ByFile(t, newFn())
+	testRepoStore_Refs(t, newFn())
 }
 
 func testRepoStore_uninitialized(t *testing.T, rs RepoStore) {
@@ -41,6 +32,11 @@ func testRepoStore_uninitialized(t *testing.T, rs RepoStore) {
 func testRepoStore_Import_empty(t *testing.T, rs RepoStoreImporter) {
 	if err := rs.Import("c", nil, graph.Output{}); err != nil {
 		t.Errorf("%s: Import(c, nil, empty): %s", rs, err)
+	}
+	if rs, ok := rs.(RepoIndexer); ok {
+		if err := rs.Index("c"); err != nil {
+			t.Fatalf("%s: Index: %s", rs, err)
+		}
 	}
 	testTreeStore_empty(t, rs)
 }
@@ -66,6 +62,11 @@ func testRepoStore_Import(t *testing.T, rs RepoStoreImporter) {
 	if err := rs.Import("c", unit, data); err != nil {
 		t.Errorf("%s: Import(c, %v, data): %s", rs, unit, err)
 	}
+	if rs, ok := rs.(RepoIndexer); ok {
+		if err := rs.Index("c"); err != nil {
+			t.Fatalf("%s: Index: %s", rs, err)
+		}
+	}
 }
 
 func testRepoStore_Versions(t *testing.T, rs RepoStoreImporter) {
@@ -73,6 +74,11 @@ func testRepoStore_Versions(t *testing.T, rs RepoStoreImporter) {
 		unit := &unit.SourceUnit{Type: "t1", Name: "u1"}
 		if err := rs.Import(version, unit, graph.Output{}); err != nil {
 			t.Errorf("%s: Import(%s, %v, empty data): %s", rs, version, unit, err)
+		}
+		if rs, ok := rs.(RepoIndexer); ok {
+			if err := rs.Index(version); err != nil {
+				t.Fatalf("%s: Index: %s", rs, err)
+			}
 		}
 	}
 
@@ -103,6 +109,11 @@ func testRepoStore_Units(t *testing.T, rs RepoStoreImporter) {
 	for _, unit := range units {
 		if err := rs.Import("c", unit, graph.Output{}); err != nil {
 			t.Errorf("%s: Import(c, %v, empty data): %s", rs, unit, err)
+		}
+	}
+	if rs, ok := rs.(RepoIndexer); ok {
+		if err := rs.Index("c"); err != nil {
+			t.Fatalf("%s: Index: %s", rs, err)
 		}
 	}
 
@@ -150,6 +161,11 @@ func testRepoStore_Defs(t *testing.T, rs RepoStoreImporter) {
 	}
 	if err := rs.Import("c", u, data); err != nil {
 		t.Errorf("%s: Import(c, %v, data): %s", rs, u, err)
+	}
+	if rs, ok := rs.(RepoIndexer); ok {
+		if err := rs.Index("c"); err != nil {
+			t.Fatalf("%s: Index: %s", rs, err)
+		}
 	}
 
 	want := []*graph.Def{
@@ -200,6 +216,11 @@ func testRepoStore_Defs_ByCommitID_ByFile(t *testing.T, rs RepoStoreImporter) {
 		if err := rs.Import(commitID, unit, data); err != nil {
 			t.Errorf("%s: Import(%s, %v, data): %s", rs, commitID, unit, err)
 		}
+		if rs, ok := rs.(RepoIndexer); ok {
+			if err := rs.Index(commitID); err != nil {
+				t.Fatalf("%s: Index: %s", rs, err)
+			}
+		}
 	}
 
 	want := []*graph.Def{
@@ -245,6 +266,11 @@ func testRepoStore_Refs(t *testing.T, rs RepoStoreImporter) {
 	}
 	if err := rs.Import("c", unit, data); err != nil {
 		t.Errorf("%s: Import(c, %v, data): %s", rs, unit, err)
+	}
+	if rs, ok := rs.(RepoIndexer); ok {
+		if err := rs.Index("c"); err != nil {
+			t.Fatalf("%s: Index: %s", rs, err)
+		}
 	}
 
 	want := []*graph.Ref{
