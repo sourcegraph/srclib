@@ -425,7 +425,7 @@ func (s *fsUnitStore) Defs(fs ...DefFilter) (defs []*graph.Def, err error) {
 // defsAtOffsets reads the defs at the given serialized byte offsets
 // from the def data file and returns them in arbitrary order.
 func (s *fsUnitStore) defsAtOffsets(ofs byteOffsets, fs []DefFilter) (defs []*graph.Def, err error) {
-	vlog.Printf("fsUnitStore: reading defs at offsets %v with filters %v...", ofs, fs)
+	vlog.Printf("fsUnitStore: reading defs at %d offsets with filters %v...", len(ofs), fs)
 	f, err := openFetcherOrOpen(s.fs, unitDefsFilename)
 	if err != nil {
 		return nil, err
@@ -477,7 +477,7 @@ func (s *fsUnitStore) defsAtOffsets(ofs byteOffsets, fs []DefFilter) (defs []*gr
 		return defs, err
 	}
 	sort.Sort(graph.Defs(defs))
-	vlog.Printf("fsUnitStore: read %v defs at offsets %v with filters %v.", len(defs), ofs, fs)
+	vlog.Printf("fsUnitStore: read %v defs at %d offsets with filters %v.", len(defs), len(ofs), fs)
 	return defs, nil
 }
 
@@ -548,7 +548,7 @@ func (s *fsUnitStore) Refs(fs ...RefFilter) (refs []*graph.Ref, err error) {
 // refsAtByteRanges reads the refs at the given serialized byte ranges
 // from the ref data file and returns them in arbitrary order.
 func (s *fsUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs []*graph.Ref, err error) {
-	vlog.Printf("fsUnitStore: reading refs at byte ranges %v with filters %v...", brs, fs)
+	vlog.Printf("fsUnitStore: reading refs at %d byte ranges with filters %v...", len(brs), fs)
 	f, err := openFetcherOrOpen(s.fs, unitRefsFilename)
 	if err != nil {
 		return nil, err
@@ -612,14 +612,14 @@ func (s *fsUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs [
 		return refs, err
 	}
 	sort.Sort(refsByFileStartEnd(refs))
-	vlog.Printf("fsUnitStore: read %d refs at byte ranges %v with filters %v.", len(refs), brs, fs)
+	vlog.Printf("fsUnitStore: read %d refs at %d byte ranges with filters %v.", len(refs), len(brs), fs)
 	return refs, nil
 }
 
 // refsAtOffsets reads the refs at the given serialized byte offsets
 // from the ref data file and returns them in arbitrary order.
 func (s *fsUnitStore) refsAtOffsets(ofs byteOffsets, fs []RefFilter) (refs []*graph.Ref, err error) {
-	vlog.Printf("fsUnitStore: reading refs at offsets %v with filters %v...", ofs, fs)
+	vlog.Printf("fsUnitStore: reading refs at %d offsets with filters %v...", len(ofs), fs)
 	f, err := openFetcherOrOpen(s.fs, unitRefsFilename)
 	if err != nil {
 		return nil, err
@@ -671,7 +671,7 @@ func (s *fsUnitStore) refsAtOffsets(ofs byteOffsets, fs []RefFilter) (refs []*gr
 		return refs, err
 	}
 	sort.Sort(refsByFileStartEnd(refs))
-	vlog.Printf("fsUnitStore: read %v refs at offsets %v with filters %v.", len(refs), ofs, fs)
+	vlog.Printf("fsUnitStore: read %v refs at %d offsets with filters %v.", len(refs), len(ofs), fs)
 	return refs, nil
 }
 
