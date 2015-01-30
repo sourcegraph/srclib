@@ -1,24 +1,6 @@
 package graph
 
-import (
-	"encoding/json"
-	"strconv"
-)
-
-type RefDefKey struct {
-	DefRepo     string `json:",omitempty"`
-	DefUnitType string `json:",omitempty"`
-	DefUnit     string `json:",omitempty"`
-	DefPath     string `json:",omitempty"`
-}
-
-func (r RefDefKey) String() string {
-	b, err := json.Marshal(r)
-	if err != nil {
-		panic("RefDefKey.String: " + err.Error())
-	}
-	return string(b)
-}
+import "strconv"
 
 type RefKey struct {
 	DefRepo     string `json:",omitempty"`

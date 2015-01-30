@@ -556,6 +556,44 @@ func (s *fsUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs [
 	return refs, nil
 }
 
+// refsAtOffsets reads the refs at the given serialized byte offsets
+// from the ref data file and returns them in arbitrary order.
+func (s *fsUnitStore) refsAtOffsets(ofs byteOffsets, fs []RefFilter) (refs []*graph.Ref, err error) {
+	vlog.Printf("fsUnitStore: reading refs at offsets %v with filters %v...", ofs, fs)
+	f, err := openFetcherOrOpen(s.fs, unitRefsFilename)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		err2 := f.Close()
+		if err == nil {
+			err = err2
+		}
+	}()
+
+	ffs := refFilters(fs)
+
+	for _, ofs := range ofs {
+		// Guess how many bytes this ref is. The s3vfs (if that's the
+		// VFS impl in use) will autofetch beyond that if needed.
+		const byteEstimate = 500
+		r, err := rangeReader(f, ofs, byteEstimate)
+		if err != nil {
+			return nil, err
+		}
+		dec := Codec.NewDecoder(r)
+		var ref graph.Ref
+		if _, err := dec.Decode(&ref); err != nil {
+			return nil, err
+		}
+		if ffs.SelectRef(&ref) {
+			refs = append(refs, &ref)
+		}
+	}
+	vlog.Printf("fsUnitStore: read %v refs at offsets %v with filters %v.", len(refs), ofs, fs)
+	return refs, nil
+}
+
 // openFetcher calls fs.OpenFetcher if it implemented the
 // FetcherOpener interface; otherwise it calls fs.Open.
 func openFetcherOrOpen(fs rwvfs.FileSystem, name string) (vfs.ReadSeekCloser, error) {
@@ -581,11 +619,11 @@ func rangeReader(f io.ReadSeeker, start, n int64) (io.Reader, error) {
 
 // readDefs reads all defs from the def data file and returns them
 // along with their serialized byte offsets.
-func (s *fsUnitStore) readRefs() (refs []*graph.Ref, fbrs fileByteRanges, err error) {
+func (s *fsUnitStore) readRefs() (refs []*graph.Ref, fbrs fileByteRanges, ofs byteOffsets, err error) {
 	vlog.Println("fsUnitStore: reading all refs and byte ranges...")
 	f, err := s.fs.Open(unitRefsFilename)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 	defer func() {
 		err2 := f.Close()
@@ -604,8 +642,10 @@ func (s *fsUnitStore) readRefs() (refs []*graph.Ref, fbrs fileByteRanges, err er
 		if err == io.EOF {
 			break
 		} else if err != nil {
-			return nil, nil, err
+			return nil, nil, nil, err
 		}
+
+		ofs = append(ofs, o)
 
 		var lastFileRefStartOffset int64
 		if brs, present := fbrs[ref.File]; present {
@@ -628,7 +668,7 @@ func (s *fsUnitStore) readRefs() (refs []*graph.Ref, fbrs fileByteRanges, err er
 		fbrs[lastFile] = append(fbrs[lastFile], o-lastFileRefStartOffset)
 	}
 	vlog.Printf("fsUnitStore: read %d refs and byte ranges.", len(refs))
-	return refs, fbrs, nil
+	return refs, fbrs, ofs, nil
 
 }
 
@@ -637,7 +677,7 @@ func (s *fsUnitStore) Import(data graph.Output) error {
 	if _, err := s.writeDefs(data.Defs); err != nil {
 		return err
 	}
-	if _, err := s.writeRefs(data.Refs); err != nil {
+	if _, _, err := s.writeRefs(data.Refs); err != nil {
 		return err
 	}
 	return nil
@@ -679,11 +719,11 @@ func (s *fsUnitStore) writeDefs(defs []*graph.Def) (ofs byteOffsets, err error) 
 }
 
 // writeDefs writes the ref data file.
-func (s *fsUnitStore) writeRefs(refs []*graph.Ref) (fbr fileByteRanges, err error) {
+func (s *fsUnitStore) writeRefs(refs []*graph.Ref) (fbr fileByteRanges, ofs byteOffsets, err error) {
 	vlog.Printf("fsUnitStore: writing %d refs...", len(refs))
 	f, err := s.fs.Create(unitRefsFilename)
 	if err != nil {
-		return nil, err
+		return nil, ofs, err
 	}
 	defer func() {
 		err2 := f.Close()
@@ -705,9 +745,12 @@ func (s *fsUnitStore) writeRefs(refs []*graph.Ref) (fbr fileByteRanges, err erro
 	enc := Codec.NewEncoder(bw)
 	var o uint64
 	fbr = fileByteRanges{}
+	ofs = make(byteOffsets, len(refs))
 	lastFile := ""
 	lastFileByteRanges := byteRanges{}
-	for _, ref := range refs {
+	for i, ref := range refs {
+		ofs[i] = int64(o)
+
 		if lastFile != ref.File {
 			if lastFile != "" {
 				fbr[lastFile] = lastFileByteRanges
@@ -718,7 +761,7 @@ func (s *fsUnitStore) writeRefs(refs []*graph.Ref) (fbr fileByteRanges, err erro
 		before := o
 		n, err := enc.Encode(ref)
 		if err != nil {
-			return nil, err
+			return nil, ofs, err
 		}
 		o += n
 
@@ -729,10 +772,10 @@ func (s *fsUnitStore) writeRefs(refs []*graph.Ref) (fbr fileByteRanges, err erro
 		fbr[lastFile] = lastFileByteRanges
 	}
 	if err := bw.Flush(); err != nil {
-		return nil, err
+		return nil, ofs, err
 	}
 	vlog.Printf("fsUnitStore: done writing %d refs.", len(refs))
-	return fbr, nil
+	return fbr, ofs, nil
 }
 
 func (s *fsUnitStore) String() string { return "fsUnitStore" }

@@ -58,6 +58,17 @@ func (m *Ref) Reset()         { *m = Ref{} }
 func (m *Ref) String() string { return proto.CompactTextString(m) }
 func (*Ref) ProtoMessage()    {}
 
+type RefDefKey struct {
+	DefRepo     string `protobuf:"bytes,1,opt,name=def_repo" json:"DefRepo,omitempty"`
+	DefUnitType string `protobuf:"bytes,3,opt,name=def_unit_type" json:"DefUnitType,omitempty"`
+	DefUnit     string `protobuf:"bytes,4,opt,name=def_unit" json:"DefUnit,omitempty"`
+	DefPath     string `protobuf:"bytes,5,opt,name=def_path" json:"DefPath"`
+}
+
+func (m *RefDefKey) Reset()         { *m = RefDefKey{} }
+func (m *RefDefKey) String() string { return proto.CompactTextString(m) }
+func (*RefDefKey) ProtoMessage()    {}
+
 func init() {
 }
 func (m *Ref) Unmarshal(data []byte) error {
@@ -346,6 +357,135 @@ func (m *Ref) Unmarshal(data []byte) error {
 	}
 	return nil
 }
+func (m *RefDefKey) Unmarshal(data []byte) error {
+	l := len(data)
+	index := 0
+	for index < l {
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if index >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := data[index]
+			index++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DefRepo", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if index >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[index]
+				index++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			postIndex := index + int(stringLen)
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DefRepo = string(data[index:postIndex])
+			index = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DefUnitType", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if index >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[index]
+				index++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			postIndex := index + int(stringLen)
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DefUnitType = string(data[index:postIndex])
+			index = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DefUnit", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if index >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[index]
+				index++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			postIndex := index + int(stringLen)
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DefUnit = string(data[index:postIndex])
+			index = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DefPath", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if index >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[index]
+				index++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			postIndex := index + int(stringLen)
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DefPath = string(data[index:postIndex])
+			index = postIndex
+		default:
+			var sizeOfWire int
+			for {
+				sizeOfWire++
+				wire >>= 7
+				if wire == 0 {
+					break
+				}
+			}
+			index -= sizeOfWire
+			skippy, err := github_com_gogo_protobuf_proto.Skip(data[index:])
+			if err != nil {
+				return err
+			}
+			if (index + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			index += skippy
+		}
+	}
+	return nil
+}
 func (m *Ref) Size() (n int) {
 	var l int
 	_ = l
@@ -370,6 +510,20 @@ func (m *Ref) Size() (n int) {
 	n += 1 + l + sovRef(uint64(l))
 	n += 1 + sovRef(uint64(m.Start))
 	n += 1 + sovRef(uint64(m.End))
+	return n
+}
+
+func (m *RefDefKey) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.DefRepo)
+	n += 1 + l + sovRef(uint64(l))
+	l = len(m.DefUnitType)
+	n += 1 + l + sovRef(uint64(l))
+	l = len(m.DefUnit)
+	n += 1 + l + sovRef(uint64(l))
+	l = len(m.DefPath)
+	n += 1 + l + sovRef(uint64(l))
 	return n
 }
 
@@ -456,6 +610,40 @@ func (m *Ref) MarshalTo(data []byte) (n int, err error) {
 	return i, nil
 }
 
+func (m *RefDefKey) Marshal() (data []byte, err error) {
+	size := m.Size()
+	data = make([]byte, size)
+	n, err := m.MarshalTo(data)
+	if err != nil {
+		return nil, err
+	}
+	return data[:n], nil
+}
+
+func (m *RefDefKey) MarshalTo(data []byte) (n int, err error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	data[i] = 0xa
+	i++
+	i = encodeVarintRef(data, i, uint64(len(m.DefRepo)))
+	i += copy(data[i:], m.DefRepo)
+	data[i] = 0x1a
+	i++
+	i = encodeVarintRef(data, i, uint64(len(m.DefUnitType)))
+	i += copy(data[i:], m.DefUnitType)
+	data[i] = 0x22
+	i++
+	i = encodeVarintRef(data, i, uint64(len(m.DefUnit)))
+	i += copy(data[i:], m.DefUnit)
+	data[i] = 0x2a
+	i++
+	i = encodeVarintRef(data, i, uint64(len(m.DefPath)))
+	i += copy(data[i:], m.DefPath)
+	return i, nil
+}
+
 func encodeFixed64Ref(data []byte, offset int, v uint64) int {
 	data[offset] = uint8(v)
 	data[offset+1] = uint8(v >> 8)
@@ -500,6 +688,17 @@ func (this *Ref) GoString() string {
 		`File:` + fmt.Sprintf("%#v", this.File),
 		`Start:` + fmt.Sprintf("%#v", this.Start),
 		`End:` + fmt.Sprintf("%#v", this.End) + `}`}, ", ")
+	return s
+}
+func (this *RefDefKey) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&graph.RefDefKey{` +
+		`DefRepo:` + fmt.Sprintf("%#v", this.DefRepo),
+		`DefUnitType:` + fmt.Sprintf("%#v", this.DefUnitType),
+		`DefUnit:` + fmt.Sprintf("%#v", this.DefUnit),
+		`DefPath:` + fmt.Sprintf("%#v", this.DefPath) + `}`}, ", ")
 	return s
 }
 func valueToGoStringRef(v interface{}, typ string) string {
