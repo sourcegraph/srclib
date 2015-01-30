@@ -556,6 +556,10 @@ func (s *fsUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs [
 	ffs := refFilters(fs)
 
 	for i, br := range brs {
+		if _, moreOK := LimitRemaining(fs); !moreOK {
+			break
+		}
+
 		r, err := rangeReader(s.fs, unitRefsFilename, f, br.start(), readLengths[i])
 		if err != nil {
 			return nil, err
