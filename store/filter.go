@@ -669,56 +669,43 @@ type limiter struct {
 	n   int
 	ofs int
 
-	skipped int
-
-	mu  sync.Mutex
-	def map[*graph.Def]struct{} // seen defs
-	ref map[*graph.Ref]struct{} // seen refs
+	mu      sync.Mutex
+	skipped map[interface{}]struct{}
+	seen    map[interface{}]struct{}
 }
 
 func (l *limiter) String() string {
-	return fmt.Sprintf("Limit(%d/%d offset %d)", l.added(), l.n, l.ofs)
+	return fmt.Sprintf("Limit(%d offset %d: %d remaining)", l.n, l.ofs, l.remainingOffsetPlusLimit())
 }
-func (l *limiter) added() int {
+func (l *limiter) remainingOffsetPlusLimit() int {
 	l.mu.Lock()
-	a := len(l.def) + len(l.ref)
+	r := l.n + l.ofs - len(l.seen) - len(l.skipped)
 	l.mu.Unlock()
-	return a
+	return r
 }
-func (l *limiter) SelectDef(def *graph.Def) bool {
+func (l *limiter) SelectDef(def *graph.Def) bool { return l.selectObj(def) }
+func (l *limiter) SelectRef(ref *graph.Ref) bool { return l.selectObj(ref) }
+func (l *limiter) selectObj(obj interface{}) bool {
 	l.mu.Lock()
 	defer l.mu.Unlock()
-	if l.skipped < l.ofs {
-		l.skipped++
+	if l.ofs > 0 && l.skipped == nil {
+		l.skipped = make(map[interface{}]struct{}, l.ofs)
+	}
+	if len(l.skipped) < l.ofs {
+		l.skipped[obj] = struct{}{}
 		return false
 	}
-	if l.def == nil {
-		l.def = map[*graph.Def]struct{}{}
-	}
-	if _, seen := l.def[def]; seen {
-		return true
-	}
-	if len(l.def) < l.n {
-		l.def[def] = struct{}{}
-		return true
-	}
-	return false
-}
-func (l *limiter) SelectRef(ref *graph.Ref) bool {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-	if l.skipped < l.ofs {
-		l.skipped++
+	if _, skipped := l.skipped[obj]; skipped {
 		return false
 	}
-	if l.ref == nil {
-		l.ref = map[*graph.Ref]struct{}{}
+	if l.seen == nil {
+		l.seen = make(map[interface{}]struct{}, l.n)
 	}
-	if _, seen := l.ref[ref]; seen {
+	if _, seen := l.seen[obj]; seen {
 		return true
 	}
-	if len(l.ref) < l.n {
-		l.ref[ref] = struct{}{}
+	if len(l.seen) < l.n {
+		l.seen[obj] = struct{}{}
 		return true
 	}
 	return false
@@ -732,7 +719,7 @@ func LimitRemaining(filters interface{}) (remaining int, moreOK bool) {
 	for _, f := range storeFilters(filters) {
 		switch f := f.(type) {
 		case *limiter:
-			m := f.n - f.added()
+			m := f.remainingOffsetPlusLimit()
 			return m, m > 0
 		}
 	}
