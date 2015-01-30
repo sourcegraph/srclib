@@ -418,6 +418,12 @@ func (s *fsUnitStore) Defs(fs ...DefFilter) (defs []*graph.Def, err error) {
 			defs = append(defs, def)
 		}
 	}
+	for _, filter := range fs {
+		if dSort, ok := filter.(DefsSorter); ok {
+			dSort.DefsSort(defs)
+			break
+		}
+	}
 	vlog.Printf("fsUnitStore: read %v defs with filters %v.", len(defs), fs)
 	return defs, nil
 }

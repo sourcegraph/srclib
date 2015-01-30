@@ -18,6 +18,7 @@ func testUnitStore(t *testing.T, newFn func() UnitStoreImporter) {
 	testUnitStore_Import(t, newFn())
 	testUnitStore_Def(t, newFn())
 	testUnitStore_Defs(t, newFn())
+	testUnitStore_Defs_SortByName(t, newFn())
 	testUnitStore_Refs(t, newFn())
 	testUnitStore_Refs_ByFiles(t, newFn())
 	testUnitStore_Refs_ByDef(t, newFn())
@@ -143,6 +144,38 @@ func testUnitStore_Defs(t *testing.T, us UnitStoreImporter) {
 	if err != nil {
 		t.Errorf("%s: Defs(): %s", us, err)
 	}
+	if want := data.Defs; !reflect.DeepEqual(defs, want) {
+		t.Errorf("%s: Defs(): got defs %v, want %v", us, defs, want)
+		t.Log(strings.Join(pretty.Diff(defs[0], want[0]), "\n"))
+	}
+}
+
+func testUnitStore_Defs_SortByName(t *testing.T, us UnitStoreImporter) {
+	data := graph.Output{
+		Defs: []*graph.Def{
+			{
+				DefKey: graph.DefKey{Path: "p1"},
+				Name:   "b",
+			},
+			{
+				DefKey: graph.DefKey{Path: "p2"},
+				Name:   "c",
+			},
+			{
+				DefKey: graph.DefKey{Path: "p3"},
+				Name:   "a",
+			},
+		},
+	}
+	if err := us.Import(data); err != nil {
+		t.Errorf("%s: Import(data): %s", us, err)
+	}
+
+	defs, err := us.Defs(DefsSortByName{})
+	if err != nil {
+		t.Errorf("%s: Defs(): %s", us, err)
+	}
+	DefsSortByName{}.DefsSort(data.Defs)
 	if want := data.Defs; !reflect.DeepEqual(defs, want) {
 		t.Errorf("%s: Defs(): got defs %v, want %v", us, defs, want)
 		t.Log(strings.Join(pretty.Diff(defs[0], want[0]), "\n"))

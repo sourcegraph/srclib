@@ -8,6 +8,8 @@ import (
 	"strings"
 	"sync"
 
+	"sort"
+
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -763,4 +765,23 @@ func storeFilters(anyFilters interface{}) []interface{} {
 	default:
 		return []interface{}{anyFilters}
 	}
+}
+
+type defsSortByName []*graph.Def
+
+func (ds defsSortByName) Len() int           { return len(ds) }
+func (ds defsSortByName) Swap(i, j int)      { ds[i], ds[j] = ds[j], ds[i] }
+func (ds defsSortByName) Less(i, j int) bool { return ds[i].Name < ds[j].Name }
+
+type DefsSortByName struct{}
+
+func (ds DefsSortByName) DefsSort(defs []*graph.Def) {
+	sort.Sort(defsSortByName(defs))
+}
+func (ds DefsSortByName) SelectDef(def *graph.Def) bool {
+	return true
+}
+
+type DefsSorter interface {
+	DefsSort(defs []*graph.Def)
 }
