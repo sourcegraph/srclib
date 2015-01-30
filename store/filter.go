@@ -652,29 +652,32 @@ func (f byFilesFilter) SelectUnit(unit *unit.SourceUnit) bool {
 }
 
 // Limit is an EXPERIMENTAL filter for limiting the number of
-// results. It currently only works for defs. It is not correct
-// because it assumes that if it is called on an object, it gets to
-// decide whether that object appears in the final results. In
-// reality, other filters could reject the object, and then those
-// would count toward the limit for this filter but would never get
-// returned. We could guarantee that Limit always runs last (after all
-// other filters have accepted something).
-func Limit(n int) interface {
+// results. It is not correct because it assumes that if it is called
+// on an object, it gets to decide whether that object appears in the
+// final results. In reality, other filters could reject the object,
+// and then those would count toward the limit for this filter but
+// would never get returned. We could guarantee that Limit always runs
+// last (after all other filters have accepted something).
+func Limit(limit, offset int) interface {
 	DefFilter
 	RefFilter
 } {
-	return &limiter{n: n}
+	return &limiter{n: limit, ofs: offset}
 }
 
 type limiter struct {
 	n   int
+	ofs int
+
+	skipped int
+
 	mu  sync.Mutex
 	def map[*graph.Def]struct{} // seen defs
 	ref map[*graph.Ref]struct{} // seen refs
 }
 
 func (l *limiter) String() string {
-	return fmt.Sprintf("Limit(%d/%d)", l.added(), l.n)
+	return fmt.Sprintf("Limit(%d/%d offset %d)", l.added(), l.n, l.ofs)
 }
 func (l *limiter) added() int {
 	l.mu.Lock()
@@ -685,6 +688,10 @@ func (l *limiter) added() int {
 func (l *limiter) SelectDef(def *graph.Def) bool {
 	l.mu.Lock()
 	defer l.mu.Unlock()
+	if l.skipped < l.ofs {
+		l.skipped++
+		return false
+	}
 	if l.def == nil {
 		l.def = map[*graph.Def]struct{}{}
 	}
@@ -700,6 +707,10 @@ func (l *limiter) SelectDef(def *graph.Def) bool {
 func (l *limiter) SelectRef(ref *graph.Ref) bool {
 	l.mu.Lock()
 	defer l.mu.Unlock()
+	if l.skipped < l.ofs {
+		l.skipped++
+		return false
+	}
 	if l.ref == nil {
 		l.ref = map[*graph.Ref]struct{}{}
 	}

@@ -826,7 +826,8 @@ type StoreDefsCmd struct {
 
 	NamePrefix string `long:"name-prefix"`
 
-	Limit int `short:"n" long:"limit" description:"max results to return (0 for all)"`
+	Limit  int `short:"n" long:"limit" description:"max results to return (0 for all)"`
+	Offset int `long:"offset" description:"results offset (0 to start with first results)"`
 }
 
 func (c *StoreDefsCmd) filters() []store.DefFilter {
@@ -857,8 +858,8 @@ func (c *StoreDefsCmd) filters() []store.DefFilter {
 			return strings.HasPrefix(def.Name, c.NamePrefix)
 		}))
 	}
-	if c.Limit != 0 {
-		fs = append(fs, store.Limit(c.Limit))
+	if c.Limit != 0 || c.Offset != 0 {
+		fs = append(fs, store.Limit(c.Limit, c.Offset))
 	}
 	return fs
 }
@@ -899,7 +900,8 @@ type StoreRefsCmd struct {
 	DefUnit     string `long:"def-unit"`
 	DefPath     string `long:"def-path"`
 
-	Limit int `short:"n" long:"limit" description:"max results to return (0 for all)"`
+	Limit  int `short:"n" long:"limit" description:"max results to return (0 for all)"`
+	Offset int `long:"offset" description:"results offset (0 to start with first results)"`
 }
 
 func (c *StoreRefsCmd) filters() []store.RefFilter {
@@ -940,8 +942,8 @@ func (c *StoreRefsCmd) filters() []store.RefFilter {
 	if c.DefPath == "" && (c.DefRepo != "" || c.DefUnitType != "" || c.DefUnit != "") {
 		log.Fatal("must specify --def-path if you specify any of --def-repo, --def-unit-type, --def-unit (to filter by ref target def)")
 	}
-	if c.Limit != 0 {
-		fs = append(fs, store.Limit(c.Limit))
+	if c.Limit != 0 || c.Offset != 0 {
+		fs = append(fs, store.Limit(c.Limit, c.Offset))
 	}
 	return fs
 }
