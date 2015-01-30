@@ -7,7 +7,10 @@ import (
 	"path"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
+
+	"code.google.com/p/rog-go/parallel"
 
 	"github.com/kr/fs"
 	"golang.org/x/tools/godoc/vfs"
@@ -421,23 +424,39 @@ func (s *fsUnitStore) defsAtOffsets(ofs byteOffsets, fs []DefFilter) (defs []*gr
 
 	ffs := defFilters(fs)
 
-	for _, ofs := range ofs {
-		// Guess how many bytes this def is. The s3vfs (if that's the
-		// VFS impl in use) will autofetch beyond that if needed.
-		const byteEstimate = 5000
-		r, err := rangeReader(f, ofs, byteEstimate)
-		if err != nil {
-			return nil, err
-		}
-		dec := Codec.NewDecoder(r)
-		var def graph.Def
-		if _, err := dec.Decode(&def); err != nil {
-			return nil, err
-		}
-		if ffs.SelectDef(&def) {
-			defs = append(defs, &def)
-		}
+	var defsLock sync.Mutex
+	par := parallel.NewRun(parFetches(fs))
+	for _, ofs_ := range ofs {
+		ofs := ofs_
+		par.Do(func() error {
+			if _, moreOK := LimitRemaining(fs); !moreOK {
+				return nil
+			}
+
+			// Guess how many bytes this def is. The s3vfs (if that's the
+			// VFS impl in use) will autofetch beyond that if needed.
+			const byteEstimate = 2 * decodeBufSize
+			r, err := rangeReader(s.fs, unitDefsFilename, f, ofs, byteEstimate)
+			if err != nil {
+				return err
+			}
+			dec := Codec.NewDecoder(r)
+			var def graph.Def
+			if _, err := dec.Decode(&def); err != nil {
+				return err
+			}
+			if ffs.SelectDef(&def) {
+				defsLock.Lock()
+				defs = append(defs, &def)
+				defsLock.Unlock()
+			}
+			return nil
+		})
 	}
+	if err := par.Wait(); err != nil {
+		return defs, err
+	}
+	sort.Sort(graph.Defs(defs))
 	vlog.Printf("fsUnitStore: read %v defs at offsets %v with filters %v.", len(defs), ofs, fs)
 	return defs, nil
 }
@@ -537,7 +556,7 @@ func (s *fsUnitStore) refsAtByteRanges(brs []byteRanges, fs []RefFilter) (refs [
 	ffs := refFilters(fs)
 
 	for i, br := range brs {
-		r, err := rangeReader(f, br.start(), readLengths[i])
+		r, err := rangeReader(s.fs, unitRefsFilename, f, br.start(), readLengths[i])
 		if err != nil {
 			return nil, err
 		}
@@ -573,25 +592,56 @@ func (s *fsUnitStore) refsAtOffsets(ofs byteOffsets, fs []RefFilter) (refs []*gr
 
 	ffs := refFilters(fs)
 
-	for _, ofs := range ofs {
-		// Guess how many bytes this ref is. The s3vfs (if that's the
-		// VFS impl in use) will autofetch beyond that if needed.
-		const byteEstimate = 500
-		r, err := rangeReader(f, ofs, byteEstimate)
-		if err != nil {
-			return nil, err
-		}
-		dec := Codec.NewDecoder(r)
-		var ref graph.Ref
-		if _, err := dec.Decode(&ref); err != nil {
-			return nil, err
-		}
-		if ffs.SelectRef(&ref) {
-			refs = append(refs, &ref)
-		}
+	var refsLock sync.Mutex
+	par := parallel.NewRun(parFetches(fs))
+	for _, ofs_ := range ofs {
+		ofs := ofs_
+		par.Do(func() error {
+			if _, moreOK := LimitRemaining(fs); !moreOK {
+				return nil
+			}
+
+			// Guess how many bytes this ref is. The s3vfs (if that's the
+			// VFS impl in use) will autofetch beyond that if needed.
+			const byteEstimate = decodeBufSize
+			r, err := rangeReader(s.fs, unitRefsFilename, f, ofs, byteEstimate)
+			if err != nil {
+				return err
+			}
+			dec := Codec.NewDecoder(r)
+			var ref graph.Ref
+			if _, err := dec.Decode(&ref); err != nil {
+				return err
+			}
+			if ffs.SelectRef(&ref) {
+				refsLock.Lock()
+				refs = append(refs, &ref)
+				refsLock.Unlock()
+			}
+			return nil
+		})
 	}
+	if err := par.Wait(); err != nil {
+		return refs, err
+	}
+	sort.Sort(refsByFileStartEnd(refs))
 	vlog.Printf("fsUnitStore: read %v refs at offsets %v with filters %v.", len(refs), ofs, fs)
 	return refs, nil
+}
+
+const maxNetPar = 4
+
+// parFetches returns the number of parallel fetches that should be
+// attempted given the filters.
+func parFetches(filters interface{}) int {
+	n, moreOK := LimitRemaining(filters)
+	if moreOK {
+		if n == 0 {
+			return maxNetPar
+		}
+		return min(maxNetPar, n)
+	}
+	return 0
 }
 
 // openFetcher calls fs.OpenFetcher if it implemented the
@@ -605,9 +655,15 @@ func openFetcherOrOpen(fs rwvfs.FileSystem, name string) (vfs.ReadSeekCloser, er
 
 // rangeReader calls ioutil.ReadAll on the given byte range [start, n). It uses
 // optimizations for different kinds of VFSs.
-func rangeReader(f io.ReadSeeker, start, n int64) (io.Reader, error) {
-	if ff, ok := f.(rwvfs.Fetcher); ok {
-		if err := ff.Fetch(start, start+n); err != nil {
+func rangeReader(fs rwvfs.FileSystem, name string, f io.ReadSeeker, start, n int64) (io.Reader, error) {
+	if fs, ok := fs.(rwvfs.FetcherOpener); ok {
+		// Clone f so we can parallelize it.
+		var err error
+		f, err = fs.OpenFetcher(name)
+		if err != nil {
+			return nil, err
+		}
+		if err := f.(rwvfs.Fetcher).Fetch(start, start+n); err != nil {
 			return nil, err
 		}
 	}

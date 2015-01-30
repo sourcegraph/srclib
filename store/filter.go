@@ -661,6 +661,7 @@ func (f byFilesFilter) SelectUnit(unit *unit.SourceUnit) bool {
 // other filters have accepted something).
 func Limit(n int) interface {
 	DefFilter
+	RefFilter
 } {
 	return &limiter{n: n}
 }
@@ -669,9 +670,18 @@ type limiter struct {
 	n   int
 	mu  sync.Mutex
 	def map[*graph.Def]struct{} // seen defs
+	ref map[*graph.Ref]struct{} // seen refs
 }
 
-func (l *limiter) String() string { return fmt.Sprintf("Limit(%d [def=%d/%d])", l.n, len(l.def), l.n) }
+func (l *limiter) String() string {
+	return fmt.Sprintf("Limit(%d/%d)", l.added(), l.n)
+}
+func (l *limiter) added() int {
+	l.mu.Lock()
+	a := len(l.def) + len(l.ref)
+	l.mu.Unlock()
+	return a
+}
 func (l *limiter) SelectDef(def *graph.Def) bool {
 	l.mu.Lock()
 	defer l.mu.Unlock()
@@ -686,6 +696,36 @@ func (l *limiter) SelectDef(def *graph.Def) bool {
 		return true
 	}
 	return false
+}
+func (l *limiter) SelectRef(ref *graph.Ref) bool {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	if l.ref == nil {
+		l.ref = map[*graph.Ref]struct{}{}
+	}
+	if _, seen := l.ref[ref]; seen {
+		return true
+	}
+	if len(l.ref) < l.n {
+		l.ref[ref] = struct{}{}
+		return true
+	}
+	return false
+}
+
+// LimitRemaining returns how many more results may be added before
+// the limit is exceeded (specified by the Limit filter, for
+// example). If additional results may be added (either because the
+// limit has not been reached, or there is no limit), moreOK is true.
+func LimitRemaining(filters interface{}) (remaining int, moreOK bool) {
+	for _, f := range storeFilters(filters) {
+		switch f := f.(type) {
+		case *limiter:
+			m := f.n - f.added()
+			return m, m > 0
+		}
+	}
+	return 0, true
 }
 
 // storeFilters converts from slice-of-filter-type (e.g., []DefFilter,

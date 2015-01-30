@@ -869,6 +869,8 @@ type StoreRefsCmd struct {
 	DefUnitType string `long:"def-unit-type" `
 	DefUnit     string `long:"def-unit"`
 	DefPath     string `long:"def-path"`
+
+	Limit int `short:"n" long:"limit" description:"max results to return (0 for all)"`
 }
 
 func (c *StoreRefsCmd) filters() []store.RefFilter {
@@ -908,6 +910,9 @@ func (c *StoreRefsCmd) filters() []store.RefFilter {
 	}
 	if c.DefPath == "" && (c.DefRepo != "" || c.DefUnitType != "" || c.DefUnit != "") {
 		log.Fatal("must specify --def-path if you specify any of --def-repo, --def-unit-type, --def-unit (to filter by ref target def)")
+	}
+	if c.Limit != 0 {
+		fs = append(fs, store.Limit(c.Limit))
 	}
 	return fs
 }
