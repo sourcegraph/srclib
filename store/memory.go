@@ -230,6 +230,12 @@ func (s *memoryUnitStore) Defs(f ...DefFilter) ([]*graph.Def, error) {
 			defs = append(defs, def)
 		}
 	}
+	for _, filter := range f {
+		if dSort, ok := filter.(DefsSorter); ok {
+			dSort.DefsSort(defs)
+			break
+		}
+	}
 	return defs, nil
 }
 
