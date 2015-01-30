@@ -324,17 +324,17 @@ func (c *StoreImportCmd) sample(s interface{}) error {
 			defer wg.Done()
 			for i := 0; i < numRefs; i++ {
 				refs[i] = graph.Ref{
-					DefPath: fmt.Sprintf("ref-path-%d", i),
+					DefPath: fmt.Sprintf("ref-path-%d", i%179),
 					Def:     i%5 == 0,
 					Start:   uint32((i % 51) * 39),
 					End:     uint32((i%51)*37 + (int(i) % 18)),
 					File:    fmt.Sprintf("dir%d/subdir%d/subsubdir%d/file-%d.foo", i%3, i%5, i%7, i%11),
 				}
 				if i%3 == 0 {
-					refs[i].DefUnit = fmt.Sprintf("def-unit-%d", i%17)
-					refs[i].DefUnitType = fmt.Sprintf("def-unit-type-%d", i%3)
+					refs[i].DefUnit = fmt.Sprintf("def-unit-%d", i%5)
+					refs[i].DefUnitType = fmt.Sprintf("def-unit-type-%d", i%4)
 					if i%7 == 0 {
-						refs[i].DefRepo = fmt.Sprintf("def-repo-%d", i%13)
+						refs[i].DefRepo = fmt.Sprintf("def-repo-%d", i%7)
 					}
 				}
 			}
@@ -371,6 +371,24 @@ func (c *StoreImportCmd) sample(s interface{}) error {
 	}
 	if d := time.Since(start); d > time.Millisecond*250 {
 		log.Printf("Done making sample data (took %s).", d)
+	}
+
+	// Find some sample objects to query for down below.
+	ref2 := data.Refs[len(data.Refs)/2+1]
+	ref3 := data.Refs[len(data.Refs)/3+1]
+	def2 := data.Defs[len(data.Defs)/2+1]
+	def3 := data.Defs[len(data.Defs)/3+1]
+	// Find a ref that has the Unit/UnitType filled in.
+	var (
+		refDef4      graph.RefDefKey
+		foundRefDef4 bool
+	)
+	for _, ref := range data.Refs[len(data.Refs)/2:] {
+		if ref.DefUnit != "" && ref.DefUnitType != "" {
+			refDef4 = ref.RefDefKey()
+			foundRefDef4 = true
+			break
+		}
 	}
 
 	size, err := store.Codec.NewEncoder(ioutil.Discard).Encode(data)
@@ -443,17 +461,22 @@ func (c *StoreImportCmd) sample(s interface{}) error {
 	if err := runCmd(storeCmdArgs("units", repo)...); err != nil {
 		return err
 	}
-	if err := runCmd(storeCmdArgs("units", repo, "--file", data.Defs[len(data.Defs)/2+1].File)...); err != nil {
+	if err := runCmd(storeCmdArgs("units", repo, "--file", def2.File)...); err != nil {
 		return err
 	}
-	if err := runCmd(storeCmdArgs("units", repo, "--file", data.Refs[len(data.Refs)/2+1].File)...); err != nil {
+	if err := runCmd(storeCmdArgs("units", repo, "--file", ref2.File)...); err != nil {
 		return err
 	}
-	if err := runCmd(storeCmdArgs("defs", repo, "--file", data.Defs[len(data.Defs)/3+1].File)...); err != nil {
+	if err := runCmd(storeCmdArgs("defs", repo, "--file", def3.File)...); err != nil {
 		return err
 	}
-	if err := runCmd(storeCmdArgs("refs", repo, "--file", data.Refs[len(data.Refs)/2+1].File)...); err != nil {
+	if err := runCmd(storeCmdArgs("refs", repo, "--file", ref3.File)...); err != nil {
 		return err
+	}
+	if foundRefDef4 {
+		if err := runCmd(storeCmdArgs("refs", repo, "--def-unit-type", refDef4.DefUnitType, "--def-unit", refDef4.DefUnit, "--def-path", refDef4.DefPath)...); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -875,7 +898,7 @@ func (c *StoreRefsCmd) filters() []store.RefFilter {
 			return ref.End <= c.End
 		}))
 	}
-	if c.DefRepo != "" && c.DefUnitType != "" && c.DefUnit != "" && c.DefPath != "" {
+	if c.DefPath != "" {
 		fs = append(fs, store.ByRefDef(graph.RefDefKey{
 			DefRepo:     c.DefRepo,
 			DefUnitType: c.DefUnitType,
@@ -883,8 +906,8 @@ func (c *StoreRefsCmd) filters() []store.RefFilter {
 			DefPath:     c.DefPath,
 		}))
 	}
-	if (c.DefRepo != "" || c.DefUnitType != "" || c.DefUnit != "" || c.DefPath != "") && (c.DefRepo == "" || c.DefUnitType == "" || c.DefUnit == "" || c.DefPath == "") {
-		log.Fatal("must specify either all or neither of --def-repo, --def-unit-type, --def-unit, and --def-path (to filter by ref target def)")
+	if c.DefPath == "" && (c.DefRepo != "" || c.DefUnitType != "" || c.DefUnit != "") {
+		log.Fatal("must specify --def-path if you specify any of --def-repo, --def-unit-type, --def-unit (to filter by ref target def)")
 	}
 	return fs
 }
