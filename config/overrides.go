@@ -2,7 +2,7 @@ package config
 
 import "sourcegraph.com/sourcegraph/srclib/unit"
 
-var overrides = map[string]*Repository{
+var Overrides = map[string]*Repository{
 	"sourcegraph.com/sourcegraph/sourcegraph": {
 		URI: "sourcegraph.com/sourcegraph/sourcegraph",
 		Tree: Tree{
