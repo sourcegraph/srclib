@@ -446,6 +446,21 @@ func (c *StoreImportCmd) sample(s interface{}) error {
 	}
 	log.Printf("Import took %s (~%s per def/ref)", time.Since(start), time.Duration(int64(time.Since(start))/int64(len(data.Defs)+len(data.Refs))))
 
+	start = time.Now()
+	if !c.NoIndex {
+		switch s := s.(type) {
+		case store.RepoIndexer:
+			if err := s.Index(commitID); err != nil {
+				return err
+			}
+		case store.MultiRepoIndexer:
+			if err := s.Index(repo, commitID); err != nil {
+				return err
+			}
+		}
+	}
+	log.Printf("Index took %s (~%s per def/ref)", time.Since(start), time.Duration(int64(time.Since(start))/int64(len(data.Defs)+len(data.Refs))))
+
 	if c.SampleImportOnly {
 		return nil
 	}
