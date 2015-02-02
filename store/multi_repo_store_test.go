@@ -106,7 +106,7 @@ func testMultiRepoStore_Repos(t *testing.T, mrs MultiRepoStoreImporter) {
 func TestFSMultiRepoStore_Repos_customPathFuncs(t *testing.T) {
 	tests := map[string]struct{ conf *FSMultiRepoStoreConf }{
 		"nil struct":         {conf: nil},
-		"evenly distributed": {conf: &FSMultiRepoStoreConf{RepoPaths: &EvenlyDistributedRepoPaths{}}},
+		"evenly distributed": {conf: &FSMultiRepoStoreConf{RepoPaths: &customRepoPaths{}}},
 	}
 	for label, test := range tests {
 		mrs := NewFSMultiRepoStore(newTestFS(), test.conf)
