@@ -5,6 +5,8 @@ import (
 	"log"
 	"os"
 
+	"strings"
+
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
@@ -13,7 +15,14 @@ func init() {
 	if additionalOverrides != "" {
 		var o map[string]*Repository
 		if err := json.Unmarshal([]byte(additionalOverrides), &o); err != nil {
-			log.Fatalf("config/overrides.go init(): %s", err)
+			// HACK: In upstart, escaped double quotes include the backslash
+			// in the string. To get around this, we encode json using
+			// single quotes instead of double quotes, and make the switch
+			// here.
+			additionalOverrides = strings.Replace(additionalOverrides, `'`, `"`, -1)
+			if err := json.Unmarshal([]byte(additionalOverrides), &o); err != nil {
+				log.Fatalf("config/overrides.go init(): %s", err)
+			}
 		}
 		for k, v := range o {
 			Overrides[k] = v
