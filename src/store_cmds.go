@@ -426,19 +426,24 @@ func (c *StoreImportCmd) sample(s interface{}) error {
 	}
 	log.Printf("Encoded data is %s", bytesString(size))
 
-	commitID := strings.Repeat("f", 40)
-	var repo string
-	log.Printf("Importing %d defs and %d refs into the source unit %+v at commit %s", len(data.Defs), len(data.Refs), unit.ID2(), commitID)
+	if c.CommitID == "" {
+		c.CommitID = strings.Repeat("f", 40)
+	}
+
+	log.Printf("Importing %d defs and %d refs into the source unit %+v at commit %s", len(data.Defs), len(data.Refs), unit.ID2(), c.CommitID)
 	start = time.Now()
 	switch imp := s.(type) {
 	case store.RepoImporter:
-		if err := imp.Import(commitID, unit, *data); err != nil {
+		c.Repo = ""
+		if err := imp.Import(c.CommitID, unit, *data); err != nil {
 			return err
 		}
 	case store.MultiRepoImporter:
-		repo = "example.com/my/repo"
-		log.Printf(" - repo %s", repo)
-		if err := imp.Import(repo, commitID, unit, *data); err != nil {
+		if c.Repo == "" {
+			c.Repo = "example.com/my/repo"
+		}
+		log.Printf(" - repo %s", c.Repo)
+		if err := imp.Import(c.Repo, c.CommitID, unit, *data); err != nil {
 			return err
 		}
 	default:
@@ -450,11 +455,11 @@ func (c *StoreImportCmd) sample(s interface{}) error {
 	if !c.NoIndex {
 		switch s := s.(type) {
 		case store.RepoIndexer:
-			if err := s.Index(commitID); err != nil {
+			if err := s.Index(c.CommitID); err != nil {
 				return err
 			}
 		case store.MultiRepoIndexer:
-			if err := s.Index(repo, commitID); err != nil {
+			if err := s.Index(c.Repo, c.CommitID); err != nil {
 				return err
 			}
 		}
@@ -494,31 +499,31 @@ func (c *StoreImportCmd) sample(s interface{}) error {
 		if repo != "" {
 			x = append(x, "--repo", repo)
 		}
-		x = append(x, "--commit", commitID)
+		x = append(x, "--commit", c.CommitID)
 		x = append(x, args...)
 		return x
 	}
 
-	if err := runCmd(storeCmdArgs("versions", repo)...); err != nil {
+	if err := runCmd(storeCmdArgs("versions", c.Repo)...); err != nil {
 		return err
 	}
-	if err := runCmd(storeCmdArgs("units", repo)...); err != nil {
+	if err := runCmd(storeCmdArgs("units", c.Repo)...); err != nil {
 		return err
 	}
-	if err := runCmd(storeCmdArgs("units", repo, "--file", def2.File)...); err != nil {
+	if err := runCmd(storeCmdArgs("units", c.Repo, "--file", def2.File)...); err != nil {
 		return err
 	}
-	if err := runCmd(storeCmdArgs("units", repo, "--file", ref2.File)...); err != nil {
+	if err := runCmd(storeCmdArgs("units", c.Repo, "--file", ref2.File)...); err != nil {
 		return err
 	}
-	if err := runCmd(storeCmdArgs("defs", repo, "--file", def3.File)...); err != nil {
+	if err := runCmd(storeCmdArgs("defs", c.Repo, "--file", def3.File)...); err != nil {
 		return err
 	}
-	if err := runCmd(storeCmdArgs("refs", repo, "--file", ref3.File)...); err != nil {
+	if err := runCmd(storeCmdArgs("refs", c.Repo, "--file", ref3.File)...); err != nil {
 		return err
 	}
 	if foundRefDef4 {
-		if err := runCmd(storeCmdArgs("refs", repo, "--def-unit-type", refDef4.DefUnitType, "--def-unit", refDef4.DefUnit, "--def-path", refDef4.DefPath)...); err != nil {
+		if err := runCmd(storeCmdArgs("refs", c.Repo, "--def-unit-type", refDef4.DefUnitType, "--def-unit", refDef4.DefUnit, "--def-path", refDef4.DefPath)...); err != nil {
 			return err
 		}
 	}
