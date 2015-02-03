@@ -1,6 +1,25 @@
 package config
 
-import "sourcegraph.com/sourcegraph/srclib/unit"
+import (
+	"encoding/json"
+	"log"
+	"os"
+
+	"sourcegraph.com/sourcegraph/srclib/unit"
+)
+
+func init() {
+	additionalOverrides := os.Getenv("SRCLIB_ADDITIONAL_OVERRIDES")
+	if additionalOverrides != "" {
+		var o map[string]*Repository
+		if err := json.Unmarshal([]byte(additionalOverrides), &o); err != nil {
+			log.Fatalf("config/overrides.go init(): %s", err)
+		}
+		for k, v := range o {
+			Overrides[k] = v
+		}
+	}
+}
 
 var Overrides = map[string]*Repository{
 	"sourcegraph.com/sourcegraph/sourcegraph": {
