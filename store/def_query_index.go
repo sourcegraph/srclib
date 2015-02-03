@@ -40,6 +40,7 @@ func (x *defQueryIndex) getByQuery(q string) (byteOffsets, bool) {
 		panic("mafsaTable not built/read")
 	}
 
+	q = strings.ToLower(q)
 	node, i := x.mt.t.IndexedTraverse([]rune(q))
 	if node == nil {
 		return nil, false

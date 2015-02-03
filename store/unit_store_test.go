@@ -228,7 +228,7 @@ func testUnitStore_Defs_Query(t *testing.T, us UnitStoreImporter) {
 			wantIndexHits: 1,
 		},
 		{
-			q:             "abc",
+			q:             "Abc",
 			wantDefPaths:  []string{"p3", "p4"},
 			wantIndexHits: 1,
 		},
