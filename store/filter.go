@@ -775,6 +775,7 @@ func (ds defsSortByName) Less(i, j int) bool { return ds[i].Name < ds[j].Name }
 
 type DefsSortByName struct{}
 
+func (ds DefsSortByName) String() string { return "DefsSortByName" }
 func (ds DefsSortByName) DefsSort(defs []*graph.Def) {
 	sort.Sort(defsSortByName(defs))
 }
