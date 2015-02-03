@@ -189,6 +189,8 @@ func testMultiRepoStore_Units(t *testing.T, mrs MultiRepoStoreImporter) {
 	if err != nil {
 		t.Errorf("%s: Units(): %s", mrs, err)
 	}
+	sort.Sort(unit.SourceUnits(units))
+	sort.Sort(unit.SourceUnits(want))
 	if !reflect.DeepEqual(units, want) {
 		t.Errorf("%s: Units(): got %v, want %v", mrs, units, want)
 	}

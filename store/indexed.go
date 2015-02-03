@@ -67,6 +67,8 @@ func newIndexedTreeStore(fs rwvfs.FileSystem) TreeStoreImporter {
 	}
 }
 
+func (s *indexedTreeStore) String() string { return "indexedTreeStore" }
+
 // errNotIndexed occurs when that a query was unable to be performed
 // using an index. In most cases, it indicates that the caller should
 // perform the query using a full scan of all of the data.
@@ -108,7 +110,7 @@ func (s *indexedTreeStore) unitIDs(indexOnly bool, fs ...UnitFilter) ([]unit.ID2
 
 func (s *indexedTreeStore) Units(fs ...UnitFilter) ([]*unit.SourceUnit, error) {
 	// Attempt to use the index.
-	scopeUnits, err := s.unitIDs(false, fs...)
+	scopeUnits, err := s.unitIDs(true, fs...)
 	if err != nil {
 		if err == errNotIndexed {
 			return s.fsTreeStore.Units(fs...)
