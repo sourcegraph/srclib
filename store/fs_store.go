@@ -254,14 +254,31 @@ func newFSTreeStore(fs rwvfs.FileSystem) *fsTreeStore {
 	return ts
 }
 
+var c_fsTreeStore_unitsOpened = 0 // counter
+
 func (s *fsTreeStore) Units(f ...UnitFilter) ([]*unit.SourceUnit, error) {
-	unitFilenames, err := s.unitFilenames()
+	var unitFilenames []string
+
+	unitIDs, err := scopeUnits(storeFilters(f))
 	if err != nil {
 		return nil, err
 	}
 
+	if len(unitIDs) > 0 {
+		unitFilenames = make([]string, len(unitIDs))
+		for i, u := range unitIDs {
+			unitFilenames[i] = s.unitFilename(u.Type, u.Name)
+		}
+	} else {
+		unitFilenames, err = s.unitFilenames()
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	var units []*unit.SourceUnit
 	for _, filename := range unitFilenames {
+		c_fsTreeStore_unitsOpened++
 		unit, err := s.openUnitFile(filename)
 		if err != nil {
 			return nil, err

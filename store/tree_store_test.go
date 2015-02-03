@@ -136,10 +136,13 @@ func testTreeStore_Units(t *testing.T, ts TreeStoreImporter) {
 	if err != nil {
 		t.Errorf("%s: Units(): %s", ts, err)
 	}
+	sort.Sort(unit.SourceUnits(units))
+	sort.Sort(unit.SourceUnits(want))
 	if !reflect.DeepEqual(units, want) {
 		t.Errorf("%s: Units(): got %v, want %v", ts, units, want)
 	}
 
+	c_fsTreeStore_unitsOpened = 0
 	units2, err := ts.Units(ByUnits(unit.ID2{Type: "t3", Name: "u3"}, unit.ID2{Type: "t1", Name: "u1"}))
 	if err != nil {
 		t.Errorf("%s: Units(3 and 1): %s", ts, err)
@@ -152,6 +155,11 @@ func testTreeStore_Units(t *testing.T, ts TreeStoreImporter) {
 	sort.Sort(unit.SourceUnits(want2))
 	if !reflect.DeepEqual(units2, want2) {
 		t.Errorf("%s: Units(3 and 1): got %v, want %v", ts, units2, want2)
+	}
+	if isIndexedStore(ts) {
+		if want := 2; c_fsTreeStore_unitsOpened != want {
+			t.Errorf("%s: Units: got %d units opened, want %d", ts, c_fsTreeStore_unitsOpened, want)
+		}
 	}
 }
 
@@ -177,6 +185,8 @@ func testTreeStore_Units_ByFile(t *testing.T, ts TreeStoreImporter) {
 	if err != nil {
 		t.Errorf("%s: Units(ByFiles f1): %s", ts, err)
 	}
+	sort.Sort(unit.SourceUnits(units))
+	sort.Sort(unit.SourceUnits(want))
 	if !reflect.DeepEqual(units, want) {
 		t.Errorf("%s: Units(ByFiles f1): got %v, want %v", ts, units, want)
 	}
