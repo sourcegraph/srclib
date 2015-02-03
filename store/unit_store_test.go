@@ -19,6 +19,7 @@ func testUnitStore(t *testing.T, newFn func() UnitStoreImporter) {
 	testUnitStore_Def(t, newFn())
 	testUnitStore_Defs(t, newFn())
 	testUnitStore_Defs_SortByName(t, newFn())
+	testUnitStore_Defs_Query(t, newFn())
 	testUnitStore_Refs(t, newFn())
 	testUnitStore_Refs_ByFiles(t, newFn())
 	testUnitStore_Refs_ByDef(t, newFn())
@@ -182,6 +183,103 @@ func testUnitStore_Defs_SortByName(t *testing.T, us UnitStoreImporter) {
 	}
 }
 
+func testUnitStore_Defs_Query(t *testing.T, us UnitStoreImporter) {
+	data := graph.Output{
+		Defs: []*graph.Def{
+			{
+				DefKey: graph.DefKey{Path: "p1"},
+				Name:   "a",
+			},
+			{
+				DefKey: graph.DefKey{Path: "p2"},
+				Name:   "ab",
+			},
+			{
+				DefKey: graph.DefKey{Path: "p3"},
+				Name:   "abcdef",
+			},
+			{
+				DefKey: graph.DefKey{Path: "p4"},
+				Name:   "abcxxx",
+			},
+			{
+				DefKey: graph.DefKey{Path: "p5"},
+				Name:   "x",
+			},
+		},
+	}
+	if err := us.Import(data); err != nil {
+		t.Errorf("%s: Import(data): %s", us, err)
+	}
+
+	tests := []struct {
+		q             string
+		wantDefPaths  []string
+		wantIndexHits int
+	}{
+		{
+			q:             "a",
+			wantDefPaths:  []string{"p1", "p2", "p3", "p4"},
+			wantIndexHits: 1,
+		},
+		{
+			q:             "ab",
+			wantDefPaths:  []string{"p2", "p3", "p4"},
+			wantIndexHits: 1,
+		},
+		{
+			q:             "abc",
+			wantDefPaths:  []string{"p3", "p4"},
+			wantIndexHits: 1,
+		},
+		{
+			q:             "abc000",
+			wantDefPaths:  []string{},
+			wantIndexHits: 1,
+		},
+		{
+			q:             "abcde",
+			wantDefPaths:  []string{"p3"},
+			wantIndexHits: 1,
+		},
+		{
+			q:             "abcdef",
+			wantDefPaths:  []string{"p3"},
+			wantIndexHits: 1,
+		},
+		{
+			q:             "abcdefg",
+			wantDefPaths:  []string{},
+			wantIndexHits: 1,
+		},
+		{
+			q:             "x",
+			wantDefPaths:  []string{"p5"},
+			wantIndexHits: 1,
+		},
+		{
+			q:             "z",
+			wantDefPaths:  []string{},
+			wantIndexHits: 1,
+		},
+	}
+	for _, test := range tests {
+		c_defQueryIndex_getByQuery = 0
+		defs, err := us.Defs(ByDefQuery(test.q))
+		if err != nil {
+			t.Errorf("%s: Defs(ByDefQuery %q): %s", us, test.q, err)
+		}
+		if got, want := defPaths(defs), test.wantDefPaths; !reflect.DeepEqual(got, want) {
+			t.Errorf("%s: Defs(ByDefQuery %q): got defs %v, want %v", us, test.q, got, want)
+		}
+		if isIndexedStore(us) {
+			if want := test.wantIndexHits; c_defQueryIndex_getByQuery != want {
+				t.Errorf("%s: Defs(ByDefQuery %q): got %d index hits, want %d", us, test.q, c_defQueryIndex_getByQuery, want)
+			}
+		}
+	}
+}
+
 func testUnitStore_Refs(t *testing.T, us UnitStoreImporter) {
 	data := graph.Output{
 		Refs: []*graph.Ref{
@@ -302,4 +400,12 @@ func testUnitStore_Refs_ByDef(t *testing.T, us UnitStoreImporter) {
 			}
 		}
 	}
+}
+
+func defPaths(defs []*graph.Def) []string {
+	dps := make([]string, len(defs))
+	for i, def := range defs {
+		dps[i] = def.Path
+	}
+	return dps
 }
