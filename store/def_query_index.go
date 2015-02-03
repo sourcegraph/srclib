@@ -118,7 +118,7 @@ func (x *defQueryIndex) Build(defs []*graph.Def, ofs byteOffsets) error {
 	j := 0 // index of earliest def with same name
 	for i, def := range dofs {
 		if i > 0 && dofs[j].lowerName == def.lowerName {
-			x.mt.Values[j] = append(x.mt.Values[j], def.ofs)
+			x.mt.Values[len(x.mt.Values)-1] = append(x.mt.Values[len(x.mt.Values)-1], def.ofs)
 		} else {
 			bt.Insert(def.lowerName)
 			x.mt.Values = append(x.mt.Values, byteOffsets{def.ofs})
