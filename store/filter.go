@@ -594,6 +594,32 @@ func (f byDefPathFilter) SelectDef(def *graph.Def) bool {
 	return def.Path == string(f)
 }
 
+// ByDefQueryFilter is implemented by filters that restrict their
+// selection to defs whose names match the query.
+type ByDefQueryFilter interface {
+	ByDefQuery() string
+}
+
+// ByDefQuery returns a filter by def query. It panics if q is empty.
+func ByDefQuery(q string) interface {
+	DefFilter
+	ByDefQueryFilter
+} {
+	if q == "" {
+		panic("ByDefQuery: empty")
+	}
+	return byDefQueryFilter(q)
+}
+
+type byDefQueryFilter string
+
+func (f byDefQueryFilter) String() string     { return fmt.Sprintf("ByDefQuery(%q)", string(f)) }
+func (f byDefQueryFilter) ByDefQuery() string { return string(f) }
+func (f byDefQueryFilter) SelectDef(def *graph.Def) bool {
+	// TODO(sqs): be smarter about the query matching semantics.
+	return strings.HasPrefix(strings.ToLower(def.Name), strings.ToLower(string(f)))
+}
+
 // ByFilesFilter is implemented by filters that restrict their
 // selection to defs, refs, etc., that exist in any file in a set, or
 // source units that contain any of the files in the set.

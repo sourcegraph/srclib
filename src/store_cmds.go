@@ -519,6 +519,9 @@ func (c *StoreImportCmd) sample(s interface{}) error {
 	if err := runCmd(storeCmdArgs("defs", c.Repo, "--file", def3.File)...); err != nil {
 		return err
 	}
+	if err := runCmd(storeCmdArgs("defs", c.Repo, "--query", def3.Name[:len(def3.Name)-2])...); err != nil {
+		return err
+	}
 	if err := runCmd(storeCmdArgs("refs", c.Repo, "--file", ref3.File)...); err != nil {
 		return err
 	}
@@ -844,7 +847,7 @@ type StoreDefsCmd struct {
 	FilePathPrefix string `long:"file-path-prefix"`
 	CommitID       string `long:"commit"`
 
-	NamePrefix string `long:"name-prefix"`
+	Query string `long:"query"`
 
 	Limit  int `short:"n" long:"limit" description:"max results to return (0 for all)"`
 	Offset int `long:"offset" description:"results offset (0 to start with first results)"`
@@ -873,10 +876,8 @@ func (c *StoreDefsCmd) filters() []store.DefFilter {
 	if c.FilePathPrefix != "" {
 		fs = append(fs, store.ByFiles(path.Clean(c.FilePathPrefix)))
 	}
-	if c.NamePrefix != "" {
-		fs = append(fs, store.DefFilterFunc(func(def *graph.Def) bool {
-			return strings.HasPrefix(def.Name, c.NamePrefix)
-		}))
+	if c.Query != "" {
+		fs = append(fs, store.ByDefQuery(c.Query))
 	}
 	if c.Limit != 0 || c.Offset != 0 {
 		fs = append(fs, store.Limit(c.Limit, c.Offset))

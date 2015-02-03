@@ -411,6 +411,11 @@ func newIndexedUnitStore(fs rwvfs.FileSystem) UnitStoreImporter {
 				perFile: 7,
 			},
 			defToRefsIndexName: &defRefsIndex{},
+			"def_query": &defQueryIndex{
+				f: DefFilterFunc(func(def *graph.Def) bool {
+					return !def.Local && def.Name != ""
+				}),
+			},
 		},
 		fsUnitStore: &fsUnitStore{fs: fs},
 	}
