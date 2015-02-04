@@ -5,6 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
+
+	"sort"
 
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/unit"
@@ -48,6 +51,83 @@ type persistedIndex interface {
 }
 
 type byteOffsets []int64
+
+func (v byteOffsets) MarshalBinary() ([]byte, error) {
+	bb := make([]byte, len(v)*binary.MaxVarintLen64)
+	b := bb
+	for _, ofs := range v {
+		n := binary.PutVarint(b, ofs)
+		b = b[n:]
+	}
+	return bb[:len(bb)-len(b)], nil
+}
+
+func (v *byteOffsets) UnmarshalBinary(b []byte) error {
+	for {
+		if len(b) == 0 {
+			break
+		}
+		ofs, n := binary.Varint(b)
+		if n == 0 {
+			return io.ErrShortBuffer
+		}
+		if n < 0 {
+			return errors.New("bad varint")
+		}
+		*v = append(*v, ofs)
+		b = b[n:]
+	}
+	return nil
+}
+
+// byteOffsetsDeltaEncoded holds byte offsets, just like
+// byteOffsets. The only difference is that byteOffsetsDeltaEncoded is
+// binary-encoded using delta encoding (storing the diffs between
+// numbers instead of the full numbers). The Go values are the same
+// (byteOffsetsDeltaEncoded is delta-decoded when
+// unmarshaled). Because it uses delta encoding, its elements must be
+// sorted from smallest to largest.
+type byteOffsetsDeltaEncoded []int64
+
+func (v byteOffsetsDeltaEncoded) MarshalBinary() ([]byte, error) {
+	bb := make([]byte, len(v)*binary.MaxVarintLen64)
+	b := bb
+	for i, ofs := range v {
+		if i != 0 {
+			// Delta encoding.
+			ofs -= v[i-1]
+			if ofs < 0 {
+				log.Println("AA", v)
+				panic("unitOffsets: byte offsets must be sorted from smallest to largest")
+			}
+		}
+		n := binary.PutVarint(b, ofs)
+		b = b[n:]
+	}
+	return bb[:len(bb)-len(b)], nil
+}
+
+func (v *byteOffsetsDeltaEncoded) UnmarshalBinary(b []byte) error {
+	for {
+		if len(b) == 0 {
+			break
+		}
+		ofs, n := binary.Varint(b)
+		if n == 0 {
+			return io.ErrShortBuffer
+		}
+		if n < 0 {
+			return errors.New("bad varint")
+		}
+		if len(*v) > 0 {
+			// Delta encoding.
+			ofs += (*v)[len(*v)-1]
+		}
+		*v = append(*v, ofs)
+		b = b[n:]
+	}
+	return nil
+}
 
 type defIndexBuilder interface {
 	Build([]*graph.Def, byteOffsets) error
@@ -211,54 +291,49 @@ func (f unitIndexOnlyFilter) SelectUnit(u *unit.SourceUnit) bool {
 	return true
 }
 
+func deltaEncode(vs []int64) []int64 {
+	sort.Sort(int64Slice(vs))
+	for i := range vs {
+		if i != 0 {
+			vs[i] -= vs[i-1]
+			if vs[i] < 0 {
+				panic("deltaEncode: numbers must be sorted from smallest to largest")
+			}
+		}
+	}
+	return vs
+}
+
+func deltaDecode(vs []int64) []int64 {
+	for i := range vs {
+		if i != 0 {
+			if vs[i] < vs[i-1] {
+				panic("deltaDecode: negative delta")
+			}
+			vs[i] += vs[i-1]
+		}
+	}
+	return vs
+}
+
 // unitOffsets holds a set of byte offsets that all refer to positions
 // in a file inside a specific source unit.
 type unitOffsets struct {
+	byteOffsets       // byte offsets of defs/refs/etc. in source unit data file (def.dat, ref.dat, etc.)
 	Unit        uint8 // index of source unit
-	byteOffsets       // byte offsets, sorted smallest to largest
 }
 
 func (v *unitOffsets) MarshalBinary() ([]byte, error) {
-	bb := make([]byte, 1+len(v.byteOffsets)*binary.MaxVarintLen64)
-	b := bb
-	b[0] = v.Unit
-	b = b[1:]
-	for i, ofs := range v.byteOffsets {
-		if i != 0 {
-			// Delta encoding.
-			ofs -= v.byteOffsets[i-1]
-			if ofs < 0 {
-				panic("unitOffsets: byte offsets must be sorted from smallest to largest")
-			}
-		}
-		n := binary.PutVarint(b, ofs)
-		b = b[n:]
+	ofsB, err := v.byteOffsets.MarshalBinary()
+	if err != nil {
+		return nil, err
 	}
-	return bb[:len(bb)-len(b)], nil
+	return append(ofsB, v.Unit), nil
 }
 
 func (v *unitOffsets) UnmarshalBinary(b []byte) error {
-	v.Unit = b[0]
-	b = b[1:]
-	for {
-		if len(b) == 0 {
-			break
-		}
-		ofs, n := binary.Varint(b)
-		if n == 0 {
-			return io.ErrShortBuffer
-		}
-		if n < 0 {
-			return errors.New("bad varint")
-		}
-		if len(v.byteOffsets) > 0 {
-			// Delta encoding.
-			ofs += v.byteOffsets[len(v.byteOffsets)-1]
-		}
-		v.byteOffsets = append(v.byteOffsets, ofs)
-		b = b[n:]
-	}
-	return nil
+	v.Unit = b[len(b)-1]
+	return v.byteOffsets.UnmarshalBinary(b[:len(b)-1])
 }
 
 // unitDefOffsetsFilter is an internal filter used by indexes. It

@@ -1,10 +1,11 @@
 package store
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"path"
+
+	"github.com/alecthomas/binary"
 
 	"sourcegraph.com/sourcegraph/srclib/store/phtable"
 	"sourcegraph.com/sourcegraph/srclib/unit"
@@ -47,7 +48,7 @@ func (x *unitFilesIndex) getByPath(path string) ([]unit.ID2, bool, error) {
 	}
 
 	var us []unit.ID2
-	if err := json.Unmarshal(v, &us); err != nil {
+	if err := binary.Unmarshal(v, &us); err != nil {
 		return nil, true, err
 	}
 	return us, true, nil
@@ -102,7 +103,7 @@ func (x *unitFilesIndex) Build(units []*unit.SourceUnit) error {
 	}
 	b := phtable.Builder(len(f2u))
 	for file, fileUnits := range f2u {
-		ub, err := json.Marshal(fileUnits)
+		ub, err := binary.Marshal(fileUnits)
 		if err != nil {
 			return err
 		}
