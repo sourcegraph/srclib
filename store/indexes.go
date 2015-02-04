@@ -1,6 +1,7 @@
 package store
 
 import (
+	"log"
 	"os"
 	"reflect"
 	"time"
@@ -9,6 +10,8 @@ import (
 
 	"strings"
 	"sync"
+
+	"sort"
 
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -74,6 +77,9 @@ type IndexCriteria struct {
 	Name     string
 	Type     string
 	Stale    *bool
+
+	ReposLimit  int
+	ReposOffset int
 }
 
 // BuildIndexes builds all indexes on store and its lower-level stores
@@ -245,7 +251,27 @@ func listIndexes(s interface{}, c IndexCriteria, ch chan<- storeIndex, f func(*I
 		} else {
 			rss = map[string]RepoStore{c.Repo: s.openRepoStore(c.Repo)}
 		}
-		for repo, rs := range rss {
+
+		// Sort repos for determinism.
+		repos := make([]string, 0, len(rss))
+		for repo := range rss {
+			repos = append(repos, repo)
+		}
+		sort.Strings(repos)
+
+		if c.ReposOffset != 0 {
+			if c.ReposOffset < len(repos) {
+				repos = repos[c.ReposOffset:]
+			} else {
+				log.Printf("Warning: A ReposOffset (%d) was specified that equals or exceeds the total number of repos (%d).", c.ReposOffset, len(repos))
+			}
+		}
+		if c.ReposLimit != 0 && c.ReposLimit < len(repos) {
+			repos = repos[:c.ReposLimit]
+		}
+
+		for _, repo := range repos {
+			rs := rss[repo]
 			err := listIndexes(rs, c, ch, func(x *IndexStatus) {
 				x.Repo = repo
 				if f != nil {
