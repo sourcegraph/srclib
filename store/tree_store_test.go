@@ -33,6 +33,7 @@ func testTreeStore(t *testing.T, newFn func() TreeStoreImporter) {
 	testTreeStore_Units_ByFile(t, newFn())
 	testTreeStore_Def(t, newFn())
 	testTreeStore_Defs(t, newFn())
+	testTreeStore_Defs_Query(t, newFn())
 	testTreeStore_Defs_ByUnits(t, newFn())
 	testTreeStore_Defs_ByFiles(t, newFn())
 	testTreeStore_Refs(t, newFn())
@@ -308,6 +309,120 @@ func testTreeStore_Defs(t *testing.T, ts TreeStoreImporter) {
 	}
 }
 
+func testTreeStore_Defs_Query(t *testing.T, ts TreeStoreImporter) {
+	defsByUnit := map[string][]*graph.Def{
+		"u1": []*graph.Def{
+			{
+				DefKey: graph.DefKey{Path: "p1"},
+				Name:   "a",
+			},
+			{
+				DefKey: graph.DefKey{Path: "p2"},
+				Name:   "ab",
+			},
+		},
+		"u2": []*graph.Def{
+			{
+				DefKey: graph.DefKey{Path: "p3"},
+				Name:   "abcdef",
+			},
+			{
+				DefKey: graph.DefKey{Path: "p4"},
+				Name:   "abcxxx",
+			},
+			{
+				DefKey: graph.DefKey{Path: "p5"},
+				Name:   "x",
+			},
+		},
+	}
+	for unitName, defs := range defsByUnit {
+		u := &unit.SourceUnit{Type: "t", Name: unitName}
+		data := graph.Output{Defs: defs}
+		if err := ts.Import(u, data); err != nil {
+			t.Errorf("%s: Import(%v, data): %s", ts, u, err)
+		}
+		if ts, ok := ts.(TreeIndexer); ok {
+			if err := ts.Index(); err != nil {
+				t.Fatalf("%s: Index: %s", ts, err)
+			}
+		}
+	}
+
+	tests := []struct {
+		q             string
+		wantDefPaths  []string
+		wantIndexHits int
+	}{
+		{
+			q:             "a",
+			wantDefPaths:  []string{"p1", "p2", "p3", "p4"},
+			wantIndexHits: 1,
+		},
+		{
+			q:             "ab",
+			wantDefPaths:  []string{"p2", "p3", "p4"},
+			wantIndexHits: 1,
+		},
+		{
+			q:             "Abc",
+			wantDefPaths:  []string{"p3", "p4"},
+			wantIndexHits: 1,
+		},
+		{
+			q:             "abc000",
+			wantDefPaths:  []string{},
+			wantIndexHits: 1,
+		},
+		{
+			q:             "abcde",
+			wantDefPaths:  []string{"p3"},
+			wantIndexHits: 1,
+		},
+		{
+			q:             "abcdef",
+			wantDefPaths:  []string{"p3"},
+			wantIndexHits: 1,
+		},
+		{
+			q:             "abcdefg",
+			wantDefPaths:  []string{},
+			wantIndexHits: 1,
+		},
+		{
+			q:             "x",
+			wantDefPaths:  []string{"p5"},
+			wantIndexHits: 1,
+		},
+		{
+			q:             "z",
+			wantDefPaths:  []string{},
+			wantIndexHits: 1,
+		},
+	}
+	for _, test := range tests {
+		c_defQueryTreeIndex_getByQuery = 0
+		c_defQueryIndex_getByQuery = 0
+		defs, err := ts.Defs(ByDefQuery(test.q))
+		if err != nil {
+			t.Errorf("%s: Defs(ByDefQuery %q): %s", ts, test.q, err)
+		}
+		if got, want := defPaths(defs), test.wantDefPaths; !reflect.DeepEqual(got, want) {
+			t.Errorf("%s: Defs(ByDefQuery %q): got defs %v, want %v", ts, test.q, got, want)
+		}
+		if isIndexedStore(ts) {
+			if want := test.wantIndexHits; c_defQueryTreeIndex_getByQuery != want {
+				t.Errorf("%s: Defs(ByDefQuery %q): got %d index hits, want %d", ts, test.q, c_defQueryTreeIndex_getByQuery, want)
+			}
+			if c_defQueryIndex_getByQuery != 0 {
+				// This query should only hit the tree-level def query
+				// index, not the def query indexes for each unit.
+				t.Errorf("%s: Defs(ByDefQuery %q): got %d index hits on non-tree index, want none", ts, test.q, c_defQueryIndex_getByQuery)
+			}
+		}
+	}
+}
+
 func testTreeStore_Defs_ByUnits(t *testing.T, ts TreeStoreImporter) {
 	units := []*unit.SourceUnit{
 		{Type: "t1", Name: "u1"},
@@ -333,6 +448,7 @@ func testTreeStore_Defs_ByUnits(t *testing.T, ts TreeStoreImporter) {
 		{DefKey: graph.DefKey{UnitType: "t3", Unit: "u3", Path: "p3"}},
 	}
 
+	c_fsTreeStore_unitsOpened = 0
 	defs, err := ts.Defs(ByUnits(unit.ID2{Type: "t3", Name: "u3"}, unit.ID2{Type: "t1", Name: "u1"}))
 	if err != nil {
 		t.Errorf("%s: Defs(ByUnits): %s", ts, err)
@@ -341,6 +457,11 @@ func testTreeStore_Defs_ByUnits(t *testing.T, ts TreeStoreImporter) {
 	sort.Sort(graph.Defs(want))
 	if !reflect.DeepEqual(defs, want) {
 		t.Errorf("%s: Defs(ByUnits): got defs %v, want %v", ts, defs, want)
+	}
+	if isIndexedStore(ts) {
+		if c_fsTreeStore_unitsOpened != 0 {
+			t.Errorf("%s: Defs(ByUnits): got %d units opened, want none (should be able to use ByUnits filter to avoid needing to open any units)", ts, c_fsTreeStore_unitsOpened)
+		}
 	}
 }
 
