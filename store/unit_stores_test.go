@@ -218,9 +218,3 @@ func TestScopeUnits(t *testing.T) {
 		}
 	}
 }
-
-type unitID2s []unit.ID2
-
-func (v unitID2s) Len() int           { return len(v) }
-func (v unitID2s) Less(i, j int) bool { return v[i].String() < v[j].String() }
-func (v unitID2s) Swap(i, j int)      { v[i], v[j] = v[j], v[i] }

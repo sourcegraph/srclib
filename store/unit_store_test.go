@@ -407,5 +407,6 @@ func defPaths(defs []*graph.Def) []string {
 	for i, def := range defs {
 		dps[i] = def.Path
 	}
+	sort.Strings(dps)
 	return dps
 }
