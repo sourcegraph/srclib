@@ -171,7 +171,7 @@ func listIndexes(s interface{}, c IndexCriteria, ch chan<- storeIndex, f func(*I
 			}
 
 			switch x.(type) {
-			case unitRefIndexBuilder:
+			case unitRefIndexBuilder, defQueryTreeIndexBuilder:
 				st.DependsOnChildren = true
 			}
 
