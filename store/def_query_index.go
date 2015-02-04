@@ -107,7 +107,10 @@ func (x *defQueryIndex) Build(defs []*graph.Def, ofs byteOffsets) (err error) {
 	// Clone slice so we can sort it by whatever we want.
 	dofs := make([]*defLowerNameAndOffset, 0, len(defs))
 	for i, def := range defs {
-		if x.f.SelectDef(def) {
+		if x.f.SelectDef(def) && !hasNonASCIIChars(def.Name) {
+			// See https://github.com/smartystreets/mafsa/issues/1 for
+			// why we need to kick out non-ASCII.
+
 			dofs = append(dofs, &defLowerNameAndOffset{strings.ToLower(def.Name), ofs[i]})
 		}
 	}
@@ -190,4 +193,13 @@ type mafsaTable struct {
 	t      *mafsa.MinTree
 	B      []byte        // bytes of the MinTree
 	Values []byteOffsets // one value per entry in build or min
+}
+
+func hasNonASCIIChars(s string) bool {
+	for _, c := range s {
+		if c < 0 || c >= 128 {
+			return true
+		}
+	}
+	return false
 }
