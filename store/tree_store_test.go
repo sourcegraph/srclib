@@ -106,6 +106,11 @@ func testTreeStore_Unit(t *testing.T, ts TreeStoreImporter) {
 	if err := ts.Import(&unit.SourceUnit{Type: "t", Name: "u"}, graph.Output{}); err != nil {
 		t.Errorf("%s: Import(empty data): %s", ts, err)
 	}
+	if ts, ok := ts.(TreeIndexer); ok {
+		if err := ts.Index(); err != nil {
+			t.Fatalf("%s: Index: %s", ts, err)
+		}
+	}
 
 	units, err := ts.Units(ByCommitID("c"), ByUnits(unit.ID2{Type: "t", Name: "u"}))
 	if err != nil {
@@ -133,33 +138,58 @@ func testTreeStore_Units(t *testing.T, ts TreeStoreImporter) {
 		}
 	}
 
-	units, err := ts.Units()
-	if err != nil {
-		t.Errorf("%s: Units(): %s", ts, err)
-	}
-	sort.Sort(unit.SourceUnits(units))
-	sort.Sort(unit.SourceUnits(want))
-	if !reflect.DeepEqual(units, want) {
-		t.Errorf("%s: Units(): got %v, want %v", ts, units, want)
+	{
+		c_fsTreeStore_unitsOpened = 0
+		c_unitsIndex_listUnits = 0
+		units, err := ts.Units()
+		if err != nil {
+			t.Errorf("%s: Units(): %s", ts, err)
+		}
+		sort.Sort(unit.SourceUnits(units))
+		sort.Sort(unit.SourceUnits(want))
+		if !reflect.DeepEqual(units, want) {
+			t.Errorf("%s: Units(): got %v, want %v", ts, units, want)
+		}
+		if isIndexedStore(ts) {
+			if want := 1; c_unitsIndex_listUnits != want {
+				t.Errorf("%s: Units: listed unitsIndex %dx, want %dx", ts, c_unitsIndex_listUnits, want)
+			}
+			if want := 0; c_fsTreeStore_unitsOpened != want {
+				t.Errorf("%s: Units: got %d units opened, want %d (should use unitsIndex)", ts, c_fsTreeStore_unitsOpened, want)
+			}
+		}
 	}
 
-	c_fsTreeStore_unitsOpened = 0
-	units2, err := ts.Units(ByUnits(unit.ID2{Type: "t3", Name: "u3"}, unit.ID2{Type: "t1", Name: "u1"}))
-	if err != nil {
-		t.Errorf("%s: Units(3 and 1): %s", ts, err)
-	}
-	want2 := []*unit.SourceUnit{
-		{Type: "t1", Name: "u1"},
-		{Type: "t3", Name: "u3"},
-	}
-	sort.Sort(unit.SourceUnits(units2))
-	sort.Sort(unit.SourceUnits(want2))
-	if !reflect.DeepEqual(units2, want2) {
-		t.Errorf("%s: Units(3 and 1): got %v, want %v", ts, units2, want2)
-	}
-	if isIndexedStore(ts) {
-		if want := 2; c_fsTreeStore_unitsOpened != want {
-			t.Errorf("%s: Units: got %d units opened, want %d", ts, c_fsTreeStore_unitsOpened, want)
+	{
+		c_fsTreeStore_unitsOpened = 0
+		c_unitsIndex_listUnits = 0
+
+		origMaxIndividualFetches := maxIndividualFetches
+		maxIndividualFetches = 1
+		defer func() {
+			maxIndividualFetches = origMaxIndividualFetches
+		}()
+
+		units, err := ts.Units(ByUnits(unit.ID2{Type: "t3", Name: "u3"}, unit.ID2{Type: "t1", Name: "u1"}))
+		if err != nil {
+			t.Errorf("%s: Units(3 and 1): %s", ts, err)
+		}
+		want := []*unit.SourceUnit{
+			{Type: "t1", Name: "u1"},
+			{Type: "t3", Name: "u3"},
+		}
+		sort.Sort(unit.SourceUnits(units))
+		sort.Sort(unit.SourceUnits(want))
+		if !reflect.DeepEqual(units, want) {
+			t.Errorf("%s: Units(3 and 1): got %v, want %v", ts, units, want)
+		}
+		if isIndexedStore(ts) {
+			if want := 1; c_unitsIndex_listUnits != want {
+				t.Errorf("%s: Units: listed unitsIndex %dx, want %dx", ts, c_unitsIndex_listUnits, want)
+			}
+			if want := 0; c_fsTreeStore_unitsOpened != want {
+				t.Errorf("%s: Units: got %d units opened, want %d (should use unitsIndex)", ts, c_fsTreeStore_unitsOpened, want)
+			}
 		}
 	}
 }

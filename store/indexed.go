@@ -55,6 +55,10 @@ var _ interface {
 	indexedStore
 } = (*indexedTreeStore)(nil)
 
+const (
+	unitsIndexName = "units"
+)
+
 // newIndexedTreeStore creates a new indexed tree store that stores
 // data and indexes in fs.
 func newIndexedTreeStore(fs rwvfs.FileSystem) TreeStoreImporter {
@@ -63,6 +67,7 @@ func newIndexedTreeStore(fs rwvfs.FileSystem) TreeStoreImporter {
 			"file_to_units":     &unitFilesIndex{},
 			"def_to_ref_units":  &defRefUnitsIndex{},
 			"def_query_to_defs": &defQueryTreeIndex{},
+			unitsIndexName:      &unitsIndex{},
 		},
 		fsTreeStore: newFSTreeStore(fs),
 	}
@@ -115,17 +120,37 @@ func (s *indexedTreeStore) unitIDs(indexOnly bool, fs ...UnitFilter) ([]unit.ID2
 	return unitIDs, nil
 }
 
+// maxIndividualFetches is a heuristic: If we need to fetch more than
+// this many source unit files, fetching the unitsIndex (which has all
+// source unit definitions in one file) is probably faster.
+var maxIndividualFetches = 5
+
 func (s *indexedTreeStore) Units(fs ...UnitFilter) ([]*unit.SourceUnit, error) {
 	// Attempt to use the index.
-	scopeUnits, err := s.unitIDs(true, fs...)
-	if err != nil {
-		if err == errNotIndexed {
-			return s.fsTreeStore.Units(fs...)
-		}
+	scopedUnits, err := s.unitIDs(true, fs...)
+	if err != nil && err != errNotIndexed {
 		return nil, err
 	}
+	if err == errNotIndexed {
+		scopedUnits, err = scopeUnits(storeFilters(fs))
+		if err != nil {
+			return nil, err
+		}
+	}
+	if len(scopedUnits) > 0 {
+		fs = append(fs, ByUnits(scopedUnits...))
+	}
 
-	fs = append(fs, ByUnits(scopeUnits...))
+	if len(scopedUnits) == 0 || len(scopedUnits) > maxIndividualFetches {
+		vlog.Printf("indexedTreeStore.Units(%v): Using unitsIndex for query scoped to %d units.", fs, len(scopedUnits))
+		x := s.indexes[unitsIndexName]
+		if err := prepareIndex(s.fs, unitsIndexName, x); err != nil {
+			return nil, err
+		}
+		return x.(unitFullIndex).Units(fs...)
+	}
+
+	vlog.Printf("indexedTreeStore.Units(%v): Delegating to fsTreeStore for query scoped to %d units.", fs, len(scopedUnits))
 	return s.fsTreeStore.Units(fs...)
 }
 

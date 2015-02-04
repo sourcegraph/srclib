@@ -262,6 +262,10 @@ type unitIndex interface {
 	Units(...UnitFilter) ([]unit.ID2, error)
 }
 
+type unitFullIndex interface {
+	Units(...UnitFilter) ([]*unit.SourceUnit, error)
+}
+
 type unitIndexBuilder interface {
 	// Build constructs the index in memory.
 	Build([]*unit.SourceUnit) error
