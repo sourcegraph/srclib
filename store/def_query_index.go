@@ -95,8 +95,14 @@ func (ds defsByLowerName) Swap(i, j int)      { ds[i], ds[j] = ds[j], ds[i] }
 func (ds defsByLowerName) Less(i, j int) bool { return ds[i].lowerName < ds[j].lowerName }
 
 // Build implements defIndexBuilder.
-func (x *defQueryIndex) Build(defs []*graph.Def, ofs byteOffsets) error {
+func (x *defQueryIndex) Build(defs []*graph.Def, ofs byteOffsets) (err error) {
 	vlog.Printf("defQueryIndex: building index... (%d defs)", len(defs))
+
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("panic in defQueryIndex.Build (%d defs): %v", len(defs), err)
+		}
+	}()
 
 	// Clone slice so we can sort it by whatever we want.
 	dofs := make([]*defLowerNameAndOffset, 0, len(defs))

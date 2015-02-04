@@ -90,8 +90,14 @@ func (x *defQueryTreeIndex) Defs(f ...DefFilter) (map[unit.ID2]byteOffsets, erro
 }
 
 // Build implements defQueryTreeIndexBuilder.
-func (x *defQueryTreeIndex) Build(xs map[unit.ID2]*defQueryIndex) error {
+func (x *defQueryTreeIndex) Build(xs map[unit.ID2]*defQueryIndex) (err error) {
 	vlog.Printf("defQueryTreeIndex: building index... (%d unit indexes)", len(xs))
+
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("panic in defQueryTreeIndex.Build (%d unit indexes): %v", len(xs), err)
+		}
+	}()
 
 	units := make([]unit.ID2, 0, len(xs))
 	for u := range xs {
