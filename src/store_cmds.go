@@ -561,6 +561,9 @@ type storeIndexCriteria struct {
 
 	Stale    bool `long:"stale" description:"only stale indexes"`
 	NotStale bool `long:"not-stale" description:"only non-stale indexes"`
+
+	ReposLimit  int `long:"repos-limit" description:"only indexes from this many repos (0=all)"`
+	ReposOffset int `long:"repos-offset" description:"only indexes after skipping this many repos"`
 }
 
 func (c storeIndexCriteria) IndexCriteria() store.IndexCriteria {
@@ -587,6 +590,8 @@ func (c storeIndexCriteria) IndexCriteria() store.IndexCriteria {
 			log.Fatal("must specify either both or neither of --unit-type and --unit (to filter by source unit)")
 		}
 	}
+	crit.ReposLimit = c.ReposLimit
+	crit.ReposOffset = c.ReposOffset
 	return crit
 }
 
