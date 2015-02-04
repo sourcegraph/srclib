@@ -5,7 +5,10 @@ import (
 	"reflect"
 	"time"
 
+	"code.google.com/p/rog-go/parallel"
+
 	"strings"
+	"sync"
 
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -78,22 +81,48 @@ type IndexCriteria struct {
 // index that was built (or rebuilt).
 func BuildIndexes(store interface{}, c IndexCriteria, indexChan chan<- IndexStatus) ([]IndexStatus, error) {
 	var built []IndexStatus
+	var builtMu sync.Mutex
 	indexChan2 := make(chan storeIndex)
 	done := make(chan struct{})
 	go func() {
+		var par *parallel.Run
+		lastDependsOnChildren := false
 		for sx := range indexChan2 {
-			start := time.Now()
-			err := sx.store.BuildIndex(sx.status.Name, sx.index)
-			sx.status.BuildDuration = time.Since(start)
-			if err == nil {
-				sx.status.Stale = false
-			} else {
-				sx.status.BuildError = err.Error()
+			doBuild := func(sx storeIndex) {
+				start := time.Now()
+				err := sx.store.BuildIndex(sx.status.Name, sx.index)
+				sx.status.BuildDuration = time.Since(start)
+				if err == nil {
+					sx.status.Stale = false
+				} else {
+					sx.status.BuildError = err.Error()
+				}
+				builtMu.Lock()
+				built = append(built, sx.status)
+				builtMu.Unlock()
+				if indexChan != nil {
+					indexChan <- sx.status
+				}
 			}
-			built = append(built, sx.status)
-			if indexChan != nil {
-				indexChan <- sx.status
+
+			// Run indexes in parallel, but if we
+			// encounter an index that depends on children, wait for
+			// all previously seen indexes to finish before building
+			// those indexes.
+			if sx.status.DependsOnChildren != lastDependsOnChildren && par != nil {
+				par.Wait()
+				par = nil
 			}
+			if par == nil {
+				par = parallel.NewRun(MaxIndexParallel)
+			}
+			sx_ := sx
+			par.Do(func() error { doBuild(sx_); return nil })
+
+			lastDependsOnChildren = sx.status.DependsOnChildren
+		}
+		if par != nil {
+			par.Wait()
 		}
 		done <- struct{}{}
 	}()
@@ -262,15 +291,21 @@ func listIndexes(s interface{}, c IndexCriteria, ch chan<- storeIndex, f func(*I
 		} else {
 			uss = map[unit.ID2]UnitStore{*c.Unit: s.openUnitStore(*c.Unit)}
 		}
-		for unit, us := range uss {
-			unitCopy := unit
-			err := listIndexes(us, c, ch, func(x *IndexStatus) {
-				x.Unit = &unitCopy
-				if f != nil {
-					f(x)
-				}
-			})
-			if err != nil {
+		if len(uss) > 0 {
+			par := parallel.NewRun(MaxIndexParallel)
+			for unit_, us_ := range uss {
+				unit, us := unit_, us_
+				par.Do(func() error {
+					unitCopy := unit
+					return listIndexes(us, c, ch, func(x *IndexStatus) {
+						x.Unit = &unitCopy
+						if f != nil {
+							f(x)
+						}
+					})
+				})
+			}
+			if err := par.Wait(); err != nil {
 				return err
 			}
 		}
@@ -278,3 +313,5 @@ func listIndexes(s interface{}, c IndexCriteria, ch chan<- storeIndex, f func(*I
 	}
 	return nil
 }
+
+var MaxIndexParallel = 1
