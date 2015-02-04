@@ -64,8 +64,17 @@ func (x *defQueryTreeIndex) getByQuery(q string) (map[unit.ID2]byteOffsets, bool
 	return uofMap, true
 }
 
-// Covers implements defIndex.
+// Covers implements defIndex. If the filters list includes exactly 1
+// source unit filter, then this index reports that it does not cover
+// the query (so that the smaller source unit-level index is used).
 func (x *defQueryTreeIndex) Covers(filters interface{}) int {
+	scopeUnits, err := scopeUnits(storeFilters(filters))
+	if err != nil {
+		panic(err)
+	}
+	if len(scopeUnits) == 1 {
+		return 0
+	}
 	cov := 0
 	for _, f := range storeFilters(filters) {
 		if _, ok := f.(ByDefQueryFilter); ok {

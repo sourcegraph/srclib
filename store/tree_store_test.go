@@ -34,6 +34,7 @@ func testTreeStore(t *testing.T, newFn func() TreeStoreImporter) {
 	testTreeStore_Def(t, newFn())
 	testTreeStore_Defs(t, newFn())
 	testTreeStore_Defs_Query(t, newFn())
+	testTreeStore_Defs_Query_ByUnit(t, newFn())
 	testTreeStore_Defs_ByUnits(t, newFn())
 	testTreeStore_Defs_ByFiles(t, newFn())
 	testTreeStore_Refs(t, newFn())
@@ -449,6 +450,68 @@ func testTreeStore_Defs_Query(t *testing.T, ts TreeStoreImporter) {
 				// index, not the def query indexes for each unit.
 				t.Errorf("%s: Defs(ByDefQuery %q): got %d index hits on non-tree index, want none", ts, test.q, c_defQueryIndex_getByQuery)
 			}
+		}
+	}
+}
+
+func testTreeStore_Defs_Query_ByUnit(t *testing.T, ts TreeStoreImporter) {
+	defsByUnit := map[string][]*graph.Def{
+		"u1": []*graph.Def{
+			{
+				DefKey: graph.DefKey{Path: "p1"},
+				Name:   "a",
+			},
+			{
+				DefKey: graph.DefKey{Path: "p2"},
+				Name:   "ab",
+			},
+		},
+		"u2": []*graph.Def{
+			{
+				DefKey: graph.DefKey{Path: "p3"},
+				Name:   "abcdef",
+			},
+			{
+				DefKey: graph.DefKey{Path: "p4"},
+				Name:   "abcxxx",
+			},
+			{
+				DefKey: graph.DefKey{Path: "p5"},
+				Name:   "x",
+			},
+		},
+	}
+	for unitName, defs := range defsByUnit {
+		u := &unit.SourceUnit{Type: "t", Name: unitName}
+		data := graph.Output{Defs: defs}
+		if err := ts.Import(u, data); err != nil {
+			t.Errorf("%s: Import(%v, data): %s", ts, u, err)
+		}
+		if ts, ok := ts.(TreeIndexer); ok {
+			if err := ts.Index(); err != nil {
+				t.Fatalf("%s: Index: %s", ts, err)
+			}
+		}
+	}
+
+	c_defQueryTreeIndex_getByQuery = 0
+	c_defQueryIndex_getByQuery = 0
+	defs, err := ts.Defs(ByDefQuery("a"), ByUnits(unit.ID2{Type: "t", Name: "u1"}))
+	if err != nil {
+		t.Errorf("%s: Defs(ByDefQuery, ByUnit): %s", ts, err)
+	}
+	wantDefPaths := []string{"p1", "p2"}
+	if got, want := defPaths(defs), wantDefPaths; !reflect.DeepEqual(got, want) {
+		t.Errorf("%s: Defs(ByDefQuery, ByUnit): got defs %v, want %v", ts, got, want)
+	}
+	if isIndexedStore(ts) {
+		if want := 1; c_defQueryIndex_getByQuery != want {
+			t.Errorf("%s: Defs(ByDefQuery, ByUnit): got %d index hits, want %d", ts, c_defQueryIndex_getByQuery, want)
+		}
+		if c_defQueryTreeIndex_getByQuery != 0 {
+			// This query should only hit the unit-level def query
+			// index, not the def query indexes for each unit.
+			t.Errorf("%s: Defs(ByDefQuery, ByUnit): got %d index hits on non-tree index, want none", ts, c_defQueryTreeIndex_getByQuery)
 		}
 	}
 }
