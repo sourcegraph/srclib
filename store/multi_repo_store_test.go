@@ -297,6 +297,17 @@ func testMultiRepoStore_Defs_filter(t *testing.T, mrs MultiRepoStoreImporter) {
 	if err := mrs.Import("r2", "c2", &unit.SourceUnit{Type: "t", Name: "u"}, graph.Output{Defs: []*graph.Def{{DefKey: graph.DefKey{Path: "p"}}}}); err != nil {
 		t.Errorf("%s: Import: %s", mrs, err)
 	}
+	if mrs, ok := mrs.(MultiRepoIndexer); ok {
+		if err := mrs.Index("r", "c"); err != nil {
+			t.Fatalf("%s: Index: %s", mrs, err)
+		}
+		if err := mrs.Index("r", "c2"); err != nil {
+			t.Fatalf("%s: Index: %s", mrs, err)
+		}
+		if err := mrs.Index("r2", "c2"); err != nil {
+			t.Fatalf("%s: Index: %s", mrs, err)
+		}
+	}
 
 	want := []*graph.Def{
 		{

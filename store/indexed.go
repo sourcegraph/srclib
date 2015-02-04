@@ -89,6 +89,15 @@ var errNotIndexed = errors.New("no index satisfies query")
 func (s *indexedTreeStore) unitIDs(indexOnly bool, fs ...UnitFilter) ([]unit.ID2, error) {
 	vlog.Printf("indexedTreeStore.unitIDs(indexOnly=%v, %v)", indexOnly, fs)
 
+	scopedUnits, err := scopeUnits(storeFilters(fs))
+	if err != nil {
+		return nil, err
+	}
+	if scopedUnits != nil {
+		vlog.Printf("indexedTreeStore.unitIDs(indexOnly=%v, %v): Returning scoped units (from filters) without performing external lookup.", indexOnly, fs)
+		return scopedUnits, nil
+	}
+
 	// Try to find an index that covers this query.
 	if xname, bx := bestCoverageIndex(s.indexes, fs, isUnitIndex); bx != nil {
 		if err := prepareIndex(s.fs, xname, bx); err != nil {
@@ -99,12 +108,6 @@ func (s *indexedTreeStore) unitIDs(indexOnly bool, fs ...UnitFilter) ([]unit.ID2
 	}
 	if indexOnly {
 		return nil, errNotIndexed
-	}
-
-	for _, f := range fs {
-		if _, ok := f.(ByUnitsFilter); ok {
-			log.Printf("Dev warning: Unnecessary lookup performed in indexedTreeStore.unitIDs(%v). Either make unitIDs short-circuit when a ByUnitsFilter is present, or institute a stronger convention whereby callers of unitIDs bypass calling unitIDs when a ByUnitsFilter is present.", fs)
-		}
 	}
 
 	// Fall back to full scan.
@@ -130,15 +133,6 @@ func (s *indexedTreeStore) Units(fs ...UnitFilter) ([]*unit.SourceUnit, error) {
 	scopedUnits, err := s.unitIDs(true, fs...)
 	if err != nil && err != errNotIndexed {
 		return nil, err
-	}
-	if err == errNotIndexed {
-		scopedUnits, err = scopeUnits(storeFilters(fs))
-		if err != nil {
-			return nil, err
-		}
-	}
-	if len(scopedUnits) > 0 {
-		fs = append(fs, ByUnits(scopedUnits...))
 	}
 
 	if len(scopedUnits) == 0 || len(scopedUnits) > maxIndividualFetches {
@@ -197,7 +191,7 @@ func (s *indexedTreeStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 
 	// Find which source units match the unit filters; we'll restrict
 	// our defs query to those source units.
-	scopeUnits, err := s.unitIDs(true, ufs...)
+	scopeUnits, err := s.unitIDs(false, ufs...)
 	if err != nil && err != errNotIndexed {
 		return nil, err
 	} else if err == nil {

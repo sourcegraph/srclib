@@ -1,6 +1,12 @@
 package store
 
-import "sourcegraph.com/sourcegraph/srclib/graph"
+import (
+	"runtime"
+	"sync"
+
+	"code.google.com/p/rog-go/parallel"
+	"sourcegraph.com/sourcegraph/srclib/graph"
+)
 
 // A UnitStore stores and accesses srclib build data for a single
 // source unit.
@@ -45,51 +51,62 @@ func (s unitStores) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 		return nil, err
 	}
 
-	var allDefs []*graph.Def
-	for u, us := range uss {
+	var (
+		allDefs   []*graph.Def
+		allDefsMu sync.Mutex
+	)
+	par := parallel.NewRun(runtime.GOMAXPROCS(0))
+	for u_, us_ := range uss {
+		u, us := u_, us_
 		if us == nil {
 			continue
 		}
 
-		// If the filters list includes any unitDefOffsetsFilter, then
-		// clone and transform that filter into a defOffsetsFilter
-		// that only includes offsets to fetch from the source unit of
-		// the store. (This is necessary because the store doesn't
-		// know which unit it holds data for, so it doesn't know which
-		// offsets to look up given just a unitDefOffsetsFilter
-		// map[unit.ID2]byteOffsets map.)
-		fs2 := fs
-		for i, f := range fs {
-			switch f := f.(type) {
-			case unitDefOffsetsFilter:
-				fs2 = make([]DefFilter, len(fs))
-				for j := range fs {
-					if j == i {
-						// Transform unitDefOffsetsFilter to
-						// defOffsetsFilter for the current source
-						// unit.
-						fs2[j] = defOffsetsFilter(f[u])
-					} else {
-						// Copy existing filter if it's of any other
-						// type. (Assumes the filters list contains no
-						// more than 1 unitDefOffsetsFilters.)
-						fs2[j] = fs[j]
+		par.Do(func() error {
+			// If the filters list includes any unitDefOffsetsFilter, then
+			// clone and transform that filter into a defOffsetsFilter
+			// that only includes offsets to fetch from the source unit of
+			// the store. (This is necessary because the store doesn't
+			// know which unit it holds data for, so it doesn't know which
+			// offsets to look up given just a unitDefOffsetsFilter
+			// map[unit.ID2]byteOffsets map.)
+			fs2 := fs
+			for i, f := range fs {
+				switch f := f.(type) {
+				case unitDefOffsetsFilter:
+					fs2 = make([]DefFilter, len(fs))
+					for j := range fs {
+						if j == i {
+							// Transform unitDefOffsetsFilter to
+							// defOffsetsFilter for the current source
+							// unit.
+							fs2[j] = defOffsetsFilter(f[u])
+						} else {
+							// Copy existing filter if it's of any other
+							// type. (Assumes the filters list contains no
+							// more than 1 unitDefOffsetsFilters.)
+							fs2[j] = fs[j]
+						}
 					}
 				}
 			}
-		}
 
-		defs, err := us.Defs(fs2...)
-		if err != nil && !isStoreNotExist(err) {
-			return nil, err
-		}
-		for _, def := range defs {
-			def.UnitType = u.Type
-			def.Unit = u.Name
-		}
-		allDefs = append(allDefs, defs...)
+			defs, err := us.Defs(fs2...)
+			if err != nil && !isStoreNotExist(err) {
+				return err
+			}
+			for _, def := range defs {
+				def.UnitType = u.Type
+				def.Unit = u.Name
+			}
+			allDefsMu.Lock()
+			allDefs = append(allDefs, defs...)
+			allDefsMu.Unlock()
+			return nil
+		})
 	}
-	return allDefs, nil
+	err = par.Wait()
+	return allDefs, err
 }
 
 var c_unitStores_Refs_last_numUnitsQueried = 0
