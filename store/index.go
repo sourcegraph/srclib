@@ -7,8 +7,6 @@ import (
 	"io"
 	"log"
 
-	"sort"
-
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -289,31 +287,6 @@ func (f unitIndexOnlyFilter) SelectUnit(u *unit.SourceUnit) bool {
 	// used, the index has already scoped the results and u was
 	// selected.
 	return true
-}
-
-func deltaEncode(vs []int64) []int64 {
-	sort.Sort(int64Slice(vs))
-	for i := range vs {
-		if i != 0 {
-			vs[i] -= vs[i-1]
-			if vs[i] < 0 {
-				panic("deltaEncode: numbers must be sorted from smallest to largest")
-			}
-		}
-	}
-	return vs
-}
-
-func deltaDecode(vs []int64) []int64 {
-	for i := range vs {
-		if i != 0 {
-			if vs[i] < vs[i-1] {
-				panic("deltaDecode: negative delta")
-			}
-			vs[i] += vs[i-1]
-		}
-	}
-	return vs
 }
 
 // unitOffsets holds a set of byte offsets that all refer to positions
