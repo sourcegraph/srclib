@@ -92,12 +92,35 @@ func (s *fsMultiRepoStore) Repos(f ...RepoFilter) ([]string, error) {
 		max = 1
 	}
 
-	paths, err := s.ListRepoPaths(s.fs, after, max)
-	if err != nil {
-		return nil, err
+	var allPaths [][]string
+	for {
+		const maxFetch = 1000
+		var numFetch int
+		if max == 0 {
+			numFetch = maxFetch
+		} else {
+			numFetch = max - len(allPaths)
+			if numFetch > maxFetch {
+				numFetch = maxFetch
+			}
+		}
+		if numFetch <= 0 {
+			break
+		}
+
+		paths, err := s.ListRepoPaths(s.fs, after, numFetch)
+		if err != nil {
+			return nil, err
+		}
+		allPaths = append(allPaths, paths...)
+		if len(paths) < numFetch {
+			break
+		}
+		after = s.fs.Join(paths[len(paths)-1]...)
 	}
+
 	var repos []string
-	for _, path := range paths {
+	for _, path := range allPaths {
 		repo := s.PathToRepo(path)
 		if repoFilters(f).SelectRepo(repo) {
 			repos = append(repos, repo)
