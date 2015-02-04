@@ -84,10 +84,6 @@ var errNotIndexed = errors.New("no index satisfies query")
 func (s *indexedTreeStore) unitIDs(indexOnly bool, fs ...UnitFilter) ([]unit.ID2, error) {
 	vlog.Printf("indexedTreeStore.unitIDs(indexOnly=%v, %v)", indexOnly, fs)
 
-	// TODO(sqs): if fs contains a ByUnits, then just return those
-	// units without performing any other lookups. Test that this
-	// reduces the number of lookups.
-
 	// Try to find an index that covers this query.
 	if xname, bx := bestCoverageIndex(s.indexes, fs, isUnitIndex); bx != nil {
 		if err := prepareIndex(s.fs, xname, bx); err != nil {
@@ -98,6 +94,12 @@ func (s *indexedTreeStore) unitIDs(indexOnly bool, fs ...UnitFilter) ([]unit.ID2
 	}
 	if indexOnly {
 		return nil, errNotIndexed
+	}
+
+	for _, f := range fs {
+		if _, ok := f.(ByUnitsFilter); ok {
+			log.Printf("Dev warning: Unnecessary lookup performed in indexedTreeStore.unitIDs(%v). Either make unitIDs short-circuit when a ByUnitsFilter is present, or institute a stronger convention whereby callers of unitIDs bypass calling unitIDs when a ByUnitsFilter is present.", fs)
+		}
 	}
 
 	// Fall back to full scan.

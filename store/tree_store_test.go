@@ -448,6 +448,7 @@ func testTreeStore_Defs_ByUnits(t *testing.T, ts TreeStoreImporter) {
 		{DefKey: graph.DefKey{UnitType: "t3", Unit: "u3", Path: "p3"}},
 	}
 
+	c_fsTreeStore_unitsOpened = 0
 	defs, err := ts.Defs(ByUnits(unit.ID2{Type: "t3", Name: "u3"}, unit.ID2{Type: "t1", Name: "u1"}))
 	if err != nil {
 		t.Errorf("%s: Defs(ByUnits): %s", ts, err)
@@ -456,6 +457,11 @@ func testTreeStore_Defs_ByUnits(t *testing.T, ts TreeStoreImporter) {
 	sort.Sort(graph.Defs(want))
 	if !reflect.DeepEqual(defs, want) {
 		t.Errorf("%s: Defs(ByUnits): got defs %v, want %v", ts, defs, want)
+	}
+	if isIndexedStore(ts) {
+		if c_fsTreeStore_unitsOpened != 0 {
+			t.Errorf("%s: Defs(ByUnits): got %d units opened, want none (should be able to use ByUnits filter to avoid needing to open any units)", ts, c_fsTreeStore_unitsOpened)
+		}
 	}
 }
 
