@@ -411,6 +411,10 @@ const (
 )
 
 func (s *fsUnitStore) Defs(fs ...DefFilter) (defs []*graph.Def, err error) {
+	if f := getDefOffsetsFilter(fs); f != nil {
+		return s.defsAtOffsets(byteOffsets(f), fs)
+	}
+
 	vlog.Printf("fsUnitStore: reading defs with filters %v...", fs)
 	f, err := s.fs.Open(unitDefsFilename)
 	if err != nil {

@@ -167,7 +167,7 @@ func (x *defQueryIndex) Read(r io.Reader) error {
 	var mt mafsaTable
 	err = binary.Unmarshal(b, &mt)
 	x.mt = &mt
-	if err == nil {
+	if err == nil && len(x.mt.B) > 0 {
 		x.mt.t, err = new(mafsa.Decoder).Decode(x.mt.B)
 	}
 	x.ready = (err == nil)

@@ -3,6 +3,7 @@ package store
 import (
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"io"
 
 	"sourcegraph.com/sourcegraph/srclib/graph"
@@ -58,6 +59,13 @@ type defIndex interface {
 	Defs(...DefFilter) (byteOffsets, error)
 }
 
+type defTreeIndex interface {
+	// Defs returns the source units and byte offsets (within the
+	// source unit def data file) of the defs that match the def
+	// filters.
+	Defs(...DefFilter) (map[unit.ID2]byteOffsets, error)
+}
+
 // bestCoverageIndex returns the index that has the greatest coverage
 // for the given filters, or nil if no indexes have any coverage. If
 // test != nil, only indexes for which test(x) is true are considered.
@@ -77,8 +85,9 @@ func bestCoverageIndex(indexes map[string]Index, filters interface{}, test func(
 	return bestName, best
 }
 
-func isUnitIndex(x interface{}) bool { _, ok := x.(unitIndex); return ok }
-func isDefIndex(x interface{}) bool  { _, ok := x.(defIndex); return ok }
+func isUnitIndex(x interface{}) bool    { _, ok := x.(unitIndex); return ok }
+func isDefIndex(x interface{}) bool     { _, ok := x.(defIndex); return ok }
+func isDefTreeIndex(x interface{}) bool { _, ok := x.(defTreeIndex); return ok }
 func isRefIndex(x interface{}) bool {
 	switch x.(type) {
 	case refIndexByteRanges, refIndexByteOffsets:
@@ -184,6 +193,10 @@ type unitRefIndexBuilder interface {
 	Build(map[unit.ID2]*defRefsIndex) error
 }
 
+type defQueryTreeIndexBuilder interface {
+	Build(map[unit.ID2]*defQueryIndex) error
+}
+
 // unitIndexOnlyFilter wraps a non-UnitFilter that can be used by an
 // IndexedUnitStore to scope the list of source units. Currently there
 // is only a RefFilter that does this, so we simplify it by using that
@@ -196,4 +209,119 @@ func (f unitIndexOnlyFilter) SelectUnit(u *unit.SourceUnit) bool {
 	// used, the index has already scoped the results and u was
 	// selected.
 	return true
+}
+
+// unitOffsets holds a set of byte offsets that all refer to positions
+// in a file inside a specific source unit.
+type unitOffsets struct {
+	Unit        uint8 // index of source unit
+	byteOffsets       // byte offsets, sorted smallest to largest
+}
+
+func (v *unitOffsets) MarshalBinary() ([]byte, error) {
+	bb := make([]byte, 1+len(v.byteOffsets)*binary.MaxVarintLen64)
+	b := bb
+	b[0] = v.Unit
+	b = b[1:]
+	for i, ofs := range v.byteOffsets {
+		if i != 0 {
+			// Delta encoding.
+			ofs -= v.byteOffsets[i-1]
+			if ofs < 0 {
+				panic("unitOffsets: byte offsets must be sorted from smallest to largest")
+			}
+		}
+		n := binary.PutVarint(b, ofs)
+		b = b[n:]
+	}
+	return bb[:len(bb)-len(b)], nil
+}
+
+func (v *unitOffsets) UnmarshalBinary(b []byte) error {
+	v.Unit = b[0]
+	b = b[1:]
+	for {
+		if len(b) == 0 {
+			break
+		}
+		ofs, n := binary.Varint(b)
+		if n == 0 {
+			return io.ErrShortBuffer
+		}
+		if n < 0 {
+			return errors.New("bad varint")
+		}
+		if len(v.byteOffsets) > 0 {
+			// Delta encoding.
+			ofs += v.byteOffsets[len(v.byteOffsets)-1]
+		}
+		v.byteOffsets = append(v.byteOffsets, ofs)
+		b = b[n:]
+	}
+	return nil
+}
+
+// unitDefOffsetsFilter is an internal filter used by indexes. It
+// selects only defs at certain byte offsets in certain source units.
+type unitDefOffsetsFilter map[unit.ID2]byteOffsets
+
+var _ interface {
+	ByUnitsFilter
+	UnitFilter
+	DefFilter
+} = (*unitDefOffsetsFilter)(nil)
+
+func (f unitDefOffsetsFilter) String() string {
+	return fmt.Sprintf("unitDefOffsetsFilter(%v)", map[unit.ID2]byteOffsets(f))
+}
+
+func (f unitDefOffsetsFilter) ByUnits() []unit.ID2 {
+	units := make([]unit.ID2, 0, len(f))
+	for u := range f {
+		units = append(units, u)
+	}
+	return units
+}
+
+func (f unitDefOffsetsFilter) SelectUnit(u *unit.SourceUnit) bool {
+	_, present := f[u.ID2()]
+	return present
+}
+
+func (f unitDefOffsetsFilter) SelectDef(*graph.Def) bool {
+	// Index-only filter; can't determine selection with information
+	// available to filter. So assume that if this filter is being
+	// used, the index has already scoped the results to defs that it
+	// would select.
+	return true
+}
+
+// defOffsetsFilter is an internal filter used by indexes. It
+// selects only defs at certain byte offsets in the def.dat file.
+type defOffsetsFilter byteOffsets
+
+var _ interface {
+	DefFilter
+} = (*defOffsetsFilter)(nil)
+
+func (f defOffsetsFilter) String() string {
+	return fmt.Sprintf("defOffsetsFilter(%v)", byteOffsets(f))
+}
+
+func (f defOffsetsFilter) SelectDef(*graph.Def) bool {
+	// Index-only filter; can't determine selection with information
+	// available to filter. So assume that if this filter is being
+	// used, the index has already scoped the results to defs that it
+	// would select.
+	return true
+}
+
+// getDefOffsetsFilter returns a defOffsetsFilter in fs, if any exists. Otherwise it returns nil.
+func getDefOffsetsFilter(fs []DefFilter) defOffsetsFilter {
+	for _, f := range fs {
+		if f, ok := f.(defOffsetsFilter); ok {
+			return f
+		}
+	}
+	return nil
 }

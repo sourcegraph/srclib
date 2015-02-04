@@ -39,8 +39,8 @@ type unitStores struct {
 
 var _ UnitStore = (*unitStores)(nil)
 
-func (s unitStores) Defs(f ...DefFilter) ([]*graph.Def, error) {
-	uss, err := openUnitStores(s.opener, f)
+func (s unitStores) Defs(fs ...DefFilter) ([]*graph.Def, error) {
+	uss, err := openUnitStores(s.opener, fs)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,35 @@ func (s unitStores) Defs(f ...DefFilter) ([]*graph.Def, error) {
 			continue
 		}
 
-		defs, err := us.Defs(f...)
+		// If the filters list includes any unitDefOffsetsFilter, then
+		// clone and transform that filter into a defOffsetsFilter
+		// that only includes offsets to fetch from the source unit of
+		// the store. (This is necessary because the store doesn't
+		// know which unit it holds data for, so it doesn't know which
+		// offsets to look up given just a unitDefOffsetsFilter
+		// map[unit.ID2]byteOffsets map.)
+		fs2 := fs
+		for i, f := range fs {
+			switch f := f.(type) {
+			case unitDefOffsetsFilter:
+				fs2 = make([]DefFilter, len(fs))
+				for j := range fs {
+					if j == i {
+						// Transform unitDefOffsetsFilter to
+						// defOffsetsFilter for the current source
+						// unit.
+						fs2[j] = defOffsetsFilter(f[u])
+					} else {
+						// Copy existing filter if it's of any other
+						// type. (Assumes the filters list contains no
+						// more than 1 unitDefOffsetsFilters.)
+						fs2[j] = fs[j]
+					}
+				}
+			}
+		}
+
+		defs, err := us.Defs(fs2...)
 		if err != nil && !isStoreNotExist(err) {
 			return nil, err
 		}
