@@ -110,7 +110,7 @@ func (s *indexedTreeStore) unitIDs(indexOnly bool, fs ...UnitFilter) ([]unit.ID2
 	// Fall back to full scan.
 	vlog.Printf("indexedTreeStore.unitIDs(%v): No covering indexes found; performing full scan.", fs)
 	var unitIDs []unit.ID2
-	units, err := s.fsTreeStore.Units(fs...)
+	units, err := s.unitsUsingFullIndex(fs...)
 	if err != nil {
 		return nil, err
 	}
@@ -143,15 +143,19 @@ func (s *indexedTreeStore) Units(fs ...UnitFilter) ([]*unit.SourceUnit, error) {
 
 	if len(scopedUnits) == 0 || len(scopedUnits) > maxIndividualFetches {
 		vlog.Printf("indexedTreeStore.Units(%v): Using unitsIndex for query scoped to %d units.", fs, len(scopedUnits))
-		x := s.indexes[unitsIndexName]
-		if err := prepareIndex(s.fs, unitsIndexName, x); err != nil {
-			return nil, err
-		}
-		return x.(unitFullIndex).Units(fs...)
+		return s.unitsUsingFullIndex(fs...)
 	}
 
 	vlog.Printf("indexedTreeStore.Units(%v): Delegating to fsTreeStore for query scoped to %d units.", fs, len(scopedUnits))
 	return s.fsTreeStore.Units(fs...)
+}
+
+func (s *indexedTreeStore) unitsUsingFullIndex(fs ...UnitFilter) ([]*unit.SourceUnit, error) {
+	x := s.indexes[unitsIndexName]
+	if err := prepareIndex(s.fs, unitsIndexName, x); err != nil {
+		return nil, err
+	}
+	return x.(unitFullIndex).Units(fs...)
 }
 
 func (s *indexedTreeStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {

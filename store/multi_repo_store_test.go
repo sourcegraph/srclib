@@ -404,6 +404,17 @@ func testMultiRepoStore_Refs_filterByRepoCommitAndFile(t *testing.T, mrs MultiRe
 	if err := mrs.Import("r2", "c", &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f7", "f8", "f9"}}, data3); err != nil {
 		t.Errorf("%s: Import: %s", mrs, err)
 	}
+	if mrs, ok := mrs.(MultiRepoIndexer); ok {
+		if err := mrs.Index("r", "c"); err != nil {
+			t.Fatalf("%s: Index: %s", mrs, err)
+		}
+		if err := mrs.Index("r", "c2"); err != nil {
+			t.Fatalf("%s: Index: %s", mrs, err)
+		}
+		if err := mrs.Index("r2", "c"); err != nil {
+			t.Fatalf("%s: Index: %s", mrs, err)
+		}
+	}
 
 	want := []*graph.Ref{
 		{
