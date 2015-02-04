@@ -102,7 +102,7 @@ func NormalizeData(currentRepoURI, unitType, dir string, o *graph.Output) error 
 		}
 	}
 
-	if unitType != "GoPackage" && unitType != "Dockerfile" && !strings.HasPrefix(unitType, "Java") && unitType != "scala" {
+	if unitType != "GoPackage" && unitType != "Dockerfile" && !strings.HasPrefix(unitType, "Java") {
 		ensureOffsetsAreByteOffsets(dir, o)
 	}
 
