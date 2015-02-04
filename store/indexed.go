@@ -766,7 +766,11 @@ func readIndex(fs rwvfs.FileSystem, name string, x persistedIndex) (err error) {
 	var f vfs.ReadSeekCloser
 	f, err = fs.Open(fmt.Sprintf(indexFilename, name))
 	if err != nil {
-		return &errIndexNotExist{name: name, err: err}
+		vlog.Printf("%s: failed to read index: %s.", name, err)
+		if os.IsNotExist(err) {
+			return &errIndexNotExist{name: name, err: err}
+		}
+		return err
 	}
 	defer func() {
 		err2 := f.Close()
