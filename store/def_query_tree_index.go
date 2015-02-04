@@ -56,7 +56,7 @@ func (x *defQueryTreeIndex) getByQuery(q string) (map[unit.ID2]byteOffsets, bool
 	for _, unitsOffsets := range x.mt.Values[i : i+nn] {
 		for _, uofs := range unitsOffsets {
 			u := x.mt.Units[uofs.Unit]
-			uofMap[u] = append(uofMap[u], deltaDecode(uofs.byteOffsets)...)
+			uofMap[u] = append(uofMap[u], uofs.byteOffsets...)
 			numDefs += len(uofs.byteOffsets)
 		}
 	}
@@ -126,7 +126,7 @@ func (x *defQueryTreeIndex) Build(xs map[unit.ID2]*defQueryIndex) (err error) {
 				return
 			}
 			if node.Final {
-				uoffs := unitOffsets{Unit: unit, byteOffsets: deltaEncode(qx.mt.Values[i])}
+				uoffs := unitOffsets{Unit: unit, byteOffsets: qx.mt.Values[i]}
 				termToUOffs[term] = append(termToUOffs[term], uoffs)
 				i++
 			}
