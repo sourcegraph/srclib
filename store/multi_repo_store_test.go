@@ -179,6 +179,11 @@ func testMultiRepoStore_Units(t *testing.T, mrs MultiRepoStoreImporter) {
 			t.Errorf("%s: Import(c, %v, empty data): %s", mrs, unit, err)
 		}
 	}
+	if mrs, ok := mrs.(MultiRepoIndexer); ok {
+		if err := mrs.Index("r", "c"); err != nil {
+			t.Fatalf("%s: Index: %s", mrs, err)
+		}
+	}
 
 	want := []*unit.SourceUnit{
 		{Repo: "r", CommitID: "c", Type: "t1", Name: "u1"},
