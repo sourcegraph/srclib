@@ -593,6 +593,11 @@ func (c storeIndexCriteria) IndexCriteria() store.IndexCriteria {
 // doStoreIndexesCmd is invoked by both StoreIndexesCmd.Execute and
 // StoreBuildIndexesCmd.Execute.
 func doStoreIndexesCmd(crit store.IndexCriteria, opt storeIndexOptions, f func(interface{}, store.IndexCriteria, chan<- store.IndexStatus) ([]store.IndexStatus, error)) error {
+	if opt.Parallel != 1 {
+		log.Printf("NOTE: Index parallelism is %d. Output will printed as it is available, not necessarily ordered and grouped by repo, source unit, etc.", opt.Parallel)
+	}
+	store.MaxIndexParallel = opt.Parallel
+
 	s, err := OpenStore()
 	if err != nil {
 		return err
@@ -688,7 +693,8 @@ func doStoreIndexesCmd(crit store.IndexCriteria, opt storeIndexOptions, f func(i
 }
 
 type storeIndexOptions struct {
-	Output string `short:"o" long:"output" description:"output format (text|json)" default:"text"`
+	Output   string `short:"o" long:"output" description:"output format (text|json)" default:"text"`
+	Parallel int    `short:"p" long:"parallel" description:"parallelism (may produce out-of-order output)" default:"1"`
 }
 
 type StoreIndexesCmd struct {
