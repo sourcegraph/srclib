@@ -56,7 +56,7 @@ func (x *defQueryTreeIndex) getByQuery(q string) (map[unit.ID2]byteOffsets, bool
 	for _, unitsOffsets := range x.mt.Values[i : i+nn] {
 		for _, uofs := range unitsOffsets {
 			u := x.mt.Units[uofs.Unit]
-			uofMap[u] = append(uofMap[u], deltaDecoded(uofs.byteOffsets)...)
+			uofMap[u] = append(uofMap[u], deltaDecode(uofs.byteOffsets)...)
 			numDefs += len(uofs.byteOffsets)
 		}
 	}
@@ -120,7 +120,7 @@ func (x *defQueryTreeIndex) Build(xs map[unit.ID2]*defQueryIndex) error {
 				return
 			}
 			if node.Final {
-				uoffs := unitOffsets{Unit: unit, byteOffsets: deltaEncoded(qx.mt.Values[i])}
+				uoffs := unitOffsets{Unit: unit, byteOffsets: deltaEncode(qx.mt.Values[i])}
 				termToUOffs[term] = append(termToUOffs[term], uoffs)
 				i++
 			}
@@ -195,7 +195,7 @@ func (x *defQueryTreeIndex) Read(r io.Reader) error {
 	var mt mafsaUnitTable
 	err = binary.Unmarshal(b, &mt)
 	x.mt = &mt
-	if err == nil {
+	if err == nil && len(x.mt.B) > 0 {
 		x.mt.t, err = new(mafsa.Decoder).Decode(x.mt.B)
 	}
 	x.ready = (err == nil)
@@ -204,25 +204,6 @@ func (x *defQueryTreeIndex) Read(r io.Reader) error {
 
 // Ready implements persistedIndex.
 func (x *defQueryTreeIndex) Ready() bool { return x.ready }
-
-func deltaEncoded(vs []int64) []int64 {
-	sort.Sort(int64Slice(vs))
-	for i := range vs {
-		if i != 0 {
-			vs[i] -= vs[i-1]
-		}
-	}
-	return vs
-}
-
-func deltaDecoded(vs []int64) []int64 {
-	for i := range vs {
-		if i != 0 {
-			vs[i] += vs[i-1]
-		}
-	}
-	return vs
-}
 
 type unitID2s []unit.ID2
 

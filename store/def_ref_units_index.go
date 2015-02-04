@@ -1,10 +1,10 @@
 package store
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 
+	"github.com/alecthomas/binary"
 	"github.com/gogo/protobuf/proto"
 
 	"sourcegraph.com/sourcegraph/srclib/graph"
@@ -52,7 +52,7 @@ func (x *defRefUnitsIndex) getByDef(def graph.RefDefKey) ([]unit.ID2, bool, erro
 	}
 
 	var us []unit.ID2
-	if err := json.Unmarshal(v, &us); err != nil {
+	if err := binary.Unmarshal(v, &us); err != nil {
 		return nil, true, err
 	}
 	return us, true, nil
@@ -118,7 +118,7 @@ func (x *defRefUnitsIndex) Build(unitRefIndexes map[unit.ID2]*defRefsIndex) erro
 	vlog.Printf("defRefUnitsIndex: adding %d index phtable keys...", len(defToUnits))
 	b := phtable.Builder(len(defToUnits))
 	for def, units := range defToUnits {
-		ub, err := json.Marshal(units)
+		ub, err := binary.Marshal(units)
 		if err != nil {
 			return err
 		}
