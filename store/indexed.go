@@ -60,8 +60,9 @@ var _ interface {
 func newIndexedTreeStore(fs rwvfs.FileSystem) TreeStoreImporter {
 	return &indexedTreeStore{
 		indexes: map[string]Index{
-			"file_to_units":    &unitFilesIndex{},
-			"def_to_ref_units": &defRefUnitsIndex{},
+			"file_to_units":     &unitFilesIndex{},
+			"def_to_ref_units":  &defRefUnitsIndex{},
+			"def_query_to_defs": &defQueryTreeIndex{},
 		},
 		fsTreeStore: newFSTreeStore(fs),
 	}
@@ -82,6 +83,10 @@ var errNotIndexed = errors.New("no index satisfies query")
 // full scan would otherwise occur, errNotIndexed is returned.
 func (s *indexedTreeStore) unitIDs(indexOnly bool, fs ...UnitFilter) ([]unit.ID2, error) {
 	vlog.Printf("indexedTreeStore.unitIDs(indexOnly=%v, %v)", indexOnly, fs)
+
+	// TODO(sqs): if fs contains a ByUnits, then just return those
+	// units without performing any other lookups. Test that this
+	// reduces the number of lookups.
 
 	// Try to find an index that covers this query.
 	if xname, bx := bestCoverageIndex(s.indexes, fs, isUnitIndex); bx != nil {
@@ -125,6 +130,20 @@ func (s *indexedTreeStore) Units(fs ...UnitFilter) ([]*unit.SourceUnit, error) {
 func (s *indexedTreeStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 	vlog.Printf("indexedTreeStore.Defs(%v)", fs)
 
+	// First, check if any defs indexes at the tree level cover this
+	// query.
+	if xname, bx := bestCoverageIndex(s.indexes, fs, isDefTreeIndex); bx != nil {
+		if err := prepareIndex(s.fs, xname, bx); err != nil {
+			return nil, err
+		}
+		vlog.Printf("indexedTreeStore.Defs(%v): Found covering index %q (%v).", fs, xname, bx)
+		uoffs, err := bx.(defTreeIndex).Defs(fs...)
+		if err != nil {
+			return nil, err
+		}
+		fs = append(fs, unitDefOffsetsFilter(uoffs))
+	}
+
 	// We have File->Unit index (that tells us which source units
 	// include a given file). If there's a ByFiles DefFilter, then we
 	// can convert that filter into a ByUnits scope filter (which is
@@ -132,8 +151,9 @@ func (s *indexedTreeStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 
 	var ufs []UnitFilter
 	for _, f := range fs {
-		if uf, ok := f.(UnitFilter); ok {
-			ufs = append(ufs, uf)
+		switch f := f.(type) {
+		case UnitFilter:
+			ufs = append(ufs, f)
 		}
 	}
 
@@ -217,7 +237,7 @@ func (s *indexedTreeStore) Import(u *unit.SourceUnit, data graph.Output) error {
 }
 
 func (s *indexedTreeStore) Index() error {
-	return s.buildIndexes(s.Indexes(), nil, nil)
+	return s.buildIndexes(s.Indexes(), nil, nil, nil)
 }
 
 func (s *indexedTreeStore) Indexes() map[string]Index { return s.indexes }
@@ -265,10 +285,10 @@ func (s *indexedTreeStore) checkSourceUnitFiles(u *unit.SourceUnit, data graph.O
 }
 
 func (s *indexedTreeStore) BuildIndex(name string, x Index) error {
-	return s.buildIndexes(map[string]Index{name: x}, nil, nil)
+	return s.buildIndexes(map[string]Index{name: x}, nil, nil, nil)
 }
 
-func (s *indexedTreeStore) buildIndexes(xs map[string]Index, units []*unit.SourceUnit, unitRefIndexes map[unit.ID2]*defRefsIndex) error {
+func (s *indexedTreeStore) buildIndexes(xs map[string]Index, units []*unit.SourceUnit, unitRefIndexes map[unit.ID2]*defRefsIndex, unitDefQueryIndexes map[unit.ID2]*defQueryIndex) error {
 	// TODO(sqs): there's a race condition here if multiple imports
 	// are running concurrently, they could clobber each other's
 	// indexes. (S3 is eventually consistent.)
@@ -337,6 +357,56 @@ func (s *indexedTreeStore) buildIndexes(xs map[string]Index, units []*unit.Sourc
 		return unitRefIndexes, getUnitRefIndexesErr
 	}
 
+	var getUnitDefQueryIndexesErr error
+	var getUnitDefQueryIndexesOnce sync.Once
+	var unitDefQueryIndexesLock sync.Mutex
+	getUnitDefQueryIndexes := func() (map[unit.ID2]*defQueryIndex, error) {
+		getUnitDefQueryIndexesOnce.Do(func() {
+			if getUnitDefQueryIndexesErr == nil && unitDefQueryIndexes == nil {
+				// Read in the defQueryIndex for all source units.
+				units, err := getUnits()
+				if err != nil {
+					getUnitDefQueryIndexesErr = err
+					return
+				}
+
+				// Use openUnitStore on the list from getUnits so we
+				// don't need to traverse the FS tree to enumerate all
+				// the source units again (which is slow).
+				uss := make(map[unit.ID2]UnitStore, len(units))
+				for _, u := range units {
+					uss[u.ID2()] = s.fsTreeStore.openUnitStore(u.ID2())
+				}
+
+				unitDefQueryIndexes = make(map[unit.ID2]*defQueryIndex, len(units))
+				par := parallel.NewRun(runtime.GOMAXPROCS(0))
+				for u_, us_ := range uss {
+					u := u_
+					us, ok := us_.(*indexedUnitStore)
+					if !ok {
+						continue
+					}
+
+					par.Do(func() error {
+						x := us.indexes[defQueryIndexName]
+						if err := prepareIndex(us.fs, defQueryIndexName, x); err != nil {
+							return err
+						}
+						unitDefQueryIndexesLock.Lock()
+						defer unitDefQueryIndexesLock.Unlock()
+						unitDefQueryIndexes[u] = x.(*defQueryIndex)
+						return nil
+					})
+				}
+				getUnitDefQueryIndexesErr = par.Wait()
+			}
+			if unitDefQueryIndexes == nil {
+				unitDefQueryIndexes = map[unit.ID2]*defQueryIndex{}
+			}
+		})
+		return unitDefQueryIndexes, getUnitDefQueryIndexesErr
+	}
+
 	par := parallel.NewRun(len(xs))
 	for name_, x_ := range xs {
 		name, x := name_, x_
@@ -356,6 +426,14 @@ func (s *indexedTreeStore) buildIndexes(xs map[string]Index, units []*unit.Sourc
 					return err
 				}
 				if err := x.Build(unitRefIndexes); err != nil {
+					return err
+				}
+			case defQueryTreeIndexBuilder:
+				unitDefQueryIndexes, err := getUnitDefQueryIndexes()
+				if err != nil {
+					return err
+				}
+				if err := x.Build(unitDefQueryIndexes); err != nil {
 					return err
 				}
 			default:
@@ -413,11 +491,7 @@ func newIndexedUnitStore(fs rwvfs.FileSystem) UnitStoreImporter {
 				perFile: 7,
 			},
 			defToRefsIndexName: &defRefsIndex{},
-			"def_query": &defQueryIndex{
-				f: DefFilterFunc(func(def *graph.Def) bool {
-					return !def.Local && def.Name != ""
-				}),
-			},
+			defQueryIndexName:  &defQueryIndex{f: defQueryFilter},
 		},
 		fsUnitStore: &fsUnitStore{fs: fs},
 	}
@@ -425,21 +499,27 @@ func newIndexedUnitStore(fs rwvfs.FileSystem) UnitStoreImporter {
 
 const (
 	defToRefsIndexName = "def_to_refs"
+	defQueryIndexName  = "def_query"
 	indexFilename      = "%s.idx"
 )
 
 func (s *indexedUnitStore) Defs(fs ...DefFilter) ([]*graph.Def, error) {
-	// Try to find an index that covers this query.
-	if xname, bx := bestCoverageIndex(s.indexes, fs, isDefIndex); bx != nil {
-		if err := prepareIndex(s.fs, xname, bx); err != nil {
-			return nil, err
+	// If there's a defOffsetsFilter, that'll be faster than
+	// consulting an index (since it already gives us the byte
+	// offsets).
+	if hasDefOffsetsFilter := getDefOffsetsFilter(fs) != nil; !hasDefOffsetsFilter {
+		// Try to find an index that covers this query.
+		if xname, bx := bestCoverageIndex(s.indexes, fs, isDefIndex); bx != nil {
+			if err := prepareIndex(s.fs, xname, bx); err != nil {
+				return nil, err
+			}
+			vlog.Printf("indexedUnitStore.Defs(%v): Found covering index %q (%v).", fs, xname, bx)
+			ofs, err := bx.(defIndex).Defs(fs...)
+			if err != nil {
+				return nil, err
+			}
+			return s.defsAtOffsets(ofs, fs)
 		}
-		vlog.Printf("indexedUnitStore.Defs(%v): Found covering index %q (%v).", fs, xname, bx)
-		ofs, err := bx.(defIndex).Defs(fs...)
-		if err != nil {
-			return nil, err
-		}
-		return s.defsAtOffsets(ofs, fs)
 	}
 
 	// Fall back to full scan.
@@ -687,3 +767,7 @@ func readIndex(fs rwvfs.FileSystem, name string, x persistedIndex) (err error) {
 func statIndex(fs rwvfs.FileSystem, name string) (os.FileInfo, error) {
 	return fs.Stat(fmt.Sprintf(indexFilename, name))
 }
+
+var defQueryFilter = DefFilterFunc(func(def *graph.Def) bool {
+	return !def.Local && def.Name != ""
+})
