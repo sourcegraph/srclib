@@ -809,6 +809,16 @@ func (ds DefsSortByName) SelectDef(def *graph.Def) bool {
 	return true
 }
 
+type DefsSortByKey struct{}
+
+func (ds DefsSortByKey) String() string { return "DefsSortByKey" }
+func (ds DefsSortByKey) DefsSort(defs []*graph.Def) {
+	sort.Sort(graph.Defs(defs))
+}
+func (ds DefsSortByKey) SelectDef(def *graph.Def) bool {
+	return true
+}
+
 type DefsSorter interface {
 	DefsSort(defs []*graph.Def)
 }
