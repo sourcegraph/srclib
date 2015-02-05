@@ -1,6 +1,9 @@
 package store
 
 import (
+	"sync"
+
+	"code.google.com/p/rog-go/parallel"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -88,7 +91,7 @@ func (s repoStores) Versions(f ...VersionFilter) ([]*Version, error) {
 			continue
 		}
 
-		versions, err := rs.Versions(f...)
+		versions, err := rs.Versions(filtersForRepo(repo, f).([]VersionFilter)...)
 		if err != nil && !isStoreNotExist(err) {
 			return nil, err
 		}
@@ -106,22 +109,33 @@ func (s repoStores) Units(f ...UnitFilter) ([]*unit.SourceUnit, error) {
 		return nil, err
 	}
 
-	var allUnits []*unit.SourceUnit
-	for repo, rs := range rss {
+	var (
+		allUnits   []*unit.SourceUnit
+		allUnitsMu sync.Mutex
+	)
+	par := parallel.NewRun(storeFetchPar)
+	for repo_, rs_ := range rss {
+		repo, rs := repo_, rs_
 		if rs == nil {
 			continue
 		}
 
-		units, err := rs.Units(f...)
-		if err != nil && !isStoreNotExist(err) {
-			return nil, err
-		}
-		for _, unit := range units {
-			unit.Repo = repo
-		}
-		allUnits = append(allUnits, units...)
+		par.Do(func() error {
+			units, err := rs.Units(filtersForRepo(repo, f).([]UnitFilter)...)
+			if err != nil && !isStoreNotExist(err) {
+				return err
+			}
+			for _, unit := range units {
+				unit.Repo = repo
+			}
+			allUnitsMu.Lock()
+			allUnits = append(allUnits, units...)
+			allUnitsMu.Unlock()
+			return nil
+		})
 	}
-	return allUnits, nil
+	err = par.Wait()
+	return allUnits, err
 }
 
 func (s repoStores) Defs(f ...DefFilter) ([]*graph.Def, error) {
@@ -130,22 +144,33 @@ func (s repoStores) Defs(f ...DefFilter) ([]*graph.Def, error) {
 		return nil, err
 	}
 
-	var allDefs []*graph.Def
-	for repo, rs := range rss {
+	var (
+		allDefs   []*graph.Def
+		allDefsMu sync.Mutex
+	)
+	par := parallel.NewRun(storeFetchPar)
+	for repo_, rs_ := range rss {
+		repo, rs := repo_, rs_
 		if rs == nil {
 			continue
 		}
 
-		defs, err := rs.Defs(f...)
-		if err != nil && !isStoreNotExist(err) {
-			return nil, err
-		}
-		for _, def := range defs {
-			def.Repo = repo
-		}
-		allDefs = append(allDefs, defs...)
+		par.Do(func() error {
+			defs, err := rs.Defs(filtersForRepo(repo, f).([]DefFilter)...)
+			if err != nil && !isStoreNotExist(err) {
+				return err
+			}
+			for _, def := range defs {
+				def.Repo = repo
+			}
+			allDefsMu.Lock()
+			allDefs = append(allDefs, defs...)
+			allDefsMu.Unlock()
+			return nil
+		})
 	}
-	return allDefs, nil
+	err = par.Wait()
+	return allDefs, err
 }
 
 func (s repoStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
@@ -161,7 +186,7 @@ func (s repoStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 		}
 
 		setImpliedRepo(f, repo)
-		refs, err := rs.Refs(f...)
+		refs, err := rs.Refs(filtersForRepo(repo, f).([]RefFilter)...)
 		if err != nil && !isStoreNotExist(err) {
 			return nil, err
 		}

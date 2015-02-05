@@ -1,7 +1,6 @@
 package store
 
 import (
-	"runtime"
 	"sync"
 
 	"code.google.com/p/rog-go/parallel"
@@ -55,7 +54,7 @@ func (s unitStores) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 		allDefs   []*graph.Def
 		allDefsMu sync.Mutex
 	)
-	par := parallel.NewRun(runtime.GOMAXPROCS(0))
+	par := parallel.NewRun(storeFetchPar)
 	for u_, us_ := range uss {
 		u, us := u_, us_
 		if us == nil {
