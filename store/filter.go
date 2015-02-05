@@ -37,6 +37,7 @@ type DefFilterFunc func(*graph.Def) bool
 
 // SelectDef calls f(def).
 func (f DefFilterFunc) SelectDef(def *graph.Def) bool { return f(def) }
+func (f DefFilterFunc) String() string                { return "DefFilterFunc" }
 
 func defPathFilter(path string) DefFilter {
 	return DefFilterFunc(func(def *graph.Def) bool { return def.Path == path })
@@ -65,6 +66,7 @@ type RefFilterFunc func(*graph.Ref) bool
 
 // SelectRef calls f(ref).
 func (f RefFilterFunc) SelectRef(ref *graph.Ref) bool { return f(ref) }
+func (f RefFilterFunc) String() string                { return "RefFilterFunc" }
 
 // A UnitFilter filters a set of units to only those for which Select
 // returns true.
@@ -89,6 +91,7 @@ type UnitFilterFunc func(*unit.SourceUnit) bool
 
 // SelectUnit calls f(unit).
 func (f UnitFilterFunc) SelectUnit(unit *unit.SourceUnit) bool { return f(unit) }
+func (f UnitFilterFunc) String() string                        { return "UnitFilterFunc" }
 
 // A VersionFilter filters a set of versions to only those for which SelectVersion
 // returns true.
@@ -113,6 +116,7 @@ type VersionFilterFunc func(*Version) bool
 
 // SelectVersion calls f(version).
 func (f VersionFilterFunc) SelectVersion(version *Version) bool { return f(version) }
+func (f VersionFilterFunc) String() string                      { return "VersionFilterFunc" }
 
 // A RepoFilter filters a set of repos to only those for which SelectRepo
 // returns true.
@@ -137,6 +141,7 @@ type RepoFilterFunc func(string) bool
 
 // SelectRepo calls f(repo).
 func (f RepoFilterFunc) SelectRepo(repo string) bool { return f(repo) }
+func (f RepoFilterFunc) String() string              { return "RepoFilterFunc" }
 
 // ByUnitsFilter is implemented by filters that restrict their
 // selections to items that are in a set of source units. It allows
