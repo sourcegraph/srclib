@@ -28,7 +28,7 @@ func (s *memoryMultiRepoStore) Repos(f ...RepoFilter) ([]string, error) {
 		return nil, errMultiRepoStoreNoInit
 	}
 
-	var repos []string
+	repos := []string{}
 	for repo := range s.repos {
 		if repoFilters(f).SelectRepo(repo) {
 			repos = append(repos, repo)

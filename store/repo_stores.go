@@ -9,22 +9,32 @@ package store
 // TODO(sqs): return an error if the filters are mutually exclusive?
 func scopeRepos(filters []interface{}) ([]string, error) {
 	repos := map[string]struct{}{}
+	everHadAny := false // whether unitIDs ever contained any repos
 
 	for _, f := range filters {
 		switch f := f.(type) {
-		case ByRepoFilter:
-			r := f.ByRepo()
-			if len(repos) == 0 {
-				repos[r] = struct{}{}
-			} else if _, dup := repos[r]; !dup {
-				// Mutually exclusive commit IDs.
-				return []string{}, nil
+		case ByReposFilter:
+			if len(repos) == 0 && !everHadAny {
+				everHadAny = true
+				for _, r := range f.ByRepos() {
+					repos[r] = struct{}{}
+				}
+			} else {
+				// Intersect.
+				newRepos := make(map[string]struct{}, (len(repos)+len(f.ByRepos()))/2)
+				for _, r := range f.ByRepos() {
+					if _, present := repos[r]; present {
+						newRepos[r] = struct{}{}
+					}
+				}
+				repos = newRepos
 			}
 		}
 	}
 
-	if len(repos) == 0 {
-		// Scope includes potentially all units.
+	if len(repos) == 0 && !everHadAny {
+		// No unit scoping filters were present, so scope includes
+		// potentially all repos.
 		return nil, nil
 	}
 
