@@ -821,7 +821,7 @@ func (c *StoreUnitsCmd) filters() []store.UnitFilter {
 		log.Fatal("must specify either both or neither of --type and --name (to filter by source unit)")
 	}
 	if c.CommitID != "" {
-		fs = append(fs, store.ByCommitID(c.CommitID))
+		fs = append(fs, store.ByCommitIDs(c.CommitID))
 	}
 	if c.Repo != "" {
 		fs = append(fs, store.ByRepos(c.Repo))
@@ -877,7 +877,7 @@ func (c *StoreDefsCmd) filters() []store.DefFilter {
 		log.Fatal("must specify either both or neither of --unit-type and --unit (to filter by source unit)")
 	}
 	if c.CommitID != "" {
-		fs = append(fs, store.ByCommitID(c.CommitID))
+		fs = append(fs, store.ByCommitIDs(c.CommitID))
 	}
 	if c.Repo != "" {
 		fs = append(fs, store.ByRepos(c.Repo))
@@ -949,7 +949,7 @@ func (c *StoreRefsCmd) filters() []store.RefFilter {
 		log.Fatal("must specify either both or neither of --unit-type and --unit (to filter by source unit)")
 	}
 	if c.CommitID != "" {
-		fs = append(fs, store.ByCommitID(c.CommitID))
+		fs = append(fs, store.ByCommitIDs(c.CommitID))
 	}
 	if c.Repo != "" {
 		fs = append(fs, store.ByRepos(c.Repo))
