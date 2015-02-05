@@ -89,7 +89,7 @@ func filtersForRepo(repo string, filters interface{}) interface{} {
 	for i, f := range sf {
 		switch f := f.(type) {
 
-		case ByRepoCommitIDsFilter:
+		case byRepoCommitIDsFilter:
 			found := false
 			for _, v := range f.ByRepoCommitIDs() {
 				if v.Repo == repo {
@@ -102,7 +102,7 @@ func filtersForRepo(repo string, filters interface{}) interface{} {
 				panic(fmt.Sprintf("in ByRepoCommitIDsFilter, no version.Repo == %q", repo))
 			}
 
-		case ByReposFilter:
+		case byReposFilter:
 			found := false
 			for _, r := range f.ByRepos() {
 				if r == repo {

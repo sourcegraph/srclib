@@ -1,6 +1,7 @@
 package store
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -237,6 +238,10 @@ func TestFiltersForRepo(t *testing.T) {
 			wantByRepo: map[string]interface{}{"r": []DefFilter{ByDefQuery("q1"), ByDefQuery("q2")}},
 		},
 		{
+			filters:    []DefFilter{ByRepos("r"), ByUnits(unit.ID2{Type: "t", Name: "u"})},
+			wantByRepo: map[string]interface{}{"r": []DefFilter{ByUnits(unit.ID2{Type: "t", Name: "u"})}},
+		},
+		{
 			filters:    []DefFilter{ByRepoCommitIDs(Version{Repo: "r", CommitID: "c"})},
 			wantByRepo: map[string]interface{}{"r": []DefFilter{ByCommitIDs("c")}},
 		},
@@ -250,9 +255,13 @@ func TestFiltersForRepo(t *testing.T) {
 	}
 	for _, test := range tests {
 		for repo, want := range test.wantByRepo {
+			pre := fmt.Sprintf("%+v", test.filters)
 			repoFilters := filtersForRepo(repo, test.filters)
 			if !reflect.DeepEqual(repoFilters, want) {
 				t.Errorf("%+v: repo %q: got repo filters %v, want %v", test.filters, repo, repoFilters, want)
+			}
+			if post := fmt.Sprintf("%+v", test.filters); pre != post {
+				t.Errorf("%+v: filters modified: post filtersToRepo, filters == %v", test.filters, post)
 			}
 		}
 	}
