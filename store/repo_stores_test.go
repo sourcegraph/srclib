@@ -229,6 +229,14 @@ func TestFiltersForRepo(t *testing.T) {
 			wantByRepo: map[string]interface{}{"r": []DefFilter{}},
 		},
 		{
+			filters:    []DefFilter{ByDefQuery("q1"), ByRepos("r"), ByDefQuery("q2")},
+			wantByRepo: map[string]interface{}{"r": []DefFilter{ByDefQuery("q1"), ByDefQuery("q2")}},
+		},
+		{
+			filters:    []DefFilter{ByRepos("r"), ByDefQuery("q1"), ByRepos("r"), ByDefQuery("q2"), ByRepos("r")},
+			wantByRepo: map[string]interface{}{"r": []DefFilter{ByDefQuery("q1"), ByDefQuery("q2")}},
+		},
+		{
 			filters:    []DefFilter{ByRepoCommitIDs(Version{Repo: "r", CommitID: "c"})},
 			wantByRepo: map[string]interface{}{"r": []DefFilter{ByCommitIDs("c")}},
 		},
