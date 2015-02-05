@@ -1,5 +1,10 @@
 package store
 
+import (
+	"fmt"
+	"reflect"
+)
+
 // scopeRepos returns a list of repos that are matched by the
 // filters. If potentially all repos could match, or if enough repos
 // could potentially match that it would probably be cheaper to
@@ -68,4 +73,50 @@ func openRepoStores(o repoStoreOpener, filters interface{}) (map[string]RepoStor
 		rss[repo] = o.openRepoStore(repo)
 	}
 	return rss, nil
+}
+
+// filtersForRepo modifies the filters list to remove filters or
+// conditions inside filters that are guaranteed to be true or
+// unnecessary when using the filters on a call to a specific repo
+// store.
+func filtersForRepo(repo string, filters interface{}) interface{} {
+	// Copy filters so that it can be used concurrently.
+	sf := storeFilters(filters)
+	repoFilters := make([]interface{}, len(sf))
+	copy(repoFilters, sf)
+
+	d := 0 // deleted (-) and added (+) indexes in repoFilters vs. sf
+	for i, f := range sf {
+		switch f := f.(type) {
+
+		case ByRepoCommitIDsFilter:
+			found := false
+			for _, v := range f.ByRepoCommitIDs() {
+				if v.Repo == repo {
+					repoFilters[i+d] = ByCommitIDs(v.CommitID)
+					found = true
+					break
+				}
+			}
+			if !found {
+				panic(fmt.Sprintf("in ByRepoCommitIDsFilter, no version.Repo == %q", repo))
+			}
+
+		case ByReposFilter:
+			found := false
+			for _, r := range f.ByRepos() {
+				if r == repo {
+					repoFilters = append(repoFilters[:i+d], repoFilters[i+d+1:]...)
+					found = true
+					d--
+					break
+				}
+			}
+			if !found {
+				panic(fmt.Sprintf("in ByRepoCommitIDsFilter, no version.Repo == %q", repo))
+			}
+		}
+	}
+
+	return toTypedFilterSlice(reflect.TypeOf(filters), repoFilters)
 }

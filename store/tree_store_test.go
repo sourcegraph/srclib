@@ -19,6 +19,8 @@ func isIndexedStore(s interface{}) bool {
 		return true
 	case *fsRepoStore:
 		return useIndexedStore
+	case *fsMultiRepoStore:
+		return useIndexedStore
 	default:
 		return false
 	}
@@ -510,8 +512,8 @@ func testTreeStore_Defs_Query_ByUnit(t *testing.T, ts TreeStoreImporter) {
 		}
 		if c_defQueryTreeIndex_getByQuery != 0 {
 			// This query should only hit the unit-level def query
-			// index, not the def query indexes for each unit.
-			t.Errorf("%s: Defs(ByDefQuery, ByUnit): got %d index hits on non-tree index, want none", ts, c_defQueryTreeIndex_getByQuery)
+			// index, not the tree-wide def query indexes.
+			t.Errorf("%s: Defs(ByDefQuery, ByUnit): got %d index hits on tree index, want none", ts, c_defQueryTreeIndex_getByQuery)
 		}
 	}
 }

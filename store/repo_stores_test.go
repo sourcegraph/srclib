@@ -214,3 +214,38 @@ func TestScopeRepos(t *testing.T) {
 		}
 	}
 }
+
+func TestFiltersForRepo(t *testing.T) {
+	tests := []struct {
+		filters    interface{}
+		wantByRepo map[string]interface{}
+	}{
+		{
+			filters:    nil,
+			wantByRepo: nil,
+		},
+		{
+			filters:    []DefFilter{ByRepos("r")},
+			wantByRepo: map[string]interface{}{"r": []DefFilter{}},
+		},
+		{
+			filters:    []DefFilter{ByRepoCommitIDs(Version{Repo: "r", CommitID: "c"})},
+			wantByRepo: map[string]interface{}{"r": []DefFilter{ByCommitIDs("c")}},
+		},
+		{
+			filters: []DefFilter{ByRepoCommitIDs(Version{Repo: "r1", CommitID: "c1"}, Version{Repo: "r2", CommitID: "c2"})},
+			wantByRepo: map[string]interface{}{
+				"r1": []DefFilter{ByCommitIDs("c1")},
+				"r2": []DefFilter{ByCommitIDs("c2")},
+			},
+		},
+	}
+	for _, test := range tests {
+		for repo, want := range test.wantByRepo {
+			repoFilters := filtersForRepo(repo, test.filters)
+			if !reflect.DeepEqual(repoFilters, want) {
+				t.Errorf("%+v: repo %q: got repo filters %v, want %v", test.filters, repo, repoFilters, want)
+			}
+		}
+	}
+}

@@ -33,6 +33,8 @@ func testMultiRepoStore(t *testing.T, newFn func() MultiRepoStoreImporter) {
 	testMultiRepoStore_Defs_filter(t, newFn())
 	testMultiRepoStore_Defs_ByRepos(t, newFn())
 	testMultiRepoStore_Defs_ByRepos_ByDefQuery(t, newFn())
+	testMultiRepoStore_Defs_ByRepoCommitIDs(t, newFn())
+	testMultiRepoStore_Defs_ByRepoCommitIDs_ByDefQuery(t, newFn())
 	testMultiRepoStore_Refs(t, newFn())
 	testMultiRepoStore_Refs_filterByRepoCommitAndFile(t, newFn())
 	testMultiRepoStore_Refs_filterByDef(t, newFn())
@@ -419,6 +421,8 @@ func testMultiRepoStore_Defs_ByRepos_ByDefQuery(t *testing.T, mrs MultiRepoStore
 		}
 	}
 
+	c_defQueryTreeIndex_getByQuery = 0
+
 	want := []*graph.Def{
 		{DefKey: graph.DefKey{Repo: "r1", CommitID: "c", UnitType: "t", Unit: "u", Path: "p1"}, Name: "abc-r1"},
 		{DefKey: graph.DefKey{Repo: "r3", CommitID: "c", UnitType: "t", Unit: "u", Path: "p1"}, Name: "abc-r3"},
@@ -432,6 +436,90 @@ func testMultiRepoStore_Defs_ByRepos_ByDefQuery(t *testing.T, mrs MultiRepoStore
 	sort.Sort(graph.Defs(want))
 	if !reflect.DeepEqual(defs, want) {
 		t.Errorf("%s: Defs: got defs %v, want %v", mrs, defs, want)
+	}
+	if isIndexedStore(mrs) {
+		if want := 2; c_defQueryTreeIndex_getByQuery != want {
+			t.Errorf("%s: Defs: got %d index hits on tree def query index, want %d", mrs, c_defQueryTreeIndex_getByQuery, want)
+		}
+	}
+}
+
+func testMultiRepoStore_Defs_ByRepoCommitIDs(t *testing.T, mrs MultiRepoStoreImporter) {
+	repos := []string{"r1", "r2", "r3"}
+	commitIDs := []string{"c1", "c2"}
+	for _, repo := range repos {
+		for _, commitID := range commitIDs {
+			if err := mrs.Import(repo, commitID, &unit.SourceUnit{Type: "t", Name: "u"}, graph.Output{Defs: []*graph.Def{
+				{DefKey: graph.DefKey{Path: "p"}},
+			}}); err != nil {
+				t.Errorf("%s: Import: %s", mrs, err)
+			}
+			if mrs, ok := mrs.(MultiRepoIndexer); ok {
+				if err := mrs.Index(repo, commitID); err != nil {
+					t.Fatalf("%s: Index: %s", mrs, err)
+				}
+			}
+		}
+	}
+
+	want := []*graph.Def{
+		{DefKey: graph.DefKey{Repo: "r1", CommitID: "c2", UnitType: "t", Unit: "u", Path: "p"}},
+		{DefKey: graph.DefKey{Repo: "r3", CommitID: "c1", UnitType: "t", Unit: "u", Path: "p"}},
+	}
+
+	defs, err := mrs.Defs(ByRepoCommitIDs(Version{Repo: "r1", CommitID: "c2"}, Version{Repo: "r3", CommitID: "c1"}))
+	if err != nil {
+		t.Errorf("%s: Defs: %s", mrs, err)
+	}
+	sort.Sort(graph.Defs(defs))
+	sort.Sort(graph.Defs(want))
+	if !reflect.DeepEqual(defs, want) {
+		t.Errorf("%s: Defs: got defs %v, want %v", mrs, defs, want)
+	}
+}
+
+func testMultiRepoStore_Defs_ByRepoCommitIDs_ByDefQuery(t *testing.T, mrs MultiRepoStoreImporter) {
+	repos := []string{"r1", "r2", "r3"}
+	commitIDs := []string{"c1", "c2"}
+	for _, repo := range repos {
+		for _, commitID := range commitIDs {
+			data := graph.Output{
+				Defs: []*graph.Def{
+					{DefKey: graph.DefKey{Path: "p1"}, Name: "abc-" + repo},
+					{DefKey: graph.DefKey{Path: "p2"}, Name: "xyz-" + repo},
+				},
+			}
+			if err := mrs.Import(repo, commitID, &unit.SourceUnit{Type: "t", Name: "u"}, data); err != nil {
+				t.Errorf("%s: Import: %s", mrs, err)
+			}
+			if mrs, ok := mrs.(MultiRepoIndexer); ok {
+				if err := mrs.Index(repo, commitID); err != nil {
+					t.Fatalf("%s: Index: %s", mrs, err)
+				}
+			}
+		}
+	}
+
+	c_defQueryTreeIndex_getByQuery = 0
+
+	want := []*graph.Def{
+		{DefKey: graph.DefKey{Repo: "r1", CommitID: "c2", UnitType: "t", Unit: "u", Path: "p1"}, Name: "abc-r1"},
+		{DefKey: graph.DefKey{Repo: "r3", CommitID: "c1", UnitType: "t", Unit: "u", Path: "p1"}, Name: "abc-r3"},
+	}
+
+	defs, err := mrs.Defs(ByRepoCommitIDs(Version{Repo: "r1", CommitID: "c2"}, Version{Repo: "r3", CommitID: "c1"}), ByDefQuery("abc"))
+	if err != nil {
+		t.Errorf("%s: Defs: %s", mrs, err)
+	}
+	sort.Sort(graph.Defs(defs))
+	sort.Sort(graph.Defs(want))
+	if !reflect.DeepEqual(defs, want) {
+		t.Errorf("%s: Defs: got defs %v, want %v", mrs, defs, want)
+	}
+	if isIndexedStore(mrs) {
+		if want := 2; c_defQueryTreeIndex_getByQuery != want {
+			t.Errorf("%s: Defs: got %d index hits on tree def query index, want %d", mrs, c_defQueryTreeIndex_getByQuery, want)
+		}
 	}
 }
 

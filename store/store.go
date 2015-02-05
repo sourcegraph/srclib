@@ -32,3 +32,7 @@ func isOSOrVFSNotExist(err error) bool {
 	}
 	return os.IsNotExist(err)
 }
+
+// storeFetchPar is the max number of parallel fetches to child stores
+// in xyzStores calls.
+const storeFetchPar = 15

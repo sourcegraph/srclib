@@ -296,6 +296,79 @@ func (f byReposFilter) SelectRepo(repo string) bool {
 	return f.contains(repo)
 }
 
+// ByRepoCommitIDsFilter is implemented by filters that restrict their
+// selections to items in a set of repositories (and in each
+// repository, to a specific version). It allows the store to optimize
+// calls by skipping data that it knows is not in any of the specified
+// repository versions.
+type ByRepoCommitIDsFilter interface {
+	ByRepoCommitIDs() []Version
+}
+
+// ByRepoCommitIDs creates a new filter by a set of repository
+// versions. It panics if repo is empty.
+func ByRepoCommitIDs(versions ...Version) interface {
+	DefFilter
+	RefFilter
+	UnitFilter
+	VersionFilter
+	RepoFilter
+	ByReposFilter
+	ByRepoCommitIDsFilter
+} {
+	for _, v := range versions {
+		if v.Repo == "" {
+			panic("empty version.Repo")
+		}
+		if v.CommitID == "" {
+			panic("empty version.CommitID")
+		}
+	}
+	return byRepoCommitIDsFilter(versions)
+}
+
+type byRepoCommitIDsFilter []Version
+
+func (f byRepoCommitIDsFilter) String() string {
+	return fmt.Sprintf("ByRepoCommitIDs(%v)", []Version(f))
+}
+func (f byRepoCommitIDsFilter) ByRepos() []string {
+	repos := make([]string, len(f))
+	for i, v := range f {
+		repos[i] = v.Repo
+	}
+	return repos
+}
+func (f byRepoCommitIDsFilter) ByRepoCommitIDs() []Version { return []Version(f) }
+func (f byRepoCommitIDsFilter) contains(repo, commitID string) bool {
+	for _, v := range f {
+		if v.Repo == repo && v.CommitID == commitID {
+			return true
+		}
+	}
+	return false
+}
+func (f byRepoCommitIDsFilter) SelectDef(def *graph.Def) bool {
+	return (def.Repo == "" && def.CommitID == "") || f.contains(def.Repo, def.CommitID)
+}
+func (f byRepoCommitIDsFilter) SelectRef(ref *graph.Ref) bool {
+	return (ref.Repo == "" && ref.CommitID == "") || f.contains(ref.Repo, ref.CommitID)
+}
+func (f byRepoCommitIDsFilter) SelectUnit(unit *unit.SourceUnit) bool {
+	return (unit.Repo == "" && unit.CommitID == "") || f.contains(unit.Repo, unit.CommitID)
+}
+func (f byRepoCommitIDsFilter) SelectVersion(version *Version) bool {
+	return (version.Repo == "" && version.CommitID == "") || f.contains(version.Repo, version.CommitID)
+}
+func (f byRepoCommitIDsFilter) SelectRepo(repo string) bool {
+	for _, v := range f {
+		if v.Repo == repo {
+			return true
+		}
+	}
+	return false
+}
+
 // ByUnitKey returns a filter by a source unit key. It panics if any
 // fields on the unit key are not set. To filter by only source unit
 // name and type, use ByUnits.
@@ -771,6 +844,19 @@ func storeFilters(anyFilters interface{}) []interface{} {
 	default:
 		return []interface{}{anyFilters}
 	}
+}
+
+// toTypedFilterSlice takes a typ like reflect.TypeOf([]DefFilter{})
+// and a filters list like []interface{}{DefFilter1, DefFilter2} and
+// returns the filters list as a []DefFilter{DefFilter1,
+// DefFilter2}. It merely returns a modified type.
+func toTypedFilterSlice(typ reflect.Type, filters []interface{}) interface{} {
+	fs := reflect.MakeSlice(typ, len(filters), len(filters))
+	for i, f := range filters {
+		e := fs.Index(i)
+		e.Set(reflect.ValueOf(f))
+	}
+	return fs.Interface()
 }
 
 type defsSortByName []*graph.Def
