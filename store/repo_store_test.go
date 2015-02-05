@@ -5,6 +5,8 @@ import (
 	"reflect"
 	"testing"
 
+	"sort"
+
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -16,7 +18,8 @@ func testRepoStore(t *testing.T, newFn func() RepoStoreImporter) {
 	testRepoStore_Versions(t, newFn())
 	testRepoStore_Units(t, newFn())
 	testRepoStore_Defs(t, newFn())
-	testRepoStore_Defs_ByCommitID_ByFile(t, newFn())
+	testRepoStore_Defs_ByCommitIDs(t, newFn())
+	testRepoStore_Defs_ByCommitIDs_ByFile(t, newFn())
 	testRepoStore_Refs(t, newFn())
 }
 
@@ -92,7 +95,7 @@ func testRepoStore_Versions(t *testing.T, rs RepoStoreImporter) {
 		t.Errorf("%s: Versions(): got %v, want %v", rs, versions, want)
 	}
 
-	versions, err = rs.Versions(ByCommitID("c2"))
+	versions, err = rs.Versions(ByCommitIDs("c2"))
 	if err != nil {
 		t.Errorf("%s: Versions(c2): %s", rs, err)
 	}
@@ -130,7 +133,7 @@ func testRepoStore_Units(t *testing.T, rs RepoStoreImporter) {
 		t.Errorf("%s: Units(): got %v, want %v", rs, units, want)
 	}
 
-	units, err = rs.Units(ByCommitID("c"), ByUnits(unit.ID2{Type: "t2", Name: "u2"}))
+	units, err = rs.Units(ByCommitIDs("c"), ByUnits(unit.ID2{Type: "t2", Name: "u2"}))
 	if err != nil {
 		t.Errorf("%s: Units: %s", rs, err)
 	}
@@ -138,7 +141,7 @@ func testRepoStore_Units(t *testing.T, rs RepoStoreImporter) {
 		t.Errorf("%s: Units: got %v, want %v", rs, units, want)
 	}
 
-	if units, err = rs.Units(ByCommitID("c"), ByUnits(unit.ID2{Type: "t3", Name: "u3"})); err != nil {
+	if units, err = rs.Units(ByCommitIDs("c"), ByUnits(unit.ID2{Type: "t3", Name: "u3"})); err != nil {
 		t.Errorf("%s: Units: %s", rs, err)
 	} else if len(units) != 0 {
 		t.Errorf("%s: Units: got %v, want none", rs, units)
@@ -193,7 +196,7 @@ func testRepoStore_Defs(t *testing.T, rs RepoStoreImporter) {
 			Name:   "n1",
 		},
 	}
-	defs, err = rs.Defs(ByCommitID("c"), ByUnits(unit.ID2{Type: "t", Name: "u"}), ByDefPath("p1"))
+	defs, err = rs.Defs(ByCommitIDs("c"), ByUnits(unit.ID2{Type: "t", Name: "u"}), ByDefPath("p1"))
 	if err != nil {
 		t.Errorf("%s: Defs: %s", rs, err)
 	}
@@ -202,7 +205,39 @@ func testRepoStore_Defs(t *testing.T, rs RepoStoreImporter) {
 	}
 }
 
-func testRepoStore_Defs_ByCommitID_ByFile(t *testing.T, rs RepoStoreImporter) {
+func testRepoStore_Defs_ByCommitIDs(t *testing.T, rs RepoStoreImporter) {
+	const numCommits = 3
+	for c := 1; c <= numCommits; c++ {
+		unit := &unit.SourceUnit{Type: "t", Name: "u"}
+		data := graph.Output{Defs: []*graph.Def{{DefKey: graph.DefKey{Path: "p"}}}}
+		commitID := fmt.Sprintf("c%d", c)
+		if err := rs.Import(commitID, unit, data); err != nil {
+			t.Errorf("%s: Import(%s, %v, data): %s", rs, commitID, unit, err)
+		}
+		if rs, ok := rs.(RepoIndexer); ok {
+			if err := rs.Index(commitID); err != nil {
+				t.Fatalf("%s: Index: %s", rs, err)
+			}
+		}
+	}
+
+	want := []*graph.Def{
+		{DefKey: graph.DefKey{CommitID: "c1", UnitType: "t", Unit: "u", Path: "p"}},
+		{DefKey: graph.DefKey{CommitID: "c3", UnitType: "t", Unit: "u", Path: "p"}},
+	}
+
+	defs, err := rs.Defs(ByCommitIDs("c1", "c3"))
+	if err != nil {
+		t.Fatalf("%s: Defs: %s", rs, err)
+	}
+	sort.Sort(graph.Defs(defs))
+	sort.Sort(graph.Defs(want))
+	if !reflect.DeepEqual(defs, want) {
+		t.Errorf("%s: Defs: got defs %v, want %v", rs, defs, want)
+	}
+}
+
+func testRepoStore_Defs_ByCommitIDs_ByFile(t *testing.T, rs RepoStoreImporter) {
 	const numCommits = 2
 	for c := 1; c <= numCommits; c++ {
 		unit := &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f1", "f2"}}
@@ -229,7 +264,7 @@ func testRepoStore_Defs_ByCommitID_ByFile(t *testing.T, rs RepoStoreImporter) {
 
 	c_unitFilesIndex_getByPath = 0
 	c_defFilesIndex_getByPath = 0
-	defs, err := rs.Defs(ByCommitID("c2"), ByFiles("f1"))
+	defs, err := rs.Defs(ByCommitIDs("c2"), ByFiles("f1"))
 	if err != nil {
 		t.Fatalf("%s: Defs: %s", rs, err)
 	}

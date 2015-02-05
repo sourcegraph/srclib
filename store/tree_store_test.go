@@ -113,7 +113,7 @@ func testTreeStore_Unit(t *testing.T, ts TreeStoreImporter) {
 		}
 	}
 
-	units, err := ts.Units(ByCommitID("c"), ByUnits(unit.ID2{Type: "t", Name: "u"}))
+	units, err := ts.Units(ByCommitIDs("c"), ByUnits(unit.ID2{Type: "t", Name: "u"}))
 	if err != nil {
 		t.Errorf("%s: Units: %s", ts, err)
 	}
