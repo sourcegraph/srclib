@@ -20,6 +20,7 @@ import (
 	"golang.org/x/tools/godoc/vfs"
 
 	"sourcegraph.com/sourcegraph/go-flags"
+	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/graph"
@@ -762,6 +763,8 @@ func (c *StoreReposCmd) Execute(args []string) error {
 type StoreVersionsCmd struct {
 	Repo           string `long:"repo"`
 	CommitIDPrefix string `long:"commit" description:"commit ID prefix"`
+
+	RepoCommitIDs string `long:"repo-commits" description:"comma-separated list of repo@commitID specifiers"`
 }
 
 func (c *StoreVersionsCmd) filters() []store.VersionFilter {
@@ -773,6 +776,9 @@ func (c *StoreVersionsCmd) filters() []store.VersionFilter {
 		fs = append(fs, store.VersionFilterFunc(func(version *store.Version) bool {
 			return strings.HasPrefix(version.CommitID, c.CommitIDPrefix)
 		}))
+	}
+	if c.RepoCommitIDs != "" {
+		fs = append(fs, makeRepoCommitIDsFilter(c.RepoCommitIDs))
 	}
 	return fs
 }
@@ -809,6 +815,8 @@ type StoreUnitsCmd struct {
 	CommitID string `long:"commit"`
 	Repo     string `long:"repo"`
 
+	RepoCommitIDs string `long:"repo-commits" description:"comma-separated list of repo@commitID specifiers"`
+
 	File string `long:"file" description:"filter by units whose Files list contains this file"`
 }
 
@@ -825,6 +833,9 @@ func (c *StoreUnitsCmd) filters() []store.UnitFilter {
 	}
 	if c.Repo != "" {
 		fs = append(fs, store.ByRepos(c.Repo))
+	}
+	if c.RepoCommitIDs != "" {
+		fs = append(fs, makeRepoCommitIDsFilter(c.RepoCommitIDs))
 	}
 	if c.File != "" {
 		fs = append(fs, store.ByFiles(path.Clean(c.File)))
@@ -862,6 +873,8 @@ type StoreDefsCmd struct {
 	FilePathPrefix string `long:"file-path-prefix"`
 	CommitID       string `long:"commit"`
 
+	RepoCommitIDs string `long:"repo-commits" description:"comma-separated list of repo@commitID specifiers"`
+
 	Query string `long:"query"`
 
 	Limit  int `short:"n" long:"limit" description:"max results to return (0 for all)"`
@@ -881,6 +894,9 @@ func (c *StoreDefsCmd) filters() []store.DefFilter {
 	}
 	if c.Repo != "" {
 		fs = append(fs, store.ByRepos(c.Repo))
+	}
+	if c.RepoCommitIDs != "" {
+		fs = append(fs, makeRepoCommitIDsFilter(c.RepoCommitIDs))
 	}
 	if c.Path != "" {
 		fs = append(fs, store.ByDefPath(c.Path))
@@ -928,6 +944,8 @@ type StoreRefsCmd struct {
 	File     string `long:"file"`
 	CommitID string `long:"commit"`
 
+	RepoCommitIDs string `long:"repo-commits" description:"comma-separated list of repo@commitID specifiers"`
+
 	Start uint32 `long:"start"`
 	End   uint32 `long:"end"`
 
@@ -953,6 +971,9 @@ func (c *StoreRefsCmd) filters() []store.RefFilter {
 	}
 	if c.Repo != "" {
 		fs = append(fs, store.ByRepos(c.Repo))
+	}
+	if c.RepoCommitIDs != "" {
+		fs = append(fs, makeRepoCommitIDsFilter(c.RepoCommitIDs))
 	}
 	if c.File != "" {
 		fs = append(fs, store.ByFiles(path.Clean(c.File)))
@@ -1003,4 +1024,27 @@ func (c *StoreRefsCmd) Execute(args []string) error {
 	}
 	PrintJSON(refs, "  ")
 	return nil
+}
+
+func makeRepoCommitIDsFilter(repoCommitIDs string) interface {
+	store.ByRepoCommitIDsFilter
+	store.VersionFilter
+	store.DefFilter
+	store.UnitFilter
+	store.RefFilter
+} {
+	if repoCommitIDs == "" {
+		panic("empty repoCommitIDs")
+	}
+	rcs := strings.Split(repoCommitIDs, ",")
+	vs := make([]store.Version, len(rcs))
+	for i, rc := range rcs {
+		rc = strings.TrimSpace(rc)
+		repo, commitID := sourcegraph.ParseRepoAndCommitID(rc)
+		if len(commitID) != 40 {
+			log.Printf("WARNING: --repo-commits entry #%d (%q) has no commit ID or a non-absolute commit ID. Nothing will match it.", i, rc)
+		}
+		vs[i] = store.Version{Repo: repo, CommitID: commitID}
+	}
+	return store.ByRepoCommitIDs(vs...)
 }
