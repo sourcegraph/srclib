@@ -767,7 +767,7 @@ type StoreVersionsCmd struct {
 func (c *StoreVersionsCmd) filters() []store.VersionFilter {
 	var fs []store.VersionFilter
 	if c.Repo != "" {
-		fs = append(fs, store.ByRepo(c.Repo))
+		fs = append(fs, store.ByRepos(c.Repo))
 	}
 	if c.CommitIDPrefix != "" {
 		fs = append(fs, store.VersionFilterFunc(func(version *store.Version) bool {
@@ -824,7 +824,7 @@ func (c *StoreUnitsCmd) filters() []store.UnitFilter {
 		fs = append(fs, store.ByCommitID(c.CommitID))
 	}
 	if c.Repo != "" {
-		fs = append(fs, store.ByRepo(c.Repo))
+		fs = append(fs, store.ByRepos(c.Repo))
 	}
 	if c.File != "" {
 		fs = append(fs, store.ByFiles(path.Clean(c.File)))
@@ -880,7 +880,7 @@ func (c *StoreDefsCmd) filters() []store.DefFilter {
 		fs = append(fs, store.ByCommitID(c.CommitID))
 	}
 	if c.Repo != "" {
-		fs = append(fs, store.ByRepo(c.Repo))
+		fs = append(fs, store.ByRepos(c.Repo))
 	}
 	if c.Path != "" {
 		fs = append(fs, store.ByDefPath(c.Path))
@@ -952,7 +952,7 @@ func (c *StoreRefsCmd) filters() []store.RefFilter {
 		fs = append(fs, store.ByCommitID(c.CommitID))
 	}
 	if c.Repo != "" {
-		fs = append(fs, store.ByRepo(c.Repo))
+		fs = append(fs, store.ByRepos(c.Repo))
 	}
 	if c.File != "" {
 		fs = append(fs, store.ByFiles(path.Clean(c.File)))

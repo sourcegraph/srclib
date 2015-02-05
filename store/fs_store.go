@@ -65,68 +65,84 @@ type FSMultiRepoStoreConf struct {
 	RepoPaths
 }
 
+// getRepo gets a single repo.
+func (s *fsMultiRepoStore) getRepo(repo string) (string, error) {
+	repoPath := s.fs.Join(s.RepoToPath(repo)...)
+	fi, err := s.fs.Stat(repoPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return "", nil
+		}
+		return "", err
+	}
+	if !fi.Mode().IsDir() {
+		return "", nil
+	}
+	return repo, nil
+}
+
 func (s *fsMultiRepoStore) Repos(f ...RepoFilter) ([]string, error) {
 	scopeRepos, err := scopeRepos(storeFilters(f))
 	if err != nil {
 		return nil, err
 	}
 
-	// Multiple repos are mutually exclusive.
-	if len(scopeRepos) > 1 {
-		return nil, nil
-	}
+	var repos []string
 
-	var after string
-	var max int
-	if len(scopeRepos) == 1 {
-		afterComps := s.RepoToPath(scopeRepos[0])
-		if len(afterComps) > 0 {
-			lastComp := afterComps[len(afterComps)-1]
-			// We want to include the scoped repo, so make "after"
-			// into a string that sorts lexicographically BEFORE the
-			// scoped repo.
-			lastComp = lastComp[:len(lastComp)-1] + string([]rune{rune(lastComp[len(lastComp)-1]) - rune(1)}) + "\xff"
-			afterComps[len(afterComps)-1] = lastComp
-		}
-		after = s.fs.Join(afterComps...)
-		max = 1
-	}
-
-	var allPaths [][]string
-	for {
-		const maxFetch = 1000
-		var numFetch int
-		if max == 0 {
-			numFetch = maxFetch
-		} else {
-			numFetch = max - len(allPaths)
-			if numFetch > maxFetch {
-				numFetch = maxFetch
+	if scopeRepos != nil {
+		// Fetch repos individually.
+		for _, repo := range scopeRepos {
+			repo2, err := s.getRepo(repo)
+			if err != nil {
+				return nil, err
+			}
+			if repo2 != "" {
+				repos = append(repos, repo2)
 			}
 		}
-		if numFetch <= 0 {
-			break
-		}
+	} else {
+		// List repos.
+		var after string
+		var max int
+		var allPaths [][]string
+		for {
+			const maxFetch = 1000
+			var numFetch int
+			if max == 0 {
+				numFetch = maxFetch
+			} else {
+				numFetch = max - len(allPaths)
+				if numFetch > maxFetch {
+					numFetch = maxFetch
+				}
+			}
+			if numFetch <= 0 {
+				break
+			}
 
-		paths, err := s.ListRepoPaths(s.fs, after, numFetch)
-		if err != nil {
-			return nil, err
+			paths, err := s.ListRepoPaths(s.fs, after, numFetch)
+			if err != nil {
+				return nil, err
+			}
+			allPaths = append(allPaths, paths...)
+			if len(paths) < numFetch {
+				break
+			}
+			after = s.fs.Join(paths[len(paths)-1]...)
 		}
-		allPaths = append(allPaths, paths...)
-		if len(paths) < numFetch {
-			break
+		repos = make([]string, len(allPaths))
+		for i, path := range allPaths {
+			repos[i] = s.PathToRepo(path)
 		}
-		after = s.fs.Join(paths[len(paths)-1]...)
 	}
 
-	var repos []string
-	for _, path := range allPaths {
-		repo := s.PathToRepo(path)
+	filteredRepos := make([]string, 0, len(repos))
+	for _, repo := range repos {
 		if repoFilters(f).SelectRepo(repo) {
-			repos = append(repos, repo)
+			filteredRepos = append(filteredRepos, repo)
 		}
 	}
-	return repos, nil
+	return filteredRepos, nil
 }
 
 func (s *fsMultiRepoStore) openRepoStore(repo string) RepoStore {

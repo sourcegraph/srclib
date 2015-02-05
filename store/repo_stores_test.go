@@ -4,6 +4,8 @@ import (
 	"reflect"
 	"testing"
 
+	"sort"
+
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -52,7 +54,7 @@ func (m *recordingRepoStoreOpener) openAllRepoStores() (map[string]RepoStore, er
 }
 func (m *recordingRepoStoreOpener) reset() { m.opened = map[string]int{}; m.openedAll = 0 }
 
-func TestRepoStores_filterByRepo(t *testing.T) {
+func TestRepoStores_filterByRepos(t *testing.T) {
 	// Test that filters by a specific repo cause repo stores for
 	// other repos to not be called.
 
@@ -72,13 +74,13 @@ func TestRepoStores_filterByRepo(t *testing.T) {
 	}
 	o.reset()
 
-	if defs, err := rss.Defs(ByRepo("r")); err != nil {
+	if defs, err := rss.Defs(ByRepos("r")); err != nil {
 		t.Error(err)
 	} else if len(defs) > 0 {
 		t.Errorf("got defs %v, want none", defs)
 	}
 
-	if refs, err := rss.Refs(ByRepo("r")); err != nil {
+	if refs, err := rss.Refs(ByRepos("r")); err != nil {
 		t.Error(err)
 	} else if len(refs) > 0 {
 		t.Errorf("got refs %v, want none", refs)
@@ -90,19 +92,19 @@ func TestRepoStores_filterByRepo(t *testing.T) {
 		t.Errorf("got units %v, want none", units)
 	}
 
-	if units, err := rss.Units(ByRepo("r")); err != nil {
+	if units, err := rss.Units(ByRepos("r")); err != nil {
 		t.Error(err)
 	} else if len(units) > 0 {
 		t.Errorf("got units %v, want none", units)
 	}
 
-	if versions, err := rss.Versions(ByRepo("r"), ByCommitID("c")); err != nil {
+	if versions, err := rss.Versions(ByRepos("r"), ByCommitIDs("c")); err != nil {
 		t.Fatal(err)
 	} else if len(versions) != 0 {
 		t.Errorf("got versions %v, want none", versions)
 	}
 
-	if versions, err := rss.Versions(ByRepo("r")); err != nil {
+	if versions, err := rss.Versions(ByRepos("r")); err != nil {
 		t.Error(err)
 	} else if len(versions) > 0 {
 		t.Errorf("got versions %v, want none", versions)
@@ -119,31 +121,39 @@ func TestScopeRepos(t *testing.T) {
 			want:    nil,
 		},
 		{
-			filters: []interface{}{ByRepo("r")},
+			filters: []interface{}{ByRepos("r")},
 			want:    []string{"r"},
 		},
 		{
-			filters: []interface{}{nil, ByRepo("r")},
+			filters: []interface{}{nil, ByRepos("r")},
 			want:    []string{"r"},
 		},
 		{
-			filters: []interface{}{ByRepo("r"), nil},
+			filters: []interface{}{ByRepos("r"), nil},
 			want:    []string{"r"},
 		},
 		{
-			filters: []interface{}{nil, ByRepo("r"), nil},
+			filters: []interface{}{nil, ByRepos("r"), nil},
 			want:    []string{"r"},
 		},
 		{
-			filters: []interface{}{ByRepo("r"), ByRepo("r")},
+			filters: []interface{}{ByRepos("r"), ByRepos("r")},
 			want:    []string{"r"},
 		},
 		{
-			filters: []interface{}{ByRepo("r1"), ByRepo("r2")},
+			filters: []interface{}{ByRepos("r1"), ByRepos("r2")},
 			want:    []string{},
 		},
 		{
-			filters: []interface{}{ByRepo("r1"), ByRepo("r2"), ByRepo("r1")},
+			filters: []interface{}{ByRepos("r1", "r2"), ByRepos("r2", "r1")},
+			want:    []string{"r1", "r2"},
+		},
+		{
+			filters: []interface{}{ByRepos("r1", "r2"), ByRepos("r2")},
+			want:    []string{"r2"},
+		},
+		{
+			filters: []interface{}{ByRepos("r1"), ByRepos("r2"), ByRepos("r1")},
 			want:    []string{},
 		},
 		{
@@ -197,6 +207,8 @@ func TestScopeRepos(t *testing.T) {
 			t.Errorf("%+v: %v", test.filters, err)
 			continue
 		}
+		sort.Strings(repos)
+		sort.Strings(test.want)
 		if !reflect.DeepEqual(repos, test.want) {
 			t.Errorf("%+v: got repos %v, want %v", test.filters, repos, test.want)
 		}

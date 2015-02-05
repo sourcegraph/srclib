@@ -201,7 +201,7 @@ func TestScopeUnits(t *testing.T) {
 			want:    nil,
 		},
 		{
-			filters: []interface{}{ByRepo("r")},
+			filters: []interface{}{ByRepos("r")},
 			want:    nil,
 		},
 	}

@@ -232,88 +232,58 @@ func (f byCommitIDFilter) SelectVersion(version *Version) bool {
 	return version.CommitID == "" || version.CommitID == f.commitID
 }
 
-// ByRepoFilter is implemented by filters that restrict their
-// selections to items in a specific repository. It allows the store
-// to optimize calls by skipping data that it knows is not in the
-// specified repository.
-type ByRepoFilter interface {
-	ByRepo() string
+// ByReposFilter is implemented by filters that restrict their
+// selections to items in a set of repository. It allows the store to
+// optimize calls by skipping data that it knows is not in any of the
+// specified repositories.
+type ByReposFilter interface {
+	ByRepos() []string
 }
 
-// ByRepo creates a new filter by repository. It panics if repo is
-// empty.
-func ByRepo(repo string) interface {
+// ByRepos creates a new filter by a set of repositories. It panics if
+// repo is empty.
+func ByRepos(repos ...string) interface {
 	DefFilter
 	RefFilter
 	UnitFilter
 	VersionFilter
 	RepoFilter
-	ByRepoFilter
+	ByReposFilter
 } {
-	if repo == "" {
-		panic("repo: empty")
+	for _, repo := range repos {
+		if repo == "" {
+			panic("empty repo")
+		}
 	}
-	return byRepoFilter{repo}
+	return byReposFilter(repos)
 }
 
-type byRepoFilter struct{ repo string }
+type byReposFilter []string
 
-func (f byRepoFilter) String() string { return fmt.Sprintf("ByRepo(%s)", f.repo) }
-func (f byRepoFilter) ByRepo() string { return f.repo }
-func (f byRepoFilter) SelectDef(def *graph.Def) bool {
-	return def.Repo == "" || def.Repo == f.repo
-}
-func (f byRepoFilter) SelectRef(ref *graph.Ref) bool {
-	return ref.Repo == "" || ref.Repo == f.repo
-}
-func (f byRepoFilter) SelectUnit(unit *unit.SourceUnit) bool {
-	return unit.Repo == "" || unit.Repo == f.repo
-}
-func (f byRepoFilter) SelectVersion(version *Version) bool {
-	return version.Repo == "" || version.Repo == f.repo
-}
-func (f byRepoFilter) SelectRepo(repo string) bool {
-	return repo == f.repo
-}
-
-// ByRepoAndCommitID returns a filter by both repo and commit ID (both
-// must match for an item to be selected by this filter). It panics if
-// either repo or commitID is empty.
-func ByRepoAndCommitID(repo, commitID string) interface {
-	DefFilter
-	RefFilter
-	UnitFilter
-	VersionFilter
-	ByRepoFilter
-	ByCommitIDFilter
-} {
-	if repo == "" {
-		panic("repo: empty")
+func (f byReposFilter) String() string    { return fmt.Sprintf("ByRepos(%v)", []string(f)) }
+func (f byReposFilter) ByRepos() []string { return []string(f) }
+func (f byReposFilter) contains(repo string) bool {
+	for _, r := range f {
+		if r == repo {
+			return true
+		}
 	}
-	if commitID == "" {
-		panic("commitID: empty")
-	}
-	return byRepoAndCommitIDFilter{repo, commitID}
+	return false
 }
-
-type byRepoAndCommitIDFilter struct{ repo, commitID string }
-
-func (f byRepoAndCommitIDFilter) String() string {
-	return fmt.Sprintf("ByRepoAndCommitID(%s, %s)", f.repo, f.commitID)
+func (f byReposFilter) SelectDef(def *graph.Def) bool {
+	return def.Repo == "" || f.contains(def.Repo)
 }
-func (f byRepoAndCommitIDFilter) ByRepo() string     { return f.repo }
-func (f byRepoAndCommitIDFilter) ByCommitID() string { return f.commitID }
-func (f byRepoAndCommitIDFilter) SelectDef(def *graph.Def) bool {
-	return (def.Repo == "" || def.Repo == f.repo) && (def.CommitID == "" || def.CommitID == f.commitID)
+func (f byReposFilter) SelectRef(ref *graph.Ref) bool {
+	return ref.Repo == "" || f.contains(ref.Repo)
 }
-func (f byRepoAndCommitIDFilter) SelectRef(ref *graph.Ref) bool {
-	return (ref.Repo == "" || ref.Repo == f.repo) && (ref.CommitID == "" || ref.CommitID == f.commitID)
+func (f byReposFilter) SelectUnit(unit *unit.SourceUnit) bool {
+	return unit.Repo == "" || f.contains(unit.Repo)
 }
-func (f byRepoAndCommitIDFilter) SelectUnit(unit *unit.SourceUnit) bool {
-	return (unit.Repo == "" || unit.Repo == f.repo) && (unit.CommitID == "" || unit.CommitID == f.commitID)
+func (f byReposFilter) SelectVersion(version *Version) bool {
+	return version.Repo == "" || f.contains(version.Repo)
 }
-func (f byRepoAndCommitIDFilter) SelectVersion(version *Version) bool {
-	return (version.Repo == "" || version.Repo == f.repo) && (version.CommitID == "" || version.CommitID == f.commitID)
+func (f byReposFilter) SelectRepo(repo string) bool {
+	return f.contains(repo)
 }
 
 // ByUnitKey returns a filter by a source unit key. It panics if any
@@ -323,7 +293,7 @@ func ByUnitKey(key unit.Key) interface {
 	DefFilter
 	RefFilter
 	UnitFilter
-	ByRepoFilter
+	ByReposFilter
 	ByCommitIDFilter
 	ByUnitsFilter
 } {
@@ -345,7 +315,7 @@ func ByUnitKey(key unit.Key) interface {
 type byUnitKeyFilter struct{ key unit.Key }
 
 func (f byUnitKeyFilter) String() string      { return fmt.Sprintf("ByUnitKey(%+v)", f.key) }
-func (f byUnitKeyFilter) ByRepo() string      { return f.key.Repo }
+func (f byUnitKeyFilter) ByRepos() []string   { return []string{f.key.Repo} }
 func (f byUnitKeyFilter) ByCommitID() string  { return f.key.CommitID }
 func (f byUnitKeyFilter) ByUnits() []unit.ID2 { return []unit.ID2{f.key.ID2()} }
 func (f byUnitKeyFilter) SelectDef(def *graph.Def) bool {
@@ -365,7 +335,7 @@ func (f byUnitKeyFilter) SelectUnit(unit *unit.SourceUnit) bool {
 // the def key are not set.
 func ByDefKey(key graph.DefKey) interface {
 	DefFilter
-	ByRepoFilter
+	ByReposFilter
 	ByCommitIDFilter
 	ByUnitsFilter
 } {
@@ -390,7 +360,7 @@ func ByDefKey(key graph.DefKey) interface {
 type byDefKeyFilter struct{ key graph.DefKey }
 
 func (f byDefKeyFilter) String() string     { return fmt.Sprintf("ByDefKey(%+v)", f.key) }
-func (f byDefKeyFilter) ByRepo() string     { return f.key.Repo }
+func (f byDefKeyFilter) ByRepos() []string  { return []string{f.key.Repo} }
 func (f byDefKeyFilter) ByCommitID() string { return f.key.CommitID }
 func (f byDefKeyFilter) ByUnits() []unit.ID2 {
 	return []unit.ID2{{Type: f.key.UnitType, Name: f.key.Unit}}

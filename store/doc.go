@@ -38,7 +38,7 @@ scope. We could set the field value on each item after narrowing
 the scope but before calling our filter on each item, but that
 would be both time-consuming and unnecessary.
 
-E.g., Suppose we have a ByRepoFilter and immediately narrow our
+E.g., Suppose we have a ByReposFilter and immediately narrow our
 scope to a single RepoStore. All items in a RepoStore by definition
 are from the same repo, so it's unnecessary for any of their Repo
 fields to be set. Therefore their Repo fields are "", but we know
