@@ -11,22 +11,32 @@ package store
 // TODO(sqs): return an error if the filters are mutually exclusive?
 func scopeTrees(filters []interface{}) ([]string, error) {
 	commitIDs := map[string]struct{}{}
+	everHadAny := false // whether unitIDs ever contained any commitIDs
 
 	for _, f := range filters {
 		switch f := f.(type) {
-		case ByCommitIDFilter:
-			c := f.ByCommitID()
-			if len(commitIDs) == 0 {
-				commitIDs[c] = struct{}{}
-			} else if _, dup := commitIDs[c]; !dup {
-				// Mutually exclusive commit IDs.
-				return []string{}, nil
+		case ByCommitIDsFilter:
+			if len(commitIDs) == 0 && !everHadAny {
+				everHadAny = true
+				for _, c := range f.ByCommitIDs() {
+					commitIDs[c] = struct{}{}
+				}
+			} else {
+				// Intersect.
+				newCommitIDs := make(map[string]struct{}, (len(commitIDs)+len(f.ByCommitIDs()))/2)
+				for _, c := range f.ByCommitIDs() {
+					if _, present := commitIDs[c]; present {
+						newCommitIDs[c] = struct{}{}
+					}
+				}
+				commitIDs = newCommitIDs
 			}
 		}
 	}
 
-	if len(commitIDs) == 0 {
-		// Scope includes potentially all units.
+	if len(commitIDs) == 0 && !everHadAny {
+		// No unit scoping filters were present, so scope includes
+		// potentially all commitIDs.
 		return nil, nil
 	}
 

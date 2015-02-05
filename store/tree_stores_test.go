@@ -4,6 +4,8 @@ import (
 	"reflect"
 	"testing"
 
+	"sort"
+
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -62,7 +64,7 @@ func TestTreeStores_filterByCommit(t *testing.T) {
 	}}
 	tss := treeStores{opener: o}
 
-	if defs, err := tss.Defs(ByCommitID("c"), ByUnits(unit.ID2{Type: "t", Name: "u"}), ByDefPath("p")); err != nil {
+	if defs, err := tss.Defs(ByCommitIDs("c"), ByUnits(unit.ID2{Type: "t", Name: "u"}), ByDefPath("p")); err != nil {
 		t.Error(err)
 	} else if len(defs) > 0 {
 		t.Errorf("got defs %v, want none", defs)
@@ -72,25 +74,25 @@ func TestTreeStores_filterByCommit(t *testing.T) {
 	}
 	o.reset()
 
-	if defs, err := tss.Defs(ByCommitID("c")); err != nil {
+	if defs, err := tss.Defs(ByCommitIDs("c")); err != nil {
 		t.Error(err)
 	} else if len(defs) > 0 {
 		t.Errorf("got defs %v, want none", defs)
 	}
 
-	if refs, err := tss.Refs(ByCommitID("c")); err != nil {
+	if refs, err := tss.Refs(ByCommitIDs("c")); err != nil {
 		t.Error(err)
 	} else if len(refs) > 0 {
 		t.Errorf("got refs %v, want none", refs)
 	}
 
-	if units, err := tss.Units(ByCommitID("c"), ByUnits(unit.ID2{Type: "t", Name: "u"})); err != nil {
+	if units, err := tss.Units(ByCommitIDs("c"), ByUnits(unit.ID2{Type: "t", Name: "u"})); err != nil {
 		t.Error(err)
 	} else if len(units) > 0 {
 		t.Errorf("got units %v, want none", units)
 	}
 
-	if units, err := tss.Units(ByCommitID("c")); err != nil {
+	if units, err := tss.Units(ByCommitIDs("c")); err != nil {
 		t.Error(err)
 	} else if len(units) > 0 {
 		t.Errorf("got units %v, want none", units)
@@ -107,31 +109,39 @@ func TestScopeTrees(t *testing.T) {
 			want:    nil,
 		},
 		{
-			filters: []interface{}{ByCommitID("c")},
+			filters: []interface{}{ByCommitIDs("c")},
 			want:    []string{"c"},
 		},
 		{
-			filters: []interface{}{nil, ByCommitID("c")},
+			filters: []interface{}{nil, ByCommitIDs("c")},
 			want:    []string{"c"},
 		},
 		{
-			filters: []interface{}{ByCommitID("c"), nil},
+			filters: []interface{}{ByCommitIDs("c"), nil},
 			want:    []string{"c"},
 		},
 		{
-			filters: []interface{}{nil, ByCommitID("c"), nil},
+			filters: []interface{}{nil, ByCommitIDs("c"), nil},
 			want:    []string{"c"},
 		},
 		{
-			filters: []interface{}{ByCommitID("c"), ByCommitID("c")},
+			filters: []interface{}{ByCommitIDs("c"), ByCommitIDs("c")},
 			want:    []string{"c"},
 		},
 		{
-			filters: []interface{}{ByCommitID("c1"), ByCommitID("c2")},
+			filters: []interface{}{ByCommitIDs("c1"), ByCommitIDs("c2")},
 			want:    []string{},
 		},
 		{
-			filters: []interface{}{ByCommitID("c1"), ByCommitID("c2"), ByCommitID("c1")},
+			filters: []interface{}{ByCommitIDs("c2", "c1"), ByCommitIDs("c1", "c2")},
+			want:    []string{"c1", "c2"},
+		},
+		{
+			filters: []interface{}{ByCommitIDs("c1", "c2"), ByCommitIDs("c2")},
+			want:    []string{"c2"},
+		},
+		{
+			filters: []interface{}{ByCommitIDs("c1"), ByCommitIDs("c2"), ByCommitIDs("c1")},
 			want:    []string{},
 		},
 		{
@@ -185,6 +195,8 @@ func TestScopeTrees(t *testing.T) {
 			t.Errorf("%+v: %v", test.filters, err)
 			continue
 		}
+		sort.Strings(trees)
+		sort.Strings(test.want)
 		if !reflect.DeepEqual(trees, test.want) {
 			t.Errorf("%+v: got trees %v, want %v", test.filters, trees, test.want)
 		}

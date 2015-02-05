@@ -205,12 +205,12 @@ func testMultiRepoStore_Versions(t *testing.T, mrs MultiRepoStoreImporter) {
 		t.Errorf("%s: Versions(): got %v, want %v", mrs, versions, want)
 	}
 
-	versions2, err := mrs.Versions(ByCommitID("c2"))
+	versions2, err := mrs.Versions(ByCommitIDs("c2"))
 	if err != nil {
-		t.Errorf("%s: Versionss(ByCommitID c2): %s", mrs, err)
+		t.Errorf("%s: Versionss(ByCommitIDs c2): %s", mrs, err)
 	}
 	if want := []*Version{{Repo: "r", CommitID: "c2"}}; !reflect.DeepEqual(versions2, want) {
-		t.Errorf("%s: Versions(ByCommitID c2): got %v, want %v", mrs, versions2, want)
+		t.Errorf("%s: Versions(ByCommitIDs c2): got %v, want %v", mrs, versions2, want)
 	}
 }
 
@@ -360,7 +360,7 @@ func testMultiRepoStore_Defs_filter(t *testing.T, mrs MultiRepoStoreImporter) {
 		},
 	}
 
-	defs, err := mrs.Defs(ByRepos("r"), ByCommitID("c"), ByDefPath("p"))
+	defs, err := mrs.Defs(ByRepos("r"), ByCommitIDs("c"), ByDefPath("p"))
 	if err != nil {
 		t.Errorf("%s: Defs(): %s", mrs, err)
 	}
@@ -562,7 +562,7 @@ func testMultiRepoStore_Refs_filterByRepoCommitAndFile(t *testing.T, mrs MultiRe
 	}
 
 	byFiles := RefFilterFunc(func(ref *graph.Ref) bool { return ref.File == "f1" || ref.File == "f3" })
-	refs, err := mrs.Refs(ByRepos("r"), ByCommitID("c"), byFiles)
+	refs, err := mrs.Refs(ByRepos("r"), ByCommitIDs("c"), byFiles)
 	if err != nil {
 		t.Errorf("%s: Refs(): %s", mrs, err)
 	}
