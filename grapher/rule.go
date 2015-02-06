@@ -8,6 +8,7 @@ import (
 	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
+	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/plan"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
 	"sourcegraph.com/sourcegraph/srclib/unit"
@@ -17,7 +18,7 @@ const graphOp = "graph"
 
 func init() {
 	plan.RegisterRuleMaker(graphOp, makeGraphRules)
-	buildstore.RegisterDataType("graph", &Output{})
+	buildstore.RegisterDataType("graph", &graph.Output{})
 }
 
 func makeGraphRules(c *config.Tree, dataDir string, existing []makex.Rule, opt plan.Options) ([]makex.Rule, error) {
@@ -46,7 +47,7 @@ type GraphUnitRule struct {
 }
 
 func (r *GraphUnitRule) Target() string {
-	return filepath.Join(r.dataDir, plan.SourceUnitDataFilename(&Output{}, r.Unit))
+	return filepath.Join(r.dataDir, plan.SourceUnitDataFilename(&graph.Output{}, r.Unit))
 }
 
 func (r *GraphUnitRule) Prereqs() []string {

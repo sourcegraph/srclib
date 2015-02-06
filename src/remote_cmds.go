@@ -65,7 +65,7 @@ func (c *RemoteCmd) getRemoteRepo(cl *sourcegraph.Client) (*sourcegraph.Repo, er
 		return nil, errors.New(errMsg + "; to specify which remote repository to act upon instead of attempting automatic detection, use --repo (e.g., '--repo github.com/owner/repo')")
 	}
 
-	rrepo, _, err := cl.Repos.Get(sourcegraph.RepoSpec{URI: c.RepoURI}, nil)
+	rrepo, _, err := cl.Repos.GetOrCreate(sourcegraph.RepoSpec{URI: c.RepoURI}, nil)
 	if sourcegraph.IsHTTPErrorCode(err, http.StatusNotFound) {
 		return nil, fmt.Errorf("No repository exists on the remote with the URI %q. To add it, use 'src remote add'. The underlying error was: %s", c.RepoURI, err)
 	}

@@ -1,31 +1,20 @@
 package graph
 
-import (
-	"strconv"
-
-	"sourcegraph.com/sourcegraph/go-nnz/nnz"
-)
-
-type RefDefKey struct {
-	DefRepo     string  `db:"def_repo" json:",omitempty"`
-	DefUnitType string  `db:"def_unit_type" json:",omitempty"`
-	DefUnit     string  `db:"def_unit" json:",omitempty"`
-	DefPath     DefPath `db:"def_path" json:",omitempty"`
-}
+import "strconv"
 
 type RefKey struct {
-	DefRepo     string  `db:"def_repo" json:",omitempty"`
-	DefUnitType string  `db:"def_unit_type" json:",omitempty"`
-	DefUnit     string  `db:"def_unit" json:",omitempty"`
-	DefPath     DefPath `db:"def_path" json:",omitempty"`
-	Def         bool    `json:",omitempty"`
-	Repo        string  `json:",omitempty"`
-	UnitType    string  `db:"unit_type" json:",omitempty"`
-	Unit        string  `json:",omitempty"`
-	File        string  `json:",omitempty"`
-	CommitID    string  `db:"commit_id" json:",omitempty"`
-	Start       int     `json:",omitempty"`
-	End         int     `json:",omitempty"`
+	DefRepo     string `json:",omitempty"`
+	DefUnitType string `json:",omitempty"`
+	DefUnit     string `json:",omitempty"`
+	DefPath     string `json:",omitempty"`
+	Def         bool   `json:",omitempty"`
+	Repo        string `json:",omitempty"`
+	UnitType    string `json:",omitempty"`
+	Unit        string `json:",omitempty"`
+	File        string `json:",omitempty"`
+	CommitID    string `json:",omitempty"`
+	Start       uint32 `json:",omitempty"`
+	End         uint32 `json:",omitempty"`
 }
 
 func (r *RefKey) RefDefKey() RefDefKey {
@@ -36,38 +25,6 @@ func (r *RefKey) RefDefKey() RefDefKey {
 		DefPath:     r.DefPath,
 	}
 }
-
-// START Ref OMIT
-// Ref represents a reference from source code to a def.
-type Ref struct {
-	// The definition that this reference points to
-	DefRepo     string  `db:"def_repo"`
-	DefUnitType string  `db:"def_unit_type"`
-	DefUnit     string  `db:"def_unit"`
-	DefPath     DefPath `db:"def_path"`
-
-	// Def is true if this ref is the original definition or a redefinition
-	Def bool
-
-	Repo string
-
-	// CommitID is the immutable commit ID (not the branch name) of the VCS
-	// revision that this ref was found in.
-	CommitID string `db:"commit_id" json:",omitempty"`
-
-	UnitType string `db:"unit_type" json:",omitempty"`
-	Unit     string `json:",omitempty"`
-
-	// Private is whether this reference is private, i.e., if it came from a private repository. Note that this means
-	// the the repository that contains the reference is private, NOT the repository to which the reference points.
-	Private nnz.Bool `json:",omitempty"`
-
-	File  string
-	Start int
-	End   int
-}
-
-// END Ref OMIT
 
 func (r *Ref) RefKey() RefKey {
 	return RefKey{
@@ -115,7 +72,7 @@ func (r *Ref) SetFromDefKey(k DefKey) {
 type Refs []*Ref
 
 func (r *Ref) sortKey() string {
-	return string(r.DefPath) + string(r.DefRepo) + r.DefUnitType + r.DefUnit + string(r.Repo) + r.UnitType + r.Unit + r.File + strconv.Itoa(r.Start) + strconv.Itoa(r.End)
+	return r.DefPath + r.DefRepo + r.DefUnitType + r.DefUnit + r.Repo + r.UnitType + r.Unit + r.File + strconv.Itoa(int(r.Start)) + strconv.Itoa(int(r.End))
 }
 func (vs Refs) Len() int           { return len(vs) }
 func (vs Refs) Swap(i, j int)      { vs[i], vs[j] = vs[j], vs[i] }

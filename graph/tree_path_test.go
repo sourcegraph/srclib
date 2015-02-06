@@ -3,7 +3,7 @@ package graph
 import "testing"
 
 func Test_TreePath(t *testing.T) {
-	treePaths := []TreePath{
+	treePaths := []string{
 		"foo",
 		"foo/bar",
 		"foo/-/bar",
@@ -27,16 +27,16 @@ func Test_TreePath(t *testing.T) {
 		".",
 		"./foo/bar",
 	}
-	notTreePaths := []TreePath{"", "/", "///", "foo//bar", "/foo/bar"}
+	notTreePaths := []string{"", "/", "///", "foo//bar", "/foo/bar"}
 
 	for _, tp := range treePaths {
-		if !tp.IsValid() {
+		if !IsValidTreePath(tp) {
 			t.Errorf("%s should be valid, but was invalid", tp)
 		}
 	}
 
 	for _, ntp := range notTreePaths {
-		if ntp.IsValid() {
+		if IsValidTreePath(ntp) {
 			t.Errorf("%s should be invalid, but was valid", ntp)
 		}
 	}

@@ -1,10 +1,6 @@
 package unit
 
-import (
-	"encoding/json"
-
-	"sourcegraph.com/sourcegraph/srclib/util/sqltypes"
-)
+import "encoding/json"
 
 // A RepoSourceUnit is the "concrete" form of SourceUnit that includes
 // information about which repository (and commit) the source unit exists in. In
@@ -12,16 +8,13 @@ import (
 // type RepoSourceUnit is used afterwards (either in cross-source-unit analysis,
 // such as cross-reference resolution, or in after-the-fact DB/API queries).
 type RepoSourceUnit struct {
-	Repo     string
-	CommitID string `db:"commit_id"`
-	UnitType string `db:"unit_type"`
-	Unit     string
-
-	// Private is true if this is from a private repository.
-	Private bool
+	Repo     string `json:",omitempty"`
+	CommitID string `json:",omitempty"`
+	UnitType string `json:",omitempty"`
+	Unit     string `json:",omitempty"`
 
 	// Data is the JSON of the underlying SourceUnit.
-	Data sqltypes.JSON
+	Data json.RawMessage
 }
 
 // NewRepoSourceUnit creates an equivalent RepoSourceUnit from a

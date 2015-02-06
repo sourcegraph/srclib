@@ -1,7 +1,7 @@
 package unit
 
 import (
-	"database/sql/driver"
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"path/filepath"
@@ -11,6 +11,21 @@ import (
 	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 )
+
+// Key is the unique key for a source unit.
+type Key struct {
+	// Repo is the URI of the repository containing this source unit.
+	Repo string
+
+	// CommitID is the VCS commit that the source unit exists at.
+	CommitID string
+
+	// UnitType is the source unit's Type.
+	UnitType string
+
+	// Unit is the source unit's Name.
+	Unit string
+}
 
 // START SourceUnit OMIT
 type SourceUnit struct {
@@ -28,22 +43,27 @@ type SourceUnit struct {
 	// Repo is the URI of the repository containing this source unit, if any.
 	// The scanner tool does not need to set this field - it can be left blank,
 	// to be filled in by the `src` tool
-	Repo string
+	Repo string `json:",omitempty"`
+
+	// CommitID is the commit ID of the repository containing this
+	// source unit, if any. The scanner tool need not fill this in; it
+	// should be left blank, to be filled in by the `src` tool.
+	CommitID string `json:",omitempty"`
 
 	// Globs is a list of patterns that match files that make up this source
 	// unit. It is used to detect when the source unit definition is out of date
 	// (e.g., when a file matches the glob but is not in the Files list).
 	//
 	// TODO(sqs): implement this in the Makefiles
-	Globs []string
+	Globs []string `json:",omitempty"`
 
 	// Files is all of the files that make up this source unit. Filepaths should
 	// be relative to the repository root.
-	Files []string
+	Files []string `json:",omitempty"`
 
 	// Dir is the root directory of this source unit. It is optional and maybe
 	// empty.
-	Dir string
+	Dir string `json:",omitempty"`
 
 	// Dependencies is a list of dependencies that this source unit has. The
 	// schema for these dependencies is internal to the scanner that produced
@@ -75,10 +95,19 @@ type SourceUnit struct {
 	// unit. Each key is the name of an operation, and the value is the tool to
 	// use to perform that operation. If the value is nil, the tool is chosen
 	// automatically according to the user's configuration.
-	Ops map[string]*srclib.ToolRef
+	Ops map[string]*srclib.ToolRef `json:",omitempty"`
 
 	// TODO(sqs): add a way to specify the toolchains and tools to use for
 	// various tasks on this source unit
+}
+
+func (u *SourceUnit) Key() Key {
+	return Key{
+		Repo:     u.Repo,
+		CommitID: u.CommitID,
+		UnitType: u.Type,
+		Unit:     u.Name,
+	}
 }
 
 //END SourceUnit OMIT
@@ -126,6 +155,19 @@ func (u SourceUnit) ID() ID {
 	return ID(fmt.Sprintf("%s%s%s", url.QueryEscape(u.Name), idSeparator, u.Type))
 }
 
+func (u *SourceUnit) ID2() ID2 {
+	return ID2{Type: u.Type, Name: u.Name}
+}
+
+func (u Key) ID2() ID2 {
+	return ID2{Type: u.UnitType, Name: u.Unit}
+}
+
+func (u SourceUnit) String() string {
+	b, _ := json.Marshal(u)
+	return string(b)
+}
+
 // ParseID parses the name and type from a source unit ID (from
 // (*SourceUnit).ID()).
 func ParseID(unitID string) (name, typ string, err error) {
@@ -142,22 +184,16 @@ func ParseID(unitID string) (name, typ string, err error) {
 	return name, typ, nil
 }
 
-// ID is a source unit ID.
+// ID is a source unit ID. It is only unique within a repository.
 type ID string
 
-// Value implements driver.Valuer.
-func (x ID) Value() (driver.Value, error) {
-	return string(x), nil
+// ID2 is a source unit ID. It is only unique within a repository.
+type ID2 struct {
+	Type string
+	Name string
 }
 
-// Scan implements sql.Scanner.
-func (x *ID) Scan(v interface{}) error {
-	if data, ok := v.([]byte); ok {
-		*x = ID(data)
-		return nil
-	}
-	return fmt.Errorf("%T.Scan failed: %v", x, v)
-}
+func (v ID2) String() string { return fmt.Sprintf("{%s %s}", v.Type, v.Name) }
 
 // ExpandPaths interprets paths, which contains paths (optionally with
 // filepath.Glob-compatible globs) that are relative to base. A list of actual
@@ -173,3 +209,9 @@ func ExpandPaths(base string, paths []string) ([]string, error) {
 	}
 	return expanded, nil
 }
+
+type SourceUnits []*SourceUnit
+
+func (v SourceUnits) Len() int           { return len(v) }
+func (v SourceUnits) Less(i, j int) bool { return v[i].String() < v[j].String() }
+func (v SourceUnits) Swap(i, j int)      { v[i], v[j] = v[j], v[i] }

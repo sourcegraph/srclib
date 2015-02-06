@@ -10,8 +10,8 @@ import (
 func init() {
 	// TODO(sqs): "do-all" is a stupid name
 	c, err := CLI.AddCommand("do-all",
-		"fully process (config, plan, and execute)",
-		`Fully processes a tree: configures it, plans the execution, and executes all analysis steps.`,
+		"fully process (config, plan, execute, and import)",
+		`Fully processes a tree: configures it, plans the execution, executes all analysis steps, and imports the data.`,
 		&doAllCmd,
 	)
 	if err != nil {
@@ -57,6 +57,12 @@ func (c *DoAllCmd) Execute(args []string) error {
 		BuildCacheOpt:    c.BuildCacheOpt,
 	}
 	if err := makeCmd.Execute(nil); err != nil {
+		return err
+	}
+
+	// store
+	storeImportCmd := &StoreImportCmd{}
+	if err := storeImportCmd.Execute(nil); err != nil {
 		return err
 	}
 

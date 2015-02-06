@@ -95,7 +95,7 @@ func UnresolvedInternalRefs(currentRepoURI string, refs []*graph.Ref, defs []*gr
 // PopulateImpliedFields fills in fields on graph data objects that
 // individual toolchains leave blank but that are implied by the
 // source unit the graph data objects were built from.
-func PopulateImpliedFields(repo, commitID, unitType, unit string, o *Output) {
+func PopulateImpliedFields(repo, commitID, unitType, unit string, o *graph.Output) {
 	for _, def := range o.Defs {
 		def.UnitType = unitType
 		def.Unit = unit

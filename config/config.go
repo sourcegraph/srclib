@@ -77,7 +77,7 @@ type Tree struct {
 // configuration.
 func ReadRepository(dir string, repoURI string) (*Repository, error) {
 	var c *Repository
-	if oc, overridden := overrides[repoURI]; overridden {
+	if oc, overridden := Overrides[repoURI]; overridden {
 		c = oc
 	} else if f, err := os.Open(filepath.Join(dir, Filename)); err == nil {
 		defer f.Close()
