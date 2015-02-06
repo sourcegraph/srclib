@@ -28,6 +28,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	buildDataGroup.Aliases = []string{"bd"}
 
 	c, err := buildDataGroup.AddCommand("ls",
 		"list build data files and dirs",
