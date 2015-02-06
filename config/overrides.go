@@ -1,8 +1,36 @@
 package config
 
-import "sourcegraph.com/sourcegraph/srclib/unit"
+import (
+	"encoding/json"
+	"log"
+	"os"
 
-var overrides = map[string]*Repository{
+	"strings"
+
+	"sourcegraph.com/sourcegraph/srclib/unit"
+)
+
+func init() {
+	additionalOverrides := os.Getenv("SRCLIB_ADDITIONAL_OVERRIDES")
+	if additionalOverrides != "" {
+		var o map[string]*Repository
+		if err := json.Unmarshal([]byte(additionalOverrides), &o); err != nil {
+			// HACK: In upstart, escaped double quotes include the backslash
+			// in the string. To get around this, we encode json using
+			// single quotes instead of double quotes, and make the switch
+			// here.
+			additionalOverrides = strings.Replace(additionalOverrides, `'`, `"`, -1)
+			if err := json.Unmarshal([]byte(additionalOverrides), &o); err != nil {
+				log.Fatalf("config/overrides.go init(): %s", err)
+			}
+		}
+		for k, v := range o {
+			Overrides[k] = v
+		}
+	}
+}
+
+var Overrides = map[string]*Repository{
 	"sourcegraph.com/sourcegraph/sourcegraph": {
 		URI: "sourcegraph.com/sourcegraph/sourcegraph",
 		Tree: Tree{

@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/grapher"
 )
 
@@ -30,12 +31,16 @@ var normalizeGraphDataCmd NormalizeGraphDataCmd
 func (c *NormalizeGraphDataCmd) Execute(args []string) error {
 	in := os.Stdin
 
-	var o *grapher.Output
+	var o *graph.Output
 	if err := json.NewDecoder(in).Decode(&o); err != nil {
 		return err
 	}
 
-	if err := grapher.NormalizeData(c.UnitType, c.Dir, o); err != nil {
+	localRepo, err := OpenRepo(".")
+	if err != nil {
+		return err
+	}
+	if err := grapher.NormalizeData(localRepo.URI(), c.UnitType, c.Dir, o); err != nil {
 		return err
 	}
 

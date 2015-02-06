@@ -64,7 +64,18 @@ func LocalRepo(repoDir string) (RepoBuildStore, error) {
 	if err := os.Mkdir(storeDir, 0700); err != nil && !os.IsExist(err) {
 		return nil, err
 	}
-	return Repo(rwvfs.Walkable(rwvfs.OS(storeDir))), nil
+	fs := rwvfs.OS(storeDir)
+	setCreateParentDirs(fs)
+	return Repo(rwvfs.Walkable(fs)), nil
+}
+
+func setCreateParentDirs(fs rwvfs.FileSystem) {
+	type createParents interface {
+		CreateParentDirs(bool)
+	}
+	if fs, ok := fs.(createParents); ok {
+		fs.CreateParentDirs(true)
+	}
 }
 
 type repoBuildStore struct {

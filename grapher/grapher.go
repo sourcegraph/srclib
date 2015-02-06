@@ -17,23 +17,12 @@ import (
 )
 
 type Grapher interface {
-	Graph(dir string, unit *unit.SourceUnit, c *config.Repository) (*Output, error)
+	Graph(dir string, unit *unit.SourceUnit, c *config.Repository) (*graph.Output, error)
 }
-
-// START Output OMIT
-// Output is produced by grapher tools.
-type Output struct {
-	Defs []*graph.Def `json:",omitempty"`
-	Refs []*graph.Ref `json:",omitempty"`
-	Docs []*graph.Doc `json:",omitempty"`
-	Anns []*ann.Ann   `json:",omitempty"`
-}
-
-// END Output OMIT
 
 // TODO(sqs): add grapher validation of output
 
-func ensureOffsetsAreByteOffsets(dir string, output *Output) {
+func ensureOffsetsAreByteOffsets(dir string, output *graph.Output) {
 	fset := fileset.NewFileSet()
 	files := make(map[string]*fileset.File)
 
@@ -52,7 +41,7 @@ func ensureOffsetsAreByteOffsets(dir string, output *Output) {
 		return f
 	}
 
-	fix := func(filename string, offsets ...*int) {
+	fix := func(filename string, offsets ...*uint32) {
 		defer func() {
 			if e := recover(); e != nil {
 				log.Printf("failed to convert unicode offset to byte offset in file %s (did grapher output a nonexistent byte offset?) continuing anyway...", filename)
@@ -70,11 +59,11 @@ func ensureOffsetsAreByteOffsets(dir string, output *Output) {
 			if *offset == 0 {
 				continue
 			}
-			before, after := *offset, f.ByteOffsetOfRune(*offset)
+			before, after := *offset, uint32(f.ByteOffsetOfRune(int(*offset)))
 			if before != after {
 				log.Printf("Changed pos %d to %d in %s", before, after, filename)
 			}
-			*offset = f.ByteOffsetOfRune(*offset)
+			*offset = uint32(f.ByteOffsetOfRune(int(*offset)))
 		}
 	}
 
@@ -92,7 +81,7 @@ func ensureOffsetsAreByteOffsets(dir string, output *Output) {
 	}
 }
 
-func sortedOutput(o *Output) *Output {
+func sortedOutput(o *graph.Output) *graph.Output {
 	sort.Sort(graph.Defs(o.Defs))
 	sort.Sort(graph.Refs(o.Refs))
 	sort.Sort(graph.Docs(o.Docs))
@@ -101,10 +90,15 @@ func sortedOutput(o *Output) *Output {
 }
 
 // NormalizeData sorts data and performs other postprocessing.
-func NormalizeData(unitType, dir string, o *Output) error {
+func NormalizeData(currentRepoURI, unitType, dir string, o *graph.Output) error {
 	for _, ref := range o.Refs {
 		if ref.DefRepo != "" {
 			ref.DefRepo = graph.MakeURI(string(ref.DefRepo))
+		} else {
+			ref.DefRepo = currentRepoURI
+		}
+		if ref.Repo == "" {
+			ref.Repo = currentRepoURI
 		}
 	}
 

@@ -17,7 +17,6 @@ import (
 	"github.com/aybabtme/color/brush"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/graph"
-	"sourcegraph.com/sourcegraph/srclib/grapher"
 )
 
 func init() {
@@ -248,7 +247,7 @@ func (c *DiffCmd) Execute(args []string) error {
 	}
 	defer actFile_.Close()
 
-	var expOutput, actOutput grapher.Output
+	var expOutput, actOutput graph.Output
 	err = json.NewDecoder(expFile_).Decode(&expOutput)
 	if err != nil {
 		return err

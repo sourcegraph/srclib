@@ -2,8 +2,21 @@ package toolchain
 
 import (
 	"fmt"
+	"os"
+
+	"strconv"
 
 	"sourcegraph.com/sourcegraph/srclib"
+)
+
+var (
+	// noToolchains operates srclib in no-toolchain mode, where it
+	// does not try to look for system toolchains in your SRCLIBPATH.
+	noToolchains, _ = strconv.ParseBool(os.Getenv("SRCLIB_NO_TOOLCHAINS"))
+
+	// noneToolchain is returned by ChooseTool when noToolchains is
+	// true.
+	noneToolchain = &srclib.ToolRef{Toolchain: "NONE", Subcmd: "NONE"}
 )
 
 // ChooseTool determines which toolchain and tool to use to run op (graph,
@@ -15,6 +28,9 @@ import (
 // more than 1 are found, then an error is returned. TODO(sqs): extend this to
 // choose the "best" tool when multiple tools would suffice.
 func ChooseTool(op, unitType string) (*srclib.ToolRef, error) {
+	if noToolchains {
+		return noneToolchain, nil
+	}
 	tcs, err := List()
 	if err != nil {
 		return nil, err
