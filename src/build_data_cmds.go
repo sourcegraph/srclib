@@ -544,9 +544,12 @@ func uploadFile(local vfs.FileSystem, remote rwvfs.FileSystem, path string, fi o
 		return err
 	}
 
+	if err := rf.Close(); err != nil {
+		return err
+	}
+
 	if GlobalOpt.Verbose {
 		log.Printf("Uploaded %s (%.1fkb)", path, kb)
 	}
-
-	return rf.Close()
+	return nil
 }
