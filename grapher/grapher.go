@@ -92,13 +92,17 @@ func sortedOutput(o *graph.Output) *graph.Output {
 // NormalizeData sorts data and performs other postprocessing.
 func NormalizeData(currentRepoURI, unitType, dir string, o *graph.Output) error {
 	for _, ref := range o.Refs {
+		if ref.DefRepo == currentRepoURI {
+			ref.DefRepo = ""
+		}
 		if ref.DefRepo != "" {
 			ref.DefRepo = graph.MakeURI(string(ref.DefRepo))
-		} else {
-			ref.DefRepo = currentRepoURI
 		}
-		if ref.Repo == "" {
-			ref.Repo = currentRepoURI
+		if ref.Repo == currentRepoURI {
+			ref.Repo = ""
+		}
+		if ref.Repo != "" {
+			ref.Repo = graph.MakeURI(string(ref.Repo))
 		}
 	}
 
