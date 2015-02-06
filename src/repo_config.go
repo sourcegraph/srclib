@@ -106,8 +106,9 @@ func getRootDir(dir string) (rootDir string, vcsType string, err error) {
 	for i := len(ancestors) - 1; i >= 0; i-- {
 		ancDir := ancestors[i]
 		for _, vt := range vcsTypes {
-			fi, err := os.Stat(filepath.Join(ancDir, "."+vt))
-			if err == nil && fi.IsDir() {
+			// Don't check that the FileInfo is a dir because git
+			// submodules have a .git file.
+			if _, err := os.Stat(filepath.Join(ancDir, "."+vt)); err == nil {
 				return ancDir, vt, nil
 			}
 		}
