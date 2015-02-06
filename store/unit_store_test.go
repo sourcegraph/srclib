@@ -2,12 +2,8 @@ package store
 
 import (
 	"reflect"
-	"testing"
-
-	"github.com/kr/pretty"
-
 	"sort"
-	"strings"
+	"testing"
 
 	"sourcegraph.com/sourcegraph/srclib/graph"
 )
@@ -147,7 +143,6 @@ func testUnitStore_Defs(t *testing.T, us UnitStoreImporter) {
 	}
 	if want := data.Defs; !reflect.DeepEqual(defs, want) {
 		t.Errorf("%s: Defs(): got defs %v, want %v", us, defs, want)
-		t.Log(strings.Join(pretty.Diff(defs[0], want[0]), "\n"))
 	}
 }
 
@@ -179,7 +174,6 @@ func testUnitStore_Defs_SortByName(t *testing.T, us UnitStoreImporter) {
 	DefsSortByName{}.DefsSort(data.Defs)
 	if want := data.Defs; !reflect.DeepEqual(defs, want) {
 		t.Errorf("%s: Defs(): got defs %v, want %v", us, defs, want)
-		t.Log(strings.Join(pretty.Diff(defs[0], want[0]), "\n"))
 	}
 }
 
