@@ -19,8 +19,6 @@ func (d DocKey) String() string {
 	return string(b)
 }
 
-// END Doc OMIT
-
 func (d *Doc) sortKey() string { return d.Key().String() }
 
 // Sorting
