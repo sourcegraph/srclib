@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -18,6 +19,8 @@ import (
 	"code.google.com/p/rog-go/parallel"
 
 	"golang.org/x/tools/godoc/vfs"
+
+	"sort"
 
 	"sourcegraph.com/sourcegraph/go-flags"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
@@ -954,6 +957,8 @@ type StoreRefsCmd struct {
 	DefUnit     string `long:"def-unit"`
 	DefPath     string `long:"def-path"`
 
+	Broken bool `long:"broken" description:"only show refs that point to nonexistent defs"`
+
 	Limit  int `short:"n" long:"limit" description:"max results to return (0 for all)"`
 	Offset int `long:"offset" description:"results offset (0 to start with first results)"`
 }
@@ -995,9 +1000,23 @@ func (c *StoreRefsCmd) filters() []store.RefFilter {
 			DefUnit:     c.DefUnit,
 			DefPath:     c.DefPath,
 		}))
-	}
-	if c.DefPath == "" && (c.DefRepo != "" || c.DefUnitType != "" || c.DefUnit != "") {
-		log.Fatal("must specify --def-path if you specify any of --def-repo, --def-unit-type, --def-unit (to filter by ref target def)")
+	} else {
+		// Slower filters since they don't use an index.
+		if c.DefRepo != "" {
+			fs = append(fs, store.AbsRefFilterFunc(store.RefFilterFunc(func(ref *graph.Ref) bool {
+				return ref.DefRepo == c.DefRepo
+			})))
+		}
+		if c.DefUnitType != "" {
+			fs = append(fs, store.AbsRefFilterFunc(store.RefFilterFunc(func(ref *graph.Ref) bool {
+				return ref.DefUnitType == c.DefUnitType
+			})))
+		}
+		if c.DefUnit != "" {
+			fs = append(fs, store.AbsRefFilterFunc(store.RefFilterFunc(func(ref *graph.Ref) bool {
+				return ref.DefUnit == c.DefUnit
+			})))
+		}
 	}
 	if c.Limit != 0 || c.Offset != 0 {
 		fs = append(fs, store.Limit(c.Limit, c.Offset))
@@ -1022,8 +1041,56 @@ func (c *StoreRefsCmd) Execute(args []string) error {
 	if err != nil {
 		return err
 	}
+
+	if c.Broken {
+		refs, err = brokenRefsOnly(refs, s)
+		if err != nil {
+			return err
+		}
+	}
+
 	PrintJSON(refs, "  ")
 	return nil
+}
+
+func brokenRefsOnly(refs []*graph.Ref, s interface{}) ([]*graph.Ref, error) {
+	uniqRefDefs := map[graph.DefKey][]*graph.Ref{}
+	for _, ref := range refs {
+		if ref.Repo != ref.DefRepo {
+			// TODO(sqs): need to skip these because we don't know the
+			// "DefCommitID" in the def's repo, and ByDefKey requires
+			// the key to have a CommitID.
+			log.Printf("ref.Repo=%q != ref.DefRepo=%q", ref.Repo, ref.DefRepo)
+			continue
+		}
+		def := ref.DefKey()
+		def.CommitID = ref.CommitID
+		uniqRefDefs[def] = append(uniqRefDefs[def], ref)
+	}
+
+	var (
+		brokenRefs  []*graph.Ref
+		brokenRefMu sync.Mutex
+		par         = parallel.NewRun(runtime.GOMAXPROCS(0))
+	)
+	for def_, refs_ := range uniqRefDefs {
+		def, refs := def_, refs_
+		par.Do(func() error {
+			defs, err := s.(store.RepoStore).Defs(store.ByDefKey(def))
+			if err != nil {
+				return err
+			}
+			if len(defs) == 0 {
+				brokenRefMu.Lock()
+				brokenRefs = append(brokenRefs, refs...)
+				brokenRefMu.Unlock()
+			}
+			return nil
+		})
+	}
+	err := par.Wait()
+	sort.Sort(graph.Refs(brokenRefs))
+	return brokenRefs, err
 }
 
 func makeRepoCommitIDsFilter(repoCommitIDs string) interface {

@@ -419,26 +419,20 @@ func (f byUnitKeyFilter) SelectUnit(unit *unit.SourceUnit) bool {
 		(unit.Type == "" || unit.Type == f.key.UnitType) && (unit.Name == "" || unit.Name == f.key.Unit)
 }
 
-// ByDefKey returns a filter by a def key. It panics if any fields on
-// the def key are not set.
+// ByDefKey returns a filter by a def key. It panics if the def path
+// is not set. If you pass a ByDefKey filter to a store that's scoped
+// to a specific repo/version/unit, then it will match all items in
+// that repo/version/unit even if the
+// key.Repo/key.CommitID/key.UnitType/key.Unit fields do not match
+// (because stores do not "know" the repo/version/unit they store data
+// for, and therefore they can't apply filter criteria for the level
+// above them).
 func ByDefKey(key graph.DefKey) interface {
 	DefFilter
 	ByReposFilter
 	ByCommitIDsFilter
 	ByUnitsFilter
 } {
-	if key.Repo == "" {
-		panic("key.Repo: empty")
-	}
-	if key.CommitID == "" {
-		panic("key.CommitID: empty")
-	}
-	if key.UnitType == "" {
-		panic("key.UnitType: empty")
-	}
-	if key.Unit == "" {
-		panic("key.Unit: empty")
-	}
 	if key.Path == "" {
 		panic("key.Path: empty")
 	}
