@@ -236,6 +236,11 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 		return err
 	}
 
+	var (
+		mu               sync.Mutex
+		hasIndexableData bool
+	)
+
 	par := parallel.NewRun(10)
 	for _, rule_ := range mf.Rules {
 		rule := rule_
@@ -259,6 +264,10 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 		par.Do(func() error {
 			switch rule := rule.(type) {
 			case *grapher.GraphUnitRule:
+				mu.Lock()
+				hasIndexableData = true
+				mu.Unlock()
+
 				var data graph.Output
 				if err := readJSONFileFS(buildDataFS, rule.Target(), &data); err != nil {
 					if os.IsNotExist(err) {
@@ -305,7 +314,7 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 		return err
 	}
 
-	if !opt.NoIndex {
+	if hasIndexableData && !opt.NoIndex {
 		if GlobalOpt.Verbose {
 			log.Printf("# Building indexes")
 		}
