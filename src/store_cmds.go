@@ -264,10 +264,6 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 		par.Do(func() error {
 			switch rule := rule.(type) {
 			case *grapher.GraphUnitRule:
-				mu.Lock()
-				hasIndexableData = true
-				mu.Unlock()
-
 				var data graph.Output
 				if err := readJSONFileFS(buildDataFS, rule.Target(), &data); err != nil {
 					if os.IsNotExist(err) {
@@ -306,6 +302,10 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 				default:
 					return fmt.Errorf("store (type %T) does not implement importing", stor)
 				}
+
+				mu.Lock()
+				hasIndexableData = true
+				mu.Unlock()
 			}
 			return nil
 		})
