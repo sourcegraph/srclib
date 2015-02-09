@@ -8,8 +8,8 @@ import (
 
 	"strconv"
 
-	"github.com/gregjones/httpcache"
-	"github.com/gregjones/httpcache/diskcache"
+	"github.com/sourcegraph/httpcache"
+	"github.com/sourcegraph/httpcache/diskcache"
 	"sourcegraph.com/sourcegraph/go-flags"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/auth"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
