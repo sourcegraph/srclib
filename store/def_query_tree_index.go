@@ -144,6 +144,11 @@ func (x *defQueryTreeIndex) Build(xs map[unit.ID2]*defQueryIndex) (err error) {
 			}
 		}
 		if qx.mt.t != nil {
+			if _, present := unitNums[u]; !present {
+				// Skip unit - it is the 256th or above unit (and we
+				// store that index in a uint8 now :( ).
+				continue
+			}
 			traverse("", unitNums[u], qx.mt.t.Root)
 		}
 	}
@@ -215,6 +220,45 @@ func (x *defQueryTreeIndex) Read(r io.Reader) error {
 	}
 	x.ready = (err == nil)
 	return err
+}
+
+// Fprint prints a human-readable representation of the index.
+func (x *defQueryTreeIndex) Fprint(w io.Writer) error {
+	if x.mt == nil {
+		panic("mafsaTable not built/read")
+	}
+
+	allTerms := make([]string, 0, len(x.mt.Values))
+	var getAllTerms func(term string, n *mafsa.MinTreeNode)
+	getAllTerms = func(term string, n *mafsa.MinTreeNode) {
+		if n.Final {
+			allTerms = append(allTerms, term)
+		}
+		for _, c := range n.OrderedEdges() {
+			getAllTerms(term+string([]rune{c}), n.Edges[c])
+		}
+	}
+
+	getAllTerms("", x.mt.t.Root)
+	fmt.Fprintln(w, "Terms")
+	for i, term := range allTerms {
+		fmt.Fprintf(w, "  %d - %q\n", i, term)
+	}
+
+	fmt.Fprintln(w)
+
+	fmt.Fprintln(w, "Unit offsets")
+	for i, uofss := range x.mt.Values {
+		fmt.Fprintf(w, "Term %q (node %d)\n", allTerms[i], i)
+		for _, uofs := range uofss {
+			fmt.Fprintf(w, "\tUnit %v\n", x.mt.Units[uofs.Unit])
+			for _, ofs := range uofs.byteOffsets {
+				fmt.Fprintf(w, "\t\t%d\n", ofs)
+			}
+		}
+	}
+
+	return nil
 }
 
 // Ready implements persistedIndex.

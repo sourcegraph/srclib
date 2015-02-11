@@ -29,6 +29,9 @@ type indexedStore interface {
 	// BuildIndex builds the index with the specified name.
 	BuildIndex(name string, x Index) error
 
+	// readIndex calls the readIndex func on the given index.
+	readIndex(name string, x persistedIndex) error
+
 	// statIndex calls vfs.Stat on the index's backing file or
 	// directory.
 	statIndex(name string) (os.FileInfo, error)
@@ -313,6 +316,10 @@ func (s *indexedTreeStore) BuildIndex(name string, x Index) error {
 	return s.buildIndexes(map[string]Index{name: x}, nil, nil, nil)
 }
 
+func (s *indexedTreeStore) readIndex(name string, x persistedIndex) error {
+	return readIndex(s.fs, name, x)
+}
+
 func (s *indexedTreeStore) buildIndexes(xs map[string]Index, units []*unit.SourceUnit, unitRefIndexes map[unit.ID2]*defRefsIndex, unitDefQueryIndexes map[unit.ID2]*defQueryIndex) error {
 	// TODO(sqs): there's a race condition here if multiple imports
 	// are running concurrently, they could clobber each other's
@@ -404,7 +411,7 @@ func (s *indexedTreeStore) buildIndexes(xs map[string]Index, units []*unit.Sourc
 				}
 
 				unitDefQueryIndexes = make(map[unit.ID2]*defQueryIndex, len(units))
-				par := parallel.NewRun(runtime.GOMAXPROCS(0))
+				par := parallel.NewRun(len(units))
 				for u_, us_ := range uss {
 					u := u_
 					us, ok := us_.(*indexedUnitStore)
@@ -610,6 +617,10 @@ func (s *indexedUnitStore) Indexes() map[string]Index { return s.indexes }
 
 func (s *indexedUnitStore) BuildIndex(name string, x Index) error {
 	return s.buildIndexes(map[string]Index{name: x}, nil, nil, nil, nil)
+}
+
+func (s *indexedUnitStore) readIndex(name string, x persistedIndex) error {
+	return readIndex(s.fs, name, x)
 }
 
 func (s *indexedUnitStore) buildIndexes(xs map[string]Index, data *graph.Output, defOfs byteOffsets, refFBRs fileByteRanges, refOfs byteOffsets) error {

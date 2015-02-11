@@ -1,6 +1,7 @@
 package store
 
 import (
+	"io"
 	"log"
 	"os"
 	"reflect"
@@ -66,6 +67,28 @@ type IndexStatus struct {
 	// BuildDuration is how long it took to build the index. It is
 	// only returned by BuildIndexes (not Indexes).
 	BuildDuration time.Duration `json:",omitempty"`
+
+	// index is the actual index object. It is used to support Print.
+	index Index
+
+	// store is the indexed store that holds the index. It is used to
+	// support Print.
+	store indexedStore
+}
+
+// Fprint prints a representation of s's index's contents to w.
+func (s IndexStatus) Fprint(w io.Writer) error {
+	type printer interface {
+		Fprint(io.Writer) error
+	}
+	if px, ok := s.index.(printer); ok {
+		if err := s.store.readIndex(s.Name, s.index.(persistedIndex)); err != nil {
+			return err
+		}
+		return px.Fprint(w)
+	}
+	log.Printf("WARNING: Index %q does not support printing.", s.Name)
+	return nil
 }
 
 // IndexCriteria restricts a set of indexes to only those that match
@@ -82,32 +105,36 @@ type IndexCriteria struct {
 	ReposOffset int
 }
 
+// NoSourceUnit can be used as a value for IndexCriteria.Unit to
+// indicate that source unit indexes should not be selected.
+var NoSourceUnit = &unit.ID2{}
+
 // BuildIndexes builds all indexes on store and its lower-level stores
 // that match the specified criteria. It returns the status of each
 // index that was built (or rebuilt).
 func BuildIndexes(store interface{}, c IndexCriteria, indexChan chan<- IndexStatus) ([]IndexStatus, error) {
 	var built []IndexStatus
 	var builtMu sync.Mutex
-	indexChan2 := make(chan storeIndex)
+	indexChan2 := make(chan IndexStatus)
 	done := make(chan struct{})
 	go func() {
 		var par *parallel.Run
 		lastDependsOnChildren := false
 		for sx := range indexChan2 {
-			doBuild := func(sx storeIndex) {
+			doBuild := func(sx IndexStatus) {
 				start := time.Now()
-				err := sx.store.BuildIndex(sx.status.Name, sx.index)
-				sx.status.BuildDuration = time.Since(start)
+				err := sx.store.BuildIndex(sx.Name, sx.index)
+				sx.BuildDuration = time.Since(start)
 				if err == nil {
-					sx.status.Stale = false
+					sx.Stale = false
 				} else {
-					sx.status.BuildError = err.Error()
+					sx.BuildError = err.Error()
 				}
 				builtMu.Lock()
-				built = append(built, sx.status)
+				built = append(built, sx)
 				builtMu.Unlock()
 				if indexChan != nil {
-					indexChan <- sx.status
+					indexChan <- sx
 				}
 			}
 
@@ -115,7 +142,7 @@ func BuildIndexes(store interface{}, c IndexCriteria, indexChan chan<- IndexStat
 			// encounter an index that depends on children, wait for
 			// all previously seen indexes to finish before building
 			// those indexes.
-			if sx.status.DependsOnChildren != lastDependsOnChildren && par != nil {
+			if sx.DependsOnChildren != lastDependsOnChildren && par != nil {
 				par.Wait()
 				par = nil
 			}
@@ -125,7 +152,7 @@ func BuildIndexes(store interface{}, c IndexCriteria, indexChan chan<- IndexStat
 			sx_ := sx
 			par.Do(func() error { doBuild(sx_); return nil })
 
-			lastDependsOnChildren = sx.status.DependsOnChildren
+			lastDependsOnChildren = sx.DependsOnChildren
 		}
 		if par != nil {
 			par.Wait()
@@ -148,13 +175,13 @@ func BuildIndexes(store interface{}, c IndexCriteria, indexChan chan<- IndexStat
 // returns (if desired).
 func Indexes(store interface{}, c IndexCriteria, indexChan chan<- IndexStatus) ([]IndexStatus, error) {
 	var xs []IndexStatus
-	indexChan2 := make(chan storeIndex)
+	indexChan2 := make(chan IndexStatus)
 	done := make(chan struct{})
 	go func() {
 		for sx := range indexChan2 {
-			xs = append(xs, sx.status)
+			xs = append(xs, sx)
 			if indexChan != nil {
-				indexChan <- sx.status
+				indexChan <- sx
 			}
 		}
 		done <- struct{}{}
@@ -165,28 +192,21 @@ func Indexes(store interface{}, c IndexCriteria, indexChan chan<- IndexStatus) (
 	return xs, err
 }
 
-// storeIndex is a (store,index) pair that makes it easy to perform
-// both both index status listing and index creation. It is sent on
-// the channel by listIndexes to its callers.
-type storeIndex struct {
-	store  indexedStore
-	status IndexStatus
-	index  Index
-}
-
 // listIndexes lists indexes in s (a store) asynchronously, sending
 // status objects to ch. If f != nil, it is called to set/modify
-// fields on each status object before the storeIndex object is sent to
+// fields on each status object before the IndexStatus object is sent to
 // the channel.
-func listIndexes(s interface{}, c IndexCriteria, ch chan<- storeIndex, f func(*IndexStatus)) error {
+func listIndexes(s interface{}, c IndexCriteria, ch chan<- IndexStatus, f func(*IndexStatus)) error {
 	switch s := s.(type) {
 	case indexedStore:
 		xx := s.Indexes()
-		var waitingOnChildren []storeIndex
+		var waitingOnChildren []IndexStatus
 		for name, x := range xx {
 			st := IndexStatus{
-				Name: name,
-				Type: strings.TrimPrefix(reflect.TypeOf(x).String(), "*store."),
+				Name:  name,
+				Type:  strings.TrimPrefix(reflect.TypeOf(x).String(), "*store."),
+				index: x,
+				store: s,
 			}
 
 			if !strings.Contains(st.Name, c.Name) {
@@ -214,14 +234,20 @@ func listIndexes(s interface{}, c IndexCriteria, ch chan<- storeIndex, f func(*I
 				continue
 			}
 
-			si := storeIndex{store: s, status: st, index: x}
 			if f != nil {
-				f(&si.status)
+				f(&st)
 			}
+
+			if c.Unit != nil && c.Unit != NoSourceUnit {
+				if st.Unit == nil || *c.Unit != *st.Unit {
+					continue
+				}
+			}
+
 			if st.DependsOnChildren {
-				waitingOnChildren = append(waitingOnChildren, si)
+				waitingOnChildren = append(waitingOnChildren, st)
 			} else {
-				ch <- si
+				ch <- st
 			}
 		}
 
@@ -307,6 +333,9 @@ func listIndexes(s interface{}, c IndexCriteria, ch chan<- storeIndex, f func(*I
 		}
 
 	case unitStoreOpener:
+		if c.Unit == NoSourceUnit {
+			return nil
+		}
 		var uss map[unit.ID2]UnitStore
 		if c.Unit == nil {
 			var err error

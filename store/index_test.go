@@ -1,7 +1,10 @@
 package store
 
 import (
+	"reflect"
 	"testing"
+
+	"github.com/alecthomas/binary"
 
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -77,5 +80,22 @@ func TestBestCoverageIndex(t *testing.T) {
 		if name != test.wantBestName {
 			t.Errorf("%s: got best index %q, want %q", label, name, test.wantBestName)
 		}
+	}
+}
+
+func TestUnitOffsets_BinaryEncoding(t *testing.T) {
+	uofs := unitOffsets{Unit: 123, byteOffsets: []int64{1, 100, 1000, 200, 2}}
+	b, err := binary.Marshal(&uofs)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var uofs2 unitOffsets
+	if err := binary.Unmarshal(b, &uofs2); err != nil {
+		t.Fatal(err)
+	}
+
+	if !reflect.DeepEqual(uofs2, uofs) {
+		t.Errorf("got %v, want %v", uofs2, uofs)
 	}
 }
