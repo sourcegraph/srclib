@@ -502,7 +502,7 @@ var _ interface {
 
 // newIndexedUnitStore creates a new indexed unit store that stores
 // data and indexes in fs.
-func newIndexedUnitStore(fs rwvfs.FileSystem) UnitStoreImporter {
+func newIndexedUnitStore(fs rwvfs.FileSystem, label string) UnitStoreImporter {
 	return &indexedUnitStore{
 		indexes: map[string]Index{
 			"path_to_def":  &defPathIndex{},
@@ -518,7 +518,7 @@ func newIndexedUnitStore(fs rwvfs.FileSystem) UnitStoreImporter {
 			defToRefsIndexName: &defRefsIndex{},
 			defQueryIndexName:  &defQueryIndex{f: defQueryFilter},
 		},
-		fsUnitStore: &fsUnitStore{fs: fs},
+		fsUnitStore: &fsUnitStore{fs: fs, label: label},
 	}
 }
 
