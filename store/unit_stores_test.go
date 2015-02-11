@@ -1,6 +1,7 @@
 package store
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -215,6 +216,42 @@ func TestScopeUnits(t *testing.T) {
 		sort.Sort(unitID2s(test.want))
 		if !reflect.DeepEqual(units, test.want) {
 			t.Errorf("%+v: got units %v, want %v", test.filters, units, test.want)
+		}
+	}
+}
+
+func TestFiltersForUnit(t *testing.T) {
+	tests := []struct {
+		filters    interface{}
+		wantByUnit map[unit.ID2]interface{}
+	}{
+		{
+			filters:    nil,
+			wantByUnit: nil,
+		},
+		{
+			filters: []DefFilter{ByUnits(unit.ID2{Type: "t", Name: "u"})},
+			wantByUnit: map[unit.ID2]interface{}{
+				unit.ID2{Type: "t", Name: "u"}: []DefFilter{},
+			},
+		},
+		{
+			filters: []DefFilter{ByRepos("r"), ByUnits(unit.ID2{Type: "t", Name: "u"})},
+			wantByUnit: map[unit.ID2]interface{}{
+				unit.ID2{Type: "t", Name: "u"}: []DefFilter{ByRepos("r")},
+			},
+		},
+	}
+	for _, test := range tests {
+		for unit, want := range test.wantByUnit {
+			pre := fmt.Sprintf("%+v", test.filters)
+			unitFilters := filtersForUnit(unit, test.filters)
+			if !reflect.DeepEqual(unitFilters, want) {
+				t.Errorf("%+v: unit %q: got unit filters %v, want %v", test.filters, unit, unitFilters, want)
+			}
+			if post := fmt.Sprintf("%+v", test.filters); pre != post {
+				t.Errorf("%+v: filters modified: post filtersToUnit, filters == %v", test.filters, post)
+			}
 		}
 	}
 }

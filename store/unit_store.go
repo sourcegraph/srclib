@@ -62,35 +62,7 @@ func (s unitStores) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 		}
 
 		par.Do(func() error {
-			// If the filters list includes any unitDefOffsetsFilter, then
-			// clone and transform that filter into a defOffsetsFilter
-			// that only includes offsets to fetch from the source unit of
-			// the store. (This is necessary because the store doesn't
-			// know which unit it holds data for, so it doesn't know which
-			// offsets to look up given just a unitDefOffsetsFilter
-			// map[unit.ID2]byteOffsets map.)
-			fs2 := fs
-			for i, f := range fs {
-				switch f := f.(type) {
-				case unitDefOffsetsFilter:
-					fs2 = make([]DefFilter, len(fs))
-					for j := range fs {
-						if j == i {
-							// Transform unitDefOffsetsFilter to
-							// defOffsetsFilter for the current source
-							// unit.
-							fs2[j] = defOffsetsFilter(f[u])
-						} else {
-							// Copy existing filter if it's of any other
-							// type. (Assumes the filters list contains no
-							// more than 1 unitDefOffsetsFilters.)
-							fs2[j] = fs[j]
-						}
-					}
-				}
-			}
-
-			defs, err := us.Defs(fs2...)
+			defs, err := us.Defs(filtersForUnit(u, fs).([]DefFilter)...)
 			if err != nil && !isStoreNotExist(err) {
 				return err
 			}
@@ -125,7 +97,7 @@ func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 
 		c_unitStores_Refs_last_numUnitsQueried++
 		setImpliedUnit(f, u)
-		refs, err := us.Refs(f...)
+		refs, err := us.Refs(filtersForUnit(u, f).([]RefFilter)...)
 		if err != nil && !isStoreNotExist(err) {
 			return nil, err
 		}

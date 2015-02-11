@@ -1,6 +1,11 @@
 package store
 
-import "sourcegraph.com/sourcegraph/srclib/unit"
+import (
+	"fmt"
+	"reflect"
+
+	"sourcegraph.com/sourcegraph/srclib/unit"
+)
 
 // scopeUnits returns a list of units that are matched by the
 // filters. If potentially all units could match, or if enough units
@@ -71,4 +76,50 @@ func openUnitStores(o unitStoreOpener, filters interface{}) (map[unit.ID2]UnitSt
 		uss[u] = o.openUnitStore(u)
 	}
 	return uss, nil
+}
+
+// filtersForUnit modifies the filters list to remove filters or
+// conditions inside filters that are guaranteed to be true or
+// unnecessary when using the filters on a call to a specific unit
+// store.
+func filtersForUnit(unit unit.ID2, filters interface{}) interface{} {
+	// Copy filters so that it can be used concurrently.
+	sf := storeFilters(filters)
+	unitFilters := make([]interface{}, len(sf))
+	copy(unitFilters, sf)
+
+	d := 0 // deleted (-) and added (+) indexes in unitFilters vs. sf
+	for i, f := range sf {
+		switch f := f.(type) {
+
+		case unitDefOffsetsFilter:
+			found := false
+			for u, ofs := range f {
+				if u == unit {
+					unitFilters[i+d] = defOffsetsFilter(ofs)
+					found = true
+					break
+				}
+			}
+			if !found {
+				panic(fmt.Sprintf("in unitDefOffsetsFilter, no unit == %v", unit))
+			}
+
+		case byUnitsFilter:
+			found := false
+			for _, u := range f.ByUnits() {
+				if u == unit {
+					unitFilters = append(unitFilters[:i+d], unitFilters[i+d+1:]...)
+					found = true
+					d--
+					break
+				}
+			}
+			if !found {
+				panic(fmt.Sprintf("in ByUnitsFilter, no unit == %v", unit))
+			}
+		}
+	}
+
+	return toTypedFilterSlice(reflect.TypeOf(filters), unitFilters)
 }
