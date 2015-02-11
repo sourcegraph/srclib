@@ -113,7 +113,7 @@ func filtersForRepo(repo string, filters interface{}) interface{} {
 				}
 			}
 			if !found {
-				panic(fmt.Sprintf("in ByRepoCommitIDsFilter, no version.Repo == %q", repo))
+				panic(fmt.Sprintf("in ByReposFilter, no version.Repo == %q", repo))
 			}
 		}
 	}
