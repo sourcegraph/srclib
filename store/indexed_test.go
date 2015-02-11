@@ -5,7 +5,7 @@ import "testing"
 func TestIndexedUnitStore(t *testing.T) {
 	useIndexedStore = true
 	testUnitStore(t, func() UnitStoreImporter {
-		return newIndexedUnitStore(newTestFS())
+		return newIndexedUnitStore(newTestFS(), "")
 	})
 }
 

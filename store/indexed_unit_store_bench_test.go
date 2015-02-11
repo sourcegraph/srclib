@@ -51,7 +51,7 @@ func newFSUnitStore() UnitStoreImporter {
 
 func idxUnitStore() UnitStoreImporter {
 	fs := rwvfs.Map(map[string]string{})
-	return newIndexedUnitStore(fs)
+	return newIndexedUnitStore(fs, "")
 }
 
 func benchmarkUnitStore_Def(b *testing.B, us UnitStoreImporter, numDefs int) {
