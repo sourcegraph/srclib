@@ -553,7 +553,7 @@ func (s *fsUnitStore) defsAtOffsets(ofs byteOffsets, fs []DefFilter) (defs []*gr
 // readDefs reads all defs from the def data file and returns them
 // along with their serialized byte offsets.
 func (s *fsUnitStore) readDefs() (defs []*graph.Def, ofs byteOffsets, err error) {
-	vlog.Printf("%s: reading defs and byte offsets...")
+	vlog.Printf("%s: reading defs and byte offsets...", s)
 	f, err := s.fs.Open(unitDefsFilename)
 	if err != nil {
 		return nil, nil, err
