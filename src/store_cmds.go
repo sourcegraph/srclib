@@ -572,6 +572,8 @@ type storeIndexCriteria struct {
 	Name     string `long:"name" description:"only indexes whose name contains this substring"`
 	Type     string `long:"type" description:"only indexes whose Go type contains this substring"`
 
+	NoSourceUnit bool `long:"no-unit" description:"skip indexes for specific source units"`
+
 	Stale    bool `long:"stale" description:"only stale indexes"`
 	NotStale bool `long:"not-stale" description:"only non-stale indexes"`
 
@@ -597,6 +599,9 @@ func (c storeIndexCriteria) IndexCriteria() store.IndexCriteria {
 		f := false
 		crit.Stale = &f
 	}
+	if c.NoSourceUnit {
+		crit.Unit = store.NoSourceUnit
+	}
 	if c.UnitType != "" || c.Unit != "" {
 		crit.Unit = &unit.ID2{Type: c.UnitType, Name: c.Unit}
 		if crit.Unit.Type == "" || crit.Unit.Name == "" {
@@ -616,6 +621,13 @@ func doStoreIndexesCmd(crit store.IndexCriteria, opt storeIndexOptions, f func(i
 	}
 	store.MaxIndexParallel = opt.Parallel
 
+	printIndex := func(x store.IndexStatus) error {
+		if !opt.Print {
+			return nil
+		}
+		return x.Fprint(os.Stderr)
+	}
+
 	s, err := OpenStore()
 	if err != nil {
 		return err
@@ -629,6 +641,9 @@ func doStoreIndexesCmd(crit store.IndexCriteria, opt storeIndexOptions, f func(i
 		go func() {
 			for x := range indexChan {
 				PrintJSON(x, "")
+				if err := printIndex(x); err != nil {
+					log.Fatal(err)
+				}
 			}
 			done <- struct{}{}
 		}()
@@ -686,6 +701,10 @@ func doStoreIndexesCmd(crit store.IndexCriteria, opt storeIndexOptions, f func(i
 				}
 				fmt.Println()
 
+				if err := printIndex(x); err != nil {
+					log.Fatal(err)
+				}
+
 				lastRepo = x.Repo
 				lastCommitID = x.CommitID
 				lastUnit = x.Unit
@@ -713,6 +732,8 @@ func doStoreIndexesCmd(crit store.IndexCriteria, opt storeIndexOptions, f func(i
 type storeIndexOptions struct {
 	Output   string `short:"o" long:"output" description:"output format (text|json)" default:"text"`
 	Parallel int    `short:"p" long:"parallel" description:"parallelism (may produce out-of-order output)" default:"1"`
+
+	Print bool `long:"print" description:"(debug) print representation of index"`
 }
 
 type StoreIndexesCmd struct {

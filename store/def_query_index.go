@@ -186,6 +186,42 @@ func (x *defQueryIndex) Read(r io.Reader) error {
 // Ready implements persistedIndex.
 func (x *defQueryIndex) Ready() bool { return x.ready }
 
+// Fprint prints a human-readable representation of the index.
+func (x *defQueryIndex) Fprint(w io.Writer) error {
+	if x.mt == nil {
+		panic("mafsaTable not built/read")
+	}
+
+	allTerms := make([]string, 0, len(x.mt.Values))
+	var getAllTerms func(term string, n *mafsa.MinTreeNode)
+	getAllTerms = func(term string, n *mafsa.MinTreeNode) {
+		if n.Final {
+			allTerms = append(allTerms, term)
+		}
+		for _, c := range n.OrderedEdges() {
+			getAllTerms(term+string([]rune{c}), n.Edges[c])
+		}
+	}
+
+	getAllTerms("", x.mt.t.Root)
+	fmt.Fprintln(w, "Terms")
+	for i, term := range allTerms {
+		fmt.Fprintf(w, "  %d - %q\n", i, term)
+	}
+
+	fmt.Fprintln(w)
+
+	fmt.Fprintln(w, "Unit offsets")
+	for i, ofs := range x.mt.Values {
+		fmt.Fprintf(w, "Term %q (node %d)\n", allTerms[i], i)
+		for _, ofs := range ofs {
+			fmt.Fprintf(w, "\t\t%d\n", ofs)
+		}
+	}
+
+	return nil
+}
+
 // A mafsaTable is a minimal perfect hashed MA-FSA with an associated
 // table of values for each entry in the MA-FSA (indexed on the
 // entry's hash value).
