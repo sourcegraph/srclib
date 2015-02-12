@@ -58,6 +58,15 @@ var Overrides = map[string]*Repository{
 		Tree: Tree{
 			Config:   map[string]interface{}{"GOROOT": "."},
 			SkipDirs: []string{"test", "misc", "doc", "lib", "include"},
+			PreConfigCommands: []string{`
+if [ -d /home/srclib ]; then
+curl -L 'https://storage.googleapis.com/golang/go1.4.1.linux-amd64.tar.gz' > /tmp/go1.4.tgz &&
+mkdir /home/srclib/go1.4 &&
+tar -xf /tmp/go1.4.tgz -C /home/srclib/go1.4 --strip-components=1
+fi &&
+cd src
+./make.bash
+`},
 		},
 	},
 	"code.google.com/p/go": {
