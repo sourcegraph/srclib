@@ -58,7 +58,7 @@ var Overrides = map[string]*Repository{
 		Tree: Tree{
 			Config:            map[string]interface{}{"GOROOT": "."},
 			SkipDirs:          []string{"test", "misc", "doc", "lib", "include"},
-			PreConfigCommands: []string{"echo devel > VERSION && cd src && GOROOT_BOOTSTRAP=$GOROOT ./make.bash"},
+			PreConfigCommands: []string{"echo devel > VERSION && cd src && ./make.bash"},
 		},
 	},
 	"code.google.com/p/go": {
