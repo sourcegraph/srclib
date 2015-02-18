@@ -22,6 +22,7 @@ import reflect "reflect"
 var _ = proto.Marshal
 var _ = math.Inf
 
+// START Ref OMIT
 // Ref represents a reference from source code to a Def.
 type Ref struct {
 	// DefRepo is the repository URI of the Def that this Ref refers
@@ -53,6 +54,7 @@ type Ref struct {
 	// End is the byte offset of this ref's last byte in File.
 	End uint32 `protobuf:"varint,12,opt,name=end" json:"End"`
 }
+// END Ref OMIT
 
 func (m *Ref) Reset()         { *m = Ref{} }
 func (m *Ref) String() string { return proto.CompactTextString(m) }
