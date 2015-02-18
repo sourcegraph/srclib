@@ -20,12 +20,14 @@ import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
 var _ = proto.Marshal
 var _ = math.Inf
 
+// START Output OMIT
 type Output struct {
 	Defs []*Def                                        `protobuf:"bytes,1,rep,name=defs" json:"Defs,omitempty"`
 	Refs []*Ref                                        `protobuf:"bytes,2,rep,name=refs" json:"Refs,omitempty"`
 	Docs []*Doc                                        `protobuf:"bytes,3,rep,name=docs" json:"Docs,omitempty"`
 	Anns []*ann.Ann `protobuf:"bytes,4,rep,name=anns,customtype=sourcegraph.com/sourcegraph/srclib/ann.Ann" json:"Anns,omitempty"`
 }
+// END Output OMIT
 
 func (m *Output) Reset()         { *m = Output{} }
 func (m *Output) String() string { return proto.CompactTextString(m) }
