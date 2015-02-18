@@ -1,4 +1,4 @@
-# Toolchains Overview
+# Language toolchains
 
 A **toolchain** is a program that implements functionality for analyzing
 projects and source code, according to the specifications defined in this

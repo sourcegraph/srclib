@@ -7,20 +7,12 @@
 
 <div class="container">
   <div class="row">
+    {% if meta.no_toc %}
+    <div class="col-md-12 content" role="main">{% include "content.html" %}</div>
+    {% else %}
     <div class="col-md-3">{% include "toc.html" %}</div>
-    <div class="col-md-9" role="main">
-
-    {% include "content.html" %}
-
-    {% if include_next_prev %}
-      <ul class="pager">
-        <li class="previous {% if not previous_page %}disabled{% endif %}"><a href="{{ previous_page.url }}">← Previous</a></li>
-        <li class="next {% if not next_page %}disabled{% endif %}"><a href="{{ next_page.url }}">Next →</a></li>
-      </ul>
+    <div class="col-md-9 content" role="main">{% include "content.html" %}</div>
     {% endif %}
-
-
-    </div>
   </div>
   <hr>{% include "newsletter.html" %}
 </div>

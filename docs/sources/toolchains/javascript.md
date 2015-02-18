@@ -11,7 +11,7 @@ Browse the code at [srclib-javascript](https://sourcegraph.com/sourcegraph/srcli
 
 
 First,
-[install the `src` program (see srclib installation instructions)](../gettingstarted.md#install-srclib).
+[install the `src` program (see srclib installation instructions)](../install.md#install-srclib).
 
 Then run:
 

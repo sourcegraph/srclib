@@ -31,7 +31,7 @@ Now, `src toolchain list` should show the toolchains you just installed.
 
 ### Building from source
 
-First, [install Go](http://golang.org/doc/install) (version 1.3 or newer).
+First, [install Go](http://golang.org/doc/install) (version 1.4 or newer).
 
 Then download and install `src`:
 
@@ -52,13 +52,13 @@ out the Editor Plugins section of the documentation. Currently,
 [Emacs](plugins/emacs.md) [Sublime Text](plugins/sublimetext.md) and
 [Atom](plugins/atom.md) are supported, and support for more editors is coming soon.
 
-### Build on srclib
+### Build on top of srclib
 
-If you want to help build/improve editor plugins, or simply hack on srclib,
-read through the docs on [Building on srclib](api/overview.md).
+If you want to build or improve srclib editor plugins, read
+[Building on srclib](api/overview.md).
 
 ### Contribute to srclib
 
-Finally, if you want to help build out the language analysis infrastructure,
-make sure you're familiar with the [API](api/overview.md). Then, read closely over
-the [Creating a Toolchain](toolchains/overview.md) section.
+If you want to help build the language analysis infrastructure, make
+sure you're familiar with the [API](api/overview.md). Then, read the
+[Creating a Toolchain](toolchains/overview.md) section.
