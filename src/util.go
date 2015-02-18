@@ -171,6 +171,10 @@ func bytesString(s uint64) string {
 	return fmt.Sprintf(f+"%s", val, suffix)
 }
 
+func percent(num, denom int) float64 {
+	return 100 * float64(num) / float64(denom)
+}
+
 // A tracingTransport prints out the full HTTP request and response
 // for each roundtrip.
 type tracingTransport struct {
