@@ -987,7 +987,10 @@ type StoreRefsCmd struct {
 	DefUnit     string `long:"def-unit"`
 	DefPath     string `long:"def-path"`
 
-	Broken bool `long:"broken" description:"only show refs that point to nonexistent defs"`
+	Broken   bool `long:"broken" description:"only show refs that point to nonexistent defs"`
+	Coverage bool `long:"coverage" description:"print a coverage summary (resolved refs, broken refs, total refs)"`
+
+	Format string `long:"format" description:"output format ('json' or 'none')" default:"json"`
 
 	Limit  int `short:"n" long:"limit" description:"max results to return (0 for all)"`
 	Offset int `long:"offset" description:"results offset (0 to start with first results)"`
@@ -1072,25 +1075,46 @@ func (c *StoreRefsCmd) Execute(args []string) error {
 		return err
 	}
 
-	if c.Broken {
-		refs, err = brokenRefsOnly(refs, s)
+	allRefs := refs
+	var brokenRefs []*graph.Ref
+	if c.Broken || c.Coverage {
+		brokenRefs, err = brokenRefsOnly(refs, s)
 		if err != nil {
 			return err
 		}
+		if c.Broken {
+			refs = brokenRefs
+		}
 	}
 
-	PrintJSON(refs, "  ")
+	switch c.Format {
+	case "json":
+		PrintJSON(refs, "  ")
+	}
+
+	if c.Coverage {
+		log.Printf("# Coverage summary:")
+		log.Printf("#  - %d total refs", len(allRefs))
+		resolvedRefs := len(allRefs) - len(brokenRefs)
+		log.Printf("#  - %d resolved refs (%.1f)", resolvedRefs, percent(resolvedRefs, len(allRefs)))
+		log.Printf("#  - %d broken refs (%.1f)", len(brokenRefs), percent(len(brokenRefs), len(allRefs)))
+	}
+
 	return nil
 }
 
 func brokenRefsOnly(refs []*graph.Ref, s interface{}) ([]*graph.Ref, error) {
 	uniqRefDefs := map[graph.DefKey][]*graph.Ref{}
+	loggedDefRepos := map[string]struct{}{}
 	for _, ref := range refs {
 		if ref.Repo != ref.DefRepo {
-			// TODO(sqs): need to skip these because we don't know the
-			// "DefCommitID" in the def's repo, and ByDefKey requires
-			// the key to have a CommitID.
-			log.Printf("ref.Repo=%q != ref.DefRepo=%q", ref.Repo, ref.DefRepo)
+			if _, logged := loggedDefRepos[ref.DefRepo]; !logged {
+				// TODO(sqs): need to skip these because we don't know the
+				// "DefCommitID" in the def's repo, and ByDefKey requires
+				// the key to have a CommitID.
+				log.Printf("WARNING: Can't check resolution of cross-repo ref (ref.Repo=%q != ref.DefRepo=%q) - cross-repo ref checking is not yet implemented. (This log message will not be repeated.)", ref.Repo, ref.DefRepo)
+				loggedDefRepos[ref.DefRepo] = struct{}{}
+			}
 			continue
 		}
 		def := ref.DefKey()
