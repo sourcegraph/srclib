@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # Create site dir if it does not exist
 mkdir -p site
 
