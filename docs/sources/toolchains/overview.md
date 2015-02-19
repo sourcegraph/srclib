@@ -198,5 +198,5 @@ sending another object would slightly complicate things.
   <li><a href="haskell.md">Haskell</a></li>
   <li><a href="ruby.md">Ruby (WIP)</a></li>
   <li><a href="php.md">PHP (WIP)</a></li>
-  <li><a href="creatingatoolchain.md" class="contribute">Contribute a new language</a></li>
+
 </ul>

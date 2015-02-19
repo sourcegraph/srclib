@@ -48,7 +48,7 @@ pages:
 - ['toolchains/java.md', 'Language toolchains', 'Java']
 - ['toolchains/haskell.md', 'Language toolchains', 'Haskell']
 - ['toolchains/php.md', 'Language toolchains', 'PHP']
-- ['toolchains/creatingatoolchain.md', 'Language toolchains', 'Creating a Toolchain']
+#- ['toolchains/creatingatoolchain.md', 'Language toolchains', 'Creating a Toolchain']
 - ['toolchains/faq.md', 'Language toolchains', 'FAQ']
 
 # Building
@@ -66,5 +66,5 @@ pages:
 - ['toolchains/dependency-resolution-output.md', 'Schema', 'Dependency Resolution Output']
 
 # Contributing
-- ['contributing.md', 'Contributing']
+#- ['contributing.md', 'Contributing']
 

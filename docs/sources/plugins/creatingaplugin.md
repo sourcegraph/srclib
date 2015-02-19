@@ -1,12 +1,12 @@
 # Creating a Plugin
 
-So you want to build an editor plugin! srclib can make your favorite editor more intelligent in a language-agnostic -- which means that you only need to interface with srclib, and you'll get analysis for every language that srclib supports for free.
+So you want to build an editor plugin! srclib can make your favorite editor more intelligent in a language-agnostic way -- which means that you only need to interface with srclib, and you'll get analysis for every language that srclib supports for free.
 
 ## Before You Start
 
 Make sure you have [srclib installed](../install.md), along with the [toolchains you want to use](../toolchains/overview.md#TODOavailable-toolchains). It's also a good idea to be familiar with the [srclib's api](../api/overview.md) and [data model](../api/data-model.md).
 
-**Be aware that currently many API commands currently rely on an up-to-date build to function correctly**. For example, `src api describe` takes `--start-byte` as one of its arguments, and gives you the information for the identifier that starts at `start-byte`. If the user has changed the file, byte offset may be incorrect.
+**Be aware that many API commands currently rely on an up-to-date build to function correctly**. For example, `src api describe` takes `--start-byte` as one of its arguments, and gives you the information for the identifier that starts at `start-byte`. If you change a file, an identifier's byte offset may be out of sync with the analyzed version of the code. The srclib team is looking into this issue and we'll have a fix for it out soon, but for now, make sure to run `src do-all` before calling an API command to get accurate results.
 
 There are a couple things a srclib-powered plugin can do:
 
@@ -18,9 +18,9 @@ There are a couple things a srclib-powered plugin can do:
  
 ## Analyze a Project
 
-You can explicitly build a project by running `src do-all` at the top-level directory of a repository. `src do-all` equivalent to running `src config` and then `src make`. `src do-all` will return `0` for it's error code if it completes correctly.
+You can explicitly build a project by running `src do-all` at the top-level directory of a repository. `src do-all` is equivalent to running `src config` and then `src make`. `src do-all` will return `0` for it's error code if it completes correctly.
 
-Analysis happens automatically when you call an API command on `src` if no builds exist for the vcs version (where a version is a commit id or HEAD) that is currently checked out. 
+Analysis happens automatically when you call an API command on `src` if no builds exist for the vcs version (where a version is a commit id or HEAD) that is currently checked out.
 
 ## Show Type Information
 

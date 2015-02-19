@@ -58,7 +58,7 @@ intelligent code search over hundreds of thousands of projects.
           <li><a href="toolchains/haskell.md">Haskell</a></li>
           <li><a href="toolchains/ruby.md">Ruby (WIP)</a></li>
           <li><a href="toolchains/php.md">PHP (WIP)</a></li>
-          <li><a href="toolchains/creatingatoolchain.md" class="contribute">Contribute a new language</a></li>
+
         </ul>
       </div>
     </div>
