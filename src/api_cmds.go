@@ -32,6 +32,13 @@ func init() {
 		log.Fatal(err)
 	}
 
+	/* START APIDescribeCmdDoc OMIT
+This command is used by editor plugins to retrieve information about
+the identifier at a specific position in a file.
+
+It will hit Sourcegraph's API to get a definition's examples. With the
+flag `--no-examples`, this command does not hit Sourcegraph's API.
+	END APIDescribeCmdDoc OMIT */
 	_, err = c.AddCommand("describe",
 		"display documentation for the def under the cursor",
 		"Returns information about the definition referred to by the cursor's current position in a file.",
@@ -41,6 +48,10 @@ func init() {
 		log.Fatal(err)
 	}
 
+	/* START APIListCmdDoc OMIT
+This command will return a list of all the references in a file. It
+can be used for finding all uses of a reference in a file.
+	END APIListCmdDoc OMIT */
 	_, err = c.AddCommand("list",
 		"list all refs in a given file",
 		"Return a list of all references that are in the current file.",
@@ -50,15 +61,23 @@ func init() {
 		log.Fatal(err)
 	}
 
+	/* START APIDepsCmdDoc OMIT
+This command returns a list of all resolved and unresolved
+dependencies for the current repository.
+	END APIDepsCmdDoc OMIT */
 	_, err = c.AddCommand("deps",
 		"list all resolved and unresolved dependencies",
-		"Return a list of all resolved and unresolved dependencies that are in the current repository.",
+		`Return a list of all resolved and unresolved dependencies that are in the current repository.`,
 		&apiDepsCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	/* START APIUnitsCmdDoc OMIT
+This command returns a list of all of the source units in the current
+repository.
+	END APIUnitsCmdDoc OMIT */
 	_, err = c.AddCommand("units",
 		"list all source unit information",
 		"Return a list of all source units that are in the current repository.",
@@ -74,6 +93,7 @@ type APICmd struct{}
 var apiCmd APICmd
 
 func (c *APICmd) Execute(args []string) error { return nil }
+
 
 type APIDescribeCmd struct {
 	File      string `long:"file" required:"yes" value-name:"FILE"`
@@ -194,6 +214,10 @@ func getSourceUnitsWithFile(buildStore buildstore.RepoBuildStore, repo *Repo, fi
 	return units, nil
 }
 
+/* START APIListCmdOutput OMIT
+[[.code "graph/ref.pb.go" "Ref"]]
+END APIListCmdOutput OMIT*/
+
 func (c *APIListCmd) Execute(args []string) error {
 	var err error
 	c.File, err = filepath.Abs(c.File)
@@ -270,6 +294,33 @@ func (c *APIListCmd) Execute(args []string) error {
 	}
 	return nil
 }
+
+
+/* START APIDescribeCmdOutput OMIT
+
+The output is defined in
+[api_cmds.go](https://github.com/sourcegraph/srclib/blob/e5295dfcd719535ff9cbb37a2771337d44fe5953/src/api_cmds.go#L190-L193),
+as the JSON representation of the following struct.
+
+The Def and Example structs are defined as follows in the Sourcegraph API.
+
+[[.code "src/api_cmds.go" "APIDescribeCmdOutputQuickHack"]]
+
+[[.code "https://raw.githubusercontent.com/sourcegraph/go-sourcegraph/6937daba84bf2d0f919191fd74e5193171b4f5d5/sourcegraph/defs.go" 105 113]]
+
+[[.code "graph/def.pb.go" "Def "]]
+
+[[.code "https://raw.githubusercontent.com/sourcegraph/go-sourcegraph/6937daba84bf2d0f919191fd74e5193171b4f5d5/sourcegraph/defs.go" 236 252]]
+
+[[.code "graph/ref.pb.go" "Ref"]]
+
+END APIDescribeCmdOutput OMIT */
+// START APIDescribeCmdOutputQuickHack OMIT
+type apiDescribeCmdOutput struct {
+	Def      *sourcegraph.Def
+	Examples []*sourcegraph.Example
+}
+// END APIDescribeCmdOutputQuickHack OMIT
 
 func (c *APIDescribeCmd) Execute(args []string) error {
 	var err error
@@ -394,10 +445,7 @@ OuterLoop:
 		ref.DefRepo = repo.URI()
 	}
 
-	var resp struct {
-		Def      *sourcegraph.Def
-		Examples []*sourcegraph.Example
-	}
+	var resp apiDescribeCmdOutput
 
 	// Now find the def for this ref.
 	defInCurrentRepo := ref.DefRepo == repo.URI()
@@ -489,6 +537,12 @@ func abs(n int) int {
 	return n
 }
 
+/* START APIDepsCmdOutput OMIT
+This command returns a dep.Resolution slice.
+
+[[.code "dep/resolve.go" "Resolution"]]
+END APIDepsCmdOutput OMIT */
+
 func (c *APIDepsCmd) Execute(args []string) error {
 	var err error
 
@@ -550,6 +604,12 @@ func (c *APIDepsCmd) Execute(args []string) error {
 
 	return json.NewEncoder(os.Stdout).Encode(depSlice)
 }
+
+/* START APIUnitsCmdOutput OMIT
+This command returns a unit.SourceUnit slice.
+
+[[.code "unit/source_unit.go" "SourceUnit"]]
+END APIUnitsCmdOutput OMIT */
 
 func (c *APIUnitsCmd) Execute(args []string) error {
 	var err error
