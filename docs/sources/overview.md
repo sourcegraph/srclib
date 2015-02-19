@@ -1,6 +1,6 @@
 no_toc: true
 
-# ![srclib symbol](/images/srclib_symbol.svg) **srclib** is a hackable, multi-language code analysis library for building better code tools.
+<h1><img alt="srclib symbol" src="../images/srclib_symbol.svg"/> <strong>srclib</strong> is a hackable, multi-language code analysis library for building better code tools.</h1>
 
 <div class="row">
 <div class="col-sm-7">
