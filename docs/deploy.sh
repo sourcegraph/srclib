@@ -23,4 +23,4 @@ to invalidate CloudFront's files with the following command:
 This costs $0.005 per file invalidated (after the first 1000 files in
 a month), which isn't a ton, but it's best to only run it when you
 need to.
- EOF
+EOF
