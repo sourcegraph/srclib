@@ -17,6 +17,16 @@ toolchains:
 - lang: Java
   repo: srclib/srclib-java
 
+commands:
+- command: 'src api describe'
+  type: APIDescribeCmd
+- command: 'src api list'
+  type: APIListCmd
+- command: 'src api deps'
+  type: APIDepsCmd
+- command: 'src api units'
+  type: APIUnitsCmd
+
 pages:
 
 - ['overview.md', 'Overview']
@@ -36,6 +46,9 @@ pages:
 - ['toolchains/ruby.md', 'Language toolchains', 'Ruby']
 - ['toolchains/javascript.md', 'Language toolchains', 'JavaScript']
 - ['toolchains/java.md', 'Language toolchains', 'Java']
+- ['toolchains/haskell.md', 'Language toolchains', 'Haskell']
+- ['toolchains/php.md', 'Language toolchains', 'PHP']
+- ['toolchains/creatingatoolchain.md', 'Language toolchains', 'Creating a Toolchain']
 - ['toolchains/faq.md', 'Language toolchains', 'FAQ']
 
 # Building
@@ -44,8 +57,6 @@ pages:
 # src API
 - ['api/overview.md', 'src API', 'Overview']
 - ['api/make.md', 'src API', 'src make']
-- ['api/describe.md', 'src API', 'src describe']
-
 
 # Schema
 - ['api/data-model.md', 'Schema', 'Overview']

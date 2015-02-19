@@ -40,25 +40,25 @@ intelligent code search over hundreds of thousands of projects.
       <div>
         <label>Editor plugins:</label>
         <ul class="list-unstyled">
-          <li><a href="https://sourcegraph.com/sourcegraph/emacs-sourcegraph-mode">Emacs</a></li>
-          <li><a href="https://sourcegraph.com/sourcegraph/sourcegraph-sublime">Sublime</a></li>
-          <li><a href="https://sourcegraph.com/sourcegraph/sourcegraph-atom">Atom</a></li>
-          <li><a href="https://github.com/lazywei/vim-sourcegraph">Vim (WIP)</a></li>
-          <li><a href="#TODO" class="contribute">Contribute a plugin</a></li>
+          <li><a href="plugins/emacs.md">Emacs</a></li>
+          <li><a href="plugins/sublimetext.md">Sublime</a></li>
+          <li><a href="plugins/atom.md">Atom</a></li>
+          <li><a href="plugins/vim.md">Vim (WIP)</a></li>
+          <li><a href="plugins/creatingaplugin.md" class="contribute">Create a plugin</a></li>
           <li>&nbsp;</li>
         </ul>
       </div><!--
       --><div>
         <label>Languages:</label>
         <ul class="list-unstyled">
-          <li><a href="https://sourcegraph.com/sourcegraph/srclib-go">Go</a></li>
-          <li><a href="https://sourcegraph.com/sourcegraph/srclib-java">Java</a></li>
-          <li><a href="https://sourcegraph.com/sourcegraph/srclib-python">Python</a></li>
-          <li><a href="https://sourcegraph.com/sourcegraph/srclib-haskell">JavaScript</a></li>
-          <li><a href="https://sourcegraph.com/sourcegraph/srclib-haskell">Haskell</a></li>
-          <li><a href="https://sourcegraph.com/sourcegraph/srclib-haskell">Ruby (WIP)</a></li>
-          <li><a href="https://sourcegraph.com/sourcegraph/srclib-haskell">PHP (WIP)</a></li>
-          <li><a href="#TODO" class="contribute">Contribute a new language</a></li>
+          <li><a href="toolchains/go.md">Go</a></li>
+          <li><a href="toolchains/java.md">Java</a></li>
+          <li><a href="toolchains/python.md">Python</a></li>
+          <li><a href="toolchains/javascript.md">JavaScript</a></li>
+          <li><a href="toolchains/haskell.md">Haskell</a></li>
+          <li><a href="toolchains/ruby.md">Ruby (WIP)</a></li>
+          <li><a href="toolchains/php.md">PHP (WIP)</a></li>
+          <li><a href="toolchains/creatingatoolchain.md" class="contribute">Contribute a new language</a></li>
         </ul>
       </div>
     </div>

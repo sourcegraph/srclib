@@ -185,3 +185,18 @@ graphers have to resolve all of the same deps that `dep` would have to. But
 we're already providing a full JSON object on stdin, so making it an array or
 sending another object would slightly complicate things.
 --->
+
+# Available Toolchains
+
+<!--- Stolen from overview.md. --->
+
+<ul>
+  <li><a href="go.md">Go</a></li>
+  <li><a href="java.md">Java</a></li>
+  <li><a href="python.md">Python</a></li>
+  <li><a href="javascript.md">JavaScript</a></li>
+  <li><a href="haskell.md">Haskell</a></li>
+  <li><a href="ruby.md">Ruby (WIP)</a></li>
+  <li><a href="php.md">PHP (WIP)</a></li>
+  <li><a href="creatingatoolchain.md" class="contribute">Contribute a new language</a></li>
+</ul>

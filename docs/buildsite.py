@@ -46,7 +46,7 @@ def convert_markdown_new(source, **kwargs):
       return "```\n" + command + "\n" + result.strip() + "\n```"
 
     # Source code embeds
-    elif args[0] == ".code":
+    elif args[0] == ".code" or args[0] == ".doc":
       code = ""
       try: #Try as a URL
         code = urlopen(args[1]).read()
@@ -81,19 +81,27 @@ def convert_markdown_new(source, **kwargs):
 
         lines = lines[start - 1:end]
 
-      # Trim "OMIT" lines
-      lines = filter(lambda x: not x.strip().lower().endswith("omit"), lines)
+      # Trim "OMIT" lines. Ignore "*/".
+      lines = filter(lambda x: not x.strip().rstrip("*/").rstrip().lower().endswith("omit"), lines)
 
       # TODO: Trim leading and trailing empty lines
 
-      lines.insert(0, "```go")
-      lines.append("```")
+      if args[0] == ".code":
+        lines.insert(0, "```go")
+        lines.append("```")
+      # else: # args[0] == ".doc"
+      #   lines.insert(0, "\n")
+      #   lines.insert("\n")
       return "\n".join(lines)
 
     # No matching logic
     else:
       return match.group(0)
-  source = re.sub("\[\[(.*)\]\]", expand, source)
+  # Process an aritrary number of expansions.
+  oldSource = ""
+  while source != oldSource:
+    oldSource = source
+    source = re.sub("\[\[(.*)\]\]", expand, oldSource)
 
   return convert_markdown_original(source)
 
