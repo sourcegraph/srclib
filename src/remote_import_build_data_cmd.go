@@ -53,11 +53,10 @@ func (c *RemoteImportBuildCmd) Execute(args []string) error {
 	}
 	repoRevSpec.CommitID = string(commit.ID)
 
-	build, _, err := cl.Builds.Create(repoSpec, &sourcegraph.BuildCreateOptions{
+	build, _, err := cl.Builds.Create(repoRevSpec, &sourcegraph.BuildCreateOptions{
 		BuildConfig: sourcegraph.BuildConfig{
-			Import:   true,
-			Queue:    false,
-			CommitID: repoRevSpec.CommitID,
+			Import: true,
+			Queue:  false,
 		},
 		Force: true,
 	})
