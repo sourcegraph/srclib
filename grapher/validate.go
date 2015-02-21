@@ -43,6 +43,8 @@ func ValidateDocs(docs []*graph.Doc) (errs MultiError) {
 		} else {
 			docKeys[key] = struct{}{}
 		}
+		// SAMER: check that Start and End do not equal each
+		// other if DefKey is empty.
 	}
 	return
 }
