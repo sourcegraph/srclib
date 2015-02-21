@@ -11,6 +11,12 @@ You will also need SASS, in order to compile the style sheets. This can be
 obtained with `gem install sass`. In order to use the testing script `test.sh`,
 you will need to run `sudo apt-get install inotify-tools`.
 
+## WARNING
+
+**Doc tags (like "START SomeTag") are NOT preserved when protobuf
+files are generated. You will need to add them by hand.**
+
+
 ## Testing Documentation
 
 To start testing, run `./test.sh`. This will watch for changes, building into
