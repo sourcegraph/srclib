@@ -33,12 +33,12 @@ func init() {
 	}
 
 	/* START APIDescribeCmdDoc OMIT
-This command is used by editor plugins to retrieve information about
-the identifier at a specific position in a file.
+	This command is used by editor plugins to retrieve information about
+	the identifier at a specific position in a file.
 
-It will hit Sourcegraph's API to get a definition's examples. With the
-flag `--no-examples`, this command does not hit Sourcegraph's API.
-	END APIDescribeCmdDoc OMIT */
+	It will hit Sourcegraph's API to get a definition's examples. With the
+	flag `--no-examples`, this command does not hit Sourcegraph's API.
+		END APIDescribeCmdDoc OMIT */
 	_, err = c.AddCommand("describe",
 		"display documentation for the def under the cursor",
 		"Returns information about the definition referred to by the cursor's current position in a file.",
@@ -49,9 +49,9 @@ flag `--no-examples`, this command does not hit Sourcegraph's API.
 	}
 
 	/* START APIListCmdDoc OMIT
-This command will return a list of all the references in a file. It
-can be used for finding all uses of a reference in a file.
-	END APIListCmdDoc OMIT */
+	This command will return a list of all the references in a file. It
+	can be used for finding all uses of a reference in a file.
+		END APIListCmdDoc OMIT */
 	_, err = c.AddCommand("list",
 		"list all refs in a given file",
 		"Return a list of all references that are in the current file.",
@@ -62,9 +62,9 @@ can be used for finding all uses of a reference in a file.
 	}
 
 	/* START APIDepsCmdDoc OMIT
-This command returns a list of all resolved and unresolved
-dependencies for the current repository.
-	END APIDepsCmdDoc OMIT */
+	This command returns a list of all resolved and unresolved
+	dependencies for the current repository.
+		END APIDepsCmdDoc OMIT */
 	_, err = c.AddCommand("deps",
 		"list all resolved and unresolved dependencies",
 		`Return a list of all resolved and unresolved dependencies that are in the current repository.`,
@@ -75,9 +75,9 @@ dependencies for the current repository.
 	}
 
 	/* START APIUnitsCmdDoc OMIT
-This command returns a list of all of the source units in the current
-repository.
-	END APIUnitsCmdDoc OMIT */
+	This command returns a list of all of the source units in the current
+	repository.
+		END APIUnitsCmdDoc OMIT */
 	_, err = c.AddCommand("units",
 		"list all source unit information",
 		"Return a list of all source units that are in the current repository.",
@@ -93,7 +93,6 @@ type APICmd struct{}
 var apiCmd APICmd
 
 func (c *APICmd) Execute(args []string) error { return nil }
-
 
 type APIDescribeCmd struct {
 	File      string `long:"file" required:"yes" value-name:"FILE"`
@@ -295,7 +294,6 @@ func (c *APIListCmd) Execute(args []string) error {
 	return nil
 }
 
-
 /* START APIDescribeCmdOutput OMIT
 
 The output is defined in
@@ -320,6 +318,7 @@ type apiDescribeCmdOutput struct {
 	Def      *sourcegraph.Def
 	Examples []*sourcegraph.Example
 }
+
 // END APIDescribeCmdOutputQuickHack OMIT
 
 func (c *APIDescribeCmd) Execute(args []string) error {
@@ -546,7 +545,7 @@ END APIDepsCmdOutput OMIT */
 func (c *APIDepsCmd) Execute(args []string) error {
 	var err error
 
-	repo, err := OpenRepo(filepath.Dir(string(c.Args.Dir)))
+	repo, err := OpenRepo(filepath.Clean(string(c.Args.Dir)))
 	if err != nil {
 		return err
 	}
@@ -614,7 +613,7 @@ END APIUnitsCmdOutput OMIT */
 func (c *APIUnitsCmd) Execute(args []string) error {
 	var err error
 
-	repo, err := OpenRepo(filepath.Dir(string(c.Args.Dir)))
+	repo, err := OpenRepo(filepath.Clean(string(c.Args.Dir)))
 	if err != nil {
 		return err
 	}
