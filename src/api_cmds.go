@@ -560,12 +560,11 @@ func (c *APIDepsCmd) Execute(args []string) error {
 	}
 	commitFS := buildStore.Commit(repo.CommitID)
 
-	exists, err := buildstore.BuildDataExistsForCommit(buildStore, repo.CommitID)
-	if err != nil {
+	if err := ensureBuild(buildStore, repo); err != nil {
+		if err := buildstore.RemoveAllDataForCommit(buildStore, repo.CommitID); err != nil {
+			log.Println(err)
+		}
 		return err
-	}
-	if !exists {
-		return errors.New("No build data found. Try running `src config` first.")
 	}
 
 	var depSlice []*dep.Resolution
@@ -628,12 +627,11 @@ func (c *APIUnitsCmd) Execute(args []string) error {
 	}
 	commitFS := buildStore.Commit(repo.CommitID)
 
-	exists, err := buildstore.BuildDataExistsForCommit(buildStore, repo.CommitID)
-	if err != nil {
+	if err := ensureBuild(buildStore, repo); err != nil {
+		if err := buildstore.RemoveAllDataForCommit(buildStore, repo.CommitID); err != nil {
+			log.Println(err)
+		}
 		return err
-	}
-	if !exists {
-		return errors.New("No build data found. Try running `src config` first.")
 	}
 
 	var unitSlice []unit.SourceUnit
