@@ -33,12 +33,12 @@ func (c *BuildCmd) Execute(args []string) error {
 		return err
 	}
 
-	build, _, err := cl.Builds.Create(rrepo.RepoSpec(), &sourcegraph.BuildCreateOptions{
+	repoRev := sourcegraph.RepoRevSpec{RepoSpec: rrepo.RepoSpec(), Rev: c.CommitID, CommitID: c.CommitID}
+	build, _, err := cl.Builds.Create(repoRev, &sourcegraph.BuildCreateOptions{
 		BuildConfig: sourcegraph.BuildConfig{
 			Import:   true,
 			Queue:    true,
 			Priority: c.Priority,
-			CommitID: c.CommitID,
 		},
 		Force: true,
 	})
