@@ -49,12 +49,13 @@ func init() {
 	}
 
 	/* START APIListCmdDoc OMIT
-	This command will return a list of all the references in a file. It
-	can be used for finding all uses of a reference in a file.
-		END APIListCmdDoc OMIT */
+	This command will return a list of all the definitions,
+	references, and docs in a file. It can be used for finding all
+	uses of a reference in a file.
+	END APIListCmdDoc OMIT */
 	_, err = c.AddCommand("list",
-		"list all refs in a given file",
-		"Return a list of all references that are in the current file.",
+		"list all defs, refs, and docs in a given file",
+		"Return a list of all definitions, references, and docs that are in the current file.",
 		&apiListCmd,
 	)
 	if err != nil {
@@ -102,7 +103,10 @@ type APIDescribeCmd struct {
 }
 
 type APIListCmd struct {
-	File string `long:"file" required:"yes" value-name:"FILE"`
+	File   string `long:"file" required:"yes" value-name:"FILE"`
+	NoRefs bool   `long:"no-refs"`
+	NoDefs bool   `long:"no-defs"`
+	NoDocs bool   `long:"no-docs"`
 }
 
 type APIDepsCmd struct {
@@ -213,9 +217,14 @@ func getSourceUnitsWithFile(buildStore buildstore.RepoBuildStore, repo *Repo, fi
 	return units, nil
 }
 
-/* START APIListCmdOutput OMIT
-[[.code "graph/ref.pb.go" "Ref"]]
-END APIListCmdOutput OMIT*/
+// START APIListCmdOutput OMIT
+type apiListCmdOutput struct {
+	Defs []*graph.Def `json:",omitempty"`
+	Refs []*graph.Ref `json:",omitempty"`
+	Docs []*graph.Doc `json:",omitempty"`
+}
+
+// END APIListCmdOutput OMIT
 
 func (c *APIListCmd) Execute(args []string) error {
 	var err error
@@ -268,8 +277,8 @@ func (c *APIListCmd) Execute(args []string) error {
 		}
 	}
 
-	// Find the ref(s) at the character position.
-	var refs []*graph.Ref
+	// Grab all the data for the file.
+	var output apiListCmdOutput
 	for _, u := range units {
 		var g graph.Output
 		graphFile := plan.SourceUnitDataFilename("graph", u)
@@ -281,14 +290,31 @@ func (c *APIListCmd) Execute(args []string) error {
 		if err := json.NewDecoder(f).Decode(&g); err != nil {
 			return fmt.Errorf("%s: %s", graphFile, err)
 		}
-		for _, ref := range g.Refs {
-			if c.File == ref.File {
-				refs = append(refs, ref)
+		if !c.NoRefs {
+			for _, ref := range g.Refs {
+				if c.File == ref.File {
+					output.Refs = append(output.Refs, ref)
+				}
 			}
 		}
+		if !c.NoDefs {
+			for _, def := range g.Defs {
+				if c.File == def.File {
+					output.Defs = append(output.Defs, def)
+				}
+			}
+		}
+		if !c.NoDocs {
+			for _, doc := range g.Docs {
+				if c.File == doc.File {
+					output.Docs = append(output.Docs, doc)
+				}
+			}
+		}
+
 	}
 
-	if err := json.NewEncoder(os.Stdout).Encode(refs); err != nil {
+	if err := json.NewEncoder(os.Stdout).Encode(output); err != nil {
 		return err
 	}
 	return nil
