@@ -21,7 +21,7 @@ func init() {
 
 type BuildsCmd struct {
 	N         int    `short:"n" description:"number of builds to show" default:"5"`
-	Rev       string `long:"rev" description:"filter builds by revision or commit ID"`
+	CommitID  string `long:"commit" description:"filter builds by commit ID"`
 	Queued    bool   `long:"queued"`
 	Succeeded bool   `long:"succeeded"`
 	Ended     bool   `long:"ended"`
@@ -40,19 +40,18 @@ func (c *BuildsCmd) Execute(args []string) error {
 		return err
 	}
 
-	opt := &sourcegraph.BuildListByRepoOptions{
-		Rev: c.Rev,
-		BuildListOptions: sourcegraph.BuildListOptions{
-			Queued:      c.Queued,
-			Succeeded:   c.Succeeded,
-			Ended:       c.Ended,
-			Failed:      c.Failed,
-			Sort:        c.Sort,
-			Direction:   c.Direction,
-			ListOptions: sourcegraph.ListOptions{PerPage: c.N},
-		},
+	opt := &sourcegraph.BuildListOptions{
+		Repo:        rrepo.URI,
+		CommitID:    c.CommitID,
+		Queued:      c.Queued,
+		Succeeded:   c.Succeeded,
+		Ended:       c.Ended,
+		Failed:      c.Failed,
+		Sort:        c.Sort,
+		Direction:   c.Direction,
+		ListOptions: sourcegraph.ListOptions{PerPage: c.N},
 	}
-	builds, _, err := cl.Builds.ListByRepo(rrepo.RepoSpec(), opt)
+	builds, _, err := cl.Builds.List(opt)
 	if err != nil {
 		return err
 	}
