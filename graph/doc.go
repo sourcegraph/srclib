@@ -4,19 +4,19 @@ import "encoding/json"
 
 // Key returns the unique key for the doc.
 func (d *Doc) Key() DocKey {
-	return DocKey{DefKey: d.DefKey, Format: d.Format, Start: d.Start}
+	return DocKey{DefKey: d.DefKey, Format: d.Format, Start: d.Start, File: d.File}
 }
 
 // DocKey is the unique key for a doc. Each doc within a source unit
 // must have a unique DocKey.
 //
 // Freestanding comments will not have an associated DefKey, but they
-// *must* provide 'Start' and 'End', where 'Start' != 'End'.
+// *must* provide 'Start' and 'File'.
 type DocKey struct {
 	DefKey
 	Format string
+	File   string
 	Start  uint32
-	End    uint32
 }
 
 func (d DocKey) String() string {
