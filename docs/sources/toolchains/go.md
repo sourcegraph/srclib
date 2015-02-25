@@ -10,7 +10,7 @@ Browse the code at [srclib-go](https://sourcegraph.com/sourcegraph/srclib-go) an
   allowtransparency="true" frameborder="0" scrolling="0" width="170" height="30"></iframe>
 
 First,
-[install the `src` program (see srclib installation instructions)](../gettingstarted.md#install-srclib).
+[install the `src` program (see srclib installation instructions)](../install.md#install-srclib).
 
 Then run:
 

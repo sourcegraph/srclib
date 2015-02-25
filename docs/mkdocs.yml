@@ -11,44 +11,60 @@ theme_dir: ./theme/
 
 google_analytics: ['UA-40540747-5', 'srclib.org']
 
+toolchains:
+- lang: Go
+  repo: srclib/srclib-go
+- lang: Java
+  repo: srclib/srclib-java
+
+commands:
+- command: 'src api describe'
+  type: APIDescribeCmd
+- command: 'src api list'
+  type: APIListCmd
+- command: 'src api deps'
+  type: APIDepsCmd
+- command: 'src api units'
+  type: APIUnitsCmd
+
 pages:
 
-- ['gettingstarted.md', 'Getting Started']
+- ['overview.md', 'Overview']
+- ['install.md', 'Installation']
 
-# Editor Plugins
-- ['plugins/emacs.md', 'Editor Plugins', 'Emacs']
-- ['plugins/sublimetext.md', 'Editor Plugins', 'Sublime Text']
-#- ['plugins/vim.md', 'Editor Plugins', 'Vim']
-- ['plugins/atom.md', 'Editor Plugins', 'Atom']
-#- ['plugins/creatingaplugin.md', 'Editor Plugins', 'Creating a Plugin']
+# Editor plugins
+- ['plugins/emacs.md', 'Editor plugins', 'Emacs']
+- ['plugins/sublimetext.md', 'Editor plugins', 'Sublime Text']
+- ['plugins/vim.md', 'Editor plugins', 'Vim']
+- ['plugins/atom.md', 'Editor plugins', 'Atom']
+- ['plugins/creatingaplugin.md', 'Editor plugins', 'Creating a Plugin']
 
-# Language Toolchains
-- ['toolchains/python.md', 'Language Toolchains', 'Python']
-- ['toolchains/go.md', 'Language Toolchains', 'Go']
-- ['toolchains/ruby.md', 'Language Toolchains', 'Ruby']
-- ['toolchains/javascript.md', 'Language Toolchains', 'JavaScript']
-#- ['toolchains/java.md', 'Language Toolchains', 'Java']
+# Language toolchains
+- ['toolchains/overview.md', 'Language toolchains', 'Overview']
+- ['toolchains/python.md', 'Language toolchains', 'Python']
+- ['toolchains/go.md', 'Language toolchains', 'Go']
+- ['toolchains/ruby.md', 'Language toolchains', 'Ruby']
+- ['toolchains/javascript.md', 'Language toolchains', 'JavaScript']
+- ['toolchains/java.md', 'Language toolchains', 'Java']
+- ['toolchains/haskell.md', 'Language toolchains', 'Haskell']
+- ['toolchains/php.md', 'Language toolchains', 'PHP']
+#- ['toolchains/creatingatoolchain.md', 'Language toolchains', 'Creating a Toolchain']
+- ['toolchains/faq.md', 'Language toolchains', 'FAQ']
 
 # Building
 #- ['building/uploading.md', 'Library Authors', 'Uploading to Sourcegraph']
 
-# API
-- ['api/overview.md', 'Building on srclib', 'Overview']
-- ['api/make.md', 'Building on srclib', 'src make']
-- ['api/describe.md', 'Building on srclib', 'src describe']
+# src API
+- ['api/overview.md', 'src API', 'Overview']
+- ['api/make.md', 'src API', 'src make']
 
-# Creating a Toolchain
-- ['toolchains/overview.md', 'Contributing to srclib', 'Creating a Toolchain']
-- ['toolchains/openquestions.md', 'Contributing to srclib', 'Open Questions']
+# Schema
+- ['api/data-model.md', 'Schema', 'Overview']
+- ['toolchains/commonstructures.md', 'Schema', 'Common Data Structures']
+- ['toolchains/scanner-output.md', 'Schema', 'Scanner Output']
+- ['toolchains/grapher-output.md', 'Schema', 'Grapher Output']
+- ['toolchains/dependency-resolution-output.md', 'Schema', 'Dependency Resolution Output']
 
-#- ['toolchains/formatter.md', 'Creating a Toolchain', 'Formatter API']
+# Contributing
+#- ['contributing.md', 'Contributing']
 
-
-# Data Model
-- ['api/data-model.md', 'Data Model', 'Overview']
-- ['toolchains/commonstructures.md', 'Data Model', 'Common Data Structures']
-- ['toolchains/scanner-output.md', 'Data Model', 'Scanner Output']
-- ['toolchains/grapher-output.md', 'Data Model', 'Grapher Output']
-- ['toolchains/dependency-resolution-output.md', 'Data Model', 'Dependency Resolution Output']
-
-- ['faq.md', 'FAQ']

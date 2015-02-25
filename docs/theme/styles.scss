@@ -1,33 +1,61 @@
 $dark-color: rgb(60,60,60);
 $blue-highlight: rgb(69,157,229);
 
+.action-buttons {
+  .btn-primary {
+    background-color: lighten($blue-highlight, 5%);
+    border-color: lighten($blue-highlight, 10%);
+    font-weight: bold;
+    width: 100%;
+    font-size: 1.1em;
+  }
+
+  label {
+      display: block;
+      color: #999;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 0.85em;
+      margin-bottom: 0;
+  }
+
+  .btn-default {
+    background-color: white;
+    width: 50%;
+  }
+
+  .btn {
+      font-size: 1em;
+      margin-bottom: 5px;
+      padding: 8px 3px;
+      &:hover {
+          background-color: $blue-highlight;
+          border-color: darken($blue-highlight, 10%);
+          color: white;
+      }
+  }
+
+  .two-columns {
+    & > div {
+        width: 50%;
+        display: inline-block;
+    }
+    li {
+        margin-bottom: 0;
+        a.contribute {
+            font-size: 0.9em;
+            font-style: italic;
+        }
+    }
+  }
+}
+
+.video-embed {
+    margin-left: 40px;
+    margin-bottom: 40px;
+}
+
 .home {
-    button.btn {
-        font-size: 1em;
-        margin-top: 0.3em;
-    }
-
-    a.button-link:hover {
-        text-decoration: none;
-    }
-
-    button.btn-default {
-        background-color: white;
-        &:hover {
-            background-color: #008cba;
-            border-color: #0079a1;
-            color: white;
-        }
-    }
-
-    button.btn-disabled {
-        &:hover {
-            background-color: white !important;
-            border-color: #e0e0e0 !important;
-            color: #333333;
-        }
-    }
-
     img.img-screen {
         border: 1px solid black;
     }
@@ -437,11 +465,35 @@ img.desaturatehalf {
 }
 
 // Documentation Markdown stylings
-.markdown {
+.content {
   font-size: 110%;
   line-height: 1.5em;
 
   p, li {
     margin-bottom: 16px;
+  }
+
+  .content-edit {
+    margin-top: -1px;
+    font-size: 0.8em;
+    a {
+      color: white;
+      background-color: #aaa;
+      padding: 3px 6px;
+      border-radius: 0 0 2px 2px;
+      text-decoration: none;
+      &:hover {
+          background-color: $blue-highlight;
+      }
+    }
+  }
+
+  h1 {
+    margin-bottom: 20px;
+  }
+
+  img[alt="srclib symbol"] {
+    width: 47px;
+    height: 47px;
   }
 }

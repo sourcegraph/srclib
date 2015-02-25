@@ -13,7 +13,7 @@
 ## Installing
 
 First, make sure you've installed srclib, following
-the [instructions here](../gettingstarted.md#install-srclib).
+the [instructions here](../install.md#install-srclib).
 
 To install, either use
 [Package Control](https://sublime.wbond.net/packages/Sourcegraph) to install it

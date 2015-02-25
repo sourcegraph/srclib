@@ -22,6 +22,7 @@ import reflect "reflect"
 var _ = proto.Marshal
 var _ = math.Inf
 
+// START Doc OMIT
 // Doc is documentation on a Def.
 type Doc struct {
 	// DefKey points to the Def that this documentation pertains to.
@@ -39,6 +40,7 @@ type Doc struct {
 	// End is the byte offset of this Doc's last byte in File.
 	End uint32 `protobuf:"varint,6,opt,name=end" json:"End,omitempty"`
 }
+// END Doc OMIT
 
 func (m *Doc) Reset()         { *m = Doc{} }
 func (m *Doc) String() string { return proto.CompactTextString(m) }

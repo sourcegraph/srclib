@@ -36,6 +36,7 @@ import reflect "reflect"
 var _ = proto.Marshal
 var _ = math.Inf
 
+// START DefKey OMIT
 // DefKey specifies a definition, either concretely or abstractly. A concrete
 // definition key has a non-empty CommitID and refers to a definition defined in a
 // specific commit. An abstract definition key has an empty CommitID and is
@@ -72,11 +73,13 @@ type DefKey struct {
 	// def hierarchy). See Def.TreePath instead.
 	Path string `protobuf:"bytes,5,opt,name=path" json:"Path"`
 }
+// END DefKey OMIT
 
 func (m *DefKey) Reset()         { *m = DefKey{} }
 func (m *DefKey) String() string { return proto.CompactTextString(m) }
 func (*DefKey) ProtoMessage()    {}
 
+// START Def OMIT
 // Def is a definition in code.
 type Def struct {
 	// DefKey is the natural unique key for a def. It is stable
@@ -130,6 +133,7 @@ type Def struct {
 	// The following regex captures the children of a tree-path X: X(/-[^/]*)*(/[^/-][^/]*)
 	TreePath string `protobuf:"bytes,17,opt,name=tree_path" json:"TreePath,omitempty"`
 }
+// END Def OMIT
 
 func (m *Def) Reset()         { *m = Def{} }
 func (m *Def) String() string { return proto.CompactTextString(m) }

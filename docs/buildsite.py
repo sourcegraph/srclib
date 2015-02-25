@@ -4,6 +4,7 @@ import jinja2
 import os
 import re
 import shlex
+import sys
 
 import mkdocs.build
 from mkdocs.build import build
@@ -15,10 +16,11 @@ def line_containing(lines, text):
   for i in range(len(lines)):
     if text.lower() in lines[i].lower():
       return i
+  raise Exception("could not find {}".format(text))
 
 # Wrap some functions to allow custom commands in markdown
 convert_markdown_original = mkdocs.build.convert_markdown
-def convert_markdown_new(source):
+def convert_markdown_new(source, **kwargs):
 
   def expand(match):
     args = shlex.split(match.groups()[0])
@@ -44,7 +46,7 @@ def convert_markdown_new(source):
       return "```\n" + command + "\n" + result.strip() + "\n```"
 
     # Source code embeds
-    elif args[0] == ".code":
+    elif args[0] == ".code" or args[0] == ".doc":
       code = ""
       try: #Try as a URL
         code = urlopen(args[1]).read()
@@ -63,30 +65,43 @@ def convert_markdown_new(source):
         start = 1
         end = len(lines) - 1
 
-        if args[2].isdigit(): start = int(args[2])
-        else:
-          start = line_containing(lines, args[2]) + 1
+        try:
+          if args[2].isdigit(): start = int(args[2])
+          else:
+            start = line_containing(lines, args[2]) + 1
 
-        if args[3].isdigit(): end = int(args[3])
-        else: end = line_containing(lines, args[3]) + 1
+          if args[3].isdigit(): end = int(args[3])
+          else: end = line_containing(lines, args[3]) + 1
+        except Exception, e: # If line_containing fails
+          print "Error: {}".format(e)
+          print "  in {}".format(args[1])
+          sys.exit(1)
 
         #TODO: Also allow regex matching
 
         lines = lines[start - 1:end]
 
-      # Trim "OMIT" lines
-      lines = filter(lambda x: not x.strip().lower().endswith("omit"), lines)
+      # Trim "OMIT" lines. Ignore "*/".
+      lines = filter(lambda x: not x.strip().rstrip("*/").rstrip().lower().endswith("omit"), lines)
 
       # TODO: Trim leading and trailing empty lines
 
-      lines.insert(0, "```go")
-      lines.append("```")
+      if args[0] == ".code":
+        lines.insert(0, "```go")
+        lines.append("```")
+      # else: # args[0] == ".doc"
+      #   lines.insert(0, "\n")
+      #   lines.insert("\n")
       return "\n".join(lines)
 
     # No matching logic
     else:
       return match.group(0)
-  source = re.sub("\[\[(.*)\]\]", expand, source)
+  # Process an aritrary number of expansions.
+  oldSource = ""
+  while source != oldSource:
+    oldSource = source
+    source = re.sub("\[\[(.*)\]\]", expand, oldSource)
 
   return convert_markdown_original(source)
 

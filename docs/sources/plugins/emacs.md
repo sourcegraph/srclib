@@ -10,7 +10,7 @@
 - Find usages (across all open-source projects globally)
 
 ## Installation Instructions
-First, make sure you've [installed srclib](../gettingstarted.md#install-srclib), along with the toolchains for the programming
+First, make sure you've [installed srclib](../install.md), along with the toolchains for the programming
 languages you're using. Once srclib is installed, you can install the emacs plugin by navigating to your `.emacs.d`
 directory and cloning the repository.
 

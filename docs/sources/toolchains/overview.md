@@ -1,4 +1,4 @@
-# Toolchains Overview
+# Language toolchains
 
 A **toolchain** is a program that implements functionality for analyzing
 projects and source code, according to the specifications defined in this
@@ -185,3 +185,18 @@ graphers have to resolve all of the same deps that `dep` would have to. But
 we're already providing a full JSON object on stdin, so making it an array or
 sending another object would slightly complicate things.
 --->
+
+# Available Toolchains
+
+<!--- Stolen from overview.md. --->
+
+<ul>
+  <li><a href="go.md">Go</a></li>
+  <li><a href="java.md">Java</a></li>
+  <li><a href="python.md">Python</a></li>
+  <li><a href="javascript.md">JavaScript</a></li>
+  <li><a href="haskell.md">Haskell</a></li>
+  <li><a href="ruby.md">Ruby (WIP)</a></li>
+  <li><a href="php.md">PHP (WIP)</a></li>
+
+</ul>

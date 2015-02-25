@@ -1,8 +1,7 @@
-<br>
-<div style="text-align:right;">
-<a href="https://github.com/sourcegraph/srclib/tree/master/docs/sources/{{ current_page.input_path }}">
-    <span class="glyphicon glyphicon-edit"></span>  Edit This File
-</a>
+<div class="pull-right content-edit">
+  <a href="https://github.com/sourcegraph/srclib/tree/master/docs/sources/{{ current_page.input_path }}">
+    <span class="glyphicon glyphicon-edit"></span> Edit
+  </a>
 </div>
 
 {% if meta.source %}
@@ -13,6 +12,5 @@
   </div>
 {% endif %}
 
-<div class="markdown">
 {{ content }}
-</div>
+
