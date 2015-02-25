@@ -5,8 +5,6 @@ import (
 	"regexp"
 )
 
-// END Def OMIT
-
 var treePathRegexp = regexp.MustCompile(`^(?:[^/]+)(?:/[^/]+)*$`)
 
 func IsValidTreePath(treePath string) bool {
