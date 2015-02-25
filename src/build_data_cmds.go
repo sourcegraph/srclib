@@ -17,6 +17,7 @@ import (
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
+	"sourcegraph.com/sourcegraph/srclib/store"
 )
 
 func init() {
@@ -315,6 +316,7 @@ type BuildDataRemoveCmd struct {
 	buildDataSingleRepoCommonOpts
 
 	Recursive bool `short:"r" description:"recursively delete files and dir"`
+	All       bool `long:"all" description:"remove all build data (local only)"`
 	Args      struct {
 		Files []string `name:"FILES" default:"." description:"file to remove"`
 	} `positional-args:"yes"`
@@ -323,8 +325,25 @@ type BuildDataRemoveCmd struct {
 var buildDataRemoveCmd BuildDataRemoveCmd
 
 func (c *BuildDataRemoveCmd) Execute(args []string) error {
-	if len(c.Args.Files) == 0 {
+	if len(c.Args.Files) == 0 && !c.All {
 		return fmt.Errorf("no files specified")
+	}
+
+	if c.All {
+		if !c.Local {
+			return fmt.Errorf("--all and --local must be used together")
+		}
+		lrepo, err := openLocalRepo()
+		if err != nil {
+			return err
+		}
+		if err := os.RemoveAll(filepath.Join(lrepo.RootDir, store.SrclibStoreDir)); err != nil {
+			return err
+		}
+		if err := os.RemoveAll(filepath.Join(lrepo.RootDir, buildstore.BuildDataDirName)); err != nil {
+			return err
+		}
+		return nil
 	}
 
 	bdfs, repoLabel, err := c.getFileSystem()
