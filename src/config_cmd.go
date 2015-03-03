@@ -209,8 +209,10 @@ func runPreConfigCommands(dir string, cmds []string, execOpt ToolchainExecOpt) e
 		// Build image
 		dockerfile := []byte(`
 FROM ubuntu:14.04
-RUN apt-get update -qq && echo 2014-08-10
+RUN apt-get update -qq && echo 2015-03-02
 RUN apt-get install -qq curl git mercurial build-essential
+# install these for srclib-java's mvn-install-nodeps-error-tolerant.bash script:
+RUN apt-get install -qq maven ecj perl
 RUN useradd -ms /bin/bash srclib
 RUN mkdir /src
 RUN chown srclib /src
