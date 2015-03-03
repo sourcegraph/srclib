@@ -37,12 +37,14 @@ type Tree struct {
 	// is read from the Srcfile but before scanners are run). The commands are
 	// run at the top-level directory of the tree.
 	//
-	// If `src config` is run with the program execution method ("-m program"),
-	// the commands are executed normally. If it is run with the Docker
-	// execution method ("-m docker"), the commands are run in a Docker
-	// container with the tree mounted read-write at /src. Currently this
-	// container runs Ubuntu 14.04 with the git, mercurial, curl, and
-	// build-essential packages installed.
+	// If `src config` is run with the program execution method ("-m
+	// program"), the commands are executed normally. If it is run
+	// with the Docker execution method ("-m docker"), the commands
+	// are run in a Docker container with the tree mounted read-write
+	// at /src. Currently this container runs Ubuntu 14.04 with the
+	// git, mercurial, curl, and build-essential packages installed
+	// (plus others that are temporarily installed until we develop a
+	// better way of handling things that need pre-config commands).
 	//
 	// This is the only accepted way to modify the tree during processing. Tools
 	// shouldn't modify the tree because they run concurrently. If they run in
