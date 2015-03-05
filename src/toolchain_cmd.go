@@ -73,6 +73,15 @@ func init() {
 		log.Fatal(err)
 	}
 
+	_, err = c.AddCommand("install",
+		"install toolchains",
+		"Download and install toolchains",
+		&toolchainInstallCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	_, err = c.AddCommand("install-std",
 		"install standard toolchains",
 		"Install standard toolchains (sourcegraph.com/sourcegraph/srclib-* toolchains).",
@@ -272,17 +281,78 @@ func (c *ToolchainAddCmd) Execute(args []string) error {
 	return toolchain.Add(c.Dir, c.Args.ToolchainPath)
 }
 
-type toolchainTag struct {
-	tag         string
-	description string
-	fn          func() error
+type toolchainInstaller struct {
+	name string
+	fn   func() error
 }
 
-var availableToolchains = []toolchainTag{
-	{"go", "Go (sourcegraph.com/sourcegraph/srclib-go)", installGoToolchain},
-	{"python", "Python (sourcegraph.com/sourcegraph/srclib-python)", installPythonToolchain},
-	{"ruby", "Ruby (sourcegraph.com/sourcegraph/srclib-ruby)", installRubyToolchain},
-	{"javascript", "JavaScript (sourcegraph.com/sourcegraph/srclib-javascript)", installJavaScriptToolchain},
+type toolchainMap map[string]toolchainInstaller
+
+var stdToolchains = toolchainMap{
+	"go":         toolchainInstaller{"Go (sourcegraph.com/sourcegraph/srclib-go)", installGoToolchain},
+	"python":     toolchainInstaller{"Python (sourcegraph.com/sourcegraph/srclib-python)", installPythonToolchain},
+	"ruby":       toolchainInstaller{"Ruby (sourcegraph.com/sourcegraph/srclib-ruby)", installRubyToolchain},
+	"javascript": toolchainInstaller{"JavaScript (sourcegraph.com/sourcegraph/srclib-javascript)", installJavaScriptToolchain},
+}
+
+func (m toolchainMap) listKeys() string {
+	var langs string
+	for i, _ := range m {
+		langs += i + ", "
+	}
+	// Remove the last comma from langs before returning it.
+	return strings.TrimSuffix(langs, ", ")
+}
+
+type ToolchainInstallCmd struct {
+	// Args are not required so we can print out a more detailed
+	// error message inside (*ToolchainInstallCmd).Execute.
+	Args struct {
+		Languages []string `value-name:"LANG" description:"language toolchains to install"`
+	} `positional-args:"yes"`
+}
+
+var toolchainInstallCmd ToolchainInstallCmd
+
+func (c *ToolchainInstallCmd) Execute(args []string) error {
+	if len(c.Args.Languages) == 0 {
+		return errors.New(brush.Red(fmt.Sprintf("No languages specified. Standard languages include: %s", stdToolchains.listKeys())).String())
+	}
+	var is []toolchainInstaller
+	for _, l := range c.Args.Languages {
+		i, ok := stdToolchains[l]
+		if !ok {
+			return errors.New(brush.Red(fmt.Sprintf("Language %s unrecognized. Standard languages include: %s", l, stdToolchains.listKeys())).String())
+		}
+		is = append(is, i)
+	}
+	return installToolchains(is)
+}
+
+func installToolchains(langs []toolchainInstaller) error {
+	var notInstalled []string
+	for _, l := range langs {
+		fmt.Println(brush.Cyan(l.name + " " + strings.Repeat("=", 78-len(l.name))).String())
+		if err := l.fn(); err != nil {
+			if err, ok := err.(skippedToolchain); ok {
+				fmt.Printf("%s\n", brush.Yellow(err.Error()))
+			} else {
+				fmt.Printf("%s\n", brush.Red(fmt.Sprintf("failed to install/upgrade %s toolchain: %s", l.name, err)))
+			}
+			notInstalled = append(notInstalled, l.name)
+			// Continue here because we attempt to install
+			// all the toolchains.
+			continue
+		}
+
+		fmt.Println(brush.Green("OK! Installed/upgraded " + l.name + " toolchain").String())
+		fmt.Println(brush.Cyan(strings.Repeat("=", 80)).String())
+		fmt.Println()
+	}
+	if len(notInstalled) != 0 {
+		return errors.New(brush.Red(fmt.Sprintf("The following toolchains were not installed:\n%s", strings.Join(notInstalled, "\n"))).String())
+	}
+	return nil
 }
 
 type ToolchainInstallStdCmd struct {
@@ -295,32 +365,18 @@ func (c *ToolchainInstallStdCmd) Execute(args []string) error {
 	fmt.Println(brush.Cyan("Installing/upgrading standard toolchains..."))
 	fmt.Println()
 
+	var is []toolchainInstaller
 OuterLoop:
-	for _, x := range availableToolchains {
-		tag := x.tag
-		desc := x.description
+	for name, installer := range stdToolchains {
 		for _, skip := range c.Skip {
-			if strings.EqualFold(tag, skip) {
-				fmt.Println(brush.Yellow(fmt.Sprintf("Skipping installation of %s", desc)))
+			if strings.EqualFold(name, skip) {
+				fmt.Println(brush.Yellow(fmt.Sprintf("Skipping installation of %s", installer.name)))
 				continue OuterLoop
 			}
 		}
-		fmt.Println(brush.Cyan(desc + " " + strings.Repeat("=", 78-len(desc))).String())
-		if err := x.fn(); err != nil {
-			if err, ok := err.(skippedToolchain); ok {
-				fmt.Println(brush.Yellow(err.Error()).String())
-				fmt.Println()
-				continue
-			}
-			return errors.New(brush.Red(fmt.Sprintf("failed to install/upgrade %s toolchain: %s", desc, err)).String())
-		}
-
-		fmt.Println(brush.Green("OK! Installed/upgraded " + desc + " toolchain").String())
-		fmt.Println(brush.Cyan(strings.Repeat("=", 80)).String())
-		fmt.Println()
+		is = append(is, installer)
 	}
-
-	return nil
+	return installToolchains(is)
 }
 
 func installGoToolchain() error {
