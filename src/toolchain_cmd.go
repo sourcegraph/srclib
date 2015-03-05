@@ -81,6 +81,15 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	_, err = c.AddCommand("install",
+		"install specific toolchains",
+		"Install specific toolchains (sourcegraph.com/sourcegraph/srclib-* toolchains).",
+		&toolchainInstallCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 type ToolchainPath string
@@ -272,6 +281,30 @@ func (c *ToolchainAddCmd) Execute(args []string) error {
 	return toolchain.Add(c.Dir, c.Args.ToolchainPath)
 }
 
+type toolchainInfo struct {
+	desc string
+	fn   func() error
+}
+
+var stdToolchains map[string]toolchainInfo = map[string]toolchainInfo{
+	"go":         {"Go (sourcegraph.com/sourcegraph/srclib-go)", installGoToolchain},
+	"python":     {"Python (sourcegraph.com/sourcegraph/srclib-python)", installPythonToolchain},
+	"ruby":       {"Ruby (sourcegraph.com/sourcegraph/srclib-ruby)", installRubyToolchain},
+	"javascript": {"JavaScript (sourcegraph.com/sourcegraph/srclib-javascript)", installJavaScriptToolchain},
+}
+
+type ToolchainInstallCmd struct{}
+
+var toolchainInstallCmd ToolchainInstallCmd
+
+func (c *ToolchainInstallCmd) Execute(args []string) error {
+	// TODO(samer): Add Args to ToolchainInstallCmd instead?
+	if len(args) == 0 {
+		return errors.New("Recieved zero arguments.")
+	}
+	return installToolchains(args)
+}
+
 type ToolchainInstallStdCmd struct {
 	Skip []string `long:"skip" description:"skip installing matching toolchains (can be specified multiple times; e.g., --skip go --skip ruby)" value-name:"NAME"`
 }
@@ -281,45 +314,45 @@ var toolchainInstallStdCmd ToolchainInstallStdCmd
 func (c *ToolchainInstallStdCmd) Execute(args []string) error {
 	fmt.Println(brush.Cyan("Installing/upgrading standard toolchains..."))
 	fmt.Println()
-
-	x := []struct {
-		name string
-		fn   func() error
-	}{
-		{"Go (sourcegraph.com/sourcegraph/srclib-go)", c.installGoToolchain},
-		{"Python (sourcegraph.com/sourcegraph/srclib-python)", c.installPythonToolchain},
-		{"Ruby (sourcegraph.com/sourcegraph/srclib-ruby)", c.installRubyToolchain},
-		{"JavaScript (sourcegraph.com/sourcegraph/srclib-javascript)", c.installJavaScriptToolchain},
-	}
-
-OuterLoop:
-	for _, x := range x {
-		name := x.name
+	langs := make([]string, 0, len(stdToolchains))
+	for lang, info := range stdToolchains {
 		for _, skip := range c.Skip {
-			if strings.Contains(name, skip) {
-				fmt.Println(brush.Yellow(fmt.Sprintf("Skipping installation of %s", name)))
-				continue OuterLoop
+			if strings.Contains(lang, skip) {
+				fmt.Println(brush.Yellow(fmt.Sprintf("Skipping installation of %s", info.desc)))
+				continue
 			}
 		}
-		fmt.Println(brush.Cyan(name + " " + strings.Repeat("=", 78-len(name))).String())
-		if err := x.fn(); err != nil {
+		langs = append(langs, lang)
+	}
+	// TODO(samer): Ask the user to confirm toolchains before installing.
+	return installToolchains(langs)
+}
+
+func installToolchains(langs []string) error {
+	for _, l := range langs {
+		l := strings.ToLower(l)
+		tool, ok := stdToolchains[l]
+		if !ok {
+			fmt.Println(brush.Yellow(fmt.Sprintf("Language \"%s\" is not supported.", l)))
+			continue
+		}
+		if err := tool.fn(); err != nil {
 			if err, ok := err.(skippedToolchain); ok {
 				fmt.Println(brush.Yellow(err.Error()).String())
 				fmt.Println()
 				continue
 			}
-			return errors.New(brush.Red(fmt.Sprintf("failed to install/upgrade %s toolchain: %s", name, err)).String())
+			return errors.New(brush.Red(fmt.Sprintf("failed to install/upgrade %s toolchain: %s", tool.desc, err)).String())
 		}
 
-		fmt.Println(brush.Green("OK! Installed/upgraded " + name + " toolchain").String())
+		fmt.Println(brush.Green("OK! Installed/upgraded " + tool.desc + " toolchain").String())
 		fmt.Println(brush.Cyan(strings.Repeat("=", 80)).String())
 		fmt.Println()
 	}
-
 	return nil
 }
 
-func (c *ToolchainInstallStdCmd) installGoToolchain() error {
+func installGoToolchain() error {
 	const toolchain = "sourcegraph.com/sourcegraph/srclib-go"
 	gopath := os.Getenv("GOPATH")
 	if gopath == "" {
@@ -351,7 +384,7 @@ func (c *ToolchainInstallStdCmd) installGoToolchain() error {
 	return nil
 }
 
-func (c *ToolchainInstallStdCmd) installRubyToolchain() error {
+func installRubyToolchain() error {
 	const toolchain = "sourcegraph.com/sourcegraph/srclib-ruby"
 
 	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
@@ -376,7 +409,7 @@ func (c *ToolchainInstallStdCmd) installRubyToolchain() error {
 	return nil
 }
 
-func (c *ToolchainInstallStdCmd) installJavaScriptToolchain() error {
+func installJavaScriptToolchain() error {
 	const toolchain = "sourcegraph.com/sourcegraph/srclib-javascript"
 
 	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
@@ -396,7 +429,7 @@ func (c *ToolchainInstallStdCmd) installJavaScriptToolchain() error {
 	return nil
 }
 
-func (c *ToolchainInstallStdCmd) installPythonToolchain() error {
+func installPythonToolchain() error {
 	const toolchain = "sourcegraph.com/sourcegraph/srclib-python"
 
 	requiredCmds := map[string]string{
