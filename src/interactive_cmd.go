@@ -2,6 +2,7 @@ package src
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -12,8 +13,6 @@ import (
 
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/graph"
-
-	_ "sourcegraph.com/sourcegraph/srclib-go/golang_def"
 
 	"github.com/nemith/goline"
 	"github.com/peterh/liner"
@@ -179,9 +178,22 @@ func formatObject(objs interface{}) string {
 		if o == nil {
 			return "def is nil"
 		}
-		f := o.Fmt()
-		return fmt.Sprintf("%s %s %s\n%s",
-			f.Kind(), f.Name(""), f.Type(""),
+		b, err := json.Marshal(o)
+		if err != nil {
+			return fmt.Sprintf("error unmarshalling: %s", err)
+		}
+		c := &FmtCmd{
+			UnitType:   o.UnitType,
+			ObjectType: "def",
+			Format:     "decl",
+			Object:     string(b),
+		}
+		out, err := c.Get()
+		if err != nil {
+			return fmt.Sprintf("error formatting def: %s", err)
+		}
+		return fmt.Sprintf("---------- def ----------\n%s\n%s",
+			out,
 			getFileSegment(o.File, o.DefStart, o.DefEnd, true),
 		)
 	case []*graph.Def:
@@ -211,7 +223,11 @@ func formatObject(objs interface{}) string {
 		return strings.Join(out, "\n")
 	case defRefs:
 		var out []string
-		out = append(out, formatObject(o.def), formatObject(o.refs))
+		out = append(out,
+			formatObject(o.def),
+			"---------- refs ----------",
+			formatObject(o.refs),
+		)
 		return strings.Join(out, "\n")
 	default:
 		log.Printf("formatObject: no output for %#v\n", o)
