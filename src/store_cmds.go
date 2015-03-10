@@ -912,6 +912,10 @@ type StoreDefsCmd struct {
 
 	Limit  int `short:"n" long:"limit" description:"max results to return (0 for all)"`
 	Offset int `long:"offset" description:"results offset (0 to start with first results)"`
+
+	// If Filter is non-nil, it is applied along with the above
+	// filters.
+	Filter store.DefFilter
 }
 
 func (c *StoreDefsCmd) filters() []store.DefFilter {
@@ -943,6 +947,9 @@ func (c *StoreDefsCmd) filters() []store.DefFilter {
 	if c.Query != "" {
 		fs = append(fs, store.ByDefQuery(c.Query))
 	}
+	if c.Filter != nil {
+		fs = append(fs, c.Filter)
+	}
 	if c.Limit != 0 || c.Offset != 0 {
 		fs = append(fs, store.Limit(c.Limit, c.Offset))
 	}
@@ -952,22 +959,30 @@ func (c *StoreDefsCmd) filters() []store.DefFilter {
 var storeDefsCmd StoreDefsCmd
 
 func (c *StoreDefsCmd) Execute(args []string) error {
-	s, err := OpenStore()
-	if err != nil {
-		return err
-	}
-
-	us, ok := s.(store.UnitStore)
-	if !ok {
-		return fmt.Errorf("store (type %T) does not implement listing defs", s)
-	}
-
-	defs, err := us.Defs(c.filters()...)
+	defs, err := c.Get()
 	if err != nil {
 		return err
 	}
 	PrintJSON(defs, "  ")
 	return nil
+}
+
+func (c *StoreDefsCmd) Get() ([]*graph.Def, error) {
+	s, err := OpenStore()
+	if err != nil {
+		return nil, err
+	}
+
+	us, ok := s.(store.UnitStore)
+	if !ok {
+		return nil, fmt.Errorf("store (type %T) does not implement listing defs", s)
+	}
+
+	defs, err := us.Defs(c.filters()...)
+	if err != nil {
+		return nil, err
+	}
+	return defs, nil
 }
 
 type StoreRefsCmd struct {
@@ -1060,19 +1075,31 @@ func (c *StoreRefsCmd) filters() []store.RefFilter {
 var storeRefsCmd StoreRefsCmd
 
 func (c *StoreRefsCmd) Execute(args []string) error {
-	s, err := OpenStore()
+	refs, err := c.Get()
 	if err != nil {
 		return err
+	}
+	switch c.Format {
+	case "json":
+		PrintJSON(refs, "  ")
+	}
+	return nil
+}
+
+func (c *StoreRefsCmd) Get() ([]*graph.Ref, error) {
+	s, err := OpenStore()
+	if err != nil {
+		return nil, err
 	}
 
 	us, ok := s.(store.UnitStore)
 	if !ok {
-		return fmt.Errorf("store (type %T) does not implement listing refs", s)
+		return nil, fmt.Errorf("store (type %T) does not implement listing refs", s)
 	}
 
 	refs, err := us.Refs(c.filters()...)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	allRefs := refs
@@ -1080,18 +1107,12 @@ func (c *StoreRefsCmd) Execute(args []string) error {
 	if c.Broken || c.Coverage {
 		brokenRefs, err = brokenRefsOnly(refs, s)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if c.Broken {
 			refs = brokenRefs
 		}
 	}
-
-	switch c.Format {
-	case "json":
-		PrintJSON(refs, "  ")
-	}
-
 	if c.Coverage {
 		log.Printf("# Coverage summary:")
 		log.Printf("#  - %d total refs", len(allRefs))
@@ -1100,7 +1121,7 @@ func (c *StoreRefsCmd) Execute(args []string) error {
 		log.Printf("#  - %d broken refs (%.1f)", len(brokenRefs), percent(len(brokenRefs), len(allRefs)))
 	}
 
-	return nil
+	return refs, nil
 }
 
 func brokenRefsOnly(refs []*graph.Ref, s interface{}) ([]*graph.Ref, error) {
