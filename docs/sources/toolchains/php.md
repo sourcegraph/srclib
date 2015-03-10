@@ -1,3 +1,3 @@
 # PHP Toolchain
 
-... is a work in progress! Leave a note ***HERE*** (TODO: add link) if you want a php toolchain.
+... is a work in progress! Leave a note [here](https://github.com/sourcegraph/sourcegraph.com/issues/185) if you want a PHP toolchain.
