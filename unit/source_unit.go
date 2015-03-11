@@ -59,7 +59,7 @@ type SourceUnit struct {
 
 	// Files is all of the files that make up this source unit. Filepaths should
 	// be relative to the repository root.
-	Files []string `json:",omitempty"`
+	Files []string
 
 	// Dir is the root directory of this source unit. It is optional and maybe
 	// empty.
