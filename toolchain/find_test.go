@@ -45,6 +45,13 @@ func TestList_program(t *testing.T) {
 		}
 	}
 
+	// Put a file symlink in srclib DIR path.
+	oldp := filepath.Join(tmpdir, "a/a/.bin/a")
+	newp := filepath.Join(tmpdir, "link")
+	if err := os.Symlink(oldp, newp); err != nil {
+		t.Fatal(err)
+	}
+
 	toolchains, err := List()
 	if err != nil {
 		t.Fatal(err)
