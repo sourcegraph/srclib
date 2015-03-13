@@ -236,7 +236,7 @@ var keywordInfoMap = map[tokKeyword]keywordInfo{
 		defaultVals: []tokValue{"defs", "refs"},
 	},
 	keyFormat: keywordInfo{
-		validVals:   []tokValue{"decl", "methods", "body"},
+		validVals:   []tokValue{"decl", "methods", "body", "full"},
 		defaultVals: []tokValue{"decl", "body"},
 	},
 	keyLimit: keywordInfo{
@@ -588,13 +588,30 @@ func inputToFormat(i *inputValues) format {
 			f.showDocs = true
 		}
 	}
+	for _, fmt := range i.format {
+		switch fmt {
+		case "decl":
+			f.showDefDecl = true
+		case "methods":
+			f.showDefMethods = true
+		case "body":
+			f.showDefBody = true
+		case "full":
+			f.showDefFull = true
+		}
+	}
 	return f
 }
 
 type format struct {
-	showDefs bool
-	showRefs bool
-	showDocs bool
+	showDefs    bool
+	showRefs    bool
+	showDocs    bool
+	showDefDecl bool
+	showDefBody bool
+	// The following are unimplemented:
+	showDefMethods bool
+	showDefFull    bool
 }
 
 // eval evaluates input and returns the results as 'output'.
@@ -688,26 +705,29 @@ func formatObject(objs interface{}, f format) string {
 		if o == nil {
 			return "def is nil"
 		}
-		var output string
+		var output []string
 		if f.showDefs {
-			b, err := json.Marshal(o)
-			if err != nil {
-				return fmt.Sprintf("error unmarshalling: %s", err)
+			output = append(output, "---------- def ----------")
+			if f.showDefDecl {
+				b, err := json.Marshal(o)
+				if err != nil {
+					return fmt.Sprintf("error unmarshalling: %s", err)
+				}
+				c := &FmtCmd{
+					UnitType:   o.UnitType,
+					ObjectType: "def",
+					Format:     "decl",
+					Object:     string(b),
+				}
+				out, err := c.Get()
+				if err != nil {
+					return fmt.Sprintf("error formatting def: %s", err)
+				}
+				output = append(output, out)
 			}
-			c := &FmtCmd{
-				UnitType:   o.UnitType,
-				ObjectType: "def",
-				Format:     "decl",
-				Object:     string(b),
+			if f.showDefBody {
+				output = append(output, getFileSegment(o.File, o.DefStart, o.DefEnd, true))
 			}
-			out, err := c.Get()
-			if err != nil {
-				return fmt.Sprintf("error formatting def: %s", err)
-			}
-			output += fmt.Sprintf("---------- def ----------\n%s\n%s",
-				out,
-				getFileSegment(o.File, o.DefStart, o.DefEnd, true),
-			)
 		}
 		if f.showDocs {
 			var data string
@@ -718,10 +738,10 @@ func formatObject(objs interface{}, f format) string {
 				}
 			}
 			if data != "" {
-				output += fmt.Sprintf("---------- doc ----------\n%s\n", data)
+				output = append(output, "---------- doc ----------", data)
 			}
 		}
-		return output
+		return strings.Join(output, "\n")
 	case []*graph.Def:
 		var out []string
 		for _, d := range o {
