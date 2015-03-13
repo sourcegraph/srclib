@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"reflect"
+	"strconv"
 	"strings"
 	"unicode/utf8"
 
@@ -600,6 +601,14 @@ func inputToFormat(i *inputValues) format {
 			f.showDefFull = true
 		}
 	}
+	// TODO: make limit parsing more robust.
+	if len(i.limit) == 1 {
+		l, err := strconv.Atoi(string(i.limit[0]))
+		if err != nil {
+			log.Printf("Could not convert limit %s to an int, skipping.\n", i.limit[0])
+		}
+		f.limit = l
+	}
 	return f
 }
 
@@ -609,6 +618,7 @@ type format struct {
 	showDocs    bool
 	showDefDecl bool
 	showDefBody bool
+	limit       int
 	// The following are unimplemented:
 	showDefMethods bool
 	showDefFull    bool
@@ -626,7 +636,7 @@ func eval(input string) (output string, err error) {
 	f := inputToFormat(i)
 	var out []string
 	for _, input := range i.def {
-		c := &StoreDefsCmd{Query: string(input)}
+		c := &StoreDefsCmd{Query: string(input), Limit: f.limit}
 		defs, err := c.Get()
 		if err != nil {
 			return "", err
