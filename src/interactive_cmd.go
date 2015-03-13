@@ -14,7 +14,6 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 
-	"github.com/nemith/goline"
 	"github.com/peterh/liner"
 )
 
@@ -33,11 +32,6 @@ func init() {
 type InteractiveCmd struct{}
 
 var interactiveCmd InteractiveCmd
-
-func helpHandler(l *goline.GoLine) (bool, error) {
-	fmt.Println("\nHelp!")
-	return false, nil
-}
 
 var historyFile = "/tmp/.srclibi_history"
 
