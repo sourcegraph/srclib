@@ -576,6 +576,27 @@ loop:
 	return i.validateAndSetDefaults()
 }
 
+func inputToFormat(i *inputValues) format {
+	var f format
+	for _, s := range i.sel {
+		switch s {
+		case "defs":
+			f.showDefs = true
+		case "refs":
+			f.showRefs = true
+		case "docs":
+			f.showDocs = true
+		}
+	}
+	return f
+}
+
+type format struct {
+	showDefs bool
+	showRefs bool
+	showDocs bool
+}
+
 // eval evaluates input and returns the results as 'output'.
 func eval(input string) (output string, err error) {
 	i, err := parse(input)
@@ -585,32 +606,33 @@ func eval(input string) (output string, err error) {
 	if GlobalOpt.Verbose {
 		log.Printf("parsed: %+v\n", i)
 	}
+	f := inputToFormat(i)
 	var out []string
 	for _, input := range i.def {
 		c := &StoreDefsCmd{Query: string(input)}
-		// TODO: reenable 'kind' filter.
-		// if kind != "" {
-		// 	c.Filter = byDefKind{kind}
-		// }
 		defs, err := c.Get()
 		if err != nil {
 			return "", err
 		}
-		outDefRefs := make([]defRefs, 0, len(defs))
-		for _, d := range defs {
-			c := &StoreRefsCmd{
-				DefRepo:     d.Repo,
-				DefUnitType: d.UnitType,
-				DefUnit:     d.Unit,
-				DefPath:     d.Path,
+		if f.showRefs {
+			outDefRefs := make([]defRefs, 0, len(defs))
+			for _, d := range defs {
+				c := &StoreRefsCmd{
+					DefRepo:     d.Repo,
+					DefUnitType: d.UnitType,
+					DefUnit:     d.Unit,
+					DefPath:     d.Path,
+				}
+				refs, err := c.Get()
+				if err != nil {
+					return "", err
+				}
+				outDefRefs = append(outDefRefs, defRefs{d, refs})
 			}
-			refs, err := c.Get()
-			if err != nil {
-				return "", err
-			}
-			outDefRefs = append(outDefRefs, defRefs{d, refs})
+			out = append(out, formatObject(outDefRefs, f))
+			continue
 		}
-		out = append(out, formatObject(outDefRefs))
+		out = append(out, formatObject(defs, f))
 	}
 	return strings.Join(out, "\n"), nil
 }
@@ -660,61 +682,80 @@ func getFileSegment(file string, start, end uint32, header bool) string {
 	return string(f[start:end])
 }
 
-func formatObject(objs interface{}) string {
+func formatObject(objs interface{}, f format) string {
 	switch o := objs.(type) {
 	case *graph.Def:
 		if o == nil {
 			return "def is nil"
 		}
-		b, err := json.Marshal(o)
-		if err != nil {
-			return fmt.Sprintf("error unmarshalling: %s", err)
+		var output string
+		if f.showDefs {
+			b, err := json.Marshal(o)
+			if err != nil {
+				return fmt.Sprintf("error unmarshalling: %s", err)
+			}
+			c := &FmtCmd{
+				UnitType:   o.UnitType,
+				ObjectType: "def",
+				Format:     "decl",
+				Object:     string(b),
+			}
+			out, err := c.Get()
+			if err != nil {
+				return fmt.Sprintf("error formatting def: %s", err)
+			}
+			output += fmt.Sprintf("---------- def ----------\n%s\n%s",
+				out,
+				getFileSegment(o.File, o.DefStart, o.DefEnd, true),
+			)
 		}
-		c := &FmtCmd{
-			UnitType:   o.UnitType,
-			ObjectType: "def",
-			Format:     "decl",
-			Object:     string(b),
+		if f.showDocs {
+			var data string
+			for _, doc := range o.Docs {
+				if doc.Format == "text/plain" {
+					data = doc.Data
+					break
+				}
+			}
+			if data != "" {
+				output += fmt.Sprintf("---------- doc ----------\n%s\n", data)
+			}
 		}
-		out, err := c.Get()
-		if err != nil {
-			return fmt.Sprintf("error formatting def: %s", err)
-		}
-		return fmt.Sprintf("---------- def ----------\n%s\n%s",
-			out,
-			getFileSegment(o.File, o.DefStart, o.DefEnd, true),
-		)
+		return output
 	case []*graph.Def:
 		var out []string
 		for _, d := range o {
-			out = append(out, formatObject(d))
+			out = append(out, formatObject(d, f))
 		}
 		return strings.Join(out, "\n")
 	case *graph.Ref:
 		if o == nil {
 			return "ref is nil"
 		}
-		return getFileSegment(o.File, o.Start, o.End, true)
+		if f.showRefs {
+			return getFileSegment(o.File, o.Start, o.End, true)
+		}
+		return ""
 	case []*graph.Ref:
 		var out []string
 		for _, r := range o {
 			if !r.Def {
-				out = append(out, formatObject(r))
+				out = append(out, formatObject(r, f))
 			}
 		}
 		return strings.Join(out, "\n")
 	case []defRefs:
 		var out []string
 		for _, d := range o {
-			out = append(out, formatObject(d))
+			out = append(out, formatObject(d, f))
 		}
 		return strings.Join(out, "\n")
 	case defRefs:
 		var out []string
 		out = append(out,
-			formatObject(o.def),
+			formatObject(o.def, f),
 			"---------- refs ----------",
-			formatObject(o.refs),
+			formatObject(o.refs, f),
 		)
 		return strings.Join(out, "\n")
 	default:
