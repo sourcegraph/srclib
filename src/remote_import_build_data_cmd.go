@@ -152,6 +152,7 @@ func (c *RemoteImportBuildCmd) Execute(args []string) error {
 				log.Printf("# Import succeeded!")
 			} else if importTask.Failure {
 				log.Printf("# Import failed!")
+				return fmt.Errorf("import failed")
 			}
 			break
 		}
