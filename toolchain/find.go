@@ -68,6 +68,17 @@ func List() ([]*Info, error) {
 			if path != dir && (name[0] == '.' || name[0] == '_') {
 				w.SkipDir()
 			} else if fi.Mode()&os.ModeSymlink != 0 {
+				// Check if symlink points to a directory.
+				if sfi, err := os.Stat(path); err == nil {
+					if !sfi.IsDir() {
+						continue
+					}
+				} else if os.IsNotExist(err) {
+					continue
+				} else {
+					return nil, err
+				}
+
 				// traverse symlinks but refer to symlinked trees' toolchains using
 				// the path to them through the original entry in SRCLIBPATH
 				dirs = append(dirs, path+"/")
