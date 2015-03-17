@@ -73,6 +73,15 @@ func init() {
 		log.Fatal(err)
 	}
 
+	_, err = c.AddCommand("temp-dir",
+		"get toolchain's temp dir",
+		"Get toolchain's temp directory. Creates it if it doesn't exists.",
+		&toolchainTempDirCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	_, err = c.AddCommand("install",
 		"install toolchains",
 		"Download and install toolchains",
@@ -279,6 +288,24 @@ var toolchainAddCmd ToolchainAddCmd
 
 func (c *ToolchainAddCmd) Execute(args []string) error {
 	return toolchain.Add(c.Dir, c.Args.ToolchainPath)
+}
+
+type ToolchainTempDirCmd struct {
+	Args struct {
+		ToolchainPath string `name:"TOOLCHAIN" default:"." description:"toolchain path for which to get temp dir"`
+	} `positional-args:"yes" required:"yes"`
+}
+
+var toolchainTempDirCmd ToolchainTempDirCmd
+
+func (c *ToolchainTempDirCmd) Execute(args []string) error {
+	dir, err := toolchain.TempDir(c.Args.ToolchainPath)
+	if err != nil {
+		return errors.New(brush.Red(fmt.Sprintf("Failed to get/create temp dir: %s", err)).String())
+	}
+
+	fmt.Printf(dir)
+	return nil
 }
 
 type toolchainInstaller struct {
