@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"log"
 	"path/filepath"
 
 	"code.google.com/p/rog-go/parallel"
@@ -60,11 +61,7 @@ func OpenRepo(dir string) (*Repo, error) {
 	})
 	par.Do(func() error {
 		// Get repo URI from clone URL.
-		cloneURL, err := getVCSCloneURL(rc.VCSType, rc.RootDir)
-		if err != nil {
-			return err
-		}
-		rc.CloneURL = cloneURL
+		rc.CloneURL = getVCSCloneURL(rc.VCSType, rc.RootDir)
 		return nil
 	})
 	return rc, par.Wait()
@@ -131,7 +128,14 @@ func ancestorDirsAndSelfExceptRoot(p string) []string {
 	return dirs
 }
 
-func getVCSCloneURL(vcsType string, repoDir string) (string, error) {
+// getVCSCloneURL gets the primary remote url. getVCSCloneURL returns
+// the empty string if it fails or if there is no primary remote.
+func getVCSCloneURL(vcsType string, repoDir string) string {
+	logWarning := func(err error) {
+		if GlobalOpt.Verbose {
+			log.Printf("Warning: getVCSCloneURL: %s", err)
+		}
+	}
 	run := func(args ...string) (string, error) {
 		cmd := exec.Command(args[0], args[1:]...)
 		cmd.Dir = repoDir
@@ -150,19 +154,29 @@ func getVCSCloneURL(vcsType string, repoDir string) (string, error) {
 		// Try to get the "srclib" remote first.
 		url, err := run("git", "config", "remote.srclib.url")
 		if err == nil {
-			return url, nil
+			return url
 		}
 
 		url, err = run("git", "config", "remote.origin.url")
 		if code, _ := exitStatus(err); code == 1 {
 			// `git config --get` returns exit code 1 if the config key doesn't exist.
-			return "", errNoVCSCloneURL
+			logWarning(errNoVCSCloneURL)
+			return ""
+		} else if err != nil {
+			logWarning(errNoVCSCloneURL)
+			return ""
 		}
-		return url, err
+		return url
 	case "hg":
-		return run("hg", "--config", "trusted.users=root", "paths", "default")
+		cloneURL, err := run("hg", "--config", "trusted.users=root", "paths", "default")
+		if err != nil {
+			logWarning(err)
+			return ""
+		}
+		return cloneURL
 	default:
-		return "", fmt.Errorf("unrecognized VCS %v", vcsType)
+		logWarning(fmt.Errorf("unrecognized VCS %v", vcsType))
+		return ""
 	}
 }
 
