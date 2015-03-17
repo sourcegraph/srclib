@@ -25,7 +25,12 @@ type Repo struct {
 	CloneURL string // CloneURL of repo.
 }
 
-func (c *Repo) URI() string { return graph.MakeURI(c.CloneURL) }
+func (c *Repo) URI() string {
+	if c.CloneURL != "" {
+		graph.MakeURI(c.CloneURL)
+	}
+	return ""
+}
 
 func (r *Repo) RepoRevSpec() sourcegraph.RepoRevSpec {
 	return sourcegraph.RepoRevSpec{
