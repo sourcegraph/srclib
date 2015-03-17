@@ -67,11 +67,6 @@ func OpenRepo(dir string) (*Repo, error) {
 		rc.CloneURL = cloneURL
 		return nil
 	})
-	par.Do(func() error {
-		// Misc
-		updateVCSIgnore("." + rc.VCSType + "ignore")
-		return nil
-	})
 	return rc, par.Wait()
 }
 
