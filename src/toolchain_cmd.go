@@ -533,6 +533,6 @@ func symlinkToGopath(toolchain string) (skip string, err error) {
 		return fmt.Sprintf("toolchain dir in GOPATH (%s) is not a symlink (assuming you intentionally cloned the toolchain repo to your GOPATH; not modifying it)", gopathDir), nil
 	}
 
-	log.Printf("Symlinked toolchain %s into your GOPATH at", toolchain, gopathDir)
+	log.Printf("Symlinked toolchain %s into your GOPATH at %s", toolchain, gopathDir)
 	return "", nil
 }
