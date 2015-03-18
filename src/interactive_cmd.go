@@ -14,7 +14,6 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 
 	"github.com/peterh/liner"
@@ -41,19 +40,8 @@ var historyFile = "/tmp/.srclibi_history"
 var activeRepo = "."
 
 func (c *InteractiveCmd) Execute(args []string) error {
-	// Figure out a better way to do this...
-	repo, err := OpenRepo(activeRepo)
+	_, err := prepareCommandContext(activeRepo)
 	if err != nil {
-		return err
-	}
-	buildStore, err := buildstore.LocalRepo(repo.RootDir)
-	if err != nil {
-		return err
-	}
-	if err := ensureBuild(buildStore, repo); err != nil {
-		if err := buildstore.RemoveAllDataForCommit(buildStore, repo.CommitID); err != nil {
-			log.Println(err)
-		}
 		return err
 	}
 
