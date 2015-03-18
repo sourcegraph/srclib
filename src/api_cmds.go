@@ -191,7 +191,15 @@ func prepareCommandContext(file string) (commandContext, error) {
 		}
 		return commandContext{}, err
 	}
-
+	i := &StoreImportCmd{
+		ImportOpt: ImportOpt{
+			Repo:     repo.CloneURL,
+			CommitID: repo.CommitID,
+		},
+	}
+	if err := i.Execute(nil); err != nil {
+		return commandContext{}, err
+	}
 	return c, nil
 }
 
