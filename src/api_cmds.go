@@ -126,7 +126,76 @@ var apiListCmd APIListCmd
 var apiDepsCmd APIDepsCmd
 var apiUnitsCmd APIUnitsCmd
 
-// Invokes the build process on the given repository
+type commandContext struct {
+	repo         *Repo
+	relativeFile string
+	buildStore   buildstore.RepoBuildStore
+	commitFS     rwvfs.WalkableFileSystem
+}
+
+// prepareCommandContext prepare the context for the the "src"
+// command. If file is "." or ends in a "/", then it is a directory. It is safe
+// for "file" to have multiple trailing slashes. prepareCommandContext
+// creates commandContext, changes the process' working directory to
+// file's directory and ensures that a build has been made. It is
+// meant to be used by user-facing commands.
+func prepareCommandContext(file string) (commandContext, error) {
+	var (
+		err   error
+		c     commandContext
+		isDir bool
+	)
+	if file == "" {
+		return commandContext{}, errors.New("prepareCommandContext: file cannot be empty")
+	}
+	if file == "." || file[len(file)-1] == os.PathSeparator {
+		isDir = true
+	}
+	file, err = filepath.Abs(file)
+	if err != nil {
+		return commandContext{}, err
+	}
+	// filepath.Abs returns a cleaned file path, so we need to add
+	// the path separator to it to presrve filepath.Dir's
+	// semantics.
+	if isDir {
+		file += string(os.PathSeparator)
+	}
+
+	repo, err := OpenRepo(filepath.Dir(file))
+	if err != nil {
+		return commandContext{}, err
+	}
+	c.repo = repo
+
+	rel, err := filepath.Rel(repo.RootDir, file)
+	if err != nil {
+		return commandContext{}, err
+	}
+	c.relativeFile = rel
+
+	if err := os.Chdir(repo.RootDir); err != nil {
+		return commandContext{}, err
+	}
+
+	buildStore, err := buildstore.LocalRepo(repo.RootDir)
+	if err != nil {
+		return commandContext{}, err
+	}
+	c.buildStore = buildStore
+	c.commitFS = buildStore.Commit(repo.CommitID)
+
+	if err := ensureBuild(buildStore, repo); err != nil {
+		if err := buildstore.RemoveAllDataForCommit(buildStore, repo.CommitID); err != nil {
+			log.Println(err)
+		}
+		return commandContext{}, err
+	}
+
+	return c, nil
+}
+
+// ensureBuild invokes the build process on the given repository
 func ensureBuild(buildStore buildstore.RepoBuildStore, repo *Repo) error {
 	configOpt := config.Options{
 		Repo:   repo.URI(),
@@ -176,7 +245,8 @@ func getSourceUnits(commitFS rwvfs.WalkableFileSystem, repo *Repo) []string {
 	return unitFiles
 }
 
-// Get a list of all source units that contain the given file
+// getSourceUnitsWithFile gets a list of all source units that contain
+// the given file.
 func getSourceUnitsWithFile(buildStore buildstore.RepoBuildStore, repo *Repo, filename string) ([]*unit.SourceUnit, error) {
 	filename = filepath.Clean(filename)
 
@@ -227,40 +297,13 @@ type apiListCmdOutput struct {
 // END APIListCmdOutput OMIT
 
 func (c *APIListCmd) Execute(args []string) error {
-	var err error
-	c.File, err = filepath.Abs(c.File)
+	context, err := prepareCommandContext(c.File)
 	if err != nil {
 		return err
 	}
 
-	repo, err := OpenRepo(filepath.Dir(c.File))
-	if err != nil {
-		return err
-	}
-
-	c.File, err = filepath.Rel(repo.RootDir, c.File)
-	if err != nil {
-		return err
-	}
-
-	if err := os.Chdir(repo.RootDir); err != nil {
-		return err
-	}
-
-	buildStore, err := buildstore.LocalRepo(repo.RootDir)
-	if err != nil {
-		return err
-	}
-	commitFS := buildStore.Commit(repo.CommitID)
-
-	if err := ensureBuild(buildStore, repo); err != nil {
-		if err := buildstore.RemoveAllDataForCommit(buildStore, repo.CommitID); err != nil {
-			log.Println(err)
-		}
-		return err
-	}
-
-	units, err := getSourceUnitsWithFile(buildStore, repo, c.File)
+	file := context.relativeFile
+	units, err := getSourceUnitsWithFile(context.buildStore, context.repo, file)
 	if err != nil {
 		return err
 	}
@@ -271,9 +314,9 @@ func (c *APIListCmd) Execute(args []string) error {
 			for i, u := range units {
 				ids[i] = string(u.ID())
 			}
-			log.Printf("File %s is in %d source units %v.", c.File, len(units), ids)
+			log.Printf("File %s is in %d source units %v.", file, len(units), ids)
 		} else {
-			log.Printf("File %s is not in any source units.", c.File)
+			log.Printf("File %s is not in any source units.", file)
 		}
 	}
 
@@ -282,7 +325,7 @@ func (c *APIListCmd) Execute(args []string) error {
 	for _, u := range units {
 		var g graph.Output
 		graphFile := plan.SourceUnitDataFilename("graph", u)
-		f, err := commitFS.Open(graphFile)
+		f, err := context.commitFS.Open(graphFile)
 		if err != nil {
 			return err
 		}
@@ -292,21 +335,21 @@ func (c *APIListCmd) Execute(args []string) error {
 		}
 		if !c.NoRefs {
 			for _, ref := range g.Refs {
-				if c.File == ref.File {
+				if file == ref.File {
 					output.Refs = append(output.Refs, ref)
 				}
 			}
 		}
 		if !c.NoDefs {
 			for _, def := range g.Defs {
-				if c.File == def.File {
+				if file == def.File {
 					output.Defs = append(output.Defs, def)
 				}
 			}
 		}
 		if !c.NoDocs {
 			for _, doc := range g.Docs {
-				if c.File == doc.File {
+				if file == doc.File {
 					output.Docs = append(output.Docs, doc)
 				}
 			}
@@ -348,40 +391,12 @@ type apiDescribeCmdOutput struct {
 // END APIDescribeCmdOutputQuickHack OMIT
 
 func (c *APIDescribeCmd) Execute(args []string) error {
-	var err error
-	c.File, err = filepath.Abs(c.File)
+	context, err := prepareCommandContext(c.File)
 	if err != nil {
 		return err
 	}
-
-	repo, err := OpenRepo(filepath.Dir(c.File))
-	if err != nil {
-		return err
-	}
-
-	c.File, err = filepath.Rel(repo.RootDir, c.File)
-	if err != nil {
-		return err
-	}
-
-	if err := os.Chdir(repo.RootDir); err != nil {
-		return err
-	}
-
-	buildStore, err := buildstore.LocalRepo(repo.RootDir)
-	if err != nil {
-		return err
-	}
-	commitFS := buildStore.Commit(repo.CommitID)
-
-	if err := ensureBuild(buildStore, repo); err != nil {
-		if err := buildstore.RemoveAllDataForCommit(buildStore, repo.CommitID); err != nil {
-			log.Println(err)
-		}
-		return err
-	}
-
-	units, err := getSourceUnitsWithFile(buildStore, repo, c.File)
+	file := context.relativeFile
+	units, err := getSourceUnitsWithFile(context.buildStore, context.repo, file)
 	if err != nil {
 		return err
 	}
@@ -392,9 +407,9 @@ func (c *APIDescribeCmd) Execute(args []string) error {
 			for i, u := range units {
 				ids[i] = string(u.ID())
 			}
-			log.Printf("Position %s:%d is in %d source units %v.", c.File, c.StartByte, len(units), ids)
+			log.Printf("Position %s:%d is in %d source units %v.", file, c.StartByte, len(units), ids)
 		} else {
-			log.Printf("Position %s:%d is not in any source units.", c.File, c.StartByte)
+			log.Printf("Position %s:%d is not in any source units.", file, c.StartByte)
 		}
 	}
 
@@ -405,7 +420,7 @@ OuterLoop:
 	for _, u := range units {
 		var g graph.Output
 		graphFile := plan.SourceUnitDataFilename("graph", u)
-		f, err := commitFS.Open(graphFile)
+		f, err := context.commitFS.Open(graphFile)
 		if err != nil {
 			return err
 		}
@@ -414,7 +429,7 @@ OuterLoop:
 			return fmt.Errorf("%s: %s", graphFile, err)
 		}
 		for _, ref2 := range g.Refs {
-			if c.File == ref2.File {
+			if file == ref2.File {
 				if c.StartByte >= ref2.Start && c.StartByte <= ref2.End {
 					ref = ref2
 					if ref.DefUnit == "" {
@@ -433,7 +448,7 @@ OuterLoop:
 
 	if ref == nil {
 		if GlobalOpt.Verbose {
-			log.Printf("No ref found at %s:%d.", c.File, c.StartByte)
+			log.Printf("No ref found at %s:%d.", file, c.StartByte)
 
 			if len(nearbyRefs) > 0 {
 				log.Printf("However, nearby refs were found in the same file:")
@@ -442,7 +457,7 @@ OuterLoop:
 				}
 			}
 
-			f, err := os.Open(c.File)
+			f, err := os.Open(file)
 			if err == nil {
 				defer f.Close()
 				b, err := ioutil.ReadAll(f)
@@ -467,18 +482,18 @@ OuterLoop:
 	}
 
 	if ref.DefRepo == "" {
-		ref.DefRepo = repo.URI()
+		ref.DefRepo = context.repo.URI()
 	}
 
 	var resp apiDescribeCmdOutput
 
 	// Now find the def for this ref.
-	defInCurrentRepo := ref.DefRepo == repo.URI()
+	defInCurrentRepo := ref.DefRepo == context.repo.URI()
 	if defInCurrentRepo {
 		// Def is in the current repo.
 		var g graph.Output
 		graphFile := plan.SourceUnitDataFilename("graph", &unit.SourceUnit{Name: ref.DefUnit, Type: ref.DefUnitType})
-		f, err := commitFS.Open(graphFile)
+		f, err := context.commitFS.Open(graphFile)
 		if err != nil {
 			return err
 		}
@@ -500,7 +515,7 @@ OuterLoop:
 			}
 
 			// If Def is in the current Repo, transform that path to be an absolute path
-			resp.Def.File = filepath.Join(repo.RootDir, resp.Def.File)
+			resp.Def.File = filepath.Join(context.repo.RootDir, resp.Def.File)
 		}
 		if resp.Def == nil && GlobalOpt.Verbose {
 			log.Printf("No definition found with path %q in unit %q type %q.", ref.DefPath, ref.DefUnit, ref.DefUnitType)
@@ -569,27 +584,11 @@ This command returns a dep.Resolution slice.
 END APIDepsCmdOutput OMIT */
 
 func (c *APIDepsCmd) Execute(args []string) error {
-	var err error
-
-	repo, err := OpenRepo(filepath.Clean(string(c.Args.Dir)))
+	// HACK(samertm): append a backslash to Dir to assure that it's parsed
+	// as a directory, but Directory should have an unmarshalling
+	// method that does this.
+	context, err := prepareCommandContext(string(c.Args.Dir) + string(os.PathSeparator))
 	if err != nil {
-		return err
-	}
-
-	if err := os.Chdir(repo.RootDir); err != nil {
-		return err
-	}
-
-	buildStore, err := buildstore.LocalRepo(repo.RootDir)
-	if err != nil {
-		return err
-	}
-	commitFS := buildStore.Commit(repo.CommitID)
-
-	if err := ensureBuild(buildStore, repo); err != nil {
-		if err := buildstore.RemoveAllDataForCommit(buildStore, repo.CommitID); err != nil {
-			log.Println(err)
-		}
 		return err
 	}
 
@@ -598,13 +597,13 @@ func (c *APIDepsCmd) Execute(args []string) error {
 	depSuffix := buildstore.DataTypeSuffix([]*dep.ResolvedDep{})
 	depCache := make(map[string]struct{})
 	foundDepresolve := false
-	w := fs.WalkFS(".", commitFS)
+	w := fs.WalkFS(".", context.commitFS)
 	for w.Step() {
 		depfile := w.Path()
 		if strings.HasSuffix(depfile, depSuffix) {
 			foundDepresolve = true
 			var deps []*dep.Resolution
-			f, err := commitFS.Open(depfile)
+			f, err := context.commitFS.Open(depfile)
 			if err != nil {
 				return err
 			}
@@ -636,40 +635,24 @@ This command returns a unit.SourceUnit slice.
 END APIUnitsCmdOutput OMIT */
 
 func (c *APIUnitsCmd) Execute(args []string) error {
-	var err error
-
-	repo, err := OpenRepo(filepath.Clean(string(c.Args.Dir)))
+	// HACK(samertm): append a backslash to Dir to assure that it's parsed
+	// as a directory, but Directory should have an unmarshalling
+	// method that does this.
+	context, err := prepareCommandContext(string(c.Args.Dir) + string(os.PathSeparator))
 	if err != nil {
-		return err
-	}
-
-	if err := os.Chdir(repo.RootDir); err != nil {
-		return err
-	}
-
-	buildStore, err := buildstore.LocalRepo(repo.RootDir)
-	if err != nil {
-		return err
-	}
-	commitFS := buildStore.Commit(repo.CommitID)
-
-	if err := ensureBuild(buildStore, repo); err != nil {
-		if err := buildstore.RemoveAllDataForCommit(buildStore, repo.CommitID); err != nil {
-			log.Println(err)
-		}
 		return err
 	}
 
 	var unitSlice []unit.SourceUnit
 	unitSuffix := buildstore.DataTypeSuffix(unit.SourceUnit{})
 	foundUnit := false
-	w := fs.WalkFS(".", commitFS)
+	w := fs.WalkFS(".", context.commitFS)
 	for w.Step() {
 		unitFile := w.Path()
 		if strings.HasSuffix(unitFile, unitSuffix) {
 			var unit unit.SourceUnit
 			foundUnit = true
-			f, err := commitFS.Open(unitFile)
+			f, err := context.commitFS.Open(unitFile)
 			if err != nil {
 				return err
 			}
