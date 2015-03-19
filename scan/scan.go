@@ -2,6 +2,8 @@ package scan
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"runtime"
 	"sync"
 
@@ -14,6 +16,8 @@ import (
 
 type Options struct {
 	config.Options
+	// Quiet silences all output.
+	Quiet bool
 }
 
 // ScanMulti runs multiple scanner tools in parallel. It passes command-line
@@ -62,6 +66,9 @@ func Scan(scanner toolchain.Tool, opt Options, treeConfig map[string]interface{}
 		return nil, err
 	}
 
+	if opt.Quiet {
+		scanner.SetLogger(log.New(ioutil.Discard, "", 0))
+	}
 	var units []*unit.SourceUnit
 	if err := scanner.Run(args, treeConfig, &units); err != nil {
 		return nil, err

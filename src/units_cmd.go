@@ -30,7 +30,7 @@ func init() {
 // scanUnitsIntoConfig uses cfg to scan for source units. It modifies
 // cfg.SourceUnits, merging the scanned source units with those already present
 // in cfg.
-func scanUnitsIntoConfig(cfg *config.Repository, configOpt config.Options, execOpt ToolchainExecOpt) error {
+func scanUnitsIntoConfig(cfg *config.Repository, configOpt config.Options, execOpt ToolchainExecOpt, quiet bool) error {
 	scanners := make([]toolchain.Tool, len(cfg.Scanners))
 	for i, scannerRef := range cfg.Scanners {
 		scanner, err := toolchain.OpenTool(scannerRef.Toolchain, scannerRef.Subcmd, execOpt.ToolchainMode())
@@ -40,7 +40,7 @@ func scanUnitsIntoConfig(cfg *config.Repository, configOpt config.Options, execO
 		scanners[i] = scanner
 	}
 
-	units, err := scan.ScanMulti(scanners, scan.Options{Options: configOpt}, cfg.Config)
+	units, err := scan.ScanMulti(scanners, scan.Options{Options: configOpt, Quiet: quiet}, cfg.Config)
 	if err != nil {
 		return err
 	}
@@ -134,7 +134,7 @@ func (c *UnitsCmd) Execute(args []string) error {
 		return err
 	}
 
-	if err := scanUnitsIntoConfig(cfg, c.Options, c.ToolchainExecOpt); err != nil {
+	if err := scanUnitsIntoConfig(cfg, c.Options, c.ToolchainExecOpt, false); err != nil {
 		return err
 	}
 
