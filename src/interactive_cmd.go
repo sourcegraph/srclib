@@ -76,6 +76,7 @@ func (c *InteractiveCmd) Execute(args []string) error {
 	if err := setActiveContext("."); err != nil {
 		return err
 	}
+	fmt.Println("src interactive - :help for help")
 	term, err := terminal(historyFile)
 	if err != nil {
 		return err
@@ -103,7 +104,7 @@ func (c *InteractiveCmd) Execute(args []string) error {
 
 // inputValues holds the fully-parsed input.
 type inputValues struct {
-	def    []tokValue
+	name   []tokValue
 	in     []tokValue
 	sel    []tokValue
 	format []tokValue
@@ -114,8 +115,8 @@ type inputValues struct {
 // get returns the tokValue slice that tokKeyword 'k' maps to.
 func (i inputValues) get(k tokKeyword) ([]tokValue, error) {
 	switch k {
-	case keyDef:
-		return i.def, nil
+	case keyName:
+		return i.name, nil
 	case keyIn:
 		return i.in, nil
 	case keySel:
@@ -134,8 +135,8 @@ func (i inputValues) get(k tokKeyword) ([]tokValue, error) {
 // append appends 'vs' to the tokValue slice that tokKeyword 'k' maps to.
 func (i *inputValues) append(k tokKeyword, vs ...tokValue) error {
 	switch k {
-	case keyDef:
-		i.def = append(i.def, vs...)
+	case keyName:
+		i.name = append(i.name, vs...)
 	case keyIn:
 		i.in = append(i.in, vs...)
 	case keySel:
@@ -221,7 +222,7 @@ func (e tokEOF) isToken() {}
 type tokKeyword string
 
 var (
-	keyDef    tokKeyword = "def"
+	keyName   tokKeyword = "name"
 	keyIn     tokKeyword = "in"
 	keySel    tokKeyword = "select"
 	keyFormat tokKeyword = "format"
@@ -249,8 +250,8 @@ type keywordInfo struct {
 // keywordInfoMap is a map from tokKeyword to keywordInfo for every
 // keyword.
 var keywordInfoMap = map[tokKeyword]keywordInfo{
-	keyDef: keywordInfo{},
-	keyIn:  keywordInfo{},
+	keyName: keywordInfo{},
+	keyIn:   keywordInfo{},
 	keySel: keywordInfo{
 		validVals:   []tokValue{"defs", "refs", "docs"},
 		defaultVals: []tokValue{"defs", "refs"},
@@ -584,9 +585,9 @@ loop:
 				log.Printf("parsing: got tokValue %s\n", t)
 			}
 			// If we haven't seen a tokKeyword ('on' is
-			// empty), then we're implicitly on keyDef.
+			// empty), then we're implicitly on keyName.
 			if on == "" {
-				on = keyDef
+				on = keyName
 			}
 			i.append(on, t)
 		default:
@@ -600,7 +601,7 @@ func inputToFormat(i *inputValues) format {
 	var f format
 	for _, s := range i.sel {
 		switch s {
-		case "defs":
+		case "def":
 			f.showDefs = true
 		case "refs":
 			f.showRefs = true
@@ -634,7 +635,7 @@ func inputToFormat(i *inputValues) format {
 type format struct {
 	showDefs    bool
 	showRefs    bool
-	showDocs    bool
+	showDocs    boolp
 	showDefDecl bool
 	showDefBody bool
 	limit       int
@@ -654,7 +655,8 @@ func eval(input string) (output string, err error) {
 	}
 	f := inputToFormat(i)
 	var out []string
-	for _, input := range i.def {
+	// TODO: only deal with one name!
+	for _, input := range i.name {
 		c := &StoreDefsCmd{
 			Query:    string(input),
 			CommitID: activeContext.repo.CommitID,
