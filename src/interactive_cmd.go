@@ -15,6 +15,8 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"sort"
+
 	"sourcegraph.com/sourcegraph/srclib/graph"
 
 	"github.com/peterh/liner"
@@ -93,13 +95,21 @@ func (c *InteractiveCmd) Execute(args []string) error {
 			return err
 		}
 		term.AppendHistory(line)
-		result, err := eval(line)
+		output, err := eval(line)
 		if err != nil {
-			log.Println(err)
+			fmt.Println("Error:", err)
+			if output != "" {
+				fmt.Print(cleanOutput(output))
+			}
 		} else {
-			fmt.Println(result)
+			fmt.Print(cleanOutput(output))
 		}
 	}
+}
+
+// cleanOutput returns o with only one trailing newline.
+func cleanOutput(o string) string {
+	return strings.TrimSuffix(o, "\n") + "\n"
 }
 
 // inputValues holds the fully-parsed input.
@@ -110,6 +120,18 @@ type inputValues struct {
 	format []tokValue
 	limit  []tokValue
 	help   []tokValue
+}
+
+// TODO: turn inputValues into a map. There is no reason to
+// implement a map with switch statements.
+
+func (i inputValues) isEmpty() bool {
+	return i.name == nil &&
+		i.in == nil &&
+		i.sel == nil &&
+		i.format == nil &&
+		i.limit == nil &&
+		i.help == nil
 }
 
 // get returns the tokValue slice that tokKeyword 'k' maps to.
@@ -132,7 +154,7 @@ func (i inputValues) get(k tokKeyword) ([]tokValue, error) {
 	}
 }
 
-// append appends 'vs' to the tokValue slice that tokKeyword 'k' maps to.
+// append appends vs to the tokValue slice that tokKeyword 'k' maps to.
 func (i *inputValues) append(k tokKeyword, vs ...tokValue) error {
 	switch k {
 	case keyName:
@@ -147,6 +169,28 @@ func (i *inputValues) append(k tokKeyword, vs ...tokValue) error {
 		i.limit = append(i.limit, vs...)
 	case keyHelp:
 		i.help = append(i.help, vs...)
+	default:
+		return tokKeywordError{k}
+	}
+	return nil
+}
+
+// init initializes the tokValue slice that k maps to. It is used to
+// indicate that the keyword has been seen.
+func (i *inputValues) init(k tokKeyword) error {
+	switch k {
+	case keyName:
+		i.name = []tokValue{}
+	case keyIn:
+		i.in = []tokValue{}
+	case keySel:
+		i.sel = []tokValue{}
+	case keyFormat:
+		i.format = []tokValue{}
+	case keyLimit:
+		i.limit = []tokValue{}
+	case keyHelp:
+		i.help = []tokValue{}
 	default:
 		return tokKeywordError{k}
 	}
@@ -179,16 +223,24 @@ func (i inputValues) validate(k tokKeyword) error {
 	return nil
 }
 
-// validateAndSetDefaults validates 'i' and sets default values for
-// 'i's empty tokValue slices. validateAndSetDefaults returns 'i'.
-func (i *inputValues) validateAndSetDefaults() (*inputValues, error) {
-	for keyword, info := range keywordInfoMap {
+// validateAll returns an error if i is invalid.
+func (i inputValues) validateAll() error {
+	for _, keyword := range allKeywords {
 		if err := i.validate(keyword); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// setDefaults sets default values for i's empty tokValue slices.
+func (i *inputValues) setDefaults() (*inputValues, error) {
+	for keyword, info := range keywordInfoMap {
+		s, err := i.get(keyword)
+		if err != nil {
 			return nil, err
 		}
-		// Skip error check on get because we already know
-		// that keyword is a valid tokKeyword.
-		if s, _ := i.get(keyword); len(s) == 0 {
+		if len(s) == 0 {
 			i.append(keyword, info.defaultVals...)
 		}
 	}
@@ -245,25 +297,66 @@ type keywordInfo struct {
 	// typeConstraint can be "int" or the empty string. If
 	// typeConstraint is non-empty, then validVals must be nil.
 	typeConstraint string
+	// argName is the semantic name for the keyword's argument
+	// list. The help text displays it as ":<keyword> <argName>".
+	argName string
+	// description is a description of the keyword's semantics.
+	description string
 }
 
 // keywordInfoMap is a map from tokKeyword to keywordInfo for every
 // keyword.
+// Invariant: keywordInfoMap is not modified.
 var keywordInfoMap = map[tokKeyword]keywordInfo{
-	keyName: keywordInfo{},
-	keyIn:   keywordInfo{},
+	keyName: keywordInfo{
+		argName: "name",
+		description: `Narrow to all objects matching 'name'.
+':name' is special because it is implicit if no keyword is used, and its input cannot be a list. For example, the input 'some word' is equivalent to ':name some word'.`,
+	},
+	keyIn: keywordInfo{
+		argName:     "repo",
+		description: "Change the repository to 'repo'.",
+	},
 	keySel: keywordInfo{
 		validVals:   []tokValue{"defs", "refs", "docs"},
 		defaultVals: []tokValue{"defs", "refs"},
+		argName:     "objects",
+		description: "Narrow search to 'objects'.",
 	},
 	keyFormat: keywordInfo{
 		validVals:   []tokValue{"decl", "methods", "body", "full"},
 		defaultVals: []tokValue{"decl", "body"},
+		argName:     "formats",
+		description: "Show defs in the formats specificed by 'formats'.",
 	},
 	keyLimit: keywordInfo{
 		typeConstraint: "int",
+		argName:        "number",
+		description:    "Only display 'number' results.",
 	},
-	keyHelp: keywordInfo{},
+	keyHelp: keywordInfo{
+		argName:     "topics",
+		description: "Show the help for 'topics'. If 'topics' is empty, show general help.",
+	},
+}
+
+// allKeywords is a sorted list of all available keywords.
+var allKeywords = keywordInfoMapToList(keywordInfoMap)
+
+// keywordInfoMapToList returns a sorted list of all of the keywords
+// in m.
+func keywordInfoMapToList(m map[tokKeyword]keywordInfo) []tokKeyword {
+	// ks is a string map for easier sorting.
+	ks := make([]string, 0, len(m))
+	for key := range m {
+		ks = append(ks, string(key))
+	}
+	sort.Strings(ks)
+	keywords := make([]tokKeyword, 0, len(ks))
+	for _, k := range ks {
+		keywords = append(keywords, tokKeyword(k))
+	}
+	return keywords
 }
 
 func (k tokKeyword) isToken() {}
@@ -529,7 +622,12 @@ func lexValue(l *lexer) stateFn {
 	return nil
 }
 
+type parseError struct{ error }
+
+func (e *parseError) Error() string { return fmt.Sprintf("parse error: %s", e.error) }
+
 // parse parses the user input and organizes it into inputValues.
+// Invariant: if error is not nil, it is of type parseError.
 func parse(input string) (*inputValues, error) {
 	if GlobalOpt.Verbose {
 		log.Printf("parsing: input %s\n", input)
@@ -558,7 +656,7 @@ loop:
 			if GlobalOpt.Verbose {
 				log.Printf("parsing: got tokError %s\n", t)
 			}
-			return nil, t
+			return nil, &parseError{t}
 		case tokKeyword:
 			if GlobalOpt.Verbose {
 				log.Printf("parsing: got tokKeyword %s\n", t)
@@ -568,18 +666,19 @@ loop:
 			// 'on') is valid.
 			if on != "" {
 				if err := i.validate(on); err != nil {
-					return nil, err
+					return nil, &parseError{err}
 				}
 			}
 			s, err := i.get(t)
 			if err != nil {
-				return nil, err
+				return nil, &parseError{err}
 			}
 			if len(s) > 0 {
-				return nil, fmt.Errorf("error: keyword :%s can only appear once.", t)
+				return nil, &parseError{fmt.Errorf("error: keyword :%s can only appear once.", t)}
 			}
 			// Set 'on' to the new tokKeyword.
 			on = t
+			i.init(on)
 		case tokValue:
 			if GlobalOpt.Verbose {
 				log.Printf("parsing: got tokValue %s\n", t)
@@ -594,7 +693,14 @@ loop:
 			panic("unknown concrete type for token: " + reflect.TypeOf(t).Name())
 		}
 	}
-	return i.validateAndSetDefaults()
+	if err := i.validateAll(); err != nil {
+		return nil, &parseError{err}
+	}
+
+	if GlobalOpt.Verbose {
+		log.Printf("parsed: %+v\n", i)
+	}
+	return i, nil
 }
 
 func inputToFormat(i *inputValues) format {
@@ -635,7 +741,7 @@ func inputToFormat(i *inputValues) format {
 type format struct {
 	showDefs    bool
 	showRefs    bool
-	showDocs    boolp
+	showDocs    bool
 	showDefDecl bool
 	showDefBody bool
 	limit       int
@@ -644,15 +750,46 @@ type format struct {
 	showDefFull    bool
 }
 
-// eval evaluates input and returns the results as 'output'.
+// briefHelpText prints out the commands in brief, suitable for
+// displaying after an error.
+func briefHelpText() string {
+	buf := &bytes.Buffer{}
+	buf.WriteString("Available commands:\n")
+	for i, k := range allKeywords {
+		buf.WriteString(fmt.Sprintf("  :%s <%s>", k, keywordInfoMap[k].argName))
+		if i != len(allKeywords)-1 {
+			buf.WriteString("\n")
+		}
+	}
+	return buf.String()
+}
+
+// helpText returns the concatenated help text for each topic, where
+// topic is "full" or a keyword name (such as "format").
+func helpText(topics []tokValue) (string, error) {
+	return briefHelpText(), nil
+}
+
+// eval evaluates input and returns the results as output. If output
+// is non-empty, it should be displayed even if err is non-nil.
 func eval(input string) (output string, err error) {
 	i, err := parse(input)
 	if err != nil {
+		return briefHelpText(), err
+	}
+	// There is some sense of order: if i is empty or ":help" is
+	// set, do not evaluate the rest of 'i'.
+	switch {
+	case i.isEmpty():
+		return briefHelpText(), nil
+	case i.help != nil:
+		return helpText(i.help)
+	}
+	i, err = i.setDefaults()
+	if err != nil {
 		return "", err
 	}
-	if GlobalOpt.Verbose {
-		log.Printf("parsed: %+v\n", i)
-	}
+
 	f := inputToFormat(i)
 	var out []string
 	// TODO: only deal with one name!
