@@ -12,6 +12,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 	"unicode/utf8"
 
 	"sourcegraph.com/sourcegraph/srclib/graph"
@@ -40,9 +41,31 @@ var historyFile = "/tmp/.srclibi_history"
 var activeRepo = "."
 
 func (c *InteractiveCmd) Execute(args []string) error {
-	_, err := prepareCommandContext(activeRepo)
-	if err != nil {
-		return err
+	fmt.Printf("Analyzing project...")
+	// Build project concurrently so we can update the UI.
+	// FIXME(samertm): For some reason, each "Printf?" ends with a
+	// newline. I suspect that liner or go-flags is messing with
+	// the output.
+	done := make(chan error)
+	go func() {
+		_, err := prepareCommandContext(activeRepo)
+		if err != nil {
+			done <- err
+		}
+		done <- nil
+	}()
+OuterLoop:
+	for {
+		select {
+		case <-time.Tick(time.Second):
+			fmt.Print(".")
+		case err := <-done:
+			if err != nil {
+				fmt.Println()
+				return err
+			}
+			break OuterLoop
+		}
 	}
 
 	term, err := terminal(historyFile)
