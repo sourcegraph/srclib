@@ -45,9 +45,6 @@ var activeContext commandContext
 func (c *InteractiveCmd) Execute(args []string) error {
 	fmt.Printf("Analyzing project...")
 	// Build project concurrently so we can update the UI.
-	// FIXME(samertm): For some reason, each "Printf?" ends with a
-	// newline. I suspect that liner or go-flags is messing with
-	// the output.
 	type maybeContext struct {
 		context commandContext
 		err     error
@@ -71,6 +68,7 @@ OuterLoop:
 			break OuterLoop
 		}
 	}
+	fmt.Println()
 	// Invariant: activeContext is the result of prepareCommandContext
 	// after the loop above.
 
