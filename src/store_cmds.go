@@ -173,6 +173,8 @@ func (c *StoreCmd) store() (interface{}, error) {
 type StoreImportCmd struct {
 	ImportOpt
 
+	Quiet bool `short:"q" long:"quiet" description:"silence all output"`
+
 	Sample           bool `long:"sample" description:"(sample data) import sample data, not .srclib-cache data"`
 	SampleDefs       int  `long:"sample-defs" description:"(sample data) number of sample defs to import" default:"100"`
 	SampleRefs       int  `long:"sample-refs" description:"(sample data) number of sample refs to import" default:"100"`
@@ -206,7 +208,9 @@ func (c *StoreImportCmd) Execute(args []string) error {
 	if err := Import(bdfs, s, c.ImportOpt); err != nil {
 		return err
 	}
-	log.Printf("# Import completed in %s.", time.Since(start))
+	if !c.Quiet {
+		log.Printf("# Import completed in %s.", time.Since(start))
+	}
 	return nil
 }
 
