@@ -38,11 +38,9 @@ var interactiveCmd InteractiveCmd
 
 var historyFile = "/tmp/.srclibi_history"
 
-var activeRepo = "."
-
 var activeContext commandContext
 
-func (c *InteractiveCmd) Execute(args []string) error {
+func setActiveContext(repoPath string) error {
 	fmt.Printf("Analyzing project...")
 	// Build project concurrently so we can update the UI.
 	type maybeContext struct {
@@ -51,7 +49,7 @@ func (c *InteractiveCmd) Execute(args []string) error {
 	}
 	done := make(chan maybeContext)
 	go func() {
-		context, err := prepareCommandContext(activeRepo)
+		context, err := prepareCommandContext(repoPath)
 		done <- maybeContext{context, err}
 	}()
 OuterLoop:
@@ -71,7 +69,13 @@ OuterLoop:
 	fmt.Println()
 	// Invariant: activeContext is the result of prepareCommandContext
 	// after the loop above.
+	return nil
+}
 
+func (c *InteractiveCmd) Execute(args []string) error {
+	if err := setActiveContext("."); err != nil {
+		return err
+	}
 	term, err := terminal(historyFile)
 	if err != nil {
 		return err
