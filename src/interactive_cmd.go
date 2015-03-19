@@ -384,6 +384,18 @@ type tokValue string
 
 func (v tokValue) isToken() {}
 
+// formatValues returns vs as comma-delimited string.
+func formatValues(vs []tokValue) string {
+	buf := &bytes.Buffer{}
+	for i, v := range vs {
+		buf.WriteString(string(v))
+		if i != len(vs)-1 {
+			buf.WriteString(", ")
+		}
+	}
+	return buf.String()
+}
+
 // These character runs are used by the lexer to identify terms.
 const (
 	horizontalWhitespace = " \t"
@@ -756,7 +768,7 @@ func briefHelpText() string {
 	buf := &bytes.Buffer{}
 	buf.WriteString("Available commands:\n")
 	for i, k := range allKeywords {
-		buf.WriteString(fmt.Sprintf("  :%s <%s>", k, keywordInfoMap[k].argName))
+		fmt.Fprintf(buf, "  :%s <%s>", k, keywordInfoMap[k].argName)
 		if i != len(allKeywords)-1 {
 			buf.WriteString("\n")
 		}
@@ -767,7 +779,42 @@ func briefHelpText() string {
 // helpText returns the concatenated help text for each topic, where
 // topic is "full" or a keyword name (such as "format").
 func helpText(topics []tokValue) (string, error) {
-	return briefHelpText(), nil
+	// If no topics are specified, show the help for all topics.
+	if len(topics) == 0 {
+		for _, k := range allKeywords {
+			topics = append(topics, tokValue(k))
+		}
+	}
+	buf := &bytes.Buffer{}
+	indent := "  "
+	for _, t := range topics {
+		k := tokKeyword(t)
+		info, ok := keywordInfoMap[k]
+		if !ok {
+			return "", fmt.Errorf("Topic %s does not exist", t)
+		}
+		fmt.Fprintf(buf, "-- :%s <%s>\n%s%s\n", k, info.argName,
+			indent, strings.Replace(info.description, "\n", "\n"+indent, -1))
+		if len(info.validVals) == 0 &&
+			len(info.defaultVals) == 0 &&
+			info.typeConstraint == "" {
+			continue
+		}
+		buf.WriteString("\n")
+		if len(info.validVals) != 0 {
+			fmt.Fprintf(buf, "%sValid values for '%s': %s\n",
+				indent, info.argName, formatValues(info.validVals))
+		}
+		if len(info.defaultVals) != 0 {
+			fmt.Fprintf(buf, "%sDefault values for '%s': %s\n",
+				indent, info.argName, formatValues(info.defaultVals))
+		}
+		if info.typeConstraint == "" {
+			fmt.Fprintf(buf, "%s'%s' must be of type %s\n",
+				indent, info.argName, info.typeConstraint)
+		}
+	}
+	return buf.String(), nil
 }
 
 // eval evaluates input and returns the results as output. If output
