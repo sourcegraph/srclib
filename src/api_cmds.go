@@ -196,6 +196,7 @@ func prepareCommandContext(file string) (commandContext, error) {
 			Repo:     repo.CloneURL,
 			CommitID: repo.CommitID,
 		},
+		Quiet: true,
 	}
 	if err := i.Execute(nil); err != nil {
 		return commandContext{}, err
@@ -220,7 +221,7 @@ func ensureBuild(buildStore buildstore.RepoBuildStore, repo *Repo) error {
 		configCmd := &ConfigCmd{
 			Options:          configOpt,
 			ToolchainExecOpt: toolchainExecOpt,
-			w:                os.Stderr,
+			Quiet:            true,
 		}
 		if err := configCmd.Execute(nil); err != nil {
 			return err
@@ -233,6 +234,7 @@ func ensureBuild(buildStore buildstore.RepoBuildStore, repo *Repo) error {
 	makeCmd := &MakeCmd{
 		Options:          configOpt,
 		ToolchainExecOpt: toolchainExecOpt,
+		Quiet:            true,
 	}
 	if err := makeCmd.Execute(nil); err != nil {
 		return err
