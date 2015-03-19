@@ -40,33 +40,39 @@ var historyFile = "/tmp/.srclibi_history"
 
 var activeRepo = "."
 
+var activeContext commandContext
+
 func (c *InteractiveCmd) Execute(args []string) error {
 	fmt.Printf("Analyzing project...")
 	// Build project concurrently so we can update the UI.
 	// FIXME(samertm): For some reason, each "Printf?" ends with a
 	// newline. I suspect that liner or go-flags is messing with
 	// the output.
-	done := make(chan error)
+	type maybeContext struct {
+		context commandContext
+		err     error
+	}
+	done := make(chan maybeContext)
 	go func() {
-		_, err := prepareCommandContext(activeRepo)
-		if err != nil {
-			done <- err
-		}
-		done <- nil
+		context, err := prepareCommandContext(activeRepo)
+		done <- maybeContext{context, err}
 	}()
 OuterLoop:
 	for {
 		select {
 		case <-time.Tick(time.Second):
 			fmt.Print(".")
-		case err := <-done:
-			if err != nil {
+		case m := <-done:
+			if m.err != nil {
 				fmt.Println()
-				return err
+				return m.err
 			}
+			activeContext = m.context
 			break OuterLoop
 		}
 	}
+	// Invariant: activeContext is the result of prepareCommandContext
+	// after the loop above.
 
 	term, err := terminal(historyFile)
 	if err != nil {
@@ -647,7 +653,11 @@ func eval(input string) (output string, err error) {
 	f := inputToFormat(i)
 	var out []string
 	for _, input := range i.def {
-		c := &StoreDefsCmd{Query: string(input), Limit: f.limit}
+		c := &StoreDefsCmd{
+			Query:    string(input),
+			CommitID: activeContext.repo.CommitID,
+			Limit:    f.limit,
+		}
 		defs, err := c.Get()
 		if err != nil {
 			return "", err
