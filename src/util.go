@@ -17,6 +17,16 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
+type nopWriteCloser struct{}
+
+func (w nopWriteCloser) Write(p []byte) (n int, err error) {
+	return len(p), nil
+}
+
+func (w nopWriteCloser) Close() error {
+	return nil
+}
+
 func isDir(dir string) bool {
 	di, err := os.Stat(dir)
 	return err == nil && di.IsDir()
