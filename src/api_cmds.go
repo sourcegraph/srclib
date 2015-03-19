@@ -191,16 +191,6 @@ func prepareCommandContext(file string) (commandContext, error) {
 		}
 		return commandContext{}, err
 	}
-	i := &StoreImportCmd{
-		ImportOpt: ImportOpt{
-			Repo:     repo.CloneURL,
-			CommitID: repo.CommitID,
-		},
-		Quiet: true,
-	}
-	if err := i.Execute(nil); err != nil {
-		return commandContext{}, err
-	}
 	return c, nil
 }
 
@@ -240,6 +230,17 @@ func ensureBuild(buildStore buildstore.RepoBuildStore, repo *Repo) error {
 		return err
 	}
 
+	// Always re-import.
+	i := &StoreImportCmd{
+		ImportOpt: ImportOpt{
+			Repo:     repo.CloneURL,
+			CommitID: repo.CommitID,
+		},
+		Quiet: true,
+	}
+	if err := i.Execute(nil); err != nil {
+		return err
+	}
 	return nil
 }
 
