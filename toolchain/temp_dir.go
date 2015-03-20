@@ -9,8 +9,8 @@ import (
 	"sourcegraph.com/sourcegraph/srclib"
 )
 
-// TEMPDIRNAME is directory under SRCLIBPATH where to store temp directories for toolchains.
-const TEMPDIRNAME = "tmp"
+// TempDirName is directory under SRCLIBPATH where to store temp directories for toolchains.
+const TempDirName = ".tmp"
 
 // TempDir returns toolchains temp directory. Directory is created it doesn't
 // exist.
@@ -28,7 +28,7 @@ func TempDir(toolchainPath string) (string, error) {
 	}
 
 	srclibpathEntry := strings.SplitN(srclib.Path, ":", 2)[0]
-	tmpDir := filepath.Join(srclibpathEntry, TEMPDIRNAME, tc.Path)
+	tmpDir := filepath.Join(srclibpathEntry, TempDirName, tc.Path)
 
 	if err := os.MkdirAll(tmpDir, 0700); err != nil {
 		return "", err
