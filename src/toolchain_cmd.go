@@ -292,7 +292,7 @@ func (c *ToolchainAddCmd) Execute(args []string) error {
 
 type ToolchainTempDirCmd struct {
 	Args struct {
-		ToolchainPath string `name:"TOOLCHAIN" default:"." description:"toolchain path for which to get temp dir"`
+		ToolchainPath string `name:"TOOLCHAIN" description:"toolchain path for which to get temp dir"`
 	} `positional-args:"yes" required:"yes"`
 }
 
