@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"reflect"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -84,6 +85,7 @@ func (c *InteractiveCmd) Execute(args []string) error {
 		return err
 	}
 	defer persist(term, historyFile)
+	term.SetCompleter(lineCompleter)
 
 	for {
 		line, err := term.Prompt("src> ")
@@ -107,6 +109,74 @@ func (c *InteractiveCmd) Execute(args []string) error {
 	}
 }
 
+// matchWithKeyword matches lines that include a colon, ':'.
+//
+// Groups:
+//   1. line prefix
+//   2. keyword name
+//   3. whitespace between keyword name and value
+//   4. value
+//
+// If matchWithKeyword does not match, then the input matches all
+// valid values for the implicit keyword, ":name", that are prefixed
+// by input.
+//
+// If group two is empty, then the last character is ':' and the input
+// matches all keywords.
+//
+// If group three is empty, then the input matches all keywords beginning
+// with group two.
+//
+// If group three is not empty and group four is empty, then the input
+// matches all values that are valid for the keyword named by group
+// two.
+//
+// If group four is not empty, then the input matches all valid values
+// for the keywored named by group one that have group four as their
+// prefix.
+var matchWithKeyword = regexp.MustCompile(`(.*:)(\w*)([[:blank:]]*)(.*)`)
+
+// lineCompleter returns a set of completions for line.
+func lineCompleter(line string) []string {
+	m := matchWithKeyword.FindStringSubmatch(line)
+	// If no match was found, the keyword is "name" implicitly.
+	if m == nil {
+		return valueCompleter("", string(keyName), line)
+	}
+	if m[2] == "" || m[3] == "" {
+		return keywordCompleter(m[1], m[2])
+	}
+	return valueCompleter(m[1], m[2], m[4])
+}
+
+// keywordCompleter returns a set of keywords that complete token
+// prefixed with prefix.
+func keywordCompleter(prefix, token string) []string {
+	var cs []string
+	for _, k := range allKeywords {
+		if strings.HasPrefix(string(k), token) {
+			cs = append(cs, prefix+token+strings.TrimPrefix(string(k), token))
+		}
+	}
+	return cs
+}
+
+// valueCompleter returns a set of values that complete token for
+// keyword prefixed with prefix. If keyword is not a valid tokKeyword,
+// valueCompleter returns nil.
+func valueCompleter(prefix, keyword, token string) []string {
+	if !keywordValid(tokKeyword(keyword)) {
+		return nil
+	}
+	switch tokKeyword(keyword) {
+	case keyName:
+		return nil //something()
+	case keyHelp:
+		return keywordCompleter(prefix, keyword)
+	}
+	return nil
+}
+
 // cleanOutput returns o with only one trailing newline.
 func cleanOutput(o string) string {
 	return strings.TrimSuffix(o, "\n") + "\n"
@@ -114,86 +184,45 @@ func cleanOutput(o string) string {
 
 // inputValues holds the fully-parsed input.
 type inputValues struct {
-	name   []tokValue
-	in     []tokValue
-	sel    []tokValue
-	format []tokValue
-	limit  []tokValue
-	help   []tokValue
+	m map[tokKeyword][]tokValue
+}
+
+func newInputValues() *inputValues {
+	return &inputValues{m: make(map[tokKeyword][]tokValue)}
 }
 
 // TODO: turn inputValues into a map. There is no reason to
 // implement a map with switch statements.
 
 func (i inputValues) isEmpty() bool {
-	return i.name == nil &&
-		i.in == nil &&
-		i.sel == nil &&
-		i.format == nil &&
-		i.limit == nil &&
-		i.help == nil
+	return len(i.m) == 0
 }
 
-// get returns the tokValue slice that tokKeyword 'k' maps to.
-func (i inputValues) get(k tokKeyword) ([]tokValue, error) {
-	switch k {
-	case keyName:
-		return i.name, nil
-	case keyIn:
-		return i.in, nil
-	case keySel:
-		return i.sel, nil
-	case keyFormat:
-		return i.format, nil
-	case keyLimit:
-		return i.limit, nil
-	case keyHelp:
-		return i.help, nil
-	default:
-		return nil, tokKeywordError{k}
+// get returns the tokValue slice that tokKeyword 'k' maps to. get
+// panics if k is not a valid keyword.
+func (i inputValues) get(k tokKeyword) []tokValue {
+	if !keywordValid(k) {
+		panic("get: " + tokKeywordError{k}.Error())
 	}
+	return i.m[k]
 }
 
 // append appends vs to the tokValue slice that tokKeyword 'k' maps to.
 func (i *inputValues) append(k tokKeyword, vs ...tokValue) error {
-	switch k {
-	case keyName:
-		i.name = append(i.name, vs...)
-	case keyIn:
-		i.in = append(i.in, vs...)
-	case keySel:
-		i.sel = append(i.sel, vs...)
-	case keyFormat:
-		i.format = append(i.format, vs...)
-	case keyLimit:
-		i.limit = append(i.limit, vs...)
-	case keyHelp:
-		i.help = append(i.help, vs...)
-	default:
+	if !keywordValid(k) {
 		return tokKeywordError{k}
 	}
+	i.m[k] = append(i.m[k], vs...)
 	return nil
 }
 
 // init initializes the tokValue slice that k maps to. It is used to
 // indicate that the keyword has been seen.
 func (i *inputValues) init(k tokKeyword) error {
-	switch k {
-	case keyName:
-		i.name = []tokValue{}
-	case keyIn:
-		i.in = []tokValue{}
-	case keySel:
-		i.sel = []tokValue{}
-	case keyFormat:
-		i.format = []tokValue{}
-	case keyLimit:
-		i.limit = []tokValue{}
-	case keyHelp:
-		i.help = []tokValue{}
-	default:
+	if !keywordValid(k) {
 		return tokKeywordError{k}
 	}
+	i.m[k] = []tokValue{}
 	return nil
 }
 
@@ -204,11 +233,10 @@ func (i inputValues) validate(k tokKeyword) error {
 	if info.validVals == nil {
 		return nil
 	}
-	s, err := i.get(k)
-	if err != nil {
-		return err
+	if !keywordValid(k) {
+		return tokKeywordError{k}
 	}
-	for _, val := range s {
+	for _, val := range i.get(k) {
 		var valid bool
 		for _, v := range info.validVals {
 			if val == v {
@@ -224,7 +252,7 @@ func (i inputValues) validate(k tokKeyword) error {
 }
 
 // validateAll returns an error if i is invalid.
-func (i inputValues) validateAll() error {
+func (i inputValues) finalize() error {
 	for _, keyword := range allKeywords {
 		if err := i.validate(keyword); err != nil {
 			return err
@@ -234,17 +262,13 @@ func (i inputValues) validateAll() error {
 }
 
 // setDefaults sets default values for i's empty tokValue slices.
-func (i *inputValues) setDefaults() (*inputValues, error) {
+func (i *inputValues) setDefaults() *inputValues {
 	for keyword, info := range keywordInfoMap {
-		s, err := i.get(keyword)
-		if err != nil {
-			return nil, err
-		}
-		if len(s) == 0 {
+		if len(i.get(keyword)) == 0 {
 			i.append(keyword, info.defaultVals...)
 		}
 	}
-	return i, nil
+	return i
 }
 
 // A token is a structure that a lexer can emit.
@@ -276,8 +300,9 @@ type tokKeyword string
 var (
 	keyName   tokKeyword = "name"
 	keyIn     tokKeyword = "in"
-	keySel    tokKeyword = "select"
+	keySelect tokKeyword = "select"
 	keyFormat tokKeyword = "format"
+	keyKind   tokKeyword = "kind"
 	keyLimit  tokKeyword = "limit"
 	keyHelp   tokKeyword = "help"
 )
@@ -317,11 +342,15 @@ var keywordInfoMap = map[tokKeyword]keywordInfo{
 		argName:     "repo",
 		description: "Change the repository to 'repo'.",
 	},
-	keySel: keywordInfo{
+	keySelect: keywordInfo{
 		validVals:   []tokValue{"defs", "refs", "docs"},
-		defaultVals: []tokValue{"defs", "refs"},
+		defaultVals: []tokValue{"defs"},
 		argName:     "objects",
 		description: "Narrow search to 'objects'.",
+	},
+	keyKind: keywordInfo{
+		argName:     "kinds",
+		description: `Narrow search to 'kinds', which are language-specific "kinds" of objects. Possible values include "type", "func", "var", etc.`,
 	},
 	keyFormat: keywordInfo{
 		validVals:   []tokValue{"decl", "methods", "body", "full"},
@@ -371,6 +400,11 @@ func (e tokKeywordError) Error() string {
 		return "invalid keyword: keyword is empty"
 	}
 	return fmt.Sprintf("unknown keyword: %s", e.k)
+}
+
+func keywordValid(k tokKeyword) bool {
+	_, ok := keywordInfoMap[k]
+	return ok
 }
 
 // toTokKeyword returns a keyword for 's'. It does not check 's's
@@ -650,7 +684,7 @@ func parse(input string) (*inputValues, error) {
 	}
 	go l.run()
 	// Create the inputValues from the input tokens.
-	i := &inputValues{}
+	i := newInputValues()
 	type parseState int
 	var on tokKeyword
 	// invariant:
@@ -681,11 +715,10 @@ loop:
 					return nil, &parseError{err}
 				}
 			}
-			s, err := i.get(t)
-			if err != nil {
-				return nil, &parseError{err}
+			if !keywordValid(t) {
+				return nil, &parseError{tokKeywordError{t}}
 			}
-			if len(s) > 0 {
+			if len(i.get(t)) > 0 {
 				return nil, &parseError{fmt.Errorf("error: keyword :%s can only appear once.", t)}
 			}
 			// Set 'on' to the new tokKeyword.
@@ -705,7 +738,7 @@ loop:
 			panic("unknown concrete type for token: " + reflect.TypeOf(t).Name())
 		}
 	}
-	if err := i.validateAll(); err != nil {
+	if err := i.finalize(); err != nil {
 		return nil, &parseError{err}
 	}
 
@@ -717,9 +750,9 @@ loop:
 
 func inputToFormat(i *inputValues) format {
 	var f format
-	for _, s := range i.sel {
+	for _, s := range i.get(keySelect) {
 		switch s {
-		case "def":
+		case "defs":
 			f.showDefs = true
 		case "refs":
 			f.showRefs = true
@@ -727,7 +760,7 @@ func inputToFormat(i *inputValues) format {
 			f.showDocs = true
 		}
 	}
-	for _, fmt := range i.format {
+	for _, fmt := range i.get(keyFormat) {
 		switch fmt {
 		case "decl":
 			f.showDefDecl = true
@@ -740,10 +773,10 @@ func inputToFormat(i *inputValues) format {
 		}
 	}
 	// TODO: make limit parsing more robust.
-	if len(i.limit) == 1 {
-		l, err := strconv.Atoi(string(i.limit[0]))
+	if len(i.get(keyLimit)) == 1 {
+		l, err := strconv.Atoi(string(i.get(keyLimit)[0]))
 		if err != nil {
-			log.Printf("Could not convert limit %s to an int, skipping.\n", i.limit[0])
+			log.Printf("Could not convert limit %s to an int, skipping.\n", i.get(keyLimit)[0])
 		}
 		f.limit = l
 	}
@@ -829,18 +862,15 @@ func eval(input string) (output string, err error) {
 	switch {
 	case i.isEmpty():
 		return briefHelpText(), nil
-	case i.help != nil:
-		return helpText(i.help)
+	case i.get(keyHelp) != nil:
+		return helpText(i.get(keyHelp))
 	}
-	i, err = i.setDefaults()
-	if err != nil {
-		return "", err
-	}
+	i.setDefaults()
 
 	f := inputToFormat(i)
 	var out []string
 	// TODO: only deal with one name!
-	for _, input := range i.name {
+	for _, input := range i.get(keyName) {
 		c := &StoreDefsCmd{
 			Query:    string(input),
 			CommitID: activeContext.repo.CommitID,
