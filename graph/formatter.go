@@ -71,10 +71,10 @@ const (
 	LanguageWideQualified = "lang-wide"
 )
 
-// qualLevels associates a number (the slice index) with each Qualification, for
+// QualLevels associates a number (the slice index) with each Qualification, for
 // use in format strings (so that, e.g., "%.0n" means Unqualified name and
 // "%.2n" means DepQualified name).
-var qualLevels = []Qualification{
+var QualLevels = []Qualification{
 	Unqualified, ScopeQualified, DepQualified, RepositoryWideQualified, LanguageWideQualified,
 }
 
@@ -170,11 +170,11 @@ type printFormatter struct{ DefFormatter }
 func (pf *printFormatter) Format(f fmt.State, c rune) {
 	var qual Qualification
 	if prec, ok := f.Precision(); ok {
-		if prec < 0 || prec >= len(qualLevels) {
+		if prec < 0 || prec >= len(QualLevels) {
 			fmt.Fprintf(f, "%%!%c(invalid qual %d)", c, prec)
 			return
 		}
-		qual = qualLevels[prec]
+		qual = QualLevels[prec]
 	}
 
 	switch c {
