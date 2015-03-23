@@ -35,13 +35,65 @@ func init() {
 	queryGroup.Aliases = append(queryGroup.Aliases, "q")
 }
 
-type QueryCmd struct{}
+type QueryCmd struct {
+	Args struct {
+		Rest []string `name:"ARGS"`
+	} `positional-args:"yes"`
+}
 
 var queryCmd QueryCmd
 
-var historyFile = "/tmp/.srclibi_history"
+var historyFile = "/tmp/.srclibq_history"
 
 var activeContext commandContext
+
+func (c *QueryCmd) Execute(args []string) error {
+	if err := setActiveContext("."); err != nil {
+		// TODO: log error somewhere
+		log.Println("Errors were found building this project. Some things may be broken. Continuing...")
+	}
+	if len(c.Args.Rest) != 0 {
+		// If args are provided, evaluate the args and do not
+		// enter the interactive interface.
+		output, err := eval(strings.Join(c.Args.Rest, " "))
+		// Always print output, even if err is non-nil.
+		if output != "" {
+			fmt.Print(cleanOutput(output))
+		}
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	fmt.Println("src query - :help for help")
+	term, err := terminal(historyFile)
+	if err != nil {
+		return err
+	}
+	defer persist(term, historyFile)
+	term.SetCompleter(lineCompleter)
+
+	for {
+		line, err := term.Prompt("src> ")
+		if err != nil {
+			if err == io.EOF {
+				fmt.Println()
+				return nil
+			}
+			return err
+		}
+		term.AppendHistory(line)
+		output, err := eval(line)
+		if err != nil {
+			fmt.Println("Error:", err)
+			if output != "" {
+				fmt.Print(cleanOutput(output))
+			}
+		} else {
+			fmt.Print(cleanOutput(output))
+		}
+	}
+}
 
 func setActiveContext(repoPath string) error {
 	fmt.Printf("Analyzing project...")
@@ -73,41 +125,6 @@ OuterLoop:
 	// Invariant: activeContext is the result of prepareCommandContext
 	// after the loop above.
 	return nil
-}
-
-func (c *QueryCmd) Execute(args []string) error {
-	if err := setActiveContext("."); err != nil {
-		// TODO: log error somewhere
-		log.Println("Errors were found building this project. Some things may be broken. Continuing...")
-	}
-	fmt.Println("src query - :help for help")
-	term, err := terminal(historyFile)
-	if err != nil {
-		return err
-	}
-	defer persist(term, historyFile)
-	term.SetCompleter(lineCompleter)
-
-	for {
-		line, err := term.Prompt("src> ")
-		if err != nil {
-			if err == io.EOF {
-				fmt.Println()
-				return nil
-			}
-			return err
-		}
-		term.AppendHistory(line)
-		output, err := eval(line)
-		if err != nil {
-			fmt.Println("Error:", err)
-			if output != "" {
-				fmt.Print(cleanOutput(output))
-			}
-		} else {
-			fmt.Print(cleanOutput(output))
-		}
-	}
 }
 
 // matchWithKeyword matches lines that include a colon, ':'.
