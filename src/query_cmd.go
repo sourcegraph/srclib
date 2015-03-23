@@ -24,20 +24,20 @@ import (
 )
 
 func init() {
-	interactiveGroup, err := CLI.AddCommand("interactive",
-		"interactive REPL for build data",
-		"The interactive (i) command is a readline-like interface for interacting with the build data for a project.",
-		&interactiveCmd,
+	queryGroup, err := CLI.AddCommand("query",
+		"query REPL for build data",
+		"The query (q) command is a readline-like interface for interacting with the build data for a project.",
+		&queryCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
-	interactiveGroup.Aliases = append(interactiveGroup.Aliases, "i")
+	queryGroup.Aliases = append(queryGroup.Aliases, "q")
 }
 
-type InteractiveCmd struct{}
+type QueryCmd struct{}
 
-var interactiveCmd InteractiveCmd
+var queryCmd QueryCmd
 
 var historyFile = "/tmp/.srclibi_history"
 
@@ -75,12 +75,12 @@ OuterLoop:
 	return nil
 }
 
-func (c *InteractiveCmd) Execute(args []string) error {
+func (c *QueryCmd) Execute(args []string) error {
 	if err := setActiveContext("."); err != nil {
 		// TODO: log error somewhere
 		log.Println("Errors were found building this project. Some things may be broken. Continuing...")
 	}
-	fmt.Println("src interactive - :help for help")
+	fmt.Println("src query - :help for help")
 	term, err := terminal(historyFile)
 	if err != nil {
 		return err
