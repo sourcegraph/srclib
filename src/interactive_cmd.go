@@ -77,7 +77,8 @@ OuterLoop:
 
 func (c *InteractiveCmd) Execute(args []string) error {
 	if err := setActiveContext("."); err != nil {
-		return err
+		// TODO: log error somewhere
+		log.Println("Errors were found building this project. Some things may be broken. Continuing...")
 	}
 	fmt.Println("src interactive - :help for help")
 	term, err := terminal(historyFile)
@@ -170,11 +171,36 @@ func valueCompleter(prefix, keyword, token string) []string {
 	}
 	switch tokKeyword(keyword) {
 	case keyName:
-		return nil //something()
+		return nameCompleter(prefix, token)
 	case keyHelp:
 		return keywordCompleter(prefix, keyword)
 	}
 	return nil
+}
+
+// nameCompleter returns a set of values that complete token for name
+// prefixed with prefix. Because nameCompleter blocks, only completes
+// tokens larger than three characters.
+// TODO: investigave blocking -- can the user break out of it?
+func nameCompleter(prefix, token string) []string {
+	if len(token) < 4 {
+		return nil
+	}
+	// PERF: do we need to limit this call?
+	c := &StoreDefsCmd{
+		Query:    string(token),
+		CommitID: activeContext.repo.CommitID,
+	}
+	defs, err := c.Get()
+	if err != nil {
+		// TODO: log this error.
+		return nil
+	}
+	completions := make([]string, 0, len(defs))
+	for _, d := range defs {
+		completions = append(completions, prefix+token+strings.TrimPrefix(d.Name, token))
+	}
+	return completions
 }
 
 // cleanOutput returns o with only one trailing newline.
@@ -303,6 +329,7 @@ var (
 	keySelect tokKeyword = "select"
 	keyFormat tokKeyword = "format"
 	keyKind   tokKeyword = "kind"
+	keyFile   tokKeyword = "file"
 	keyLimit  tokKeyword = "limit"
 	keyHelp   tokKeyword = "help"
 )
@@ -351,6 +378,10 @@ var keywordInfoMap = map[tokKeyword]keywordInfo{
 	keyKind: keywordInfo{
 		argName:     "kinds",
 		description: `Narrow search to 'kinds', which are language-specific "kinds" of objects. Possible values include "type", "func", "var", etc.`,
+	},
+	keyFile: keywordInfo{
+		argName:     "prefixes",
+		description: `Narrow search to files that begin with any values in 'prefixes'`,
 	},
 	keyFormat: keywordInfo{
 		validVals:   []tokValue{"decl", "methods", "body", "full"},
@@ -876,6 +907,14 @@ func eval(input string) (output string, err error) {
 			CommitID: activeContext.repo.CommitID,
 			Limit:    f.limit,
 		}
+		// TODO: make the following filters work with more
+		// than one value.
+		if len(i.get(keyKind)) != 0 {
+			c.Filter = byDefKind{string(i.get(keyKind)[0])}
+		}
+		if len(i.get(keyFile)) != 0 {
+			c.FilePathPrefix = string(i.get(keyFile)[0])
+		}
 		defs, err := c.Get()
 		if err != nil {
 			return "", err
@@ -903,6 +942,7 @@ func eval(input string) (output string, err error) {
 	return strings.Join(out, "\n"), nil
 }
 
+// TODO: move to store package.
 type byDefKind struct {
 	kind string
 }
