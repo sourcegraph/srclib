@@ -71,7 +71,8 @@ func (c *QueryCmd) Execute(args []string) error {
 		return err
 	}
 	defer persist(term, historyFile)
-	term.SetCompleter(lineCompleter)
+	term.SetWordCompleter(wordCompleter)
+	term.SetTabCompletionStyle(liner.TabPrints)
 
 	for {
 		line, err := term.Prompt("src> ")
@@ -154,52 +155,89 @@ OuterLoop:
 // prefix.
 var matchWithKeyword = regexp.MustCompile(`(.*:)(\w*)([[:blank:]]*)(.*)`)
 
-// lineCompleter returns a set of completions for line.
-func lineCompleter(line string) []string {
-	m := matchWithKeyword.FindStringSubmatch(line)
+// wordCompleter returns a set of completions for word ending at line[pos].
+func wordCompleter(line string, pos int) (head string, completions []string, tail string) {
+	// 3/23/15: liner's Bash-style completion deletes the
+	// to-be-completed word if completions has more than one item.
+	// We fix that with fix by manually appending the completed
+	// section of the token to "head".
+	//
+	// NOTE: check that completion works when len(completions) == 0.
+	fix := func(head string, completions []string, tail string) (string, []string, string) {
+		// When completions empty, the word completer is not
+		// applied. The bug does not manifest when completions
+		// has only one item.
+		if len(completions) == 0 || len(completions) == 1 {
+			return head, completions, tail
+		}
+		// invariant: prefix is the common case-insensitive
+		// prefix among all of the completions seen so far
+		// after each loop iteration.
+		prefix := strings.ToLower(completions[1])
+		for i := 2; i < len(completions); i++ {
+			c := completions[i]
+			l := len(prefix)
+			if len(c) < l {
+				l = len(c)
+			}
+			for ; l >= 0; l-- {
+				if c[:l] == prefix[:l] {
+					break
+				}
+			}
+			prefix = c[:l]
+			// Short-circuit if prefix is empty.
+			if prefix == "" {
+				break
+			}
+		}
+		return head + prefix, completions, tail
+	}
+	seg := line[:pos]
+	end := line[pos:]
+	m := matchWithKeyword.FindStringSubmatch(seg)
 	// If no match was found, the keyword is "name" implicitly.
 	if m == nil {
-		return valueCompleter("", string(keyName), line)
+		return fix("", valueCompleter(string(keyName), seg), end)
 	}
 	if m[2] == "" || m[3] == "" {
-		return keywordCompleter(m[1], m[2])
+		return fix(m[1], keywordCompleter(m[2]), end)
 	}
-	return valueCompleter(m[1], m[2], m[4])
+	return fix(m[1], valueCompleter(m[2], m[4]), end)
 }
 
-// keywordCompleter returns a set of keywords that complete token
-// prefixed with prefix.
-func keywordCompleter(prefix, token string) []string {
+// keywordCompleter returns a set of keywords that complete token.
+func keywordCompleter(token string) []string {
 	var cs []string
 	for _, k := range allKeywords {
 		if strings.HasPrefix(string(k), token) {
-			cs = append(cs, prefix+token+strings.TrimPrefix(string(k), token))
+			cs = append(cs, string(k))
 		}
 	}
 	return cs
 }
 
 // valueCompleter returns a set of values that complete token for
-// keyword prefixed with prefix. If keyword is not a valid tokKeyword,
-// valueCompleter returns nil.
-func valueCompleter(prefix, keyword, token string) []string {
+// keyword. If keyword is not a valid tokKeyword, valueCompleter
+// returns nil.
+func valueCompleter(keyword, token string) []string {
 	if !keywordValid(tokKeyword(keyword)) {
 		return nil
 	}
 	switch tokKeyword(keyword) {
 	case keyName:
-		return nameCompleter(prefix, token)
+		return nameCompleter(token)
 	case keyHelp:
-		return keywordCompleter(prefix, keyword)
+		return keywordCompleter(keyword)
 	}
 	return nil
 }
 
-// nameCompleter returns a set of values that complete token for name
-// prefixed with prefix. Because nameCompleter blocks, only completes
-// tokens larger than three characters.
+// nameCompleter returns a set of values that complete token for name.
+// Because nameCompleter blocks, only completes tokens larger than
+// three characters.
 // TODO: investigave blocking -- can the user break out of it?
-func nameCompleter(prefix, token string) []string {
+func nameCompleter(token string) []string {
 	if len(token) < 4 {
 		return nil
 	}
@@ -215,7 +253,7 @@ func nameCompleter(prefix, token string) []string {
 	}
 	completions := make([]string, 0, len(defs))
 	for _, d := range defs {
-		completions = append(completions, prefix+token+strings.TrimPrefix(d.Name, token))
+		completions = append(completions, d.Name)
 	}
 	return completions
 }
