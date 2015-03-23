@@ -65,7 +65,7 @@ func (c *QueryCmd) Execute(args []string) error {
 		}
 		return nil
 	}
-	fmt.Println("src query - :help for help")
+	fmt.Println(`src query - ":help" for help`)
 	term, err := terminal(historyFile)
 	if err != nil {
 		return err
@@ -374,8 +374,8 @@ type tokEOF struct{}
 func (e tokEOF) isToken() {}
 
 // A tokKeyword is a keyword for the 'src i' lanugage. Keywords always
-// start with ":". Do not cast strings to tokKeywords. Always use
-// 'toTokKeyword'.
+// start with ":" in the language, but tokKeywords do not contain the
+// ":". Do not cast strings to tokKeywords. Always use 'toTokKeyword'.
 type tokKeyword string
 
 var (
@@ -772,10 +772,11 @@ func parse(input string) (*inputValues, error) {
 	// Create the inputValues from the input tokens.
 	i := newInputValues()
 	type parseState int
-	var on tokKeyword
+
 	// invariant:
-	//  - 'on' is empty before the loop starts, and is set on the
+	//  - on is empty before the loop starts, and is set on the
 	//  first successful iteration of theloop.
+	var on tokKeyword
 loop:
 	for t := range l.tokens {
 		switch t := t.(type) {
@@ -885,7 +886,7 @@ type format struct {
 // displaying after an error.
 func briefHelpText() string {
 	buf := &bytes.Buffer{}
-	buf.WriteString("Available commands:\n")
+	buf.WriteString("Available commands: -- \":help all\" for detailed help, \":help usage\" for usage\n")
 	for i, k := range allKeywords {
 		fmt.Fprintf(buf, "  :%s <%s>", k, keywordInfoMap[k].argName)
 		if i != len(allKeywords)-1 {
@@ -896,10 +897,17 @@ func briefHelpText() string {
 }
 
 // helpText returns the concatenated help text for each topic, where
-// topic is "full" or a keyword name (such as "format").
+// topic is "all", "usage" or a keyword name (such as "format").
+// TODO: explain "all" and "usage".
 func helpText(topics []tokValue) (string, error) {
 	// If no topics are specified, show the help for all topics.
 	if len(topics) == 0 {
+		return briefHelpText(), nil
+	}
+	// If the first value is "all", show help on every topic.
+	if topics[0] == "all" {
+		topics = make([]tokValue, 0, len(allKeywords)+1)
+		topics = append(topics, tokValue("usage"))
 		for _, k := range allKeywords {
 			topics = append(topics, tokValue(k))
 		}
@@ -907,10 +915,31 @@ func helpText(topics []tokValue) (string, error) {
 	buf := &bytes.Buffer{}
 	indent := "  "
 	for _, t := range topics {
+		// "usage" is a special value. It prints out the
+		// tutorial for help.
+		if t == "usage" {
+			fmt.Fprint(buf, `These are some example queries:
+src> Hello
+;; All definitions (funcs, vars, etc) that begin with "Hello".
+src> :name Hello
+;; Same as above. The ":name" keyword is assumed if left out.
+src> Hello :select defs, refs
+;; All defintions that begin with "Hello" and their references.
+;; If ":select" is left out, "defs" is included by default.
+src> Hello :kind func
+;; All functions that begin with "Hello". ":kind" is language-defined.
+src> Hello :format decl
+;; All definition declarations -- ignore defintion bodies.
+`)
+			continue
+		}
 		k := tokKeyword(t)
 		info, ok := keywordInfoMap[k]
 		if !ok {
 			return "", fmt.Errorf("Topic %s does not exist", t)
+		}
+		if buf.Len() == 0 {
+			fmt.Fprint(buf, "Keywords:\n")
 		}
 		fmt.Fprintf(buf, "-- :%s <%s>\n%s%s\n", k, info.argName,
 			indent, strings.Replace(info.description, "\n", "\n"+indent, -1))
