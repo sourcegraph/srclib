@@ -161,9 +161,6 @@ func ByUnits(units ...unit.ID2) interface {
 	ByUnitsFilter
 } {
 	for _, u := range units {
-		if u.Name == "" {
-			panic("unit.Name: empty")
-		}
 		if u.Type == "" {
 			panic("unit.Type: empty")
 		}
