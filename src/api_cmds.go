@@ -492,13 +492,16 @@ OuterLoop:
 		return nil
 	}
 
+	// ref.DefRepo is *not* guaranteed to be non-empty, as
+	// repo.URI() will return the empty string if the repo's
+	// CloneURL is empty or malformed.
 	if ref.DefRepo == "" {
 		ref.DefRepo = context.repo.URI()
 	}
 
 	var resp apiDescribeCmdOutput
-
 	// Now find the def for this ref.
+
 	defInCurrentRepo := ref.DefRepo == context.repo.URI()
 	if defInCurrentRepo {
 		// Def is in the current repo.
@@ -533,47 +536,53 @@ OuterLoop:
 		}
 	}
 
-	spec := sourcegraph.DefSpec{
-		Repo:     string(ref.DefRepo),
-		UnitType: ref.DefUnitType,
-		Unit:     ref.DefUnit,
-		Path:     string(ref.DefPath),
+	// spec is only valid for remote requests if ref.DefRepo is
+	// non-empty.
+	var spec sourcegraph.DefSpec
+	var specValid bool
+	if ref.DefRepo != "" {
+		specValid = true
+		spec = sourcegraph.DefSpec{
+			Repo:     string(ref.DefRepo),
+			UnitType: ref.DefUnitType,
+			Unit:     ref.DefUnit,
+			Path:     string(ref.DefPath),
+		}
 	}
 
-	apiclient := NewAPIClientWithAuthIfPresent()
+	if specValid {
+		apiclient := NewAPIClientWithAuthIfPresent()
+		var wg sync.WaitGroup
+		if resp.Def == nil {
+			// Def is not in the current repo. Try looking it up using the
+			// Sourcegraph API.
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				var err error
+				resp.Def, _, err = apiclient.Defs.Get(spec, &sourcegraph.DefGetOptions{Doc: true})
+				if err != nil && GlobalOpt.Verbose {
+					log.Printf("Couldn't fetch definition %v: %s.", spec, err)
+				}
+			}()
+		}
 
-	var wg sync.WaitGroup
-
-	if resp.Def == nil {
-		// Def is not in the current repo. Try looking it up using the
-		// Sourcegraph API.
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			var err error
-			resp.Def, _, err = apiclient.Defs.Get(spec, &sourcegraph.DefGetOptions{Doc: true})
-			if err != nil && GlobalOpt.Verbose {
-				log.Printf("Couldn't fetch definition %v: %s.", spec, err)
-			}
-		}()
+		if !c.NoExamples {
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				var err error
+				resp.Examples, _, err = apiclient.Defs.ListExamples(spec, &sourcegraph.DefListExamplesOptions{
+					Formatted:   true,
+					ListOptions: sourcegraph.ListOptions{PerPage: 4},
+				})
+				if err != nil && GlobalOpt.Verbose {
+					log.Printf("Couldn't fetch examples for %v: %s.", spec, err)
+				}
+			}()
+		}
+		wg.Wait()
 	}
-
-	if !c.NoExamples {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			var err error
-			resp.Examples, _, err = apiclient.Defs.ListExamples(spec, &sourcegraph.DefListExamplesOptions{
-				Formatted:   true,
-				ListOptions: sourcegraph.ListOptions{PerPage: 4},
-			})
-			if err != nil && GlobalOpt.Verbose {
-				log.Printf("Couldn't fetch examples for %v: %s.", spec, err)
-			}
-		}()
-	}
-
-	wg.Wait()
 
 	if err := json.NewEncoder(os.Stdout).Encode(resp); err != nil {
 		return err
