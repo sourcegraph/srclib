@@ -63,13 +63,22 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	_, err = CLI.AddCommand("whoami",
+		"show logged-in user login and info",
+		"The whoami command prints the username and other information about the user authenticated by a previous call to `src login`.",
+		&whoamiCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 type LoginCmd struct {
 	UID int    `long:"uid" description:"Sourcegraph UID" required:"yes"`
 	Key string `long:"key" description:"Sourcegraph API key" required:"yes"`
 
-	NoVerify bool `long:"no-verify" description:"don't verify login credentials by attempting to log in"`
+	NoVerify bool `long:"no-verify" description:"don't verify login credentials by attempting to log in remotely"`
 }
 
 var loginCmd LoginCmd
@@ -100,5 +109,35 @@ func (c *LoginCmd) Execute(args []string) error {
 		return err
 	}
 	log.Printf("# Credentials saved to %s.", userAuthFile)
+	return nil
+}
+
+type WhoamiCmd struct {
+	NoVerify bool `long:"no-verify" description:"don't verify login credentials by attempting to log in remotely"`
+}
+
+var whoamiCmd WhoamiCmd
+
+func (c *WhoamiCmd) Execute(args []string) error {
+	a, err := readUserAuth()
+	if err != nil {
+		return err
+	}
+	endpointURL := getEndpointURL()
+	ua := a[endpointURL.String()]
+	if ua == nil {
+		log.Fatalf("# No authentication info set for %s (use `src login` to authenticate)", endpointURL)
+	}
+	if c.NoVerify {
+		log.Printf("UID %d on %s (not verified remotely)", ua.UID, endpointURL)
+	} else {
+		cl := NewAPIClientWithAuthIfPresent()
+		u, _, err := cl.Users.Get(sourcegraph.UserSpec{UID: ua.UID}, nil)
+		if err != nil {
+			log.Fatalf("Error verifying auth credentials with endpoint %s: %s.", endpointURL, err)
+		}
+		log.Printf("%s (UID %d) on %s (verified remotely)", u.Login, ua.UID, endpointURL)
+	}
+
 	return nil
 }
