@@ -14,7 +14,6 @@ import (
 	"strings"
 	"syscall"
 
-	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 )
 
@@ -25,18 +24,13 @@ type Repo struct {
 	CloneURL string // CloneURL of repo.
 }
 
+// URI returns the Repo's URI. It returns the empty string if the
+// Repo's CloneURL is malformed or empty.
 func (c *Repo) URI() string {
-	if c.CloneURL != "" {
-		graph.MakeURI(c.CloneURL)
-	}
-	return ""
-}
-
-func (r *Repo) RepoRevSpec() sourcegraph.RepoRevSpec {
-	return sourcegraph.RepoRevSpec{
-		RepoSpec: sourcegraph.RepoSpec{URI: r.URI()},
-		Rev:      r.CommitID,
-		CommitID: r.CommitID,
+	if uri, err := graph.TryMakeURI(c.CloneURL); err != nil {
+		return ""
+	} else {
+		return uri
 	}
 }
 
