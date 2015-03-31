@@ -1,26 +1,31 @@
 package src
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"math"
 	"net/http"
 	"net/http/httputil"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 
 	"golang.org/x/tools/godoc/vfs"
 
-	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/unit"
-	"sourcegraph.com/sourcegraph/srclib/util"
 )
+
+type nopWriteCloser struct{}
+
+func (w nopWriteCloser) Write(p []byte) (n int, err error) {
+	return len(p), nil
+}
+
+func (w nopWriteCloser) Close() error {
+	return nil
+}
 
 func isDir(dir string) bool {
 	di, err := os.Stat(dir)
@@ -104,29 +109,6 @@ func OpenInputFiles(extraArgs []string) map[string]io.ReadCloser {
 func CloseAll(files map[string]io.ReadCloser) {
 	for _, rc := range files {
 		rc.Close()
-	}
-}
-
-// updateVCSIgnore adds .srclib-cache/ to the user's .${VCS}ignore file in
-// their home directory.
-func updateVCSIgnore(name string) {
-	homeDir := util.CurrentUserHomeDir()
-
-	entry := buildstore.BuildDataDirName + "/"
-
-	path := filepath.Join(homeDir, name)
-	data, err := ioutil.ReadFile(path)
-	if os.IsNotExist(err) {
-		err = nil
-	} else if bytes.Contains(data, []byte("\n"+entry+"\n")) {
-		// already has entry
-		return
-	}
-
-	data = append(data, []byte("\n\n# srclib build cache\n"+entry+"\n")...)
-	err = ioutil.WriteFile(path, data, 0700)
-	if err != nil {
-		log.Fatal(err)
 	}
 }
 

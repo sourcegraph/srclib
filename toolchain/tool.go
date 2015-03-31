@@ -68,7 +68,7 @@ func OpenTool(toolchain, subcmd string, mode Mode) (Tool, error) {
 		return nil, fmt.Errorf("failed to open tool (%s %s): %s", toolchain, subcmd, err)
 	}
 
-	return &tool{tc, subcmd}, nil
+	return &tool{tc, subcmd, log.New(os.Stderr, "", 0)}, nil
 }
 
 // A Tool is a subcommand of a Toolchain that performs an single operation, such
@@ -80,11 +80,22 @@ type Tool interface {
 	// Run executes this tool with args (sending the JSON-serialization of input
 	// on stdin, if input is non-nil) and parses the JSON response into resp.
 	Run(arg []string, input, resp interface{}) error
+
+	// SetLogger sets the logger for Tool to l.
+	SetLogger(l *log.Logger)
 }
 
 type tool struct {
 	tc     Toolchain
 	subcmd string
+	log    *log.Logger
+}
+
+func (t *tool) SetLogger(l *log.Logger) {
+	if l == nil {
+		panic("SetLogger: logger cannot be nil")
+	}
+	t.log = l
 }
 
 func (t *tool) Command() (*exec.Cmd, error) {
@@ -106,7 +117,7 @@ func (t *tool) Run(arg []string, input, resp interface{}) error {
 	cmd.Args = append(cmd.Args, arg...)
 	cmd.Stderr = os.Stderr
 
-	log.Printf("Running: %v", cmd.Args)
+	t.log.Printf("Running: %v", cmd.Args)
 
 	var stdin io.WriteCloser
 	if input != nil {
@@ -114,7 +125,7 @@ func (t *tool) Run(arg []string, input, resp interface{}) error {
 		if err != nil {
 			return err
 		}
-		log.Printf("  --> with input %s", data)
+		t.log.Printf("  --> with input %s", data)
 
 		stdin, err = cmd.StdinPipe()
 		if err != nil {

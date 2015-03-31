@@ -1,6 +1,7 @@
 package src
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -136,7 +137,13 @@ func getLocalBuildDataFS(commitID string) (rwvfs.FileSystem, string, error) {
 	return localStore.Commit(commitID), fmt.Sprintf("local repository (root dir %s, commit %s)", lrepo.RootDir, commitID), nil
 }
 
+// getRemoteBuildDataFS gets the remote build data file system for
+// repo at commitID. It returns an error if repo is empty.
 func getRemoteBuildDataFS(repo, commitID string) (rwvfs.FileSystem, string, sourcegraph.RepoRevSpec, error) {
+	if repo == "" {
+		err := errors.New("getRemoteBuildDataFS: repo cannot be empty")
+		return nil, "", sourcegraph.RepoRevSpec{}, err
+	}
 	cl := NewAPIClientWithAuthIfPresent()
 	rrepo, _, err := cl.Repos.Get(sourcegraph.RepoSpec{URI: repo}, nil)
 	if err != nil {
@@ -148,6 +155,9 @@ func getRemoteBuildDataFS(repo, commitID string) (rwvfs.FileSystem, string, sour
 	return fs, fmt.Sprintf("remote repository (URI %s, commit %s)", rrepo.URI, commitID), repoRevSpec, err
 }
 
+// getBuildDataFS gets the build data file system for repo at
+// commitID. If local is true, repo is ignored and build data is
+// fetched for the local repo.
 func getBuildDataFS(local bool, repo, commitID string) (rwvfs.FileSystem, string, error) {
 	if local {
 		return getLocalBuildDataFS(commitID)

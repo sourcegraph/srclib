@@ -92,6 +92,8 @@ type ConfigCmd struct {
 		Dir Directory `name:"DIR" default:"." description:"root directory of tree to configure"`
 	} `positional-args:"yes"`
 
+	Quiet bool `short:"q" long:"quiet" description:"silence all output"`
+
 	w io.Writer // output stream to print to (defaults to os.Stdout)
 }
 
@@ -100,6 +102,9 @@ var configCmd ConfigCmd
 func (c *ConfigCmd) Execute(args []string) error {
 	if c.w == nil {
 		c.w = os.Stdout
+	}
+	if c.Quiet {
+		c.w = nopWriteCloser{}
 	}
 
 	if c.Args.Dir == "" {
@@ -112,16 +117,16 @@ func (c *ConfigCmd) Execute(args []string) error {
 	}
 
 	if len(cfg.PreConfigCommands) > 0 {
-		if err := runPreConfigCommands(string(c.Args.Dir), cfg.PreConfigCommands, c.ToolchainExecOpt); err != nil {
+		if err := runPreConfigCommands(c.Args.Dir.String(), cfg.PreConfigCommands, c.ToolchainExecOpt, c.Quiet); err != nil {
 			return fmt.Errorf("PreConfigCommands: %s", err)
 		}
 	}
 
-	if err := scanUnitsIntoConfig(cfg, c.Options, c.ToolchainExecOpt); err != nil {
+	if err := scanUnitsIntoConfig(cfg, c.Options, c.ToolchainExecOpt, c.Quiet); err != nil {
 		return fmt.Errorf("failed to scan for source units: %s", err)
 	}
 
-	localRepo, err := OpenRepo(string(c.Args.Dir))
+	localRepo, err := OpenRepo(c.Args.Dir.String())
 	if err != nil {
 		return fmt.Errorf("failed to open repo: %s", err)
 	}
@@ -195,12 +200,14 @@ func sortedMap(m map[string]interface{}) [][2]interface{} {
 	return sorted
 }
 
-func runPreConfigCommands(dir string, cmds []string, execOpt ToolchainExecOpt) error {
+func runPreConfigCommands(dir string, cmds []string, execOpt ToolchainExecOpt, quiet bool) error {
 	if mode := execOpt.ToolchainMode(); mode&toolchain.AsProgram > 0 {
 		for _, cmdStr := range cmds {
 			cmd := exec.Command("sh", "-c", cmdStr)
 			cmd.Dir = dir
-			cmd.Stdout, cmd.Stderr = os.Stderr, os.Stderr
+			if !quiet {
+				cmd.Stdout, cmd.Stderr = os.Stderr, os.Stderr
+			}
 			if err := cmd.Run(); err != nil {
 				return fmt.Errorf("command %q: %s", cmdStr, err)
 			}
@@ -234,7 +241,9 @@ WORKDIR /src
 		const containerName = "src-preconfigcommands"
 		buildCmd := exec.Command("docker", "build", "-t", containerName, ".")
 		buildCmd.Dir = tmpdir
-		buildCmd.Stdout, buildCmd.Stderr = os.Stderr, os.Stderr
+		if !quiet {
+			buildCmd.Stdout, buildCmd.Stderr = os.Stderr, os.Stderr
+		}
 		if err := buildCmd.Run(); err != nil {
 			return fmt.Errorf("building PreConfigCommands Docker container: %s", err)
 		}
@@ -252,7 +261,9 @@ WORKDIR /src
 		for _, cmdStr := range cmds {
 			cmd := exec.Command("docker", "run", "-v", dir+":/src", "--rm", "--entrypoint=/bin/bash", containerName)
 			cmd.Args = append(cmd.Args, "-c", cmdStr)
-			cmd.Stdout, cmd.Stderr = os.Stderr, os.Stderr
+			if !quiet {
+				cmd.Stdout, cmd.Stderr = os.Stderr, os.Stderr
+			}
 			log.Printf("Running PreConfigCommands Docker container: %v", cmd.Args)
 			if err := cmd.Run(); err != nil {
 				return fmt.Errorf("command %q: %s", cmdStr, err)
