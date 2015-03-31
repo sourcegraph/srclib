@@ -902,13 +902,12 @@ func (c *StoreUnitsCmd) Execute(args []string) error {
 }
 
 type StoreDefsCmd struct {
-	Repo           string `long:"repo"`
-	Path           string `long:"path"`
-	UnitType       string `long:"unit-type" `
-	Unit           string `long:"unit"`
-	File           string `long:"file"`
-	FilePathPrefix string `long:"file-path-prefix"`
-	CommitID       string `long:"commit"`
+	Repo     string `long:"repo"`
+	Path     string `long:"path"`
+	UnitType string `long:"unit-type" `
+	Unit     string `long:"unit"`
+	File     string `long:"file"`
+	CommitID string `long:"commit"`
 
 	RepoCommitIDs string `long:"repo-commits" description:"comma-separated list of repo@commitID specifiers"`
 
@@ -944,9 +943,6 @@ func (c *StoreDefsCmd) filters() []store.DefFilter {
 	}
 	if c.File != "" {
 		fs = append(fs, store.ByFiles(path.Clean(c.File)))
-	}
-	if c.FilePathPrefix != "" {
-		fs = append(fs, store.ByFiles(path.Clean(c.FilePathPrefix)))
 	}
 	if c.Query != "" {
 		fs = append(fs, store.ByDefQuery(c.Query))

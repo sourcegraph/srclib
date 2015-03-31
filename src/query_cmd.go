@@ -997,7 +997,7 @@ func eval(input string) (output string, err error) {
 			c.Filter = byDefKind{string(i.get(keyKind)[0])}
 		}
 		if len(i.get(keyFile)) != 0 {
-			c.FilePathPrefix = string(i.get(keyFile)[0])
+			c.File = string(i.get(keyFile)[0])
 		}
 		defs, err := c.Get()
 		if err != nil {
