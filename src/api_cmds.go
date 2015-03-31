@@ -19,6 +19,7 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/dep"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/plan"
+	"sourcegraph.com/sourcegraph/srclib/store"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
@@ -87,6 +88,19 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	/* START APISearchCmdDoc OMIT
+	This command opens an interactive prompt that provides
+	fuzzy-completion for the search terms.
+	END APISearchCmdDoc OMIT */
+	_, err = c.AddCommand("search",
+		"open fuzzy-completion prompt for search terms",
+		"Opens a fuzzy-completion prompt for search terms, which are returned as a newline-delimited list of completions.",
+		&apiSearchCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 type APICmd struct{}
@@ -121,10 +135,16 @@ type APIUnitsCmd struct {
 	} `positional-args:"yes"`
 }
 
+type APISearchCmd struct {
+	Dir      Directory `long:"dir" default:"." description:"root directory of target project"`
+	AllTerms bool      `long:"all-terms" description:"return all valid search terms and exit"`
+}
+
 var apiDescribeCmd APIDescribeCmd
 var apiListCmd APIListCmd
 var apiDepsCmd APIDepsCmd
 var apiUnitsCmd APIUnitsCmd
+var apiSearchCmd APISearchCmd
 
 type commandContext struct {
 	repo         *Repo
@@ -690,4 +710,52 @@ func (c *APIUnitsCmd) Execute(args []string) error {
 	}
 
 	return json.NewEncoder(os.Stdout).Encode(unitSlice)
+}
+
+/* START APISearchCmdOutput OMIT
+
+This command prints an array of def name and defkey pairs to stdout.
+
+[[.code "src/api_cmds.go" "APISearchCmdOutputQuickHack"]]
+
+END APISearchCmdOutput */
+
+// START APISearchCmdOutputQuickHack OMIT
+type apiSearchCmdOutput struct {
+	Name string
+	Key  graph.DefKey
+}
+
+// END APISearchCmdOutputQuickHack OMIT
+
+func (c *APISearchCmd) Execute(args []string) error {
+	context, err := prepareCommandContext(c.Dir.String(), true)
+	if err != nil {
+		return err
+	}
+	if c.AllTerms {
+		cmd := &StoreDefsCmd{
+			Repo:     context.repo.RootDir,
+			CommitID: context.repo.CommitID,
+			Filter:   store.ByDefQuery(""),
+		}
+		defs, err := cmd.Get()
+		if err != nil {
+			return err
+		}
+		out := make([]apiSearchCmdOutput, 0, len(defs))
+		for _, d := range defs {
+			out = append(out, apiSearchCmdOutput{
+				Name: d.Name,
+				Key:  d.DefKey,
+			})
+		}
+		o, err := json.Marshal(out)
+		if err != nil {
+			return err // TODO: handle gracefully.
+		}
+		fmt.Printf("%s", o)
+		return nil
+	}
+	return errors.New("Interactive fuzzy-completion is unimplemented.")
 }
