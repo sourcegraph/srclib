@@ -607,7 +607,7 @@ func (c *APIDepsCmd) Execute(args []string) error {
 	// HACK(samertm): append a backslash to Dir to assure that it's parsed
 	// as a directory, but Directory should have an unmarshalling
 	// method that does this.
-	context, err := prepareCommandContext(string(c.Args.Dir) + string(os.PathSeparator))
+	context, err := prepareCommandContext(c.Args.Dir.String())
 	if err != nil {
 		return err
 	}
@@ -655,10 +655,7 @@ This command returns a unit.SourceUnit slice.
 END APIUnitsCmdOutput OMIT */
 
 func (c *APIUnitsCmd) Execute(args []string) error {
-	// HACK(samertm): append a backslash to Dir to assure that it's parsed
-	// as a directory, but Directory should have an unmarshalling
-	// method that does this.
-	context, err := prepareCommandContext(string(c.Args.Dir) + string(os.PathSeparator))
+	context, err := prepareCommandContext(c.Args.Dir.String())
 	if err != nil {
 		return err
 	}

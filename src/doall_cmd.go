@@ -35,7 +35,7 @@ var doAllCmd DoAllCmd
 
 func (c *DoAllCmd) Execute(args []string) error {
 	if c.Dir != "" {
-		if err := os.Chdir(string(c.Dir)); err != nil {
+		if err := os.Chdir(c.Dir.String()); err != nil {
 			return err
 		}
 	}
