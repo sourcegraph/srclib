@@ -117,7 +117,7 @@ func (c *ConfigCmd) Execute(args []string) error {
 	}
 
 	if len(cfg.PreConfigCommands) > 0 {
-		if err := runPreConfigCommands(string(c.Args.Dir), cfg.PreConfigCommands, c.ToolchainExecOpt, c.Quiet); err != nil {
+		if err := runPreConfigCommands(c.Args.Dir.String(), cfg.PreConfigCommands, c.ToolchainExecOpt, c.Quiet); err != nil {
 			return fmt.Errorf("PreConfigCommands: %s", err)
 		}
 	}
@@ -126,7 +126,7 @@ func (c *ConfigCmd) Execute(args []string) error {
 		return fmt.Errorf("failed to scan for source units: %s", err)
 	}
 
-	localRepo, err := OpenRepo(string(c.Args.Dir))
+	localRepo, err := OpenRepo(c.Args.Dir.String())
 	if err != nil {
 		return fmt.Errorf("failed to open repo: %s", err)
 	}

@@ -8,7 +8,9 @@ import (
 	"sourcegraph.com/sourcegraph/go-flags"
 )
 
-// Directory is flags.Completer that provides directory name completion.
+// Directory is flags.Completer that provides directory name
+// completion. Do not convert Directory to a string type manually,
+// always use Directory.String().
 //
 // TODO(sqs): this is annoying. it only completes the dir name and doesn't let
 // you keep typing the arg.
@@ -30,4 +32,21 @@ func (d Directory) Complete(match string) []flags.Completion {
 		}
 	}
 	return dirs
+}
+
+// String returns the uncleaned string representation of d. If d is
+// empty, "." is returned. Never convert Directories to strings
+// manually, always call String.
+func (d Directory) String() string {
+	if d == "" {
+		return "."
+	}
+	dir, file := filepath.Split(string(d))
+	if file == "" {
+		return dir
+	}
+	if file == "." || file == ".." {
+		return dir + file
+	}
+	return dir + file + string(os.PathSeparator)
 }
