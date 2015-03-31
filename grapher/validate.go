@@ -61,11 +61,11 @@ func (e MultiError) Error() string {
 
 // UnresolvedInternalRefs returns a map of unresolved internal refs,
 // keyed on the (nonexistent) defs they point to. CurrentRepoURI must
-// be the repo URI of the repo the refs and defs were built from. It
-// is used to determine whether a ref is an internal ref or not. Only
-// internal refs can be checked in this way because checking
-// resolution to external defs would require loading external data,
-// which is outside the scope of this function.
+// be the repo URI of the repo the refs and defs were built from.
+// CurrentRepoURI may be empty. It is used to determine whether a ref
+// is an internal ref or not. Only internal refs can be checked in
+// this way because checking resolution to external defs would require
+// loading external data, which is outside the scope of this function.
 func UnresolvedInternalRefs(currentRepoURI string, refs []*graph.Ref, defs []*graph.Def) map[graph.DefKey][]*graph.Ref {
 	defKeys := map[graph.DefKey]*graph.Def{}
 	for _, def := range defs {

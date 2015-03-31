@@ -1,6 +1,7 @@
 package src
 
 import (
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -35,6 +36,7 @@ type MakeCmd struct {
 	ToolchainExecOpt `group:"execution"`
 	BuildCacheOpt    `group:"build cache"`
 
+	Quiet  bool `short:"q" long:"quiet" description:"silence all output"`
 	DryRun bool `short:"n" long:"dry-run" description:"print what would be done and exit"`
 
 	Dir Directory `short:"C" long:"directory" description:"change to DIR before doing anything" value-name:"DIR"`
@@ -48,7 +50,7 @@ var makeCmd MakeCmd
 
 func (c *MakeCmd) Execute(args []string) error {
 	if c.Dir != "" {
-		if err := os.Chdir(string(c.Dir)); err != nil {
+		if err := os.Chdir(c.Dir.String()); err != nil {
 			return err
 		}
 	}
@@ -68,10 +70,16 @@ func (c *MakeCmd) Execute(args []string) error {
 	mkConf := &makex.Default
 	mk := mkConf.NewMaker(mf, goals...)
 
+	if c.Quiet {
+		mk.RuleOutput = func(r makex.Rule) (out io.WriteCloser, err io.WriteCloser, logger *log.Logger) {
+			return nopWriteCloser{}, nopWriteCloser{},
+				log.New(nopWriteCloser{}, "", 0)
+		}
+	}
+
 	if c.DryRun {
 		return mk.DryRun(os.Stdout)
 	}
-
 	return mk.Run()
 }
 
