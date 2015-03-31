@@ -105,7 +105,7 @@ func setActiveContext(repoPath string) error {
 	}
 	done := make(chan maybeContext)
 	go func() {
-		context, err := prepareCommandContext(repoPath)
+		context, err := prepareCommandContext(repoPath, false)
 		done <- maybeContext{context, err}
 	}()
 OuterLoop:
