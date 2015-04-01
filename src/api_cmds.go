@@ -103,11 +103,11 @@ func init() {
 	}
 
 	/* START APIRepoCmdDoc OMIT
-	This command prints the repo info to stdout.
+	This command prints the repository info to stdout.
 	END APIRepoCmdDoc OMIT */
 	_, err = c.AddCommand("repo",
 		"list repo info",
-		"List the repo info for the repo srclib is operating on",
+		"List the repository info for the repository srclib is operating on.",
 		&apiRepoCmd,
 	)
 	if err != nil {
@@ -431,7 +431,7 @@ as the JSON representation of the following struct.
 
 The Def and Example structs are defined as follows in the Sourcegraph API.
 
-[[.code "src/api_cmds.go" "APIDescribeCmdOutputQuickHack"]]
+[[.code "src/api_cmds.go" "APIDescribeCmdOutputDocHack"]]
 
 [[.code "https://raw.githubusercontent.com/sourcegraph/go-sourcegraph/6937daba84bf2d0f919191fd74e5193171b4f5d5/sourcegraph/defs.go" 105 113]]
 
@@ -442,13 +442,13 @@ The Def and Example structs are defined as follows in the Sourcegraph API.
 [[.code "graph/ref.pb.go" "Ref"]]
 
 END APIDescribeCmdOutput OMIT */
-// START APIDescribeCmdOutputQuickHack OMIT
+// START APIDescribeCmdOutputDocHack OMIT
 type apiDescribeCmdOutput struct {
 	Def      *sourcegraph.Def
 	Examples []*sourcegraph.Example
 }
 
-// END APIDescribeCmdOutputQuickHack OMIT
+// END APIDescribeCmdOutputDocHack OMIT
 
 func (c *APIDescribeCmd) Execute(args []string) error {
 	context, err := prepareCommandContext(c.File, false)
@@ -739,19 +739,19 @@ func (c *APIUnitsCmd) Execute(args []string) error {
 
 /* START APISearchCmdOutput OMIT
 
-This command prints an array of def name and defkey pairs to stdout.
+This command returns an array of def name and DefKey pairs.
 
-[[.code "src/api_cmds.go" "APISearchCmdOutputQuickHack"]]
+[[.code "src/api_cmds.go" "APISearchCmdOutputDocHack"]]
 
 END APISearchCmdOutput */
 
-// START APISearchCmdOutputQuickHack OMIT
+// START APISearchCmdOutputDocHack OMIT
 type apiSearchCmdOutput struct {
 	Name string
 	Key  graph.DefKey
 }
 
-// END APISearchCmdOutputQuickHack OMIT
+// END APISearchCmdOutputDocHack OMIT
 
 func (c *APISearchCmd) Execute(args []string) error {
 	context, err := prepareCommandContext(c.Dir.String(), true)
@@ -787,12 +787,9 @@ func (c *APISearchCmd) Execute(args []string) error {
 
 /* START APIRepoCmdOutput OMIT
 
-This command prints the repo info for srclib's current context to
-stdout.
-
 [[.code "src/repo_config.go" "Repo"]]
 
-END APIRepoCmdOutput */
+END APIRepoCmdOutput OMIT */
 func (c *APIRepoCmd) Execute(args []string) error {
 	context, err := prepareCommandContext(c.Args.File, true)
 	if err != nil {
