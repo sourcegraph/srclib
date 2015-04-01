@@ -206,11 +206,13 @@ func prepareCommandContext(file string, skipBuild bool) (commandContext, error) 
 	c.buildStore = buildStore
 	c.commitFS = buildStore.Commit(repo.CommitID)
 
-	if err := ensureBuild(buildStore, repo); err != nil {
-		if err := buildstore.RemoveAllDataForCommit(buildStore, repo.CommitID); err != nil {
-			log.Println(err)
+	if !skipBuild {
+		if err := ensureBuild(buildStore, repo); err != nil {
+			if err := buildstore.RemoveAllDataForCommit(buildStore, repo.CommitID); err != nil {
+				log.Println(err)
+			}
+			return commandContext{}, err
 		}
-		return commandContext{}, err
 	}
 	return c, nil
 }
