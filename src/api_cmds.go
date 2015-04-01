@@ -113,6 +113,18 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	/* START APIAnalyzeCmdDoc OMIT
+	This command analyzes a repository and prints the status info.
+	END APIAnalyzeCmdDoc OMIT */
+	_, err = c.AddCommand("analyze",
+		"analyze a repo",
+		"Analyze a repository.",
+		&apiAnalyzeCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 type APICmd struct{}
@@ -158,12 +170,19 @@ type APIRepoCmd struct {
 	} `positional-args:"yes"`
 }
 
+type APIAnalyzeCmd struct {
+	Args struct {
+		File string `name:"FILE" description:"(optional) analyze project that file is in"`
+	} `positional-args:"yes"`
+}
+
 var apiDescribeCmd APIDescribeCmd
 var apiListCmd APIListCmd
 var apiDepsCmd APIDepsCmd
 var apiUnitsCmd APIUnitsCmd
 var apiSearchCmd APISearchCmd
 var apiRepoCmd APIRepoCmd
+var apiAnalyzeCmd APIAnalyzeCmd
 
 // commandContext represents the context of the "src" command.
 type commandContext struct {
@@ -799,6 +818,35 @@ func (c *APIRepoCmd) Execute(args []string) error {
 	if err != nil {
 		return err
 	}
+	fmt.Printf("%s\n", b)
+	return nil
+}
+
+/* START APIAnalyzeCmdOutput OMIT
+
+[[.code "src/api_cmds.go" "APIAnalyzeCmdOutputDocHack"]]
+
+END APIAnalyzeCmdOutput OMIT */
+
+// START APIAnalyzeCmdOutputDocHack OMIT
+type apiAnalyzeCmdOutput struct {
+	// Status is either "up-to-date" or "failure"
+	Status string
+}
+
+// END APIAnalyzeCmdOutputDocHack OMIT
+
+func (c *APIAnalyzeCmd) Execute(args []string) error {
+	_, err := prepareCommandContext(c.Args.File, false)
+	out := apiAnalyzeCmdOutput{}
+	if err != nil {
+		out.Status = "failure"
+		b, _ := json.Marshal(out)
+		fmt.Printf("%s\n", b)
+		return err
+	}
+	out.Status = "up-to-date"
+	b, _ := json.Marshal(out)
 	fmt.Printf("%s\n", b)
 	return nil
 }
