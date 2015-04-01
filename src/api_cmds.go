@@ -101,6 +101,18 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	/* START APIRepoCmdDoc OMIT
+	This command prints the repo info to stdout.
+	END APIRepoCmdDoc OMIT */
+	_, err = c.AddCommand("repo",
+		"list repo info",
+		"List the repo info for the repo srclib is operating on",
+		&apiRepoCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 type APICmd struct{}
@@ -140,26 +152,40 @@ type APISearchCmd struct {
 	AllTerms bool      `long:"all-terms" description:"return all valid search terms and exit"`
 }
 
+type APIRepoCmd struct {
+	Args struct {
+		File string `name:"FILE" description:"(optional) get repo for file"`
+	} `positional-args:"yes"`
+}
+
 var apiDescribeCmd APIDescribeCmd
 var apiListCmd APIListCmd
 var apiDepsCmd APIDepsCmd
 var apiUnitsCmd APIUnitsCmd
 var apiSearchCmd APISearchCmd
+var apiRepoCmd APIRepoCmd
 
+// commandContext represents the context of the "src" command.
 type commandContext struct {
-	repo         *Repo
+	repo *Repo
+	// relativeFile is the file path of the file passed into
+	// prepareCommandContext relative to the root directory. As
+	// computed by prepareCommandContext, it is never empty.
 	relativeFile string
 	buildStore   buildstore.RepoBuildStore
 	commitFS     rwvfs.WalkableFileSystem
 }
 
 // prepareCommandContext prepare the context for the the "src"
-// command. If file is "." or ends in a "/", then it is a directory.
-// It is safe for "file" to have multiple trailing slashes.
-// prepareCommandContext creates commandContext, changes the process'
-// working directory to file's directory and ensures that a build has
-// been made. It is meant to be used by user-facing commands. When
-// skipBuild is true, the repo is not built.
+// command. prepareCommandContext creates commandContext, changes the
+// process' working directory to file's directory and ensures that a
+// build has been made. It is meant to be used by user-facing
+// commands.
+//
+// If file is "." or ends in a "/", then it is a directory.
+// If file is empty, then it is assumed to be ".". It is safe for
+// "file" to have multiple trailing slashes.
+// When skipBuild is true, the repo is not built.
 func prepareCommandContext(file string, skipBuild bool) (commandContext, error) {
 	var (
 		err   error
@@ -167,7 +193,7 @@ func prepareCommandContext(file string, skipBuild bool) (commandContext, error) 
 		isDir bool
 	)
 	if file == "" {
-		return commandContext{}, errors.New("prepareCommandContext: file cannot be empty")
+		file = "."
 	}
 	if file == "." || file[len(file)-1] == os.PathSeparator {
 		isDir = true
@@ -757,4 +783,25 @@ func (c *APISearchCmd) Execute(args []string) error {
 		return nil
 	}
 	return errors.New("Interactive fuzzy-completion is unimplemented.")
+}
+
+/* START APIRepoCmdOutput OMIT
+
+This command prints the repo info for srclib's current context to
+stdout.
+
+[[.code "src/repo_config.go" "Repo"]]
+
+END APIRepoCmdOutput */
+func (c *APIRepoCmd) Execute(args []string) error {
+	context, err := prepareCommandContext(c.Args.File, true)
+	if err != nil {
+		return err
+	}
+	b, err := json.Marshal(context.repo)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s\n", b)
+	return nil
 }
