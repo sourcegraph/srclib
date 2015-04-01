@@ -625,9 +625,6 @@ This command returns a dep.Resolution slice.
 END APIDepsCmdOutput OMIT */
 
 func (c *APIDepsCmd) Execute(args []string) error {
-	// HACK(samertm): append a backslash to Dir to assure that it's parsed
-	// as a directory, but Directory should have an unmarshalling
-	// method that does this.
 	context, err := prepareCommandContext(c.Args.Dir.String(), false)
 	if err != nil {
 		return err
