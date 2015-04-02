@@ -278,8 +278,9 @@ func (c *ToolchainGetCmd) Execute(args []string) error {
 }
 
 type ToolchainAddCmd struct {
-	Dir  string `long:"dir" description:"directory containing toolchain to add" value-name:"DIR"`
-	Args struct {
+	Dir   string `long:"dir" description:"directory containing toolchain to add" value-name:"DIR"`
+	Force bool   `short:"f" long:"force" description:"(dangerous) force add, overwrite existing toolchain"`
+	Args  struct {
 		ToolchainPath string `name:"TOOLCHAIN" default:"." description:"toolchain path to use for toolchain directory"`
 	} `positional-args:"yes" required:"yes"`
 }
@@ -287,7 +288,7 @@ type ToolchainAddCmd struct {
 var toolchainAddCmd ToolchainAddCmd
 
 func (c *ToolchainAddCmd) Execute(args []string) error {
-	return toolchain.Add(c.Dir, c.Args.ToolchainPath)
+	return toolchain.Add(c.Dir, c.Args.ToolchainPath, &toolchain.AddOpt{Force: c.Force})
 }
 
 type ToolchainTempDirCmd struct {
