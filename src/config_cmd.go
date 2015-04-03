@@ -49,7 +49,7 @@ The default values for --repo and --subdir are determined by detecting the curre
 // getInitialConfig gets the initial config (i.e., the config that comes solely
 // from the Srcfile, if any, and the external user config, before running the
 // scanners).
-func getInitialConfig(opt config.Options, dir Directory) (*config.Repository, error) {
+func getInitialConfig(opt config.Options, dir string) (*config.Repository, error) {
 	if dir != "" && dir != "." {
 		log.Fatalf("Currently, only configuring the current directory tree is supported (i.e., no DIR argument). You provided %q.\n\nTo configure that directory, `cd %s` in your shell and rerun this command.", dir, dir)
 	}
@@ -107,11 +107,7 @@ func (c *ConfigCmd) Execute(args []string) error {
 		c.w = nopWriteCloser{}
 	}
 
-	if c.Args.Dir == "" {
-		c.Args.Dir = "."
-	}
-
-	cfg, err := getInitialConfig(c.Options, c.Args.Dir)
+	cfg, err := getInitialConfig(c.Options, c.Args.Dir.String())
 	if err != nil {
 		return err
 	}

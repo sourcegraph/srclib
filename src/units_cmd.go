@@ -125,11 +125,7 @@ type UnitsCmd struct {
 var unitsCmd UnitsCmd
 
 func (c *UnitsCmd) Execute(args []string) error {
-	if c.Args.Dir == "" {
-		c.Args.Dir = "."
-	}
-
-	cfg, err := getInitialConfig(c.Options, c.Args.Dir)
+	cfg, err := getInitialConfig(c.Options, c.Args.Dir.String())
 	if err != nil {
 		return err
 	}
