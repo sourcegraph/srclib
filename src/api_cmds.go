@@ -632,7 +632,10 @@ func (c *APIDepsCmd) Execute(args []string) error {
 				return fmt.Errorf("%s: %s", depfile, err)
 			}
 			for _, d := range deps {
-				key := d.KeyId()
+				key, err := d.RawKeyId()
+				if err != nil {
+					return err
+				}
 				if _, ok := depCache[key]; !ok {
 					depCache[key] = struct{}{}
 					depSlice = append(depSlice, d)
