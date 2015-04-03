@@ -10,7 +10,8 @@ import (
 
 // Directory is flags.Completer that provides directory name
 // completion. Do not convert Directory to a string type manually,
-// always use Directory.String().
+// always use Directory.String(). Only use Directory for
+// go-flags.Command fields, not for internal functions.
 //
 // TODO(sqs): this is annoying. it only completes the dir name and doesn't let
 // you keep typing the arg.
