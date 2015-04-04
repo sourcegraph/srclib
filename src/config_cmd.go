@@ -50,21 +50,14 @@ The default values for --repo and --subdir are determined by detecting the curre
 // from the Srcfile, if any, and the external user config, before running the
 // scanners).
 func getInitialConfig(opt config.Options, dir string) (*config.Repository, error) {
-	if dir != "" && dir != "." {
-		log.Fatalf("Currently, only configuring the current directory tree is supported (i.e., no DIR argument). You provided %q.\n\nTo configure that directory, `cd %s` in your shell and rerun this command.", dir, dir)
-	}
-
-	if opt.Subdir != "." {
-		// TODO(sqs): if we have overridden a repo, then we specify the
-		// overridden config from the root dir of the repo. so, if you try to
-		// configure from a subdir in an overridden repo, the config will be
-		// wrong. disable this for now.
-		log.Fatalf("Configuration is currently only supported at the root (top-level directory) of a repository, not in a subdirectory (%q).", opt.Subdir)
-	}
-
-	cfg, err := config.ReadRepository(string(dir), opt.Repo)
+	r, err := OpenRepo(dir)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read repository at %s: %s", dir, err)
+		return nil, err
+	}
+
+	cfg, err := config.ReadRepository(r.RootDir, opt.Repo)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read repository at %s: %s", r.RootDir, err)
 	}
 
 	if cfg.Scanners == nil {
