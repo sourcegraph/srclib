@@ -6,6 +6,10 @@ import (
 )
 
 func TestMarshalArgs(t *testing.T) {
+	type fooGroup struct {
+		Bar string `long:"bar"`
+	}
+
 	tests := []struct {
 		group    interface{}
 		wantArgs []string
@@ -58,6 +62,18 @@ func TestMarshalArgs(t *testing.T) {
 				Foo []string `long:"foo"`
 			}{Foo: []string{}},
 			wantArgs: nil,
+		},
+		{
+			group: &struct {
+				Foo fooGroup `group:"foo"`
+			}{Foo: fooGroup{Bar: "x"}},
+			wantArgs: []string{"--bar", "x"},
+		},
+		{
+			group: &struct {
+				Foo fooGroup `group:"foo" namespace:"foo"`
+			}{Foo: fooGroup{Bar: "x"}},
+			wantArgs: []string{"--foo.bar", "x"},
 		},
 	}
 	for _, test := range tests {
