@@ -15,7 +15,10 @@ func MarshalArgs(v interface{}) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	return marshalArgsInGroup(group, "")
+}
 
+func marshalArgsInGroup(group *flags.Group, prefix string) ([]string, error) {
 	var args []string
 	for _, opt := range group.Options() {
 		flagStr := opt.String()
@@ -43,6 +46,15 @@ func MarshalArgs(v interface{}) ([]string, error) {
 		} else {
 			args = append(args, flagStr, fmt.Sprintf("%v", opt.Value()))
 		}
+	}
+	for _, g := range group.Groups() {
+		// TODO(sqs): assumes that the NamespaceDelimiter is "."
+		const namespaceDelimiter = "."
+		groupArgs, err := marshalArgsInGroup(g, g.Namespace+namespaceDelimiter)
+		if err != nil {
+			return nil, err
+		}
+		args = append(args, groupArgs...)
 	}
 	return args, nil
 }
