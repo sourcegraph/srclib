@@ -37,7 +37,7 @@ func (c *RemoteImportBuildCmd) Execute(args []string) error {
 		log.Printf("Creating a new import-only build for repo %q commit %q", remoteCmd.RepoURI, c.CommitID)
 	}
 
-	repo, _, err := cl.Repos.GetOrCreate(sourcegraph.RepoSpec{URI: remoteCmd.RepoURI}, nil)
+	repo, _, err := cl.Repos.Get(sourcegraph.RepoSpec{URI: remoteCmd.RepoURI}, nil)
 	if err != nil {
 		return err
 	}
