@@ -2,9 +2,11 @@ package src
 
 import (
 	"log"
+	"path"
 
 	"sourcegraph.com/sourcegraph/go-flags"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
+	"sourcegraph.com/sourcegraph/srclib/graph"
 )
 
 func initRemoteRepoCmds(remoteGroup *flags.Command) {
@@ -47,11 +49,16 @@ func (c *RemoteAddCmd) Execute(args []string) error {
 		}
 	}
 
-	newRepo := sourcegraph.NewRepoSpec{
-		Type:        c.VCSType,
-		CloneURLStr: c.CloneURL,
+	uri, err := graph.TryMakeURI(c.CloneURL)
+	if err != nil {
+		return err
 	}
-	rrepo, _, err := cl.Repos.Create(newRepo)
+	rrepo, _, err := cl.Repos.Create(&sourcegraph.Repo{
+		URI:          uri,
+		Name:         path.Base(uri),
+		VCS:          c.VCSType,
+		HTTPCloneURL: c.CloneURL,
+	})
 	if err != nil {
 		return err
 	}
