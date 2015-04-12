@@ -6,6 +6,9 @@ This page is to help you get started with srclib. In order to work with srclib w
 * getting language toolchains
 * editor plugin (optional)
 
+<br>
+
+
 ## Dependencies
 
 Srclib depends on the following components:
@@ -17,7 +20,6 @@ Srclib depends on the following components:
 ### Go 1.4+
 
 First, you need to [install Go](http://golang.org/doc/install) (version 1.4 or newer).
-
 
 
 ### Mercurial
@@ -33,7 +35,7 @@ Centos, Fedora or Red Hat Linux:
 sudo yum update && sudo yum install mercurial
 ```
 
-
+<br>
 
 ## Srclib installation
 
@@ -57,6 +59,8 @@ Download and install `src`:
 ```
 go get -u -v sourcegraph.com/sourcegraph/srclib/cmd/src
 ```
+
+<br>
 
 ##Language Toolchains
 
@@ -90,6 +94,8 @@ sourcegraph.com/sourcegraph/srclib-go     program, docker
 
 ```
 
+<br>
+
 ##Testing Srclib
 
 In order to test srclib we can use  it to analyze  the already fetched source code for the Go toolchain `srclib-go`.
@@ -107,8 +113,7 @@ src config && src make
 
 You should have a .srclib-cache directory inside srclib-go that has all of the build data for the repository.
 
-
-
+<br>
 
 ## Next steps
 
@@ -130,3 +135,5 @@ If you want to build or improve srclib editor plugins, read
 If you want to help build the language analysis infrastructure, make
 sure you're familiar with the [API](api/overview.md). Then, read the
 [Creating a Toolchain](toolchains/overview.md) section.
+
+<br>
