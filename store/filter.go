@@ -34,6 +34,16 @@ func (fs DefFilters) SelectDef(def *graph.Def) bool {
 	return true
 }
 
+func (fs DefFilters) SelectDefs(defs ...*graph.Def) []*graph.Def {
+	var sel []*graph.Def
+	for _, def := range defs {
+		if fs.SelectDef(def) {
+			sel = append(sel, def)
+		}
+	}
+	return sel
+}
+
 // A DefFilterFunc is a DefFilter that selects only those defs for
 // which the func returns true.
 type DefFilterFunc func(*graph.Def) bool
