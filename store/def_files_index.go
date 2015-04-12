@@ -105,7 +105,7 @@ func (x *defFilesIndex) Build(defs []*graph.Def, ofs byteOffsets) error {
 	vlog.Printf("defFilesIndex: building index...")
 	f2ofs := make(filesToDefOfs, len(defs)/50)
 	for i, def := range defs {
-		if len(f2ofs[def.File]) < x.perFile && defFilters(x.filters).SelectDef(def) {
+		if len(f2ofs[def.File]) < x.perFile && DefFilters(x.filters).SelectDef(def) {
 			f2ofs.add(def.File, ofs[i], x.perFile)
 		}
 	}

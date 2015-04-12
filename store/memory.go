@@ -226,7 +226,7 @@ func (s *memoryUnitStore) Defs(f ...DefFilter) ([]*graph.Def, error) {
 
 	var defs []*graph.Def
 	for _, def := range s.data.Defs {
-		if defFilters(f).SelectDef(def) {
+		if DefFilters(f).SelectDef(def) {
 			defs = append(defs, def)
 		}
 	}

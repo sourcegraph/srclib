@@ -20,9 +20,12 @@ type DefFilter interface {
 	SelectDef(*graph.Def) bool
 }
 
-type defFilters []DefFilter
+// DefFilters wraps a list of individual def filters and has a
+// SelectDef method that returns true iff all individual def filters
+// select the def.
+type DefFilters []DefFilter
 
-func (fs defFilters) SelectDef(def *graph.Def) bool {
+func (fs DefFilters) SelectDef(def *graph.Def) bool {
 	for _, f := range fs {
 		if !f.SelectDef(def) {
 			return false
