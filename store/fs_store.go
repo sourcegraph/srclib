@@ -477,7 +477,7 @@ func (s *fsUnitStore) Defs(fs ...DefFilter) (defs []*graph.Def, err error) {
 		} else if err != nil {
 			return nil, err
 		}
-		if defFilters(fs).SelectDef(def) {
+		if DefFilters(fs).SelectDef(def) {
 			defs = append(defs, def)
 		}
 	}
@@ -506,7 +506,7 @@ func (s *fsUnitStore) defsAtOffsets(ofs byteOffsets, fs []DefFilter) (defs []*gr
 		}
 	}()
 
-	ffs := defFilters(fs)
+	ffs := DefFilters(fs)
 
 	p := parFetches(s.fs, fs)
 	if p == 0 {
