@@ -6,6 +6,8 @@ import (
 	"os"
 	"time"
 
+	"golang.org/x/net/context"
+
 	"sourcegraph.com/sourcegraph/go-flags"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 )
@@ -37,7 +39,7 @@ func (c *RemoteImportBuildCmd) Execute(args []string) error {
 		log.Printf("Creating a new import-only build for repo %q commit %q", remoteCmd.RepoURI, c.CommitID)
 	}
 
-	repo, _, err := cl.Repos.Get(sourcegraph.RepoSpec{URI: remoteCmd.RepoURI}, nil)
+	repo, err := cl.Repos.Get(context.TODO(), &sourcegraph.RepoSpec{URI: remoteCmd.RepoURI})
 	if err != nil {
 		return err
 	}
@@ -47,7 +49,7 @@ func (c *RemoteImportBuildCmd) Execute(args []string) error {
 
 	// Resolve to the full commit ID, and ensure that the remote
 	// server knows about the commit.
-	commit, err := getCommitWithRefreshAndRetry(cl, repoRevSpec)
+	commit, err := getCommit(cl, repoRevSpec)
 	if err != nil {
 		return err
 	}
