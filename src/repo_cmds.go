@@ -62,9 +62,6 @@ func (c *RepoCmd) Execute(args []string) error {
 
 func printRemoteRepo(repo *sourcegraph.Repo) {
 	fmt.Printf("URI:\t\t%s\n", repo.URI)
-	if repo.URIAlias != "" {
-		fmt.Printf("URI alias:\t%s\n", repo.URIAlias)
-	}
 
 	if GlobalOpt.Verbose {
 		if repo.Description != "" {

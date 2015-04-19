@@ -49,7 +49,7 @@ func (c *BuildsCmd) Execute(args []string) error {
 		Failed:      c.Failed,
 		Sort:        c.Sort,
 		Direction:   c.Direction,
-		ListOptions: sourcegraph.ListOptions{PerPage: c.N},
+		ListOptions: sourcegraph.ListOptions{PerPage: int32(c.N)},
 	}
 	builds, _, err := cl.Builds.List(opt)
 	if err != nil {

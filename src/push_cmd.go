@@ -32,7 +32,7 @@ func (c *PushCmd) Execute(args []string) error {
 	repoSpec := sourcegraph.RepoSpec{URI: rrepo.URI}
 	repoRevSpec := sourcegraph.RepoRevSpec{RepoSpec: repoSpec, Rev: localRepo.CommitID}
 
-	if _, err := getCommitWithRefreshAndRetry(cl, repoRevSpec); err != nil {
+	if _, err := getCommit(cl, repoRevSpec); err != nil {
 		return err
 	}
 
