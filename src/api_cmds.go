@@ -11,6 +11,8 @@ import (
 	"strings"
 	"sync"
 
+	context2 "golang.org/x/net/context"
+
 	"github.com/kr/fs"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"sourcegraph.com/sourcegraph/rwvfs"
@@ -559,8 +561,7 @@ OuterLoop:
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
-				var err error
-				resp.Def, _, err = apiclient.Defs.Get(spec, &sourcegraph.DefGetOptions{Doc: true})
+				resp.Def, err = apiclient.Defs.Get(context2.TODO(), &sourcegraph.DefsGetOp{Def: spec, Opt: &sourcegraph.DefGetOptions{Doc: true}})
 				if err != nil && GlobalOpt.Verbose {
 					log.Printf("Couldn't fetch definition %v: %s.", spec, err)
 				}
@@ -571,13 +572,17 @@ OuterLoop:
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
-				var err error
-				resp.Examples, _, err = apiclient.Defs.ListExamples(spec, &sourcegraph.DefListExamplesOptions{
+				examples, err := apiclient.Defs.ListExamples(context2.TODO(), &sourcegraph.DefsListExamplesOp{Def: spec, Opt: &sourcegraph.DefListExamplesOptions{
 					Formatted:   true,
 					ListOptions: sourcegraph.ListOptions{PerPage: 4},
-				})
+				}})
+
 				if err != nil && GlobalOpt.Verbose {
 					log.Printf("Couldn't fetch examples for %v: %s.", spec, err)
+				}
+
+				if examples != nil {
+					resp.Examples = append(resp.Examples, examples.Examples...)
 				}
 			}()
 		}

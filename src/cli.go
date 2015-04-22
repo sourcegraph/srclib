@@ -10,6 +10,8 @@ import (
 
 	"github.com/sourcegraph/httpcache"
 	"github.com/sourcegraph/httpcache/diskcache"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"sourcegraph.com/sourcegraph/go-flags"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/auth"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
@@ -86,8 +88,13 @@ func newAPIClient(ua *userEndpointAuth, cache bool) *sourcegraph.Client {
 		transport = &tracingTransport{Writer: os.Stderr, Transport: transport}
 	}
 
-	c := sourcegraph.NewClient(&http.Client{Transport: transport})
-	c.BaseURL = endpointURL
+	//c := sourcegraph.NewClient(&http.Client{Transport: transport})
+	//c.BaseURL = endpointURL
+	conn, err := grpc.Dial("localhost:3100", grpc.WithTransportCredentials(credentials.NewClientTLSFromCert(nil, "")))
+	if err != nil {
+		panic(err)
+	}
+	c := sourcegraph.NewGRPCClient(conn)
 	return c
 }
 

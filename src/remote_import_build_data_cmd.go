@@ -1,3 +1,5 @@
+// +build TODO
+
 package src
 
 import (
@@ -55,13 +57,14 @@ func (c *RemoteImportBuildCmd) Execute(args []string) error {
 	}
 	repoRevSpec.CommitID = string(commit.ID)
 
-	build, _, err := cl.Builds.Create(repoRevSpec, &sourcegraph.BuildCreateOptions{
+	build, _, err := cl.Builds.Create(context.TODO(), &sourcegraph.BuildsCreateOp{RepoRev: repoRevSpec, Opt: &sourcegraph.BuildCreateOptions{
 		BuildConfig: sourcegraph.BuildConfig{
 			Import: true,
 			Queue:  false,
 		},
 		Force: true,
-	})
+	}})
+
 	if err != nil {
 		return err
 	}

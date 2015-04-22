@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"golang.org/x/net/context"
+
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 )
 
@@ -97,7 +99,7 @@ func (c *LoginCmd) Execute(args []string) error {
 
 	if !c.NoVerify {
 		authedAPIClient := newAPIClient(&ua, true)
-		u, _, err := authedAPIClient.Users.Get(sourcegraph.UserSpec{UID: c.UID}, nil)
+		u, err := authedAPIClient.Users.Get(context.TODO(), &sourcegraph.UserSpec{UID: c.UID})
 		if err != nil {
 			log.Fatalf("Error verifying auth credentials with endpoint %s: %s.", endpointURL, err)
 		}
@@ -132,7 +134,7 @@ func (c *WhoamiCmd) Execute(args []string) error {
 		log.Printf("UID %d on %s (not verified remotely)", ua.UID, endpointURL)
 	} else {
 		cl := NewAPIClientWithAuthIfPresent()
-		u, _, err := cl.Users.Get(sourcegraph.UserSpec{UID: ua.UID}, nil)
+		u, err := cl.Users.Get(context.TODO(), &sourcegraph.UserSpec{UID: ua.UID})
 		if err != nil {
 			log.Fatalf("Error verifying auth credentials with endpoint %s: %s.", endpointURL, err)
 		}
