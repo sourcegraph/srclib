@@ -99,7 +99,7 @@ func (c *LoginCmd) Execute(args []string) error {
 
 	if !c.NoVerify {
 		authedAPIClient := newAPIClient(&ua, true)
-		u, err := authedAPIClient.Users.Get(context.TODO(), &sourcegraph.UserSpec{UID: c.UID})
+		u, err := authedAPIClient.Users.Get(context.TODO(), &sourcegraph.UserSpec{UID: int32(c.UID)})
 		if err != nil {
 			log.Fatalf("Error verifying auth credentials with endpoint %s: %s.", endpointURL, err)
 		}
@@ -134,7 +134,7 @@ func (c *WhoamiCmd) Execute(args []string) error {
 		log.Printf("UID %d on %s (not verified remotely)", ua.UID, endpointURL)
 	} else {
 		cl := NewAPIClientWithAuthIfPresent()
-		u, err := cl.Users.Get(context.TODO(), &sourcegraph.UserSpec{UID: ua.UID})
+		u, err := cl.Users.Get(context.TODO(), &sourcegraph.UserSpec{UID: int32(ua.UID)})
 		if err != nil {
 			log.Fatalf("Error verifying auth credentials with endpoint %s: %s.", endpointURL, err)
 		}
