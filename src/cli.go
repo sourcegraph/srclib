@@ -13,7 +13,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"sourcegraph.com/sourcegraph/go-flags"
-	"sourcegraph.com/sourcegraph/go-sourcegraph/auth"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 )
 
@@ -68,7 +67,7 @@ func newAPIClient(ua *userEndpointAuth, cache bool) *sourcegraph.Client {
 
 	if tickets := getPermGrantTickets(); len(tickets) > 0 {
 		log.Println("# Using perm grant ticket from SRCLIB_TICKET.")
-		transport = &auth.TicketAuthedTransport{SignedTicketStrings: tickets, Transport: transport}
+		transport = &sourcegraph.TicketAuth{SignedTicketStrings: tickets, Transport: transport}
 	}
 
 	if ua == nil {
@@ -81,16 +80,21 @@ func newAPIClient(ua *userEndpointAuth, cache bool) *sourcegraph.Client {
 		if GlobalOpt.Verbose {
 			log.Printf("# Using authenticated API client for endpoint %s (UID %d).", endpointURL, ua.UID)
 		}
-		transport = &auth.BasicAuthTransport{Username: strconv.Itoa(ua.UID), Password: ua.Key, Transport: transport}
-	}
-
-	if v, _ := strconv.ParseBool(os.Getenv("SRC_TRACE")); v {
-		transport = &tracingTransport{Writer: os.Stderr, Transport: transport}
+		transport = &sourcegraph.KeyAuth{UID: ua.UID, Key: ua.Key, Transport: transport}
 	}
 
 	//c := sourcegraph.NewClient(&http.Client{Transport: transport})
 	//c.BaseURL = endpointURL
-	conn, err := grpc.Dial("localhost:3100", grpc.WithTransportCredentials(credentials.NewClientTLSFromCert(nil, "")), grpc.WithCodec(sourcegraph.GRPCCodec))
+
+	opts := []grpc.DialOption{
+		grpc.WithTransportCredentials(credentials.NewClientTLSFromCert(nil, "")),
+		grpc.WithCodec(sourcegraph.GRPCCodec),
+	}
+	if creds, ok := transport.(credentials.Credentials); ok {
+		opts = append(opts, grpc.WithPerRPCCredentials(creds))
+	}
+
+	conn, err := grpc.Dial("localhost:3100", opts...)
 	if err != nil {
 		panic(err)
 	}
