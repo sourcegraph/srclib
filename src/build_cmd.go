@@ -40,7 +40,7 @@ func (c *BuildCmd) Execute(args []string) error {
 		BuildConfig: sourcegraph.BuildConfig{
 			Import:   true,
 			Queue:    true,
-			Priority: c.Priority,
+			Priority: int32(c.Priority),
 		},
 		Force: true,
 	}})
