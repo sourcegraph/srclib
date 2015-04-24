@@ -59,6 +59,11 @@ func newAPIClient(ua *userEndpointAuth, cache bool) *sourcegraph.Client {
 	endpointURL := getEndpointURL()
 
 	var transport http.RoundTripper
+	opts := []grpc.DialOption{
+		grpc.WithTransportCredentials(credentials.NewClientTLSFromCert(nil, "")),
+		grpc.WithCodec(sourcegraph.GRPCCodec),
+	}
+
 	if cache {
 		transport = http.RoundTripper(httpcache.NewTransport(diskcache.New("/tmp/srclib-cache")))
 	} else {
@@ -67,7 +72,9 @@ func newAPIClient(ua *userEndpointAuth, cache bool) *sourcegraph.Client {
 
 	if tickets := getPermGrantTickets(); len(tickets) > 0 {
 		log.Println("# Using perm grant ticket from SRCLIB_TICKET.")
-		transport = &sourcegraph.TicketAuth{SignedTicketStrings: tickets, Transport: transport}
+		cred := &sourcegraph.TicketAuth{SignedTicketStrings: tickets, Transport: transport}
+		opts = append(opts, grpc.WithPerRPCCredentials(cred))
+		transport = cred
 	}
 
 	if ua == nil {
@@ -80,19 +87,13 @@ func newAPIClient(ua *userEndpointAuth, cache bool) *sourcegraph.Client {
 		if GlobalOpt.Verbose {
 			log.Printf("# Using authenticated API client for endpoint %s (UID %d).", endpointURL, ua.UID)
 		}
-		transport = &sourcegraph.KeyAuth{UID: ua.UID, Key: ua.Key, Transport: transport}
+		cred := &sourcegraph.KeyAuth{UID: ua.UID, Key: ua.Key, Transport: transport}
+		opts = append(opts, grpc.WithPerRPCCredentials(cred))
+		transport = cred
 	}
 
 	//c := sourcegraph.NewClient(&http.Client{Transport: transport})
 	//c.BaseURL = endpointURL
-
-	opts := []grpc.DialOption{
-		grpc.WithTransportCredentials(credentials.NewClientTLSFromCert(nil, "")),
-		grpc.WithCodec(sourcegraph.GRPCCodec),
-	}
-	if creds, ok := transport.(credentials.Credentials); ok {
-		opts = append(opts, grpc.WithPerRPCCredentials(creds))
-	}
 
 	conn, err := grpc.Dial("localhost:3100", opts...)
 	if err != nil {
