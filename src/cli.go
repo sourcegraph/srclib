@@ -60,8 +60,10 @@ func newAPIClient(ua *userEndpointAuth, cache bool) *sourcegraph.Client {
 
 	var transport http.RoundTripper
 	opts := []grpc.DialOption{
-		grpc.WithTransportCredentials(credentials.NewClientTLSFromCert(nil, "")),
 		grpc.WithCodec(sourcegraph.GRPCCodec),
+	}
+	if endpointURL.Scheme == "https" {
+		opts = append(opts, grpc.WithTransportCredentials(credentials.NewClientTLSFromCert(nil, "")))
 	}
 
 	if cache {
