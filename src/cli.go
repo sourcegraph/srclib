@@ -10,8 +10,9 @@ import (
 
 	"github.com/sourcegraph/httpcache"
 	"github.com/sourcegraph/httpcache/diskcache"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"sourcegraph.com/sourcegraph/go-flags"
-	"sourcegraph.com/sourcegraph/go-sourcegraph/auth"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 )
 
@@ -58,6 +59,13 @@ func newAPIClient(ua *userEndpointAuth, cache bool) *sourcegraph.Client {
 	endpointURL := getEndpointURL()
 
 	var transport http.RoundTripper
+	opts := []grpc.DialOption{
+		grpc.WithCodec(sourcegraph.GRPCCodec),
+	}
+	if endpointURL.Scheme == "https" {
+		opts = append(opts, grpc.WithTransportCredentials(credentials.NewClientTLSFromCert(nil, "")))
+	}
+
 	if cache {
 		transport = http.RoundTripper(httpcache.NewTransport(diskcache.New("/tmp/srclib-cache")))
 	} else {
@@ -66,7 +74,9 @@ func newAPIClient(ua *userEndpointAuth, cache bool) *sourcegraph.Client {
 
 	if tickets := getPermGrantTickets(); len(tickets) > 0 {
 		log.Println("# Using perm grant ticket from SRCLIB_TICKET.")
-		transport = &auth.TicketAuthedTransport{SignedTicketStrings: tickets, Transport: transport}
+		cred := &sourcegraph.TicketAuth{SignedTicketStrings: tickets, Transport: transport}
+		opts = append(opts, grpc.WithPerRPCCredentials(cred))
+		transport = cred
 	}
 
 	if ua == nil {
@@ -79,15 +89,19 @@ func newAPIClient(ua *userEndpointAuth, cache bool) *sourcegraph.Client {
 		if GlobalOpt.Verbose {
 			log.Printf("# Using authenticated API client for endpoint %s (UID %d).", endpointURL, ua.UID)
 		}
-		transport = &auth.BasicAuthTransport{Username: strconv.Itoa(ua.UID), Password: ua.Key, Transport: transport}
+		cred := &sourcegraph.KeyAuth{UID: ua.UID, Key: ua.Key, Transport: transport}
+		opts = append(opts, grpc.WithPerRPCCredentials(cred))
+		transport = cred
 	}
 
-	if v, _ := strconv.ParseBool(os.Getenv("SRC_TRACE")); v {
-		transport = &tracingTransport{Writer: os.Stderr, Transport: transport}
-	}
+	//c := sourcegraph.NewClient(&http.Client{Transport: transport})
+	//c.BaseURL = endpointURL
 
-	c := sourcegraph.NewClient(&http.Client{Transport: transport})
-	c.BaseURL = endpointURL
+	conn, err := grpc.Dial("localhost:3100", opts...)
+	if err != nil {
+		panic(err)
+	}
+	c := sourcegraph.NewGRPCClient(conn)
 	return c
 }
 

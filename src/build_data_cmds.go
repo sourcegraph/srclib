@@ -1,3 +1,5 @@
+// +build TODO
+
 package src
 
 import (
@@ -10,6 +12,7 @@ import (
 	"path/filepath"
 
 	"github.com/kr/fs"
+	"golang.org/x/net/context"
 	"golang.org/x/tools/godoc/vfs"
 
 	"code.google.com/p/rog-go/parallel"
@@ -145,7 +148,7 @@ func getRemoteBuildDataFS(repo, commitID string) (rwvfs.FileSystem, string, sour
 		return nil, "", sourcegraph.RepoRevSpec{}, err
 	}
 	cl := NewAPIClientWithAuthIfPresent()
-	rrepo, _, err := cl.Repos.Get(sourcegraph.RepoSpec{URI: repo}, nil)
+	rrepo, err := cl.Repos.Get(context.TODO(), &sourcegraph.RepoSpec{URI: repo})
 	if err != nil {
 		return nil, "", sourcegraph.RepoRevSpec{}, err
 	}
