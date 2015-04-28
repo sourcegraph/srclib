@@ -101,7 +101,7 @@ func newAPIClient(ua *userEndpointAuth, cache bool) *sourcegraph.Client {
 	if err != nil {
 		panic(err)
 	}
-	c := sourcegraph.NewGRPCClient(conn)
+	c := sourcegraph.NewClient(&http.Client{Transport: transport}, conn)
 	return c
 }
 
