@@ -94,14 +94,12 @@ func newAPIClient(ua *userEndpointAuth, cache bool) *sourcegraph.Client {
 		transport = cred
 	}
 
-	//c := sourcegraph.NewClient(&http.Client{Transport: transport})
-	//c.BaseURL = endpointURL
-
 	conn, err := grpc.Dial("localhost:3100", opts...)
 	if err != nil {
 		panic(err)
 	}
 	c := sourcegraph.NewClient(&http.Client{Transport: transport}, conn)
+	c.BaseURL = endpointURL
 	return c
 }
 
