@@ -1,9 +1,9 @@
-// +build TODO
-
 package src
 
 import (
 	"log"
+
+	"golang.org/x/net/context"
 
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 )
@@ -34,7 +34,7 @@ func (c *PushCmd) Execute(args []string) error {
 	repoSpec := sourcegraph.RepoSpec{URI: rrepo.URI}
 	repoRevSpec := sourcegraph.RepoRevSpec{RepoSpec: repoSpec, Rev: localRepo.CommitID}
 
-	if _, err := getCommit(cl, repoRevSpec); err != nil {
+	if _, err := cl.Repos.GetCommit(context.TODO(), &repoRevSpec); err != nil {
 		return err
 	}
 

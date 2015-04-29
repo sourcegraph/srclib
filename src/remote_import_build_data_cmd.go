@@ -1,5 +1,3 @@
-// +build TODO
-
 package src
 
 import (
@@ -12,6 +10,7 @@ import (
 
 	"sourcegraph.com/sourcegraph/go-flags"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
+	"sourcegraph.com/sqs/pbtypes"
 )
 
 func initRemoteImportBuildCmd(remoteGroup *flags.Command) {
@@ -51,13 +50,13 @@ func (c *RemoteImportBuildCmd) Execute(args []string) error {
 
 	// Resolve to the full commit ID, and ensure that the remote
 	// server knows about the commit.
-	commit, err := getCommit(cl, repoRevSpec)
+	commit, err := cl.Repos.GetCommit(context.TODO(), &repoRevSpec)
 	if err != nil {
 		return err
 	}
 	repoRevSpec.CommitID = string(commit.ID)
 
-	build, _, err := cl.Builds.Create(context.TODO(), &sourcegraph.BuildsCreateOp{RepoRev: repoRevSpec, Opt: &sourcegraph.BuildCreateOptions{
+	build, err := cl.Builds.Create(context.TODO(), &sourcegraph.BuildsCreateOp{RepoRev: repoRevSpec, Opt: &sourcegraph.BuildCreateOptions{
 		BuildConfig: sourcegraph.BuildConfig{
 			Import: true,
 			Queue:  false,
@@ -72,23 +71,24 @@ func (c *RemoteImportBuildCmd) Execute(args []string) error {
 		log.Printf("Created build #%d", build.BID)
 	}
 
-	now := time.Now()
+	now := pbtypes.NewTimestamp(time.Now())
 	host := fmt.Sprintf("local (USER=%s)", os.Getenv("USER"))
-	buildUpdate := sourcegraph.BuildUpdate{StartedAt: &now, Host: &host}
-	if _, _, err := cl.Builds.Update(build.Spec(), buildUpdate); err != nil {
+	buildUpdate := sourcegraph.BuildUpdate{StartedAt: &now, Host: host}
+	if _, err := cl.Builds.Update(context.TODO(), &sourcegraph.BuildsUpdateOp{Build: build.Spec(), Info: buildUpdate}); err != nil {
 		return err
 	}
 
 	importTask := &sourcegraph.BuildTask{
 		BID:   build.BID,
+		Repo:  repoSpec.URI,
 		Op:    sourcegraph.ImportTaskOp,
 		Queue: true,
 	}
-	tasks, _, err := cl.Builds.CreateTasks(build.Spec(), []*sourcegraph.BuildTask{importTask})
+	tasks, err := cl.Builds.CreateTasks(context.TODO(), &sourcegraph.BuildsCreateTasksOp{Build: build.Spec(), Tasks: []*sourcegraph.BuildTask{importTask}})
 	if err != nil {
 		return err
 	}
-	importTask = tasks[0]
+	importTask = tasks.BuildTasks[0]
 	if GlobalOpt.Verbose {
 		log.Printf("Created import task #%d", importTask.TaskID)
 	}
@@ -103,7 +103,7 @@ func (c *RemoteImportBuildCmd) Execute(args []string) error {
 			case <-done:
 				return
 			case <-time.After(time.Duration(loopsSinceLastLog+1) * 500 * time.Millisecond):
-				logs, _, err := cl.Builds.GetTaskLog(importTask.Spec(), &logOpt)
+				logs, err := cl.Builds.GetTaskLog(context.TODO(), &sourcegraph.BuildsGetTaskLogOp{Task: importTask.Spec(), Opt: &logOpt})
 				if err != nil {
 					log.Printf("Warning: failed to get build logs: %s.", err)
 					return
@@ -132,12 +132,12 @@ func (c *RemoteImportBuildCmd) Execute(args []string) error {
 			return fmt.Errorf("import timed out after %s", time.Since(start))
 		}
 
-		tasks, _, err := cl.Builds.ListBuildTasks(build.Spec())
+		tasks, err := cl.Builds.ListBuildTasks(context.TODO(), &sourcegraph.BuildsListBuildTasksOp{Build: build.Spec()})
 		if err != nil {
 			return err
 		}
 		importTask = nil
-		for _, task := range tasks {
+		for _, task := range tasks.BuildTasks {
 			if task.TaskID == taskID {
 				importTask = task
 				break
@@ -147,12 +147,12 @@ func (c *RemoteImportBuildCmd) Execute(args []string) error {
 			return fmt.Errorf("task #%d not found in task list for build #%d", taskID, build.BID)
 		}
 
-		if !started && importTask.StartedAt.Valid {
+		if !started && importTask.StartedAt != nil {
 			log.Printf("# Import started.")
 			started = true
 		}
 
-		if importTask.EndedAt.Valid {
+		if importTask.EndedAt != nil {
 			if importTask.Success {
 				log.Printf("# Import succeeded!")
 			} else if importTask.Failure {
