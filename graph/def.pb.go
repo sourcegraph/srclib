@@ -100,20 +100,24 @@ type Def struct {
 	// args are Local, but fields with "private" scope are not
 	// Local.
 	Local bool `protobuf:"varint,8,opt,name=local,proto3" json:"Local,omitempty"`
+	// Virtual is whether this def does NOT have a location in source.
+	// If virtual, then the def does not have source code location. An
+	// example of a virtual def is a Java class defined in a JAR file.
+	Virtual bool `protobuf:"varint,9,opt,name=virtual,proto3" json:"Virtual,omitempty"`
 	// Test is whether this def is defined in test code (as opposed to main
 	// code). For example, definitions in Go *_test.go files have Test = true.
-	Test bool `protobuf:"varint,9,opt,name=test,proto3" json:"Test,omitempty"`
+	Test bool `protobuf:"varint,10,opt,name=test,proto3" json:"Test,omitempty"`
 	// Data contains additional language- and toolchain-specific information
 	// about the def. Data is used to construct function signatures,
 	// import/require statements, language-specific type descriptions, etc.
 	//
 	// To use json.RawMessage:
-	// optional bytes data = 10 [(gogoproto.customtype) = "encoding/json.RawMessage", (gogoproto.jsontag) = "Data,omitempty"];
-	Data json.RawMessage `protobuf:"bytes,10,opt,name=data,proto3" json:"Data,omitempty"`
+	// optional bytes data = 11 [(gogoproto.customtype) = "encoding/json.RawMessage", (gogoproto.jsontag) = "Data,omitempty"];
+	Data json.RawMessage `protobuf:"bytes,11,opt,name=data,proto3" json:"Data,omitempty"`
 	// Docs are docstrings for this Def. This field is not set in the
 	// Defs produced by graphers; they should emit docs in the
 	// separate Docs field on the graph.Output struct.
-	Docs []*DefDoc `protobuf:"bytes,11,rep,name=docs" json:"Docs,omitempty"`
+	Docs []*DefDoc `protobuf:"bytes,12,rep,name=docs" json:"Docs,omitempty"`
 	// TreePath is a structurally significant path descriptor for a def. For
 	// many languages, it may be identical or similar to DefKey.Path.
 	// However, it has the following constraints, which allow it to define a
@@ -475,6 +479,23 @@ func (m *Def) Unmarshal(data []byte) error {
 			m.Local = bool(v != 0)
 		case 9:
 			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Virtual", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if index >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[index]
+				index++
+				v |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Virtual = bool(v != 0)
+		case 10:
+			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Test", wireType)
 			}
 			var v int
@@ -490,7 +511,7 @@ func (m *Def) Unmarshal(data []byte) error {
 				}
 			}
 			m.Test = bool(v != 0)
-		case 10:
+		case 11:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
 			}
@@ -512,7 +533,7 @@ func (m *Def) Unmarshal(data []byte) error {
 			}
 			m.Data = append([]byte{}, data[index:postIndex]...)
 			index = postIndex
-		case 11:
+		case 12:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Docs", wireType)
 			}
@@ -719,6 +740,9 @@ func (m *Def) Size() (n int) {
 	if m.Local {
 		n += 2
 	}
+	if m.Virtual {
+		n += 2
+	}
 	if m.Test {
 		n += 2
 	}
@@ -887,8 +911,18 @@ func (m *Def) MarshalTo(data []byte) (n int, err error) {
 		}
 		i++
 	}
-	if m.Test {
+	if m.Virtual {
 		data[i] = 0x48
+		i++
+		if m.Virtual {
+			data[i] = 1
+		} else {
+			data[i] = 0
+		}
+		i++
+	}
+	if m.Test {
+		data[i] = 0x50
 		i++
 		if m.Test {
 			data[i] = 1
@@ -899,7 +933,7 @@ func (m *Def) MarshalTo(data []byte) (n int, err error) {
 	}
 	if m.Data != nil {
 		if len(m.Data) > 0 {
-			data[i] = 0x52
+			data[i] = 0x5a
 			i++
 			i = encodeVarintDef(data, i, uint64(len(m.Data)))
 			i += copy(data[i:], m.Data)
@@ -907,7 +941,7 @@ func (m *Def) MarshalTo(data []byte) (n int, err error) {
 	}
 	if len(m.Docs) > 0 {
 		for _, msg := range m.Docs {
-			data[i] = 0x5a
+			data[i] = 0x62
 			i++
 			i = encodeVarintDef(data, i, uint64(msg.Size()))
 			n, err := msg.MarshalTo(data[i:])
@@ -1010,6 +1044,7 @@ func (this *Def) GoString() string {
 		`DefEnd:` + fmt.Sprintf("%#v", this.DefEnd),
 		`Exported:` + fmt.Sprintf("%#v", this.Exported),
 		`Local:` + fmt.Sprintf("%#v", this.Local),
+		`Virtual:` + fmt.Sprintf("%#v", this.Virtual),
 		`Test:` + fmt.Sprintf("%#v", this.Test),
 		`Data:` + fmt.Sprintf("%#v", this.Data),
 		`Docs:` + fmt.Sprintf("%#v", this.Docs),
