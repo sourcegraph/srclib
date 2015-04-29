@@ -290,7 +290,7 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 				}
 				for _, def := range data.Defs {
 					if doc, present := docsByPath[def.Path]; present {
-						def.Docs = append(def.Docs, graph.DefDoc{Format: doc.Format, Data: doc.Data})
+						def.Docs = append(def.Docs, &graph.DefDoc{Format: doc.Format, Data: doc.Data})
 					}
 				}
 
