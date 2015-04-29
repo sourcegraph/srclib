@@ -1,11 +1,11 @@
-// +build TODO
-
 package src
 
 import (
 	"fmt"
 	"log"
 	"time"
+
+	"golang.org/x/net/context"
 
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 )
@@ -53,20 +53,20 @@ func (c *BuildsCmd) Execute(args []string) error {
 		Direction:   c.Direction,
 		ListOptions: sourcegraph.ListOptions{PerPage: int32(c.N)},
 	}
-	builds, _, err := cl.Builds.List(opt)
+	builds, err := cl.Builds.List(context.TODO(), opt)
 	if err != nil {
 		return err
 	}
 
-	for _, b := range builds {
+	for _, b := range builds.Builds {
 		if b.Success {
-			fmt.Printf(green("#% 8d")+" succeeded % 9s ago", b.BID, ago(b.EndedAt.Time))
+			fmt.Printf(green("#% 8d")+" succeeded % 9s ago", b.BID, ago(b.EndedAt.Time()))
 		} else if b.Failure {
-			fmt.Printf(red("#% 8d")+" failed % 9s ago", b.BID, ago(b.EndedAt.Time))
-		} else if b.StartedAt.Valid {
-			fmt.Printf(cyan("#% 8d")+" started % 9s ago", b.BID, ago(b.StartedAt.Time))
+			fmt.Printf(red("#% 8d")+" failed % 9s ago", b.BID, ago(b.EndedAt.Time()))
+		} else if b.StartedAt != nil {
+			fmt.Printf(cyan("#% 8d")+" started % 9s ago", b.BID, ago(b.StartedAt.Time()))
 		} else {
-			fmt.Printf(gray("#% 8d")+" queued % 9s ago", b.BID, ago(b.CreatedAt))
+			fmt.Printf(gray("#% 8d")+" queued % 9s ago", b.BID, ago(b.CreatedAt.Time()))
 		}
 		fmt.Printf("\t%s\n", b.CommitID)
 	}

@@ -6,7 +6,6 @@ import (
 	"golang.org/x/net/context"
 
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
-	"sourcegraph.com/sourcegraph/go-vcs/vcs"
 )
 
 // getRemoteRepo gets the remote repository that corresponds to the
@@ -32,10 +31,4 @@ func getRemoteRepo(cl *sourcegraph.Client) (*sourcegraph.Repo, error) {
 		return nil, fmt.Errorf("repo %s: %s", uri, err)
 	}
 	return rrepo, nil
-}
-
-// getCommit gets a repository commit.
-func getCommit(cl *sourcegraph.Client, repoRevSpec sourcegraph.RepoRevSpec) (*vcs.Commit, error) {
-	// TODO(sqs!nodb-ctx): reimplement
-	panic("unimplemented")
 }
