@@ -132,7 +132,7 @@ func (c *RemoteImportBuildCmd) Execute(args []string) error {
 			return fmt.Errorf("import timed out after %s", time.Since(start))
 		}
 
-		tasks, _, err := cl.Builds.ListBuildTasks(build.Spec(), nil)
+		tasks, _, err := cl.Builds.ListBuildTasks(build.Spec())
 		if err != nil {
 			return err
 		}

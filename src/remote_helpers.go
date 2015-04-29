@@ -27,7 +27,7 @@ func getRemoteRepo(cl *sourcegraph.Client) (*sourcegraph.Repo, error) {
 		return nil, fmt.Errorf("getRemoteRepo: the local repo's URI is malformed: %s", lrepo.CloneURL)
 	}
 
-	rrepo, err := cl.Repos.Get(context.TODO(), &sourcegraph.RepoSpec{URI: uri}, nil)
+	rrepo, err := cl.Repos.Get(context.TODO(), &sourcegraph.RepoSpec{URI: uri})
 	return rrepo, err
 }
 
