@@ -148,7 +148,7 @@ func getRemoteBuildDataFS(repo, commitID string) (rwvfs.FileSystem, string, sour
 	cl := NewAPIClientWithAuthIfPresent()
 	rrepo, err := cl.Repos.Get(context.TODO(), &sourcegraph.RepoSpec{URI: repo})
 	if err != nil {
-		return nil, "", sourcegraph.RepoRevSpec{}, err
+		return nil, "", sourcegraph.RepoRevSpec{}, fmt.Errorf("repo %s: %s", repo, err)
 	}
 
 	repoRevSpec := sourcegraph.RepoRevSpec{RepoSpec: rrepo.RepoSpec(), Rev: commitID, CommitID: commitID}
