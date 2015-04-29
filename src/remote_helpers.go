@@ -28,7 +28,10 @@ func getRemoteRepo(cl *sourcegraph.Client) (*sourcegraph.Repo, error) {
 	}
 
 	rrepo, err := cl.Repos.Get(context.TODO(), &sourcegraph.RepoSpec{URI: uri})
-	return rrepo, err
+	if err != nil {
+		return nil, fmt.Errorf("repo %s: %s", uri, err)
+	}
+	return rrepo, nil
 }
 
 // getCommit gets a repository commit.
