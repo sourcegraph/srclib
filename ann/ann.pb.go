@@ -14,7 +14,6 @@
 package ann;import "encoding/json"
 
 import proto "github.com/gogo/protobuf/proto"
-import math "math"
 
 // discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto/gogo.pb"
 
@@ -24,7 +23,6 @@ import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
-var _ = math.Inf
 
 // An Ann is a source code annotation.
 //
@@ -32,31 +30,31 @@ var _ = math.Inf
 // Start, End, Type).
 type Ann struct {
 	// Repo is the VCS repository in which this ann exists.
-	Repo string `protobuf:"bytes,1,opt,name=repo" json:"Repo,omitempty"`
+	Repo string `protobuf:"bytes,1,opt,name=repo,proto3" json:"Repo,omitempty"`
 	// CommitID is the ID of the VCS commit that this ann exists
 	// in. The CommitID is always a full commit ID (40 hexadecimal
 	// characters for git and hg), never a branch or tag name.
-	CommitID string `protobuf:"bytes,2,opt,name=commit_id" json:"CommitID,omitempty"`
+	CommitID string `protobuf:"bytes,2,opt,name=commit_id,proto3" json:"CommitID,omitempty"`
 	// UnitType is the source unit type that the annotation exists
 	// on. It is either the source unit type during whose processing
 	// the annotation was detected/created. Multiple annotations may
 	// exist on the same file from different source unit types if a
 	// file is contained in multiple source units.
-	UnitType string `protobuf:"bytes,3,opt,name=unit_type" json:"UnitType,omitempty"`
+	UnitType string `protobuf:"bytes,3,opt,name=unit_type,proto3" json:"UnitType,omitempty"`
 	// Unit is the name of the source unit that this ann exists in.
-	Unit string `protobuf:"bytes,4,opt,name=unit" json:"Unit,omitempty"`
+	Unit string `protobuf:"bytes,4,opt,name=unit,proto3" json:"Unit,omitempty"`
 	// File is the filename in which this Ann exists.
-	File string `protobuf:"bytes,5,opt,name=file" json:"File,omitempty"`
+	File string `protobuf:"bytes,5,opt,name=file,proto3" json:"File,omitempty"`
 	// Start is the byte offset of this ann's first byte in File.
-	Start uint32 `protobuf:"varint,6,opt,name=start" json:"Start"`
+	Start uint32 `protobuf:"varint,6,opt,name=start,proto3" json:"Start"`
 	// End is the byte offset of this ann's last byte in File.
-	End uint32 `protobuf:"varint,7,opt,name=end" json:"End"`
+	End uint32 `protobuf:"varint,7,opt,name=end,proto3" json:"End"`
 	// Type is the type of the annotation. See this package's type
 	// constants for a list of possible types.
-	Type string `protobuf:"bytes,8,opt,name=type" json:"Type"`
+	Type string `protobuf:"bytes,8,opt,name=type,proto3" json:"Type"`
 	// Data contains arbitrary JSON data that is specific to this
 	// annotation type (e.g., the link URL for Link annotations).
-	Data json.RawMessage `protobuf:"bytes,9,opt,name=data" json:"Data,omitempty"`
+	Data json.RawMessage `protobuf:"bytes,9,opt,name=data,proto3" json:"Data,omitempty"`
 }
 
 func (m *Ann) Reset()         { *m = Ann{} }
@@ -294,22 +292,40 @@ func (m *Ann) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.Repo)
-	n += 1 + l + sovAnn(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovAnn(uint64(l))
+	}
 	l = len(m.CommitID)
-	n += 1 + l + sovAnn(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovAnn(uint64(l))
+	}
 	l = len(m.UnitType)
-	n += 1 + l + sovAnn(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovAnn(uint64(l))
+	}
 	l = len(m.Unit)
-	n += 1 + l + sovAnn(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovAnn(uint64(l))
+	}
 	l = len(m.File)
-	n += 1 + l + sovAnn(uint64(l))
-	n += 1 + sovAnn(uint64(m.Start))
-	n += 1 + sovAnn(uint64(m.End))
+	if l > 0 {
+		n += 1 + l + sovAnn(uint64(l))
+	}
+	if m.Start != 0 {
+		n += 1 + sovAnn(uint64(m.Start))
+	}
+	if m.End != 0 {
+		n += 1 + sovAnn(uint64(m.End))
+	}
 	l = len(m.Type)
-	n += 1 + l + sovAnn(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovAnn(uint64(l))
+	}
 	if m.Data != nil {
 		l = len(m.Data)
-		n += 1 + l + sovAnn(uint64(l))
+		if l > 0 {
+			n += 1 + l + sovAnn(uint64(l))
+		}
 	}
 	return n
 }
@@ -342,41 +358,59 @@ func (m *Ann) MarshalTo(data []byte) (n int, err error) {
 	_ = i
 	var l int
 	_ = l
-	data[i] = 0xa
-	i++
-	i = encodeVarintAnn(data, i, uint64(len(m.Repo)))
-	i += copy(data[i:], m.Repo)
-	data[i] = 0x12
-	i++
-	i = encodeVarintAnn(data, i, uint64(len(m.CommitID)))
-	i += copy(data[i:], m.CommitID)
-	data[i] = 0x1a
-	i++
-	i = encodeVarintAnn(data, i, uint64(len(m.UnitType)))
-	i += copy(data[i:], m.UnitType)
-	data[i] = 0x22
-	i++
-	i = encodeVarintAnn(data, i, uint64(len(m.Unit)))
-	i += copy(data[i:], m.Unit)
-	data[i] = 0x2a
-	i++
-	i = encodeVarintAnn(data, i, uint64(len(m.File)))
-	i += copy(data[i:], m.File)
-	data[i] = 0x30
-	i++
-	i = encodeVarintAnn(data, i, uint64(m.Start))
-	data[i] = 0x38
-	i++
-	i = encodeVarintAnn(data, i, uint64(m.End))
-	data[i] = 0x42
-	i++
-	i = encodeVarintAnn(data, i, uint64(len(m.Type)))
-	i += copy(data[i:], m.Type)
-	if m.Data != nil {
-		data[i] = 0x4a
+	if len(m.Repo) > 0 {
+		data[i] = 0xa
 		i++
-		i = encodeVarintAnn(data, i, uint64(len(m.Data)))
-		i += copy(data[i:], m.Data)
+		i = encodeVarintAnn(data, i, uint64(len(m.Repo)))
+		i += copy(data[i:], m.Repo)
+	}
+	if len(m.CommitID) > 0 {
+		data[i] = 0x12
+		i++
+		i = encodeVarintAnn(data, i, uint64(len(m.CommitID)))
+		i += copy(data[i:], m.CommitID)
+	}
+	if len(m.UnitType) > 0 {
+		data[i] = 0x1a
+		i++
+		i = encodeVarintAnn(data, i, uint64(len(m.UnitType)))
+		i += copy(data[i:], m.UnitType)
+	}
+	if len(m.Unit) > 0 {
+		data[i] = 0x22
+		i++
+		i = encodeVarintAnn(data, i, uint64(len(m.Unit)))
+		i += copy(data[i:], m.Unit)
+	}
+	if len(m.File) > 0 {
+		data[i] = 0x2a
+		i++
+		i = encodeVarintAnn(data, i, uint64(len(m.File)))
+		i += copy(data[i:], m.File)
+	}
+	if m.Start != 0 {
+		data[i] = 0x30
+		i++
+		i = encodeVarintAnn(data, i, uint64(m.Start))
+	}
+	if m.End != 0 {
+		data[i] = 0x38
+		i++
+		i = encodeVarintAnn(data, i, uint64(m.End))
+	}
+	if len(m.Type) > 0 {
+		data[i] = 0x42
+		i++
+		i = encodeVarintAnn(data, i, uint64(len(m.Type)))
+		i += copy(data[i:], m.Type)
+	}
+	if m.Data != nil {
+		if len(m.Data) > 0 {
+			data[i] = 0x4a
+			i++
+			i = encodeVarintAnn(data, i, uint64(len(m.Data)))
+			i += copy(data[i:], m.Data)
+		}
 	}
 	return i, nil
 }

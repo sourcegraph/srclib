@@ -19,7 +19,6 @@
 package graph;import "encoding/json"
 
 import proto "github.com/gogo/protobuf/proto"
-import math "math"
 
 // discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto/gogo.pb"
 
@@ -34,9 +33,7 @@ import reflect "reflect"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
-var _ = math.Inf
 
-// START DefKey OMIT
 // DefKey specifies a definition, either concretely or abstractly. A concrete
 // definition key has a non-empty CommitID and refers to a definition defined in a
 // specific commit. An abstract definition key has an empty CommitID and is
@@ -49,17 +46,17 @@ var _ = math.Inf
 // the time specified by the CommitID.
 type DefKey struct {
 	// Repo is the VCS repository that defines this definition.
-	Repo string `protobuf:"bytes,1,opt,name=repo" json:"Repo,omitempty"`
+	Repo string `protobuf:"bytes,1,opt,name=repo,proto3" json:"Repo,omitempty"`
 	// CommitID is the ID of the VCS commit that this definition was defined in. The
 	// CommitID is always a full commit ID (40 hexadecimal characters for git
 	// and hg), never a branch or tag name.
-	CommitID string `protobuf:"bytes,2,opt,name=commit_id" json:"CommitID,omitempty"`
+	CommitID string `protobuf:"bytes,2,opt,name=commit_id,proto3" json:"CommitID,omitempty"`
 	// UnitType is the type name of the source unit (obtained from unit.Type(u))
 	// that this definition was defined in.
-	UnitType string `protobuf:"bytes,3,opt,name=unit_type" json:"UnitType,omitempty"`
+	UnitType string `protobuf:"bytes,3,opt,name=unit_type,proto3" json:"UnitType,omitempty"`
 	// Unit is the name of the source unit (obtained from u.Name()) that this
 	// definition was defined in.
-	Unit string `protobuf:"bytes,4,opt,name=unit" json:"Unit,omitempty"`
+	Unit string `protobuf:"bytes,4,opt,name=unit,proto3" json:"Unit,omitempty"`
 	// Path is a unique identifier for the def, relative to the source unit.
 	// It should remain stable across commits as long as the def is the
 	// "same" def. Its Elasticsearch mapping is defined separately (because
@@ -71,54 +68,52 @@ type DefKey struct {
 	// the Path, but this may not always be the case. I.e., don't rely on Path
 	// to find parents or children or any other structural propreties of the
 	// def hierarchy). See Def.TreePath instead.
-	Path string `protobuf:"bytes,5,opt,name=path" json:"Path"`
+	Path string `protobuf:"bytes,5,opt,name=path,proto3" json:"Path"`
 }
-// END DefKey OMIT
 
 func (m *DefKey) Reset()         { *m = DefKey{} }
 func (m *DefKey) String() string { return proto.CompactTextString(m) }
 func (*DefKey) ProtoMessage()    {}
 
-// START Def OMIT
 // Def is a definition in code.
 type Def struct {
 	// DefKey is the natural unique key for a def. It is stable
 	// (subsequent runs of a grapher will emit the same defs with the same
 	// DefKeys).
-	DefKey `protobuf:"bytes,1,req,name=key,embedded=key" json:""`
+	DefKey `protobuf:"bytes,1,opt,name=key,embedded=key" json:""`
 	// Name of the definition. This need not be unique.
-	Name string `protobuf:"bytes,2,opt,name=name" json:"Name"`
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"Name"`
 	// Kind is the kind of thing this definition is. This is
 	// language-specific. Possible values include "type", "func",
 	// "var", etc.
-	Kind     string `protobuf:"bytes,3,opt,name=kind" json:"Kind,omitempty"`
-	File     string `protobuf:"bytes,4,opt,name=file" json:"File"`
-	DefStart uint32 `protobuf:"varint,5,opt,name=start" json:"DefStart"`
-	DefEnd   uint32 `protobuf:"varint,6,opt,name=end" json:"DefEnd"`
+	Kind     string `protobuf:"bytes,3,opt,name=kind,proto3" json:"Kind,omitempty"`
+	File     string `protobuf:"bytes,4,opt,name=file,proto3" json:"File"`
+	DefStart uint32 `protobuf:"varint,5,opt,name=start,proto3" json:"DefStart"`
+	DefEnd   uint32 `protobuf:"varint,6,opt,name=end,proto3" json:"DefEnd"`
 	// Exported is whether this def is part of a source unit's
 	// public API. For example, in Java a "public" field is
 	// Exported.
-	Exported bool `protobuf:"varint,7,opt,name=exported" json:"Exported,omitempty"`
+	Exported bool `protobuf:"varint,7,opt,name=exported,proto3" json:"Exported,omitempty"`
 	// Local is whether this def is local to a function or some
 	// other inner scope. Local defs do *not* have module,
 	// package, or file scope. For example, in Java a function's
 	// args are Local, but fields with "private" scope are not
 	// Local.
-	Local bool `protobuf:"varint,8,opt,name=local" json:"Local,omitempty"`
+	Local bool `protobuf:"varint,8,opt,name=local,proto3" json:"Local,omitempty"`
 	// Test is whether this def is defined in test code (as opposed to main
 	// code). For example, definitions in Go *_test.go files have Test = true.
-	Test bool `protobuf:"varint,9,opt,name=test" json:"Test,omitempty"`
+	Test bool `protobuf:"varint,9,opt,name=test,proto3" json:"Test,omitempty"`
 	// Data contains additional language- and toolchain-specific information
 	// about the def. Data is used to construct function signatures,
 	// import/require statements, language-specific type descriptions, etc.
 	//
 	// To use json.RawMessage:
-	// optional bytes data = 10 [(gogoproto.nullable) = false, (gogoproto.customtype) = "encoding/json.RawMessage", (gogoproto.jsontag) = "Data,omitempty"];
-	Data json.RawMessage `protobuf:"bytes,10,opt,name=data" json:"Data,omitempty"`
+	// optional bytes data = 10 [(gogoproto.customtype) = "encoding/json.RawMessage", (gogoproto.jsontag) = "Data,omitempty"];
+	Data json.RawMessage `protobuf:"bytes,10,opt,name=data,proto3" json:"Data,omitempty"`
 	// Docs are docstrings for this Def. This field is not set in the
 	// Defs produced by graphers; they should emit docs in the
 	// separate Docs field on the graph.Output struct.
-	Docs []DefDoc `protobuf:"bytes,11,rep,name=docs" json:"Docs,omitempty"`
+	Docs []*DefDoc `protobuf:"bytes,11,rep,name=docs" json:"Docs,omitempty"`
 	// TreePath is a structurally significant path descriptor for a def. For
 	// many languages, it may be identical or similar to DefKey.Path.
 	// However, it has the following constraints, which allow it to define a
@@ -131,9 +126,8 @@ type Def struct {
 	// Any prefix of a tree-path that terminates in a def name must be a valid
 	// tree-path for some def.
 	// The following regex captures the children of a tree-path X: X(/-[^/]*)*(/[^/-][^/]*)
-	TreePath string `protobuf:"bytes,17,opt,name=tree_path" json:"TreePath,omitempty"`
+	TreePath string `protobuf:"bytes,17,opt,name=tree_path,proto3" json:"TreePath,omitempty"`
 }
-// END Def OMIT
 
 func (m *Def) Reset()         { *m = Def{} }
 func (m *Def) String() string { return proto.CompactTextString(m) }
@@ -144,9 +138,9 @@ type DefDoc struct {
 	// Format is the the MIME-type that the documentation is stored
 	// in. Valid formats include 'text/html', 'text/plain',
 	// 'text/x-markdown', text/x-rst'.
-	Format string `protobuf:"bytes,1,req,name=format" json:"Format"`
+	Format string `protobuf:"bytes,1,opt,name=format,proto3" json:"Format"`
 	// Data is the actual documentation text.
-	Data string `protobuf:"bytes,2,opt,name=data" json:"Data"`
+	Data string `protobuf:"bytes,2,opt,name=data,proto3" json:"Data"`
 }
 
 func (m *DefDoc) Reset()         { *m = DefDoc{} }
@@ -538,7 +532,7 @@ func (m *Def) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Docs = append(m.Docs, DefDoc{})
+			m.Docs = append(m.Docs, &DefDoc{})
 			m.Docs[len(m.Docs)-1].Unmarshal(data[index:postIndex])
 			index = postIndex
 		case 17:
@@ -674,15 +668,25 @@ func (m *DefKey) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.Repo)
-	n += 1 + l + sovDef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovDef(uint64(l))
+	}
 	l = len(m.CommitID)
-	n += 1 + l + sovDef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovDef(uint64(l))
+	}
 	l = len(m.UnitType)
-	n += 1 + l + sovDef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovDef(uint64(l))
+	}
 	l = len(m.Unit)
-	n += 1 + l + sovDef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovDef(uint64(l))
+	}
 	l = len(m.Path)
-	n += 1 + l + sovDef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovDef(uint64(l))
+	}
 	return n
 }
 
@@ -692,19 +696,37 @@ func (m *Def) Size() (n int) {
 	l = m.DefKey.Size()
 	n += 1 + l + sovDef(uint64(l))
 	l = len(m.Name)
-	n += 1 + l + sovDef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovDef(uint64(l))
+	}
 	l = len(m.Kind)
-	n += 1 + l + sovDef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovDef(uint64(l))
+	}
 	l = len(m.File)
-	n += 1 + l + sovDef(uint64(l))
-	n += 1 + sovDef(uint64(m.DefStart))
-	n += 1 + sovDef(uint64(m.DefEnd))
-	n += 2
-	n += 2
-	n += 2
+	if l > 0 {
+		n += 1 + l + sovDef(uint64(l))
+	}
+	if m.DefStart != 0 {
+		n += 1 + sovDef(uint64(m.DefStart))
+	}
+	if m.DefEnd != 0 {
+		n += 1 + sovDef(uint64(m.DefEnd))
+	}
+	if m.Exported {
+		n += 2
+	}
+	if m.Local {
+		n += 2
+	}
+	if m.Test {
+		n += 2
+	}
 	if m.Data != nil {
 		l = len(m.Data)
-		n += 1 + l + sovDef(uint64(l))
+		if l > 0 {
+			n += 1 + l + sovDef(uint64(l))
+		}
 	}
 	if len(m.Docs) > 0 {
 		for _, e := range m.Docs {
@@ -713,7 +735,9 @@ func (m *Def) Size() (n int) {
 		}
 	}
 	l = len(m.TreePath)
-	n += 2 + l + sovDef(uint64(l))
+	if l > 0 {
+		n += 2 + l + sovDef(uint64(l))
+	}
 	return n
 }
 
@@ -721,9 +745,13 @@ func (m *DefDoc) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.Format)
-	n += 1 + l + sovDef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovDef(uint64(l))
+	}
 	l = len(m.Data)
-	n += 1 + l + sovDef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovDef(uint64(l))
+	}
 	return n
 }
 
@@ -755,26 +783,36 @@ func (m *DefKey) MarshalTo(data []byte) (n int, err error) {
 	_ = i
 	var l int
 	_ = l
-	data[i] = 0xa
-	i++
-	i = encodeVarintDef(data, i, uint64(len(m.Repo)))
-	i += copy(data[i:], m.Repo)
-	data[i] = 0x12
-	i++
-	i = encodeVarintDef(data, i, uint64(len(m.CommitID)))
-	i += copy(data[i:], m.CommitID)
-	data[i] = 0x1a
-	i++
-	i = encodeVarintDef(data, i, uint64(len(m.UnitType)))
-	i += copy(data[i:], m.UnitType)
-	data[i] = 0x22
-	i++
-	i = encodeVarintDef(data, i, uint64(len(m.Unit)))
-	i += copy(data[i:], m.Unit)
-	data[i] = 0x2a
-	i++
-	i = encodeVarintDef(data, i, uint64(len(m.Path)))
-	i += copy(data[i:], m.Path)
+	if len(m.Repo) > 0 {
+		data[i] = 0xa
+		i++
+		i = encodeVarintDef(data, i, uint64(len(m.Repo)))
+		i += copy(data[i:], m.Repo)
+	}
+	if len(m.CommitID) > 0 {
+		data[i] = 0x12
+		i++
+		i = encodeVarintDef(data, i, uint64(len(m.CommitID)))
+		i += copy(data[i:], m.CommitID)
+	}
+	if len(m.UnitType) > 0 {
+		data[i] = 0x1a
+		i++
+		i = encodeVarintDef(data, i, uint64(len(m.UnitType)))
+		i += copy(data[i:], m.UnitType)
+	}
+	if len(m.Unit) > 0 {
+		data[i] = 0x22
+		i++
+		i = encodeVarintDef(data, i, uint64(len(m.Unit)))
+		i += copy(data[i:], m.Unit)
+	}
+	if len(m.Path) > 0 {
+		data[i] = 0x2a
+		i++
+		i = encodeVarintDef(data, i, uint64(len(m.Path)))
+		i += copy(data[i:], m.Path)
+	}
 	return i, nil
 }
 
@@ -801,53 +839,71 @@ func (m *Def) MarshalTo(data []byte) (n int, err error) {
 		return 0, err
 	}
 	i += n1
-	data[i] = 0x12
-	i++
-	i = encodeVarintDef(data, i, uint64(len(m.Name)))
-	i += copy(data[i:], m.Name)
-	data[i] = 0x1a
-	i++
-	i = encodeVarintDef(data, i, uint64(len(m.Kind)))
-	i += copy(data[i:], m.Kind)
-	data[i] = 0x22
-	i++
-	i = encodeVarintDef(data, i, uint64(len(m.File)))
-	i += copy(data[i:], m.File)
-	data[i] = 0x28
-	i++
-	i = encodeVarintDef(data, i, uint64(m.DefStart))
-	data[i] = 0x30
-	i++
-	i = encodeVarintDef(data, i, uint64(m.DefEnd))
-	data[i] = 0x38
-	i++
-	if m.Exported {
-		data[i] = 1
-	} else {
-		data[i] = 0
-	}
-	i++
-	data[i] = 0x40
-	i++
-	if m.Local {
-		data[i] = 1
-	} else {
-		data[i] = 0
-	}
-	i++
-	data[i] = 0x48
-	i++
-	if m.Test {
-		data[i] = 1
-	} else {
-		data[i] = 0
-	}
-	i++
-	if m.Data != nil {
-		data[i] = 0x52
+	if len(m.Name) > 0 {
+		data[i] = 0x12
 		i++
-		i = encodeVarintDef(data, i, uint64(len(m.Data)))
-		i += copy(data[i:], m.Data)
+		i = encodeVarintDef(data, i, uint64(len(m.Name)))
+		i += copy(data[i:], m.Name)
+	}
+	if len(m.Kind) > 0 {
+		data[i] = 0x1a
+		i++
+		i = encodeVarintDef(data, i, uint64(len(m.Kind)))
+		i += copy(data[i:], m.Kind)
+	}
+	if len(m.File) > 0 {
+		data[i] = 0x22
+		i++
+		i = encodeVarintDef(data, i, uint64(len(m.File)))
+		i += copy(data[i:], m.File)
+	}
+	if m.DefStart != 0 {
+		data[i] = 0x28
+		i++
+		i = encodeVarintDef(data, i, uint64(m.DefStart))
+	}
+	if m.DefEnd != 0 {
+		data[i] = 0x30
+		i++
+		i = encodeVarintDef(data, i, uint64(m.DefEnd))
+	}
+	if m.Exported {
+		data[i] = 0x38
+		i++
+		if m.Exported {
+			data[i] = 1
+		} else {
+			data[i] = 0
+		}
+		i++
+	}
+	if m.Local {
+		data[i] = 0x40
+		i++
+		if m.Local {
+			data[i] = 1
+		} else {
+			data[i] = 0
+		}
+		i++
+	}
+	if m.Test {
+		data[i] = 0x48
+		i++
+		if m.Test {
+			data[i] = 1
+		} else {
+			data[i] = 0
+		}
+		i++
+	}
+	if m.Data != nil {
+		if len(m.Data) > 0 {
+			data[i] = 0x52
+			i++
+			i = encodeVarintDef(data, i, uint64(len(m.Data)))
+			i += copy(data[i:], m.Data)
+		}
 	}
 	if len(m.Docs) > 0 {
 		for _, msg := range m.Docs {
@@ -861,12 +917,14 @@ func (m *Def) MarshalTo(data []byte) (n int, err error) {
 			i += n
 		}
 	}
-	data[i] = 0x8a
-	i++
-	data[i] = 0x1
-	i++
-	i = encodeVarintDef(data, i, uint64(len(m.TreePath)))
-	i += copy(data[i:], m.TreePath)
+	if len(m.TreePath) > 0 {
+		data[i] = 0x8a
+		i++
+		data[i] = 0x1
+		i++
+		i = encodeVarintDef(data, i, uint64(len(m.TreePath)))
+		i += copy(data[i:], m.TreePath)
+	}
 	return i, nil
 }
 
@@ -885,14 +943,18 @@ func (m *DefDoc) MarshalTo(data []byte) (n int, err error) {
 	_ = i
 	var l int
 	_ = l
-	data[i] = 0xa
-	i++
-	i = encodeVarintDef(data, i, uint64(len(m.Format)))
-	i += copy(data[i:], m.Format)
-	data[i] = 0x12
-	i++
-	i = encodeVarintDef(data, i, uint64(len(m.Data)))
-	i += copy(data[i:], m.Data)
+	if len(m.Format) > 0 {
+		data[i] = 0xa
+		i++
+		i = encodeVarintDef(data, i, uint64(len(m.Format)))
+		i += copy(data[i:], m.Format)
+	}
+	if len(m.Data) > 0 {
+		data[i] = 0x12
+		i++
+		i = encodeVarintDef(data, i, uint64(len(m.Data)))
+		i += copy(data[i:], m.Data)
+	}
 	return i, nil
 }
 
@@ -950,7 +1012,7 @@ func (this *Def) GoString() string {
 		`Local:` + fmt.Sprintf("%#v", this.Local),
 		`Test:` + fmt.Sprintf("%#v", this.Test),
 		`Data:` + fmt.Sprintf("%#v", this.Data),
-		`Docs:` + strings.Replace(fmt.Sprintf("%#v", this.Docs), `&`, ``, 1),
+		`Docs:` + fmt.Sprintf("%#v", this.Docs),
 		`TreePath:` + fmt.Sprintf("%#v", this.TreePath) + `}`}, ", ")
 	return s
 }
