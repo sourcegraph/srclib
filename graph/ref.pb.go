@@ -5,7 +5,6 @@
 package graph
 
 import proto "github.com/gogo/protobuf/proto"
-import math "math"
 
 // discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto/gogo.pb"
 
@@ -20,51 +19,48 @@ import reflect "reflect"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
-var _ = math.Inf
 
-// START Ref OMIT
 // Ref represents a reference from source code to a Def.
 type Ref struct {
 	// DefRepo is the repository URI of the Def that this Ref refers
 	// to.
-	DefRepo string `protobuf:"bytes,1,opt,name=def_repo" json:"DefRepo,omitempty"`
+	DefRepo string `protobuf:"bytes,1,opt,name=def_repo,proto3" json:"DefRepo,omitempty"`
 	// DefUnitType is the source unit type of the Def that this Ref refers to.
-	DefUnitType string `protobuf:"bytes,3,opt,name=def_unit_type" json:"DefUnitType,omitempty"`
+	DefUnitType string `protobuf:"bytes,3,opt,name=def_unit_type,proto3" json:"DefUnitType,omitempty"`
 	// DefUnit is the name of the source unit that this ref exists in.
-	DefUnit string `protobuf:"bytes,4,opt,name=def_unit" json:"DefUnit,omitempty"`
+	DefUnit string `protobuf:"bytes,4,opt,name=def_unit,proto3" json:"DefUnit,omitempty"`
 	// Path is the path of the Def that this ref refers to.
-	DefPath string `protobuf:"bytes,5,opt,name=def_path" json:"DefPath"`
+	DefPath string `protobuf:"bytes,5,opt,name=def_path,proto3" json:"DefPath"`
 	// Repo is the VCS repository in which this ref exists.
-	Repo string `protobuf:"bytes,6,opt,name=repo" json:"Repo,omitempty"`
+	Repo string `protobuf:"bytes,6,opt,name=repo,proto3" json:"Repo,omitempty"`
 	// CommitID is the ID of the VCS commit that this ref exists
 	// in. The CommitID is always a full commit ID (40 hexadecimal
 	// characters for git and hg), never a branch or tag name.
-	CommitID string `protobuf:"bytes,7,opt,name=commit_id" json:"CommitID,omitempty"`
+	CommitID string `protobuf:"bytes,7,opt,name=commit_id,proto3" json:"CommitID,omitempty"`
 	// UnitType is the type name of the source unit that this ref
 	// exists in.
-	UnitType string `protobuf:"bytes,8,opt,name=unit_type" json:"UnitType,omitempty"`
+	UnitType string `protobuf:"bytes,8,opt,name=unit_type,proto3" json:"UnitType,omitempty"`
 	// Unit is the name of the source unit that this ref exists in.
-	Unit string `protobuf:"bytes,9,opt,name=unit" json:"Unit,omitempty"`
+	Unit string `protobuf:"bytes,9,opt,name=unit,proto3" json:"Unit,omitempty"`
 	// Def is true if this Ref spans the name of the Def it points to.
-	Def bool `protobuf:"varint,17,opt,name=def" json:"Def,omitempty"`
+	Def bool `protobuf:"varint,17,opt,name=def,proto3" json:"Def,omitempty"`
 	// File is the filename in which this Ref exists.
-	File string `protobuf:"bytes,10,opt,name=file" json:"File,omitempty"`
+	File string `protobuf:"bytes,10,opt,name=file,proto3" json:"File,omitempty"`
 	// Start is the byte offset of this ref's first byte in File.
-	Start uint32 `protobuf:"varint,11,opt,name=start" json:"Start"`
+	Start uint32 `protobuf:"varint,11,opt,name=start,proto3" json:"Start"`
 	// End is the byte offset of this ref's last byte in File.
-	End uint32 `protobuf:"varint,12,opt,name=end" json:"End"`
+	End uint32 `protobuf:"varint,12,opt,name=end,proto3" json:"End"`
 }
-// END Ref OMIT
 
 func (m *Ref) Reset()         { *m = Ref{} }
 func (m *Ref) String() string { return proto.CompactTextString(m) }
 func (*Ref) ProtoMessage()    {}
 
 type RefDefKey struct {
-	DefRepo     string `protobuf:"bytes,1,opt,name=def_repo" json:"DefRepo,omitempty"`
-	DefUnitType string `protobuf:"bytes,3,opt,name=def_unit_type" json:"DefUnitType,omitempty"`
-	DefUnit     string `protobuf:"bytes,4,opt,name=def_unit" json:"DefUnit,omitempty"`
-	DefPath     string `protobuf:"bytes,5,opt,name=def_path" json:"DefPath"`
+	DefRepo     string `protobuf:"bytes,1,opt,name=def_repo,proto3" json:"DefRepo,omitempty"`
+	DefUnitType string `protobuf:"bytes,3,opt,name=def_unit_type,proto3" json:"DefUnitType,omitempty"`
+	DefUnit     string `protobuf:"bytes,4,opt,name=def_unit,proto3" json:"DefUnit,omitempty"`
+	DefPath     string `protobuf:"bytes,5,opt,name=def_path,proto3" json:"DefPath"`
 }
 
 func (m *RefDefKey) Reset()         { *m = RefDefKey{} }
@@ -492,26 +488,50 @@ func (m *Ref) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.DefRepo)
-	n += 1 + l + sovRef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovRef(uint64(l))
+	}
 	l = len(m.DefUnitType)
-	n += 1 + l + sovRef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovRef(uint64(l))
+	}
 	l = len(m.DefUnit)
-	n += 1 + l + sovRef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovRef(uint64(l))
+	}
 	l = len(m.DefPath)
-	n += 1 + l + sovRef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovRef(uint64(l))
+	}
 	l = len(m.Repo)
-	n += 1 + l + sovRef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovRef(uint64(l))
+	}
 	l = len(m.CommitID)
-	n += 1 + l + sovRef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovRef(uint64(l))
+	}
 	l = len(m.UnitType)
-	n += 1 + l + sovRef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovRef(uint64(l))
+	}
 	l = len(m.Unit)
-	n += 1 + l + sovRef(uint64(l))
-	n += 3
+	if l > 0 {
+		n += 1 + l + sovRef(uint64(l))
+	}
+	if m.Def {
+		n += 3
+	}
 	l = len(m.File)
-	n += 1 + l + sovRef(uint64(l))
-	n += 1 + sovRef(uint64(m.Start))
-	n += 1 + sovRef(uint64(m.End))
+	if l > 0 {
+		n += 1 + l + sovRef(uint64(l))
+	}
+	if m.Start != 0 {
+		n += 1 + sovRef(uint64(m.Start))
+	}
+	if m.End != 0 {
+		n += 1 + sovRef(uint64(m.End))
+	}
 	return n
 }
 
@@ -519,13 +539,21 @@ func (m *RefDefKey) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.DefRepo)
-	n += 1 + l + sovRef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovRef(uint64(l))
+	}
 	l = len(m.DefUnitType)
-	n += 1 + l + sovRef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovRef(uint64(l))
+	}
 	l = len(m.DefUnit)
-	n += 1 + l + sovRef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovRef(uint64(l))
+	}
 	l = len(m.DefPath)
-	n += 1 + l + sovRef(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovRef(uint64(l))
+	}
 	return n
 }
 
@@ -557,58 +585,82 @@ func (m *Ref) MarshalTo(data []byte) (n int, err error) {
 	_ = i
 	var l int
 	_ = l
-	data[i] = 0xa
-	i++
-	i = encodeVarintRef(data, i, uint64(len(m.DefRepo)))
-	i += copy(data[i:], m.DefRepo)
-	data[i] = 0x1a
-	i++
-	i = encodeVarintRef(data, i, uint64(len(m.DefUnitType)))
-	i += copy(data[i:], m.DefUnitType)
-	data[i] = 0x22
-	i++
-	i = encodeVarintRef(data, i, uint64(len(m.DefUnit)))
-	i += copy(data[i:], m.DefUnit)
-	data[i] = 0x2a
-	i++
-	i = encodeVarintRef(data, i, uint64(len(m.DefPath)))
-	i += copy(data[i:], m.DefPath)
-	data[i] = 0x32
-	i++
-	i = encodeVarintRef(data, i, uint64(len(m.Repo)))
-	i += copy(data[i:], m.Repo)
-	data[i] = 0x3a
-	i++
-	i = encodeVarintRef(data, i, uint64(len(m.CommitID)))
-	i += copy(data[i:], m.CommitID)
-	data[i] = 0x42
-	i++
-	i = encodeVarintRef(data, i, uint64(len(m.UnitType)))
-	i += copy(data[i:], m.UnitType)
-	data[i] = 0x4a
-	i++
-	i = encodeVarintRef(data, i, uint64(len(m.Unit)))
-	i += copy(data[i:], m.Unit)
-	data[i] = 0x88
-	i++
-	data[i] = 0x1
-	i++
-	if m.Def {
-		data[i] = 1
-	} else {
-		data[i] = 0
+	if len(m.DefRepo) > 0 {
+		data[i] = 0xa
+		i++
+		i = encodeVarintRef(data, i, uint64(len(m.DefRepo)))
+		i += copy(data[i:], m.DefRepo)
 	}
-	i++
-	data[i] = 0x52
-	i++
-	i = encodeVarintRef(data, i, uint64(len(m.File)))
-	i += copy(data[i:], m.File)
-	data[i] = 0x58
-	i++
-	i = encodeVarintRef(data, i, uint64(m.Start))
-	data[i] = 0x60
-	i++
-	i = encodeVarintRef(data, i, uint64(m.End))
+	if len(m.DefUnitType) > 0 {
+		data[i] = 0x1a
+		i++
+		i = encodeVarintRef(data, i, uint64(len(m.DefUnitType)))
+		i += copy(data[i:], m.DefUnitType)
+	}
+	if len(m.DefUnit) > 0 {
+		data[i] = 0x22
+		i++
+		i = encodeVarintRef(data, i, uint64(len(m.DefUnit)))
+		i += copy(data[i:], m.DefUnit)
+	}
+	if len(m.DefPath) > 0 {
+		data[i] = 0x2a
+		i++
+		i = encodeVarintRef(data, i, uint64(len(m.DefPath)))
+		i += copy(data[i:], m.DefPath)
+	}
+	if len(m.Repo) > 0 {
+		data[i] = 0x32
+		i++
+		i = encodeVarintRef(data, i, uint64(len(m.Repo)))
+		i += copy(data[i:], m.Repo)
+	}
+	if len(m.CommitID) > 0 {
+		data[i] = 0x3a
+		i++
+		i = encodeVarintRef(data, i, uint64(len(m.CommitID)))
+		i += copy(data[i:], m.CommitID)
+	}
+	if len(m.UnitType) > 0 {
+		data[i] = 0x42
+		i++
+		i = encodeVarintRef(data, i, uint64(len(m.UnitType)))
+		i += copy(data[i:], m.UnitType)
+	}
+	if len(m.Unit) > 0 {
+		data[i] = 0x4a
+		i++
+		i = encodeVarintRef(data, i, uint64(len(m.Unit)))
+		i += copy(data[i:], m.Unit)
+	}
+	if len(m.File) > 0 {
+		data[i] = 0x52
+		i++
+		i = encodeVarintRef(data, i, uint64(len(m.File)))
+		i += copy(data[i:], m.File)
+	}
+	if m.Start != 0 {
+		data[i] = 0x58
+		i++
+		i = encodeVarintRef(data, i, uint64(m.Start))
+	}
+	if m.End != 0 {
+		data[i] = 0x60
+		i++
+		i = encodeVarintRef(data, i, uint64(m.End))
+	}
+	if m.Def {
+		data[i] = 0x88
+		i++
+		data[i] = 0x1
+		i++
+		if m.Def {
+			data[i] = 1
+		} else {
+			data[i] = 0
+		}
+		i++
+	}
 	return i, nil
 }
 
@@ -627,22 +679,30 @@ func (m *RefDefKey) MarshalTo(data []byte) (n int, err error) {
 	_ = i
 	var l int
 	_ = l
-	data[i] = 0xa
-	i++
-	i = encodeVarintRef(data, i, uint64(len(m.DefRepo)))
-	i += copy(data[i:], m.DefRepo)
-	data[i] = 0x1a
-	i++
-	i = encodeVarintRef(data, i, uint64(len(m.DefUnitType)))
-	i += copy(data[i:], m.DefUnitType)
-	data[i] = 0x22
-	i++
-	i = encodeVarintRef(data, i, uint64(len(m.DefUnit)))
-	i += copy(data[i:], m.DefUnit)
-	data[i] = 0x2a
-	i++
-	i = encodeVarintRef(data, i, uint64(len(m.DefPath)))
-	i += copy(data[i:], m.DefPath)
+	if len(m.DefRepo) > 0 {
+		data[i] = 0xa
+		i++
+		i = encodeVarintRef(data, i, uint64(len(m.DefRepo)))
+		i += copy(data[i:], m.DefRepo)
+	}
+	if len(m.DefUnitType) > 0 {
+		data[i] = 0x1a
+		i++
+		i = encodeVarintRef(data, i, uint64(len(m.DefUnitType)))
+		i += copy(data[i:], m.DefUnitType)
+	}
+	if len(m.DefUnit) > 0 {
+		data[i] = 0x22
+		i++
+		i = encodeVarintRef(data, i, uint64(len(m.DefUnit)))
+		i += copy(data[i:], m.DefUnit)
+	}
+	if len(m.DefPath) > 0 {
+		data[i] = 0x2a
+		i++
+		i = encodeVarintRef(data, i, uint64(len(m.DefPath)))
+		i += copy(data[i:], m.DefPath)
+	}
 	return i, nil
 }
 
@@ -686,10 +746,10 @@ func (this *Ref) GoString() string {
 		`CommitID:` + fmt.Sprintf("%#v", this.CommitID),
 		`UnitType:` + fmt.Sprintf("%#v", this.UnitType),
 		`Unit:` + fmt.Sprintf("%#v", this.Unit),
-		`Def:` + fmt.Sprintf("%#v", this.Def),
 		`File:` + fmt.Sprintf("%#v", this.File),
 		`Start:` + fmt.Sprintf("%#v", this.Start),
-		`End:` + fmt.Sprintf("%#v", this.End) + `}`}, ", ")
+		`End:` + fmt.Sprintf("%#v", this.End),
+		`Def:` + fmt.Sprintf("%#v", this.Def) + `}`}, ", ")
 	return s
 }
 func (this *RefDefKey) GoString() string {

@@ -1,3 +1,4 @@
+syntax = "proto3";
 package ann;
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
@@ -14,38 +15,38 @@ option (gogoproto.unmarshaler_all) = true;
 // Start, End, Type).
 message Ann {
     // Repo is the VCS repository in which this ann exists.
-    optional string repo = 1 [(gogoproto.nullable) = false, (gogoproto.jsontag) = "Repo,omitempty"];
+    optional string repo = 1 [(gogoproto.jsontag) = "Repo,omitempty"];
 
     // CommitID is the ID of the VCS commit that this ann exists
     // in. The CommitID is always a full commit ID (40 hexadecimal
     // characters for git and hg), never a branch or tag name.
-    optional string commit_id = 2 [(gogoproto.nullable) = false, (gogoproto.customname) = "CommitID", (gogoproto.jsontag) = "CommitID,omitempty"];
+    optional string commit_id = 2 [(gogoproto.customname) = "CommitID", (gogoproto.jsontag) = "CommitID,omitempty"];
 
     // UnitType is the source unit type that the annotation exists
     // on. It is either the source unit type during whose processing
     // the annotation was detected/created. Multiple annotations may
     // exist on the same file from different source unit types if a
     // file is contained in multiple source units.
-    optional string unit_type = 3 [(gogoproto.nullable) = false, (gogoproto.customname) = "UnitType", (gogoproto.jsontag) = "UnitType,omitempty"];
+    optional string unit_type = 3 [(gogoproto.customname) = "UnitType", (gogoproto.jsontag) = "UnitType,omitempty"];
 
     // Unit is the name of the source unit that this ann exists in.
-    optional string unit = 4 [(gogoproto.nullable) = false, (gogoproto.jsontag) = "Unit,omitempty"];
+    optional string unit = 4 [(gogoproto.jsontag) = "Unit,omitempty"];
 
     // File is the filename in which this Ann exists.
-    optional string file = 5 [(gogoproto.nullable) = false, (gogoproto.jsontag) = "File,omitempty"];
+    optional string file = 5 [(gogoproto.jsontag) = "File,omitempty"];
 
     // Start is the byte offset of this ann's first byte in File.
-    optional uint32 start = 6 [(gogoproto.nullable) = false, (gogoproto.jsontag) = "Start"];
+    optional uint32 start = 6 [(gogoproto.jsontag) = "Start"];
 
     // End is the byte offset of this ann's last byte in File.
-    optional uint32 end = 7 [(gogoproto.nullable) = false, (gogoproto.jsontag) = "End"];
+    optional uint32 end = 7 [(gogoproto.jsontag) = "End"];
 
     // Type is the type of the annotation. See this package's type
     // constants for a list of possible types.
-    optional string type = 8 [(gogoproto.nullable) = false, (gogoproto.jsontag) = "Type"];
+    optional string type = 8 [(gogoproto.jsontag) = "Type"];
 
     // Data contains arbitrary JSON data that is specific to this
     // annotation type (e.g., the link URL for Link annotations).
-    optional bytes data = 9 [(gogoproto.nullable) = false, (gogoproto.jsontag) = "Data,omitempty"];
+    optional bytes data = 9 [(gogoproto.jsontag) = "Data,omitempty"];
 
 };

@@ -5,7 +5,6 @@
 package graph
 
 import proto "github.com/gogo/protobuf/proto"
-import math "math"
 
 // discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto/gogo.pb"
 
@@ -20,27 +19,24 @@ import reflect "reflect"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
-var _ = math.Inf
 
-// START Doc OMIT
 // Doc is documentation on a Def.
 type Doc struct {
 	// DefKey points to the Def that this documentation pertains to.
-	DefKey `protobuf:"bytes,1,req,name=key,embedded=key" json:""`
+	DefKey `protobuf:"bytes,1,opt,name=key,embedded=key" json:""`
 	// Format is the the MIME-type that the documentation is stored
 	// in. Valid formats include 'text/html', 'text/plain',
 	// 'text/x-markdown', text/x-rst'.
-	Format string `protobuf:"bytes,2,opt,name=format" json:"Format"`
+	Format string `protobuf:"bytes,2,opt,name=format,proto3" json:"Format"`
 	// Data is the actual documentation text.
-	Data string `protobuf:"bytes,3,opt,name=data" json:"Data"`
+	Data string `protobuf:"bytes,3,opt,name=data,proto3" json:"Data"`
 	// File is the filename where this Doc exists.
-	File string `protobuf:"bytes,4,opt,name=file" json:"File,omitempty"`
+	File string `protobuf:"bytes,4,opt,name=file,proto3" json:"File,omitempty"`
 	// Start is the byte offset of this Doc's first byte in File.
-	Start uint32 `protobuf:"varint,5,opt,name=start" json:"Start,omitempty"`
+	Start uint32 `protobuf:"varint,5,opt,name=start,proto3" json:"Start,omitempty"`
 	// End is the byte offset of this Doc's last byte in File.
-	End uint32 `protobuf:"varint,6,opt,name=end" json:"End,omitempty"`
+	End uint32 `protobuf:"varint,6,opt,name=end,proto3" json:"End,omitempty"`
 }
-// END Doc OMIT
 
 func (m *Doc) Reset()         { *m = Doc{} }
 func (m *Doc) String() string { return proto.CompactTextString(m) }
@@ -215,13 +211,23 @@ func (m *Doc) Size() (n int) {
 	l = m.DefKey.Size()
 	n += 1 + l + sovDoc(uint64(l))
 	l = len(m.Format)
-	n += 1 + l + sovDoc(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovDoc(uint64(l))
+	}
 	l = len(m.Data)
-	n += 1 + l + sovDoc(uint64(l))
+	if l > 0 {
+		n += 1 + l + sovDoc(uint64(l))
+	}
 	l = len(m.File)
-	n += 1 + l + sovDoc(uint64(l))
-	n += 1 + sovDoc(uint64(m.Start))
-	n += 1 + sovDoc(uint64(m.End))
+	if l > 0 {
+		n += 1 + l + sovDoc(uint64(l))
+	}
+	if m.Start != 0 {
+		n += 1 + sovDoc(uint64(m.Start))
+	}
+	if m.End != 0 {
+		n += 1 + sovDoc(uint64(m.End))
+	}
 	return n
 }
 
@@ -261,24 +267,34 @@ func (m *Doc) MarshalTo(data []byte) (n int, err error) {
 		return 0, err
 	}
 	i += n1
-	data[i] = 0x12
-	i++
-	i = encodeVarintDoc(data, i, uint64(len(m.Format)))
-	i += copy(data[i:], m.Format)
-	data[i] = 0x1a
-	i++
-	i = encodeVarintDoc(data, i, uint64(len(m.Data)))
-	i += copy(data[i:], m.Data)
-	data[i] = 0x22
-	i++
-	i = encodeVarintDoc(data, i, uint64(len(m.File)))
-	i += copy(data[i:], m.File)
-	data[i] = 0x28
-	i++
-	i = encodeVarintDoc(data, i, uint64(m.Start))
-	data[i] = 0x30
-	i++
-	i = encodeVarintDoc(data, i, uint64(m.End))
+	if len(m.Format) > 0 {
+		data[i] = 0x12
+		i++
+		i = encodeVarintDoc(data, i, uint64(len(m.Format)))
+		i += copy(data[i:], m.Format)
+	}
+	if len(m.Data) > 0 {
+		data[i] = 0x1a
+		i++
+		i = encodeVarintDoc(data, i, uint64(len(m.Data)))
+		i += copy(data[i:], m.Data)
+	}
+	if len(m.File) > 0 {
+		data[i] = 0x22
+		i++
+		i = encodeVarintDoc(data, i, uint64(len(m.File)))
+		i += copy(data[i:], m.File)
+	}
+	if m.Start != 0 {
+		data[i] = 0x28
+		i++
+		i = encodeVarintDoc(data, i, uint64(m.Start))
+	}
+	if m.End != 0 {
+		data[i] = 0x30
+		i++
+		i = encodeVarintDoc(data, i, uint64(m.End))
+	}
 	return i, nil
 }
 
