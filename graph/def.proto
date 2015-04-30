@@ -82,27 +82,22 @@ message Def {
     // Local.
     optional bool local = 8 [(gogoproto.jsontag) = "Local,omitempty"];
 
-    // Virtual is whether this def does NOT have a location in source.
-    // If virtual, then the def does not have source code location. An
-    // example of a virtual def is a Java class defined in a JAR file.
-    optional bool virtual = 9 [(gogoproto.jsontag) = "Virtual,omitempty"];
-
     // Test is whether this def is defined in test code (as opposed to main
     // code). For example, definitions in Go *_test.go files have Test = true.
-    optional bool test = 10 [(gogoproto.jsontag) = "Test,omitempty"];
+    optional bool test = 9 [(gogoproto.jsontag) = "Test,omitempty"];
 
     // Data contains additional language- and toolchain-specific information
     // about the def. Data is used to construct function signatures,
     // import/require statements, language-specific type descriptions, etc.
     //
     // To use json.RawMessage:
-    //optional bytes data = 11 [(gogoproto.customtype) = "encoding/json.RawMessage", (gogoproto.jsontag) = "Data,omitempty"];
-    optional bytes data = 11 [(gogoproto.jsontag) = "Data,omitempty"];
+    //optional bytes data = 10 [(gogoproto.customtype) = "encoding/json.RawMessage", (gogoproto.jsontag) = "Data,omitempty"];
+    optional bytes data = 10 [(gogoproto.jsontag) = "Data,omitempty"];
 
     // Docs are docstrings for this Def. This field is not set in the
     // Defs produced by graphers; they should emit docs in the
     // separate Docs field on the graph.Output struct.
-    repeated DefDoc docs = 12 [(gogoproto.jsontag) = "Docs,omitempty"];
+    repeated DefDoc docs = 11 [(gogoproto.jsontag) = "Docs,omitempty"];
 
     // TreePath is a structurally significant path descriptor for a def. For
     // many languages, it may be identical or similar to DefKey.Path.
