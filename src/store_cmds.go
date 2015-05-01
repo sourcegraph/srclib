@@ -197,7 +197,7 @@ func (c *StoreImportCmd) Execute(args []string) error {
 		return c.sample(s)
 	}
 
-	bdfs, label, err := getBuildDataFS(!c.RemoteBuildData, c.Repo, c.CommitID)
+	bdfs, label, err := GetBuildDataFS(!c.RemoteBuildData, c.Repo, c.CommitID)
 	if err != nil {
 		return err
 	}
