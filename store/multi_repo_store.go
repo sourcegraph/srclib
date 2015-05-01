@@ -41,4 +41,11 @@ type MultiRepoStoreImporter interface {
 	MultiRepoImporter
 }
 
+// A MultiRepoStoreImporterIndexer implements all 3 interfaces.
+type MultiRepoStoreImporterIndexer interface {
+	MultiRepoStore
+	MultiRepoImporter
+	MultiRepoIndexer
+}
+
 // TODO(sqs): What should the Repo type be? Right now it is just string.

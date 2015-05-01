@@ -38,11 +38,11 @@ type fsMultiRepoStore struct {
 	repoStores
 }
 
-var _ MultiRepoStoreImporter = (*fsMultiRepoStore)(nil)
+var _ MultiRepoStoreImporterIndexer = (*fsMultiRepoStore)(nil)
 
 // NewFSMultiRepoStore creates a new repository store (that can be
 // imported into) that is backed by files on a filesystem.
-func NewFSMultiRepoStore(fs rwvfs.WalkableFileSystem, conf *FSMultiRepoStoreConf) MultiRepoStoreImporter {
+func NewFSMultiRepoStore(fs rwvfs.WalkableFileSystem, conf *FSMultiRepoStoreConf) MultiRepoStoreImporterIndexer {
 	if conf == nil {
 		conf = &FSMultiRepoStoreConf{}
 	}
