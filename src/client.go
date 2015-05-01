@@ -75,9 +75,14 @@ func (c *credentialOpts) WithCredentials(ctx context.Context) (context.Context, 
 // Client returns a Sourcegraph API client configured to use the
 // specified endpoints and authentication info.
 func Client() *sourcegraph.Client {
-	ctx := context.Background()
+	return sourcegraph.NewClientFromContext(WithClientContext(context.Background()))
+}
+
+// WithClientContext returns a copy of parent with client endpoint and
+// auth information added.
+func WithClientContext(parent context.Context) context.Context {
 	var err error
-	ctx, err = Endpoints.WithEndpoints(ctx)
+	ctx, err := Endpoints.WithEndpoints(parent)
 	if err != nil {
 		log.Fatalf("Error constructing API client endpoints: %s.", err)
 	}
@@ -85,7 +90,7 @@ func Client() *sourcegraph.Client {
 	if err != nil {
 		log.Fatalf("Error constructing API client credentials: %s.", err)
 	}
-	return sourcegraph.NewClientFromContext(ctx)
+	return ctx
 }
 
 func getEndpointURL() *url.URL {
