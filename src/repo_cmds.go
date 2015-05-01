@@ -39,7 +39,7 @@ func (c *RepoCmd) Execute(args []string) error {
 			fmt.Printf("# Warning: %s\n", localRepoErr)
 			fmt.Println("# Not trying to fetch and display remote repository information due to the above error.")
 		} else {
-			cl := NewAPIClientWithAuthIfPresent()
+			cl := Client()
 			remoteRepo, err := getRemoteRepo(cl)
 			if err == nil {
 				fmt.Println("# Remote repository:")

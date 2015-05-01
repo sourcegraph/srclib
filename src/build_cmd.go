@@ -28,7 +28,7 @@ type BuildCmd struct {
 var buildCmd BuildCmd
 
 func (c *BuildCmd) Execute(args []string) error {
-	cl := NewAPIClientWithAuthIfPresent()
+	cl := Client()
 
 	rrepo, err := getRemoteRepo(cl)
 	if err != nil {

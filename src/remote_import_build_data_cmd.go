@@ -34,7 +34,7 @@ type RemoteImportBuildCmd struct {
 var remoteImportBuildCmd RemoteImportBuildCmd
 
 func (c *RemoteImportBuildCmd) Execute(args []string) error {
-	cl := NewAPIClientWithAuthIfPresent()
+	cl := Client()
 
 	if GlobalOpt.Verbose {
 		log.Printf("Creating a new import-only build for repo %q commit %q", remoteCmd.RepoURI, c.CommitID)
