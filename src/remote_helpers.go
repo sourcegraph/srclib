@@ -16,7 +16,7 @@ import (
 func getRemoteRepo(cl *sourcegraph.Client) (*sourcegraph.Repo, error) {
 	lrepo, err := openLocalRepo()
 	if err != nil {
-		return nil, localRepoErr
+		return nil, err
 	}
 	if lrepo.CloneURL == "" {
 		return nil, errNoVCSCloneURL
