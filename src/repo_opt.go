@@ -11,11 +11,21 @@ import (
 var (
 	localRepo    *Repo
 	localRepoErr error
+
+	// CacheLocalRepo controls whether openLocalRepo caches the
+	// results of OpenRepo the first time it runs and returns the same
+	// repo for all subsequent calls (even if you call os.Chdir, for
+	// example).
+	CacheLocalRepo = true
 )
 
 // openLocalRepo opens the VCS repository in or above the current
 // directory.
 func openLocalRepo() (*Repo, error) {
+	if !CacheLocalRepo {
+		return OpenRepo(".")
+	}
+
 	// Only try to open the current-dir repo once (we'd get the same result each
 	// time, since we never modify it).
 	if localRepo == nil && localRepoErr == nil {
