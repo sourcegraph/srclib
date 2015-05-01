@@ -40,6 +40,8 @@ func (c *RepoCmd) Execute(args []string) error {
 			fmt.Println("# Not trying to fetch and display remote repository information due to the above error.")
 		} else {
 			cl := Client()
+			defer cl.Close()
+
 			remoteRepo, err := getRemoteRepo(cl)
 			if err == nil {
 				fmt.Println("# Remote repository:")

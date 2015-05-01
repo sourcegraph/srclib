@@ -35,6 +35,7 @@ var remoteImportBuildCmd RemoteImportBuildCmd
 
 func (c *RemoteImportBuildCmd) Execute(args []string) error {
 	cl := Client()
+	defer cl.Close()
 
 	if GlobalOpt.Verbose {
 		log.Printf("Creating a new import-only build for repo %q commit %q", remoteCmd.RepoURI, c.CommitID)
