@@ -99,7 +99,7 @@ func (c *LoginCmd) Execute(args []string) error {
 	if !c.NoVerify {
 		// Overwrite Credentials to only have the API key, so we know
 		// we're testing only the API key's validity.
-		Credentials = credentialOpts{APIKey: c.Key}
+		Credentials = CredentialOpts{APIKey: c.Key}
 		authedAPIClient := Client()
 		authInfo, err := authedAPIClient.UserAuth.Identify(context.TODO(), &pbtypes.Void{})
 		if err != nil {

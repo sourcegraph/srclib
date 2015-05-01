@@ -16,17 +16,17 @@ func AddClientConfig(p *flags.Parser) {
 
 func init() { AddClientConfig(CLI) }
 
-// endpointOpts sets the URLs to use for contacting the Sourcegraph
+// EndpointOpts sets the URLs to use for contacting the Sourcegraph
 // server's API.
-type endpointOpts struct {
+type EndpointOpts struct {
 	HTTPEndpoint string `long:"http-endpoint" description:"base URL to HTTP API" default:"http://localhost:3000/api/" env:"SG_API_URL"`
 	GRPCEndpoint string `long:"grpc-endpoint" description:"base URL to gRPC API" default:"http://localhost:3100" env:"SG_GRPC_URL"`
 }
 
-var Endpoints endpointOpts
+var Endpoints EndpointOpts
 
 // WithEndpoints sets the HTTP and gRPC endpoint in the context.
-func (c *endpointOpts) WithEndpoints(ctx context.Context) (context.Context, error) {
+func (c *EndpointOpts) WithEndpoints(ctx context.Context) (context.Context, error) {
 	httpEndpoint, err := url.Parse(c.HTTPEndpoint)
 	if err != nil {
 		return nil, err
@@ -42,18 +42,18 @@ func (c *endpointOpts) WithEndpoints(ctx context.Context) (context.Context, erro
 	return ctx, nil
 }
 
-// credentialOpts sets the authentication credentials to use when
+// CredentialOpts sets the authentication credentials to use when
 // contacting the Sourcegraph server's API.
-type credentialOpts struct {
+type CredentialOpts struct {
 	APIKey   string   `long:"api-key" description:"API key" env:"SRC_KEY"`
 	Tickets  []string `long:"ticket" description:"tickets" env:"SRCLIB_TICKET"`
 	AuthFile string   `long:"auth-file" description:"path to .src-auth" default:"$HOME/.src-auth"`
 }
 
-var Credentials credentialOpts
+var Credentials CredentialOpts
 
 // WithCredentials sets the HTTP and gRPC credentials in the context.
-func (c *credentialOpts) WithCredentials(ctx context.Context) (context.Context, error) {
+func (c *CredentialOpts) WithCredentials(ctx context.Context) (context.Context, error) {
 	if c.APIKey != "" {
 		ctx = sourcegraph.WithClientCredentials(ctx, &sourcegraph.APIKeyAuth{Key: c.APIKey})
 	}
