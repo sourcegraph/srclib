@@ -137,6 +137,8 @@ func (c *WhoamiCmd) Execute(args []string) error {
 	}
 
 	cl := Client()
+	defer cl.Close()
+
 	authInfo, err := cl.UserAuth.Identify(context.TODO(), &pbtypes.Void{})
 	if err != nil {
 		log.Fatalf("Error verifying auth credentials with endpoint %s: %s.", endpointURL, err)

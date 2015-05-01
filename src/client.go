@@ -75,6 +75,7 @@ func (c *CredentialOpts) WithCredentials(ctx context.Context) (context.Context, 
 // Client returns a Sourcegraph API client configured to use the
 // specified endpoints and authentication info.
 func Client() *sourcegraph.Client {
+	_ = "find_unclosed_clients:ignore"
 	return sourcegraph.NewClientFromContext(WithClientContext(context.Background()))
 }
 
