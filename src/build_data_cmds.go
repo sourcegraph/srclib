@@ -100,7 +100,7 @@ func (c buildDataSingleCommitCommonOpts) getLocalFileSystem() (rwvfs.FileSystem,
 }
 
 func (c buildDataSingleCommitCommonOpts) getRemoteFileSystem() (rwvfs.FileSystem, string, sourcegraph.RepoRevSpec, error) {
-	cl := NewAPIClientWithAuthIfPresent()
+	cl := Client()
 	rrepo, err := getRemoteRepo(cl)
 	if err != nil {
 		return nil, "", sourcegraph.RepoRevSpec{}, err
@@ -145,7 +145,7 @@ func getRemoteBuildDataFS(repo, commitID string) (rwvfs.FileSystem, string, sour
 		err := errors.New("getRemoteBuildDataFS: repo cannot be empty")
 		return nil, "", sourcegraph.RepoRevSpec{}, err
 	}
-	cl := NewAPIClientWithAuthIfPresent()
+	cl := Client()
 	rrepo, err := cl.Repos.Get(context.TODO(), &sourcegraph.RepoSpec{URI: repo})
 	if err != nil {
 		return nil, "", sourcegraph.RepoRevSpec{}, fmt.Errorf("repo %s: %s", repo, err)
@@ -206,7 +206,7 @@ func (c *BuildDataListCmd) Execute(args []string) error {
 	// Only used for constructing the URLs for remote build data.
 	var repoRevSpec sourcegraph.RepoRevSpec
 	if !c.Local {
-		cl := NewAPIClientWithAuthIfPresent()
+		cl := Client()
 		rrepo, err := getRemoteRepo(cl)
 		if err != nil {
 			return err
@@ -416,9 +416,8 @@ func (c *BuildDataFetchCmd) Execute(args []string) error {
 	// Use uncached API client because the .srclib-cache already
 	// caches it, and we want to be able to stream large files.
 	//
-	// TODO(sqs): this uncached client isn't authed because it doesn't
-	// have the other API client's http.Client or http.RoundTripper
-	cl := newAPIClientWithAuth(false)
+	// TODO(sqs!): I ripped this out for nodb, implement it again
+	cl := Client()
 	remoteFS, err = cl.BuildData.FileSystem(repoRevSpec)
 	if err != nil {
 		return err

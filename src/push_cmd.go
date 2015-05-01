@@ -25,7 +25,7 @@ type PushCmd struct {
 var pushCmd PushCmd
 
 func (c *PushCmd) Execute(args []string) error {
-	cl := NewAPIClientWithAuthIfPresent()
+	cl := Client()
 	rrepo, err := getRemoteRepo(cl)
 	if err != nil {
 		return err

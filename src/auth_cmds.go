@@ -9,9 +9,10 @@ import (
 	"golang.org/x/net/context"
 
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
+	"sourcegraph.com/sqs/pbtypes"
 )
 
-var userAuthFile = filepath.Join(os.Getenv("HOME"), ".srclib-auth")
+var userAuthFile = filepath.Join(os.Getenv("HOME"), ".src-auth")
 
 // userAuth holds user auth credentials keyed on API endpoint
 // URL. It's typically saved in a file named by userAuthFile.
@@ -20,7 +21,6 @@ type userAuth map[string]*userEndpointAuth
 // userEndpointAuth holds a user's authentication credentials for a
 // srclib endpoint.
 type userEndpointAuth struct {
-	UID int    // User ID
 	Key string // API key
 }
 
@@ -77,8 +77,7 @@ func init() {
 }
 
 type LoginCmd struct {
-	UID int    `long:"uid" description:"Sourcegraph UID" required:"yes"`
-	Key string `long:"key" description:"Sourcegraph API key" required:"yes"`
+	Key string `long:"key" description:"Sourcegraph API key" required:"yes" env:"SRC_KEY"`
 
 	NoVerify bool `long:"no-verify" description:"don't verify login credentials by attempting to log in remotely"`
 }
@@ -94,16 +93,23 @@ func (c *LoginCmd) Execute(args []string) error {
 		a = userAuth{}
 	}
 
-	ua := userEndpointAuth{UID: c.UID, Key: c.Key}
+	ua := userEndpointAuth{Key: c.Key}
 	endpointURL := getEndpointURL()
 
 	if !c.NoVerify {
-		authedAPIClient := newAPIClient(&ua, true)
-		u, err := authedAPIClient.Users.Get(context.TODO(), &sourcegraph.UserSpec{UID: int32(c.UID)})
+		// Overwrite Credentials to only have the API key, so we know
+		// we're testing only the API key's validity.
+		Credentials = credentialOpts{APIKey: c.Key}
+		authedAPIClient := Client()
+		authInfo, err := authedAPIClient.UserAuth.Identify(context.TODO(), &pbtypes.Void{})
 		if err != nil {
 			log.Fatalf("Error verifying auth credentials with endpoint %s: %s.", endpointURL, err)
 		}
-		log.Printf("# Logged into %s as UID %d (%s) using API key.", endpointURL, c.UID, u.Login)
+		user, err := authedAPIClient.Users.Get(context.TODO(), &sourcegraph.UserSpec{UID: authInfo.UID})
+		if err != nil {
+			log.Fatalf("Error getting user with UID %d: %s.", authInfo.UID, err)
+		}
+		log.Printf("# Logged into %s as UID %d (%s) using API key.", endpointURL, user.UID, user.Login)
 	}
 
 	a[endpointURL.String()] = &ua
@@ -115,7 +121,6 @@ func (c *LoginCmd) Execute(args []string) error {
 }
 
 type WhoamiCmd struct {
-	NoVerify bool `long:"no-verify" description:"don't verify login credentials by attempting to log in remotely"`
 }
 
 var whoamiCmd WhoamiCmd
@@ -130,16 +135,17 @@ func (c *WhoamiCmd) Execute(args []string) error {
 	if ua == nil {
 		log.Fatalf("# No authentication info set for %s (use `src login` to authenticate)", endpointURL)
 	}
-	if c.NoVerify {
-		log.Printf("UID %d on %s (not verified remotely)", ua.UID, endpointURL)
-	} else {
-		cl := NewAPIClientWithAuthIfPresent()
-		u, err := cl.Users.Get(context.TODO(), &sourcegraph.UserSpec{UID: int32(ua.UID)})
-		if err != nil {
-			log.Fatalf("Error verifying auth credentials with endpoint %s: %s.", endpointURL, err)
-		}
-		log.Printf("%s (UID %d) on %s (verified remotely)", u.Login, ua.UID, endpointURL)
+
+	cl := Client()
+	authInfo, err := cl.UserAuth.Identify(context.TODO(), &pbtypes.Void{})
+	if err != nil {
+		log.Fatalf("Error verifying auth credentials with endpoint %s: %s.", endpointURL, err)
 	}
+	user, err := cl.Users.Get(context.TODO(), &sourcegraph.UserSpec{UID: authInfo.UID})
+	if err != nil {
+		log.Fatalf("Error getting user with UID %d: %s.", authInfo.UID, err)
+	}
+	log.Printf("%s (UID %d) on %s (verified remotely)", user.Login, user.UID, endpointURL)
 
 	return nil
 }

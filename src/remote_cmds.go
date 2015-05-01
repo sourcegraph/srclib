@@ -37,7 +37,7 @@ func (c *RemoteCmd) Execute(args []string) error {
 		return fmt.Errorf("no such subcommand: src remote %v; see src remote --help", strings.Join(args, " "))
 	}
 
-	cl := NewAPIClientWithAuthIfPresent()
+	cl := Client()
 	rrepo, err := c.getRemoteRepo(cl)
 	if err != nil {
 		return err
