@@ -125,7 +125,7 @@ func (c *buildDataSingleRepoCommonOpts) getFileSystem() (rwvfs.FileSystem, strin
 	if err != nil {
 		return nil, "", err
 	}
-	return getBuildDataFS(c.Local, lrepo.URI(), c.CommitID)
+	return GetBuildDataFS(c.Local, lrepo.URI(), c.CommitID)
 }
 
 func getLocalBuildDataFS(commitID string) (rwvfs.FileSystem, string, error) {
@@ -160,10 +160,10 @@ func getRemoteBuildDataFS(repo, commitID string) (rwvfs.FileSystem, string, sour
 	return fs, fmt.Sprintf("remote repository (URI %s, commit %s)", rrepo.URI, commitID), repoRevSpec, err
 }
 
-// getBuildDataFS gets the build data file system for repo at
+// GetBuildDataFS gets the build data file system for repo at
 // commitID. If local is true, repo is ignored and build data is
 // fetched for the local repo.
-func getBuildDataFS(local bool, repo, commitID string) (rwvfs.FileSystem, string, error) {
+func GetBuildDataFS(local bool, repo, commitID string) (rwvfs.FileSystem, string, error) {
 	if local {
 		return getLocalBuildDataFS(commitID)
 	}
