@@ -11,6 +11,9 @@ type MockMultiRepoStore struct {
 	Units_    func(...UnitFilter) ([]*unit.SourceUnit, error)
 	Defs_     func(...DefFilter) ([]*graph.Def, error)
 	Refs_     func(...RefFilter) ([]*graph.Ref, error)
+
+	Import_ func(repo, commitID string, unit *unit.SourceUnit, data graph.Output) error
+	Index_  func(repo, commitID string) error
 }
 
 func (m MockMultiRepoStore) Repos(f ...RepoFilter) ([]string, error) {
@@ -31,6 +34,14 @@ func (m MockMultiRepoStore) Defs(f ...DefFilter) ([]*graph.Def, error) {
 
 func (m MockMultiRepoStore) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 	return m.Refs_(f...)
+}
+
+func (m MockMultiRepoStore) Import(repo, commitID string, unit *unit.SourceUnit, data graph.Output) error {
+	return m.Import_(repo, commitID, unit, data)
+}
+
+func (m MockMultiRepoStore) Index(repo, commitID string) error {
+	return m.Index_(repo, commitID)
 }
 
 var _ MultiRepoStore = MockMultiRepoStore{}
