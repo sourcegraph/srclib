@@ -7,11 +7,7 @@ import "doc.proto";
 import "ref.proto";
 import "ann.proto";
 
-option (gogoproto.goproto_unrecognized_all) = false;
 option (gogoproto.goproto_getters_all) = false;
-option (gogoproto.marshaler_all) = true;
-option (gogoproto.sizer_all) = true;
-option (gogoproto.unmarshaler_all) = true;
 
 message Output {
     repeated Def defs = 1 [(gogoproto.jsontag) = "Defs,omitempty"];
