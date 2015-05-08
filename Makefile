@@ -11,7 +11,6 @@ src: ${GOBIN}/src
 ${GOBIN}/src: $(shell find . -type f -and -name '*.go')
 	go install ./cmd/src
 
-EQUINOX_APP=ap_BQxVz1iWMxmjQnbVGd85V58qz6
 release: upload-release check-release
 
 SELFUPDATE_TMPDIR=.tmp-selfupdate
