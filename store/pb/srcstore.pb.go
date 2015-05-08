@@ -106,9 +106,9 @@ func RegisterMultiRepoImporterServer(s *grpc.Server, srv MultiRepoImporterServer
 	s.RegisterService(&_MultiRepoImporter_serviceDesc, srv)
 }
 
-func _MultiRepoImporter_Import_Handler(srv interface{}, ctx context.Context, buf []byte) (interface{}, error) {
+func _MultiRepoImporter_Import_Handler(srv interface{}, ctx context.Context, codec grpc.Codec, buf []byte) (interface{}, error) {
 	in := new(ImportOp)
-	if err := proto.Unmarshal(buf, in); err != nil {
+	if err := codec.Unmarshal(buf, in); err != nil {
 		return nil, err
 	}
 	out, err := srv.(MultiRepoImporterServer).Import(ctx, in)
@@ -118,9 +118,9 @@ func _MultiRepoImporter_Import_Handler(srv interface{}, ctx context.Context, buf
 	return out, nil
 }
 
-func _MultiRepoImporter_Index_Handler(srv interface{}, ctx context.Context, buf []byte) (interface{}, error) {
+func _MultiRepoImporter_Index_Handler(srv interface{}, ctx context.Context, codec grpc.Codec, buf []byte) (interface{}, error) {
 	in := new(IndexOp)
-	if err := proto.Unmarshal(buf, in); err != nil {
+	if err := codec.Unmarshal(buf, in); err != nil {
 		return nil, err
 	}
 	out, err := srv.(MultiRepoImporterServer).Index(ctx, in)
