@@ -1,80 +1,60 @@
 package src
 
 import (
-	"fmt"
 	"log"
 
-	"github.com/inconshreveable/go-update"
-	"github.com/inconshreveable/go-update/check"
+	"github.com/sqs/go-selfupdate/selfupdate"
 )
 
 func init() {
 	_, err := CLI.AddCommand("selfupdate",
-		"update the 'src' program",
-		"Checks for updates. If an update is available, downloads and installs it. The next invocation of 'src' will use the updated program.",
-		&selfupdateCmd,
+		"update this program",
+		"The selfupdate command updates the src binary.",
+		&selfUpdateCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-const (
-	updateUri       = "https://api.equinox.io/1/Updates"
-	updatePublicKey = `-----BEGIN RSA PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2zGxdsE2sVXJlMgeOjXn
-LY43+PTZ4wCOw4GZ+PKS7lr0kyeCyn4veKZYHzbdNE1rByO+IZmutqn1ylbI92ck
-LKEBe/hKP5M6fnXVuVTPEjO/O27d/pJ9OmC9h3IqorV+G/1dJWlfyhZtqxbCCCbM
-d3XRztnRqpx/HI4HgM7Xjjt3U1Qn9pOB9+gcBFBBIVSePWhVkD/uoxP+tqaRUDmp
-fcUebuSxG4rsluJCEPoXhzwyJb1l79omTocevjRmyoo7ILxu5Et3w+t5qZ5tY7kL
-9EK3l6CPtp//uI8rrMgqsKejekUnNX6I8wd1zJZ9u9Aj/KXXid4AoebFCMf+tjFh
-twIDAQAB
------END RSA PUBLIC KEY-----`
-)
+var selfUpdateCmd SelfUpdateCmd
 
-type SelfupdateCmd struct {
+type SelfUpdateCmd struct {
+	CheckOnly bool `short:"n" long:"check-only" description:"check for update but do not download and install it"`
 }
 
-var selfupdateCmd SelfupdateCmd
-
-func (c *SelfupdateCmd) Execute(args []string) error {
-	log.Printf("Current: src %s.", Version)
-
-	r, err := checkForUpdate()
-	if err == check.NoUpdateAvailable {
-		fmt.Println("No updates available.")
-		return nil
-	} else if err != nil {
-		return fmt.Errorf("checking for update: %s.", err)
+func (c *SelfUpdateCmd) Execute(_ []string) error {
+	url := "https://srclib-release.s3.amazonaws.com/"
+	var u = &selfupdate.Updater{
+		CurrentVersion: Version,
+		ApiURL:         url,
+		BinURL:         url,
+		DiffURL:        url,
+		Dir:            "src",
+		CmdName:        "src",
 	}
 
-	log.Printf("Updating to src %s...", r.Version)
-
-	// apply update
-	err, errRecover := r.Update()
-	if err != nil {
-		if errRecover != nil {
-			return fmt.Errorf("update recovery failed: %s (%s) -- you may need to recover manually!", errRecover, err)
+	if c.CheckOnly {
+		if err := u.Check(); err != nil {
+			return err
 		}
-		return fmt.Errorf("update failed: %s", err)
+	} else {
+		if err := u.Update(); err != nil {
+			return err
+		}
 	}
 
-	fmt.Printf("Updated to src %s.\n", r.Version)
+	if u.CurrentVersion == u.Info.Version {
+		log.Printf("# No updates available (current version is %s)", u.CurrentVersion)
+	} else {
+		var title string
+		if c.CheckOnly {
+			title = "An update is available"
+		} else {
+			title = "Updated"
+		}
+		log.Printf("# %s: %s -> %s", title, u.CurrentVersion, u.Info.Version)
+	}
+
 	return nil
-}
-
-func checkForUpdate() (*check.Result, error) {
-	params := check.Params{
-		AppVersion: Version,
-		AppId:      "ap_BQxVz1iWMxmjQnbVGd85V58qz6",
-		Channel:    "stable",
-	}
-
-	up := update.New()
-	up, err := up.VerifySignatureWithPEM([]byte(updatePublicKey))
-	if err != nil {
-		return nil, fmt.Errorf("parse public key for updates: %s.", err)
-	}
-
-	return params.CheckForUpdate(updateUri, up)
 }
