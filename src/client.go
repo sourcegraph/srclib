@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/url"
 
+	"sync"
+
 	"golang.org/x/net/context"
 	"sourcegraph.com/sourcegraph/go-flags"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
@@ -33,6 +35,14 @@ func (c *EndpointOpts) WithEndpoints(ctx context.Context) (context.Context, erro
 	}
 	ctx = sourcegraph.WithHTTPEndpoint(ctx, httpEndpoint)
 
+	if httpEndpoint.Path != "/api/" {
+		logHTTPEndpointWarningOnce.Do(func() {
+			log.Println()
+			log.Printf("WARNING: The HTTP endpoint you specified (with --http-endpoint %q) does not end in '/api/', but it probably should. This parameter should point to the HTTP API root, not to the Sourcegraph homepage. If you incorrectly set it to the Sourcegraph homepage, you may get HTTP 404s from the server when hitting the API.", httpEndpoint)
+			log.Println()
+		})
+	}
+
 	grpcEndpoint, err := url.Parse(c.GRPCEndpoint)
 	if err != nil {
 		return nil, err
@@ -41,6 +51,8 @@ func (c *EndpointOpts) WithEndpoints(ctx context.Context) (context.Context, erro
 
 	return ctx, nil
 }
+
+var logHTTPEndpointWarningOnce sync.Once
 
 // CredentialOpts sets the authentication credentials to use when
 // contacting the Sourcegraph server's API.
