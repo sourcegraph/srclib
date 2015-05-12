@@ -554,6 +554,7 @@ OuterLoop:
 
 	if specValid {
 		apiclient := Client()
+		defer apiclient.Close()
 		var wg sync.WaitGroup
 		if resp.Def == nil {
 			// Def is not in the current repo. Try looking it up using the
