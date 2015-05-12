@@ -44,19 +44,11 @@ func OpenRepo(dir string) (*Repo, error) {
 	// VCS and root directory
 	var err error
 	rc.RootDir, rc.VCSType, err = getRootDir(dir)
-	if err != nil || rc.RootDir == "" {
-		log.Printf("Failed to detect git/hg repository root dir for %q; continuing.", dir)
-		// Be permissive and return a repo even if there is no git/hg repository.
-		wd, err := os.Getwd()
-		if err != nil {
-			return nil, err
-		}
-		rc.RootDir = wd
-		// TODO: Ensure that builds without commit ids are successful.
-		rc.CommitID = "ffffffffffffffffffffffffffffffffffffffff"
-		rc.VCSType = ""
-		rc.CloneURL = ""
-		return rc, nil
+	if err != nil {
+		return nil, fmt.Errorf("detecting git/hg repository in %s: %s", dir, err)
+	}
+	if rc.RootDir == "" {
+		return nil, fmt.Errorf("no git/hg repository found in or above %s", dir)
 	}
 
 	par := parallel.NewRun(4)
