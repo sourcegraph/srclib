@@ -29,7 +29,6 @@ var buildCmd BuildCmd
 
 func (c *BuildCmd) Execute(args []string) error {
 	cl := Client()
-	defer cl.Close()
 
 	rrepo, err := getRemoteRepo(cl)
 	if err != nil {

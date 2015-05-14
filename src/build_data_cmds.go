@@ -101,7 +101,6 @@ func (c buildDataSingleCommitCommonOpts) getLocalFileSystem() (rwvfs.FileSystem,
 
 func (c buildDataSingleCommitCommonOpts) getRemoteFileSystem() (rwvfs.FileSystem, string, sourcegraph.RepoRevSpec, error) {
 	cl := Client()
-	defer cl.Close()
 
 	rrepo, err := getRemoteRepo(cl)
 	if err != nil {
@@ -148,7 +147,6 @@ func getRemoteBuildDataFS(repo, commitID string) (rwvfs.FileSystem, string, sour
 		return nil, "", sourcegraph.RepoRevSpec{}, err
 	}
 	cl := Client()
-	defer cl.Close()
 
 	rrepo, err := cl.Repos.Get(context.TODO(), &sourcegraph.RepoSpec{URI: repo})
 	if err != nil {
@@ -211,7 +209,6 @@ func (c *BuildDataListCmd) Execute(args []string) error {
 	var repoRevSpec sourcegraph.RepoRevSpec
 	if !c.Local {
 		cl := Client()
-		defer cl.Close()
 
 		rrepo, err := getRemoteRepo(cl)
 		if err != nil {
@@ -424,7 +421,6 @@ func (c *BuildDataFetchCmd) Execute(args []string) error {
 	//
 	// TODO(sqs!): I ripped this out for nodb, implement it again
 	cl := Client()
-	defer cl.Close()
 
 	remoteFS, err = cl.BuildData.FileSystem(repoRevSpec)
 	if err != nil {

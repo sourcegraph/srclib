@@ -38,7 +38,6 @@ func (c *RemoteCmd) Execute(args []string) error {
 	}
 
 	cl := Client()
-	defer cl.Close()
 
 	rrepo, err := c.getRemoteRepo(cl)
 	if err != nil {

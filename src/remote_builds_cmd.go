@@ -36,7 +36,6 @@ var buildsCmd BuildsCmd
 
 func (c *BuildsCmd) Execute(args []string) error {
 	cl := Client()
-	defer cl.Close()
 
 	rrepo, err := remoteCmd.getRemoteRepo(cl)
 	if err != nil {

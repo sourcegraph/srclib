@@ -26,7 +26,6 @@ var pushCmd PushCmd
 
 func (c *PushCmd) Execute(args []string) error {
 	cl := Client()
-	defer cl.Close()
 
 	rrepo, err := getRemoteRepo(cl)
 	if err != nil {
