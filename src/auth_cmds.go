@@ -101,7 +101,6 @@ func (c *LoginCmd) Execute(args []string) error {
 		// we're testing only the API key's validity.
 		Credentials = CredentialOpts{APIKey: c.Key}
 		authedAPIClient := Client()
-		defer authedAPIClient.Close()
 		authInfo, err := authedAPIClient.UserAuth.Identify(context.TODO(), &pbtypes.Void{})
 		if err != nil {
 			log.Fatalf("Error verifying auth credentials with endpoint %s: %s.", endpointURL, err)
@@ -138,7 +137,6 @@ func (c *WhoamiCmd) Execute(args []string) error {
 	}
 
 	cl := Client()
-	defer cl.Close()
 
 	authInfo, err := cl.UserAuth.Identify(context.TODO(), &pbtypes.Void{})
 	if err != nil {
