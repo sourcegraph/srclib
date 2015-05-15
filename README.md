@@ -18,7 +18,7 @@ APIs and formats, it is difficult to reuse your plugin for other languages or
 editors.
 
 We call this the **M-by-N problem**: given *M* editors and *N* languages, we
-need to write (on the order of) *M*&times;*N* plugins to get good tooling in 
+need to write (on the order of) *M*&times;*N* plugins to get good tooling in
 every case. That number gets large quickly, and it's why we suffer from poor
 developer tools.
 
@@ -69,3 +69,10 @@ srclib by installing an editor plugin in your editor of choice. [See all editor 
 ## License
 Sourcegraph is licensed under the [MIT License](https://tldrlegal.com/license/mit-license).
 More information in the LICENSE file.
+
+
+## Contributing
+
+In case you want to get involved and start hacking on srclib bugs and features or write your own toolchain, sign up on [Slack](http://srclib.slack.com) and introduce yourself to the #General channel.
+<br>
+We are more than happy to meet new contributors and to help people to get started on srclib hacking.
