@@ -34,6 +34,11 @@ func Add(dir, toolchainPath string, opt *AddOpt) error {
 	srclibpathEntry := strings.SplitN(srclib.Path, ":", 2)[0]
 	targetDir := filepath.Join(srclibpathEntry, toolchainPath)
 
+	//src toolchain add should check current dir before adding #98 @jelmerdereus
+  if _, err := os.Stat(filepath.Join(targetDir, ConfigFilename)); os.IsNotExist(err) {
+    return fmt.Errorf("No suitable target directory:\n %s\n", err.Error())
+  }
+
 	if err := os.MkdirAll(filepath.Dir(targetDir), 0700); err != nil {
 		return err
 	}
