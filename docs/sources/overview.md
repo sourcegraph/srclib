@@ -80,42 +80,9 @@ The why of srclib is explained in more detail on the [homepage](https://srclib.o
 On this page you will find an explanation of how srclib works and links to more specific information.
 
 
-<br>
-## What srclib does
-
-Srclib exposes a command-line API that you can use to analyze source code in the supported languages. The results of the analysis are stored in a well defined, language-independent format (JSON).
-
-Language-specific toolchains have been created to analyze source code. By using language-specific toolchains in combination with the `src` command, it can analyze code regardless of the language, and due to its common JSON format
-
-
 
 <br>
-#### Tasks that srclib can do
-
-When running `src make` on the command-line or when making API calls from extensions, in essence the following tasks are performed by the `src` binary:
-
-
-* **Scanning** runs before all other tools and finds all source units of the language (e.g., Python packages, Ruby gems, etc.) in a directory tree. Scanners also determine which other tools to call on each source unit.
-
-
-* **Dependency resolution** resolves raw dependencies to git/hg clone URIs, subdirectories, and commit IDs if possible (e.g., foo@0.2.1 to github.com/alice/foo commit ID abcd123).
-
-* **Graphing** performs type checking/inference and static analysis (called “graphing”) on the language’s source units and dumps data about all definitions and references.
-
-<br>
-More detailed information on the `src make` command can be found in the `src` [documentation](api/make.md) The API commands are described in more detail on the [API overview](api/overview.md) page.
-
-
-<br>
-#### Data exchange and format
-
-All `src` tools and language toolchains interact by reading on standard input and writing to standard output.
-
-Results of the various analysis tasks are stored in the path `$GOPATH/.srclib/` in folders with a corresponding name to the API calls. The data model and the JSON exchange format is described in more detail in the [API data model](api/overview.md).
-
-
-<br>
-#### Components of srclib
+## Components of srclib
 
 The following components make up the core functionality of srclib:
 
@@ -133,8 +100,52 @@ You can enjoy and use the functionality of srclib with
 
 
 <br>
-## Getting started with srclib
+## How srclib works
 
+Srclib exposes a command-line API that you can use to analyze source code in the supported languages. The results of the analysis are stored in a well defined, language-independent format (JSON).
+
+By using language-specific toolchains in combination with the `src` command, it can analyze code regardless of the language, and due to its common JSON format interaction with other tools is made much easier.
+
+
+<br>
+## Using srclib
+####running the `src make` command
+
+When running `src make` on the command-line or when making API calls from extensions, in essence the following tasks are performed by the `src` binary:
+
+
+* **Scanning** runs before all other tools and finds all source units of the language (e.g., Python packages, Ruby gems, etc.) in a directory tree. Scanners also determine which other tools to call on each source unit.
+
+
+* **Dependency resolution** resolves raw dependencies to git/hg clone URIs, subdirectories, and commit IDs if possible (e.g., foo@0.2.1 to github.com/alice/foo commit ID abcd123).
+
+* **Graphing** performs type checking/inference and static analysis (called “graphing”) on the language’s source units and dumps data about all definitions and references.
+
+For more detailed information on this process have a look at the `src make` [documentation](api/make.md) .
+
+
+####Using the srclib API
+
+The srclib API has been developed to allow the components of srclib to be called from extensions like editor plugins, and to enable a standard set of features.
+
+The API interacts with a language toolchain to support one or more of the following features:
+* Jump to definition
+* Show examples from sourcegraph.com
+
+The API commands are described in more detail on the [API overview](api/overview.md) page.
+
+
+<br>
+#### Data exchange and format
+
+All `src` tools and language toolchains interact by reading on standard input and writing to standard output.
+
+Results of the various analysis tasks are stored in the path `$GOPATH/.srclib/` in folders with a corresponding name to the API calls. The data model and the JSON exchange format is described in more detail in the [API data model](api/overview.md).
+
+
+
+<br>
+## Getting started
 
 **Download and install**
 
@@ -147,4 +158,6 @@ There are srclib plugins for many editors. You can scroll to the top of this pag
 
 <br>
 ## Contributing
-In case you want to get involved and start hacking on srclib bugs and features or write your own toolchain, sign up on [Slack](http://srclib.slack.com) and introduce yourself to the #General channel. We are more than happy to meet new contributors and to help people to get started on srclib hacking.
+In case you want to get involved and start hacking on srclib bugs and features or write your own toolchain, sign up on [Slack](http://srclib.slack.com) and introduce yourself to the #General channel.
+<br>
+We are more than happy to meet new contributors and to help people to get started on srclib hacking.
