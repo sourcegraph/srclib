@@ -73,6 +73,6 @@ More information in the LICENSE file.
 
 ## Contributing
 
-In case you want to get involved and start hacking on srclib bugs and features or write your own toolchain, sign up on [Slack](http://srclib.slack.com) and introduce yourself to the #General channel.
-<br>
-We are more than happy to meet new contributors and to help people to get started on srclib hacking.
+**In case you want to get involved and start hacking on srclib bugs and features or write your own toolchain, [sign up for Slack](http://slackin.srclib.org/) and access it on  [srclib.slack.com](http://srclib.slack.com) .**
+
+Don't forget to introduce yourself on the #General channel. We are more than happy to meet new contributors and to help people to get started.
