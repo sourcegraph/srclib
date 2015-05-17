@@ -108,7 +108,6 @@ By using language-specific toolchains in combination with the `src` command, it 
 
 
 <br>
-## Using srclib
 ####running the `src make` command
 
 When running `src make` on the command-line or when making API calls from extensions, in essence the following tasks are performed by the `src` binary:
@@ -123,7 +122,7 @@ When running `src make` on the command-line or when making API calls from extens
 
 For more detailed information on this process have a look at the `src make` [documentation](api/make.md) .
 
-
+<br>
 ####Using the srclib API
 
 The srclib API has been developed to allow the components of srclib to be called from extensions like editor plugins, and to enable a standard set of features.
