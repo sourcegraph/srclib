@@ -156,7 +156,23 @@ Check out the [installation guide](install.md) to get started with the installat
 
 There are srclib plugins for many editors. You can scroll to the top of this page and click on one of the links.
 
-<br>
+<div class="row">
+  <div class="col-md-12">
+    <p>
+    <a href="/plugins/emacs"><button class="btn btn-primary"><img style="height: 1em;" src="/images/editors/emacs.svg"> Emacs</button></a>
+    <a href="/plugins/sublimetext"><button class="btn btn-primary"><img style="height: 1em;" src="/images/editors/sublime.png"> Sublime</button></a>
+    <a href="/plugins/atom"><button class="btn btn-primary"><img style="height: 1em;" style="height: 1em;" src="/images/editors/atom.png"> Atom</button></a>
+    <button data-toggle="popover" data-placement="top" data-content="Vim support is not yet implemented" type="button" class="btn btn-default btn-disabled">
+      <img class="desaturate" style="height: 1em;" src="/images/editors/vim.svg"> Vim
+    </button>
+
+    <p>Interested in building a plugin for an editor srclib doesn't yet
+    support? <a target="_blank" href="https://twitter.com/srclib">Let us
+    know</a>&mdash;we'd love to help!</p><br>
+
+  </div>
+</div>
+
 ## Contributing
 In case you want to get involved and start hacking on srclib bugs and features or write your own toolchain, sign up on [Slack](http://srclib.slack.com) and introduce yourself to the #General channel.
 <br>
