@@ -16,6 +16,7 @@ import (
 	"github.com/kr/fs"
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"sourcegraph.com/sourcegraph/rwvfs"
+	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/dep"
@@ -650,7 +651,7 @@ func (c *APIDepsCmd) Execute(args []string) error {
 	}
 
 	if foundDepresolve == false {
-		return errors.New("No dependency information found. Try running `src config` first.")
+		return fmt.Errorf("No dependency information found. Try running `%s config` first.", srclib.CommandName)
 	}
 
 	return json.NewEncoder(os.Stdout).Encode(depSlice)
@@ -690,7 +691,7 @@ func (c *APIUnitsCmd) Execute(args []string) error {
 	}
 
 	if foundUnit == false {
-		return errors.New("No source units found. Try running `src config` first.")
+		return fmt.Errorf("No source units found. Try running `%s config` first.", srclib.CommandName)
 	}
 
 	return json.NewEncoder(os.Stdout).Encode(unitSlice)

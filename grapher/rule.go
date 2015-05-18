@@ -58,7 +58,7 @@ func (r *GraphUnitRule) Prereqs() []string {
 
 func (r *GraphUnitRule) Recipes() []string {
 	return []string{
-		fmt.Sprintf("src tool %s %q %q < $< | src internal normalize-graph-data --unit-type %q --dir . 1> $@", r.opt.ToolchainExecOpt, r.Tool.Toolchain, r.Tool.Subcmd, r.Unit.Type),
+		fmt.Sprintf("%s tool %s %q %q < $< | %s internal normalize-graph-data --unit-type %q --dir . 1> $@", srclib.CommandName, r.opt.ToolchainExecOpt, r.Tool.Toolchain, r.Tool.Subcmd, srclib.CommandName, r.Unit.Type),
 	}
 }
 

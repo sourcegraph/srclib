@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
+	"sourcegraph.com/sourcegraph/srclib"
 )
 
 func init() {
@@ -47,7 +48,7 @@ func (c *RepoCmd) Execute(args []string) error {
 				printRemoteRepo(remoteRepo)
 			} else if sourcegraph.IsHTTPErrorCode(err, http.StatusNotFound) {
 				fmt.Println("# No remote repository found.")
-				fmt.Println("# Use `src remote add` to create it.")
+				fmt.Printf("# Use `%s remote add` to create it.\n", srclib.CommandName)
 			} else {
 				fmt.Printf("# Error getting remote repository: %s.\n", err)
 			}
