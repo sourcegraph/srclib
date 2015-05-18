@@ -75,9 +75,9 @@ consume this format.
 <br>
 ## Why srclib
 
-The why of srclib is explained in more detail on the [homepage](https://srclib.org/). In short it is designed for the purpose of making software development tools more independent from the languages they support, and to enable standard functionalities in these tools like jump to definition, find usages, type inference, and documentation generation.
+Srclib is designed for the purpose of making software development tools more independent from the languages they support, and to enable standard functionalities in all these tools like jump to definition, find usages, type inference, and documentation generation.
 
-On this page you will find an explanation of how srclib works and links to more specific information.
+The why of srclib is explained in more detail on the [homepage](https://srclib.org/). On this page you will find an explanation of what srclib consists of, how it is used and links to more specific information.
 
 
 
