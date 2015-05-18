@@ -10,6 +10,7 @@ import (
 
 	"strings"
 
+	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/flagutil"
@@ -101,7 +102,7 @@ func CreateMakefile(execOpt ToolchainExecOpt, cacheOpt BuildCacheOpt) (*makex.Ma
 		return nil, err
 	}
 	if len(treeConfig.SourceUnits) == 0 {
-		log.Println("No source unit files found. Did you mean to run `src config`? (This is not an error; it just means that src didn't find anything to build or analyze here.)")
+		log.Printf("No source unit files found. Did you mean to run `%s config`? (This is not an error; it just means that src didn't find anything to build or analyze here.)", srclib.CommandName)
 	}
 
 	toolchainExecOptArgs, err := flagutil.MarshalArgs(&execOpt)
