@@ -173,6 +173,6 @@ There are srclib plugins for many editors. You can scroll to the top of this pag
 </div>
 
 ## Contributing
-In case you want to get involved and start hacking on srclib bugs and features or write your own toolchain, sign up on [Slack](http://srclib.slack.com) and introduce yourself to the #General channel.
+If you want to start hacking on srclib or write your own srclib toolchain, [join the srclib Slack](http://slackin.srclib.org) and then access it on [srclib.slack.com](https://srclib.slack.com).
 <br>
 We are more than happy to meet new contributors and to help people to get started on srclib hacking.
