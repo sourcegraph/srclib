@@ -14,6 +14,7 @@ import (
 
 	"golang.org/x/tools/godoc/vfs"
 
+	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
@@ -64,6 +65,14 @@ func execCmd(prog string, arg ...string) error {
 		return fmt.Errorf("command %q failed: %s", cmd.Args, err)
 	}
 	return nil
+}
+
+func execSrcCmd(arg ...string) error {
+	if len(arg) == 0 {
+		log.Fatal("attempted to execute 'src' command with no arguments")
+	}
+	c := append(strings.Split(srclib.CommandName, " "), arg...)
+	return execCmd(c[0], c[1:]...)
 }
 
 func SourceUnitMatchesArgs(specified []string, u *unit.SourceUnit) bool {

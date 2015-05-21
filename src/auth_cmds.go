@@ -9,6 +9,7 @@ import (
 	"golang.org/x/net/context"
 
 	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
+	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sqs/pbtypes"
 )
 
@@ -133,7 +134,7 @@ func (c *WhoamiCmd) Execute(args []string) error {
 	endpointURL := getEndpointURL()
 	ua := a[endpointURL.String()]
 	if ua == nil {
-		log.Fatalf("# No authentication info set for %s (use `src login` to authenticate)", endpointURL)
+		log.Fatalf("# No authentication info set for %s (use `%s login` to authenticate)", endpointURL, srclib.CommandName)
 	}
 
 	cl := Client()
