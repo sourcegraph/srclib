@@ -427,7 +427,7 @@ func installGoToolchain() error {
 	}
 
 	log.Println("Downloading or updating Go toolchain in", srclibpathDir)
-	if err := execCmd("src", "toolchain", "get", "-u", toolchain); err != nil {
+	if err := execSrcCmd("toolchain", "get", "-u", toolchain); err != nil {
 		return err
 	}
 
@@ -452,7 +452,7 @@ func installRubyToolchain() error {
 	}
 
 	log.Println("Downloading or updating Ruby toolchain in", srclibpathDir)
-	if err := execCmd("src", "toolchain", "get", "-u", toolchain); err != nil {
+	if err := execSrcCmd("toolchain", "get", "-u", toolchain); err != nil {
 		return err
 	}
 
@@ -477,7 +477,7 @@ func installJavaScriptToolchain() error {
 	}
 
 	log.Println("Downloading or updating JavaScript toolchain in", srclibpathDir)
-	if err := execCmd("src", "toolchain", "get", "-u", toolchain); err != nil {
+	if err := execSrcCmd("toolchain", "get", "-u", toolchain); err != nil {
 		return err
 	}
 
@@ -501,7 +501,7 @@ func installPythonToolchain() error {
 
 	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
 	log.Println("Downloading or updating Python toolchain in", srclibpathDir)
-	if err := execCmd("src", "toolchain", "get", "-u", toolchain); err != nil {
+	if err := execSrcCmd("toolchain", "get", "-u", toolchain); err != nil {
 		return err
 	}
 

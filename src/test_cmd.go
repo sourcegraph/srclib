@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"github.com/aybabtme/color/brush"
+	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 )
@@ -182,7 +183,9 @@ func testTree(treeDir, expectedDir, actualDir string, exeMethod string, generate
 	} else {
 		w = &buf
 	}
-	cmd := exec.Command("src", "-v", "do-all", "-m", exeMethod)
+	// src might be embbeded as a sub-command in a host, such as the Sourcegraph app.
+	c := append(strings.Split(srclib.CommandName, " "), []string{"-v", "do-all", "-m", exeMethod}...)
+	cmd := exec.Command(c[0], c[1:]...)
 	cmd.Dir = treeDir
 	cmd.Stderr, cmd.Stdout = w, w
 	cmd.Env = append(os.Environ(), "SRCLIB_FOLLOW_CROSS_FS_SYMLINKS=true")
