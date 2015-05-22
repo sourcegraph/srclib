@@ -20,6 +20,7 @@ func init() {
 }
 
 type PushCmd struct {
+	CommitID string `long:"commit" description:"commit ID of build data to operate on"`
 }
 
 var pushCmd PushCmd
@@ -32,8 +33,15 @@ func (c *PushCmd) Execute(args []string) error {
 		return err
 	}
 
+	commitID := localRepo.CommitID
+	if c.CommitID != "" {
+		commitID = c.CommitID
+		buildDataUploadCmd.CommitID = commitID
+		remoteImportBuildCmd.CommitID = commitID
+	}
+
 	repoSpec := sourcegraph.RepoSpec{URI: rrepo.URI}
-	repoRevSpec := sourcegraph.RepoRevSpec{RepoSpec: repoSpec, Rev: localRepo.CommitID}
+	repoRevSpec := sourcegraph.RepoRevSpec{RepoSpec: repoSpec, Rev: commitID}
 
 	if _, err := cl.Repos.GetCommit(context.TODO(), &repoRevSpec); err != nil {
 		return err
