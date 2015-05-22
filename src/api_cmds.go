@@ -148,7 +148,7 @@ func prepareCommandContext(file string) (commandContext, error) {
 	if file == "" {
 		return commandContext{}, errors.New("prepareCommandContext: file cannot be empty")
 	}
-	if file == "." || file[len(file)-1] == os.PathSeparator {
+	if file == "." || file[len(file)-1] == filepath.Separator {
 		isDir = true
 	}
 	file, err = filepath.Abs(file)
@@ -159,7 +159,7 @@ func prepareCommandContext(file string) (commandContext, error) {
 	// the path separator to it to presrve filepath.Dir's
 	// semantics.
 	if isDir {
-		file += string(os.PathSeparator)
+		file += string(filepath.Separator)
 	}
 
 	repo, err := OpenRepo(filepath.Dir(file))

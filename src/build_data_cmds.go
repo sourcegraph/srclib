@@ -230,7 +230,7 @@ func (c *BuildDataListCmd) Execute(args []string) error {
 
 		var suffix string
 		if fi.IsDir() {
-			suffix = "/"
+			suffix = string(filepath.Separator)
 		}
 
 		var urlStr string

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 
 	"strconv"
 
@@ -59,7 +60,8 @@ func newAPIClient(ua *userEndpointAuth, cache bool) *sourcegraph.Client {
 
 	var transport http.RoundTripper
 	if cache {
-		transport = http.RoundTripper(httpcache.NewTransport(diskcache.New("/tmp/srclib-cache")))
+		tempDir := filepath.Join(os.TempDir(), "srclib-cache")
+		transport = http.RoundTripper(httpcache.NewTransport(diskcache.New(tempDir)))
 	} else {
 		transport = http.DefaultTransport
 	}

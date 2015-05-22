@@ -21,7 +21,7 @@ func Get(path string, update bool) (*Info, error) {
 		return tc, err
 	}
 
-	dir := strings.SplitN(srclib.Path, ":", 2)[0]
+	dir := filepath.SplitList(srclib.Path)[0]
 	toolchainDir := filepath.Join(dir, path)
 
 	if fi, err := os.Stat(toolchainDir); os.IsNotExist(err) {

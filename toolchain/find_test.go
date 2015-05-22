@@ -24,16 +24,16 @@ func TestList_program(t *testing.T) {
 
 	files := map[string]os.FileMode{
 		// ok
-		"a/a/.bin/a":          0700,
-		"a/a/Srclibtoolchain": 0700,
+		filepath.Join("a", "a", ".bin", "a"):       0700,
+		filepath.Join("a", "a", "Srclibtoolchain"): 0700,
 
 		// not executable
-		"b/b/.bin/z":          0600,
-		"b/b/Srclibtoolchain": 0600,
+		filepath.Join("b", "b", ".bin", "z"):       0600,
+		filepath.Join("b", "b", "Srclibtoolchain"): 0600,
 
 		// not in .bin
-		"c/c/c":               0700,
-		"c/c/Srclibtoolchain": 0700,
+		filepath.Join("c", "c", "c"):               0700,
+		filepath.Join("c", "c", "Srclibtoolchain"): 0700,
 	}
 	for f, mode := range files {
 		f = filepath.Join(tmpdir, f)
@@ -46,7 +46,7 @@ func TestList_program(t *testing.T) {
 	}
 
 	// Put a file symlink in srclib DIR path.
-	oldp := filepath.Join(tmpdir, "a/a/.bin/a")
+	oldp := filepath.Join(tmpdir, "a", "a", ".bin", "a")
 	newp := filepath.Join(tmpdir, "link")
 	if err := os.Symlink(oldp, newp); err != nil {
 		t.Fatal(err)
@@ -58,7 +58,7 @@ func TestList_program(t *testing.T) {
 	}
 
 	got := toolchainPathsWithProgramOrDockerfile(toolchains)
-	want := []string{"a/a"}
+	want := []string{filepath.Join("a", "a")}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got toolchains %v, want %v", got, want)
 	}
@@ -78,13 +78,13 @@ func TestList_docker(t *testing.T) {
 
 	files := map[string]struct{}{
 		// ok
-		"a/a/Dockerfile": struct{}{}, "a/a/Srclibtoolchain": struct{}{},
+		filepath.Join("a", "a", "Dockerfile"): struct{}{}, filepath.Join("a", "a", "Srclibtoolchain"): struct{}{},
 
 		// no Srclibtoolchain
-		"b/b/Dockerfile": struct{}{},
+		filepath.Join("b", "b", "Dockerfile"): struct{}{},
 
 		// ok (no Dockerfile)
-		"c/c/Srclibtoolchain": struct{}{},
+		filepath.Join("c", "c", "Srclibtoolchain"): struct{}{},
 	}
 	for f := range files {
 		if err := os.MkdirAll(filepath.Join(tmpdir, filepath.Dir(f)), 0700); err != nil {
@@ -101,7 +101,7 @@ func TestList_docker(t *testing.T) {
 	}
 
 	got := toolchainPathsWithProgramOrDockerfile(toolchains)
-	want := []string{"a/a"}
+	want := []string{filepath.Join("a", "a")}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got toolchains %v, want %v", got, want)
 	}
