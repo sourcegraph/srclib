@@ -414,7 +414,7 @@ func installGoToolchain() error {
 		return skippedToolchain{toolchain, "no GOPATH set (assuming Go is not installed and you don't want the Go toolchain)"}
 	}
 
-	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
+	srclibpathDir := filepath.Join(filepath.SplitList(srclib.Path)[0], toolchain) // toolchain dir under SRCLIBPATH
 
 	if err := os.MkdirAll(filepath.Dir(srclibpathDir), 0700); err != nil {
 		return err
@@ -442,7 +442,7 @@ func installGoToolchain() error {
 func installRubyToolchain() error {
 	const toolchain = "sourcegraph.com/sourcegraph/srclib-ruby"
 
-	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
+	srclibpathDir := filepath.Join(filepath.SplitList(srclib.Path)[0], toolchain) // toolchain dir under SRCLIBPATH
 
 	if _, err := exec.LookPath("ruby"); isExecErrNotFound(err) {
 		return skippedToolchain{toolchain, "no `ruby` in PATH (assuming you don't have Ruby installed and you don't want the Ruby toolchain)"}
@@ -467,7 +467,7 @@ func installRubyToolchain() error {
 func installJavaScriptToolchain() error {
 	const toolchain = "sourcegraph.com/sourcegraph/srclib-javascript"
 
-	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
+	srclibpathDir := filepath.Join(filepath.SplitList(srclib.Path)[0], toolchain) // toolchain dir under SRCLIBPATH
 
 	if _, err := exec.LookPath("node"); isExecErrNotFound(err) {
 		return skippedToolchain{toolchain, "no `node` in PATH (assuming you don't have Node.js installed and you don't want the JavaScript toolchain)"}
@@ -499,7 +499,7 @@ func installPythonToolchain() error {
 		}
 	}
 
-	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
+	srclibpathDir := filepath.Join(filepath.SplitList(srclib.Path)[0], toolchain) // toolchain dir under SRCLIBPATH
 	log.Println("Downloading or updating Python toolchain in", srclibpathDir)
 	if err := execCmd("src", "toolchain", "get", "-u", toolchain); err != nil {
 		return err
@@ -542,9 +542,9 @@ func symlinkToGopath(toolchain string) (skip string, err error) {
 		return "", fmt.Errorf("GOPATH not set")
 	}
 
-	srcDir := filepath.Join(strings.Split(gopath, ":")[0], "src")
+	srcDir := filepath.Join(filepath.SplitList(gopath)[0], "src")
 	gopathDir := filepath.Join(srcDir, toolchain)
-	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain)
+	srclibpathDir := filepath.Join(filepath.SplitList(srclib.Path)[0], toolchain)
 
 	if fi, err := os.Lstat(gopathDir); os.IsNotExist(err) {
 		log.Printf("mkdir -p %s", filepath.Dir(gopathDir))
@@ -553,6 +553,7 @@ func symlinkToGopath(toolchain string) (skip string, err error) {
 		}
 		log.Printf("ln -s %s %s", srclibpathDir, gopathDir)
 		if err := os.Symlink(srclibpathDir, gopathDir); err != nil {
+			log.Printf("Symlink failed %s", err)
 			return "", err
 		}
 	} else if err != nil {

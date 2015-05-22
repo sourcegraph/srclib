@@ -23,7 +23,7 @@ func init() {
 		log.Fatal(err)
 	}
 	if !strings.HasSuffix(d, filepath.Join("srclib", "src")) {
-		log.Fatalf("directory %s must end with \"srclib"+string(os.PathSeparator)+"src\"", d)
+		log.Fatalf("directory %s must end with \"srclib"+string(filepath.Separator)+"src\"", d)
 	}
 	testdataPath = filepath.Join(d, "..", "testdata")
 	srclibPath = filepath.Join(testdataPath, "srclibpath")
