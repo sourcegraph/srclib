@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sort"
-	"strings"
 
 	"github.com/kr/fs"
 	"sourcegraph.com/sourcegraph/srclib"
@@ -47,7 +47,7 @@ func List() ([]*Info, error) {
 	var found []*Info
 	seen := map[string]string{}
 
-	dirs := strings.Split(srclib.Path, ":")
+	dirs := filepath.SplitList(srclib.Path)
 
 	// maps symlinked trees to their original path
 	origDirs := map[string]string{}
@@ -81,10 +81,11 @@ func List() ([]*Info, error) {
 
 				// traverse symlinks but refer to symlinked trees' toolchains using
 				// the path to them through the original entry in SRCLIBPATH
-				dirs = append(dirs, path+"/")
-				origDirs[path+"/"] = dir
+				dirs = append(dirs, path+string(filepath.Separator))
+				origDirs[path+string(filepath.Separator)] = dir
 			} else if fi.Mode().IsDir() {
 				// Check for Srclibtoolchain file in this dir.
+
 				if _, err := os.Stat(filepath.Join(path, ConfigFilename)); os.IsNotExist(err) {
 					continue
 				} else if err != nil {
@@ -133,11 +134,16 @@ func newInfo(toolchainPath, dir, configFile string) (*Info, error) {
 	}
 
 	prog := filepath.Join(".bin", filepath.Base(toolchainPath))
+
+	if runtime.GOOS == "windows" {
+		prog += ".exe"
+	}
+
 	if fi, err := os.Stat(filepath.Join(dir, prog)); os.IsNotExist(err) {
 		prog = ""
 	} else if err != nil {
 		return nil, err
-	} else if !(fi.Mode().Perm()&0111 > 0) {
+	} else if runtime.GOOS != "windows" && !(fi.Mode().Perm()&0111 > 0) {
 		return nil, fmt.Errorf("installed toolchain program %q is not executable (+x)", prog)
 	}
 
@@ -155,11 +161,11 @@ func newInfo(toolchainPath, dir, configFile string) (*Info, error) {
 func lookInPaths(pattern string, paths string) ([]string, error) {
 	var found []string
 	seen := map[string]struct{}{}
-	for _, dir := range strings.Split(paths, ":") {
+	for _, dir := range filepath.SplitList(paths) {
 		if dir == "" {
 			dir = "."
 		}
-		matches, err := filepath.Glob(dir + "/" + pattern)
+		matches, err := filepath.Glob(filepath.Join(dir, pattern))
 		if err != nil {
 			return nil, err
 		}

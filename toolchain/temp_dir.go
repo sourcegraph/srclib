@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"sourcegraph.com/sourcegraph/srclib"
 )
@@ -27,7 +26,7 @@ func TempDir(toolchainPath string) (string, error) {
 		return "", err
 	}
 
-	srclibpathEntry := strings.SplitN(srclib.Path, ":", 2)[0]
+	srclibpathEntry := filepath.SplitList(srclib.Path)[0]
 	tmpDir := filepath.Join(srclibpathEntry, TempDirName, tc.Path)
 
 	if err := os.MkdirAll(tmpDir, 0700); err != nil {

@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"sourcegraph.com/sourcegraph/srclib/util"
 )
@@ -35,7 +34,7 @@ func init() {
 	}
 
 	if CacheDir == "" {
-		dirs := strings.SplitN(Path, ":", 2)
+		dirs := filepath.SplitList(Path)
 		CacheDir = filepath.Join(dirs[0], ".cache")
 	}
 }
