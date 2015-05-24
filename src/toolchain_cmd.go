@@ -488,7 +488,7 @@ func installJavaScriptToolchain() error {
 func installJavaToolchain() error {
 	const toolchain = "sourcegraph.com/sourcegraph/srclib-java"
 
-	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
+	srclibpathDir := filepath.Join(filepath.SplitList(srclib.Path)[0], toolchain) // toolchain dir under SRCLIBPATH
 
 	reqdCmds := []string{"mvn"}
 	for _, reqdCmd := range reqdCmds {
