@@ -1,6 +1,7 @@
 language: go
 go: 1.4
 python: 2.7
+jdk: oraclejdk8
 
 before_install:
   - mkdir -p $HOME/gopath/src/sourcegraph.com/sourcegraph
