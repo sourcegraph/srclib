@@ -321,7 +321,7 @@ var stdToolchains = toolchainMap{
 	"python":     toolchainInstaller{"Python (sourcegraph.com/sourcegraph/srclib-python)", installPythonToolchain},
 	"ruby":       toolchainInstaller{"Ruby (sourcegraph.com/sourcegraph/srclib-ruby)", installRubyToolchain},
 	"javascript": toolchainInstaller{"JavaScript (sourcegraph.com/sourcegraph/srclib-javascript)", installJavaScriptToolchain},
-	"java":       toolchainInstaller{"Java (sourcegraph.com/sourcegraph/srclib-java)", installJavaToolchain},
+	// "java":       toolchainInstaller{"Java (sourcegraph.com/sourcegraph/srclib-java)", installJavaToolchain},
 }
 
 func (m toolchainMap) listKeys() string {
