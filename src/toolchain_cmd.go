@@ -503,7 +503,7 @@ func installJavaToolchain() error {
 		return err
 	}
 
-	log.Println("Installing deps for Ruby toolchain in", srclibpathDir)
+	log.Println("Installing deps for Java toolchain in", srclibpathDir)
 	if err := execCmd("make", "-C", srclibpathDir); err != nil {
 		return err
 	}
