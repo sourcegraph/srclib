@@ -57,7 +57,7 @@ func (c *MakeCmd) Execute(args []string) error {
 		}
 	}
 
-	mf, err := CreateMakefile(c.ToolchainExecOpt, c.BuildCacheOpt)
+	mf, err := CreateMakefile(c.ToolchainExecOpt, c.BuildCacheOpt, c.Verbose)
 	if err != nil {
 		return err
 	}
@@ -89,7 +89,7 @@ func (c *MakeCmd) Execute(args []string) error {
 // CreateMakefile creates a Makefile to build a tree. The cwd should
 // be the root of the tree you want to make (due to some probably
 // unnecessary assumptions that CreateMaker makes).
-func CreateMakefile(execOpt ToolchainExecOpt, cacheOpt BuildCacheOpt) (*makex.Makefile, error) {
+func CreateMakefile(execOpt ToolchainExecOpt, cacheOpt BuildCacheOpt, verbose bool) (*makex.Makefile, error) {
 	localRepo, err := OpenRepo(".")
 	if err != nil {
 		return nil, err
@@ -117,6 +117,7 @@ func CreateMakefile(execOpt ToolchainExecOpt, cacheOpt BuildCacheOpt) (*makex.Ma
 	mf, err := plan.CreateMakefile(buildDataDir, buildStore, localRepo.VCSType, treeConfig, plan.Options{
 		ToolchainExecOpt: strings.Join(toolchainExecOptArgs, " "),
 		NoCache:          cacheOpt.NoCacheWrite,
+		Verbose:          verbose,
 	})
 	if err != nil {
 		return nil, err

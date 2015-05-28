@@ -20,6 +20,8 @@ type Options struct {
 	// When NoCache is true, all files are rebuilt instead of only
 	// the ones associated with changed source units.
 	NoCache bool
+
+	Verbose bool
 }
 
 type RuleMaker func(c *config.Tree, dataDir string, existing []makex.Rule, opt Options) ([]makex.Rule, error)
