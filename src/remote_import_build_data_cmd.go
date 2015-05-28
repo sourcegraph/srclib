@@ -68,7 +68,7 @@ func (c *RemoteImportBuildCmd) Execute(args []string) error {
 		return err
 	}
 	if GlobalOpt.Verbose {
-		log.Printf("Created build #%d", build.BID)
+		log.Printf("Created build: %s", build.Spec().IDString())
 	}
 
 	now := pbtypes.NewTimestamp(time.Now())
@@ -79,10 +79,11 @@ func (c *RemoteImportBuildCmd) Execute(args []string) error {
 	}
 
 	importTask := &sourcegraph.BuildTask{
-		BID:   build.BID,
-		Repo:  repoSpec.URI,
-		Op:    sourcegraph.ImportTaskOp,
-		Queue: true,
+		CommitID: build.CommitID,
+		Attempt:  build.Attempt,
+		Repo:     repoSpec.URI,
+		Op:       sourcegraph.ImportTaskOp,
+		Queue:    true,
 	}
 	tasks, err := cl.Builds.CreateTasks(context.TODO(), &sourcegraph.BuildsCreateTasksOp{Build: build.Spec(), Tasks: []*sourcegraph.BuildTask{importTask}})
 	if err != nil {
@@ -126,7 +127,7 @@ func (c *RemoteImportBuildCmd) Execute(args []string) error {
 	}()
 	taskID := importTask.TaskID
 	started := false
-	log.Printf("# Import queued. Waiting for task #%d in build #%d to start...", importTask.TaskID, build.BID)
+	log.Printf("# Import queued. Waiting for task #%d in build #%s to start...", importTask.TaskID, build.Spec().IDString())
 	for i, start := 0, time.Now(); ; i++ {
 		if time.Since(start) > 45*time.Minute {
 			return fmt.Errorf("import timed out after %s", time.Since(start))
@@ -144,7 +145,7 @@ func (c *RemoteImportBuildCmd) Execute(args []string) error {
 			}
 		}
 		if importTask == nil {
-			return fmt.Errorf("task #%d not found in task list for build #%d", taskID, build.BID)
+			return fmt.Errorf("task #%d not found in task list for build #%s", taskID, build.Spec().IDString())
 		}
 
 		if !started && importTask.StartedAt != nil {

@@ -48,7 +48,7 @@ func (c *BuildCmd) Execute(args []string) error {
 	if err != nil {
 		return err
 	}
-	log.Printf("# Created build #%d", build.BID)
+	log.Printf("# Created build #%s", build.Spec().IDString())
 
 	return nil
 }

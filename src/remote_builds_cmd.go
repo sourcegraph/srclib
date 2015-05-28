@@ -60,13 +60,13 @@ func (c *BuildsCmd) Execute(args []string) error {
 
 	for _, b := range builds.Builds {
 		if b.Success {
-			fmt.Printf(green("#% 8d")+" succeeded % 9s ago", b.BID, ago(b.EndedAt.Time()))
+			fmt.Printf(green("#%s")+" succeeded % 9s ago", b.Spec().IDString(), ago(b.EndedAt.Time()))
 		} else if b.Failure {
-			fmt.Printf(red("#% 8d")+" failed % 9s ago", b.BID, ago(b.EndedAt.Time()))
+			fmt.Printf(red("#%s")+" failed % 9s ago", b.Spec().IDString(), ago(b.EndedAt.Time()))
 		} else if b.StartedAt != nil {
-			fmt.Printf(cyan("#% 8d")+" started % 9s ago", b.BID, ago(b.StartedAt.Time()))
+			fmt.Printf(cyan("#%s")+" started % 9s ago", b.Spec().IDString(), ago(b.StartedAt.Time()))
 		} else {
-			fmt.Printf(gray("#% 8d")+" queued % 9s ago", b.BID, ago(b.CreatedAt.Time()))
+			fmt.Printf(gray("#%s")+" queued % 9s ago", b.Spec().IDString(), ago(b.CreatedAt.Time()))
 		}
 		fmt.Printf("\t%s\n", b.CommitID)
 	}
