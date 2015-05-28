@@ -2,19 +2,20 @@ package src
 
 import (
 	"io"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
-
-	"sourcegraph.com/sourcegraph/makex"
-
 	"strings"
+
+	"github.com/aybabtme/color/brush"
 
 	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/flagutil"
 	"sourcegraph.com/sourcegraph/srclib/plan"
+	"sourcegraph.com/sourcegraph/makex"
 )
 
 func init() {
@@ -83,7 +84,16 @@ func (c *MakeCmd) Execute(args []string) error {
 	if c.DryRun {
 		return mk.DryRun(os.Stdout)
 	}
-	return mk.Run()
+	err = mk.Run()
+	switch {
+	case c.Quiet:
+		// Skip output
+	case err == nil:
+		fmt.Println(brush.Green("MAKE SUCCESS"))
+	case err != nil:
+		fmt.Println(brush.DarkRed("MAKE FAILURE"))
+	}
+	return err
 }
 
 // CreateMakefile creates a Makefile to build a tree. The cwd should
