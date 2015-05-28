@@ -107,6 +107,9 @@ func CreateMakefile(buildDataDir string, buildStore buildstore.RepoBuildStore, v
 		if err != nil {
 			return nil, fmt.Errorf("rule maker %s: %s", name, err)
 		}
+		if opt.Verbose {
+			log.Printf("%v: Created %d rule(s)", name, len(rules))
+		}
 		if !opt.NoCache {
 			// When cached builds are enabled, we replace all rules whose source unit
 			// hasn't changed between commits with a rule that copies the build
