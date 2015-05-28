@@ -37,8 +37,9 @@ type MakeCmd struct {
 	ToolchainExecOpt `group:"execution"`
 	BuildCacheOpt    `group:"build cache"`
 
-	Quiet  bool `short:"q" long:"quiet" description:"silence all output"`
-	DryRun bool `short:"n" long:"dry-run" description:"print what would be done and exit"`
+	Quiet   bool `short:"q" long:"quiet" description:"silence all output"`
+	Verbose bool `short:"v" long:"verbose" description:"show more verbose output"`
+	DryRun  bool `short:"n" long:"dry-run" description:"print what would be done and exit"`
 
 	Dir Directory `short:"C" long:"directory" description:"change to DIR before doing anything" value-name:"DIR"`
 
@@ -70,6 +71,7 @@ func (c *MakeCmd) Execute(args []string) error {
 
 	mkConf := &makex.Default
 	mk := mkConf.NewMaker(mf, goals...)
+	mk.Verbose = c.Verbose
 
 	if c.Quiet {
 		mk.RuleOutput = func(r makex.Rule) (out io.WriteCloser, err io.WriteCloser, logger *log.Logger) {
