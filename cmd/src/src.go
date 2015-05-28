@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"runtime/pprof"
+	"strings"
 
 	_ "sourcegraph.com/sourcegraph/srclib/dep"
 	_ "sourcegraph.com/sourcegraph/srclib/scan"
@@ -26,6 +28,7 @@ func main() {
 	}
 
 	if err := src.Main(); err != nil {
+		fmt.Fprintf(os.Stderr, "FAILED: %s - %s\n", strings.Join(os.Args, " "), err.Error())
 		os.Exit(1)
 	}
 }
