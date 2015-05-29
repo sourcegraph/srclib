@@ -2,6 +2,7 @@ package dep
 
 import (
 	"fmt"
+	"log"
 	"path/filepath"
 
 	"sourcegraph.com/sourcegraph/makex"
@@ -34,6 +35,9 @@ func makeDepRules(c *config.Tree, dataDir string, existing []makex.Rule, opt pla
 		}
 
 		rules = append(rules, &ResolveDepsRule{dataDir, u, toolRef, opt})
+		if opt.Verbose {
+			log.Printf("Created %v rule for %v %v", depresolveOp, toolRef.Toolchain, u.ID())
+		}
 	}
 	return rules, nil
 }
