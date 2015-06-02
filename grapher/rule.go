@@ -2,6 +2,7 @@ package grapher
 
 import (
 	"fmt"
+	"log"
 	"path/filepath"
 
 	"sourcegraph.com/sourcegraph/makex"
@@ -35,6 +36,10 @@ func makeGraphRules(c *config.Tree, dataDir string, existing []makex.Rule, opt p
 		}
 
 		rules = append(rules, &GraphUnitRule{dataDir, u, toolRef, opt})
+		if opt.Verbose {
+			log.Printf("Created %v rule for %v %v", graphOp, toolRef.Toolchain, u.ID())
+		}
+
 	}
 	return rules, nil
 }

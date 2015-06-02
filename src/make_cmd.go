@@ -2,19 +2,20 @@ package src
 
 import (
 	"io"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
-
-	"sourcegraph.com/sourcegraph/makex"
-
 	"strings"
+
+	"github.com/aybabtme/color/brush"
 
 	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/flagutil"
 	"sourcegraph.com/sourcegraph/srclib/plan"
+	"sourcegraph.com/sourcegraph/makex"
 )
 
 func init() {
@@ -37,8 +38,9 @@ type MakeCmd struct {
 	ToolchainExecOpt `group:"execution"`
 	BuildCacheOpt    `group:"build cache"`
 
-	Quiet  bool `short:"q" long:"quiet" description:"silence all output"`
-	DryRun bool `short:"n" long:"dry-run" description:"print what would be done and exit"`
+	Quiet   bool `short:"q" long:"quiet" description:"silence all output"`
+	Verbose bool `short:"v" long:"verbose" description:"show more verbose output"`
+	DryRun  bool `short:"n" long:"dry-run" description:"print what would be done and exit"`
 
 	Dir Directory `short:"C" long:"directory" description:"change to DIR before doing anything" value-name:"DIR"`
 
@@ -56,7 +58,7 @@ func (c *MakeCmd) Execute(args []string) error {
 		}
 	}
 
-	mf, err := CreateMakefile(c.ToolchainExecOpt, c.BuildCacheOpt)
+	mf, err := CreateMakefile(c.ToolchainExecOpt, c.BuildCacheOpt, c.Verbose)
 	if err != nil {
 		return err
 	}
@@ -70,6 +72,7 @@ func (c *MakeCmd) Execute(args []string) error {
 
 	mkConf := &makex.Default
 	mk := mkConf.NewMaker(mf, goals...)
+	mk.Verbose = c.Verbose
 
 	if c.Quiet {
 		mk.RuleOutput = func(r makex.Rule) (out io.WriteCloser, err io.WriteCloser, logger *log.Logger) {
@@ -81,13 +84,22 @@ func (c *MakeCmd) Execute(args []string) error {
 	if c.DryRun {
 		return mk.DryRun(os.Stdout)
 	}
-	return mk.Run()
+	err = mk.Run()
+	switch {
+	case c.Quiet:
+		// Skip output
+	case err == nil:
+		fmt.Println(brush.Green("MAKE SUCCESS"))
+	case err != nil:
+		fmt.Println(brush.DarkRed("MAKE FAILURE"))
+	}
+	return err
 }
 
 // CreateMakefile creates a Makefile to build a tree. The cwd should
 // be the root of the tree you want to make (due to some probably
 // unnecessary assumptions that CreateMaker makes).
-func CreateMakefile(execOpt ToolchainExecOpt, cacheOpt BuildCacheOpt) (*makex.Makefile, error) {
+func CreateMakefile(execOpt ToolchainExecOpt, cacheOpt BuildCacheOpt, verbose bool) (*makex.Makefile, error) {
 	localRepo, err := OpenRepo(".")
 	if err != nil {
 		return nil, err
@@ -115,6 +127,7 @@ func CreateMakefile(execOpt ToolchainExecOpt, cacheOpt BuildCacheOpt) (*makex.Ma
 	mf, err := plan.CreateMakefile(buildDataDir, buildStore, localRepo.VCSType, treeConfig, plan.Options{
 		ToolchainExecOpt: strings.Join(toolchainExecOptArgs, " "),
 		NoCache:          cacheOpt.NoCacheWrite,
+		Verbose:          verbose,
 	})
 	if err != nil {
 		return nil, err
