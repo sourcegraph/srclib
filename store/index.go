@@ -296,8 +296,8 @@ func (f unitIndexOnlyFilter) SelectUnit(u *unit.SourceUnit) bool {
 // unitOffsets holds a set of byte offsets that all refer to positions
 // in a file inside a specific source unit.
 type unitOffsets struct {
-	byteOffsets       // byte offsets of defs/refs/etc. in source unit data file (def.dat, ref.dat, etc.)
-	Unit        uint8 // index of source unit
+	byteOffsets        // byte offsets of defs/refs/etc. in source unit data file (def.dat, ref.dat, etc.)
+	Unit        uint16 // index of source unit
 }
 
 func (v *unitOffsets) MarshalBinary() ([]byte, error) {
@@ -305,12 +305,15 @@ func (v *unitOffsets) MarshalBinary() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return append(ofsB, v.Unit), nil
+	ofsB = append(ofsB, byte(0), byte(0))
+	binary.LittleEndian.PutUint16(ofsB[len(ofsB)-2:], v.Unit)
+
+	return ofsB, nil
 }
 
 func (v *unitOffsets) UnmarshalBinary(b []byte) error {
-	v.Unit = b[len(b)-1]
-	return v.byteOffsets.UnmarshalBinary(b[:len(b)-1])
+	v.Unit = binary.LittleEndian.Uint16(b[len(b)-2:])
+	return v.byteOffsets.UnmarshalBinary(b[:len(b)-2])
 }
 
 // unitDefOffsetsFilter is an internal filter used by indexes. It
