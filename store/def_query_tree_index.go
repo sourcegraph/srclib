@@ -114,23 +114,23 @@ func (x *defQueryTreeIndex) Build(xs map[unit.ID2]*defQueryIndex) (err error) {
 	}
 	sort.Sort(unitID2s(units))
 
-	const maxUnits = math.MaxUint8
+	const maxUnits = math.MaxUint16
 	if len(units) > maxUnits {
 		log.Printf("Warning: the def query index supports a maximum of %d source units in a tree, but this tree has %d. Source units that exceed the limit will not be indexed for def queries.", maxUnits, len(units))
 		units = units[:maxUnits]
 	}
 
-	unitNums := make(map[unit.ID2]uint8, len(units))
+	unitNums := make(map[unit.ID2]uint16, len(units))
 	for _, u := range units {
-		unitNums[u] = uint8(len(unitNums))
+		unitNums[u] = uint16(len(unitNums))
 	}
 
 	termToUOffs := make(map[string][]unitOffsets)
 
-	var traverse func(term string, unit uint8, node *mafsa.MinTreeNode)
+	var traverse func(term string, unit uint16, node *mafsa.MinTreeNode)
 	for u, qx := range xs {
 		i := 0
-		traverse = func(term string, unit uint8, node *mafsa.MinTreeNode) {
+		traverse = func(term string, unit uint16, node *mafsa.MinTreeNode) {
 			if node == nil {
 				return
 			}
@@ -145,8 +145,8 @@ func (x *defQueryTreeIndex) Build(xs map[unit.ID2]*defQueryIndex) (err error) {
 		}
 		if qx.mt.t != nil {
 			if _, present := unitNums[u]; !present {
-				// Skip unit - it is the 256th or above unit (and we
-				// store that index in a uint8 now :( ).
+				// Skip unit - it is the 65536th or above unit (and we
+				// store that index in a uint16 now :( ).
 				continue
 			}
 			traverse("", unitNums[u], qx.mt.t.Root)
