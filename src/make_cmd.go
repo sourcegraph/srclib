@@ -1,8 +1,8 @@
 package src
 
 import (
-	"io"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -10,12 +10,12 @@ import (
 
 	"github.com/aybabtme/color/brush"
 
+	"sourcegraph.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/flagutil"
 	"sourcegraph.com/sourcegraph/srclib/plan"
-	"sourcegraph.com/sourcegraph/makex"
 )
 
 func init() {
@@ -36,7 +36,6 @@ type MakeCmd struct {
 	config.Options
 
 	ToolchainExecOpt `group:"execution"`
-	BuildCacheOpt    `group:"build cache"`
 
 	Quiet   bool `short:"q" long:"quiet" description:"silence all output"`
 	Verbose bool `short:"v" long:"verbose" description:"show more verbose output"`
@@ -58,7 +57,7 @@ func (c *MakeCmd) Execute(args []string) error {
 		}
 	}
 
-	mf, err := CreateMakefile(c.ToolchainExecOpt, c.BuildCacheOpt, c.Verbose)
+	mf, err := CreateMakefile(c.ToolchainExecOpt, c.Verbose)
 	if err != nil {
 		return err
 	}
@@ -99,7 +98,7 @@ func (c *MakeCmd) Execute(args []string) error {
 // CreateMakefile creates a Makefile to build a tree. The cwd should
 // be the root of the tree you want to make (due to some probably
 // unnecessary assumptions that CreateMaker makes).
-func CreateMakefile(execOpt ToolchainExecOpt, cacheOpt BuildCacheOpt, verbose bool) (*makex.Makefile, error) {
+func CreateMakefile(execOpt ToolchainExecOpt, verbose bool) (*makex.Makefile, error) {
 	localRepo, err := OpenRepo(".")
 	if err != nil {
 		return nil, err
@@ -126,7 +125,6 @@ func CreateMakefile(execOpt ToolchainExecOpt, cacheOpt BuildCacheOpt, verbose bo
 	buildDataDir := filepath.Join(buildstore.BuildDataDirName, localRepo.CommitID)
 	mf, err := plan.CreateMakefile(buildDataDir, buildStore, localRepo.VCSType, treeConfig, plan.Options{
 		ToolchainExecOpt: strings.Join(toolchainExecOptArgs, " "),
-		NoCache:          cacheOpt.NoCacheWrite,
 		Verbose:          verbose,
 	})
 	if err != nil {

@@ -75,7 +75,6 @@ type ConfigCmd struct {
 	config.Options
 
 	ToolchainExecOpt `group:"execution"`
-	BuildCacheOpt    `group:"build cache"`
 
 	Output struct {
 		Output string `short:"o" long:"output" description:"output format" default:"text" value-name:"text|json"`
@@ -126,26 +125,24 @@ func (c *ConfigCmd) Execute(args []string) error {
 	commitFS := buildStore.Commit(localRepo.CommitID)
 
 	// Write source units to build cache.
-	if !c.NoCacheWrite {
-		if err := rwvfs.MkdirAll(commitFS, "."); err != nil {
+	if err := rwvfs.MkdirAll(commitFS, "."); err != nil {
+		return err
+	}
+	for _, u := range cfg.SourceUnits {
+		unitFile := plan.SourceUnitDataFilename(unit.SourceUnit{}, u)
+		if err := rwvfs.MkdirAll(commitFS, filepath.Dir(unitFile)); err != nil {
 			return err
 		}
-		for _, u := range cfg.SourceUnits {
-			unitFile := plan.SourceUnitDataFilename(unit.SourceUnit{}, u)
-			if err := rwvfs.MkdirAll(commitFS, filepath.Dir(unitFile)); err != nil {
-				return err
-			}
-			f, err := commitFS.Create(unitFile)
-			if err != nil {
-				return err
-			}
-			defer f.Close()
-			if err := json.NewEncoder(f).Encode(u); err != nil {
-				return err
-			}
-			if err := f.Close(); err != nil {
-				log.Fatal(err)
-			}
+		f, err := commitFS.Create(unitFile)
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+		if err := json.NewEncoder(f).Encode(u); err != nil {
+			return err
+		}
+		if err := f.Close(); err != nil {
+			log.Fatal(err)
 		}
 	}
 

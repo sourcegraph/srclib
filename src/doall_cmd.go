@@ -26,7 +26,6 @@ type DoAllCmd struct {
 	config.Options
 
 	ToolchainExecOpt `group:"execution"`
-	BuildCacheOpt    `group:"build cache"`
 
 	Dir Directory `short:"C" long:"directory" description:"change to DIR before doing anything" value-name:"DIR"`
 }
@@ -44,7 +43,6 @@ func (c *DoAllCmd) Execute(args []string) error {
 	configCmd := &ConfigCmd{
 		Options:          c.Options,
 		ToolchainExecOpt: c.ToolchainExecOpt,
-		BuildCacheOpt:    c.BuildCacheOpt,
 	}
 	if err := configCmd.Execute(nil); err != nil {
 		return err
@@ -54,7 +52,6 @@ func (c *DoAllCmd) Execute(args []string) error {
 	makeCmd := &MakeCmd{
 		Options:          c.Options,
 		ToolchainExecOpt: c.ToolchainExecOpt,
-		BuildCacheOpt:    c.BuildCacheOpt,
 	}
 	if err := makeCmd.Execute(nil); err != nil {
 		return err
