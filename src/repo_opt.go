@@ -34,7 +34,7 @@ func openLocalRepo() (*Repo, error) {
 	return localRepo, localRepoErr
 }
 
-func setDefaultRepoURIOpt(c *flags.Command) {
+func SetDefaultRepoOpt(c *flags.Command) {
 	openLocalRepo()
 	if localRepo != nil {
 		if localRepo.CloneURL != "" {
@@ -43,7 +43,7 @@ func setDefaultRepoURIOpt(c *flags.Command) {
 	}
 }
 
-func setDefaultCommitIDOpt(c *flags.Command) {
+func SetDefaultCommitIDOpt(c *flags.Command) {
 	openLocalRepo()
 	if localRepo != nil {
 		if localRepo.CommitID != "" {

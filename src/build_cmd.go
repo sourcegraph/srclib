@@ -17,7 +17,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	setDefaultCommitIDOpt(buildCmd)
+	SetDefaultCommitIDOpt(buildCmd)
 }
 
 type BuildCmd struct {

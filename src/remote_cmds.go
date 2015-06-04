@@ -22,7 +22,7 @@ func init() {
 		log.Fatal(err)
 	}
 	remoteGroup.SubcommandsOptional = true
-	setDefaultRepoURIOpt(remoteGroup)
+	SetDefaultRepoOpt(remoteGroup)
 
 	initRemoteImportBuildCmd(remoteGroup)
 }

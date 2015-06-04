@@ -39,7 +39,7 @@ To suppress specific kinds of warnings, or to include only specific kinds of war
 		log.Fatal(err)
 	}
 
-	setDefaultRepoURIOpt(c)
+	SetDefaultRepoOpt(c)
 }
 
 type LintCmd struct {

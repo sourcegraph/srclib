@@ -42,7 +42,7 @@ The default values for --repo and --subdir are determined by detecting the curre
 	}
 	c.Aliases = []string{"c"}
 
-	setDefaultRepoURIOpt(c)
+	SetDefaultRepoOpt(c)
 	setDefaultRepoSubdirOpt(c)
 }
 
