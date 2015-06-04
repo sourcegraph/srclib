@@ -3,7 +3,7 @@ page_title: Overview
 # Overview
 <div class="alert alert-danger" role="alert">Note: The API is still in flux, and may change throughout the duration of this beta.</div>
 
-The srclib API will be used through the invocation of subcommands of the `src` executable.
+The srclib API will be used through the invocation of subcommands of the `srclib` executable.
 
 ## API Commands
 
@@ -13,51 +13,51 @@ API commands return their responses as JSON, to facilitate the building of tools
 
 <!-- TODO: This should be generated from 'commands' in mkdocs.yml -->
 
-### `src api describe`
+### `srclib api describe`
 
-[[.doc "src/api_cmds.go" "APIDescribeCmdDoc"]]
+[[.doc "cli/api_cmds.go" "APIDescribeCmdDoc"]]
 
 #### Usage
 
-[[.run src api describe -h]]
+[[.run srclib api describe -h]]
 
 #### Output
 
-[[.doc "src/api_cmds.go" "APIDescribeCmdOutput"]]
+[[.doc "cli/api_cmds.go" "APIDescribeCmdOutput"]]
 
-### `src api list`
-[[.doc "src/api_cmds.go" "APIListCmdDoc"]]
-
-#### Usage
-[[.run src api list -h]]
-
-#### Output
-[[.doc "src/api_cmds.go" "APIListCmdOutput"]]
-
-### `src api deps`
-[[.doc "src/api_cmds.go" "APIDepsCmdDoc"]]
+### `srclib api list`
+[[.doc "cli/api_cmds.go" "APIListCmdDoc"]]
 
 #### Usage
-[[.run src api list -h]]
+[[.run srclib api list -h]]
 
 #### Output
-[[.doc "src/api_cmds.go" "APIDepsCmdOutput"]]
+[[.doc "cli/api_cmds.go" "APIListCmdOutput"]]
 
-### `src api units`
-[[.doc "src/api_cmds.go" "APIUnitsCmdDoc"]]
+### `srclib api deps`
+[[.doc "cli/api_cmds.go" "APIDepsCmdDoc"]]
 
 #### Usage
-[[.run src api units -h]]
+[[.run srclib api list -h]]
 
 #### Output
-[[.doc "src/api_cmds.go" "APIUnitsCmdOutput"]]
+[[.doc "cli/api_cmds.go" "APIDepsCmdOutput"]]
+
+### `srclib api units`
+[[.doc "cli/api_cmds.go" "APIUnitsCmdDoc"]]
+
+#### Usage
+[[.run srclib api units -h]]
+
+#### Output
+[[.doc "cli/api_cmds.go" "APIUnitsCmdOutput"]]
 
 ## Standalone Commands
 
 Standalong commands are for the srclib power user: most people will use srclib through an editor plugin or Sourcegraph, but the following commands are useful for modifying the state of a repository's analysis data.
 
-### `src config`
-`src config` is used to detect what kinds of source units (npm/pip/Go/etc. packages) exist in a repository or directory tree.
+### `srclib config`
+`srclib config` is used to detect what kinds of source units (npm/pip/Go/etc. packages) exist in a repository or directory tree.
 
-### `src make`
-`src make` is used to perform analysis on a given directory. See the [src make docs](make.md) for usage instructions.
+### `srclib make`
+`srclib make` is used to perform analysis on a given directory. See the [srclib make docs](make.md) for usage instructions.

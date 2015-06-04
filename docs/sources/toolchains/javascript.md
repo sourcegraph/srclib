@@ -11,20 +11,20 @@ Browse the code at [srclib-javascript](https://sourcegraph.com/sourcegraph/srcli
 
 
 First,
-[install the `src` program (see srclib installation instructions)](../install.md#install-srclib).
+[install the `srclib` program (see srclib installation instructions)](../install.md#install-srclib).
 
 Then run:
 
 ```bash
 git clone https://github.com/sourcegraph/srclib-javascript.git
 cd srclib-javascript
-src toolchain add sourcegraph.com/sourcegraph/srclib-javascript
+srclib toolchain add sourcegraph.com/sourcegraph/srclib-javascript
 ```
 
 To verify that installation succeeded, run:
 
 ```
-src toolchain list
+srclib toolchain list
 ```
 
 You should see this srclib-javascript toolchain in the list.

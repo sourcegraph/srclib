@@ -1,4 +1,4 @@
-package src
+package cli
 
 import (
 	"log"
@@ -6,7 +6,7 @@ import (
 	"sourcegraph.com/sourcegraph/go-flags"
 )
 
-var CLI = flags.NewNamedParser("src", flags.Default)
+var CLI = flags.NewNamedParser("srclib", flags.Default)
 
 // GlobalOpt contains global options.
 var GlobalOpt struct {
@@ -14,7 +14,7 @@ var GlobalOpt struct {
 }
 
 func init() {
-	CLI.LongDescription = "src builds projects, analyzes source code, and queries Sourcegraph."
+	CLI.LongDescription = "srclib builds projects, analyzes source code, and queries Sourcegraph."
 	CLI.AddGroup("Global options", "", &GlobalOpt)
 }
 

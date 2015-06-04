@@ -1,4 +1,4 @@
-package src
+package cli
 
 import (
 	"fmt"
@@ -14,7 +14,7 @@ var Version = "dev"
 func init() {
 	_, err := CLI.AddCommand("version",
 		"show version",
-		"The version subcommand displays the current version of this src program.",
+		"The version subcommand displays the current version of this srclib program.",
 		&versionCmd{},
 	)
 	if err != nil {

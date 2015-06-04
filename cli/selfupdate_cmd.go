@@ -1,4 +1,4 @@
-package src
+package cli
 
 import (
 	"log"
@@ -9,7 +9,7 @@ import (
 func init() {
 	_, err := CLI.AddCommand("selfupdate",
 		"update this program",
-		"The selfupdate command updates the src binary.",
+		"The selfupdate command updates the srclib binary.",
 		&selfUpdateCmd,
 	)
 	if err != nil {
@@ -30,8 +30,8 @@ func (c *SelfUpdateCmd) Execute(_ []string) error {
 		ApiURL:         url,
 		BinURL:         url,
 		DiffURL:        url,
-		Dir:            "src",
-		CmdName:        "src",
+		Dir:            "srclib",
+		CmdName:        "srclib",
 	}
 
 	if c.CheckOnly {

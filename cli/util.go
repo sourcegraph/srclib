@@ -1,4 +1,4 @@
-package src
+package cli
 
 import (
 	"encoding/json"
@@ -69,7 +69,7 @@ func execCmd(prog string, arg ...string) error {
 
 func execSrcCmd(arg ...string) error {
 	if len(arg) == 0 {
-		log.Fatal("attempted to execute 'src' command with no arguments")
+		log.Fatal("attempted to execute 'srclib' command with no arguments")
 	}
 	c := append(strings.Split(srclib.CommandName, " "), arg...)
 	return execCmd(c[0], c[1:]...)

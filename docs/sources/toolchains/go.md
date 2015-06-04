@@ -10,7 +10,7 @@ Browse the code at [srclib-go](https://sourcegraph.com/sourcegraph/srclib-go) an
   allowtransparency="true" frameborder="0" scrolling="0" width="170" height="30"></iframe>
 
 First,
-[install the `src` program (see srclib installation instructions)](../install.md#install-srclib).
+[install the `srclib` program (see srclib installation instructions)](../install.md#install-srclib).
 
 Then run:
 
@@ -23,13 +23,13 @@ cd $GOPATH/sourcegraph.com/sourcegraph/srclib-go
 make
 
 # link this toolchain in your SRCLIBPATH (default ~/.srclib) to enable it
-src toolchain add sourcegraph.com/sourcegraph/srclib-go
+srclib toolchain add sourcegraph.com/sourcegraph/srclib-go
 ```
 
 To verify that installation succeeded, run:
 
 ```
-src toolchain list
+srclib toolchain list
 ```
 
 You should see this srclib-go toolchain in the list.

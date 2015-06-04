@@ -1,4 +1,4 @@
-package src
+package cli
 
 import (
 	"log"
@@ -9,8 +9,8 @@ import (
 
 func init() {
 	_, err := CLI.AddCommand("makefile",
-		"prints the Makefile that `src make` executes",
-		"The makefile command prints the Makefile that `src make` will execute.",
+		"prints the Makefile that `srclib make` executes",
+		"The makefile command prints the Makefile that `srclib make` will execute.",
 		&makefileCmd,
 	)
 	if err != nil {

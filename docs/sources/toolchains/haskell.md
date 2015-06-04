@@ -14,16 +14,16 @@ git clone sourcegraph.com/sourcegraph/srclib-haskell
 cd srclib-haskell
 
 # link this toolchain in your SRCLIBPATH (default ~/.srclib) to enable it
-src toolchain add sourcegraph.com/sourcegraph/srclib-haskell
+srclib toolchain add sourcegraph.com/sourcegraph/srclib-haskell
 
 # Build a docker image that will run the toolchain.
-src toolchain build sourcegraph.com/sourcegraph/srclib-haskell
+srclib toolchain build sourcegraph.com/sourcegraph/srclib-haskell
 ```
 
 To verify that the installation succeeded, run:
 
 ```
-src toolchain list
+srclib toolchain list
 ```
 
 You should see this srclib-haskell toolchain in the list.

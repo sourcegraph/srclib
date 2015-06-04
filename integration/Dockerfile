@@ -41,7 +41,7 @@ WORKDIR /home/srclib
 
 USER root
 RUN chown -R srclib /usr/local/rvm
-ADD ./src /usr/local/bin/src
+ADD ./srclib /usr/local/bin/srclib
 USER srclib
 
-RUN src toolchain install-std
+RUN srclib toolchain install-std

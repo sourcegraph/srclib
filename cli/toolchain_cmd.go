@@ -1,4 +1,4 @@
-package src
+package cli
 
 import (
 	"errors"
@@ -458,7 +458,7 @@ func installRubyToolchain() error {
 
 	log.Println("Installing deps for Ruby toolchain in", srclibpathDir)
 	if err := execCmd("make", "-C", srclibpathDir); err != nil {
-		return fmt.Errorf("%s\n\nTip: If you are using a version of Ruby other than 2.1.2 (the default for srclib), or if you are using your system Ruby, try using a Ruby version manager (such as https://rvm.io) to install a more standard Ruby, and try Ruby 2.1.2.\n\nIf you are still having problems, post an issue at https://github.com/sourcegraph/srclib-ruby/issues with the full log output and information about your OS and Ruby version.\n\nIf you don't care about Ruby, skip this installation by running `src toolchain install-std --skip ruby`.", err)
+		return fmt.Errorf("%s\n\nTip: If you are using a version of Ruby other than 2.1.2 (the default for srclib), or if you are using your system Ruby, try using a Ruby version manager (such as https://rvm.io) to install a more standard Ruby, and try Ruby 2.1.2.\n\nIf you are still having problems, post an issue at https://github.com/sourcegraph/srclib-ruby/issues with the full log output and information about your OS and Ruby version.\n\nIf you don't care about Ruby, skip this installation by running `srclib toolchain install-std --skip ruby`.", err)
 	}
 
 	return nil
@@ -542,7 +542,7 @@ func symlinkToGopath(toolchain string) (skip string, err error) {
 		return "", fmt.Errorf("GOPATH not set")
 	}
 
-	srcDir := filepath.Join(strings.Split(gopath, ":")[0], "src")
+	srcDir := filepath.Join(strings.Split(gopath, ":")[0], "srclib")
 	gopathDir := filepath.Join(srcDir, toolchain)
 	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain)
 

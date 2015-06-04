@@ -1,6 +1,6 @@
 // +build lgtest
 
-package src_test
+package cli_test
 
 import (
 	"io/ioutil"
@@ -45,7 +45,7 @@ func TestDoAll_cached_sample(t *testing.T) {
 	if o, err := gitCmd.CombinedOutput(); err != nil {
 		t.Fatal(string(o), err)
 	}
-	srcCmd = exec.Command("src", "do-all")
+	srcCmd = exec.Command("srclib", "do-all")
 	srcCmd.Dir = filepath.Join(testdataPath, "go-cached")
 	srcCmd.Env = append([]string{"SRCLIBPATH=" + srclibPath}, os.Environ()...)
 	if o, err := srcCmd.CombinedOutput(); err != nil {
@@ -56,7 +56,7 @@ func TestDoAll_cached_sample(t *testing.T) {
 	if o, err := gitCmd.CombinedOutput(); err != nil {
 		t.Fatal(string(o), err)
 	}
-	srcCmd = exec.Command("src", "do-all")
+	srcCmd = exec.Command("srclib", "do-all")
 	srcCmd.Dir = filepath.Join(testdataPath, "go-cached")
 	srcCmd.Env = append([]string{"SRCLIBPATH=" + srclibPath}, os.Environ()...)
 	if o, err := srcCmd.CombinedOutput(); err != nil {

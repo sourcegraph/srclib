@@ -8,4 +8,4 @@ _src() {
 	return 1
 }
 
-complete -F _src src
+complete -F _srclib srclib

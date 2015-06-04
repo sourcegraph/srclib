@@ -23,7 +23,7 @@ var (
 
 	// CommandName holds the commands that will be used to call self when generating
 	// Makefiles and updating toolchains.
-	CommandName = "src"
+	CommandName = "srclib"
 )
 
 func init() {

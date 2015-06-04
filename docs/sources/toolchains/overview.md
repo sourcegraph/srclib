@@ -51,12 +51,12 @@ If DIR is a directory listed in SRCLIBPATH, the directory
 "DIR/github.com/foo/bar" defines a toolchain named "github.com/foo/bar".
 
 Toolchain directories must contain a Srclibtoolchain file describing and configuring the
-toolchain. To see all available toolchains, run `src info toolchains`.
+toolchain. To see all available toolchains, run `srclib info toolchains`.
 
 ## Tool discovery
 
 A toolchain's tools are described in its Srclibtoolchain file. To see all
-available tools (provided by all available toolchains), run `src info tools`.
+available tools (provided by all available toolchains), run `srclib info tools`.
 
 
 # Running tools
@@ -78,7 +78,7 @@ There are 2 modes of execution for srclib tools:
     the analysis results, such as on [Sourcegraph](https://sourcegraph.com).)
 
     A Docker-containerized tool is a directory (under SRCLIBPATH) that contains a
-    Dockerfile. There is no installation necessary for these tools; the `src`
+    Dockerfile. There is no installation necessary for these tools; the `srclib`
     program knows how to build and run their Docker container.
 
     When the Docker container runs, the project's source code is always
@@ -91,18 +91,18 @@ be the same, if possible, regardless of the execution mode.
 TODO(sqs): Clarify this. What does "should be the same" mean?
 --->
 
-Toolchains are not typically invoked directly by users; the `src` program invokes
+Toolchains are not typically invoked directly by users; the `srclib` program invokes
 them as part of higher-level commands. However, it is possible to invoke them
 directly. To run a tool, run:
 
 ```
-src tool TOOLCHAIN TOOL [ARG...]
+srclib tool TOOLCHAIN TOOL [ARG...]
 ```
 
 For example:
 
 ```
-src tool github.com/alice/srclib-python scan ~/my-python-project
+srclib tool github.com/alice/srclib-python scan ~/my-python-project
 ```
 
 
