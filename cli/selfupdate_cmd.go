@@ -3,6 +3,8 @@ package cli
 import (
 	"log"
 
+	"sourcegraph.com/sourcegraph/srclib"
+
 	"github.com/sqs/go-selfupdate/selfupdate"
 )
 
