@@ -23,7 +23,6 @@ import (
 	"sort"
 
 	"sourcegraph.com/sourcegraph/go-flags"
-	"sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph"
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/graph"
@@ -42,7 +41,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	lrepo, _ := openLocalRepo()
+	lrepo, _ := OpenLocalRepo()
 	if lrepo != nil && lrepo.RootDir != "" {
 		absDir, err := os.Getwd()
 		if err != nil {
@@ -1182,7 +1181,7 @@ func makeRepoCommitIDsFilter(repoCommitIDs string) interface {
 	vs := make([]store.Version, len(rcs))
 	for i, rc := range rcs {
 		rc = strings.TrimSpace(rc)
-		repo, commitID := sourcegraph.ParseRepoAndCommitID(rc)
+		repo, commitID := parseRepoAndCommitID(rc)
 		if len(commitID) != 40 {
 			log.Printf("WARNING: --repo-commits entry #%d (%q) has no commit ID or a non-absolute commit ID. Nothing will match it.", i, rc)
 		}

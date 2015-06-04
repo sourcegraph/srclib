@@ -200,3 +200,12 @@ func (t *tracingTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 
 	return resp, nil
 }
+
+// parseRepoAndCommitID parses strings like "example.com/repo" and
+// "example.com/repo@myrev".
+func parseRepoAndCommitID(repoAndCommitID string) (uri, commitID string) {
+	if i := strings.Index(repoAndCommitID, "@"); i != -1 {
+		return repoAndCommitID[:i], repoAndCommitID[i+1:]
+	}
+	return repoAndCommitID, ""
+}
