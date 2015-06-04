@@ -37,7 +37,7 @@ type Tree struct {
 	// is read from the Srcfile but before scanners are run). The commands are
 	// run at the top-level directory of the tree.
 	//
-	// If `src config` is run with the program execution method ("-m
+	// If `srclib config` is run with the program execution method ("-m
 	// program"), the commands are executed normally. If it is run
 	// with the Docker execution method ("-m docker"), the commands
 	// are run in a Docker container with the tree mounted read-write

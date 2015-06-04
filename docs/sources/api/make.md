@@ -1,22 +1,22 @@
-# `src make`
+# `srclib make`
 
-The `src make` command is the top-level task runner for the entire analysis
+The `srclib make` command is the top-level task runner for the entire analysis
 process. It should be run from the top-level source directory of a project. When
 run, it determines the tasks that need to be run (based on manual configuration
 and automatic detection and scanning) and then runs them.
 
-When you run `src make` in a source directory, it executes tasks in 3 phases:
+When you run `srclib make` in a source directory, it executes tasks in 3 phases:
 
 1. Configure
 1. Plan
 1. Execute
 
-<img style="float:right" alt="src make build process" src="https://rawgit.com/sourcegraph/srclib/master/src-make-build-process.svg" width="400">
+<img style="float:right" alt="srclib make build process" src="https://rawgit.com/sourcegraph/srclib/master/src-make-build-process.svg" width="400">
 
 
 ## Phase 1. Configure
 
-First, `src config` configures the project by combining the Srcfile manual
+First, `srclib config` configures the project by combining the Srcfile manual
 configuration file (if present) and the list of source units produced by the
 scanners it invokes.
 
@@ -45,12 +45,12 @@ can regenerate them when the source unit definitions change.
 
 ## Phase 2. Plan
 
-Next, `src make` generates a Makefile (in memory) that, when run, will run the
+Next, `srclib make` generates a Makefile (in memory) that, when run, will run the
 necessary commands to analyze the project. To do so, it examines each source
 unit (using the build cache, if present) and generates rules for each of the
 predefined operations (currently depresolve and graph).
 
-You can view the Makefile by running `src make --print`.
+You can view the Makefile by running `srclib make --print`.
 
 To determine which tool to use for an operation on a source unit, it first
 checks whether the Srcfile specifies a tool to use. If not, it takes the first
@@ -63,15 +63,15 @@ Makefile:
 
 ```
 .srclib-cache/COMMITID/NAME1/TYPE1.graph.v0.json: .srclib-cache/COMMITID/NAME1/TYPE1.unit.v0.json
-    src tool TOOLCHAIN graph # args vary
+    srclib tool TOOLCHAIN graph # args vary
 
 .srclib-cache/COMMITID/NAME1/TYPE1.depresolve.v0.json: .srclib-cache/COMMITID/NAME1/TYPE1.unit.v0.json
-    src tool TOOLCHAIN depresolve # args vary
+    srclib tool TOOLCHAIN depresolve # args vary
 ```
 
 ## Phase 3. Execute
 
-Finally, `src make` executes the Makefile created in the prior planning phase.
+Finally, `srclib make` executes the Makefile created in the prior planning phase.
 
 The final products of the execution phase are the target JSON files containing
 the results of executing the tools as specified in the Makefile.
