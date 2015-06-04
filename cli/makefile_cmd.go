@@ -9,8 +9,8 @@ import (
 
 func init() {
 	_, err := CLI.AddCommand("makefile",
-		"prints the Makefile that `srclib make` executes",
-		"The makefile command prints the Makefile that `srclib make` will execute.",
+		"prints the Makefile that the `make` subcommand executes",
+		"The makefile command prints the Makefile that the `make` subcommand will execute.",
 		&makefileCmd,
 	)
 	if err != nil {

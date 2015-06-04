@@ -30,8 +30,8 @@ func (c *SelfUpdateCmd) Execute(_ []string) error {
 		ApiURL:         url,
 		BinURL:         url,
 		DiffURL:        url,
-		Dir:            "srclib",
-		CmdName:        "srclib",
+		Dir:            srclib.CommandName,
+		CmdName:        srclib.CommandName,
 	}
 
 	if c.CheckOnly {
