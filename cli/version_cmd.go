@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-// Version of sgx.
+// Version of srclib.
 //
 // For releases, this is set using the -X flag to `go tool ld`. See
 // http://stackoverflow.com/a/11355611.
