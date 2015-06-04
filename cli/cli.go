@@ -6,7 +6,7 @@ import (
 	"sourcegraph.com/sourcegraph/go-flags"
 )
 
-var CLI = flags.NewNamedParser("srclib", flags.Default)
+var CLI = flags.NewNamedParser(srclib.CommandName, flags.Default)
 
 // GlobalOpt contains global options.
 var GlobalOpt struct {
