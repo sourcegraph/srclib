@@ -41,7 +41,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	setDefaultCommitIDOpt(c)
+	SetDefaultCommitIDOpt(c)
 
 	c, err = buildDataGroup.AddCommand("cat",
 		"display contents of build files",
@@ -51,7 +51,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	setDefaultCommitIDOpt(c)
+	SetDefaultCommitIDOpt(c)
 
 	c, err = buildDataGroup.AddCommand("rm",
 		"remove build data files and dirs",
@@ -61,7 +61,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	setDefaultCommitIDOpt(c)
+	SetDefaultCommitIDOpt(c)
 
 	c, err = buildDataGroup.AddCommand("fetch",
 		"fetch remote build data to local dir",
@@ -71,7 +71,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	setDefaultCommitIDOpt(c)
+	SetDefaultCommitIDOpt(c)
 
 	c, err = buildDataGroup.AddCommand("upload",
 		"upload local build data to remote",
@@ -81,7 +81,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	setDefaultCommitIDOpt(c)
+	SetDefaultCommitIDOpt(c)
 }
 
 type BuildDataCmd struct {

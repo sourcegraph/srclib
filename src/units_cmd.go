@@ -23,7 +23,7 @@ func init() {
 		log.Fatal(err)
 	}
 
-	setDefaultRepoURIOpt(c)
+	SetDefaultRepoOpt(c)
 	setDefaultRepoSubdirOpt(c)
 }
 

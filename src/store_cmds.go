@@ -66,8 +66,8 @@ func InitStoreCmds(c *flags.Command) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	setDefaultRepoURIOpt(importC)
-	setDefaultCommitIDOpt(importC)
+	SetDefaultRepoOpt(importC)
+	SetDefaultCommitIDOpt(importC)
 
 	_, err = c.AddCommand("indexes",
 		"list indexes",
