@@ -11,6 +11,7 @@ import (
 	"strings"
 	"testing"
 
+	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 )
 

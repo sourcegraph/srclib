@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"sourcegraph.com/sourcegraph/go-flags"
+	"sourcegraph.com/sourcegraph/srclib"
 )
 
 var CLI = flags.NewNamedParser(srclib.CommandName, flags.Default)
