@@ -1,4 +1,4 @@
-package src
+package cli
 
 import (
 	"errors"
@@ -96,7 +96,7 @@ func (c *LintCmd) Execute(args []string) error {
 					var unitType, unitName string
 					if !c.NoCheckResolve {
 						if !strings.Contains(absPath, buildstore.BuildDataDirName) {
-							return fmt.Errorf("couldn't infer which source unit %s corresponds to, because its absolute path is not under any %s dir; either run with --no-check-resolve to skip checking that internal refs resolve to valid defs (which requires knowing what source unit each output file is from), or run 'src lint' against .srclib-cache or subdirectories of it", w.Path(), buildstore.BuildDataDirName)
+							return fmt.Errorf("couldn't infer which source unit %s corresponds to, because its absolute path is not under any %s dir; either run with --no-check-resolve to skip checking that internal refs resolve to valid defs (which requires knowing what source unit each output file is from), or run 'srclib lint' against .srclib-cache or subdirectories of it", w.Path(), buildstore.BuildDataDirName)
 						}
 						unitType = strings.TrimSuffix(fi.Name(), "."+suffix+".json")
 						// Infer source unit name from file path (the

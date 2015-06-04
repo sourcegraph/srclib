@@ -1,4 +1,4 @@
-package src
+package cli
 
 func bold(s string) string {
 	return "\x1b[1m" + s + "\x1b[0m"

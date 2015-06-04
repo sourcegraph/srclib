@@ -1,4 +1,4 @@
-package src
+package cli
 
 import (
 	"bytes"
@@ -28,7 +28,7 @@ used (except those whose name begins with "_").
 
 Expected and actual outputs for a tree are stored in TREE/../../{expected,actual}/TREEBASE, respectively, where TREEBASE is the basename of TREE.
 
-After making the tree, "src test" compares the actual test output against the expected test output. Any differences trigger a test failure, and the differinglines are printed.
+After making the tree, "srclib test" compares the actual test output against the expected test output. Any differences trigger a test failure, and the differinglines are printed.
 
 If the --gen flag is used, the expected test output is removed and regenerated. You should regenerate the expected output whenever you make changes to the toolchain that alter the desired output. Be sure to check the new expected output for errors manually; it's easy to accidentally commit new expected output that is incorrect.
 
@@ -38,7 +38,7 @@ Use a Srcfile in trees whose tests you want to configure (e.g., by only running 
 
 EXAMPLE
 
-For example, suppose you run "src test" in a directory with the following files:
+For example, suppose you run "srclib test" in a directory with the following files:
 
   testdata/case/foo/foo.go
 
@@ -153,7 +153,7 @@ func testTree(treeDir, expectedDir, actualDir string, exeMethod string, generate
 
 	// Symlink ${treeDir}/.srclib-cache/${commitID} to the desired output dir.
 	//
-	// TODO(sqs): make `src make` not necessarily write to a .srclib-cache/...
+	// TODO(sqs): make `srclib make` not necessarily write to a .srclib-cache/...
 	// path containing the commit ID. When we're just making a tree, we don't
 	// know or care about the commit ID.
 	treeRepo, err := OpenRepo(treeDir)
@@ -175,7 +175,7 @@ func testTree(treeDir, expectedDir, actualDir string, exeMethod string, generate
 	// uncommitted changes.
 	defer os.Remove(origOutputDestDir)
 
-	// Run `src make`.
+	// Run `srclib make`.
 	var w io.Writer
 	var buf bytes.Buffer
 	if GlobalOpt.Verbose {
@@ -183,7 +183,7 @@ func testTree(treeDir, expectedDir, actualDir string, exeMethod string, generate
 	} else {
 		w = &buf
 	}
-	// src might be embbeded as a sub-command in a host, such as the Sourcegraph app.
+	// srclib might be embbeded as a sub-command in a host, such as the Sourcegraph app.
 	c := append(strings.Split(srclib.CommandName, " "), []string{"-v", "do-all", "-m", exeMethod}...)
 	cmd := exec.Command(c[0], c[1:]...)
 	cmd.Dir = treeDir

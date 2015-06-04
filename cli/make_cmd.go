@@ -1,4 +1,4 @@
-package src
+package cli
 
 import (
 	"fmt"
@@ -113,7 +113,7 @@ func CreateMakefile(execOpt ToolchainExecOpt, verbose bool) (*makex.Makefile, er
 		return nil, err
 	}
 	if len(treeConfig.SourceUnits) == 0 {
-		log.Printf("No source unit files found. Did you mean to run `%s config`? (This is not an error; it just means that src didn't find anything to build or analyze here.)", srclib.CommandName)
+		log.Printf("No source unit files found. Did you mean to run `%s config`? (This is not an error; it just means that srclib didn't find anything to build or analyze here.)", srclib.CommandName)
 	}
 
 	toolchainExecOptArgs, err := flagutil.MarshalArgs(&execOpt)

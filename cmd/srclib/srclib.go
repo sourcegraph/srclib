@@ -7,9 +7,9 @@ import (
 	"runtime/pprof"
 	"strings"
 
+	"sourcegraph.com/sourcegraph/srclib/cli"
 	_ "sourcegraph.com/sourcegraph/srclib/dep"
 	_ "sourcegraph.com/sourcegraph/srclib/scan"
-	"sourcegraph.com/sourcegraph/srclib/src"
 )
 
 func main() {
@@ -27,7 +27,7 @@ func main() {
 		}()
 	}
 
-	if err := src.Main(); err != nil {
+	if err := cli.Main(); err != nil {
 		fmt.Fprintf(os.Stderr, "FAILED: %s - %s\n", strings.Join(os.Args, " "), err.Error())
 		os.Exit(1)
 	}
