@@ -12,16 +12,16 @@ var (
 	localRepo    *Repo
 	localRepoErr error
 
-	// CacheLocalRepo controls whether openLocalRepo caches the
+	// CacheLocalRepo controls whether OpenLocalRepo caches the
 	// results of OpenRepo the first time it runs and returns the same
 	// repo for all subsequent calls (even if you call os.Chdir, for
 	// example).
 	CacheLocalRepo = true
 )
 
-// openLocalRepo opens the VCS repository in or above the current
+// OpenLocalRepo opens the VCS repository in or above the current
 // directory.
-func openLocalRepo() (*Repo, error) {
+func OpenLocalRepo() (*Repo, error) {
 	if !CacheLocalRepo {
 		return OpenRepo(".")
 	}
@@ -35,7 +35,7 @@ func openLocalRepo() (*Repo, error) {
 }
 
 func SetDefaultRepoOpt(c *flags.Command) {
-	openLocalRepo()
+	OpenLocalRepo()
 	if localRepo != nil {
 		if localRepo.CloneURL != "" {
 			SetOptionDefaultValue(c.Group, "repo", localRepo.URI())
@@ -44,7 +44,7 @@ func SetDefaultRepoOpt(c *flags.Command) {
 }
 
 func SetDefaultCommitIDOpt(c *flags.Command) {
-	openLocalRepo()
+	OpenLocalRepo()
 	if localRepo != nil {
 		if localRepo.CommitID != "" {
 			SetOptionDefaultValue(c.Group, "commit", localRepo.CommitID)
@@ -53,7 +53,7 @@ func SetDefaultCommitIDOpt(c *flags.Command) {
 }
 
 func setDefaultRepoSubdirOpt(c *flags.Command) {
-	openLocalRepo()
+	OpenLocalRepo()
 	if localRepo != nil {
 		absDir, err := os.Getwd()
 		if err != nil {

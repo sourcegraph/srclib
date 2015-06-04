@@ -73,7 +73,7 @@ func (c *LintCmd) Execute(args []string) error {
 		}
 	}()
 
-	lrepo, lrepoErr := openLocalRepo()
+	lrepo, lrepoErr := OpenLocalRepo()
 	if lrepoErr != nil {
 		log.Printf("warning: while opening current dir's repo: %s", lrepoErr)
 	}

@@ -159,10 +159,10 @@ func getVCSCloneURL(vcsType string, repoDir string) string {
 		url, err = run("git", "config", "remote.origin.url")
 		if code, _ := exitStatus(err); code == 1 {
 			// `git config --get` returns exit code 1 if the config key doesn't exist.
-			logWarning(errNoVCSCloneURL)
+			logWarning(ErrNoVCSCloneURL)
 			return ""
 		} else if err != nil {
-			logWarning(errNoVCSCloneURL)
+			logWarning(ErrNoVCSCloneURL)
 			return ""
 		}
 		return url
@@ -179,7 +179,7 @@ func getVCSCloneURL(vcsType string, repoDir string) string {
 	}
 }
 
-var errNoVCSCloneURL = errors.New("Could not determine remote clone URL for the current repository. For git repositories, srclib checks for remotes named 'srclib' or 'origin' (in that order). Run 'git remote add NAME URL' to add a remote, where NAME is either 'srclib' or 'origin' and URL is a git clone URL (e.g. https://example.com/repo.git).' to add a remote. For hg repositories, srclib checks the 'default' remote.")
+var ErrNoVCSCloneURL = errors.New("Could not determine remote clone URL for the current repository. For git repositories, srclib checks for remotes named 'srclib' or 'origin' (in that order). Run 'git remote add NAME URL' to add a remote, where NAME is either 'srclib' or 'origin' and URL is a git clone URL (e.g. https://example.com/repo.git).' to add a remote. For hg repositories, srclib checks the 'default' remote.")
 
 func exitStatus(err error) (uint32, error) {
 	if err != nil {
