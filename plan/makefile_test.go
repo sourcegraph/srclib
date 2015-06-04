@@ -40,10 +40,10 @@ func TestCreateMakefile(t *testing.T) {
 all: testdata/n/t.graph.json testdata/n/t.depresolve.json
 
 testdata/n/t.graph.json: testdata/n/t.unit.json f
-	src tool  "tc" "t" < $< | src internal normalize-graph-data --unit-type "t" --dir . 1> $@
+	srclib tool  "tc" "t" < $< | srclib internal normalize-graph-data --unit-type "t" --dir . 1> $@
 
 testdata/n/t.depresolve.json: testdata/n/t.unit.json
-	src tool  "tc" "t" < $^ 1> $@
+	srclib tool  "tc" "t" < $^ 1> $@
 
 .DELETE_ON_ERROR:
 `
