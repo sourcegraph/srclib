@@ -32,7 +32,15 @@ func TryMakeURI(cloneURL string) (string, error) {
 
 	url, err := url.Parse(cloneURL)
 	if err != nil {
-		return "", fmt.Errorf("MakeURI(%q): %s", cloneURL, err)
+		return "", err
+	} else if url.Path == "" || url.Path == "/" {
+		return "", fmt.Errorf("determining URI from repo clone URL failed: missing path from URL (%q)", cloneURL)
+	} else if url.Host == "" && (url.Path[0] == '/' || !strings.Contains(strings.Trim(url.Path, "/"), "/")) {
+		// We ensure our Path doesn't look like the output of TryMakeURI
+		// so that the output of this function is a fixed point.
+		// ie TryMakeURI("github.com/user/repo") == ("github.com/user/repo", nil),
+		// not an error.
+		return "", fmt.Errorf("determining URI from repo clone URL failed: missing host from URL (%q)", cloneURL)
 	}
 
 	path := strings.TrimSuffix(url.Path, ".git")
