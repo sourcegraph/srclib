@@ -17,8 +17,10 @@ func TestTryMakeURI(t *testing.T) {
 		{"ssh://hg@bitbucket.org/org/repo", "bitbucket.org/org/repo"},
 		{"https://user@bitbucket.org/org/repo", "bitbucket.org/org/repo"},
 		{"/foo/bar", ""},
-		{"foo/github.com/user/repo", ""},
-		{"/foo/github.com/user/repo", ""},
+		{"https://gitrepos/foo/bar", "gitrepos/foo/bar"},
+		{"gitrepos/foo/bar", "gitrepos/foo/bar"},
+		{"gitrepos/", ""},
+		{"/gitrepos/foo/bar", ""},
 		{"http://foo.com/", ""},
 		{"http://foo.com/bar?baz#qux", "foo.com/bar"},
 	}
