@@ -35,7 +35,7 @@ func TryMakeURI(cloneURL string) (string, error) {
 		return "", fmt.Errorf("MakeURI(%q): %s", cloneURL, err)
 	} else if url.Path == "" || url.Path == "/" {
 		return "", fmt.Errorf("MakeURI(%q): missing path from URL", cloneURL)
-	} else if url.Host == "" && !strings.Contains(strings.Split(url.Path, "/")[0], ".") {
+	} else if url.Host == "" && (url.Path[0] == '/' || !strings.Contains(strings.Trim(url.Path, "/"), "/")) {
 		// We ensure our Path doesn't look like the output of TryMakeURI
 		// so that the output of this function is a fixed point.
 		// ie TryMakeURI("github.com/user/repo") == ("github.com/user/repo", nil),
