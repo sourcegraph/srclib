@@ -28,23 +28,23 @@ func marshalArgsInGroup(group *flags.Group, prefix string) ([]string, error) {
 			flagStr = flagStr[i+2:]
 		}
 
-		v := opt.Value()
-		if m, ok := v.(flags.Marshaler); ok {
-			s, err := m.MarshalFlag()
+		switch v := opt.Value().(type) {
+		case flags.Marshaler:
+			s, err := v.MarshalFlag()
 			if err != nil {
 				return nil, err
 			}
 			args = append(args, flagStr, s)
-		} else if ss, ok := v.([]string); ok {
-			for _, s := range ss {
+		case []string:
+			for _, s := range v {
 				args = append(args, flagStr, s)
 			}
-		} else if bv, ok := v.(bool); ok {
-			if bv {
+		case bool:
+			if v {
 				args = append(args, flagStr)
 			}
-		} else {
-			args = append(args, flagStr, fmt.Sprintf("%v", opt.Value()))
+		default:
+			args = append(args, flagStr, fmt.Sprintf("%v", v))
 		}
 	}
 	for _, g := range group.Groups() {
