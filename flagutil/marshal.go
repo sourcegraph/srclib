@@ -2,6 +2,7 @@ package flagutil
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 
 	"sourcegraph.com/sourcegraph/go-flags"
@@ -44,7 +45,9 @@ func marshalArgsInGroup(group *flags.Group, prefix string) ([]string, error) {
 				args = append(args, flagStr)
 			}
 		default:
-			args = append(args, flagStr, fmt.Sprintf("%v", v))
+			if !isDefaultValue(opt, fmt.Sprintf("%v", v)) {
+				args = append(args, flagStr, fmt.Sprintf("%v", v))
+			}
 		}
 	}
 	for _, g := range group.Groups() {
@@ -57,4 +60,21 @@ func marshalArgsInGroup(group *flags.Group, prefix string) ([]string, error) {
 		args = append(args, groupArgs...)
 	}
 	return args, nil
+}
+
+func isDefaultValue(opt *flags.Option, val string) bool {
+	var defaultVal string
+
+	switch len(opt.Default) {
+	case 0:
+		if k := reflect.TypeOf(opt.Value()).Kind(); k >= reflect.Int && k <= reflect.Uint64 {
+			defaultVal = "0"
+		}
+	case 1:
+		defaultVal = fmt.Sprintf("%v", opt.Default[0])
+	default:
+		return false
+	}
+
+	return defaultVal == fmt.Sprintf("%v", val)
 }
