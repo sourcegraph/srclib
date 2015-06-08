@@ -48,15 +48,15 @@ func (c *GenDataCmd) Execute(args []string) error {
 			Dir:      fmt.Sprintf("unit/%d", u),
 		}
 
-		defs := make([]*graph.Def, c.NDefs)
-		refs := make([]*graph.Ref, c.NRefs)
-		// docs := make([]*graph.Doc, c.NDefs)
 		docs := make([]*graph.Doc, 0)
+		defs := make([]*graph.Def, 0)
+		refs := make([]*graph.Ref, 0)
 
 		for f := 0; f < c.NFiles; f++ {
 			filename := filepath.Join(fmt.Sprintf("unit_%d", u), "subpackage", fmt.Sprintf("file%d.go", f))
 			offset := 0
 			defName := "foo"
+			docstring := "// this is a docstring"
 
 			ut.Files = append(ut.Files, filename)
 
@@ -74,7 +74,7 @@ func (c *GenDataCmd) Execute(args []string) error {
 			}
 
 			for i := 0; i < c.NDefs; i++ {
-				defs[i] = &graph.Def{
+				def := &graph.Def{
 					DefKey: graph.DefKey{
 						Repo:     ut.Repo,
 						CommitID: ut.CommitID,
@@ -88,26 +88,50 @@ func (c *GenDataCmd) Execute(args []string) error {
 					DefStart: uint32(offset),
 					DefEnd:   uint32(offset + len(defName)),
 				}
-				// docs[i] = &graph.Doc{
-				// 	DefKey: defs[i].DefKey,
-				// 	Data:   "I am a dostring",
-				// 	File:   defs[i].File,
-				// 	Start:  42,
-				// 	End:    203,
-				// }
-
 				if sourceFile != nil {
-					_, err := sourceFile.WriteString(defs[i].Name + "\n")
+					_, err := sourceFile.WriteString(def.Name + " ")
 					if err != nil {
 						return err
 					}
 				}
-
 				offset += len(defName) + 1
+				defs = append(defs, def)
+
+				doc := &graph.Doc{
+					DefKey: def.DefKey,
+					Data:   docstring,
+					File:   def.File,
+					Start:  uint32(offset),
+					End:    uint32(offset + len(docstring)),
+				}
+				if sourceFile != nil {
+					_, err := sourceFile.WriteString(docstring + "\n")
+					if err != nil {
+						return err
+					}
+				}
+				offset += len(docstring) + 1
+				docs = append(docs, doc)
+
+				defRef := &graph.Ref{
+					DefRepo:     def.Repo,
+					DefUnitType: def.UnitType,
+					DefUnit:     def.Unit,
+					DefPath:     def.Path,
+					Repo:        def.Repo,
+					CommitID:    def.CommitID,
+					UnitType:    def.UnitType,
+					Unit:        def.Unit,
+					Def:         true,
+					File:        def.File,
+					Start:       def.DefStart,
+					End:         def.DefEnd,
+				}
+				refs = append(refs, defRef)
 			}
 
 			for i, defIdx := 0, 0; i < c.NRefs; i, defIdx = i+1, (defIdx+1)%c.NDefs {
-				refs[i] = &graph.Ref{
+				ref := &graph.Ref{
 					DefRepo:     ut.Repo,
 					DefUnitType: ut.Type,
 					DefUnit:     ut.Name,
@@ -121,6 +145,7 @@ func (c *GenDataCmd) Execute(args []string) error {
 					Start:       uint32(offset),
 					End:         uint32(offset + len(defName)),
 				}
+				refs = append(refs, ref)
 
 				if sourceFile != nil {
 					_, err := sourceFile.WriteString(defName + "\n")
