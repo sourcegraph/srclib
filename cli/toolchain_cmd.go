@@ -542,7 +542,7 @@ func symlinkToGopath(toolchain string) (skip string, err error) {
 		return "", fmt.Errorf("GOPATH not set")
 	}
 
-	srcDir := filepath.Join(strings.Split(gopath, ":")[0], "srclib")
+	srcDir := filepath.Join(strings.Split(gopath, ":")[0], "src")
 	gopathDir := filepath.Join(srcDir, toolchain)
 	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain)
 
