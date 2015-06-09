@@ -26,7 +26,7 @@ func Lookup(path string) (*Info, error) {
 	}
 
 	if len(matches) == 0 {
-		return nil, os.ErrNotExist
+		return nil, &os.PathError{Op: "toolchain.Lookup", Path: path, Err: os.ErrNotExist}
 	}
 	if len(matches) > 1 {
 		return nil, fmt.Errorf("shadowed toolchain path %q (toolchains: %v)", path, matches)
