@@ -7,8 +7,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"strconv"
-
 	"sourcegraph.com/sourcegraph/srclib/dep"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/unit"
@@ -29,9 +27,12 @@ func init() {
 type GenDataCmd struct {
 	Repo     string `short:"r" long:"repo" description:"repo to build" required:"yes"`
 	CommitID string `short:"c" long:"commit" description:"commit ID to build" required:"yes"`
-	NDefs    int    `long:"ndefs" description:"number of defs to generate" required:"yes"`
-	NRefs    int    `long:"nrefs" description:"number of refs to generate" required:"yes"`
 	NUnits   int    `long:"nunits" description:"number of units to generate" default:"1"`
+	NFiles   int    `long:"nfiles" description:"number of files to generate per unit" default:"1"`
+	NDefs    int    `long:"ndefs" description:"number of defs to generate per file" required:"yes"`
+	NRefs    int    `long:"nrefs" description:"number of refs to generate per file" required:"yes"`
+
+	GenSource bool `long:"gen-source" description:"whether to emit source files for the generated data"`
 }
 
 var genDataCmd GenDataCmd
@@ -43,48 +44,122 @@ func (c *GenDataCmd) Execute(args []string) error {
 			Type:     "GoPackage",
 			Repo:     c.Repo,
 			CommitID: c.CommitID,
-			Files:    []string{"file1.go"},
+			Files:    []string{},
 			Dir:      fmt.Sprintf("unit/%d", u),
 		}
 
-		defs := make([]*graph.Def, c.NDefs)
-		refs := make([]*graph.Ref, c.NRefs)
-		docs := make([]*graph.Doc, c.NDefs)
+		docs := make([]*graph.Doc, 0)
+		defs := make([]*graph.Def, 0)
+		refs := make([]*graph.Ref, 0)
 
-		for i := 0; i < c.NDefs; i++ {
-			defs[i] = &graph.Def{
-				DefKey: graph.DefKey{
-					Repo:     ut.Repo,
-					CommitID: ut.CommitID,
-					UnitType: ut.Type,
-					Unit:     ut.Name,
-					Path:     filepath.Join("package", "subpackage", "type", "method", strconv.Itoa(i)),
-				},
-				Exported: true,
-				File:     "file1.go",
+		for f := 0; f < c.NFiles; f++ {
+			filename := filepath.Join(fmt.Sprintf("unit_%d", u), "subpackage", fmt.Sprintf("file%d.go", f))
+			offset := 0
+			defName := "foo"
+			docstring := "// this is a docstring"
+
+			ut.Files = append(ut.Files, filename)
+
+			var sourceFile *os.File
+			if c.GenSource {
+				err := os.MkdirAll(filepath.Dir(filename), 0700)
+				if err != nil {
+					return err
+				}
+				file, err := os.Create(filename)
+				if err != nil {
+					return err
+				}
+				sourceFile = file
 			}
-			docs[i] = &graph.Doc{
-				DefKey: defs[i].DefKey,
-				Data:   "I am a dostring",
-				File:   defs[i].File,
-				Start:  42,
-				End:    203,
+
+			for i := 0; i < c.NDefs; i++ {
+				def := &graph.Def{
+					DefKey: graph.DefKey{
+						Repo:     ut.Repo,
+						CommitID: ut.CommitID,
+						UnitType: ut.Type,
+						Unit:     ut.Name,
+						Path:     filepath.Join("package", "subpackage", "type", fmt.Sprintf("method_%d_%d", f, i)),
+					},
+					Name:     defName,
+					Exported: true,
+					File:     filename,
+					DefStart: uint32(offset),
+					DefEnd:   uint32(offset + len(defName)),
+				}
+				if sourceFile != nil {
+					_, err := sourceFile.WriteString(def.Name + " ")
+					if err != nil {
+						return err
+					}
+				}
+				offset += len(defName) + 1
+				defs = append(defs, def)
+
+				doc := &graph.Doc{
+					DefKey: def.DefKey,
+					Data:   docstring,
+					File:   def.File,
+					Start:  uint32(offset),
+					End:    uint32(offset + len(docstring)),
+				}
+				if sourceFile != nil {
+					_, err := sourceFile.WriteString(docstring + "\n")
+					if err != nil {
+						return err
+					}
+				}
+				offset += len(docstring) + 1
+				docs = append(docs, doc)
+
+				defRef := &graph.Ref{
+					DefRepo:     def.Repo,
+					DefUnitType: def.UnitType,
+					DefUnit:     def.Unit,
+					DefPath:     def.Path,
+					Repo:        def.Repo,
+					CommitID:    def.CommitID,
+					UnitType:    def.UnitType,
+					Unit:        def.Unit,
+					Def:         true,
+					File:        def.File,
+					Start:       def.DefStart,
+					End:         def.DefEnd,
+				}
+				refs = append(refs, defRef)
 			}
-		}
-		for i := 0; i < c.NRefs; i++ {
-			refs[i] = &graph.Ref{
-				DefRepo:     ut.Repo,
-				DefUnitType: ut.Type,
-				DefUnit:     ut.Name,
-				DefPath:     filepath.Join("package", "subpackage", "type", "method", strconv.Itoa(i)),
-				Repo:        ut.Repo,
-				CommitID:    ut.CommitID,
-				UnitType:    ut.Type,
-				Unit:        ut.Name,
-				Def:         false,
-				File:        "file1.go",
-				Start:       42,
-				End:         531,
+
+			for i, defIdx := 0, 0; i < c.NRefs; i, defIdx = i+1, (defIdx+1)%c.NDefs {
+				ref := &graph.Ref{
+					DefRepo:     ut.Repo,
+					DefUnitType: ut.Type,
+					DefUnit:     ut.Name,
+					DefPath:     filepath.Join("package", "subpackage", "type", fmt.Sprintf("method_%d_%d", f, defIdx)),
+					Repo:        ut.Repo,
+					CommitID:    ut.CommitID,
+					UnitType:    ut.Type,
+					Unit:        ut.Name,
+					Def:         false,
+					File:        filename,
+					Start:       uint32(offset),
+					End:         uint32(offset + len(defName)),
+				}
+				refs = append(refs, ref)
+
+				if sourceFile != nil {
+					_, err := sourceFile.WriteString(defName + "\n")
+					if err != nil {
+						return err
+					}
+				}
+
+				offset += len(defName) + 1
+			}
+
+			// Close source file
+			if sourceFile != nil {
+				sourceFile.Close()
 			}
 		}
 
