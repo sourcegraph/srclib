@@ -16,7 +16,7 @@ before_install:
 
 install:
   - go get -d -v ./... && go build -v ./...
-  - go install ./cmd/src
+  - go install ./cmd/srclib
 
 script:
   - go test -v ./...
