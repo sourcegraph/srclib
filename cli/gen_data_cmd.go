@@ -18,7 +18,7 @@ import (
 func init() {
 	c, err := CLI.AddCommand("gen-data",
 		"generates fake data",
-		`generates fake data and outputs to .srclib-cache for debugging imports.`,
+		`generates fake data for testing and benchmarking purposes. Run this command inside an empty or expendable directory.`,
 		&genDataCmd,
 	)
 	if err != nil {
@@ -51,6 +51,10 @@ func (c *GenDataCmd) Execute(args []string) error {
 		return fmt.Errorf("--commit must be non-empty or --gen-source must be true")
 	}
 
+	if err := removeGlob(".srclib-*"); err != nil {
+		return err
+	}
+
 	units := make([]*unit.SourceUnit, c.NUnits)
 	for u := 0; u < c.NUnits; u++ {
 		units[u] = &unit.SourceUnit{
@@ -64,6 +68,16 @@ func (c *GenDataCmd) Execute(args []string) error {
 	}
 
 	if c.GenSource {
+		if err := removeGlob("unit_*"); err != nil {
+			return err
+		}
+		if err := os.RemoveAll(".git"); err != nil {
+			return err
+		}
+		if err := exec.Command("git", "init").Run(); err != nil {
+			return err
+		}
+
 		// generate source files
 		for _, ut := range units {
 			err := c.genUnit(ut)
@@ -73,11 +87,11 @@ func (c *GenDataCmd) Execute(args []string) error {
 		}
 
 		// get commit ID
-		_, err := exec.Command("git", "add", "-A", ":/").Output()
+		err := exec.Command("git", "add", "-A", ":/").Run()
 		if err != nil {
 			return err
 		}
-		_, err = exec.Command("git", "commit", "-m", "generated source").Output()
+		err = exec.Command("git", "commit", "-m", "generated source").Run()
 		if err != nil {
 			return err
 		}
@@ -276,4 +290,17 @@ func (c *GenDataCmd) genFile(ut *unit.SourceUnit, filename string, f int) (defs 
 	}
 
 	return defs, refs, docs, nil
+}
+
+func removeGlob(glob string) error {
+	matches, err := filepath.Glob(glob)
+	if err != nil {
+		return err
+	}
+	for _, match := range matches {
+		if err := os.RemoveAll(match); err != nil {
+			return err
+		}
+	}
+	return nil
 }
