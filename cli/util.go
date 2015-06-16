@@ -1,9 +1,11 @@
 package cli
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"math"
 	"net/http"
@@ -15,6 +17,7 @@ import (
 	"golang.org/x/tools/godoc/vfs"
 
 	"sourcegraph.com/sourcegraph/srclib"
+	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
@@ -121,16 +124,35 @@ func CloseAll(files map[string]io.ReadCloser) {
 	}
 }
 
-func readJSONFile(file string, v interface{}) error {
+func readJSONSourceUnit(file string, v *unit.SourceUnit) error {
 	f, err := os.Open(file)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
-	return json.NewDecoder(f).Decode(v)
+
+	b, err := ioutil.ReadAll(bufio.NewReader(f))
+	if err != nil {
+		return err
+	}
+	return v.UnmarshalJSON(b)
 }
 
-func readJSONFileFS(fs vfs.FileSystem, file string, v interface{}) (err error) {
+func readJSONGraph(file string, v *graph.Output) error {
+	f, err := os.Open(file)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	b, err := ioutil.ReadAll(bufio.NewReader(f))
+	if err != nil {
+		return err
+	}
+	return v.UnmarshalJSON(b)
+}
+
+func readJSONGraphFS(fs vfs.FileSystem, file string, v *graph.Output) (err error) {
 	f, err := fs.Open(file)
 	if err != nil {
 		return err
@@ -141,7 +163,12 @@ func readJSONFileFS(fs vfs.FileSystem, file string, v interface{}) (err error) {
 			err = err2
 		}
 	}()
-	return json.NewDecoder(f).Decode(v)
+
+	b, err := ioutil.ReadAll(bufio.NewReader(f))
+	if err != nil {
+		return err
+	}
+	return v.UnmarshalJSON(b)
 }
 
 func bytesString(s uint64) string {

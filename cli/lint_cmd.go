@@ -177,7 +177,7 @@ func prependLabelToStrings(prefix string, ss []string) []string {
 
 func lintSourceUnit(baseDir, path string, checkFilesExist bool) (issues []string, err error) {
 	var u unit.SourceUnit
-	if err := readJSONFile(path, &u); err != nil {
+	if err := readJSONSourceUnit(path, &u); err != nil {
 		return nil, err
 	}
 
@@ -224,7 +224,7 @@ func lintSourceUnit(baseDir, path string, checkFilesExist bool) (issues []string
 
 func lintGraphOutput(baseDir, repoURI, unitType, unitName, path string, checkFilesExist bool) (issues []string, err error) {
 	var o graph.Output
-	if err := readJSONFile(path, &o); err != nil {
+	if err := readJSONGraph(path, &o); err != nil {
 		return nil, err
 	}
 
