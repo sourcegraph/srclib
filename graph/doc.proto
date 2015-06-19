@@ -14,17 +14,17 @@ message Doc {
     // Format is the the MIME-type that the documentation is stored
     // in. Valid formats include 'text/html', 'text/plain',
     // 'text/x-markdown', text/x-rst'.
-    optional string format = 2 [(gogoproto.jsontag) = "Format"];
+    string format = 2 [(gogoproto.jsontag) = "Format"];
 
     // Data is the actual documentation text.
-    optional string data = 3 [(gogoproto.jsontag) = "Data"];
+    string data = 3 [(gogoproto.jsontag) = "Data"];
 
     // File is the filename where this Doc exists.
-    optional string file = 4 [(gogoproto.jsontag) = "File,omitempty"];
+    string file = 4 [(gogoproto.jsontag) = "File,omitempty"];
 
     // Start is the byte offset of this Doc's first byte in File.
-    optional uint32 start = 5 [(gogoproto.jsontag) = "Start,omitempty"];
+    uint32 start = 5 [(gogoproto.jsontag) = "Start,omitempty"];
 
     // End is the byte offset of this Doc's last byte in File.
-    optional uint32 end = 6 [(gogoproto.jsontag) = "End,omitempty"];
+    uint32 end = 6 [(gogoproto.jsontag) = "End,omitempty"];
 };
