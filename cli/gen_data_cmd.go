@@ -83,7 +83,8 @@ func (c *GenDataCmd) Execute(args []string) error {
 
 		// generate source files
 		par := parallel.NewRun(runtime.GOMAXPROCS(0))
-		for _, ut := range units {
+		for _, ut_ := range units {
+			ut := ut_
 			par.Do(func() error { return c.genUnit(ut) })
 		}
 		if err := par.Wait(); err != nil {
@@ -112,7 +113,8 @@ func (c *GenDataCmd) Execute(args []string) error {
 
 	// generate graph data
 	par := parallel.NewRun(runtime.GOMAXPROCS(0))
-	for _, ut := range units {
+	for _, ut_ := range units {
+		ut := ut_
 		ut.CommitID = c.CommitID
 		par.Do(func() error { return c.genUnit(ut) })
 	}
