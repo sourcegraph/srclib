@@ -31,7 +31,7 @@ type GenDataCmd struct {
 	Repo     string `short:"r" long:"repo" description:"repo to build" required:"yes"`
 	CommitID string `short:"c" long:"commit" description:"commit ID to build"`
 	NUnits   int    `long:"nunits" description:"number of units to generate" default:"1"`
-	NFiles   int    `long:"nfiles" description:"number of files to generate per unit" default:"1"`
+	NFiles   []int  `short:"f" long:"files" description:"number of files at each level" required:"yes"`
 	NDefs    int    `long:"ndefs" description:"number of defs to generate per file" required:"yes"`
 	NRefs    int    `long:"nrefs" description:"number of refs to generate per file" required:"yes"`
 
@@ -119,20 +119,14 @@ func (c *GenDataCmd) Execute(args []string) error {
 	return nil
 }
 
-func makeFilename(unitName string, file int) string {
-	return filepath.Join(unitName, "subpackage", fmt.Sprintf("file%d.go", file))
-}
-
 func (c *GenDataCmd) genUnit(ut *unit.SourceUnit) error {
 	defs := make([]*graph.Def, 0)
 	refs := make([]*graph.Ref, 0)
 	docs := make([]*graph.Doc, 0)
 
-	for f := 0; f < c.NFiles; f++ {
-		filename := makeFilename(ut.Name, f)
-
+	for _, filename := range unitFilenames(ut.Name, c.NFiles) {
 		ut.Files = append(ut.Files, filename)
-		fileDefs, fileRefs, fileDocs, err := c.genFile(ut, filename, f)
+		fileDefs, fileRefs, fileDocs, err := c.genFile(ut, filename)
 		if err != nil {
 			return err
 		}
@@ -182,7 +176,27 @@ func (c *GenDataCmd) genUnit(ut *unit.SourceUnit) error {
 	return nil
 }
 
-func (c *GenDataCmd) genFile(ut *unit.SourceUnit, filename string, f int) (defs []*graph.Def, refs []*graph.Ref, docs []*graph.Doc, err error) {
+func unitFilenames(prefix string, structure []int) (filenames []string) {
+	if len(structure) == 0 {
+		return nil
+	}
+	if len(structure) == 1 {
+		nfiles := structure[0]
+		for i := 0; i < nfiles; i++ {
+			filenames = append(filenames, filepath.Join(prefix, fmt.Sprintf("file_%d.go", i)))
+		}
+		return filenames
+	}
+
+	head, tail := structure[0], structure[1:]
+	for i := 0; i < head; i++ {
+		subdir := filepath.Join(prefix, fmt.Sprintf("dir_%d", i))
+		filenames = append(filenames, unitFilenames(subdir, tail)...)
+	}
+	return filenames
+}
+
+func (c *GenDataCmd) genFile(ut *unit.SourceUnit, filename string) (defs []*graph.Def, refs []*graph.Ref, docs []*graph.Doc, err error) {
 	offset := 0
 	defName := "foo"
 	docstring := "// this is a docstring"
@@ -207,7 +221,7 @@ func (c *GenDataCmd) genFile(ut *unit.SourceUnit, filename string, f int) (defs 
 				CommitID: ut.CommitID,
 				UnitType: ut.Type,
 				Unit:     ut.Name,
-				Path:     filepath.Join("package", "subpackage", "type", fmt.Sprintf("method_%d_%d", f, i)),
+				Path:     filepath.Join(filename, fmt.Sprintf("method_%d", i)),
 			},
 			Name:     defName,
 			Exported: true,
@@ -262,7 +276,7 @@ func (c *GenDataCmd) genFile(ut *unit.SourceUnit, filename string, f int) (defs 
 			DefRepo:     ut.Repo,
 			DefUnitType: ut.Type,
 			DefUnit:     ut.Name,
-			DefPath:     filepath.Join("package", "subpackage", "type", fmt.Sprintf("method_%d_%d", f, defIdx)),
+			DefPath:     filepath.Join(filename, fmt.Sprintf("method_%d", defIdx)),
 			Repo:        ut.Repo,
 			CommitID:    ut.CommitID,
 			UnitType:    ut.Type,
