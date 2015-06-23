@@ -7,6 +7,9 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
+
+	"code.google.com/p/rog-go/parallel"
 
 	"strings"
 
@@ -79,11 +82,12 @@ func (c *GenDataCmd) Execute(args []string) error {
 		}
 
 		// generate source files
+		par := parallel.NewRun(runtime.GOMAXPROCS(0))
 		for _, ut := range units {
-			err := c.genUnit(ut)
-			if err != nil {
-				return err
-			}
+			par.Do(func() error { return c.genUnit(ut) })
+		}
+		if err := par.Wait(); err != nil {
+			return err
 		}
 
 		// get commit ID
@@ -107,13 +111,13 @@ func (c *GenDataCmd) Execute(args []string) error {
 	}
 
 	// generate graph data
+	par := parallel.NewRun(runtime.GOMAXPROCS(0))
 	for _, ut := range units {
 		ut.CommitID = c.CommitID
-
-		err := c.genUnit(ut)
-		if err != nil {
-			return err
-		}
+		par.Do(func() error { return c.genUnit(ut) })
+	}
+	if err := par.Wait(); err != nil {
+		return err
 	}
 
 	return nil
