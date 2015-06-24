@@ -33,8 +33,8 @@ func init() {
 type GenDataCmd struct {
 	Repo     string `short:"r" long:"repo" description:"repo to build" required:"yes"`
 	CommitID string `short:"c" long:"commit" description:"commit ID to build"`
-	NUnits   int    `long:"nunits" description:"number of units to generate" default:"1"`
 	NFiles   []int  `short:"f" long:"files" description:"number of files at each level" required:"yes"`
+	NUnits   []int  `short:"u" long:"units" description:"number of units to generate; uses same input structure as --files" required:"yes"`
 	NDefs    int    `long:"ndefs" description:"number of defs to generate per file" required:"yes"`
 	NRefs    int    `long:"nrefs" description:"number of refs to generate per file" required:"yes"`
 
@@ -58,20 +58,24 @@ func (c *GenDataCmd) Execute(args []string) error {
 		return err
 	}
 
-	units := make([]*unit.SourceUnit, c.NUnits)
-	for u := 0; u < c.NUnits; u++ {
-		units[u] = &unit.SourceUnit{
-			Name:     fmt.Sprintf("unit_%d", u),
+	units := make([]*unit.SourceUnit, 0)
+	unitNames := hierarchicalNames("u", "unit", "", c.NUnits)
+	for _, unitName := range unitNames {
+		units = append(units, &unit.SourceUnit{
+			Name:     fmt.Sprintf(unitName),
 			Type:     "GoPackage",
 			Repo:     c.Repo,
 			CommitID: c.CommitID,
 			Files:    []string{},
-			Dir:      fmt.Sprintf("unit_%d", u),
-		}
+			Dir:      unitName,
+		})
 	}
 
 	if c.GenSource {
 		if err := removeGlob("unit_*"); err != nil {
+			return err
+		}
+		if err := removeGlob("u_*"); err != nil {
 			return err
 		}
 		if err := os.RemoveAll(".git"); err != nil {
@@ -130,7 +134,7 @@ func (c *GenDataCmd) genUnit(ut *unit.SourceUnit) error {
 	refs := make([]*graph.Ref, 0)
 	docs := make([]*graph.Doc, 0)
 
-	for _, filename := range unitFilenames(ut.Name, c.NFiles) {
+	for _, filename := range hierarchicalNames("dir", "file", ut.Name, c.NFiles) {
 		ut.Files = append(ut.Files, filename)
 		fileDefs, fileRefs, fileDocs, err := c.genFile(ut, filename)
 		if err != nil {
@@ -182,22 +186,24 @@ func (c *GenDataCmd) genUnit(ut *unit.SourceUnit) error {
 	return nil
 }
 
-func unitFilenames(prefix string, structure []int) (filenames []string) {
+// hierarchicalNames returns a slice of hierarchical filenames with branching factor at each
+// level specified by structure
+func hierarchicalNames(nodeRoot string, leafRoot string, prefix string, structure []int) (filenames []string) {
 	if len(structure) == 0 {
 		return nil
 	}
 	if len(structure) == 1 {
 		nfiles := structure[0]
 		for i := 0; i < nfiles; i++ {
-			filenames = append(filenames, filepath.Join(prefix, fmt.Sprintf("file_%d.go", i)))
+			filenames = append(filenames, filepath.Join(prefix, fmt.Sprintf("%s_%d", leafRoot, i)))
 		}
 		return filenames
 	}
 
 	head, tail := structure[0], structure[1:]
 	for i := 0; i < head; i++ {
-		subdir := filepath.Join(prefix, fmt.Sprintf("dir_%d", i))
-		filenames = append(filenames, unitFilenames(subdir, tail)...)
+		subdir := filepath.Join(prefix, fmt.Sprintf("%s_%d", nodeRoot, i))
+		filenames = append(filenames, hierarchicalNames(nodeRoot, leafRoot, subdir, tail)...)
 	}
 	return filenames
 }
