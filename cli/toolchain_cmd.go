@@ -321,6 +321,7 @@ var stdToolchains = toolchainMap{
 	"python":     toolchainInstaller{"Python (sourcegraph.com/sourcegraph/srclib-python)", installPythonToolchain},
 	"ruby":       toolchainInstaller{"Ruby (sourcegraph.com/sourcegraph/srclib-ruby)", installRubyToolchain},
 	"javascript": toolchainInstaller{"JavaScript (sourcegraph.com/sourcegraph/srclib-javascript)", installJavaScriptToolchain},
+	"java":       toolchainInstaller{"Java (sourcegraph.com/sourcegraph/srclib-java)", installJavaToolchain},
 }
 
 func (m toolchainMap) listKeys() string {
@@ -513,6 +514,32 @@ func installPythonToolchain() error {
 	}
 
 	log.Println("Installing deps for Python toolchain in", srclibpathDir)
+	if err := execCmd("make", "-C", srclibpathDir, "install"); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func installJavaToolchain() error {
+	const toolchain = "sourcegraph.com/sourcegraph/srclib-java"
+
+	requiredCmds := map[string]string{
+		"javac": "install the JDK (JDK8u preferred)",
+	}
+	for requiredCmd, instructions := range requiredCmds {
+		if _, err := exec.LookPath(requiredCmd); isExecErrNotFound(err) {
+			return skippedToolchain{toolchain, fmt.Sprintf("no `%s` found in PATH; to install, %s", requiredCmd, instructions)}
+		}
+	}
+
+	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
+	log.Println("Downloading or updating Java toolchain in", srclibpathDir)
+	if err := execSrcCmd("toolchain", "get", "-u", toolchain); err != nil {
+		return err
+	}
+
+	log.Println("Installing Java toolchain in", srclibpathDir)
 	if err := execCmd("make", "-C", srclibpathDir, "install"); err != nil {
 		return err
 	}
