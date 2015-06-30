@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"sourcegraph.com/sourcegraph/srclib"
 )
@@ -31,8 +30,7 @@ func Add(dir, toolchainPath string, opt *AddOpt) error {
 		return err
 	}
 
-	srclibpathEntry := strings.SplitN(srclib.Path, ":", 2)[0]
-	targetDir := filepath.Join(srclibpathEntry, toolchainPath)
+	targetDir := filepath.Join(srclib.PathEntries()[0], toolchainPath)
 
 	if err := os.MkdirAll(filepath.Dir(targetDir), 0700); err != nil {
 		return err

@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 
 	"sourcegraph.com/sourcegraph/srclib"
 )
@@ -21,8 +20,7 @@ func Get(path string, update bool) (*Info, error) {
 		return tc, err
 	}
 
-	dir := strings.SplitN(srclib.Path, ":", 2)[0]
-	toolchainDir := filepath.Join(dir, path)
+	toolchainDir := filepath.Join(srclib.PathEntries()[0], path)
 
 	if fi, err := os.Stat(toolchainDir); os.IsNotExist(err) {
 		cloneURL := "https://" + path + ".git"
