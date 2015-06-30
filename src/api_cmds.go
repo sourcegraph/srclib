@@ -139,7 +139,7 @@ type commandContext struct {
 // creates commandContext, changes the process' working directory to
 // file's directory and ensures that a build has been made. It is
 // meant to be used by user-facing commands.
-func prepareCommandContext(file string) (commandContext, error) {
+func prepareCommandContext(file string, ensure_build bool) (commandContext, error) {
 	var (
 		err   error
 		c     commandContext
@@ -185,11 +185,13 @@ func prepareCommandContext(file string) (commandContext, error) {
 	c.buildStore = buildStore
 	c.commitFS = buildStore.Commit(repo.CommitID)
 
-	if err := ensureBuild(buildStore, repo); err != nil {
-		if err := buildstore.RemoveAllDataForCommit(buildStore, repo.CommitID); err != nil {
-			log.Println(err)
+	if ensure_build {
+		if err := ensureBuild(buildStore, repo); err != nil {
+			if err := buildstore.RemoveAllDataForCommit(buildStore, repo.CommitID); err != nil {
+				log.Println(err)
+			}
+			return commandContext{}, err
 		}
-		return commandContext{}, err
 	}
 	return c, nil
 }
@@ -308,7 +310,7 @@ type apiListCmdOutput struct {
 // END APIListCmdOutput OMIT
 
 func (c *APIListCmd) Execute(args []string) error {
-	context, err := prepareCommandContext(c.File)
+	context, err := prepareCommandContext(c.File, true)
 	if err != nil {
 		return err
 	}
@@ -402,7 +404,7 @@ type apiDescribeCmdOutput struct {
 // END APIDescribeCmdOutputQuickHack OMIT
 
 func (c *APIDescribeCmd) Execute(args []string) error {
-	context, err := prepareCommandContext(c.File)
+	context, err := prepareCommandContext(c.File, true)
 	if err != nil {
 		return err
 	}
@@ -607,7 +609,7 @@ func (c *APIDepsCmd) Execute(args []string) error {
 	// HACK(samertm): append a backslash to Dir to assure that it's parsed
 	// as a directory, but Directory should have an unmarshalling
 	// method that does this.
-	context, err := prepareCommandContext(c.Args.Dir.String())
+	context, err := prepareCommandContext(c.Args.Dir.String(), false)
 	if err != nil {
 		return err
 	}
@@ -658,7 +660,7 @@ This command returns a unit.SourceUnit slice.
 END APIUnitsCmdOutput OMIT */
 
 func (c *APIUnitsCmd) Execute(args []string) error {
-	context, err := prepareCommandContext(c.Args.Dir.String())
+	context, err := prepareCommandContext(c.Args.Dir.String(), false)
 	if err != nil {
 		return err
 	}
