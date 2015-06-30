@@ -268,7 +268,7 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 			switch rule := rule.(type) {
 			case *grapher.GraphUnitRule:
 				var data graph.Output
-				if err := readJSONGraphFS(buildDataFS, rule.Target(), &data); err != nil {
+				if err := readJSONFileFS(buildDataFS, rule.Target(), &data); err != nil {
 					if os.IsNotExist(err) {
 						log.Printf("Warning: no build data for unit %s %s.", rule.Unit.Type, rule.Unit.Name)
 						return nil
