@@ -3,10 +3,16 @@ package cli
 import (
 	"errors"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
+	"time"
 
 	"strings"
 	"sync"
@@ -59,6 +65,24 @@ func init() {
 		"download a toolchain",
 		"Download a toolchain's repository to the SRCLIBPATH.",
 		&toolchainGetCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = c.AddCommand("bundle",
+		"bundle a toolchain",
+		"The bundle subcommand builds and archives toolchain bundles (.tar.gz files, one per toolchain variant). Bundles contain prebuilt toolchains and allow people to use srclib toolchains without needing to compile them on their own system.",
+		&toolchainBundleCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = c.AddCommand("unbundle",
+		"unbundle a toolchain",
+		"The unbundle subcommand unarchives a toolchain bundle (previously created with the 'bundle' subcommand). It allows people to download and use prebuilt toolchains without needing to compile them on their system.",
+		&toolchainUnbundleCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -269,12 +293,82 @@ func (c *ToolchainGetCmd) Execute(args []string) error {
 		if GlobalOpt.Verbose {
 			fmt.Println(tc)
 		}
-		_, err := toolchain.Get(string(tc), c.Update)
+		_, err := toolchain.CloneOrUpdate(string(tc), c.Update)
 		if err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+type ToolchainBundleCmd struct {
+	Variant string `long:"variant" description:"only produce a bundle for the given variant (default is all variants)"`
+	DryRun  bool   `short:"n" long:"dry-run" description:"don't do anything, but print what would be done"`
+
+	Args struct {
+		Toolchain ToolchainPath `name:"TOOLCHAIN" description:"toolchain to bundle" required:"yes"`
+		Dir       string        `name:"TOOLCHAIN-DIR" description:"dir containing toolchain files (default: look up TOOLCHAIN in SRCLIBPATH)"`
+	} `positional-args:"yes"`
+}
+
+var toolchainBundleCmd ToolchainBundleCmd
+
+func (c *ToolchainBundleCmd) Execute(args []string) error {
+	log.Printf("Bundling toolchain %s...", c.Args.Toolchain)
+
+	tmpDir, err := ioutil.TempDir("", path.Base(string(c.Args.Toolchain))+"toolchain-bundle")
+	if err != nil {
+		return err
+	}
+	log.Printf(" - output dir: %s", tmpDir)
+
+	var variants []toolchain.Variant
+	if c.Variant != "" {
+		variants = append(variants, toolchain.ParseVariant(c.Variant))
+	}
+
+	if c.Args.Dir == "" {
+		info, err := toolchain.Lookup(string(c.Args.Toolchain))
+		if err != nil {
+			return err
+		}
+		c.Args.Dir = info.Dir
+	}
+
+	bundles, err := toolchain.Bundle(c.Args.Dir, tmpDir, variants, c.DryRun, GlobalOpt.Verbose)
+	if err != nil {
+		return err
+	}
+
+	log.Println()
+	log.Println("Bundles ready:", tmpDir)
+	for _, b := range bundles {
+		log.Println("   ", b)
+	}
+
+	return nil
+}
+
+type ToolchainUnbundleCmd struct {
+	Args struct {
+		Toolchain  string `name:"TOOLCHAIN" description:"toolchain path to unbundle to"`
+		BundleFile string `name:"BUNDLE-FILE" description:"bundle file containing toolchain dir contents (.tar.gz, .tar, etc.)"`
+	} `positional-args:"yes" required:"yes"`
+}
+
+var toolchainUnbundleCmd ToolchainUnbundleCmd
+
+func (c *ToolchainUnbundleCmd) Execute(args []string) error {
+	if GlobalOpt.Verbose {
+		log.Printf("Unarchiving from bundle file %s to toolchain %s", c.Args.BundleFile, c.Args.Toolchain)
+	}
+
+	f, err := os.Open(c.Args.BundleFile)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	return toolchain.Unbundle(c.Args.Toolchain, c.Args.BundleFile, f)
 }
 
 type ToolchainAddCmd struct {
@@ -522,25 +616,75 @@ func installPythonToolchain() error {
 }
 
 func installJavaToolchain() error {
-	const toolchain = "sourcegraph.com/sourcegraph/srclib-java"
+	return installToolchainFromBundle("Java", "sourcegraph.com/sourcegraph/srclib-java", "https://srclib-support.s3-us-west-2.amazonaws.com/srclib-java/srclib-java__bundle__jdk-1.8.tar.gz")
+}
 
-	requiredCmds := map[string]string{
-		"javac": "install the JDK (JDK8u preferred)",
-	}
-	for requiredCmd, instructions := range requiredCmds {
-		if _, err := exec.LookPath(requiredCmd); isExecErrNotFound(err) {
-			return skippedToolchain{toolchain, fmt.Sprintf("no `%s` found in PATH; to install, %s", requiredCmd, instructions)}
-		}
-	}
-
-	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
-	log.Println("Downloading or updating Java toolchain in", srclibpathDir)
-	if err := execSrcCmd("toolchain", "get", "-u", toolchain); err != nil {
+func installToolchainFromBundle(name, toolchainPath, bundleURL string) (err error) {
+	tmpDir, err := ioutil.TempDir("", "srclib-toolchain-bundle")
+	if err != nil {
 		return err
 	}
 
-	log.Println("Installing Java toolchain in", srclibpathDir)
-	if err := execCmd("make", "-C", srclibpathDir, "install"); err != nil {
+	url, err := url.Parse(bundleURL)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("Installing %s toolchain from %s", name, bundleURL)
+	outputFile := filepath.Join(tmpDir, filepath.Base(url.Path))
+	f, err := os.Create(outputFile)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err2 := f.Close(); err2 != nil && err == nil {
+			err = err2
+		}
+	}()
+
+	resp, err := http.Get(bundleURL)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("GET %s: unexpected HTTP status %d (%s)", bundleURL, resp.StatusCode, resp.Status)
+	}
+
+	done := make(chan struct{})
+	go func() {
+		for {
+			t := time.After(time.Second * 2)
+			select {
+			case <-t:
+				fi, err := os.Stat(outputFile)
+				if err == nil {
+					fmt.Printf("\rDownload %.1f%% complete (%.1f MB / %.1f MB)",
+						float64(fi.Size())/float64(resp.ContentLength)*100,
+						float64(fi.Size())/1024/1024,
+						float64(resp.ContentLength)/1024/1024,
+					)
+				}
+			case <-done:
+				log.Printf("Finished downloading")
+				return
+			}
+		}
+	}()
+
+	log.Printf("Downloading %s (%.1f MB)", bundleURL, float64(resp.ContentLength)/1024/1024)
+	_, err = io.Copy(f, resp.Body)
+	done <- struct{}{}
+	fmt.Println() // for the "\r" line in the progress indicator
+	if err != nil {
+		return err
+	}
+
+	log.Printf("Unarchiving %s toolchain bundle at %s", name, outputFile)
+	var unbundleCmd ToolchainUnbundleCmd
+	unbundleCmd.Args.BundleFile = outputFile
+	unbundleCmd.Args.Toolchain = toolchainPath
+	if err := unbundleCmd.Execute(nil); err != nil {
 		return err
 	}
 

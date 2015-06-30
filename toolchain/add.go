@@ -20,8 +20,10 @@ func Add(dir, toolchainPath string, opt *AddOpt) error {
 		opt = &AddOpt{}
 	}
 	if !opt.Force {
-		if _, err := Lookup(toolchainPath); !os.IsNotExist(err) {
+		if _, err := Lookup(toolchainPath); err == nil {
 			return fmt.Errorf("a toolchain already exists at toolchain path %q", toolchainPath)
+		} else if !os.IsNotExist(err) {
+			return err
 		}
 	}
 
