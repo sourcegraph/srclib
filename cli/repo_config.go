@@ -27,11 +27,8 @@ type Repo struct {
 // URI returns the Repo's URI. It returns the empty string if the
 // Repo's CloneURL is malformed or empty.
 func (c *Repo) URI() string {
-	if uri, err := graph.TryMakeURI(c.CloneURL); err != nil {
-		return ""
-	} else {
-		return uri
-	}
+	uri, _ := graph.TryMakeURI(c.CloneURL)
+	return uri
 }
 
 func OpenRepo(dir string) (*Repo, error) {
@@ -143,9 +140,6 @@ func getVCSCloneURL(vcsType string, repoDir string) string {
 			return "", err
 		}
 		cloneURL := strings.TrimSpace(string(out))
-		if vcsType == "git" {
-			cloneURL = strings.Replace(cloneURL, "git@github.com:", "git://github.com/", 1)
-		}
 		return cloneURL, nil
 	}
 	switch vcsType {
