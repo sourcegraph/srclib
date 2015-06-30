@@ -31,7 +31,7 @@ func Get(path string, update bool) (*Info, error) {
 		if err := cmd.Run(); err != nil {
 			return nil, err
 		}
-	} else if fi.Mode().IsDir() {
+	} else if update && fi.Mode().IsDir() {
 		cmd := exec.Command("git", "pull", "origin", "master")
 		cmd.Dir = toolchainDir
 		cmd.Stdout, cmd.Stderr = os.Stderr, os.Stderr
