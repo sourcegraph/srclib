@@ -23,10 +23,20 @@ func TestTryMakeURI(t *testing.T) {
 		{"/gitrepos/foo/bar", ""},
 		{"http://foo.com/", ""},
 		{"http://foo.com/bar?baz#qux", "foo.com/bar"},
+		{"git@foo.com:bar", "foo.com/bar"},
+		{"git@foo.com:bar/baz.qux", "foo.com/bar/baz.qux"},
+		{"git@foo:bar.git", "foo/bar"},
 	}
 
 	for _, test := range tests {
-		got, _ := TryMakeURI(test.cloneURL)
+		got, err := TryMakeURI(test.cloneURL)
+		if test.want != "" && err != nil {
+			t.Errorf("%s: error: %s", test.cloneURL, err)
+			continue
+		}
+		if test.want == "" {
+			continue
+		}
 		if test.want != got {
 			t.Errorf("%q: want URI %q, got %q", test.cloneURL, test.want, got)
 		}

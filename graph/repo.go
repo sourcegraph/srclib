@@ -30,6 +30,11 @@ func TryMakeURI(cloneURL string) (string, error) {
 		return "", errors.New("MakeURI: empty clone URL")
 	}
 
+	// Handle "user@host:path" and "host:path" (assumed SSH).
+	if strings.Contains(cloneURL, ":") && !strings.Contains(cloneURL, "://") {
+		cloneURL = "ssh://" + strings.Replace(cloneURL, ":", "/", -1)
+	}
+
 	url, err := url.Parse(cloneURL)
 	if err != nil {
 		return "", err
