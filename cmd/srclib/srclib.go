@@ -7,6 +7,8 @@ import (
 	"runtime/pprof"
 	"strings"
 
+	"sourcegraph.com/sourcegraph/go-flags"
+
 	"sourcegraph.com/sourcegraph/srclib/cli"
 	_ "sourcegraph.com/sourcegraph/srclib/dep"
 	_ "sourcegraph.com/sourcegraph/srclib/scan"
@@ -28,7 +30,9 @@ func main() {
 	}
 
 	if err := cli.Main(); err != nil {
-		fmt.Fprintf(os.Stderr, "FAILED: %s - %s\n", strings.Join(os.Args, " "), err.Error())
+		if _, ok := err.(*flags.Error); !ok {
+			fmt.Fprintf(os.Stderr, "FAILED: %s\n", strings.Join(os.Args, " "))
+		}
 		os.Exit(1)
 	}
 }
