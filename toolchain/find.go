@@ -47,7 +47,7 @@ func List() ([]*Info, error) {
 	var found []*Info
 	seen := map[string]string{}
 
-	dirs := strings.Split(srclib.Path, ":")
+	dirs := srclib.PathEntries()
 
 	// maps symlinked trees to their original path
 	origDirs := map[string]string{}
