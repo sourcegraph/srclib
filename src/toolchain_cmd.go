@@ -363,8 +363,8 @@ func installToolchains(langs []toolchainInstaller) error {
 	for _, l := range langs {
 		fmt.Println(brush.Cyan(l.name + " " + strings.Repeat("=", 78-len(l.name))).String())
 		if err := l.fn(); err != nil {
-			if err, ok := err.(skippedToolchain); ok {
-				fmt.Printf("%s\n", brush.Yellow(err.Error()))
+			if err2, ok := err.(skippedToolchain); ok {
+				fmt.Printf("%s\n", brush.Yellow(err2.Error()))
 			} else {
 				fmt.Printf("%s\n", brush.Red(fmt.Sprintf("failed to install/upgrade %s toolchain: %s", l.name, err)))
 			}
