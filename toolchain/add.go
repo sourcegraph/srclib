@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"sourcegraph.com/sourcegraph/srclib"
 )
@@ -21,8 +20,10 @@ func Add(dir, toolchainPath string, opt *AddOpt) error {
 		opt = &AddOpt{}
 	}
 	if !opt.Force {
-		if _, err := Lookup(toolchainPath); !os.IsNotExist(err) {
+		if _, err := Lookup(toolchainPath); err == nil {
 			return fmt.Errorf("a toolchain already exists at toolchain path %q", toolchainPath)
+		} else if !os.IsNotExist(err) {
+			return err
 		}
 	}
 
@@ -31,8 +32,7 @@ func Add(dir, toolchainPath string, opt *AddOpt) error {
 		return err
 	}
 
-	srclibpathEntry := strings.SplitN(srclib.Path, ":", 2)[0]
-	targetDir := filepath.Join(srclibpathEntry, toolchainPath)
+	targetDir := filepath.Join(srclib.PathEntries()[0], toolchainPath)
 
 	if err := os.MkdirAll(filepath.Dir(targetDir), 0700); err != nil {
 		return err
