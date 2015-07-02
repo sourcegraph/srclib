@@ -10,8 +10,27 @@ import (
 	"path/filepath"
 	"strings"
 
+	"sourcegraph.com/sourcegraph/srclib"
+
 	"github.com/fsouza/go-dockerclient"
 )
+
+// Dir returns the directory where the named toolchain lives (under
+// the SRCLIBPATH). If the toolchain already exists in any of the
+// entries of SRCLIBPATH, that directory is returned. Otherwise a
+// nonexistent directory in the first SRCLIBPATH entry is returned.
+func Dir(toolchainPath string) (string, error) {
+	toolchainPath = filepath.Clean(toolchainPath)
+
+	dir, err := lookupToolchain(toolchainPath)
+	if os.IsNotExist(err) {
+		return filepath.Join(srclib.PathEntries()[0], toolchainPath), nil
+	}
+	if err != nil {
+		err = &os.PathError{Op: "toolchain.Dir", Path: toolchainPath, Err: err}
+	}
+	return dir, err
+}
 
 // Info describes a toolchain.
 type Info struct {
