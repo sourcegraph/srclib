@@ -666,7 +666,6 @@ func installToolchainFromBundle(name, toolchainPath, bundleURL string) (err erro
 					)
 				}
 			case <-done:
-				log.Printf("Finished downloading")
 				return
 			}
 		}
@@ -679,6 +678,8 @@ func installToolchainFromBundle(name, toolchainPath, bundleURL string) (err erro
 	if err != nil {
 		return err
 	}
+
+	log.Printf("Finished downloading")
 
 	log.Printf("Unarchiving %s toolchain bundle at %s", name, outputFile)
 	var unbundleCmd ToolchainUnbundleCmd
