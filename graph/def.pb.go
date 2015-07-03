@@ -24,7 +24,7 @@ import proto "github.com/gogo/protobuf/proto"
 
 // discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto/gogo.pb"
 
-import encoding_json "encoding/json"
+import sourcegraph_com_sqs_pbtypes "sourcegraph.com/sqs/pbtypes"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -101,7 +101,7 @@ type Def struct {
 	// Data contains additional language- and toolchain-specific information
 	// about the def. Data is used to construct function signatures,
 	// import/require statements, language-specific type descriptions, etc.
-	Data encoding_json.RawMessage `protobuf:"bytes,10,opt,name=data,proto3,customtype=encoding/json.RawMessage" json:"Data,omitempty"`
+	Data sourcegraph_com_sqs_pbtypes.RawMessage `protobuf:"bytes,10,opt,name=data,proto3,customtype=sourcegraph.com/sqs/pbtypes.RawMessage" json:"Data,omitempty"`
 	// Docs are docstrings for this Def. This field is not set in the
 	// Defs produced by graphers; they should emit docs in the
 	// separate Docs field on the graph.Output struct.
