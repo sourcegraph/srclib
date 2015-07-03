@@ -84,10 +84,7 @@ message Def {
     // Data contains additional language- and toolchain-specific information
     // about the def. Data is used to construct function signatures,
     // import/require statements, language-specific type descriptions, etc.
-    //
-    // To use json.RawMessage:
-    //optional bytes data = 10 [(gogoproto.customtype) = "encoding/json.RawMessage", (gogoproto.jsontag) = "Data,omitempty"];
-    bytes data = 10 [(gogoproto.jsontag) = "Data,omitempty"];
+    bytes data = 10 [(gogoproto.customtype) = "sourcegraph.com/sqs/pbtypes.RawMessage", (gogoproto.jsontag) = "Data,omitempty"];
 
     // Docs are docstrings for this Def. This field is not set in the
     // Defs produced by graphers; they should emit docs in the
