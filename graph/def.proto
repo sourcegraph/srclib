@@ -116,3 +116,23 @@ message DefDoc {
     // Data is the actual documentation text.
     string data = 2 [(gogoproto.jsontag) = "Data"];
 };
+
+// DefFormatStrings contains the various def format strings.
+message DefFormatStrings {
+	QualFormatStrings name = 1 [(gogoproto.nullable) = false];
+	QualFormatStrings type = 2 [(gogoproto.nullable) = false];
+	string name_and_type_separator = 3;
+	string language = 4;
+	string def_keyword = 5;
+	string kind = 6;
+}
+
+// QualFormatStrings holds the formatted string for each Qualification for a def
+// (for either Name or Type).
+message QualFormatStrings {
+	string unqualified = 1;
+	string scope_qualified = 2;
+	string dep_qualified = 3;
+	string repository_wide_qualified = 4;
+	string language_wide_qualified = 5;
+}
