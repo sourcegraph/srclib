@@ -11,11 +11,13 @@ It is generated from these files:
 It has these top-level messages:
 	Ann
 */
-package ann;import "encoding/json"
+package ann
 
 import proto "github.com/gogo/protobuf/proto"
 
 // discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto/gogo.pb"
+
+import sourcegraph_com_sqs_pbtypes "sourcegraph.com/sqs/pbtypes"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -50,7 +52,7 @@ type Ann struct {
 	Type string `protobuf:"bytes,8,opt,name=type,proto3" json:"Type"`
 	// Data contains arbitrary JSON data that is specific to this
 	// annotation type (e.g., the link URL for Link annotations).
-	Data json.RawMessage `protobuf:"bytes,9,opt,name=data,proto3" json:"Data,omitempty"`
+	Data sourcegraph_com_sqs_pbtypes.RawMessage `protobuf:"bytes,9,opt,name=data,proto3,customtype=sourcegraph.com/sqs/pbtypes.RawMessage" json:"Data,omitempty"`
 }
 
 func (m *Ann) Reset()         { *m = Ann{} }
