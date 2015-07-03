@@ -15,6 +15,8 @@ It has these top-level messages:
 	DefKey
 	Def
 	DefDoc
+	DefFormatStrings
+	QualFormatStrings
 */
 package graph
 
@@ -136,6 +138,34 @@ type DefDoc struct {
 func (m *DefDoc) Reset()         { *m = DefDoc{} }
 func (m *DefDoc) String() string { return proto.CompactTextString(m) }
 func (*DefDoc) ProtoMessage()    {}
+
+// DefFormatStrings contains the various def format strings.
+type DefFormatStrings struct {
+	Name                 QualFormatStrings `protobuf:"bytes,1,opt,name=name" json:"name"`
+	Type                 QualFormatStrings `protobuf:"bytes,2,opt,name=type" json:"type"`
+	NameAndTypeSeparator string            `protobuf:"bytes,3,opt,name=name_and_type_separator,proto3" json:"name_and_type_separator,omitempty"`
+	Language             string            `protobuf:"bytes,4,opt,name=language,proto3" json:"language,omitempty"`
+	DefKeyword           string            `protobuf:"bytes,5,opt,name=def_keyword,proto3" json:"def_keyword,omitempty"`
+	Kind                 string            `protobuf:"bytes,6,opt,name=kind,proto3" json:"kind,omitempty"`
+}
+
+func (m *DefFormatStrings) Reset()         { *m = DefFormatStrings{} }
+func (m *DefFormatStrings) String() string { return proto.CompactTextString(m) }
+func (*DefFormatStrings) ProtoMessage()    {}
+
+// QualFormatStrings holds the formatted string for each Qualification for a def
+// (for either Name or Type).
+type QualFormatStrings struct {
+	Unqualified             string `protobuf:"bytes,1,opt,name=unqualified,proto3" json:"unqualified,omitempty"`
+	ScopeQualified          string `protobuf:"bytes,2,opt,name=scope_qualified,proto3" json:"scope_qualified,omitempty"`
+	DepQualified            string `protobuf:"bytes,3,opt,name=dep_qualified,proto3" json:"dep_qualified,omitempty"`
+	RepositoryWideQualified string `protobuf:"bytes,4,opt,name=repository_wide_qualified,proto3" json:"repository_wide_qualified,omitempty"`
+	LanguageWideQualified   string `protobuf:"bytes,5,opt,name=language_wide_qualified,proto3" json:"language_wide_qualified,omitempty"`
+}
+
+func (m *QualFormatStrings) Reset()         { *m = QualFormatStrings{} }
+func (m *QualFormatStrings) String() string { return proto.CompactTextString(m) }
+func (*QualFormatStrings) ProtoMessage()    {}
 
 func init() {
 }
