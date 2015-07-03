@@ -43,5 +43,6 @@ message Ann {
 
     // Data contains arbitrary JSON data that is specific to this
     // annotation type (e.g., the link URL for Link annotations).
-    bytes data = 9 [(gogoproto.customtype) = "encoding/json.RawMessage", (gogoproto.jsontag) = "Data,omitempty"];
+    bytes data = 9 [(gogoproto.jsontag) = "Data,omitempty"];
+
 };
