@@ -28,10 +28,13 @@ func Get(path string, update bool) (*Info, error) {
 		// older gits don't heed git https redirects, so manually substitute in
 		// the github.com clone url for sourcegraph.com clone urls
 		var substitutedPath string
-		if strings.HasPrefix(path, "sourcegraph.com/") {
-			substitutedPath = "github.com/" + strings.TrimPrefix(path, "sourcegraph.com/")
+		var uriPath string
+
+		uriPath = filepath.ToSlash(path)
+		if strings.HasPrefix(uriPath, "sourcegraph.com/") {
+			substitutedPath = "github.com/" + strings.TrimPrefix(uriPath, "sourcegraph.com/")
 		} else {
-			substitutedPath = path
+			substitutedPath = uriPath
 		}
 		cloneURL := "https://" + substitutedPath + ".git"
 		cmd := exec.Command("git", "clone", cloneURL, toolchainDir)
