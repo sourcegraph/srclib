@@ -15,13 +15,13 @@ func AncestorDirs(p string, self bool) []string {
 		return nil
 	}
 	var dirs []string
-	if self {
-		dirs = append(dirs, absPath)
-	}
 	dir := filepath.Dir(absPath)
 	for dir != "." && dir[len(dir)-1:] != string(filepath.Separator) {
-		dirs = append(dirs, dir)
+		dirs = append([]string{dir}, dirs...)
 		dir = filepath.Dir(dir)
+	}
+	if self {
+		dirs = append(dirs, absPath)
 	}
 	return dirs
 }
