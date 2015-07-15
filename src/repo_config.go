@@ -14,6 +14,7 @@ import (
 	"strings"
 	"syscall"
 
+	"sourcegraph.com/sourcegraph/srclib/util"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 )
 
@@ -99,7 +100,7 @@ func getRootDir(dir string) (rootDir string, vcsType string, err error) {
 	if err != nil {
 		return "", "", err
 	}
-	ancestors := ancestorDirsAndSelfExceptRoot(dir)
+	ancestors := util.AncestorDirs(dir, true)
 
 	vcsTypes := []string{"git", "hg"}
 	for i := len(ancestors) - 1; i >= 0; i-- {
@@ -113,26 +114,6 @@ func getRootDir(dir string) (rootDir string, vcsType string, err error) {
 		}
 	}
 	return "", "", nil
-}
-
-// ancestorDirsAndSelfExceptRoot returns a list of p's ancestor
-// directories (including itself but excluding the root ("." or "/")).
-func ancestorDirsAndSelfExceptRoot(p string) []string {
-	if p == "" {
-		return nil
-	}
-	if len(p) == 1 && (p[0] == '.' || p[0] == '/') {
-		return nil
-	}
-
-	var dirs []string
-	for i, c := range p {
-		if c == '/' {
-			dirs = append(dirs, p[:i])
-		}
-	}
-	dirs = append(dirs, p)
-	return dirs
 }
 
 // getVCSCloneURL gets the primary remote url. getVCSCloneURL returns

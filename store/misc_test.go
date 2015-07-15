@@ -3,6 +3,8 @@ package store
 import (
 	"reflect"
 	"testing"
+
+	"sourcegraph.com/sourcegraph/srclib/util"
 )
 
 func TestAncestorDirsExceptRoot(t *testing.T) {
@@ -16,7 +18,7 @@ func TestAncestorDirsExceptRoot(t *testing.T) {
 		"a/b/c": []string{"a", "a/b"},
 	}
 	for p, want := range tests {
-		dirs := ancestorDirsExceptRoot(p)
+		dirs := util.AncestorDirs(p, false)
 		if !reflect.DeepEqual(dirs, want) {
 			t.Errorf("%v: got %v, want %v", p, dirs, want)
 		}
