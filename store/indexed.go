@@ -411,7 +411,7 @@ func (s *indexedTreeStore) buildIndexes(xs map[string]Index, units []*unit.Sourc
 				}
 
 				unitDefQueryIndexes = make(map[unit.ID2]*defQueryIndex, len(units))
-				par := parallel.NewRun(len(units))
+				par := parallel.NewRun(runtime.GOMAXPROCS(0))
 				for u_, us_ := range uss {
 					u := u_
 					us, ok := us_.(*indexedUnitStore)
@@ -439,7 +439,7 @@ func (s *indexedTreeStore) buildIndexes(xs map[string]Index, units []*unit.Sourc
 		return unitDefQueryIndexes, getUnitDefQueryIndexesErr
 	}
 
-	par := parallel.NewRun(len(xs))
+	par := parallel.NewRun(runtime.GOMAXPROCS(0))
 	for name_, x_ := range xs {
 		name, x := name_, x_
 		par.Do(func() error {
@@ -670,7 +670,7 @@ func (s *indexedUnitStore) buildIndexes(xs map[string]Index, data *graph.Output,
 		return refs, refFBRs, refOfs, getRefsErr
 	}
 
-	par := parallel.NewRun(len(xs))
+	par := parallel.NewRun(runtime.GOMAXPROCS(0))
 	for name_, x_ := range xs {
 		name, x := name_, x_
 		par.Do(func() error {
