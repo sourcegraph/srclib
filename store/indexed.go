@@ -67,10 +67,10 @@ const (
 func newIndexedTreeStore(fs rwvfs.FileSystem) TreeStoreImporter {
 	return &indexedTreeStore{
 		indexes: map[string]Index{
-			"file_to_units":     &unitFilesIndex{},
-			"def_to_ref_units":  &defRefUnitsIndex{},
-			"def_query_to_defs": &defQueryTreeIndex{},
-			unitsIndexName:      &unitsIndex{},
+			"file_to_units":       &unitFilesIndex{},
+			"def_to_ref_units":    &defRefUnitsIndex{},
+			"def_query_to_defs16": &defQueryTreeIndex{},
+			unitsIndexName:        &unitsIndex{},
 		},
 		fsTreeStore: newFSTreeStore(fs),
 	}
