@@ -1,6 +1,7 @@
 package store
 
 import (
+	"fmt"
 	"sync"
 
 	"code.google.com/p/rog-go/parallel"
@@ -80,7 +81,10 @@ func (s unitStores) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 	return allDefs, err
 }
 
-var c_unitStores_Refs_last_numUnitsQueried = 0
+var (
+	c_unitStores_Refs_last_numUnitsQueried = 0
+	c_mu                                   sync.Mutex
+)
 
 func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 	uss, err := openUnitStores(s.opener, f)
@@ -95,22 +99,41 @@ func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 	)
 	par := parallel.NewRun(storeFetchPar)
 	for u, us := range uss {
+		u, us := u, us
 		if us == nil {
 			continue
 		}
 
 		par.Do(func() error {
-			// Copy so we can do concurrent modification
-			fCopy := filtersForUnit(u, f).([]RefFilter)
+			// Copy so we can do concurrent modification in setImpliedUnit
+			fCopy := make([]RefFilter, len(f))
+			for i, filter := range f {
+				// HACK: consider adding a clone() method to filters
+				switch filter := filter.(type) {
+				case *absRefFilterFunc:
+					newFilter := *filter
+					fCopy[i] = &newFilter
+				case *byRefDefFilter:
+					newFilter := *filter
+					fCopy[i] = &newFilter
+				default:
+					if _, ok := filter.(impliedUnitSetter); ok {
+						return fmt.Errorf("cannot shallow-copy unrecognized filter type %T", filter)
+					} else {
+						fCopy[i] = filter
+					}
+				}
+			}
+			fCopy = filtersForUnit(u, fCopy).([]RefFilter)
+
 			setImpliedUnit(fCopy, u)
 
-			refs, err := us.Refs(fCopy...)
-
 			// Use a lock since increment isn't atomic
-			allRefsMu.Lock()
+			c_mu.Lock()
 			c_unitStores_Refs_last_numUnitsQueried++
-			allRefsMu.Unlock()
+			c_mu.Unlock()
 
+			refs, err := us.Refs(fCopy...)
 			if err != nil && !isStoreNotExist(err) {
 				return err
 			}
