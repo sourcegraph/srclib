@@ -81,10 +81,7 @@ func (s unitStores) Defs(fs ...DefFilter) ([]*graph.Def, error) {
 	return allDefs, err
 }
 
-var (
-	c_unitStores_Refs_last_numUnitsQueried = 0
-	c_mu                                   sync.Mutex
-)
+var c_unitStores_Refs_last_numUnitsQueried = 0
 
 func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 	uss, err := openUnitStores(s.opener, f)
@@ -103,6 +100,8 @@ func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 		if us == nil {
 			continue
 		}
+
+		c_unitStores_Refs_last_numUnitsQueried++
 
 		par.Do(func() error {
 			// Copy so we can do concurrent modification in setImpliedUnit
@@ -127,11 +126,6 @@ func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 			fCopy = filtersForUnit(u, fCopy).([]RefFilter)
 
 			setImpliedUnit(fCopy, u)
-
-			// Use a lock since increment isn't atomic
-			c_mu.Lock()
-			c_unitStores_Refs_last_numUnitsQueried++
-			c_mu.Unlock()
 
 			refs, err := us.Refs(fCopy...)
 			if err != nil && !isStoreNotExist(err) {
