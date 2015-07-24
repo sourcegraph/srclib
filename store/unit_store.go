@@ -96,10 +96,10 @@ func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 	)
 	par := parallel.NewRun(storeFetchPar)
 	for u, us := range uss {
-		u, us := u, us
 		if us == nil {
 			continue
 		}
+		u, us := u, us
 
 		c_unitStores_Refs_last_numUnitsQueried++
 
