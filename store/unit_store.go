@@ -118,9 +118,8 @@ func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 				default:
 					if _, ok := filter.(impliedUnitSetter); ok {
 						return fmt.Errorf("cannot shallow-copy unrecognized filter type %T", filter)
-					} else {
-						fCopy[i] = filter
 					}
+					fCopy[i] = filter
 				}
 			}
 			fCopy = filtersForUnit(u, fCopy).([]RefFilter)
