@@ -91,8 +91,8 @@ func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 
 	c_unitStores_Refs_last_numUnitsQueried = 0
 	var (
-		allRefs   []*graph.Ref
 		allRefsMu sync.Mutex
+		allRefs   []*graph.Ref
 	)
 	par := parallel.NewRun(storeFetchPar)
 	for u, us := range uss {
