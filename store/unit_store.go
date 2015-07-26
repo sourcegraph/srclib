@@ -1,7 +1,6 @@
 package store
 
 import (
-	"fmt"
 	"sync"
 
 	"code.google.com/p/rog-go/parallel"
@@ -104,27 +103,8 @@ func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 		c_unitStores_Refs_last_numUnitsQueried++
 
 		par.Do(func() error {
-			// Copy so we can do concurrent modification in setImpliedUnit
-			fCopy := make([]RefFilter, len(f))
-			for i, filter := range f {
-				// HACK: consider adding a clone() method to filters
-				switch filter := filter.(type) {
-				case *absRefFilterFunc:
-					newFilter := *filter
-					fCopy[i] = &newFilter
-				case *byRefDefFilter:
-					newFilter := *filter
-					fCopy[i] = &newFilter
-				default:
-					if _, ok := filter.(impliedUnitSetter); ok {
-						return fmt.Errorf("cannot shallow-copy unrecognized filter type %T", filter)
-					}
-					fCopy[i] = filter
-				}
-			}
-			fCopy = filtersForUnit(u, fCopy).([]RefFilter)
-
-			setImpliedUnit(fCopy, u)
+			fCopy := filtersForUnit(u, f).([]RefFilter)
+			fCopy = withImpliedUnit(fCopy, u)
 
 			refs, err := us.Refs(fCopy...)
 			if err != nil && !isStoreNotExist(err) {
