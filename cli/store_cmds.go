@@ -232,11 +232,11 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 	// files we will import).
 	treeConfig, err := config.ReadCached(buildDataFS)
 	if err != nil {
-		return err
+		return fmt.Errorf("error calling config.ReadCached: %s", err)
 	}
 	mf, err := plan.CreateMakefile(".", nil, "", treeConfig, plan.Options{NoCache: true})
 	if err != nil {
-		return err
+		return fmt.Errorf("error calling plan.Makefile: %s", err)
 	}
 
 	var (
@@ -273,7 +273,7 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 						log.Printf("Warning: no build data for unit %s %s.", rule.Unit.Type, rule.Unit.Name)
 						return nil
 					}
-					return err
+					return fmt.Errorf("error reading JSON file %s for unit %s %s: %s", rule.Target(), rule.Unit.Type, rule.Unit.Name, err)
 				}
 				if opt.DryRun || GlobalOpt.Verbose {
 					log.Printf("# Importing graph data (%d defs, %d refs, %d docs, %d anns) for unit %s %s", len(data.Defs), len(data.Refs), len(data.Docs), len(data.Anns), rule.Unit.Type, rule.Unit.Name)
@@ -296,11 +296,11 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 				switch imp := stor.(type) {
 				case store.RepoImporter:
 					if err := imp.Import(opt.CommitID, rule.Unit, data); err != nil {
-						return err
+						return fmt.Errorf("error running store.RepoImporter.Import: %s", err)
 					}
 				case store.MultiRepoImporter:
 					if err := imp.Import(opt.Repo, opt.CommitID, rule.Unit, data); err != nil {
-						return err
+						return fmt.Errorf("error running store.MultiRepoImporter.Import: %s", err)
 					}
 				default:
 					return fmt.Errorf("store (type %T) does not implement importing", stor)
@@ -324,11 +324,11 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 		switch s := stor.(type) {
 		case store.RepoIndexer:
 			if err := s.Index(opt.CommitID); err != nil {
-				return err
+				return fmt.Errorf("Error indexing commit %s: %s", opt.CommitID, err)
 			}
 		case store.MultiRepoIndexer:
 			if err := s.Index(opt.Repo, opt.CommitID); err != nil {
-				return err
+				return fmt.Errorf("error indexing %s@%s: %s", opt.Repo, opt.CommitID, err)
 			}
 		}
 	}
