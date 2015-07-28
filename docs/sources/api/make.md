@@ -50,7 +50,7 @@ necessary commands to analyze the project. To do so, it examines each source
 unit (using the build cache, if present) and generates rules for each of the
 predefined operations (currently depresolve and graph).
 
-You can view the Makefile by running `src make --print`.
+You can view the Makefile by running `src make --dry-run`.
 
 To determine which tool to use for an operation on a source unit, it first
 checks whether the Srcfile specifies a tool to use. If not, it takes the first
