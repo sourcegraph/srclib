@@ -178,8 +178,6 @@ type StoreImportCmd struct {
 	SampleDefs       int  `long:"sample-defs" description:"(sample data) number of sample defs to import" default:"100"`
 	SampleRefs       int  `long:"sample-refs" description:"(sample data) number of sample refs to import" default:"100"`
 	SampleImportOnly bool `long:"sample-import-only" description:"(sample data) only import, don't demonstrate listing data"`
-
-	RemoteBuildData bool `long:"remote-build-data" description:"import remote build data (not the local .srclib-cache build data)"`
 }
 
 var storeImportCmd StoreImportCmd
@@ -196,12 +194,12 @@ func (c *StoreImportCmd) Execute(args []string) error {
 		return c.sample(s)
 	}
 
-	bdfs, label, err := GetBuildDataFS(!c.RemoteBuildData, c.Repo, c.CommitID)
+	bdfs, err := GetBuildDataFS(c.CommitID)
 	if err != nil {
 		return err
 	}
 	if GlobalOpt.Verbose {
-		log.Printf("# Importing build data for %s (commit %s) from %s", c.Repo, c.CommitID, label)
+		log.Printf("# Importing build data for %s (commit %s)", c.Repo, c.CommitID)
 	}
 
 	if err := Import(bdfs, s, c.ImportOpt); err != nil {
