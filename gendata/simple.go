@@ -17,18 +17,16 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
-type GenDataCmd struct {
-	Repo     string
-	CommitID string
-	NFiles   []int
-	NUnits   []int
-	NDefs    int
-	NRefs    int
+type SimpleRepoCmd struct {
+	GenDataOpt
 
-	GenSource bool
+	NFiles []int `short:"f" long:"files" description:"number of files at each level" required:"yes"`
+	NUnits []int `short:"u" long:"units" description:"number of units to generate; uses same input structure as --files" required:"yes"`
+	NDefs  int   `long:"ndefs" description:"number of defs to generate per file" required:"yes"`
+	NRefs  int   `long:"nrefs" description:"number of refs to generate per file" required:"yes"`
 }
 
-func (c *GenDataCmd) Generate() error {
+func (c *SimpleRepoCmd) Execute(args []string) error {
 	if c.CommitID == "" && !c.GenSource {
 		return fmt.Errorf("--commit must be non-empty or --gen-source must be true")
 	}
@@ -108,7 +106,7 @@ func (c *GenDataCmd) Generate() error {
 	return nil
 }
 
-func (c *GenDataCmd) genUnit(ut *unit.SourceUnit) error {
+func (c *SimpleRepoCmd) genUnit(ut *unit.SourceUnit) error {
 	defs := make([]*graph.Def, 0)
 	refs := make([]*graph.Ref, 0)
 	docs := make([]*graph.Doc, 0)
@@ -165,7 +163,7 @@ func (c *GenDataCmd) genUnit(ut *unit.SourceUnit) error {
 	return nil
 }
 
-func (c *GenDataCmd) genFile(ut *unit.SourceUnit, filename string) (defs []*graph.Def, refs []*graph.Ref, docs []*graph.Doc, err error) {
+func (c *SimpleRepoCmd) genFile(ut *unit.SourceUnit, filename string) (defs []*graph.Def, refs []*graph.Ref, docs []*graph.Doc, err error) {
 	offset := 0
 	defName := "foo"
 	docstring := "// this is a docstring"
