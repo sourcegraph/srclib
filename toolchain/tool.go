@@ -1,6 +1,7 @@
 package toolchain
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -142,7 +143,7 @@ func (t *tool) Run(arg []string, input, resp interface{}) error {
 	}
 
 	if input != nil {
-		if err := json.NewEncoder(stdin).Encode(input); err != nil {
+		if err := json.NewEncoder(bufio.NewWriter(stdin)).Encode(input); err != nil {
 			return err
 		}
 		if err := stdin.Close(); err != nil {
