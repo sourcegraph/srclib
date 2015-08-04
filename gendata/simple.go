@@ -1,16 +1,12 @@
 package gendata
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"runtime"
 
 	"code.google.com/p/rog-go/parallel"
-
-	"strings"
 
 	"sourcegraph.com/sourcegraph/srclib/dep"
 	"sourcegraph.com/sourcegraph/srclib/graph"
@@ -27,8 +23,8 @@ type SimpleRepoCmd struct {
 }
 
 func (c *SimpleRepoCmd) Execute(args []string) error {
-	if c.CommitID == "" && !c.GenSource {
-		return fmt.Errorf("--commit must be non-empty or --gen-source must be true")
+	if err := c.validate(); err != nil {
+		return err
 	}
 
 	if err := removeGlob(".srclib-*"); err != nil {
@@ -49,16 +45,7 @@ func (c *SimpleRepoCmd) Execute(args []string) error {
 	}
 
 	if c.GenSource {
-		if err := removeGlob("unit_*"); err != nil {
-			return err
-		}
-		if err := removeGlob("u_*"); err != nil {
-			return err
-		}
-		if err := os.RemoveAll(".git"); err != nil {
-			return err
-		}
-		if err := exec.Command("git", "init").Run(); err != nil {
+		if err := resetSource(); err != nil {
 			return err
 		}
 
@@ -73,19 +60,10 @@ func (c *SimpleRepoCmd) Execute(args []string) error {
 		}
 
 		// get commit ID
-		err := exec.Command("git", "add", "-A", ":/").Run()
+		commitID, err := getGitCommitID()
 		if err != nil {
 			return err
 		}
-		err = exec.Command("git", "commit", "-m", "generated source").Run()
-		if err != nil {
-			return err
-		}
-		out, err := exec.Command("git", "log", "--pretty=oneline", "-n1").Output()
-		if err != nil {
-			return err
-		}
-		commitID := strings.Fields(string(out))[0]
 
 		// update command to generate graph data
 		c.CommitID = commitID
@@ -122,40 +100,8 @@ func (c *SimpleRepoCmd) genUnit(ut *unit.SourceUnit) error {
 
 	if !c.GenSource {
 		gr := graph.Output{Defs: defs, Refs: refs, Docs: docs}
-		dp := make([]*dep.Resolution, 0)
-
-		unitDir := filepath.Join(".srclib-cache", ut.CommitID, ut.Name)
-		if err := os.MkdirAll(unitDir, 0700); err != nil {
-			return err
-		}
-
-		unitFile, err := os.OpenFile(filepath.Join(unitDir, fmt.Sprintf("%s.unit.json", ut.Type)), os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0666)
-		if err != nil {
-			return err
-		}
-		defer unitFile.Close()
-
-		if err := json.NewEncoder(unitFile).Encode(ut); err != nil {
-			return err
-		}
-
-		graphFile, err := os.OpenFile(filepath.Join(unitDir, fmt.Sprintf("%s.graph.json", ut.Type)), os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0666)
-		if err != nil {
-			return err
-		}
-		defer graphFile.Close()
-
-		if err := json.NewEncoder(graphFile).Encode(gr); err != nil {
-			return err
-		}
-
-		depFile, err := os.OpenFile(filepath.Join(unitDir, fmt.Sprintf("%s.depresolve.json", ut.Type)), os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0666)
-		if err != nil {
-			return err
-		}
-		defer depFile.Close()
-
-		if err := json.NewEncoder(depFile).Encode(dp); err != nil {
+		deps := make([]*dep.Resolution, 0)
+		if err := writeSrclibCache(ut, &gr, deps); err != nil {
 			return err
 		}
 	}
@@ -271,17 +217,4 @@ func (c *SimpleRepoCmd) genFile(ut *unit.SourceUnit, filename string) (defs []*g
 	}
 
 	return defs, refs, docs, nil
-}
-
-func removeGlob(glob string) error {
-	matches, err := filepath.Glob(glob)
-	if err != nil {
-		return err
-	}
-	for _, match := range matches {
-		if err := os.RemoveAll(match); err != nil {
-			return err
-		}
-	}
-	return nil
 }
