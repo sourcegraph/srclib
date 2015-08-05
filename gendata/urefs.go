@@ -188,7 +188,7 @@ func (c *URefsRepoCmd) genDefsFile(ut *unit.SourceUnit, filename string) (defs [
 			DefEnd:   uint32(offset + len(defName) - 1),
 		}
 		if sourceFile != nil {
-			_, err := sourceFile.WriteString(def.Name + " ")
+			_, err := sourceFile.WriteString(def.Name + "\n")
 			if err != nil {
 				return nil, nil, err
 			}
@@ -262,7 +262,7 @@ func (c *URefsRepoCmd) genRefsFiles(ut *unit.SourceUnit, defs []*graph.Def, defs
 			}
 
 			if sourcefile != nil {
-				_, err := sourcefile.WriteString(def.Name + " ")
+				_, err := sourcefile.WriteString(def.Name + "\n")
 				if err != nil {
 					return nil, nil, err
 				}
