@@ -48,6 +48,9 @@ type persistedIndex interface {
 	Read(io.Reader) error
 }
 
+// The rest of this file contains helpers used by many index
+// implementations.
+
 type byteOffsets []int64
 
 func (v byteOffsets) MarshalBinary() ([]byte, error) {

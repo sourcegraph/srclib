@@ -1,6 +1,33 @@
 /*
 
-Package store handles srclib data access, querying, and storage.
+Package store handles srclib data access, importing, querying, and
+storage.
+
+It uses the filesystem as its underlying storage. Access to the
+filesystem is abstracted through a virtual filesystem (VFS) interface.
+
+This package writes two types of files: index files and data
+files. Index files are per-source unit or per-repo and support fast
+lookups by certain fields or criteria.
+
+* Indexes are consulted by the indexedXyz stores in indexed.go (which
+  implement the same interface as their underlying, non-indexed store
+  and delegate to the underlying store when the index does not cover
+  the query).
+
+  Indexes are constructed during the index process using a variety of
+  methods, depending on the operation they need to support. For
+  example, the search query index (which maps prefix queries by def
+  names to the defs that match, repo-wide) builds a MAFSA and writes
+  it to the def_query index file. Check the *_index.go files for the
+  full set of indexes in use.
+
+  See the godoc for Index for more information.
+
+* Data files consist of packed, varint-length-encoded protobufs of a
+  certain type (defs, refs, etc.). The indexes typically contain byte
+  offsets that refer to positions in the data files.
+
 
 CONVENTION - ZERO VALUES FOR FIELDS OUTSIDE OF A STORE'S SCOPE
 
@@ -50,6 +77,15 @@ the filters to be combined arbitrarily (even if the AND of their
 ByXyzFilters can't be used to narrow the scope) and allows scope
 narrowing to use techniques that may yield false positives (e.g.,
 bloom filters).
+
+
+DEBUGGING
+
+The `srclib store` subcommands allow you to perform most store
+operations interactively.
+
+Set the env var V=1 while running tests or `srclib store` commands for
+more output.
 
 */
 package store
