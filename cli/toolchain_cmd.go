@@ -555,7 +555,7 @@ func installJavaToolchain() error {
 	reqdCmds := []string{"gradle"}
 	for _, reqdCmd := range reqdCmds {
 		if _, err := exec.LookPath(reqdCmd); isExecErrNotFound(err) {
-			return skippedToolchain{toolchain, fmt.Sprintf("no `%s` in PATH, required for the Java toolchain")}
+			return skippedToolchain{toolchain, fmt.Sprintf("no `%s` in PATH, required for the Java toolchain", reqdCmd)}
 		}
 	}
 
