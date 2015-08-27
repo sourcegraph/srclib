@@ -103,6 +103,9 @@ func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 		c_unitStores_Refs_last_numUnitsQueried++
 
 		par.Do(func() error {
+			if _, moreOK := LimitRemaining(f); !moreOK {
+				return nil
+			}
 			fCopy := filtersForUnit(u, f).([]RefFilter)
 			fCopy = withImpliedUnit(fCopy, u)
 
