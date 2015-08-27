@@ -2,6 +2,7 @@ package grapher
 
 import (
 	"fmt"
+	"log"
 	"path/filepath"
 
 	"sourcegraph.com/sourcegraph/makex"
@@ -35,6 +36,10 @@ func makeGraphRules(c *config.Tree, dataDir string, existing []makex.Rule, opt p
 		}
 
 		rules = append(rules, &GraphUnitRule{dataDir, u, toolRef, opt})
+		if opt.Verbose {
+			log.Printf("Created %v rule for %v %v", graphOp, toolRef.Toolchain, u.ID())
+		}
+
 	}
 	return rules, nil
 }
@@ -58,7 +63,7 @@ func (r *GraphUnitRule) Prereqs() []string {
 
 func (r *GraphUnitRule) Recipes() []string {
 	return []string{
-		fmt.Sprintf("src tool %s %q %q < $< | src internal normalize-graph-data --unit-type %q --dir . 1> $@", r.opt.ToolchainExecOpt, r.Tool.Toolchain, r.Tool.Subcmd, r.Unit.Type),
+		fmt.Sprintf("%s tool %s %q %q < $< | %s internal normalize-graph-data --unit-type %q --dir . 1> $@", srclib.CommandName, r.opt.ToolchainExecOpt, r.Tool.Toolchain, r.Tool.Subcmd, srclib.CommandName, r.Unit.Type),
 	}
 }
 

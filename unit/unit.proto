@@ -1,7 +1,7 @@
 syntax = "proto3";
 package unit;
 
-import "gogoproto/gogo.proto";
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 // A RepoSourceUnit is the "concrete" form of SourceUnit that includes
 // information about which repository (and commit) the source unit

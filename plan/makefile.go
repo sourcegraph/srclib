@@ -21,6 +21,8 @@ type Options struct {
 	// When NoCache is true, all files are rebuilt instead of only
 	// the ones associated with changed source units.
 	NoCache bool
+
+	Verbose bool
 }
 
 type RuleMaker func(c *config.Tree, dataDir string, existing []makex.Rule, opt Options) ([]makex.Rule, error)
@@ -105,6 +107,9 @@ func CreateMakefile(buildDataDir string, buildStore buildstore.RepoBuildStore, v
 		rules, err := r(c, buildDataDir, allRules, opt)
 		if err != nil {
 			return nil, fmt.Errorf("rule maker %s: %s", name, err)
+		}
+		if opt.Verbose {
+			log.Printf("%v: Created %d rule(s)", name, len(rules))
 		}
 		if !opt.NoCache {
 			// When cached builds are enabled, we replace all rules whose source unit

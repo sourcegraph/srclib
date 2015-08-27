@@ -19,7 +19,18 @@ var (
 	// SRCLIBCACHE environment variable; if empty, it defaults to DIR/.cache,
 	// where DIR is the first entry in Path (SRCLIBPATH).
 	CacheDir = os.Getenv("SRCLIBCACHE")
+
+	// CommandName holds the commands that will be used to call self when generating
+	// Makefiles and updating toolchains.
+	CommandName = "srclib"
 )
+
+// PathEntries returns first colon-separated entries in Path
+// (SRCLIBPATH). It is guaranteed to have at least one non-empty
+// element.
+func PathEntries() []string {
+	return filepath.SplitList(Path)
+}
 
 func init() {
 	if Path == "" {

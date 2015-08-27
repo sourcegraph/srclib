@@ -4,7 +4,7 @@
 
 Running toolchains as normal programs means that it'll pick up context from your
 local system, such as interpreter/compiler versions, dependencies, etc. This is
-desirable when you're using `src` to analyze code that you're editing locally,
+desirable when you're using `srclib` to analyze code that you're editing locally,
 and when you don't want the analysis output to be reproducible by other people.
 
 Running toolchains inside Docker means that analysis occurs in a reproducible

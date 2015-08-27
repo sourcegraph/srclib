@@ -57,13 +57,13 @@ what you're building to get started.
 See [*Getting started*](https://srclib.org/gettingstarted/) for installation
 instructions.
 
-Once you install srclib's `src` tool and language support toolchains, you'll use
+Once you install srclib's `srclib` tool and language support toolchains, you'll use
 srclib by installing an editor plugin in your editor of choice. [See all editor plugins.](https://srclib.org/gettingstarted/)
 
 # Misc.
 
-* **bash completion** for `src`: run `source contrib/completion/src-completion.bash` or
-  copy that file to `/etc/bash_completion.d/srclib_src` (path may be different
+* **bash completion** for `srclib`: run `source contrib/completion/srclib-completion.bash` or
+  copy that file to `/etc/bash_completion.d/srclib` (path may be different
   on your system)
 
 ## License
