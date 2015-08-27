@@ -18,6 +18,14 @@ install:
   - go get -d -v ./... && go build -v ./...
   - go install ./cmd/srclib
 
+before_script:
+  # gradle
+  - wget https://services.gradle.org/distributions/gradle-2.6-bin.zip
+  - unzip gradle-2.6-bin.zip -d $PWD
+  - rm gradle-2.6-bin.zip
+  - chmod u+x $PWD/gradle-2.6/bin/gradle
+  - sudo ln -s $PWD/gradle-2.6/bin/gradle /usr/bin/gradle
+
 script:
   - go test -v ./...
   - make install-std-toolchains
