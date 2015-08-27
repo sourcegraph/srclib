@@ -5,7 +5,7 @@ import (
 
 	"sourcegraph.com/sourcegraph/srclib"
 
-	"github.com/sqs/go-selfupdate/selfupdate"
+	"github.com/sourcegraph/go-selfupdate/selfupdate"
 )
 
 func init() {

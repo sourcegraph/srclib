@@ -16,7 +16,7 @@ release: upload-release check-release
 SELFUPDATE_TMPDIR=.tmp-selfupdate
 upload-release:
 	@bash -c 'if [[ "$(V)" == "" ]]; then echo Must specify version: make release V=x.y.z; exit 1; fi'
-	go get github.com/laher/goxc github.com/sqs/go-selfupdate
+	go get github.com/laher/goxc github.com/sourcegraph/go-selfupdate
 	goxc -q -pv="$(V)"
 	go-selfupdate -o="$(SELFUPDATE_TMPDIR)" -cmd=srclib "release/$(V)" "$(V)"
 	aws s3 sync --acl public-read "$(SELFUPDATE_TMPDIR)" s3://srclib-release/srclib
