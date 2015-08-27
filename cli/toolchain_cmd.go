@@ -552,8 +552,7 @@ func installJavaToolchain() error {
 	const toolchain = "sourcegraph.com/sourcegraph/srclib-java"
 
 	srclibpathDir := filepath.Join(filepath.SplitList(srclib.Path)[0], toolchain) // toolchain dir under SRCLIBPATH
-
-	reqdCmds := []string{"mvn"}
+	reqdCmds := []string{"gradle"}
 	for _, reqdCmd := range reqdCmds {
 		if _, err := exec.LookPath(reqdCmd); isExecErrNotFound(err) {
 			return skippedToolchain{toolchain, fmt.Sprintf("no `%s` in PATH, required for the Java toolchain")}
@@ -562,7 +561,7 @@ func installJavaToolchain() error {
 
 	log.Println("Downloading or updating Java toolchain in", srclibpathDir)
 
-	if err := execCmd("src", "toolchain", "get", "-u", toolchain); err != nil {
+	if err := execSrcCmd("toolchain", "get", "-u", toolchain); err != nil {
 		return err
 	}
 
