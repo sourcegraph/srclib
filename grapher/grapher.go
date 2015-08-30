@@ -22,25 +22,33 @@ type Grapher interface {
 
 // TODO(sqs): add grapher validation of output
 
-func ensureOffsetsAreByteOffsets(dir string, output *graph.Output) {
-	fset := fileset.NewFileSet()
-	files := make(map[string]*fileset.File)
+type fileCache struct {
+	files map[string]*fileset.File
+	fset  *fileset.FileSet
+}
 
-	addOrGetFile := func(filename string) *fileset.File {
-		if f, ok := files[filename]; ok {
-			return f
-		}
-		data, err := ioutil.ReadFile(filename)
-		if err != nil {
-			panic("ReadFile " + filename + ": " + err.Error())
-		}
-
-		f := fset.AddFile(filename, fset.Base(), len(data))
-		f.SetByteOffsetsForContent(data)
-		files[filename] = f
+func (c fileCache) addOrGet(filename string) *fileset.File {
+	if f, ok := c.files[filename]; ok {
 		return f
 	}
+	data, err := ioutil.ReadFile(filename)
+	if err != nil {
+		panic("ReadFile " + filename + ": " + err.Error())
+	}
 
+	f := c.fset.AddFile(filename, c.fset.Base(), len(data))
+	f.SetByteOffsetsForContent(data)
+	f.SetLinesForContent(data)
+	c.files[filename] = f
+	return f
+}
+
+var files = fileCache{
+	make(map[string]*fileset.File),
+	fileset.NewFileSet(),
+}
+
+func ensureOffsetsAreByteOffsets(dir string, output *graph.Output) {
 	fix := func(filename string, offsets ...*uint32) {
 		defer func() {
 			if e := recover(); e != nil {
@@ -54,7 +62,7 @@ func ensureOffsetsAreByteOffsets(dir string, output *graph.Output) {
 		if fi, err := os.Stat(filename); err != nil || !fi.Mode().IsRegular() {
 			return
 		}
-		f := addOrGetFile(filename)
+		f := files.addOrGet(filename)
 		for _, offset := range offsets {
 			if *offset == 0 {
 				continue
@@ -89,7 +97,20 @@ func sortedOutput(o *graph.Output) *graph.Output {
 	return o
 }
 
-// NormalizeData sorts data and performs other postprocessing.
+func lineForOffset(dir, filename string, offset uint32) uint32 {
+	if filename == "" {
+		return 0
+	}
+	filename = filepath.Join(dir, filename)
+	if fi, err := os.Stat(filename); err != nil || !fi.Mode().IsRegular() {
+		return 0
+	}
+	f := files.addOrGet(filename)
+	return uint32(f.Line(f.Pos(int(offset))))
+}
+
+// NormalizeData sorts data, adds line number to refs & defs and performs other
+// postprocessing.
 func NormalizeData(currentRepoURI, unitType, dir string, o *graph.Output) error {
 	for _, ref := range o.Refs {
 		if ref.DefRepo == currentRepoURI {
@@ -108,6 +129,15 @@ func NormalizeData(currentRepoURI, unitType, dir string, o *graph.Output) error 
 
 	if unitType != "GoPackage" && unitType != "Dockerfile" && !strings.HasPrefix(unitType, "Java") {
 		ensureOffsetsAreByteOffsets(dir, o)
+	}
+
+	for _, d := range o.Defs {
+		d.StartLine = lineForOffset(dir, d.File, d.DefStart)
+		d.EndLine = lineForOffset(dir, d.File, d.DefEnd)
+	}
+	for _, r := range o.Refs {
+		r.StartLine = lineForOffset(dir, r.File, r.Start)
+		r.EndLine = lineForOffset(dir, r.File, r.End)
 	}
 
 	if err := ValidateRefs(o.Refs); err != nil {

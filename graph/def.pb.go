@@ -81,10 +81,12 @@ type Def struct {
 	// Kind is the kind of thing this definition is. This is
 	// language-specific. Possible values include "type", "func",
 	// "var", etc.
-	Kind     string `protobuf:"bytes,3,opt,name=kind,proto3" json:"Kind,omitempty"`
-	File     string `protobuf:"bytes,4,opt,name=file,proto3" json:"File"`
-	DefStart uint32 `protobuf:"varint,5,opt,name=start,proto3" json:"DefStart"`
-	DefEnd   uint32 `protobuf:"varint,6,opt,name=end,proto3" json:"DefEnd"`
+	Kind      string `protobuf:"bytes,3,opt,name=kind,proto3" json:"Kind,omitempty"`
+	File      string `protobuf:"bytes,4,opt,name=file,proto3" json:"File"`
+	DefStart  uint32 `protobuf:"varint,5,opt,name=start,proto3" json:"DefStart"`
+	DefEnd    uint32 `protobuf:"varint,6,opt,name=end,proto3" json:"DefEnd"`
+	StartLine uint32 `protobuf:"varint,18,opt,name=start_line,proto3" json:"StartLine"`
+	EndLine   uint32 `protobuf:"varint,19,opt,name=end_line,proto3" json:"EndLine"`
 	// Exported is whether this def is part of a source unit's
 	// public API. For example, in Java a "public" field is
 	// Exported.
