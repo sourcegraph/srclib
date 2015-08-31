@@ -41,6 +41,10 @@ type Ref struct {
 	Start uint32 `protobuf:"varint,11,opt,name=start,proto3" json:"Start"`
 	// End is the byte offset of this ref's last byte in File.
 	End uint32 `protobuf:"varint,12,opt,name=end,proto3" json:"End"`
+	// StartLine is the line number where this ref begins in File.
+	StartLine uint32 `protobuf:"varint,13,opt,name=start_line,proto3" json:"StartLine"`
+	// StartLine is the line number where this ref ends in File.
+	EndLine uint32 `protobuf:"varint,14,opt,name=end_line,proto3" json:"EndLine"`
 }
 
 func (m *Ref) Reset()         { *m = Ref{} }

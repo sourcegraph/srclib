@@ -47,6 +47,12 @@ message Ref {
 
     // End is the byte offset of this ref's last byte in File.
     uint32 end = 12 [(gogoproto.jsontag) = "End"];
+
+    // StartLine is the line number where this ref begins in File.
+    uint32 start_line = 13 [(gogoproto.customname) = "StartLine", (gogoproto.jsontag) = "StartLine"];
+
+    // StartLine is the line number where this ref ends in File.
+    uint32 end_line = 14 [(gogoproto.customname) = "EndLine", (gogoproto.jsontag) = "EndLine"];
 };
 
 message RefDefKey {

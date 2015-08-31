@@ -64,6 +64,8 @@ message Def {
     string file = 4 [(gogoproto.jsontag) = "File"];
     uint32 start = 5 [(gogoproto.customname) = "DefStart", (gogoproto.jsontag) = "DefStart"];
     uint32 end = 6 [(gogoproto.customname) = "DefEnd", (gogoproto.jsontag) = "DefEnd"];
+    uint32 start_line = 18 [(gogoproto.customname) = "StartLine", (gogoproto.jsontag) = "StartLine"];
+    uint32 end_line = 19 [(gogoproto.customname) = "EndLine", (gogoproto.jsontag) = "EndLine"];
 
     // Exported is whether this def is part of a source unit's
     // public API. For example, in Java a "public" field is
