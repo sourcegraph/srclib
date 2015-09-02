@@ -255,7 +255,8 @@ func (s *fsRepoStore) treeStoreFS(commitID string) rwvfs.FileSystem {
 func (s *fsRepoStore) newTreeStore(commitID string) TreeStoreImporter {
 	fs := s.treeStoreFS(commitID)
 	if useIndexedStore {
-		return newIndexedTreeStore(fs)
+		cacheKey := fs.String()
+		return newIndexedTreeStore(fs, cacheKey)
 	}
 	return newFSTreeStore(fs)
 }
