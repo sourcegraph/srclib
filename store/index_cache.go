@@ -1,6 +1,9 @@
 package store
 
-import "sync"
+import (
+	"container/list"
+	"sync"
+)
 
 // cacheableIndexStore is an index store which can allow the indexes to be
 // shared across instances of the store. The store itself needs to be
@@ -17,15 +20,24 @@ type indexCacheKey struct {
 	indexName string
 }
 
+type indexCacheElement struct {
+	key   indexCacheKey
+	index Index
+}
+
 // indexCache stores indexes for use across stores. This is to prevent the
 // cost of deserializing the index from the underlying VFS store
 type indexCache struct {
-	indexes map[indexCacheKey]Index
+	indexes map[indexCacheKey]*list.Element
+	lru     *list.List
+	maxLen  int
 	sync.RWMutex
 }
 
 var defaultIndexCache *indexCache = &indexCache{
-	indexes: map[indexCacheKey]Index{},
+	indexes: map[indexCacheKey]*list.Element{},
+	lru:     list.New(),
+	maxLen:  50,
 }
 
 // cacheGet attempts to fetch an instance of a loaded Index from an in-memory
@@ -44,15 +56,16 @@ func cachePut(store cacheableIndexStore, name string, index Index) {
 }
 
 func (c *indexCache) cacheGet(store cacheableIndexStore, name string, fallback Index) Index {
-	c.RLock()
-	defer c.RUnlock()
+	c.Lock()
+	defer c.Unlock()
 	key := indexCacheKey{
 		storeKey:  store.StoreKey(),
 		indexName: name,
 	}
-	if index, ok := c.indexes[key]; ok {
+	if el, ok := c.indexes[key]; ok {
 		vlog.Printf("%s: loaded from cache key=%v", name, key)
-		return index
+		c.lru.MoveToFront(el)
+		return el.Value.(indexCacheElement).index
 	} else {
 		vlog.Printf("%s: not in cache key=%v", name, key)
 		return fallback
@@ -75,9 +88,19 @@ func (c *indexCache) cachePut(store cacheableIndexStore, name string, index Inde
 	}
 	c.RUnlock()
 
-	vlog.Printf("%s: updating cache key=%v", name, key)
 	// Update cache
 	c.Lock()
 	defer c.Unlock()
-	c.indexes[key] = index
+	vlog.Printf("%s: updating cache key=%v", name, key)
+	el := indexCacheElement{key: key, index: index}
+	c.indexes[key] = c.lru.PushFront(el)
+
+	// Evict least recently used
+	if c.lru.Len() > c.maxLen {
+		dead := c.lru.Back()
+		deadKey := dead.Value.(indexCacheElement).key
+		vlog.Printf("Evicting %v", deadKey)
+		c.lru.Remove(dead)
+		delete(c.indexes, deadKey)
+	}
 }
