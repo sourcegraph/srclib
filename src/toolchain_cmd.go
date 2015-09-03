@@ -278,7 +278,7 @@ func (c *ToolchainGetCmd) Execute(args []string) error {
 }
 
 type ToolchainAddCmd struct {
-	Dir   string `long:"dir" description:"directory containing toolchain to add" value-name:"DIR"`
+	Dir   string `long:"dir" default:"." description:"directory containing toolchain to add" value-name:"DIR"`
 	Force bool   `short:"f" long:"force" description:"(dangerous) force add, overwrite existing toolchain"`
 	Args  struct {
 		ToolchainPath string `name:"TOOLCHAIN" default:"." description:"toolchain path to use for toolchain directory"`

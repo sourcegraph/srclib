@@ -200,7 +200,7 @@ func testTree(treeDir, expectedDir, actualDir string, exeMethod string, generate
 
 func checkResults(output bytes.Buffer, treeDir, actualDir, expectedDir string) error {
 	treeName := filepath.Base(treeDir)
-	out, err := exec.Command("diff", "-ur", expectedDir, actualDir).CombinedOutput()
+	out, err := exec.Command("diff", "-urw", expectedDir, actualDir).CombinedOutput()
 	if err != nil || len(out) > 0 {
 		fmt.Println(brush.Red(treeName + " FAIL").String())
 		fmt.Printf("Diff failed for %s: %s.", treeName, err)

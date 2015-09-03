@@ -7,6 +7,7 @@ import (
 
 	"github.com/alecthomas/binary"
 
+	"sourcegraph.com/sourcegraph/srclib/util"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/store/phtable"
 )
@@ -142,7 +143,7 @@ func (v filesToDefOfs) add(file string, ofs int64, perFile int) {
 		return
 	}
 	v[file] = append(v[file], ofs)
-	for _, dir := range ancestorDirsExceptRoot(file) {
+	for _, dir := range util.AncestorDirs(file, false) {
 		if len(v[dir]) < perFile {
 			v[dir] = append(v[dir], ofs)
 		}
