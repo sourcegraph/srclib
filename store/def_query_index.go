@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"sync"
 
 	"github.com/alecthomas/binary"
 	"github.com/smartystreets/mafsa"
@@ -19,6 +20,7 @@ type defQueryIndex struct {
 	mt    *mafsaTable
 	f     DefFilter
 	ready bool
+	sync.RWMutex
 }
 
 var _ interface {
@@ -71,6 +73,8 @@ func (x *defQueryIndex) Covers(filters interface{}) int {
 
 // Defs implements defIndex.
 func (x *defQueryIndex) Defs(f ...DefFilter) (byteOffsets, error) {
+	x.RLock()
+	defer x.RUnlock()
 	for _, ff := range f {
 		if pf, ok := ff.(ByDefQueryFilter); ok {
 			ofs, found := x.getByQuery(pf.ByDefQuery())
@@ -96,6 +100,8 @@ func (ds defsByLowerName) Less(i, j int) bool { return ds[i].lowerName < ds[j].l
 
 // Build implements defIndexBuilder.
 func (x *defQueryIndex) Build(defs []*graph.Def, ofs byteOffsets) (err error) {
+	x.Lock()
+	defer x.Unlock()
 	vlog.Printf("defQueryIndex: building index... (%d defs)", len(defs))
 
 	defer func() {
@@ -156,6 +162,8 @@ func (x *defQueryIndex) Build(defs []*graph.Def, ofs byteOffsets) (err error) {
 
 // Write implements persistedIndex.
 func (x *defQueryIndex) Write(w io.Writer) error {
+	x.RLock()
+	defer x.RUnlock()
 	if x.mt == nil {
 		panic("no mafsaTable to write")
 	}
@@ -173,6 +181,8 @@ func (x *defQueryIndex) Read(r io.Reader) error {
 	if err != nil {
 		return err
 	}
+	x.Lock()
+	defer x.Unlock()
 	var mt mafsaTable
 	err = binary.Unmarshal(b, &mt)
 	x.mt = &mt
@@ -184,10 +194,16 @@ func (x *defQueryIndex) Read(r io.Reader) error {
 }
 
 // Ready implements persistedIndex.
-func (x *defQueryIndex) Ready() bool { return x.ready }
+func (x *defQueryIndex) Ready() bool {
+	x.RLock()
+	defer x.RUnlock()
+	return x.ready
+}
 
 // Fprint prints a human-readable representation of the index.
 func (x *defQueryIndex) Fprint(w io.Writer) error {
+	x.RLock()
+	defer x.RUnlock()
 	if x.mt == nil {
 		panic("mafsaTable not built/read")
 	}

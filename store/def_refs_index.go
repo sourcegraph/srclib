@@ -2,6 +2,7 @@ package store
 
 import (
 	"io"
+	"sync"
 
 	"github.com/alecthomas/binary"
 	"github.com/gogo/protobuf/proto"
@@ -15,6 +16,7 @@ import (
 type defRefsIndex struct {
 	phtable *phtable.CHD
 	ready   bool
+	sync.RWMutex
 }
 
 var _ interface {
@@ -64,6 +66,8 @@ func (x *defRefsIndex) Covers(filters interface{}) int {
 
 // Refs implements refIndexByteOffsets.
 func (x *defRefsIndex) Refs(fs ...RefFilter) (byteOffsets, error) {
+	x.RLock()
+	defer x.RUnlock()
 	for _, f := range fs {
 		if ff, ok := f.(ByRefDefFilter); ok {
 			ofs, found, err := x.getByDef(ff.withEmptyImpliedValues())
@@ -80,6 +84,8 @@ func (x *defRefsIndex) Refs(fs ...RefFilter) (byteOffsets, error) {
 
 // Build creates the defRefsIndex.
 func (x *defRefsIndex) Build(refs []*graph.Ref, fbr fileByteRanges, ofs byteOffsets) error {
+	x.Lock()
+	defer x.Unlock()
 	vlog.Printf("defRefsIndex: building inverted def->ref index (%d refs)...", len(refs))
 	defToRefOfs := map[graph.RefDefKey]byteOffsets{}
 	for i, ref := range refs {
@@ -115,6 +121,8 @@ func (x *defRefsIndex) Build(refs []*graph.Ref, fbr fileByteRanges, ofs byteOffs
 
 // Write implements persistedIndex.
 func (x *defRefsIndex) Write(w io.Writer) error {
+	x.RLock()
+	defer x.RUnlock()
 	if x.phtable == nil {
 		panic("no phtable to write")
 	}
@@ -123,11 +131,17 @@ func (x *defRefsIndex) Write(w io.Writer) error {
 
 // Read implements persistedIndex.
 func (x *defRefsIndex) Read(r io.Reader) error {
-	var err error
-	x.phtable, err = phtable.Read(r)
+	phtable, err := phtable.Read(r)
+	x.Lock()
+	defer x.Unlock()
+	x.phtable = phtable
 	x.ready = (err == nil)
 	return err
 }
 
 // Ready implements persistedIndex.
-func (x *defRefsIndex) Ready() bool { return x.ready }
+func (x *defRefsIndex) Ready() bool {
+	x.RLock()
+	defer x.RUnlock()
+	return x.ready
+}
