@@ -8,6 +8,7 @@ import (
 	"math"
 	"sort"
 	"strings"
+	"sync"
 
 	"github.com/alecthomas/binary"
 	"github.com/smartystreets/mafsa"
@@ -18,6 +19,7 @@ import (
 type defQueryTreeIndex struct {
 	mt    *mafsaUnitTable
 	ready bool
+	sync.RWMutex
 }
 
 var _ interface {
@@ -86,6 +88,8 @@ func (x *defQueryTreeIndex) Covers(filters interface{}) int {
 
 // Defs implements defIndex.
 func (x *defQueryTreeIndex) Defs(f ...DefFilter) (map[unit.ID2]byteOffsets, error) {
+	x.RLock()
+	defer x.RUnlock()
 	for _, ff := range f {
 		if pf, ok := ff.(ByDefQueryFilter); ok {
 			uofmap, found := x.getByQuery(pf.ByDefQuery())
@@ -100,6 +104,8 @@ func (x *defQueryTreeIndex) Defs(f ...DefFilter) (map[unit.ID2]byteOffsets, erro
 
 // Build implements defQueryTreeIndexBuilder.
 func (x *defQueryTreeIndex) Build(xs map[unit.ID2]*defQueryIndex) (err error) {
+	x.Lock()
+	defer x.Unlock()
 	vlog.Printf("defQueryTreeIndex: building index... (%d unit indexes)", len(xs))
 
 	defer func() {
@@ -195,6 +201,8 @@ func (x *defQueryTreeIndex) Build(xs map[unit.ID2]*defQueryIndex) (err error) {
 
 // Write implements persistedIndex.
 func (x *defQueryTreeIndex) Write(w io.Writer) error {
+	x.RLock()
+	defer x.RUnlock()
 	if x.mt == nil {
 		panic("no mafsaTable to write")
 	}
@@ -208,6 +216,8 @@ func (x *defQueryTreeIndex) Write(w io.Writer) error {
 
 // Read implements persistedIndex.
 func (x *defQueryTreeIndex) Read(r io.Reader) error {
+	x.Lock()
+	defer x.Unlock()
 	b, err := ioutil.ReadAll(r)
 	if err != nil {
 		return err
@@ -224,6 +234,8 @@ func (x *defQueryTreeIndex) Read(r io.Reader) error {
 
 // Fprint prints a human-readable representation of the index.
 func (x *defQueryTreeIndex) Fprint(w io.Writer) error {
+	x.RLock()
+	defer x.RUnlock()
 	if x.mt == nil {
 		panic("mafsaTable not built/read")
 	}
@@ -262,7 +274,11 @@ func (x *defQueryTreeIndex) Fprint(w io.Writer) error {
 }
 
 // Ready implements persistedIndex.
-func (x *defQueryTreeIndex) Ready() bool { return x.ready }
+func (x *defQueryTreeIndex) Ready() bool {
+	x.RLock()
+	defer x.RUnlock()
+	return x.ready
+}
 
 type unitID2s []unit.ID2
 

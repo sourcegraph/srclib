@@ -50,6 +50,10 @@ type indexedTreeStore struct {
 	// (e.g., def indexes, ref indexes, etc.).
 	indexes map[string]Index
 
+	// cacheKey uniquely identifies the collection of indexes. This is
+	// used to sharing indexes in concurrent queries
+	cacheKey interface{}
+
 	*fsTreeStore
 }
 
@@ -64,7 +68,7 @@ const (
 
 // newIndexedTreeStore creates a new indexed tree store that stores
 // data and indexes in fs.
-func newIndexedTreeStore(fs rwvfs.FileSystem) TreeStoreImporter {
+func newIndexedTreeStore(fs rwvfs.FileSystem, cacheKey interface{}) TreeStoreImporter {
 	return &indexedTreeStore{
 		indexes: map[string]Index{
 			"file_to_units":       &unitFilesIndex{},
@@ -72,11 +76,13 @@ func newIndexedTreeStore(fs rwvfs.FileSystem) TreeStoreImporter {
 			"def_query_to_defs16": &defQueryTreeIndex{},
 			unitsIndexName:        &unitsIndex{},
 		},
+		cacheKey:    cacheKey,
 		fsTreeStore: newFSTreeStore(fs),
 	}
 }
 
-func (s *indexedTreeStore) String() string { return "indexedTreeStore" }
+func (s *indexedTreeStore) StoreKey() interface{} { return s.cacheKey }
+func (s *indexedTreeStore) String() string        { return "indexedTreeStore" }
 
 // errNotIndexed occurs when that a query was unable to be performed
 // using an index. In most cases, it indicates that the caller should
@@ -103,9 +109,13 @@ func (s *indexedTreeStore) unitIDs(indexOnly bool, fs ...UnitFilter) ([]unit.ID2
 
 	// Try to find an index that covers this query.
 	if xname, bx := bestCoverageIndex(s.indexes, fs, isUnitIndex); bx != nil {
+		if !bx.Ready() {
+			bx = cacheGet(s, xname, bx)
+		}
 		if err := prepareIndex(s.fs, xname, bx); err != nil {
 			return nil, err
 		}
+		cachePut(s, xname, bx)
 		vlog.Printf("indexedTreeStore.unitIDs(%v): Found covering index %q (%v).", fs, xname, bx)
 		return bx.(unitIndex).Units(fs...)
 	}

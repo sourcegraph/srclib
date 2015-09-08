@@ -12,7 +12,7 @@ func TestIndexedUnitStore(t *testing.T) {
 func TestIndexedTreeStore(t *testing.T) {
 	useIndexedStore = true
 	testTreeStore(t, func() TreeStoreImporter {
-		return newIndexedTreeStore(newTestFS())
+		return newIndexedTreeStore(newTestFS(), "test")
 	})
 }
 
