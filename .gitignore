@@ -1,3 +1,5 @@
 /release/
 
 /.tmp-selfupdate/
+
+*.test
