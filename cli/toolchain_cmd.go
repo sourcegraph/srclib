@@ -437,7 +437,7 @@ func installGoToolchain() error {
 		return errors.New(`
 Refusing to install Go toolchain because there is no GOPATH environment variable
 set.
-Note: Please ensure that Go 1.4+ is installed and that $GOPATH is set.`)
+Note: Please ensure that Go 1.4+ is installed (see https://golang.org/doc/install) and that $GOPATH is set.`)
 	}
 
 	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
