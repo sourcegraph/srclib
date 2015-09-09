@@ -69,7 +69,7 @@ To install the language analysis toolchains for
 [JavaScript](toolchains/javascript.md), and [Python](toolchains/python.md)), run:
 
 ```
-srclib toolchain go ruby javascript python
+srclib toolchain install go ruby javascript python
 ```
 
 If this command fails, please

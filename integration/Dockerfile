@@ -44,4 +44,4 @@ RUN chown -R srclib /usr/local/rvm
 ADD ./srclib /usr/local/bin/srclib
 USER srclib
 
-RUN srclib toolchain go python ruby javascript java
+RUN srclib toolchain install go python ruby javascript java
