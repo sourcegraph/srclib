@@ -20,6 +20,6 @@ install:
 
 script:
   - go test -v ./...
-  - make install-std-toolchains
-  - make test-std-toolchains
+  - make install-all-toolchains
+  - make test-all-toolchains
 
