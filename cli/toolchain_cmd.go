@@ -469,7 +469,7 @@ func installRubyToolchain() error {
 	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
 
 	if _, err := exec.LookPath("ruby"); isExecErrNotFound(err) {
-		return errors.New("no `ruby` in PATH (assuming you don't have Ruby installed and you don't want the Ruby toolchain)")
+		return errors.New("no `ruby` in PATH (do you have Ruby installed properly?)")
 	}
 	if _, err := exec.LookPath("bundle"); isExecErrNotFound(err) {
 		return fmt.Errorf("found `ruby` in PATH but did not find `bundle` in PATH; Ruby toolchain requires bundler (run `gem install bundler` to install it)")
@@ -494,7 +494,7 @@ func installJavaScriptToolchain() error {
 	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
 
 	if _, err := exec.LookPath("node"); isExecErrNotFound(err) {
-		return errors.New("no `node` in PATH (assuming you don't have Node.js installed and you don't want the JavaScript toolchain)")
+		return errors.New("no `node` in PATH (do you have Node.js installed properly?)")
 	}
 	if _, err := exec.LookPath("npm"); isExecErrNotFound(err) {
 		return fmt.Errorf("no `npm` in PATH; JavaScript toolchain requires npm")
