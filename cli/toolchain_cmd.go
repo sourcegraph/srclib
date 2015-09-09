@@ -105,15 +105,6 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	_, err = c.AddCommand("install-std",
-		"install standard toolchains",
-		"Install standard toolchains (sourcegraph.com/sourcegraph/srclib-* toolchains).",
-		&toolchainInstallStdCmd,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
 }
 
 type ToolchainPath string
@@ -439,30 +430,6 @@ func installToolchains(langs []toolchainInstaller) error {
 	return nil
 }
 
-type ToolchainInstallStdCmd struct {
-	Skip []string `long:"skip" description:"skip installing matching toolchains (can be specified multiple times; e.g., --skip go --skip ruby)" value-name:"NAME"`
-}
-
-var toolchainInstallStdCmd ToolchainInstallStdCmd
-
-func (c *ToolchainInstallStdCmd) Execute(args []string) error {
-	fmt.Println(brush.Cyan("Installing/upgrading standard toolchains..."))
-	fmt.Println()
-
-	var is []toolchainInstaller
-OuterLoop:
-	for name, installer := range stdToolchains {
-		for _, skip := range c.Skip {
-			if strings.EqualFold(name, skip) {
-				fmt.Println(brush.Yellow(fmt.Sprintf("Skipping installation of %s", installer.name)))
-				continue OuterLoop
-			}
-		}
-		is = append(is, installer)
-	}
-	return installToolchains(is)
-}
-
 func installGoToolchain() error {
 	const toolchain = "sourcegraph.com/sourcegraph/srclib-go"
 	gopath := os.Getenv("GOPATH")
@@ -515,7 +482,7 @@ func installRubyToolchain() error {
 
 	log.Println("Installing deps for Ruby toolchain in", srclibpathDir)
 	if err := execCmd("make", "-C", srclibpathDir); err != nil {
-		return fmt.Errorf("%s\n\nTip: If you are using a version of Ruby other than 2.1.2 (the default for srclib), or if you are using your system Ruby, try using a Ruby version manager (such as https://rvm.io) to install a more standard Ruby, and try Ruby 2.1.2.\n\nIf you are still having problems, post an issue at https://github.com/sourcegraph/srclib-ruby/issues with the full log output and information about your OS and Ruby version.\n\nIf you don't care about Ruby, skip this installation by running `srclib toolchain install-std --skip ruby`.", err)
+		return fmt.Errorf("%s\n\nTip: If you are using a version of Ruby other than 2.1.2 (the default for srclib), or if you are using your system Ruby, try using a Ruby version manager (such as https://rvm.io) to install a more standard Ruby, and try Ruby 2.1.2.\n\nIf you are still having problems, post an issue at https://github.com/sourcegraph/srclib-ruby/issues with the full log output and information about your OS and Ruby version.\n\n`.", err)
 	}
 
 	return nil

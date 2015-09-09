@@ -34,7 +34,7 @@ check-release:
 	@echo Released srclib $(V)
 
 install-std-toolchains:
-	srclib toolchain install-std
+	srclib toolchain go python ruby javascript java
 
 toolchains ?= go javascript python ruby
 

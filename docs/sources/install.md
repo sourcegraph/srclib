@@ -64,21 +64,12 @@ go get -u -v sourcegraph.com/sourcegraph/srclib/cmd/srclib
 
 ##Language Toolchains
 
-###Standard set
-To install the standard set of language analysis toolchains
+To install the language analysis toolchains for
 ([Go](toolchains/go.md), [Ruby](toolchains/ruby.md),
 [JavaScript](toolchains/javascript.md), and [Python](toolchains/python.md)), run:
 
 ```
-srclib toolchain install-std
-```
-By default this installs the toolchains for Ruby, Go, JavaScript, and Python.
-
-###Selective installation
-To skip installing toolchains you don't care about, use `--skip`, as in
-
-```
-srclib toolchain install-std --skip javascript --skip ruby
+srclib toolchain go ruby javascript python
 ```
 
 If this command fails, please
