@@ -105,15 +105,6 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	_, err = c.AddCommand("install-std",
-		"install standard toolchains",
-		"Install standard toolchains (sourcegraph.com/sourcegraph/srclib-* toolchains).",
-		&toolchainInstallStdCmd,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
 }
 
 type ToolchainPath string
@@ -426,60 +417,27 @@ func (c *ToolchainInstallCmd) Execute(args []string) error {
 }
 
 func installToolchains(langs []toolchainInstaller) error {
-	var notInstalled []string
 	for _, l := range langs {
 		fmt.Println(brush.Cyan(l.name + " " + strings.Repeat("=", 78-len(l.name))).String())
 		if err := l.fn(); err != nil {
-			if err2, ok := err.(skippedToolchain); ok {
-				fmt.Printf("%s\n", brush.Yellow(err2.Error()))
-			} else {
-				fmt.Printf("%s\n", brush.Red(fmt.Sprintf("failed to install/upgrade %s toolchain: %s", l.name, err)))
-			}
-			notInstalled = append(notInstalled, l.name)
-			// Continue here because we attempt to install
-			// all the toolchains.
-			continue
+			return fmt.Errorf("%s\n", brush.Red(fmt.Sprintf("failed to install/upgrade %s toolchain: %s", l.name, err)))
 		}
 
 		fmt.Println(brush.Green("OK! Installed/upgraded " + l.name + " toolchain").String())
 		fmt.Println(brush.Cyan(strings.Repeat("=", 80)).String())
 		fmt.Println()
 	}
-	if len(notInstalled) != 0 {
-		return errors.New(brush.Red(fmt.Sprintf("The following toolchains were not installed:\n%s", strings.Join(notInstalled, "\n"))).String())
-	}
 	return nil
-}
-
-type ToolchainInstallStdCmd struct {
-	Skip []string `long:"skip" description:"skip installing matching toolchains (can be specified multiple times; e.g., --skip go --skip ruby)" value-name:"NAME"`
-}
-
-var toolchainInstallStdCmd ToolchainInstallStdCmd
-
-func (c *ToolchainInstallStdCmd) Execute(args []string) error {
-	fmt.Println(brush.Cyan("Installing/upgrading standard toolchains..."))
-	fmt.Println()
-
-	var is []toolchainInstaller
-OuterLoop:
-	for name, installer := range stdToolchains {
-		for _, skip := range c.Skip {
-			if strings.EqualFold(name, skip) {
-				fmt.Println(brush.Yellow(fmt.Sprintf("Skipping installation of %s", installer.name)))
-				continue OuterLoop
-			}
-		}
-		is = append(is, installer)
-	}
-	return installToolchains(is)
 }
 
 func installGoToolchain() error {
 	const toolchain = "sourcegraph.com/sourcegraph/srclib-go"
 	gopath := os.Getenv("GOPATH")
 	if gopath == "" {
-		return skippedToolchain{toolchain, "no GOPATH set (assuming Go is not installed and you don't want the Go toolchain)"}
+		return errors.New(`
+Refusing to install Go toolchain because there is no GOPATH environment variable
+set.
+Note: Please ensure that Go 1.4+ is installed (see https://golang.org/doc/install) and that $GOPATH is set.`)
 	}
 
 	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
@@ -488,10 +446,8 @@ func installGoToolchain() error {
 		return err
 	}
 
-	if skipmsg, err := symlinkToGopath(toolchain); err != nil {
+	if err := symlinkToGopath(toolchain); err != nil {
 		return err
-	} else if skipmsg != "" {
-		return skippedToolchain{toolchain, skipmsg}
 	}
 
 	log.Println("Downloading or updating Go toolchain in", srclibpathDir)
@@ -513,7 +469,7 @@ func installRubyToolchain() error {
 	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
 
 	if _, err := exec.LookPath("ruby"); isExecErrNotFound(err) {
-		return skippedToolchain{toolchain, "no `ruby` in PATH (assuming you don't have Ruby installed and you don't want the Ruby toolchain)"}
+		return errors.New("no `ruby` in PATH (do you have Ruby installed properly?)")
 	}
 	if _, err := exec.LookPath("bundle"); isExecErrNotFound(err) {
 		return fmt.Errorf("found `ruby` in PATH but did not find `bundle` in PATH; Ruby toolchain requires bundler (run `gem install bundler` to install it)")
@@ -526,7 +482,7 @@ func installRubyToolchain() error {
 
 	log.Println("Installing deps for Ruby toolchain in", srclibpathDir)
 	if err := execCmd("make", "-C", srclibpathDir); err != nil {
-		return fmt.Errorf("%s\n\nTip: If you are using a version of Ruby other than 2.1.2 (the default for srclib), or if you are using your system Ruby, try using a Ruby version manager (such as https://rvm.io) to install a more standard Ruby, and try Ruby 2.1.2.\n\nIf you are still having problems, post an issue at https://github.com/sourcegraph/srclib-ruby/issues with the full log output and information about your OS and Ruby version.\n\nIf you don't care about Ruby, skip this installation by running `srclib toolchain install-std --skip ruby`.", err)
+		return fmt.Errorf("%s\n\nTip: If you are using a version of Ruby other than 2.1.2 (the default for srclib), or if you are using your system Ruby, try using a Ruby version manager (such as https://rvm.io) to install a more standard Ruby, and try Ruby 2.1.2.\n\nIf you are still having problems, post an issue at https://github.com/sourcegraph/srclib-ruby/issues with the full log output and information about your OS and Ruby version.\n\n`.", err)
 	}
 
 	return nil
@@ -538,7 +494,7 @@ func installJavaScriptToolchain() error {
 	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
 
 	if _, err := exec.LookPath("node"); isExecErrNotFound(err) {
-		return skippedToolchain{toolchain, "no `node` in PATH (assuming you don't have Node.js installed and you don't want the JavaScript toolchain)"}
+		return errors.New("no `node` in PATH (do you have Node.js installed properly?)")
 	}
 	if _, err := exec.LookPath("npm"); isExecErrNotFound(err) {
 		return fmt.Errorf("no `npm` in PATH; JavaScript toolchain requires npm")
@@ -563,7 +519,7 @@ func installPythonToolchain() error {
 	}
 	for requiredCmd, instructions := range requiredCmds {
 		if _, err := exec.LookPath(requiredCmd); isExecErrNotFound(err) {
-			return skippedToolchain{toolchain, fmt.Sprintf("no `%s` found in PATH; to install, %s", requiredCmd, instructions)}
+			return fmt.Errorf("no `%s` found in PATH; to install, %s", requiredCmd, instructions)
 		}
 	}
 
@@ -574,10 +530,8 @@ func installPythonToolchain() error {
 	}
 
 	// Add symlink to GOPATH so install succeeds (necessary as long as there's a Go dependency in this toolchain)
-	if skipmsg, err := symlinkToGopath(toolchain); err != nil {
+	if err := symlinkToGopath(toolchain); err != nil {
 		return err
-	} else if skipmsg != "" {
-		return skippedToolchain{toolchain, skipmsg}
 	}
 
 	log.Println("Installing deps for Python toolchain in", srclibpathDir)
@@ -665,15 +619,6 @@ func installToolchainFromBundle(name, toolchainPath, bundleURL string) (err erro
 	return nil
 }
 
-type skippedToolchain struct {
-	toolchain string
-	why       string
-}
-
-func (e skippedToolchain) Error() string {
-	return fmt.Sprintf("skipped %s: %s", e.toolchain, e.why)
-}
-
 func isExecErrNotFound(err error) bool {
 	if e, ok := err.(*exec.Error); ok && e.Err == exec.ErrNotFound {
 		return true
@@ -681,10 +626,10 @@ func isExecErrNotFound(err error) bool {
 	return false
 }
 
-func symlinkToGopath(toolchain string) (skip string, err error) {
+func symlinkToGopath(toolchain string) error {
 	gopath := os.Getenv("GOPATH")
 	if gopath == "" {
-		return "", fmt.Errorf("GOPATH not set")
+		return fmt.Errorf("GOPATH not set")
 	}
 
 	srcDir := filepath.Join(strings.Split(gopath, ":")[0], "src")
@@ -694,18 +639,20 @@ func symlinkToGopath(toolchain string) (skip string, err error) {
 	if fi, err := os.Lstat(gopathDir); os.IsNotExist(err) {
 		log.Printf("mkdir -p %s", filepath.Dir(gopathDir))
 		if err := os.MkdirAll(filepath.Dir(gopathDir), 0700); err != nil {
-			return "", err
+			return err
 		}
 		log.Printf("ln -s %s %s", srclibpathDir, gopathDir)
 		if err := os.Symlink(srclibpathDir, gopathDir); err != nil {
-			return "", err
+			return err
 		}
 	} else if err != nil {
-		return "", err
+		return err
 	} else if fi.Mode()&os.ModeSymlink == 0 {
-		return fmt.Sprintf("toolchain dir in GOPATH (%s) is not a symlink (assuming you intentionally cloned the toolchain repo to your GOPATH; not modifying it)", gopathDir), nil
+		// toolchain dir in GOPATH is not a symlink, so assume they
+		// intentionally cloned the toolchain repo into their GOPATH.
+		return nil
 	}
 
 	log.Printf("Symlinked toolchain %s into your GOPATH at %s", toolchain, gopathDir)
-	return "", nil
+	return nil
 }
