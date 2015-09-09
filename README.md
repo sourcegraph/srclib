@@ -66,6 +66,19 @@ srclib by installing an editor plugin in your editor of choice. [See all editor 
   copy that file to `/etc/bash_completion.d/srclib` (path may be different
   on your system)
 
+# Development
+
+## Sourcegraph binary release process
+
+`srclib` uses [equinox.io](https://equinox.io/) to maintain and update
+binary versions. Contributors with deploy privileges can update the
+official binaries via these instructions:
+
+1. `go install github.com/laxer/goxc`
+1. Ensure you have the AWS credentials set so that the AWS CLI (`aws`) can write to the `srclib-release` S3 bucket.
+1. Run `make release V=1.2.3`, where `1.2.3` is the version you want to release (which can be arbitrarily chosen but should be the next sequential git release tag for official releases).
+
+
 ## License
 Sourcegraph is licensed under the [MIT License](https://tldrlegal.com/license/mit-license).
 More information in the LICENSE file.
