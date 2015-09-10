@@ -13,6 +13,7 @@ before_install:
   - export PATH=$PATH:$HOME/gopath/bin
   - export GOBIN=$HOME/gopath/bin
   - sudo pip install virtualenv
+  - rvm use 2.2.2
 
 install:
   - go get -d -v ./... && go build -v ./...
