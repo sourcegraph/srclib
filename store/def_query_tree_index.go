@@ -43,6 +43,11 @@ func (x *defQueryTreeIndex) getByQuery(q string) (map[unit.ID2]byteOffsets, bool
 		panic("mafsaTable not built/read")
 	}
 
+	if x.mt.t == nil {
+		vlog.Println("getByQuery: x.mt.t == nil")
+		return nil, false
+	}
+
 	q = strings.ToLower(q)
 	node, i := x.mt.t.IndexedTraverse([]rune(q))
 	if node == nil {
