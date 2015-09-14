@@ -10,11 +10,11 @@ import (
 )
 
 var (
-	// noToolchains operates srclib in no-toolchain mode, where it
+	// NoToolchains operates srclib in no-toolchain mode, where it
 	// does not try to look for system toolchains in your SRCLIBPATH.
-	noToolchains, _ = strconv.ParseBool(os.Getenv("SRCLIB_NO_TOOLCHAINS"))
+	NoToolchains, _ = strconv.ParseBool(os.Getenv("SRCLIB_NO_TOOLCHAINS"))
 
-	// noneToolchain is returned by ChooseTool when noToolchains is
+	// noneToolchain is returned by ChooseTool when NoToolchains is
 	// true.
 	noneToolchain = &srclib.ToolRef{Toolchain: "NONE", Subcmd: "NONE"}
 )
@@ -28,7 +28,7 @@ var (
 // more than 1 are found, then an error is returned. TODO(sqs): extend this to
 // choose the "best" tool when multiple tools would suffice.
 func ChooseTool(op, unitType string) (*srclib.ToolRef, error) {
-	if noToolchains {
+	if NoToolchains {
 		return noneToolchain, nil
 	}
 	tcs, err := List()

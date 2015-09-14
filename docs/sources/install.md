@@ -2,7 +2,7 @@
 
 This page is to help you get started with srclib. In order to work with srclib we need the following components:
 * dependencies
-* installing `src`
+* installing `srclib`
 * getting language toolchains
 * editor plugin (optional)
 
@@ -39,25 +39,25 @@ sudo yum update && sudo yum install mercurial
 
 ## Srclib installation
 
-To install the **src** program, download one of the prebuilt binaries or build
+To install the **srclib** program, download one of the prebuilt binaries or build
 it from source (see next section).
 
-src binary downloads:
+srclib binary downloads:
 
-* [Linux amd64](https://api.equinox.io/1/Applications/ap_BQxVz1iWMxmjQnbVGd85V58qz6/Updates/Asset/src.zip?os=linux&arch=amd64&channel=stable)
-* [Linux i386](https://api.equinox.io/1/Applications/ap_BQxVz1iWMxmjQnbVGd85V58qz6/Updates/Asset/src.zip?os=linux&arch=386&channel=stable)
-* [Mac OS X](https://api.equinox.io/1/Applications/ap_BQxVz1iWMxmjQnbVGd85V58qz6/Updates/Asset/src.zip?os=darwin&arch=amd64&channel=stable)
+* [Linux amd64](https://api.equinox.io/1/Applications/ap_BQxVz1iWMxmjQnbVGd85V58qz6/Updates/Asset/srclib.zip?os=linux&arch=amd64&channel=stable)
+* [Linux i386](https://api.equinox.io/1/Applications/ap_BQxVz1iWMxmjQnbVGd85V58qz6/Updates/Asset/srclib.zip?os=linux&arch=386&channel=stable)
+* [Mac OS X](https://api.equinox.io/1/Applications/ap_BQxVz1iWMxmjQnbVGd85V58qz6/Updates/Asset/srclib.zip?os=darwin&arch=amd64&channel=stable)
 
-After downloading the file, unzip it and place the `src` program in your
-`$PATH`. Run `src --help` to verify that it's installed.
+After downloading the file, unzip it and place the `srclib` program in your
+`$PATH`. Run `srclib --help` to verify that it's installed.
 
 
 ### Building from source
 
-Download and install `src`:
+Download and install `srclib`:
 
 ```
-go get -u -v sourcegraph.com/sourcegraph/srclib/cmd/src
+go get -u -v sourcegraph.com/sourcegraph/srclib/cmd/srclib
 ```
 
 <br>
@@ -70,7 +70,7 @@ To install the standard set of language analysis toolchains
 [JavaScript](toolchains/javascript.md), and [Python](toolchains/python.md)), run:
 
 ```
-src toolchain install-std
+srclib toolchain install-std
 ```
 By default this installs the toolchains for Ruby, Go, JavaScript, and Python.
 
@@ -78,16 +78,16 @@ By default this installs the toolchains for Ruby, Go, JavaScript, and Python.
 To skip installing toolchains you don't care about, use `--skip`, as in
 
 ```
-src toolchain install-std --skip javascript --skip ruby
+srclib toolchain install-std --skip javascript --skip ruby
 ```
 
 If this command fails, please
 [file an issue](https://github.com/sourcegraph/srclib/issues).
 
-`src toolchain list` helps to verify the currently installed language toolchains like the following example
+`srclib toolchain list` helps to verify the currently installed language toolchains like the following example
 
 ```
-$ src toolchain list
+$ srclib toolchain list
 PATH                                      TYPE
 sourcegraph.com/sourcegraph/srclib-python  program, docker
 sourcegraph.com/sourcegraph/srclib-go     program, docker
@@ -108,7 +108,7 @@ git submodule update --init
 
 now you can test the srclib-go toolchain with
 ```
-src config && src make
+srclib config && srclib make
 ```
 
 You should have a .srclib-cache directory inside srclib-go that has all of the build data for the repository.

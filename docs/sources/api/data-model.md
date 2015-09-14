@@ -51,7 +51,7 @@ information.
 
 ## [Toolchain](../toolchains/overview.md)
 
-A primary tool called 'src' will serve as a harness for all of the individual
+A primary tool called 'srclib' will serve as a harness for all of the individual
 language toolchains. It will also serve as the API endpoint, for users to query
 for data. Each language-specific toolchain is composed of five parts - any
 language that implements these can be automatically used with srclib.
@@ -72,6 +72,6 @@ jump to definition and documentation only within a local codebase. The
 dependency resolution could be implemented without the grapher, allowing
 dependency tracking, without code graphing.
 
-The src tool, after invoking the various elements of the toolchain, will extract
+The srclib tool, after invoking the various elements of the toolchain, will extract
 other information, such as the repository URL and the commit ID, and use git/hg
 blame to find authorship information for definitions and references.

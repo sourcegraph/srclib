@@ -1,6 +1,7 @@
 language: go
 go: 1.4
 python: 2.7
+jdk: oraclejdk8
 
 before_install:
   - mkdir -p $HOME/gopath/src/sourcegraph.com/sourcegraph
@@ -15,7 +16,15 @@ before_install:
 
 install:
   - go get -d -v ./... && go build -v ./...
-  - go install ./cmd/src
+  - go install ./cmd/srclib
+
+before_script:
+  # gradle
+  - wget https://services.gradle.org/distributions/gradle-2.6-bin.zip
+  - unzip gradle-2.6-bin.zip -d $PWD
+  - rm gradle-2.6-bin.zip
+  - chmod u+x $PWD/gradle-2.6/bin/gradle
+  - sudo ln -s $PWD/gradle-2.6/bin/gradle /usr/bin/gradle
 
 script:
   - go test -v ./...

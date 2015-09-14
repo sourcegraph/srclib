@@ -89,31 +89,46 @@ func (s unitStores) Refs(f ...RefFilter) ([]*graph.Ref, error) {
 	}
 
 	c_unitStores_Refs_last_numUnitsQueried = 0
-	var allRefs []*graph.Ref
+	var (
+		allRefsMu sync.Mutex
+		allRefs   []*graph.Ref
+	)
+	par := parallel.NewRun(storeFetchPar)
 	for u, us := range uss {
 		if us == nil {
 			continue
 		}
+		u, us := u, us
 
 		c_unitStores_Refs_last_numUnitsQueried++
-		setImpliedUnit(f, u)
-		refs, err := us.Refs(filtersForUnit(u, f).([]RefFilter)...)
-		if err != nil && !isStoreNotExist(err) {
-			return nil, err
-		}
-		for _, ref := range refs {
-			ref.UnitType = u.Type
-			ref.Unit = u.Name
-			if ref.DefUnitType == "" {
-				ref.DefUnitType = u.Type
+
+		par.Do(func() error {
+			fCopy := filtersForUnit(u, f).([]RefFilter)
+			fCopy = withImpliedUnit(fCopy, u)
+
+			refs, err := us.Refs(fCopy...)
+			if err != nil && !isStoreNotExist(err) {
+				return err
 			}
-			if ref.DefUnit == "" {
-				ref.DefUnit = u.Name
+			for _, ref := range refs {
+				ref.UnitType = u.Type
+				ref.Unit = u.Name
+				if ref.DefUnitType == "" {
+					ref.DefUnitType = u.Type
+				}
+				if ref.DefUnit == "" {
+					ref.DefUnit = u.Name
+				}
 			}
-		}
-		allRefs = append(allRefs, refs...)
+
+			allRefsMu.Lock()
+			allRefs = append(allRefs, refs...)
+			allRefsMu.Unlock()
+			return nil
+		})
 	}
-	return allRefs, nil
+	err = par.Wait()
+	return allRefs, err
 }
 
 func cleanForImport(data *graph.Output, repo, unitType, unit string) {

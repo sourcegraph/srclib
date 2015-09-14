@@ -1,6 +1,7 @@
 package toolchain
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -14,24 +15,41 @@ import (
 // Lookup finds a toolchain by path in the SRCLIBPATH. For each DIR in
 // SRCLIBPATH, it checks for the existence of DIR/PATH/Srclibtoolchain.
 func Lookup(path string) (*Info, error) {
-	if noToolchains {
+	if NoToolchains {
 		return nil, nil
 	}
 
 	path = filepath.Clean(path)
 
-	matches, err := lookInPaths(filepath.Join(path, ConfigFilename), srclib.Path)
+	dir, err := Dir(path)
 	if err != nil {
 		return nil, err
 	}
 
-	if len(matches) == 0 {
-		return nil, &os.PathError{Op: "toolchain.Lookup", Path: path, Err: os.ErrNotExist}
+	// Ensure it exists.
+	fi, err := os.Stat(dir)
+	if err != nil {
+		return nil, err
+	}
+	if !fi.Mode().IsDir() {
+		return nil, &os.PathError{Op: "toolchain.Lookup", Path: dir, Err: errors.New("not a directory")}
+	}
+
+	return newInfo(path, dir, ConfigFilename)
+}
+
+func lookupToolchain(toolchainPath string) (string, error) {
+	matches, err := lookInPaths(filepath.Join(toolchainPath, ConfigFilename), srclib.Path)
+	if err != nil {
+		return "", err
 	}
 	if len(matches) > 1 {
-		return nil, fmt.Errorf("shadowed toolchain path %q (toolchains: %v)", path, matches)
+		return "", fmt.Errorf("shadowed toolchain path %q (toolchains: %v)", toolchainPath, matches)
 	}
-	return newInfo(path, filepath.Dir(matches[0]), ConfigFilename)
+	if len(matches) == 0 {
+		return "", &os.PathError{Op: "lookupToolchain", Path: toolchainPath, Err: os.ErrNotExist}
+	}
+	return filepath.Dir(matches[0]), nil
 }
 
 // List finds all toolchains in the SRCLIBPATH.
@@ -40,14 +58,14 @@ func Lookup(path string) (*Info, error) {
 // dir (with a DIR/Srclibtoolchain file), then none of DIR's
 // subdirectories are searched for toolchains.
 func List() ([]*Info, error) {
-	if noToolchains {
+	if NoToolchains {
 		return nil, nil
 	}
 
 	var found []*Info
 	seen := map[string]string{}
 
-	dirs := filepath.SplitList(srclib.Path)
+	dirs := srclib.PathEntries()
 
 	// maps symlinked trees to their original path
 	origDirs := map[string]string{}

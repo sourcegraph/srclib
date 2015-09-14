@@ -510,7 +510,11 @@ func (f *byRefDefFilter) ByDefUnitType() string      { return f.def.DefUnitType 
 func (f *byRefDefFilter) ByDefUnit() string          { return f.def.DefUnit }
 func (f *byRefDefFilter) ByDefPath() string          { return f.def.DefPath }
 func (f *byRefDefFilter) setImpliedRepo(repo string) { f.impliedRepo = repo }
-func (f *byRefDefFilter) setImpliedUnit(u unit.ID2)  { f.impliedUnit = u }
+func (f *byRefDefFilter) withImpliedUnit(u unit.ID2) RefFilter {
+	newF := *f
+	newF.impliedUnit = u
+	return &newF
+}
 func (f *byRefDefFilter) SelectRef(ref *graph.Ref) bool {
 	return ((ref.DefRepo == "" && f.impliedRepo == f.def.DefRepo) || ref.DefRepo == f.def.DefRepo) &&
 		((ref.DefUnitType == "" && f.impliedUnit.Type == f.def.DefUnitType) || ref.DefUnitType == f.def.DefUnitType) &&
@@ -573,7 +577,11 @@ func (f *absRefFilterFunc) String() string {
 }
 func (f *absRefFilterFunc) setImpliedRepo(repo string)         { f.impliedRepo = repo }
 func (f *absRefFilterFunc) setImpliedCommitID(commitID string) { f.impliedCommitID = commitID }
-func (f *absRefFilterFunc) setImpliedUnit(u unit.ID2)          { f.impliedUnit = u }
+func (f *absRefFilterFunc) withImpliedUnit(u unit.ID2) RefFilter {
+	newF := *f
+	newF.impliedUnit = u
+	return &newF
+}
 func (f *absRefFilterFunc) SelectRef(ref *graph.Ref) bool {
 	copy := *ref
 	copy.Repo = f.impliedRepo
@@ -603,7 +611,7 @@ type impliedCommitIDSetter interface {
 	setImpliedCommitID(string)
 }
 type impliedUnitSetter interface {
-	setImpliedUnit(unit.ID2)
+	withImpliedUnit(unit.ID2) RefFilter
 }
 
 func setImpliedRepo(fs []RefFilter, repo string) {
@@ -622,12 +630,16 @@ func setImpliedCommitID(fs []RefFilter, commitID string) {
 	}
 }
 
-func setImpliedUnit(fs []RefFilter, u unit.ID2) {
-	for _, f := range fs {
-		if f, ok := f.(impliedUnitSetter); ok {
-			f.setImpliedUnit(u)
+func withImpliedUnit(fs []RefFilter, u unit.ID2) []RefFilter {
+	fCopy := make([]RefFilter, len(fs))
+	for i, f := range fs {
+		if fUnitSetter, ok := f.(impliedUnitSetter); ok {
+			fCopy[i] = fUnitSetter.withImpliedUnit(u)
+		} else {
+			fCopy[i] = f
 		}
 	}
+	return fCopy
 }
 
 // ByDefPathFilter is implemented by filters that restrict their
