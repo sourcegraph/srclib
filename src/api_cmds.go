@@ -19,6 +19,7 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/dep"
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/plan"
+	"sourcegraph.com/sourcegraph/srclib/store"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
@@ -87,6 +88,43 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	/* START APISearchCmdDoc OMIT
+	This command opens an interactive prompt that provides
+	fuzzy-completion for the search terms.
+	END APISearchCmdDoc OMIT */
+	_, err = c.AddCommand("search",
+		"open fuzzy-completion prompt for search terms",
+		"Opens a fuzzy-completion prompt for search terms, which are returned as a newline-delimited list of completions.",
+		&apiSearchCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	/* START APIRepoCmdDoc OMIT
+	This command prints the repository info to stdout.
+	END APIRepoCmdDoc OMIT */
+	_, err = c.AddCommand("repo",
+		"list repo info",
+		"List the repository info for the repository srclib is operating on.",
+		&apiRepoCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	/* START APIAnalyzeCmdDoc OMIT
+	This command analyzes a repository and prints the status info.
+	END APIAnalyzeCmdDoc OMIT */
+	_, err = c.AddCommand("analyze",
+		"analyze a repo",
+		"Analyze a repository.",
+		&apiAnalyzeCmd,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 type APICmd struct{}
@@ -121,32 +159,60 @@ type APIUnitsCmd struct {
 	} `positional-args:"yes"`
 }
 
+type APISearchCmd struct {
+	Dir      Directory `long:"dir" default:"." description:"root directory of target project"`
+	AllTerms bool      `long:"all-terms" description:"return all valid search terms and exit"`
+}
+
+type APIRepoCmd struct {
+	Args struct {
+		File string `name:"FILE" description:"(optional) get repo for file"`
+	} `positional-args:"yes"`
+}
+
+type APIAnalyzeCmd struct {
+	Args struct {
+		File string `name:"FILE" description:"(optional) analyze project that file is in"`
+	} `positional-args:"yes"`
+}
+
 var apiDescribeCmd APIDescribeCmd
 var apiListCmd APIListCmd
 var apiDepsCmd APIDepsCmd
 var apiUnitsCmd APIUnitsCmd
+var apiSearchCmd APISearchCmd
+var apiRepoCmd APIRepoCmd
+var apiAnalyzeCmd APIAnalyzeCmd
 
+// commandContext represents the context of the "src" command.
 type commandContext struct {
-	repo         *Repo
+	repo *Repo
+	// relativeFile is the file path of the file passed into
+	// prepareCommandContext relative to the root directory. As
+	// computed by prepareCommandContext, it is never empty.
 	relativeFile string
 	buildStore   buildstore.RepoBuildStore
 	commitFS     rwvfs.WalkableFileSystem
 }
 
 // prepareCommandContext prepare the context for the the "src"
-// command. If file is "." or ends in a "/", then it is a directory. It is safe
-// for "file" to have multiple trailing slashes. prepareCommandContext
-// creates commandContext, changes the process' working directory to
-// file's directory and ensures that a build has been made. It is
-// meant to be used by user-facing commands.
-func prepareCommandContext(file string) (commandContext, error) {
+// command. prepareCommandContext creates commandContext, changes the
+// process' working directory to file's directory and ensures that a
+// build has been made. It is meant to be used by user-facing
+// commands.
+//
+// If file is "." or ends in a "/", then it is a directory.
+// If file is empty, then it is assumed to be ".". It is safe for
+// "file" to have multiple trailing slashes.
+// When skipBuild is true, the repo is not built.
+func prepareCommandContext(file string, skipBuild bool) (commandContext, error) {
 	var (
 		err   error
 		c     commandContext
 		isDir bool
 	)
 	if file == "" {
-		return commandContext{}, errors.New("prepareCommandContext: file cannot be empty")
+		file = "."
 	}
 	if file == "." || file[len(file)-1] == filepath.Separator {
 		isDir = true
@@ -185,11 +251,13 @@ func prepareCommandContext(file string) (commandContext, error) {
 	c.buildStore = buildStore
 	c.commitFS = buildStore.Commit(repo.CommitID)
 
-	if err := ensureBuild(buildStore, repo); err != nil {
-		if err := buildstore.RemoveAllDataForCommit(buildStore, repo.CommitID); err != nil {
-			log.Println(err)
+	if !skipBuild {
+		if err := ensureBuild(buildStore, repo); err != nil {
+			if err := buildstore.RemoveAllDataForCommit(buildStore, repo.CommitID); err != nil {
+				log.Println(err)
+			}
+			return commandContext{}, err
 		}
-		return commandContext{}, err
 	}
 	return c, nil
 }
@@ -308,7 +376,7 @@ type apiListCmdOutput struct {
 // END APIListCmdOutput OMIT
 
 func (c *APIListCmd) Execute(args []string) error {
-	context, err := prepareCommandContext(c.File)
+	context, err := prepareCommandContext(c.File, false)
 	if err != nil {
 		return err
 	}
@@ -382,7 +450,7 @@ as the JSON representation of the following struct.
 
 The Def and Example structs are defined as follows in the Sourcegraph API.
 
-[[.code "src/api_cmds.go" "APIDescribeCmdOutputQuickHack"]]
+[[.code "src/api_cmds.go" "APIDescribeCmdOutputDocHack"]]
 
 [[.code "https://raw.githubusercontent.com/sourcegraph/go-sourcegraph/6937daba84bf2d0f919191fd74e5193171b4f5d5/sourcegraph/defs.go" 105 113]]
 
@@ -393,16 +461,16 @@ The Def and Example structs are defined as follows in the Sourcegraph API.
 [[.code "graph/ref.pb.go" "Ref"]]
 
 END APIDescribeCmdOutput OMIT */
-// START APIDescribeCmdOutputQuickHack OMIT
+// START APIDescribeCmdOutputDocHack OMIT
 type apiDescribeCmdOutput struct {
 	Def      *sourcegraph.Def
 	Examples []*sourcegraph.Example
 }
 
-// END APIDescribeCmdOutputQuickHack OMIT
+// END APIDescribeCmdOutputDocHack OMIT
 
 func (c *APIDescribeCmd) Execute(args []string) error {
-	context, err := prepareCommandContext(c.File)
+	context, err := prepareCommandContext(c.File, false)
 	if err != nil {
 		return err
 	}
@@ -604,10 +672,7 @@ This command returns a dep.Resolution slice.
 END APIDepsCmdOutput OMIT */
 
 func (c *APIDepsCmd) Execute(args []string) error {
-	// HACK(samertm): append a backslash to Dir to assure that it's parsed
-	// as a directory, but Directory should have an unmarshalling
-	// method that does this.
-	context, err := prepareCommandContext(c.Args.Dir.String())
+	context, err := prepareCommandContext(c.Args.Dir.String(), false)
 	if err != nil {
 		return err
 	}
@@ -658,7 +723,7 @@ This command returns a unit.SourceUnit slice.
 END APIUnitsCmdOutput OMIT */
 
 func (c *APIUnitsCmd) Execute(args []string) error {
-	context, err := prepareCommandContext(c.Args.Dir.String())
+	context, err := prepareCommandContext(c.Args.Dir.String(), false)
 	if err != nil {
 		return err
 	}
@@ -689,4 +754,99 @@ func (c *APIUnitsCmd) Execute(args []string) error {
 	}
 
 	return json.NewEncoder(os.Stdout).Encode(unitSlice)
+}
+
+/* START APISearchCmdOutput OMIT
+
+This command returns an array of def name and DefKey pairs.
+
+[[.code "src/api_cmds.go" "APISearchCmdOutputDocHack"]]
+
+END APISearchCmdOutput */
+
+// START APISearchCmdOutputDocHack OMIT
+type apiSearchCmdOutput struct {
+	Name string
+	Key  graph.DefKey
+}
+
+// END APISearchCmdOutputDocHack OMIT
+
+func (c *APISearchCmd) Execute(args []string) error {
+	context, err := prepareCommandContext(c.Dir.String(), true)
+	if err != nil {
+		return err
+	}
+	if c.AllTerms {
+		cmd := &StoreDefsCmd{
+			Repo:     context.repo.RootDir,
+			CommitID: context.repo.CommitID,
+			Filter:   store.ByDefQuery(""),
+		}
+		defs, err := cmd.Get()
+		if err != nil {
+			return err
+		}
+		out := make([]apiSearchCmdOutput, 0, len(defs))
+		for _, d := range defs {
+			out = append(out, apiSearchCmdOutput{
+				Name: d.Name,
+				Key:  d.DefKey,
+			})
+		}
+		o, err := json.Marshal(out)
+		if err != nil {
+			return err // TODO: handle gracefully.
+		}
+		fmt.Printf("%s", o)
+		return nil
+	}
+	return errors.New("Interactive fuzzy-completion is unimplemented.")
+}
+
+/* START APIRepoCmdOutput OMIT
+
+[[.code "src/repo_config.go" "Repo"]]
+
+END APIRepoCmdOutput OMIT */
+func (c *APIRepoCmd) Execute(args []string) error {
+	context, err := prepareCommandContext(c.Args.File, true)
+	if err != nil {
+		return err
+	}
+	b, err := json.Marshal(context.repo)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s\n", b)
+	return nil
+}
+
+/* START APIAnalyzeCmdOutput OMIT
+
+[[.code "src/api_cmds.go" "APIAnalyzeCmdOutputDocHack"]]
+
+END APIAnalyzeCmdOutput OMIT */
+
+// START APIAnalyzeCmdOutputDocHack OMIT
+type apiAnalyzeCmdOutput struct {
+	// Status is either "up-to-date" or "failure"
+	Status string
+}
+
+// END APIAnalyzeCmdOutputDocHack OMIT
+
+func (c *APIAnalyzeCmd) Execute(args []string) error {
+	_, err := prepareCommandContext(c.Args.File, false)
+	out := apiAnalyzeCmdOutput{}
+	if err != nil {
+		out.Status = "failure"
+		b, _ := json.Marshal(out)
+		fmt.Printf("%s\n", b)
+		return err
+	}
+	out.Status = "up-to-date"
+	b, _ := json.Marshal(out)
+	fmt.Printf("%s\n", b)
+	return nil
 }

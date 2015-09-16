@@ -106,7 +106,7 @@ func setActiveContext(repoPath string) error {
 	}
 	done := make(chan maybeContext)
 	go func() {
-		context, err := prepareCommandContext(repoPath)
+		context, err := prepareCommandContext(repoPath, false)
 		done <- maybeContext{context, err}
 	}()
 OuterLoop:
@@ -440,8 +440,8 @@ var keywordInfoMap = map[tokKeyword]keywordInfo{
 		description: `Narrow search to files that begin with any values in 'prefixes'`,
 	},
 	keyFormat: keywordInfo{
-		validVals:   []tokValue{"decl", "methods", "body", "full"},
-		defaultVals: []tokValue{"decl", "body"},
+		validVals:   []tokValue{"decl", "methods", "body", "full", "debug"},
+		defaultVals: []tokValue{"decl"},
 		argName:     "formats",
 		description: "Show defs in the formats specificed by 'formats'.",
 	},
@@ -858,6 +858,8 @@ func inputToFormat(i *inputValues) format {
 			f.showDefBody = true
 		case "full":
 			f.showDefFull = true
+		case "debug":
+			f.showDefDebug = true
 		}
 	}
 	// TODO: make limit parsing more robust.
@@ -872,12 +874,13 @@ func inputToFormat(i *inputValues) format {
 }
 
 type format struct {
-	showDefs    bool
-	showRefs    bool
-	showDocs    bool
-	showDefDecl bool
-	showDefBody bool
-	limit       int
+	showDefs     bool
+	showRefs     bool
+	showDocs     bool
+	showDefDecl  bool
+	showDefBody  bool
+	showDefDebug bool
+	limit        int
 	// The following are unimplemented:
 	showDefMethods bool
 	showDefFull    bool
@@ -1101,6 +1104,13 @@ func formatObject(objs interface{}, f format) string {
 			}
 			if f.showDefBody {
 				output = append(output, getFileSegment(o.File, o.DefStart, o.DefEnd, true))
+			}
+			if f.showDefDebug {
+				b, err := json.Marshal(o)
+				if err != nil {
+					return fmt.Sprintf("error unmarshalling: %s", err)
+				}
+				output = append(output, string(b))
 			}
 		}
 		if f.showDocs {

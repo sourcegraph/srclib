@@ -662,14 +662,12 @@ type ByDefQueryFilter interface {
 	ByDefQuery() string
 }
 
-// ByDefQuery returns a filter by def query. It panics if q is empty.
+// ByDefQuery returns a filter by def query. It matches every def when
+// q is empty.
 func ByDefQuery(q string) interface {
 	DefFilter
 	ByDefQueryFilter
 } {
-	if q == "" {
-		panic("ByDefQuery: empty")
-	}
 	return byDefQueryFilter(q)
 }
 

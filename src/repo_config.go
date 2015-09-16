@@ -17,12 +17,15 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/graph"
 )
 
+// START Repo OMIT
 type Repo struct {
 	RootDir  string // Root directory containing repository being analyzed
 	VCSType  string // VCS type (git or hg)
 	CommitID string // CommitID of current working directory
 	CloneURL string // CloneURL of repo.
 }
+
+// END Repo OMIT
 
 // URI returns the Repo's URI. It returns the empty string if the
 // Repo's CloneURL is malformed or empty.
