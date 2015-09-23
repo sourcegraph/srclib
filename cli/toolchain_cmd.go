@@ -17,6 +17,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/GeertJohan/go.ask"
 	"github.com/aybabtme/color/brush"
 	"sourcegraph.com/sourcegraph/go-flags"
 	"sourcegraph.com/sourcegraph/srclib"
@@ -430,11 +431,70 @@ func installToolchains(langs []toolchainInstaller) error {
 	return nil
 }
 
+const goInstallErrorMessage = `
+Error: %v
+
+Refusing to install Go toolchain because Go installation has failed.
+
+-> Install Go manually if possible.
+-> Or contact support@sourcegraph.com (with the above output) for help.
+`
+
+// installGo tries to install Go using the system package manager (apt-get or
+// brew), it returns an error if installation was attempted but failed, and
+// returns nil if installation was not attempted (e.g. no supported package
+// manager was found).
+func installGo() error {
+	cmds := func(cmds ...[]string) error {
+		for _, args := range cmds {
+			fmt.Println(strings.Join(args, " "))
+			cmd := exec.Command(args[0], args[1:]...)
+			cmd.Stdin = os.Stdin
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			if err := cmd.Run(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+
+	// apt-get installation
+	if _, err := exec.LookPath("apt-get"); err == nil {
+		if !ask.MustAsk("Install Go 1.5 via apt-get everlast PPA?") {
+			return nil
+		}
+
+		err := cmds(
+			[]string{"sudo", "add-apt-repository", "-y", "ppa:evarlast/golang1.5"},
+			[]string{"sudo", "apt-get", "-y", "update"},
+			[]string{"sudo", "apt-get", "install", "-y", "golang-go"},
+		)
+		if err != nil {
+			return fmt.Errorf(goInstallErrorMessage, err)
+		}
+	}
+
+	// brew installation
+	if _, err := exec.LookPath("brew"); err == nil {
+		if !ask.MustAsk("Install Go via homebrew?") {
+			return nil
+		}
+		if err := cmds([]string{"brew", "install", "go"}); err != nil {
+			return fmt.Errorf(goInstallErrorMessage, err)
+		}
+	}
+	return nil
+}
+
 func installGoToolchain() error {
 	const toolchain = "sourcegraph.com/sourcegraph/srclib-go"
 
 	// Identify if Go is installed already or not.
 	if _, err := exec.LookPath("go"); err != nil {
+		if err := installGo(); err != nil {
+			return err
+		}
 		return errors.New(`
 Refusing to install Go toolchain because Go is not installed or is not on the
 system path.
