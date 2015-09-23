@@ -432,21 +432,27 @@ func installToolchains(langs []toolchainInstaller) error {
 
 func installGoToolchain() error {
 	const toolchain = "sourcegraph.com/sourcegraph/srclib-go"
-	gopath := os.Getenv("GOPATH")
-	if gopath == "" {
+
+	// Identify if Go is installed already or not.
+	if _, err := exec.LookPath("go"); err != nil {
 		return errors.New(`
-Refusing to install Go toolchain because there is no GOPATH environment variable
-set.
-Note: Please ensure that Go 1.4+ is installed (see https://golang.org/doc/install) and that $GOPATH is set.`)
+Refusing to install Go toolchain because Go is not installed or is not on the
+system path.
+
+-> Please install the latest version of Go (https://golang.org/doc/install) and
+run this command again.`)
 	}
 
-	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
-
-	if err := os.MkdirAll(filepath.Dir(srclibpathDir), 0700); err != nil {
+	if os.Getenv("GOPATH") == "" {
+		os.Setenv("GOPATH", path.Join(os.Getenv("HOME"), ".srclib-gopath"))
+	}
+	// Add symlink to GOPATH so install succeeds (necessary as long as there's a Go dependency in this toolchain)
+	if err := symlinkToGopath(toolchain); err != nil {
 		return err
 	}
 
-	if err := symlinkToGopath(toolchain); err != nil {
+	srclibpathDir := filepath.Join(strings.Split(srclib.Path, ":")[0], toolchain) // toolchain dir under SRCLIBPATH
+	if err := os.MkdirAll(filepath.Dir(srclibpathDir), 0700); err != nil {
 		return err
 	}
 
