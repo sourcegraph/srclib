@@ -13,6 +13,7 @@ import (
 	"path"
 	"path/filepath"
 	"time"
+	"go/build"
 
 	"strings"
 	"sync"
@@ -466,9 +467,11 @@ func installGo() error {
 		}
 
 		err := cmds(
+			// install add-apt-repository, which is needed on Ubuntu.
+			[]string{"sudo", "apt-get", "install", "-y", "software-properties-common"}
 			[]string{"sudo", "add-apt-repository", "-y", "ppa:evarlast/golang1.5"},
 			[]string{"sudo", "apt-get", "-y", "update"},
-			[]string{"sudo", "apt-get", "install", "-y", "golang-go"},
+			[]string{"sudo", "apt-get", "install", "-y", "golang-go-linux-" + build.DefaultContext.GOARCH},
 		)
 		if err != nil {
 			return fmt.Errorf(goInstallErrorMessage, err)
