@@ -471,7 +471,7 @@ func installGo() error {
 			[]string{"sudo", "apt-get", "install", "-y", "software-properties-common"},
 			[]string{"sudo", "add-apt-repository", "-y", "ppa:evarlast/golang1.5"},
 			[]string{"sudo", "apt-get", "-y", "update"},
-			[]string{"sudo", "apt-get", "install", "-y", "golang-go-linux-" + build.DefaultContext.GOARCH},
+			[]string{"sudo", "apt-get", "install", "-y", "golang-go-linux-" + build.Default.GOARCH},
 		)
 		if err != nil {
 			return fmt.Errorf(goInstallErrorMessage, err)
