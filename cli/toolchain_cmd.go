@@ -3,6 +3,7 @@ package cli
 import (
 	"errors"
 	"fmt"
+	"go/build"
 	"io"
 	"io/ioutil"
 	"log"
@@ -13,14 +14,13 @@ import (
 	"path"
 	"path/filepath"
 	"time"
-	"go/build"
 
 	"strings"
 	"sync"
 
-	"github.com/GeertJohan/go.ask"
+	ask "github.com/GeertJohan/go.ask"
 	"github.com/aybabtme/color/brush"
-	"sourcegraph.com/sourcegraph/go-flags"
+	flags "sourcegraph.com/sourcegraph/go-flags"
 	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
 )
@@ -468,7 +468,7 @@ func installGo() error {
 
 		err := cmds(
 			// install add-apt-repository, which is needed on Ubuntu.
-			[]string{"sudo", "apt-get", "install", "-y", "software-properties-common"}
+			[]string{"sudo", "apt-get", "install", "-y", "software-properties-common"},
 			[]string{"sudo", "add-apt-repository", "-y", "ppa:evarlast/golang1.5"},
 			[]string{"sudo", "apt-get", "-y", "update"},
 			[]string{"sudo", "apt-get", "install", "-y", "golang-go-linux-" + build.DefaultContext.GOARCH},
