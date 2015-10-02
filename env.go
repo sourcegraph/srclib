@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"strings"
+
 	"sourcegraph.com/sourcegraph/srclib/util"
 )
 
