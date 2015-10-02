@@ -7,7 +7,7 @@
 ## Disclaimer
 
 *Editor plugins are temporarily incompatible with srclib `master`. Please
-[download an older version of srclib](http://TODO) to use editor plugins.*
+[download an older version of srclib](./compatiblebinaries.md) to use editor plugins.*
 
 ## Features
 - Documentation lookups

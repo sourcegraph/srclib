@@ -5,7 +5,7 @@ So you want to build an editor plugin! srclib can make your favorite editor more
 ## Disclaimer
 
 *Editor plugins are temporarily incompatible with srclib `master`. Please
-[download an older version of srclib](http://TODO) to use editor plugins.*
+[download an older version of srclib](./compatiblebinaries.md) to use editor plugins.*
 
 ## Before You Start
 

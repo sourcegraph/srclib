@@ -38,7 +38,6 @@ no_toc: true
       <div class="two-columns">
         <div>
           <label>Editor plugins:</label>
-          <h6>* currently incompatible with <code>master</code></h6>
           <ul class="list-unstyled">
             <li><a href="plugins/emacs.md">Emacs</a></li>
             <li><a href="plugins/sublimetext.md">Sublime</a></li>

@@ -43,7 +43,7 @@ Currently, srclib supports:
   [Sublime Text](https://srclib.org/plugins/sublimetext/), and
   [Sourcegraph.com](https://sourcegraph.com)
 
-  NOTE: *editor plugins are temporarily incompatible with srclib `master`; to use editor plugins, please [use an old srclib binary](http://TODO)*
+  NOTE: *editor plugins are temporarily incompatible with srclib `master`; to use editor plugins, please [use an old srclib binary](https://srclib.org/plugins/compatiblebinaries/)*
 
 * **Features:** jump-to-definition, find usages, type inference, documentation
   generation, and dependency resolution
