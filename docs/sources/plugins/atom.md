@@ -2,6 +2,11 @@
 
 ![Screenshot](https://raw.githubusercontent.com/sourcegraph/sourcegraph-atom/master/screenshot.png)
 
+## Disclaimer
+
+*Editor plugins are temporarily incompatible with srclib `master`. Please
+[download an older version of srclib](./compatiblebinaries.md) to use editor plugins.*
+
 ## Features
 - Jump to Definition
 - Documentation lookups

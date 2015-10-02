@@ -16,8 +16,7 @@ no_toc: true
       srclib consists of
       <a href="toolchains/overview.md"><strong>language analysis toolchains</a></strong></a>
 (currently for Go, Python, JavaScript, and Ruby) with a
-<a href="api/overview.md"><strong>common output format</strong></a>, and tools (such as <a href="plugins/TODO"><strong>editor plugins</strong></a>) that
-consume this format.
+<a href="api/overview.md"><strong>common output format</strong></a>.
 </p>
 
 <p>

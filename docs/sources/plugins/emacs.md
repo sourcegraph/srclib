@@ -4,6 +4,11 @@
 <iframe class="embed-responsive-item" src="//www.youtube.com/embed/cm59qQD6khs" frameborder="0" allowfullscreen></iframe>
 </div>
 
+## Disclaimer
+
+*Editor plugins are temporarily incompatible with srclib `master`. Please
+[download an older version of srclib](./compatiblebinaries.md) to use editor plugins.*
+
 ## Features
 - Documentation lookups
 - Type information

@@ -33,6 +33,7 @@ pages:
 - ['install.md', 'Installation']
 
 # Editor plugins
+- ['plugins/compatiblebinaries.md', 'Editor plugins', 'Compatible Binaries']
 - ['plugins/emacs.md', 'Editor plugins', 'Emacs']
 - ['plugins/sublimetext.md', 'Editor plugins', 'Sublime Text']
 - ['plugins/vim.md', 'Editor plugins', 'Vim']
