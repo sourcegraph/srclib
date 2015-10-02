@@ -81,3 +81,9 @@ official binaries via these instructions:
 ## License
 Sourcegraph is licensed under the [MIT License](https://tldrlegal.com/license/mit-license).
 More information in the LICENSE file.
+
+
+## Contributing
+
+**If you want to start hacking on srclib or write your own srclib toolchain, [join the srclib Slack](http://slackin.srclib.org) and then access it on [srclib.slack.com](https://srclib.slack.com).**
+Don't forget to introduce yourself on the #General channel. We are more than happy to meet new contributors and to help people to get started.

@@ -185,7 +185,7 @@ func newDockerToolchain(path, dir, dockerfile, hostVolumeDir string) (*dockerToo
 	return &dockerToolchain{
 		dir:           dir,
 		dockerfile:    dockerfile,
-		imageName:     strings.Replace(path, "/", "-", -1),
+		imageName:     strings.Replace(path, string(filepath.Separator), "-", -1),
 		docker:        dc,
 		hostVolumeDir: hostVolumeDir,
 	}, nil

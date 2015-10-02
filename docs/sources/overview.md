@@ -69,3 +69,109 @@ no_toc: true
 </ul><!-- <ul class="action-buttons list-unstyled"> -->
 </div>
 </div>
+
+
+<br>
+## Why srclib
+
+Srclib is designed for the purpose of making software development tools more independent from the languages they support, and to enable standard functionalities in all these tools like jump to definition, find usages, type inference, and documentation generation.
+
+The why of srclib is explained in more detail on the [homepage](https://srclib.org/). On this page you will find an explanation of what srclib consists of, how it is used and links to more specific information.
+
+
+
+<br>
+## Components of srclib
+
+The following components make up the core functionality of srclib:
+
+* The `src` command-line analysis tool
+* The `src api` for interacting with external applications like e.g. editor plugins
+* language-specific toolchains
+* common data exchange format
+
+<br>
+You can enjoy and use the functionality of srclib with
+
+* editor plugins (jump to definition, lookup definitions on sourcegraph.com)
+* a web service like sourcegraph.com
+* your own extensions to srclib
+
+
+<br>
+## How srclib works
+
+Srclib exposes a command-line API that you can use to analyze source code in the supported languages. The results of the analysis are stored in a well defined, language-independent format (JSON).
+
+By using language-specific toolchains in combination with the `src` command, it can analyze code regardless of the language, and due to its common JSON format interaction with other tools is made much easier.
+
+
+<br>
+####running the `src make` command
+
+When running `src make` on the command-line or when making API calls from extensions, in essence the following tasks are performed by the `src` binary:
+
+
+* **Scanning** runs before all other tools and finds all source units of the language (e.g., Python packages, Ruby gems, etc.) in a directory tree. Scanners also determine which other tools to call on each source unit.
+
+
+* **Dependency resolution** resolves raw dependencies to git/hg clone URIs, subdirectories, and commit IDs if possible (e.g., foo@0.2.1 to github.com/alice/foo commit ID abcd123).
+
+* **Graphing** performs type checking/inference and static analysis (called “graphing”) on the language’s source units and dumps data about all definitions and references.
+
+For more detailed information on this process have a look at the `src make` [documentation](api/make.md) .
+
+<br>
+####Using the srclib API
+
+The srclib API has been developed to allow the components of srclib to be called from extensions like editor plugins, and to enable a standard set of features.
+
+The API interacts with a language toolchain to support one or more of the following features:
+* Jump to definition
+* Show examples from sourcegraph.com
+
+The API commands are described in more detail on the [API overview](api/overview.md) page.
+
+
+<br>
+#### Data exchange and format
+
+All `src` tools and language toolchains interact by reading on standard input and writing to standard output.
+
+Results of the various analysis tasks are stored in the path `$GOPATH/.srclib/` in folders with a corresponding name to the API calls. The data model and the JSON exchange format is described in more detail in the [API data model](api/overview.md).
+
+
+
+<br>
+## Getting started
+
+**Download and install**
+
+Check out the [installation guide](install.md) to get started with the installation of srclib.
+
+<br>
+**Get an editor plugin**
+
+There are srclib plugins for many editors. You can scroll to the top of this page and click on one of the links.
+
+<div class="row">
+  <div class="col-md-12">
+    <p>
+    <a href="/plugins/emacs"><button class="btn btn-primary"><img style="height: 1em;" src="/images/editors/emacs.svg"> Emacs</button></a>
+    <a href="/plugins/sublimetext"><button class="btn btn-primary"><img style="height: 1em;" src="/images/editors/sublime.png"> Sublime</button></a>
+    <a href="/plugins/atom"><button class="btn btn-primary"><img style="height: 1em;" style="height: 1em;" src="/images/editors/atom.png"> Atom</button></a>
+    <button data-toggle="popover" data-placement="top" data-content="Vim support is not yet implemented" type="button" class="btn btn-default btn-disabled">
+      <img class="desaturate" style="height: 1em;" src="/images/editors/vim.svg"> Vim
+    </button>
+
+    <p>Interested in building a plugin for an editor srclib doesn't yet
+    support? <a target="_blank" href="https://twitter.com/srclib">Let us
+    know</a>&mdash;we'd love to help!</p><br>
+
+  </div>
+</div>
+
+## Contributing
+If you want to start hacking on srclib or write your own srclib toolchain, [join the srclib Slack](http://slackin.srclib.org) and then access it on [srclib.slack.com](https://srclib.slack.com).
+<br>
+We are more than happy to meet new contributors and to help people to get started on srclib hacking.

@@ -2,6 +2,7 @@ package plan_test
 
 import (
 	"bytes"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -36,8 +37,10 @@ func TestCreateMakefile(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	sep := string(filepath.Separator)
+
 	want := `
-all: testdata/n/t.graph.json testdata/n/t.depresolve.json
+all: testdata` + sep + `n` + sep + `t.graph.json testdata` + sep + `n` + sep + `t.depresolve.json
 
 testdata/n/t.graph.json: testdata/n/t.unit.json f
 	srclib tool  "tc" "t" < $< | srclib internal normalize-graph-data --unit-type "t" --dir . 1> $@

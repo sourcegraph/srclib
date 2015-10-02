@@ -30,7 +30,7 @@ git clone https://github.com/sourcegraph/emacs-sourcegraph-mode.git
 To install the plugin, append the following code to `~/.emacs.d/init.el`.
 ```lisp
 (add-to-list 'load-path "~/.emacs.d/emacs-sourcegraph-mode")
-(require 'sourcegraph-mode)
+(require 'sourcegraph)
 ```
 
 Sourcegraph-mode can be enabled in a buffer with M-x, then typing `sourcegraph-mode`.
