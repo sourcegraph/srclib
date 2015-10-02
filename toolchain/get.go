@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/sourcegraph/srclib"
+	"sourcegraph.com/sourcegraph/srclib"
 )
 
 // CloneOrUpdate downloads the toolchain named by the toolchain path
