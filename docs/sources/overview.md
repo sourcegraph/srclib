@@ -16,8 +16,7 @@ no_toc: true
       srclib consists of
       <a href="toolchains/overview.md"><strong>language analysis toolchains</a></strong></a>
 (currently for Go, Python, JavaScript, and Ruby) with a
-<a href="api/overview.md"><strong>common output format</strong></a>, and tools (such as <a href="plugins/TODO"><strong>editor plugins</strong></a>) that
-consume this format.
+<a href="api/overview.md"><strong>common output format</strong></a>.
 </p>
 
 <p>
@@ -39,6 +38,7 @@ consume this format.
       <div class="two-columns">
         <div>
           <label>Editor plugins:</label>
+          <h6>* currently incompatible with <code>master</code></h6>
           <ul class="list-unstyled">
             <li><a href="plugins/emacs.md">Emacs</a></li>
             <li><a href="plugins/sublimetext.md">Sublime</a></li>

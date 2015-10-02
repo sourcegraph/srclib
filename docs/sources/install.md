@@ -108,13 +108,6 @@ You should have a .srclib-cache directory inside srclib-go that has all of the b
 
 ## Next steps
 
-### Download an editor plugin
-
-If you are interested in using the editor plugins that we have available, check
-out the Editor Plugins section of the documentation. Currently,
-[Emacs](plugins/emacs.md) [Sublime Text](plugins/sublimetext.md) and
-[Atom](plugins/atom.md) are supported, and support for more editors is coming soon.
-
 ### Build on top of srclib
 
 If you want to build or improve srclib editor plugins, read

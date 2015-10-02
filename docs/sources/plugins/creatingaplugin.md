@@ -2,6 +2,11 @@
 
 So you want to build an editor plugin! srclib can make your favorite editor more intelligent in a language-agnostic way -- which means that you only need to interface with srclib, and you'll get analysis for every language that srclib supports for free.
 
+## Disclaimer
+
+*Editor plugins are temporarily incompatible with srclib `master`. Please
+[download an older version of srclib](http://TODO) to use editor plugins.*
+
 ## Before You Start
 
 Make sure you have [srclib installed](../install.md), along with the [toolchains you want to use](../toolchains/overview.md#TODOavailable-toolchains). It's also a good idea to be familiar with the [srclib's api](../api/overview.md) and [data model](../api/data-model.md).
@@ -11,11 +16,11 @@ Make sure you have [srclib installed](../install.md), along with the [toolchains
 There are a couple things a srclib-powered plugin can do:
 
  * [Analyze a Project](#analyze-a-project)
- * [Show Type Information](#show-type-information) 
+ * [Show Type Information](#show-type-information)
  * [Jump To Definition](#jump-to-definition)
  * [Show Documentation](#show-documentation)
  * [Get Examples](#get-examples)
- 
+
 ## Analyze a Project
 
 You can explicitly build a project by running `srclib do-all` at the top-level directory of a repository. `srclib do-all` is equivalent to running `srclib config` and then `srclib make`. `srclib do-all` will return `0` for it's error code if it completes correctly.

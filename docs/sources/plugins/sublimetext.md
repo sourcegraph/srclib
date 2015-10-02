@@ -4,6 +4,11 @@
 <iframe class="embed-responsive-item" src="//www.youtube.com/embed/oSg0N0fV6o4?rel=0" frameborder="0" allowfullscreen></iframe>
 </div>
 
+## Disclaimer
+
+*Editor plugins are temporarily incompatible with srclib `master`. Please
+[download an older version of srclib](http://TODO) to use editor plugins.*
+
 ## Features
 
 - Documentation lookups
