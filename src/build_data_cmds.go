@@ -397,6 +397,7 @@ type BuildDataFetchCmd struct {
 	buildDataSingleCommitCommonOpts
 
 	DryRun bool `short:"n" long:"dry-run" description:"don't do anything, just show what would be done"`
+	Latest bool `short:"l" long:"latest" description:"fetch the latest successful build"`
 }
 
 var buildDataFetchCmd BuildDataFetchCmd
@@ -418,6 +419,25 @@ func (c *BuildDataFetchCmd) Execute(args []string) error {
 	// TODO(sqs): this uncached client isn't authed because it doesn't
 	// have the other API client's http.Client or http.RoundTripper
 	cl := newAPIClientWithAuth(false)
+	if c.Latest {
+		repoBuildInfo, _, err := cl.Repos.GetBuild(repoRevSpec, &sourcegraph.RepoGetBuildOptions{Exact: false})
+		if err != nil {
+			return err
+		}
+		if repoBuildInfo.LastSuccessful != nil {
+			repoSpec := sourcegraph.RepoSpec{URI: *repoBuildInfo.LastSuccessful.RepoURI, RID: repoBuildInfo.LastSuccessful.Repo}
+			repoRevSpec = sourcegraph.RepoRevSpec{
+				RepoSpec: repoSpec,
+				Rev:      repoBuildInfo.LastSuccessful.CommitID,
+				CommitID: repoBuildInfo.LastSuccessful.CommitID,
+			}
+			remoteRepoLabel = fmt.Sprintf("remote repository (URI %s, commit %s)", repoRevSpec.URI, repoRevSpec.CommitID)
+			// note remoteFS isn't used, otherwise we should recall getRemoteFileSystem() on new Commit
+			if GlobalOpt.Verbose {
+				log.Printf("Setting fetch to latest build: %s", remoteRepoLabel)
+			}
+		}
+	}
 	remoteFS, err = cl.BuildData.FileSystem(repoRevSpec)
 	if err != nil {
 		return err
