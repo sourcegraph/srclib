@@ -1,0 +1,13 @@
+{
+	"ImportPath": "sourcegraph.com/sourcegraph/srclib",
+	"GoVersion": "go1.5.1",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "google.golang.org/grpc",
+			"Rev": "91c8b79535eb6045d70ec671d302213f88a3ab95"
+		}
+	]
+}
