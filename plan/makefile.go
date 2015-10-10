@@ -9,6 +9,8 @@ import (
 
 	"strings"
 
+	"sort"
+
 	"sourcegraph.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
@@ -108,6 +110,7 @@ func CreateMakefile(buildDataDir string, buildStore buildstore.RepoBuildStore, v
 		if err != nil {
 			return nil, fmt.Errorf("rule maker %s: %s", name, err)
 		}
+		sort.Sort(ruleSort{rules})
 		if opt.Verbose {
 			log.Printf("%v: Created %d rule(s)", name, len(rules))
 		}
