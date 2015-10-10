@@ -1,5 +1,5 @@
 language: go
-go: 1.4
+go: 1.5
 python: 2.7
 jdk: oraclejdk8
 
