@@ -5,8 +5,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"strings"
-
 	"sourcegraph.com/sourcegraph/srclib/util"
 )
 
@@ -26,13 +24,6 @@ var (
 	// Makefiles and updating toolchains.
 	CommandName = "srclib"
 )
-
-// PathEntries returns first colon-separated entries in Path
-// (SRCLIBPATH). It is guaranteed to have at least one non-empty
-// element.
-func PathEntries() []string {
-	return strings.Split(Path, ":")
-}
 
 func init() {
 	if Path == "" {

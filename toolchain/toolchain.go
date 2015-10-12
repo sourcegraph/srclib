@@ -24,7 +24,7 @@ func Dir(toolchainPath string) (string, error) {
 
 	dir, err := lookupToolchain(toolchainPath)
 	if os.IsNotExist(err) {
-		return filepath.Join(srclib.PathEntries()[0], toolchainPath), nil
+		return filepath.Join(filepath.SplitList(srclib.Path)[0], toolchainPath), nil
 	}
 	if err != nil {
 		err = &os.PathError{Op: "toolchain.Dir", Path: toolchainPath, Err: err}
