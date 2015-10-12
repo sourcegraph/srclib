@@ -5,8 +5,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-
-	"sourcegraph.com/sourcegraph/srclib"
 )
 
 // CloneOrUpdate downloads the toolchain named by the toolchain path
@@ -17,19 +15,21 @@ import (
 func CloneOrUpdate(path string, update bool) (*Info, error) {
 	path = filepath.Clean(path)
 
-	dir := filepath.SplitList(srclib.Path)[0]
-	toolchainDir := filepath.Join(dir, path)
+	dir, err := Dir(path)
+	if err != nil {
+		return nil, err
+	}
 
-	if fi, err := os.Stat(toolchainDir); os.IsNotExist(err) {
+	if fi, err := os.Stat(dir); os.IsNotExist(err) {
 		cloneURL := "https://" + path + ".git"
-		cmd := exec.Command("git", "clone", cloneURL, toolchainDir)
+		cmd := exec.Command("git", "clone", cloneURL, dir)
 		cmd.Stdout, cmd.Stderr = os.Stderr, os.Stderr
 		if err := cmd.Run(); err != nil {
 			return nil, err
 		}
 	} else if update && fi.Mode().IsDir() {
 		cmd := exec.Command("git", "pull", "origin", "master")
-		cmd.Dir = toolchainDir
+		cmd.Dir = dir
 		cmd.Stdout, cmd.Stderr = os.Stderr, os.Stderr
 		if err := cmd.Run(); err != nil {
 			return nil, err
