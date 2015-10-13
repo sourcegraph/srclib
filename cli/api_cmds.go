@@ -381,11 +381,7 @@ The Def and Example structs are defined as follows in the Sourcegraph API.
 
 [[.code "cli/api_cmds.go" "APIDescribeCmdOutputQuickHack"]]
 
-[[.code "https://raw.githubusercontent.com/sourcegraph/go-sourcegraph/6937daba84bf2d0f919191fd74e5193171b4f5d5/sourcegraph/defs.go" 105 113]]
-
 [[.code "https://raw.githubusercontent.com/sourcegraph/srclib/bf4ec15991ed05161dad3694f8729d48c5124844/graph/def.pb.go" 73 122]]
-
-[[.code "https://raw.githubusercontent.com/sourcegraph/go-sourcegraph/6937daba84bf2d0f919191fd74e5193171b4f5d5/sourcegraph/defs.go" 236 252]]
 
 [[.code "https://raw.githubusercontent.com/sourcegraph/srclib/bf4ec15991ed05161dad3694f8729d48c5124844/graph/ref.pb.go" 14 44]]
 
