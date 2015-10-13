@@ -10,16 +10,16 @@ in through stdin.
 The output is a single JSON object with three fields that represent lists of
 Definitions, References, and Documentation data respectively. This should be printed to stdout.
 
-[[.code "graph/output.pb.go" "Output"]]
+[[.code "https://raw.githubusercontent.com/sourcegraph/srclib/bf4ec15991ed05161dad3694f8729d48c5124844/graph/output.pb.go" 15 20]]
 
 ### Def Object Structure
-[[.code "graph/def.pb.go" "Def "]]
+[[.code "https://raw.githubusercontent.com/sourcegraph/srclib/bf4ec15991ed05161dad3694f8729d48c5124844/graph/def.pb.go" 73 122]]
 
 ### Ref Object Structure
-[[.code "graph/ref.pb.go" "Ref"]]
+[[.code "https://raw.githubusercontent.com/sourcegraph/srclib/bf4ec15991ed05161dad3694f8729d48c5124844/graph/ref.pb.go" 14 44]]
 
 ### Docs Object Structure
-[[.code "graph/doc.pb.go" "Doc"]]
+[[.code "https://raw.githubusercontent.com/sourcegraph/srclib/bf4ec15991ed05161dad3694f8729d48c5124844/graph/doc.pb.go" 14 30]]
 
 ## Example: Grapher output on [jashkenas/underscore](https://github.com/jashkenas/underscore)
 ```json
