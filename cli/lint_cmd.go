@@ -105,7 +105,7 @@ func (c *LintCmd) Execute(args []string) error {
 						pcs := strings.Split(absPath, string(filepath.Separator))
 						for i, pc := range pcs {
 							if pc == buildstore.BuildDataDirName && len(pcs) > i+2 {
-								unitName = filepath.Join(pcs[i+2 : len(pcs)-1]...)
+								unitName = filepath.ToSlash(filepath.Join(pcs[i+2 : len(pcs)-1]...))
 								break
 							}
 						}
