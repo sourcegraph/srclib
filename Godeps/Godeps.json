@@ -19,6 +19,10 @@
 			"Rev": "a2ace32dbd4787714f87adb14a8aa369142efac5"
 		},
 		{
+			"ImportPath": "github.com/alexsaveliev/go-colorable-wrapper",
+			"Rev": "8f0be1aa0b297877f269d36f00bb8b1e1306abbc"
+		},
+		{
 			"ImportPath": "github.com/aybabtme/color",
 			"Rev": "0db0bdb3cc7ff8ddff622052366e17f0d506b0ef"
 		},

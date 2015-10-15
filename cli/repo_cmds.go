@@ -1,8 +1,9 @@
 package cli
 
 import (
-	"fmt"
 	"log"
+
+	"github.com/alexsaveliev/go-colorable-wrapper/fmtc"
 )
 
 func init() {
@@ -23,11 +24,11 @@ func (c *repoCmd) Execute(args []string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("# Current repository:")
-	fmt.Println("URI:", repo.URI())
-	fmt.Println("Clone URL:", repo.CloneURL)
-	fmt.Println("VCS:", repo.VCSType)
-	fmt.Println("Root dir:", repo.RootDir)
-	fmt.Println("Commit ID:", repo.CommitID)
+	fmtc.Println("# Current repository:")
+	fmtc.Println("URI:", repo.URI())
+	fmtc.Println("Clone URL:", repo.CloneURL)
+	fmtc.Println("VCS:", repo.VCSType)
+	fmtc.Println("Root dir:", repo.RootDir)
+	fmtc.Println("Commit ID:", repo.CommitID)
 	return nil
 }

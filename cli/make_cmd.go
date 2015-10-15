@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -9,6 +8,8 @@ import (
 	"strings"
 
 	"github.com/aybabtme/color/brush"
+
+	"github.com/alexsaveliev/go-colorable-wrapper/fmtc"
 
 	"sourcegraph.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srclib"
@@ -88,9 +89,9 @@ func (c *MakeCmd) Execute(args []string) error {
 	case c.Quiet:
 		// Skip output
 	case err == nil:
-		fmt.Println(brush.Green("MAKE SUCCESS"))
+		fmtc.Println(brush.Green("MAKE SUCCESS"))
 	case err != nil:
-		fmt.Println(brush.DarkRed("MAKE FAILURE"))
+		fmtc.Println(brush.DarkRed("MAKE FAILURE"))
 	}
 	return err
 }
