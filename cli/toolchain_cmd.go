@@ -21,6 +21,7 @@ import (
 	"sourcegraph.com/sourcegraph/go-flags"
 	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
+	"sourcegraph.com/sourcegraph/srclib/util"
 )
 
 func init() {
@@ -354,7 +355,7 @@ func (c *ToolchainUnbundleCmd) Execute(args []string) error {
 }
 
 type ToolchainAddCmd struct {
-	Dir   string `long:"dir" description:"directory containing toolchain to add" value-name:"DIR"`
+	Dir   string `long:"dir" default:"." description:"directory containing toolchain to add" value-name:"DIR"`
 	Force bool   `short:"f" long:"force" description:"(dangerous) force add, overwrite existing toolchain"`
 	Args  struct {
 		ToolchainPath string `name:"TOOLCHAIN" default:"." description:"toolchain path to use for toolchain directory"`
@@ -444,7 +445,7 @@ run this command again.`)
 	}
 
 	if os.Getenv("GOPATH") == "" {
-		os.Setenv("GOPATH", path.Join(os.Getenv("HOME"), ".srclib-gopath"))
+		os.Setenv("GOPATH", path.Join(util.CurrentUserHomeDir(), ".srclib-gopath"))
 	}
 	// Add symlink to GOPATH so install succeeds (necessary as long as there's a Go dependency in this toolchain)
 	if err := symlinkToGopath(toolchain); err != nil {
