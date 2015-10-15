@@ -15,6 +15,8 @@ import (
 	"strings"
 
 	"github.com/aybabtme/color/brush"
+	"github.com/alexsaveliev/go-colorable-wrapper/fmtc"
+
 	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/graph"
@@ -205,16 +207,16 @@ func checkResults(output bytes.Buffer, treeDir, actualDir, expectedDir string) e
 	treeName := filepath.Base(treeDir)
 	out, err := exec.Command("diff", "-ur", expectedDir, actualDir).CombinedOutput()
 	if err != nil || len(out) > 0 {
-		fmt.Println(brush.Red(treeName + " FAIL").String())
-		fmt.Printf("Diff failed for %s: %s.", treeName, err)
+		fmtc.Println(brush.Red(treeName + " FAIL").String())
+		fmtc.Printf("Diff failed for %s: %s.", treeName, err)
 		if len(out) > 0 {
-			fmt.Println(brush.Red(treeName + " FAIL"))
-			fmt.Println(output.String())
-			fmt.Println(string(ColorizeDiff(out)))
+			fmtc.Println(brush.Red(treeName + " FAIL"))
+			fmtc.Println(output.String())
+			fmtc.Println(string(ColorizeDiff(out)))
 		}
 		return fmt.Errorf("Output for %s differed from expected.", treeName)
 	} else {
-		fmt.Println(brush.Green(treeName + " PASS").String())
+		fmtc.Println(brush.Green(treeName + " PASS").String())
 	}
 	return nil
 }
@@ -286,17 +288,17 @@ func (c *DiffCmd) Execute(args []string) error {
 		}
 	}
 
-	fmt.Println("The following defs were missing:")
+	fmtc.Println("The following defs were missing:")
 	for _, defKey := range expOnlyDefs {
-		fmt.Printf("  %v\n", defKey)
+		fmtc.Printf("  %v\n", defKey)
 	}
-	fmt.Println("\nThe following defs were unexpected:")
+	fmtc.Println("\nThe following defs were unexpected:")
 	for _, defKey := range actOnlyDefs {
-		fmt.Printf("  %v\n", defKey)
+		fmtc.Printf("  %v\n", defKey)
 	}
-	fmt.Println("\nThe following defs differed:")
+	fmtc.Println("\nThe following defs differed:")
 	for _, defKey := range differingDefs {
-		fmt.Println("  %v\n", defKey)
+		fmtc.Println("  %v\n", defKey)
 	}
 
 	return fmt.Errorf("expected and actual output differ")
