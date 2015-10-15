@@ -3,8 +3,10 @@ package toolchain
 import (
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 	"reflect"
+	"runtime"
 	"testing"
 
 	"sourcegraph.com/sourcegraph/srclib"
@@ -22,17 +24,23 @@ func TestList_program(t *testing.T) {
 	}(srclib.Path)
 	srclib.Path = tmpdir
 
+	var extension string
+	if runtime.GOOS == "windows" {
+		extension = ".exe"
+	} else {
+		extension = ""
+	}
 	files := map[string]os.FileMode{
 		// ok
-		filepath.Join("a", "a", ".bin", "a"):       0700,
+		filepath.Join("a", "a", ".bin", "a" + extension):       0700,
 		filepath.Join("a", "a", "Srclibtoolchain"): 0700,
 
 		// not executable
-		filepath.Join("b", "b", ".bin", "z"):       0600,
+		filepath.Join("b", "b", ".bin", "z" + extension):       0600,
 		filepath.Join("b", "b", "Srclibtoolchain"): 0600,
 
 		// not in .bin
-		filepath.Join("c", "c", "c"):               0700,
+		filepath.Join("c", "c", "c" + extension):               0700,
 		filepath.Join("c", "c", "Srclibtoolchain"): 0700,
 	}
 	for f, mode := range files {
@@ -46,7 +54,7 @@ func TestList_program(t *testing.T) {
 	}
 
 	// Put a file symlink in srclib DIR path.
-	oldp := filepath.Join(tmpdir, "a", "a", ".bin", "a")
+	oldp := filepath.Join(tmpdir, "a", "a", ".bin", "a" + extension)
 	newp := filepath.Join(tmpdir, "link")
 	if err := os.Symlink(oldp, newp); err != nil {
 		t.Fatal(err)
@@ -58,7 +66,7 @@ func TestList_program(t *testing.T) {
 	}
 
 	got := toolchainPathsWithProgramOrDockerfile(toolchains)
-	want := []string{filepath.Join("a", "a")}
+	want := []string{path.Join("a", "a")}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got toolchains %v, want %v", got, want)
 	}
@@ -101,7 +109,7 @@ func TestList_docker(t *testing.T) {
 	}
 
 	got := toolchainPathsWithProgramOrDockerfile(toolchains)
-	want := []string{filepath.Join("a", "a")}
+	want := []string{path.Join("a", "a")}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got toolchains %v, want %v", got, want)
 	}
