@@ -17,7 +17,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/aybabtme/color/brush"
+	"github.com/alexsaveliev/go-colorable-wrapper"
+
 	"sourcegraph.com/sourcegraph/go-flags"
 	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
@@ -162,7 +163,7 @@ func (c *ToolchainListCmd) Execute(args []string) error {
 	}
 
 	fmtStr := "%-40s  %s\n"
-	fmt.Printf(fmtStr, "PATH", "TYPE")
+	colorable.Printf(fmtStr, "PATH", "TYPE")
 	for _, t := range toolchains {
 		var exes []string
 		if t.Program != "" {
@@ -171,7 +172,7 @@ func (c *ToolchainListCmd) Execute(args []string) error {
 		if t.Dockerfile != "" {
 			exes = append(exes, "docker")
 		}
-		fmt.Printf(fmtStr, t.Path, strings.Join(exes, ", "))
+		colorable.Printf(fmtStr, t.Path, strings.Join(exes, ", "))
 	}
 	return nil
 }
@@ -193,7 +194,7 @@ func (c *ToolchainListToolsCmd) Execute(args []string) error {
 	}
 
 	fmtStr := "%-40s  %-18s  %-15s  %-25s\n"
-	fmt.Printf(fmtStr, "TOOLCHAIN", "TOOL", "OP", "SOURCE UNIT TYPES")
+	colorable.Printf(fmtStr, "TOOLCHAIN", "TOOL", "OP", "SOURCE UNIT TYPES")
 	for _, tc := range tcs {
 		if len(c.Args.Toolchains) > 0 {
 			found := false
@@ -229,7 +230,7 @@ func (c *ToolchainListToolsCmd) Execute(args []string) error {
 				}
 			}
 
-			fmt.Printf(fmtStr, tc.Path, t.Subcmd, t.Op, strings.Join(t.SourceUnitTypes, " "))
+			colorable.Printf(fmtStr, tc.Path, t.Subcmd, t.Op, strings.Join(t.SourceUnitTypes, " "))
 		}
 	}
 	return nil
@@ -274,7 +275,7 @@ var toolchainGetCmd ToolchainGetCmd
 func (c *ToolchainGetCmd) Execute(args []string) error {
 	for _, tc := range c.Args.Toolchains {
 		if GlobalOpt.Verbose {
-			fmt.Println(tc)
+			colorable.Println(tc)
 		}
 		_, err := toolchain.CloneOrUpdate(string(tc), c.Update)
 		if err != nil {
@@ -404,13 +405,13 @@ var toolchainInstallCmd ToolchainInstallCmd
 
 func (c *ToolchainInstallCmd) Execute(args []string) error {
 	if len(c.Args.Languages) == 0 {
-		return errors.New(brush.Red(fmt.Sprintf("No languages specified. Standard languages include: %s", stdToolchains.listKeys())).String())
+		return errors.New(colorable.Red(fmt.Sprintf("No languages specified. Standard languages include: %s", stdToolchains.listKeys())))
 	}
 	var is []toolchainInstaller
 	for _, l := range c.Args.Languages {
 		i, ok := stdToolchains[l]
 		if !ok {
-			return errors.New(brush.Red(fmt.Sprintf("Language %s unrecognized. Standard languages include: %s", l, stdToolchains.listKeys())).String())
+			return errors.New(colorable.Red(fmt.Sprintf("Language %s unrecognized. Standard languages include: %s", l, stdToolchains.listKeys())))
 		}
 		is = append(is, i)
 	}
@@ -419,14 +420,14 @@ func (c *ToolchainInstallCmd) Execute(args []string) error {
 
 func installToolchains(langs []toolchainInstaller) error {
 	for _, l := range langs {
-		fmt.Println(brush.Cyan(l.name + " " + strings.Repeat("=", 78-len(l.name))).String())
+		colorable.Println(colorable.Cyan(l.name + " " + strings.Repeat("=", 78-len(l.name))))
 		if err := l.fn(); err != nil {
-			return fmt.Errorf("%s\n", brush.Red(fmt.Sprintf("failed to install/upgrade %s toolchain: %s", l.name, err)))
+			return fmt.Errorf("%s\n", colorable.Red(fmt.Sprintf("failed to install/upgrade %s toolchain: %s", l.name, err)))
 		}
 
-		fmt.Println(brush.Green("OK! Installed/upgraded " + l.name + " toolchain").String())
-		fmt.Println(brush.Cyan(strings.Repeat("=", 80)).String())
-		fmt.Println()
+		colorable.Println(colorable.Green("OK! Installed/upgraded " + l.name + " toolchain"))
+		colorable.Println(colorable.Cyan(strings.Repeat("=", 80)))
+		colorable.Println()
 	}
 	return nil
 }
@@ -593,7 +594,7 @@ func installToolchainFromBundle(name, toolchainPath, bundleURL string) (err erro
 			case <-t:
 				fi, err := os.Stat(outputFile)
 				if err == nil {
-					fmt.Printf("\rDownload %.1f%% complete (%.1f MB / %.1f MB)",
+					colorable.Printf("\rDownload %.1f%% complete (%.1f MB / %.1f MB)",
 						float64(fi.Size())/float64(resp.ContentLength)*100,
 						float64(fi.Size())/1024/1024,
 						float64(resp.ContentLength)/1024/1024,
@@ -608,7 +609,7 @@ func installToolchainFromBundle(name, toolchainPath, bundleURL string) (err erro
 	log.Printf("Downloading %s (%.1f MB)", bundleURL, float64(resp.ContentLength)/1024/1024)
 	_, err = io.Copy(f, resp.Body)
 	done <- struct{}{}
-	fmt.Println() // for the "\r" line in the progress indicator
+	colorable.Println() // for the "\r" line in the progress indicator
 	if err != nil {
 		return err
 	}

@@ -10,7 +10,9 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/alexsaveliev/go-colorable-wrapper"
 	"github.com/kr/fs"
+
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
@@ -480,7 +482,7 @@ OuterLoop:
 				log.Printf("Error opening source file to show surrounding source: %s.", err)
 			}
 		}
-		fmt.Println(`{}`)
+		colorable.Println(`{}`)
 		return nil
 	}
 
