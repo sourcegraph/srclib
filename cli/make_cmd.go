@@ -7,9 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/aybabtme/color/brush"
-
-	"github.com/alexsaveliev/go-colorable-wrapper/fmtc"
+	"github.com/alexsaveliev/go-colorable-wrapper"
 
 	"sourcegraph.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srclib"
@@ -89,9 +87,9 @@ func (c *MakeCmd) Execute(args []string) error {
 	case c.Quiet:
 		// Skip output
 	case err == nil:
-		fmtc.Println(brush.Green("MAKE SUCCESS"))
+		colorable.Println(colorable.Green("MAKE SUCCESS"))
 	case err != nil:
-		fmtc.Println(brush.DarkRed("MAKE FAILURE"))
+		colorable.Println(colorable.DarkRed("MAKE FAILURE"))
 	}
 	return err
 }

@@ -15,8 +15,7 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/grapher"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 
-	"github.com/alexsaveliev/go-colorable-wrapper/fmtc"
-	"github.com/aybabtme/color"
+	"github.com/alexsaveliev/go-colorable-wrapper"
 	"github.com/kr/fs"
 )
 
@@ -68,7 +67,7 @@ func (c *LintCmd) Execute(args []string) error {
 		for {
 			select {
 			case issue := <-issuec:
-				fmtc.Println(issue)
+				colorable.Println(issue)
 			case <-quitc:
 				return
 			}
@@ -155,7 +154,7 @@ func (c *LintCmd) Execute(args []string) error {
 							issuec <- issue
 						}
 						if err != nil {
-							log.Fatalf(color.NewBrush(color.RedPaint, color.WhitePaint)("ERR")+" %s: %s", path, err)
+							log.Fatalf(colorable.Redbg("ERR")+" %s: %s", path, err)
 						}
 					}(w.Path())
 				}

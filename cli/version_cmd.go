@@ -3,7 +3,7 @@ package cli
 import (
 	"log"
 
-	"github.com/alexsaveliev/go-colorable-wrapper/fmtc"
+	"github.com/alexsaveliev/go-colorable-wrapper"
 )
 
 // Version of srclib.
@@ -26,6 +26,6 @@ func init() {
 type versionCmd struct{}
 
 func (v *versionCmd) Execute(_ []string) error {
-	fmtc.Println(Version)
+	colorable.Println(Version)
 	return nil
 }

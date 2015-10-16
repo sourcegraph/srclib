@@ -21,7 +21,7 @@ import (
 
 	"sourcegraph.com/sourcegraph/srclib/graph"
 
-	"github.com/alexsaveliev/go-colorable-wrapper/fmtc"
+	"github.com/alexsaveliev/go-colorable-wrapper"
 	"github.com/peterh/liner"
 )
 
@@ -60,14 +60,14 @@ func (c *QueryCmd) Execute(args []string) error {
 		output, err := eval(strings.Join(c.Args.Rest, " "))
 		// Always print output, even if err is non-nil.
 		if output != "" {
-			fmtc.Print(cleanOutput(output))
+			colorable.Print(cleanOutput(output))
 		}
 		if err != nil {
 			return err
 		}
 		return nil
 	}
-	fmtc.Println(`src query - ":help" for help`)
+	colorable.Println(`src query - ":help" for help`)
 	term, err := terminal(historyFile)
 	if err != nil {
 		return err
@@ -80,7 +80,7 @@ func (c *QueryCmd) Execute(args []string) error {
 		line, err := term.Prompt("src> ")
 		if err != nil {
 			if err == io.EOF {
-				fmtc.Println()
+				colorable.Println()
 				return nil
 			}
 			return err
@@ -88,18 +88,18 @@ func (c *QueryCmd) Execute(args []string) error {
 		term.AppendHistory(line)
 		output, err := eval(line)
 		if err != nil {
-			fmtc.Println("Error:", err)
+			colorable.Println("Error:", err)
 			if output != "" {
-				fmtc.Print(cleanOutput(output))
+				colorable.Print(cleanOutput(output))
 			}
 		} else {
-			fmtc.Print(cleanOutput(output))
+			colorable.Print(cleanOutput(output))
 		}
 	}
 }
 
 func setActiveContext(repoPath string) error {
-	fmtc.Printf("Analyzing project...")
+	colorable.Printf("Analyzing project...")
 	// Build project concurrently so we can update the UI.
 	type maybeContext struct {
 		context commandContext
@@ -114,17 +114,17 @@ OuterLoop:
 	for {
 		select {
 		case <-time.Tick(time.Second):
-			fmtc.Print(".")
+			colorable.Print(".")
 		case m := <-done:
 			if m.err != nil {
-				fmtc.Println()
+				colorable.Println()
 				return m.err
 			}
 			activeContext = m.context
 			break OuterLoop
 		}
 	}
-	fmtc.Println()
+	colorable.Println()
 	// Invariant: activeContext is the result of prepareCommandContext
 	// after the loop above.
 	return nil
