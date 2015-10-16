@@ -123,9 +123,9 @@
 			"ImportPath": "google.golang.org/grpc",
 			"Rev": "91c8b79535eb6045d70ec671d302213f88a3ab95"
 		},
-		{
-			"ImportPath": "gopkg.in/inconshreveable/go-update.v0",
-			"Rev": "d8b0b1d421aa1cbf392c05869f8abbc669bb7066"
+		{			
+			"ImportPath": "github.com/inconshreveable/go-update",
+			"Rev": "68f5725818189545231c1fd8694793d45f2fc529"
 		},
 		{
 			"ImportPath": "sourcegraph.com/sourcegraph/go-flags",
