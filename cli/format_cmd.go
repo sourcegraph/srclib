@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"log"
 
-	"github.com/alexsaveliev/go-colorable-wrapper/fmtc"
+	"github.com/alexsaveliev/go-colorable-wrapper"
 
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
 )
@@ -60,6 +60,6 @@ func (c *FmtCmd) Execute(args []string) error {
 	if err != nil {
 		return err
 	}
-	fmtc.Println(out)
+	colorable.Println(out)
 	return nil
 }

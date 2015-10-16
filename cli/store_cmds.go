@@ -18,7 +18,7 @@ import (
 
 	"code.google.com/p/rog-go/parallel"
 
-	"github.com/alexsaveliev/go-colorable-wrapper/fmtc"
+	"github.com/alexsaveliev/go-colorable-wrapper"
 
 	"golang.org/x/tools/godoc/vfs"
 
@@ -664,45 +664,45 @@ func doStoreIndexesCmd(crit store.IndexCriteria, opt storeIndexOptions, f func(i
 				if isMultiRepo {
 					if x.Repo != lastRepo {
 						if lastRepo != "" {
-							fmtc.Println()
+							colorable.Println()
 						}
-						fmtc.Println(x.Repo)
+						colorable.Println(x.Repo)
 					}
 				}
 				if x.CommitID != lastCommitID {
-					fmtc.Print(repoTab, x.CommitID, "\n")
+					colorable.Print(repoTab, x.CommitID, "\n")
 				}
 				if x.Unit != lastUnit && x.Unit != nil {
 					if x.Repo == lastRepo && x.CommitID == lastCommitID {
-						fmtc.Println()
+						colorable.Println()
 					}
-					fmtc.Print(repoTab, "\t", x.Unit.Name, " ", x.Unit.Type, "\n")
+					colorable.Print(repoTab, "\t", x.Unit.Name, " ", x.Unit.Type, "\n")
 				}
 
 				if x.Unit != nil {
-					fmtc.Print("\t")
+					colorable.Print("\t")
 				}
 
-				fmtc.Print(repoTab, "\t")
-				fmtc.Printf("%s (%s) ", x.Name, x.Type)
+				colorable.Print(repoTab, "\t")
+				colorable.Printf("%s (%s) ", x.Name, x.Type)
 				if x.Stale {
-					fmtc.Print("STALE ")
+					colorable.Print("STALE ")
 				}
 				if x.Size != 0 {
-					fmtc.Print(bytesString(uint64(x.Size)), " ")
+					colorable.Print(bytesString(uint64(x.Size)), " ")
 				}
 				if x.Error != "" {
-					fmtc.Printf("(ERROR: %s) ", x.Error)
+					colorable.Printf("(ERROR: %s) ", x.Error)
 					hasError = true
 				}
 				if x.BuildError != "" {
-					fmtc.Printf("(BUILD ERROR: %s) ", x.BuildError)
+					colorable.Printf("(BUILD ERROR: %s) ", x.BuildError)
 					hasError = true
 				}
 				if x.BuildDuration != 0 {
-					fmtc.Printf("- build took %s ", x.BuildDuration)
+					colorable.Printf("- build took %s ", x.BuildDuration)
 				}
-				fmtc.Println()
+				colorable.Println()
 
 				if err := printIndex(x); err != nil {
 					log.Fatal(err)
@@ -791,7 +791,7 @@ func (c *StoreReposCmd) Execute(args []string) error {
 		return err
 	}
 	for _, repo := range repos {
-		fmtc.Println(repo)
+		colorable.Println(repo)
 	}
 	return nil
 }
@@ -838,9 +838,9 @@ func (c *StoreVersionsCmd) Execute(args []string) error {
 	}
 	for _, version := range versions {
 		if version.Repo != "" {
-			fmtc.Print(version.Repo, "\t")
+			colorable.Print(version.Repo, "\t")
 		}
-		fmtc.Println(version.CommitID)
+		colorable.Println(version.CommitID)
 	}
 	return nil
 }

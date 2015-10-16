@@ -14,8 +14,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/aybabtme/color/brush"
-	"github.com/alexsaveliev/go-colorable-wrapper/fmtc"
+	"github.com/alexsaveliev/go-colorable-wrapper"
 
 	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
@@ -207,16 +206,16 @@ func checkResults(output bytes.Buffer, treeDir, actualDir, expectedDir string) e
 	treeName := filepath.Base(treeDir)
 	out, err := exec.Command("diff", "-ur", expectedDir, actualDir).CombinedOutput()
 	if err != nil || len(out) > 0 {
-		fmtc.Println(brush.Red(treeName + " FAIL").String())
-		fmtc.Printf("Diff failed for %s: %s.", treeName, err)
+		colorable.Println(colorable.Red(treeName + " FAIL"))
+		colorable.Printf("Diff failed for %s: %s.", treeName, err)
 		if len(out) > 0 {
-			fmtc.Println(brush.Red(treeName + " FAIL"))
-			fmtc.Println(output.String())
-			fmtc.Println(string(ColorizeDiff(out)))
+			colorable.Println(colorable.Red(treeName + " FAIL"))
+			colorable.Println(output.String())
+			colorable.Println(string(ColorizeDiff(out)))
 		}
 		return fmt.Errorf("Output for %s differed from expected.", treeName)
 	} else {
-		fmtc.Println(brush.Green(treeName + " PASS").String())
+		colorable.Println(colorable.Green(treeName + " PASS"))
 	}
 	return nil
 }
@@ -288,17 +287,17 @@ func (c *DiffCmd) Execute(args []string) error {
 		}
 	}
 
-	fmtc.Println("The following defs were missing:")
+	colorable.Println("The following defs were missing:")
 	for _, defKey := range expOnlyDefs {
-		fmtc.Printf("  %v\n", defKey)
+		colorable.Printf("  %v\n", defKey)
 	}
-	fmtc.Println("\nThe following defs were unexpected:")
+	colorable.Println("\nThe following defs were unexpected:")
 	for _, defKey := range actOnlyDefs {
-		fmtc.Printf("  %v\n", defKey)
+		colorable.Printf("  %v\n", defKey)
 	}
-	fmtc.Println("\nThe following defs differed:")
+	colorable.Println("\nThe following defs differed:")
 	for _, defKey := range differingDefs {
-		fmtc.Println("  %v\n", defKey)
+		colorable.Println("  %v\n", defKey)
 	}
 
 	return fmt.Errorf("expected and actual output differ")
@@ -311,10 +310,10 @@ func ColorizeDiff(diff []byte) []byte {
 	lines := bytes.Split(diff, []byte{'\n'})
 	for i, line := range lines {
 		if bytes.HasPrefix(line, []byte{'-'}) {
-			lines[i] = []byte(brush.Red(string(line)).String())
+			lines[i] = []byte(colorable.Red(string(line)))
 		}
 		if bytes.HasPrefix(line, []byte{'+'}) {
-			lines[i] = []byte(brush.Green(string(line)).String())
+			lines[i] = []byte(colorable.Green(string(line)))
 		}
 	}
 	return bytes.Join(lines, []byte{'\n'})

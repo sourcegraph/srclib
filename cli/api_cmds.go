@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/alexsaveliev/go-colorable-wrapper/fmtc"
+	"github.com/alexsaveliev/go-colorable-wrapper"
 	"github.com/kr/fs"
 
 	"sourcegraph.com/sourcegraph/rwvfs"
@@ -482,7 +482,7 @@ OuterLoop:
 				log.Printf("Error opening source file to show surrounding source: %s.", err)
 			}
 		}
-		fmtc.Println(`{}`)
+		colorable.Println(`{}`)
 		return nil
 	}
 
