@@ -2,8 +2,6 @@ package flagutil
 
 import (
 	"reflect"
-	"runtime"
-	"strings"
 	"testing"
 )
 
@@ -106,18 +104,6 @@ func TestMarshalArgs(t *testing.T) {
 			continue
 		}
 
-		if runtime.GOOS == "windows" && test.wantArgs != nil {
-			tmp := make([]string, 0, len(test.wantArgs))
-			for _, arg := range test.wantArgs {
-				if strings.HasPrefix(arg, "--") {
-					arg = "/" + string(arg[2:])
-				} else if strings.HasPrefix(arg, "-") {
-					arg = "/" + string(arg[1:])
-				}
-				tmp = append(tmp, arg)
-			}
-			test.wantArgs = tmp
-		}
 		if !reflect.DeepEqual(args, test.wantArgs) {
 			t.Errorf("got args %v, want %v", args, test.wantArgs)
 		}
