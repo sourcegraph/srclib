@@ -5,7 +5,7 @@ browsable HTML static site, hosted at [srclib.org](http://srclib.org/).
 **[MkDocs](http://www.mkdocs.org/)**, installable through pip, is used to
 generate the HTML.
 
-Run `pip install mkdocs` to install MkDocs.
+Run `pip install mkdocs==0.9.0` to install MkDocs, version 0.9.0.
 
 You will also need SASS, in order to compile the style sheets. This can be
 obtained with `gem install sass`. In order to use the testing script `test.sh`,
