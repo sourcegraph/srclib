@@ -68,15 +68,14 @@ func newTLSDockerClient(certPath, host string) (*docker.Client, error) {
 // DOCKER_HOST env var, or the default /var/run/docker.sock socket if unset.
 func newDockerClient() (*docker.Client, error) {
 	dockerEndpoint := os.Getenv("DOCKER_HOST")
-	if dockerEndpoint == "" {
-		dockerEndpoint = "unix:///var/run/docker.sock"
-	} else if !strings.HasPrefix(dockerEndpoint, "http") && !strings.HasPrefix(dockerEndpoint, "tcp") {
-		dockerEndpoint = "http://" + dockerEndpoint
-	} else if strings.HasPrefix(dockerEndpoint, "tcp") {
-		certPath := os.Getenv("DOCKER_CERT_PATH")
-		if certPath != "" {
+	if strings.HasPrefix(dockerEndpoint, "tcp") {
+		if certPath := os.Getenv("DOCKER_CERT_PATH"); certPath != "" {
 			return newTLSDockerClient(certPath, dockerEndpoint)
 		}
+	} else if dockerEndpoint == "" {
+		dockerEndpoint = "unix:///var/run/docker.sock"
+	} else if !strings.HasPrefix(dockerEndpoint, "http") {
+		dockerEndpoint = "http://" + dockerEndpoint
 	}
 	return docker.NewClient(dockerEndpoint)
 }
