@@ -142,8 +142,8 @@ func testTreeStore_Units(t *testing.T, ts TreeStoreImporter) {
 	}
 
 	{
-		c_fsTreeStore_unitsOpened = 0
-		c_unitsIndex_listUnits = 0
+		c_fsTreeStore_unitsOpened.set(0)
+		c_unitsIndex_listUnits.set(0)
 		units, err := ts.Units()
 		if err != nil {
 			t.Errorf("%s: Units(): %s", ts, err)
@@ -154,18 +154,18 @@ func testTreeStore_Units(t *testing.T, ts TreeStoreImporter) {
 			t.Errorf("%s: Units(): got %v, want %v", ts, units, want)
 		}
 		if isIndexedStore(ts) {
-			if want := 1; c_unitsIndex_listUnits != want {
-				t.Errorf("%s: Units: listed unitsIndex %dx, want %dx", ts, c_unitsIndex_listUnits, want)
+			if want := 1; c_unitsIndex_listUnits.get() != want {
+				t.Errorf("%s: Units: listed unitsIndex %dx, want %dx", ts, c_unitsIndex_listUnits.get(), want)
 			}
-			if want := 0; c_fsTreeStore_unitsOpened != want {
-				t.Errorf("%s: Units: got %d units opened, want %d (should use unitsIndex)", ts, c_fsTreeStore_unitsOpened, want)
+			if want := 0; c_fsTreeStore_unitsOpened.get() != want {
+				t.Errorf("%s: Units: got %d units opened, want %d (should use unitsIndex)", ts, c_fsTreeStore_unitsOpened.get(), want)
 			}
 		}
 	}
 
 	{
-		c_fsTreeStore_unitsOpened = 0
-		c_unitsIndex_listUnits = 0
+		c_fsTreeStore_unitsOpened.set(0)
+		c_unitsIndex_listUnits.set(0)
 
 		origMaxIndividualFetches := maxIndividualFetches
 		maxIndividualFetches = 1
@@ -187,11 +187,11 @@ func testTreeStore_Units(t *testing.T, ts TreeStoreImporter) {
 			t.Errorf("%s: Units(3 and 1): got %v, want %v", ts, units, want)
 		}
 		if isIndexedStore(ts) {
-			if want := 1; c_unitsIndex_listUnits != want {
-				t.Errorf("%s: Units: listed unitsIndex %dx, want %dx", ts, c_unitsIndex_listUnits, want)
+			if want := 1; c_unitsIndex_listUnits.get() != want {
+				t.Errorf("%s: Units: listed unitsIndex %dx, want %dx", ts, c_unitsIndex_listUnits.get(), want)
 			}
-			if want := 0; c_fsTreeStore_unitsOpened != want {
-				t.Errorf("%s: Units: got %d units opened, want %d (should use unitsIndex)", ts, c_fsTreeStore_unitsOpened, want)
+			if want := 0; c_fsTreeStore_unitsOpened.get() != want {
+				t.Errorf("%s: Units: got %d units opened, want %d (should use unitsIndex)", ts, c_fsTreeStore_unitsOpened.get(), want)
 			}
 		}
 	}
@@ -214,7 +214,7 @@ func testTreeStore_Units_ByFile(t *testing.T, ts TreeStoreImporter) {
 		}
 	}
 
-	c_unitFilesIndex_getByPath = 0
+	c_unitFilesIndex_getByPath.set(0)
 	units, err := ts.Units(ByFiles("f1"))
 	if err != nil {
 		t.Errorf("%s: Units(ByFiles f1): %s", ts, err)
@@ -225,12 +225,12 @@ func testTreeStore_Units_ByFile(t *testing.T, ts TreeStoreImporter) {
 		t.Errorf("%s: Units(ByFiles f1): got %v, want %v", ts, units, want)
 	}
 	if isIndexedStore(ts) {
-		if want := 1; c_unitFilesIndex_getByPath != want {
-			t.Errorf("%s: Units(ByFiles f1): got %d index hits, want %d", ts, c_unitFilesIndex_getByPath, want)
+		if want := 1; c_unitFilesIndex_getByPath.get() != want {
+			t.Errorf("%s: Units(ByFiles f1): got %d index hits, want %d", ts, c_unitFilesIndex_getByPath.get(), want)
 		}
 	}
 
-	c_unitFilesIndex_getByPath = 0
+	c_unitFilesIndex_getByPath.set(0)
 	units2, err := ts.Units(ByFiles("f2"))
 	if err != nil {
 		t.Errorf("%s: Units(ByFiles f2): %s", ts, err)
@@ -242,8 +242,8 @@ func testTreeStore_Units_ByFile(t *testing.T, ts TreeStoreImporter) {
 		t.Errorf("%s: Units(ByFiles f2): got %v, want %v", ts, units2, want2)
 	}
 	if isIndexedStore(ts) {
-		if want := 1; c_unitFilesIndex_getByPath != want {
-			t.Errorf("%s: Units(ByFiles f1): got %d index hits, want %d", ts, c_unitFilesIndex_getByPath, want)
+		if want := 1; c_unitFilesIndex_getByPath.get() != want {
+			t.Errorf("%s: Units(ByFiles f1): got %d index hits, want %d", ts, c_unitFilesIndex_getByPath.get(), want)
 		}
 	}
 }
@@ -434,8 +434,8 @@ func testTreeStore_Defs_Query(t *testing.T, ts TreeStoreImporter) {
 		},
 	}
 	for _, test := range tests {
-		c_defQueryTreeIndex_getByQuery = 0
-		c_defQueryIndex_getByQuery = 0
+		c_defQueryTreeIndex_getByQuery.set(0)
+		c_defQueryIndex_getByQuery.set(0)
 		defs, err := ts.Defs(ByDefQuery(test.q))
 		if err != nil {
 			t.Errorf("%s: Defs(ByDefQuery %q): %s", ts, test.q, err)
@@ -444,13 +444,13 @@ func testTreeStore_Defs_Query(t *testing.T, ts TreeStoreImporter) {
 			t.Errorf("%s: Defs(ByDefQuery %q): got defs %v, want %v", ts, test.q, got, want)
 		}
 		if isIndexedStore(ts) {
-			if want := test.wantIndexHits; c_defQueryTreeIndex_getByQuery != want {
-				t.Errorf("%s: Defs(ByDefQuery %q): got %d index hits, want %d", ts, test.q, c_defQueryTreeIndex_getByQuery, want)
+			if want := test.wantIndexHits; c_defQueryTreeIndex_getByQuery.get() != want {
+				t.Errorf("%s: Defs(ByDefQuery %q): got %d index hits, want %d", ts, test.q, c_defQueryTreeIndex_getByQuery.get(), want)
 			}
-			if c_defQueryIndex_getByQuery != 0 {
+			if c_defQueryIndex_getByQuery.get() != 0 {
 				// This query should only hit the tree-level def query
 				// index, not the def query indexes for each unit.
-				t.Errorf("%s: Defs(ByDefQuery %q): got %d index hits on non-tree index, want none", ts, test.q, c_defQueryIndex_getByQuery)
+				t.Errorf("%s: Defs(ByDefQuery %q): got %d index hits on non-tree index, want none", ts, test.q, c_defQueryIndex_getByQuery.get())
 			}
 		}
 	}
@@ -496,8 +496,8 @@ func testTreeStore_Defs_Query_ByUnit(t *testing.T, ts TreeStoreImporter) {
 		}
 	}
 
-	c_defQueryTreeIndex_getByQuery = 0
-	c_defQueryIndex_getByQuery = 0
+	c_defQueryTreeIndex_getByQuery.set(0)
+	c_defQueryIndex_getByQuery.set(0)
 	defs, err := ts.Defs(ByDefQuery("a"), ByUnits(unit.ID2{Type: "t", Name: "u1"}))
 	if err != nil {
 		t.Errorf("%s: Defs(ByDefQuery, ByUnit): %s", ts, err)
@@ -507,13 +507,13 @@ func testTreeStore_Defs_Query_ByUnit(t *testing.T, ts TreeStoreImporter) {
 		t.Errorf("%s: Defs(ByDefQuery, ByUnit): got defs %v, want %v", ts, got, want)
 	}
 	if isIndexedStore(ts) {
-		if want := 1; c_defQueryIndex_getByQuery != want {
-			t.Errorf("%s: Defs(ByDefQuery, ByUnit): got %d index hits, want %d", ts, c_defQueryIndex_getByQuery, want)
+		if want := 1; c_defQueryIndex_getByQuery.get() != want {
+			t.Errorf("%s: Defs(ByDefQuery, ByUnit): got %d index hits, want %d", ts, c_defQueryIndex_getByQuery.get(), want)
 		}
-		if c_defQueryTreeIndex_getByQuery != 0 {
+		if c_defQueryTreeIndex_getByQuery.get() != 0 {
 			// This query should only hit the unit-level def query
 			// index, not the tree-wide def query indexes.
-			t.Errorf("%s: Defs(ByDefQuery, ByUnit): got %d index hits on tree index, want none", ts, c_defQueryTreeIndex_getByQuery)
+			t.Errorf("%s: Defs(ByDefQuery, ByUnit): got %d index hits on tree index, want none", ts, c_defQueryTreeIndex_getByQuery.get())
 		}
 	}
 }
@@ -543,7 +543,7 @@ func testTreeStore_Defs_ByUnits(t *testing.T, ts TreeStoreImporter) {
 		{DefKey: graph.DefKey{UnitType: "t3", Unit: "u3", Path: "p3"}},
 	}
 
-	c_fsTreeStore_unitsOpened = 0
+	c_fsTreeStore_unitsOpened.set(0)
 	defs, err := ts.Defs(ByUnits(unit.ID2{Type: "t3", Name: "u3"}, unit.ID2{Type: "t1", Name: "u1"}))
 	if err != nil {
 		t.Errorf("%s: Defs(ByUnits): %s", ts, err)
@@ -554,8 +554,8 @@ func testTreeStore_Defs_ByUnits(t *testing.T, ts TreeStoreImporter) {
 		t.Errorf("%s: Defs(ByUnits): got defs %v, want %v", ts, defs, want)
 	}
 	if isIndexedStore(ts) {
-		if c_fsTreeStore_unitsOpened != 0 {
-			t.Errorf("%s: Defs(ByUnits): got %d units opened, want none (should be able to use ByUnits filter to avoid needing to open any units)", ts, c_fsTreeStore_unitsOpened)
+		if c_fsTreeStore_unitsOpened.get() != 0 {
+			t.Errorf("%s: Defs(ByUnits): got %d units opened, want none (should be able to use ByUnits filter to avoid needing to open any units)", ts, c_fsTreeStore_unitsOpened.get())
 		}
 	}
 }
@@ -583,7 +583,7 @@ func testTreeStore_Defs_ByFiles(t *testing.T, ts TreeStoreImporter) {
 		{DefKey: graph.DefKey{UnitType: "t2", Unit: "u2", Path: "p2"}, File: "f2"},
 	}
 
-	c_unitFilesIndex_getByPath = 0
+	c_unitFilesIndex_getByPath.set(0)
 	defs, err := ts.Defs(ByFiles("f2"))
 	if err != nil {
 		t.Errorf("%s: Defs(ByFiles f2): %s", ts, err)
@@ -592,8 +592,8 @@ func testTreeStore_Defs_ByFiles(t *testing.T, ts TreeStoreImporter) {
 		t.Errorf("%s: Defs(ByFiles f2): got defs %v, want %v", ts, defs, want)
 	}
 	if isIndexedStore(ts) {
-		if want := 1; c_unitFilesIndex_getByPath != want {
-			t.Errorf("%s: Defs(ByFiles f2): got %d index hits, want %d", ts, c_unitFilesIndex_getByPath, want)
+		if want := 1; c_unitFilesIndex_getByPath.get() != want {
+			t.Errorf("%s: Defs(ByFiles f2): got %d index hits, want %d", ts, c_unitFilesIndex_getByPath.get(), want)
 		}
 	}
 }
@@ -697,8 +697,8 @@ func testTreeStore_Refs_ByFiles(t *testing.T, ts TreeStoreImporter) {
 	}
 
 	for file, wantRefs := range refsByFile {
-		c_unitStores_Refs_last_numUnitsQueried = 0
-		c_refFileIndex_getByFile = 0
+		c_unitStores_Refs_last_numUnitsQueried.set(0)
+		c_refFileIndex_getByFile.set(0)
 		refs, err := ts.Refs(ByFiles(file))
 		if err != nil {
 			t.Fatalf("%s: Refs(ByFiles %s): %s", ts, file, err)
@@ -719,11 +719,11 @@ func testTreeStore_Refs_ByFiles(t *testing.T, ts TreeStoreImporter) {
 			t.Errorf("%s: Refs(ByFiles %s): got refs %v, want %v", ts, file, refs, want)
 		}
 		if isIndexedStore(ts) {
-			if want := len(distinctRefUnits); c_refFileIndex_getByFile != want {
-				t.Errorf("%s: Refs(ByFiles %s): got %d index hits, want %d", ts, file, c_refFileIndex_getByFile, want)
+			if want := len(distinctRefUnits); c_refFileIndex_getByFile.get() != want {
+				t.Errorf("%s: Refs(ByFiles %s): got %d index hits, want %d", ts, file, c_refFileIndex_getByFile.get(), want)
 			}
-			if want := len(distinctRefUnits); c_unitStores_Refs_last_numUnitsQueried != want {
-				t.Errorf("%s: Refs(ByFiles %s): got %d units queried, want %d", ts, file, c_unitStores_Refs_last_numUnitsQueried, want)
+			if want := len(distinctRefUnits); c_unitStores_Refs_last_numUnitsQueried.get() != want {
+				t.Errorf("%s: Refs(ByFiles %s): got %d units queried, want %d", ts, file, c_unitStores_Refs_last_numUnitsQueried.get(), want)
 			}
 		}
 	}
@@ -772,9 +772,9 @@ func testTreeStore_Refs_ByDef(t *testing.T, ts TreeStoreImporter) {
 		for defPath, wantRefs := range refsByDefPath {
 			defLabel := defUnit + ":" + defPath
 
-			c_unitStores_Refs_last_numUnitsQueried = 0
-			c_defRefsIndex_getByDef = 0
-			c_defRefUnitsIndex_getByDef = 0
+			c_unitStores_Refs_last_numUnitsQueried.set(0)
+			c_defRefsIndex_getByDef.set(0)
+			c_defRefUnitsIndex_getByDef.set(0)
 			refs, err := ts.Refs(ByRefDef(graph.RefDefKey{DefUnitType: "t", DefUnit: defUnit, DefPath: defPath}))
 			if err != nil {
 				t.Fatalf("%s: Refs(ByDef %s): %s", ts, defLabel, err)
@@ -795,14 +795,14 @@ func testTreeStore_Refs_ByDef(t *testing.T, ts TreeStoreImporter) {
 				t.Errorf("%s: Refs(ByDef %s): got refs %v, want %v", ts, defLabel, refs, want)
 			}
 			if isIndexedStore(ts) {
-				if want := len(distinctRefUnits); c_defRefsIndex_getByDef != want {
-					t.Errorf("%s: Refs(ByDef %s): got %d c_defRefsIndex_getByDef index hits, want %d", ts, defLabel, c_defRefsIndex_getByDef, want)
+				if want := len(distinctRefUnits); c_defRefsIndex_getByDef.get() != want {
+					t.Errorf("%s: Refs(ByDef %s): got %d c_defRefsIndex_getByDef index hits, want %d", ts, defLabel, c_defRefsIndex_getByDef.get(), want)
 				}
-				if want := 1; c_defRefUnitsIndex_getByDef != want {
-					t.Errorf("%s: Refs(ByDef %s): got %d c_defRefUnitsIndex_getByDef index hits, want %d", ts, defLabel, c_defRefUnitsIndex_getByDef, want)
+				if want := 1; c_defRefUnitsIndex_getByDef.get() != want {
+					t.Errorf("%s: Refs(ByDef %s): got %d c_defRefUnitsIndex_getByDef index hits, want %d", ts, defLabel, c_defRefUnitsIndex_getByDef.get(), want)
 				}
-				if want := len(distinctRefUnits); c_unitStores_Refs_last_numUnitsQueried != want {
-					t.Errorf("%s: Refs(ByDef %s): got %d units queried, want %d", ts, defLabel, c_unitStores_Refs_last_numUnitsQueried, want)
+				if want := len(distinctRefUnits); c_unitStores_Refs_last_numUnitsQueried.get() != want {
+					t.Errorf("%s: Refs(ByDef %s): got %d units queried, want %d", ts, defLabel, c_unitStores_Refs_last_numUnitsQueried.get(), want)
 				}
 			}
 		}
