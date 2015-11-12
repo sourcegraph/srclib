@@ -1,10 +1,6 @@
 package toolchain
 
 import (
-	"crypto/tls"
-	"crypto/x509"
-	"io/ioutil"
-	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -20,48 +16,18 @@ import (
 // This should only be used when $DOCKER_CERT_PATH is set and is not an empty
 // string.
 //
-// See https://github.com/fsouza/go-dockerclient/issues/166 for details on why
-// this function is needed at all.
 func newTLSDockerClient(certPath, host string) (*docker.Client, error) {
-	// Enforce the host URL scheme to be HTTPS.
 	h, err := url.Parse(host)
 	if err != nil {
 		return nil, err
 	}
-	h.Scheme = "https"
-
-	// Create certificate pool.
-	roots := x509.NewCertPool()
-
-	// Load client authority certificate.
-	pemData, err := ioutil.ReadFile(filepath.Join(certPath, "ca.pem"))
-	if err != nil {
-		return nil, err
-	}
-	roots.AppendCertsFromPEM(pemData)
-
-	// Create certificate.
-	cert, err := tls.LoadX509KeyPair(filepath.Join(certPath, "cert.pem"), filepath.Join(certPath, "key.pem"))
-	if err != nil {
-		return nil, err
-	}
+	h.Scheme = "tcp"
 
 	// Create docker client.
-	client, err := docker.NewClient(h.String())
-	if err != nil {
-		return nil, err
-	}
-
-	// Specify our custom HTTP client with TLS-enabled transport.
-	client.HTTPClient = &http.Client{
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{
-				RootCAs:      roots,
-				Certificates: []tls.Certificate{cert},
-			},
-		},
-	}
-	return client, nil
+	return docker.NewTLSClient(h.String(), 
+		filepath.Join(certPath, "cert.pem"), 
+		filepath.Join(certPath, "key.pem"),
+		filepath.Join(certPath, "ca.pem"))
 }
 
 // newDockerClient creates a new Docker client configured to reach Docker at the
