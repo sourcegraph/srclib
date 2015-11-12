@@ -258,7 +258,7 @@ func testUnitStore_Defs_Query(t *testing.T, us UnitStoreImporter) {
 		},
 	}
 	for _, test := range tests {
-		c_defQueryIndex_getByQuery = 0
+		c_defQueryIndex_getByQuery.set(0)
 		defs, err := us.Defs(ByDefQuery(test.q))
 		if err != nil {
 			t.Errorf("%s: Defs(ByDefQuery %q): %s", us, test.q, err)
@@ -267,8 +267,8 @@ func testUnitStore_Defs_Query(t *testing.T, us UnitStoreImporter) {
 			t.Errorf("%s: Defs(ByDefQuery %q): got defs %v, want %v", us, test.q, got, want)
 		}
 		if isIndexedStore(us) {
-			if want := test.wantIndexHits; c_defQueryIndex_getByQuery != want {
-				t.Errorf("%s: Defs(ByDefQuery %q): got %d index hits, want %d", us, test.q, c_defQueryIndex_getByQuery, want)
+			if want := test.wantIndexHits; c_defQueryIndex_getByQuery.get() != want {
+				t.Errorf("%s: Defs(ByDefQuery %q): got %d index hits, want %d", us, test.q, c_defQueryIndex_getByQuery.get(), want)
 			}
 		}
 	}
@@ -332,7 +332,7 @@ func testUnitStore_Refs_ByFiles(t *testing.T, us UnitStoreImporter) {
 	}
 
 	for file, wantRefs := range refsByFile {
-		c_refFileIndex_getByFile = 0
+		c_refFileIndex_getByFile.set(0)
 		refs, err := us.Refs(ByFiles(file))
 		if err != nil {
 			t.Fatalf("%s: Refs(ByFiles %s): %s", us, file, err)
@@ -343,8 +343,8 @@ func testUnitStore_Refs_ByFiles(t *testing.T, us UnitStoreImporter) {
 			t.Errorf("%s: Refs(ByFiles %s): got refs %v, want %v", us, file, refs, want)
 		}
 		if isIndexedStore(us) {
-			if want := 1; c_refFileIndex_getByFile != want {
-				t.Errorf("%s: Refs(ByFiles %s): got %d index hits, want %d", us, file, c_refFileIndex_getByFile, want)
+			if want := 1; c_refFileIndex_getByFile.get() != want {
+				t.Errorf("%s: Refs(ByFiles %s): got %d index hits, want %d", us, file, c_refFileIndex_getByFile.get(), want)
 			}
 		}
 	}
@@ -378,7 +378,7 @@ func testUnitStore_Refs_ByDef(t *testing.T, us UnitStoreImporter) {
 	}
 
 	for defPath, wantRefs := range refsByDef {
-		c_defRefsIndex_getByDef = 0
+		c_defRefsIndex_getByDef.set(0)
 		refs, err := us.Refs(ByRefDef(graph.RefDefKey{DefPath: defPath}))
 		if err != nil {
 			t.Fatalf("%s: Refs(ByDefs %s): %s", us, defPath, err)
@@ -389,8 +389,8 @@ func testUnitStore_Refs_ByDef(t *testing.T, us UnitStoreImporter) {
 			t.Errorf("%s: Refs(ByDefs %s): got refs %v, want %v", us, defPath, refs, want)
 		}
 		if isIndexedStore(us) {
-			if want := 1; c_defRefsIndex_getByDef != want {
-				t.Errorf("%s: Refs(ByDefs %s): got %d index hits, want %d", us, defPath, c_defRefsIndex_getByDef, want)
+			if want := 1; c_defRefsIndex_getByDef.get() != want {
+				t.Errorf("%s: Refs(ByDefs %s): got %d index hits, want %d", us, defPath, c_defRefsIndex_getByDef.get(), want)
 			}
 		}
 	}
