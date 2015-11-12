@@ -421,7 +421,7 @@ func testMultiRepoStore_Defs_ByRepos_ByDefQuery(t *testing.T, mrs MultiRepoStore
 		}
 	}
 
-	c_defQueryTreeIndex_getByQuery = 0
+	c_defQueryTreeIndex_getByQuery.set(0)
 
 	want := []*graph.Def{
 		{DefKey: graph.DefKey{Repo: "r1", CommitID: "c", UnitType: "t", Unit: "u", Path: "p1"}, Name: "abc-r1"},
@@ -438,8 +438,8 @@ func testMultiRepoStore_Defs_ByRepos_ByDefQuery(t *testing.T, mrs MultiRepoStore
 		t.Errorf("%s: Defs: got defs %v, want %v", mrs, defs, want)
 	}
 	if isIndexedStore(mrs) {
-		if want := 2; c_defQueryTreeIndex_getByQuery != want {
-			t.Errorf("%s: Defs: got %d index hits on tree def query index, want %d", mrs, c_defQueryTreeIndex_getByQuery, want)
+		if want := 2; c_defQueryTreeIndex_getByQuery.get() != want {
+			t.Errorf("%s: Defs: got %d index hits on tree def query index, want %d", mrs, c_defQueryTreeIndex_getByQuery.get(), want)
 		}
 	}
 }
@@ -500,7 +500,7 @@ func testMultiRepoStore_Defs_ByRepoCommitIDs_ByDefQuery(t *testing.T, mrs MultiR
 		}
 	}
 
-	c_defQueryTreeIndex_getByQuery = 0
+	c_defQueryTreeIndex_getByQuery.set(0)
 
 	want := []*graph.Def{
 		{DefKey: graph.DefKey{Repo: "r1", CommitID: "c2", UnitType: "t", Unit: "u", Path: "p1"}, Name: "abc-r1"},
@@ -517,8 +517,8 @@ func testMultiRepoStore_Defs_ByRepoCommitIDs_ByDefQuery(t *testing.T, mrs MultiR
 		t.Errorf("%s: Defs: got defs %v, want %v", mrs, defs, want)
 	}
 	if isIndexedStore(mrs) {
-		if want := 2; c_defQueryTreeIndex_getByQuery != want {
-			t.Errorf("%s: Defs: got %d index hits on tree def query index, want %d", mrs, c_defQueryTreeIndex_getByQuery, want)
+		if want := 2; c_defQueryTreeIndex_getByQuery.get() != want {
+			t.Errorf("%s: Defs: got %d index hits on tree def query index, want %d", mrs, c_defQueryTreeIndex_getByQuery.get(), want)
 		}
 	}
 }
