@@ -28,7 +28,7 @@ var _ interface {
 	unitIndex
 } = (*unitFilesIndex)(nil)
 
-var c_unitFilesIndex_getByPath = &counter{}
+var c_unitFilesIndex_getByPath = &counter{count: new(int64)}
 
 func (x *unitFilesIndex) String() string { return fmt.Sprintf("unitFilesIndex(ready=%v)", x.ready) }
 

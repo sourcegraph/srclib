@@ -30,7 +30,7 @@ var _ interface {
 	unitIndex
 } = (*defRefUnitsIndex)(nil)
 
-var c_defRefUnitsIndex_getByDef = &counter{}
+var c_defRefUnitsIndex_getByDef = &counter{count: new(int64)}
 
 func (x *defRefUnitsIndex) String() string { return fmt.Sprintf("defRefUnitsIndex(ready=%v)", x.ready) }
 

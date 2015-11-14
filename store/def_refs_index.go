@@ -26,7 +26,7 @@ var _ interface {
 	refIndexBuilder
 } = (*defRefsIndex)(nil)
 
-var c_defRefsIndex_getByDef = &counter{}
+var c_defRefsIndex_getByDef = &counter{count: new(int64)}
 
 func (x *defRefsIndex) String() string { return "defRefsIndex" }
 

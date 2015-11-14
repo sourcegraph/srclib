@@ -38,7 +38,7 @@ var _ interface {
 	defIndex
 } = (*defFilesIndex)(nil)
 
-var c_defFilesIndex_getByPath = &counter{}
+var c_defFilesIndex_getByPath = &counter{count: new(int64)}
 
 func (x *defFilesIndex) String() string {
 	return fmt.Sprintf("defFilesIndex(ready=%v, filters=%v)", x.ready, x.filters)
