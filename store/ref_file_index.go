@@ -23,7 +23,7 @@ var _ interface {
 	refIndexBuilder
 } = (*refFileIndex)(nil)
 
-var c_refFileIndex_getByFile = &counter{}
+var c_refFileIndex_getByFile = &counter{count: new(int64)}
 
 // getByFile returns a byteRanges describing the positions of refs in
 // the given source file (i.e., for which ref.File == file). The
