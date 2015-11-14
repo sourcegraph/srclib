@@ -30,7 +30,7 @@ var _ interface {
 	defIndex
 } = (*defQueryIndex)(nil)
 
-var c_defQueryIndex_getByQuery = &counter{}
+var c_defQueryIndex_getByQuery = &counter{count: new(int64)}
 
 func (x *defQueryIndex) String() string { return fmt.Sprintf("defQueryIndex(ready=%v)", x.ready) }
 

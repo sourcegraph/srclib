@@ -29,7 +29,7 @@ var _ interface {
 	defTreeIndex
 } = (*defQueryTreeIndex)(nil)
 
-var c_defQueryTreeIndex_getByQuery = &counter{}
+var c_defQueryTreeIndex_getByQuery = &counter{count: new(int64)}
 
 func (x *defQueryTreeIndex) String() string {
 	return fmt.Sprintf("defQueryTreeIndex(ready=%v)", x.ready)
