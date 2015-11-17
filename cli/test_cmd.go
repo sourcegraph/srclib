@@ -114,6 +114,16 @@ func (c *TestCmd) Execute(args []string) error {
 			}
 			expectedDir := filepath.Join(tree, "../../expected", exeMethod, filepath.Base(tree))
 			actualDir := filepath.Join(tree, "../../actual", exeMethod, filepath.Base(tree))
+
+			_, err := os.Stat(expectedDir)
+			if err != nil && os.IsNotExist(err) {
+				// (alexsaveliev) we may have some tests available only for docker or program mode
+				if GlobalOpt.Verbose {
+					log.Printf("Skipping tree %v...", tree)
+				}
+				continue
+			}
+
 			if err := testTree(tree, expectedDir, actualDir, exeMethod, c.GenerateExpected); err != nil {
 				return fmt.Errorf("testing tree %q: %s", tree, err)
 			}
@@ -281,7 +291,7 @@ func (c *DiffCmd) Execute(args []string) error {
 			differingDefs = append(differingDefs, defKey)
 		}
 	}
-	for defKey, _ := range actDefs {
+	for defKey := range actDefs {
 		if _, exists := expDefs[defKey]; !exists {
 			actOnlyDefs = append(actOnlyDefs, defKey)
 		}
