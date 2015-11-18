@@ -115,8 +115,7 @@ func (c *TestCmd) Execute(args []string) error {
 			expectedDir := filepath.Join(tree, "../../expected", exeMethod, filepath.Base(tree))
 			actualDir := filepath.Join(tree, "../../actual", exeMethod, filepath.Base(tree))
 
-			_, err := os.Stat(expectedDir)
-			if err != nil && os.IsNotExist(err) {
+			if _, err := os.Stat(expectedDir); err != nil && os.IsNotExist(err) {
 				// (alexsaveliev) we may have some tests available only for docker or program mode
 				if GlobalOpt.Verbose {
 					log.Printf("Skipping tree %v...", tree)
