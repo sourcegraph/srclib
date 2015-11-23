@@ -8,19 +8,6 @@ import (
 	"strings"
 )
 
-// MakeURI converts a repository clone URL, such as
-// "git://github.com/user/repo.git", to a normalized URI string, such
-// as "github.com/user/repo" lexically. MakeURI panics if there is an
-// error, and should only be used if cloneURL is a correctly-formed
-// URL. It is a wrapper around TryMakeURI.
-func MakeURI(cloneURL string) string {
-	uri, err := TryMakeURI(cloneURL)
-	if err != nil {
-		panic(err)
-	}
-	return uri
-}
-
 // TryMakeURI converts a repository clone URL, such as
 // "git://github.com/user/repo.git", to a normalized URI string, such
 // as "github.com/user/repo" lexically. TryMakeURI returns an error if
