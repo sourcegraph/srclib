@@ -42,7 +42,7 @@ all: testdata/n/t.depresolve.json testdata/n/t.graph.json
 testdata/n/t.depresolve.json: testdata/n/t.unit.json
 	srclib tool  "tc" "t" < $^ 1> $@
 
-testdata/n/t.graph.json: testdata/n/t.unit.json f
+testdata/n/t.graph.json: testdata/n/t.unit.json
 	srclib tool  "tc" "t" < $< | srclib internal normalize-graph-data --unit-type "t" --dir . 1> $@
 
 .DELETE_ON_ERROR:
