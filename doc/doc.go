@@ -3,6 +3,7 @@ package doc
 import (
 	"bytes"
 	"html"
+	"html/template"
 	"path/filepath"
 	"strings"
 
@@ -43,7 +44,7 @@ func Format(filename string) Formatter {
 
 // ToHTML converts a source document in format to HTML. If conversion fails, it
 // returns a failsafe plaintext-to-HTML conversion and a non-nil error.
-func ToHTML(formatter Formatter, src []byte) ([]byte, error) {
+func ToHTML(formatter Formatter, src []byte) (template.HTML, error) {
 	var out []byte
 	var err error
 
@@ -65,7 +66,7 @@ func ToHTML(formatter Formatter, src []byte) ([]byte, error) {
 	if err != nil || len(out) == 0 {
 		out = []byte("<pre>" + strings.TrimSpace(html.EscapeString(string(src))) + "</pre>")
 	}
-	return out, err
+	return template.HTML(out), err
 }
 
 func StripNulls(s string) string {
