@@ -2,7 +2,7 @@ package store
 
 import (
 	"path/filepath"
-	"reflect"	
+	"reflect"
 	"testing"
 
 	"sourcegraph.com/sourcegraph/srclib/util"
