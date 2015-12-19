@@ -16,6 +16,7 @@ func testRepoStore(t *testing.T, newFn func() RepoStoreImporter) {
 	testRepoStore_Import_empty(t, newFn())
 	testRepoStore_Import(t, newFn())
 	testRepoStore_Versions(t, newFn())
+	testRepoStore_Versions_ByCommitIDs(t, newFn())
 	testRepoStore_Units(t, newFn())
 	testRepoStore_Defs(t, newFn())
 	testRepoStore_Defs_ByCommitIDs(t, newFn())
@@ -94,13 +95,31 @@ func testRepoStore_Versions(t *testing.T, rs RepoStoreImporter) {
 	if !reflect.DeepEqual(versions, want) {
 		t.Errorf("%s: Versions(): got %v, want %v", rs, versions, want)
 	}
+}
 
-	versions, err = rs.Versions(ByCommitIDs("c2"))
+func testRepoStore_Versions_ByCommitIDs(t *testing.T, rs RepoStoreImporter) {
+	for _, version := range []string{"c1", "c2"} {
+		unit := &unit.SourceUnit{Type: "t1", Name: "u1"}
+		if err := rs.Import(version, unit, graph.Output{}); err != nil {
+			t.Errorf("%s: Import(%s, %v, empty data): %s", rs, version, unit, err)
+		}
+		if rs, ok := rs.(RepoIndexer); ok {
+			if err := rs.Index(version); err != nil {
+				t.Fatalf("%s: Index: %s", rs, err)
+			}
+		}
+	}
+
+	c_versions_listAll.set(0)
+	versions, err := rs.Versions(ByCommitIDs("c2"))
 	if err != nil {
 		t.Errorf("%s: Versions(c2): %s", rs, err)
 	}
 	if want := []*Version{{CommitID: "c2"}}; !reflect.DeepEqual(versions, want) {
 		t.Errorf("%s: Versions(c2): got %v, want %v", rs, versions, want)
+	}
+	if want := 0; c_versions_listAll.get() != want {
+		t.Errorf("%s: Versions: got %d listAll calls, want %d", rs, c_versions_listAll.get(), want)
 	}
 }
 

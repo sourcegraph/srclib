@@ -207,12 +207,33 @@ func NewFSRepoStore(fs rwvfs.FileSystem) RepoStoreImporter {
 }
 
 func (s *fsRepoStore) Versions(f ...VersionFilter) ([]*Version, error) {
+	var versions []*Version
+
+	// Try the fast-path if there is a single explicitly listed
+	// version in the filter: we "stat" the single explicitly listed
+	// version, instead of listing all and filtering afterwards.
+	if len(f) == 1 {
+		if f, ok := f[0].(ByCommitIDsFilter); ok {
+			if commitIDs := f.ByCommitIDs(); len(commitIDs) == 1 {
+				commitID := commitIDs[0]
+				fi, err := s.fs.Stat(path.Clean(commitID))
+				if err == nil {
+					if fi.Mode().IsDir() {
+						versions = append(versions, &Version{CommitID: commitID})
+					}
+				} else if !os.IsNotExist(err) {
+					return nil, err
+				}
+				return versions, nil
+			}
+		}
+	}
+
 	versionDirs, err := s.versionDirs()
 	if err != nil {
 		return nil, err
 	}
 
-	var versions []*Version
 	for _, dir := range versionDirs {
 		version := &Version{CommitID: path.Base(dir)}
 		if versionFilters(f).SelectVersion(version) {
@@ -222,7 +243,11 @@ func (s *fsRepoStore) Versions(f ...VersionFilter) ([]*Version, error) {
 	return versions, nil
 }
 
+var c_versions_listAll = &counter{count: new(int64)}
+
 func (s *fsRepoStore) versionDirs() ([]string, error) {
+	c_versions_listAll.increment()
+
 	entries, err := s.fs.ReadDir(".")
 	if err != nil {
 		return nil, err
