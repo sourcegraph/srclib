@@ -34,25 +34,16 @@ type ToolCmd struct {
 var toolCmd ToolCmd
 
 func (c *ToolCmd) Execute(args []string) error {
-	tc, err := toolchain.Open(string(c.Args.Toolchain))
+	cmdName, err := toolchain.Command(string(c.Args.Toolchain))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var cmder interface {
-		Command() (*exec.Cmd, error)
-	}
+	cmd := exec.Command(cmdName)
 	if c.Args.Tool != "" {
-		cmder, err = toolchain.OpenTool(string(c.Args.Toolchain), string(c.Args.Tool))
-	} else {
-		cmder = tc
+		cmd.Args = append(cmd.Args, string(c.Args.Tool))
+		cmd.Args = append(cmd.Args, c.Args.ToolArgs...)
 	}
-
-	cmd, err := cmder.Command()
-	if err != nil {
-		return err
-	}
-	cmd.Args = append(cmd.Args, c.Args.ToolArgs...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
