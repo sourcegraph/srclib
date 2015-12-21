@@ -6,8 +6,6 @@ import (
 	"io"
 	"log"
 	"math"
-	"net/http"
-	"net/http/httputil"
 	"os"
 	"os/exec"
 	"strings"
@@ -33,29 +31,6 @@ func (w nopWriteCloser) Close() error {
 func isDir(dir string) bool {
 	di, err := os.Stat(dir)
 	return err == nil && di.IsDir()
-}
-
-func isFile(file string) bool {
-	fi, err := os.Stat(file)
-	return err == nil && fi.Mode().IsRegular()
-}
-
-func firstLine(s string) string {
-	i := strings.Index(s, "\n")
-	if i == -1 {
-		return s
-	}
-	return s[:i]
-}
-
-func cmdOutput(c ...string) string {
-	cmd := exec.Command(c[0], c[1:]...)
-	cmd.Stderr = os.Stderr
-	out, err := cmd.Output()
-	if err != nil {
-		log.Fatalf("%v: %s", c, err)
-	}
-	return strings.TrimSpace(string(out))
 }
 
 func execCmd(prog string, arg ...string) error {
@@ -166,41 +141,6 @@ func bytesString(s uint64) string {
 
 func percent(num, denom int) float64 {
 	return 100 * float64(num) / float64(denom)
-}
-
-// A tracingTransport prints out the full HTTP request and response
-// for each roundtrip.
-type tracingTransport struct {
-	io.Writer                   // destination of trace output
-	Transport http.RoundTripper // underlying transport (or default if nil)
-}
-
-func (t *tracingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	var u http.RoundTripper
-	if t.Transport != nil {
-		u = t.Transport
-	} else {
-		u = http.DefaultTransport
-	}
-
-	reqBytes, err := httputil.DumpRequestOut(req, true)
-	if err != nil {
-		return nil, err
-	}
-	t.Writer.Write(reqBytes)
-
-	resp, err := u.RoundTrip(req)
-	if err != nil {
-		return nil, err
-	}
-
-	respBytes, err := httputil.DumpResponse(resp, true)
-	if err != nil {
-		return nil, err
-	}
-	t.Writer.Write(respBytes)
-
-	return resp, nil
 }
 
 // parseRepoAndCommitID parses strings like "example.com/repo" and
