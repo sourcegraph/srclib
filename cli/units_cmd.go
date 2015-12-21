@@ -35,13 +35,13 @@ func init() {
 // cfg.SourceUnits, merging the scanned source units with those already present
 // in cfg.
 func scanUnitsIntoConfig(cfg *config.Repository, configOpt config.Options, quiet bool) error {
-	scanners := make([]toolchain.Tool, len(cfg.Scanners))
+	scanners := make([][]string, len(cfg.Scanners))
 	for i, scannerRef := range cfg.Scanners {
-		scanner, err := toolchain.OpenTool(scannerRef.Toolchain, scannerRef.Subcmd)
+		cmdName, err := toolchain.Command(scannerRef.Toolchain)
 		if err != nil {
 			return err
 		}
-		scanners[i] = scanner
+		scanners[i] = []string{cmdName, scannerRef.Subcmd}
 	}
 
 	units, err := scan.ScanMulti(scanners, scan.Options{Options: configOpt, Quiet: quiet}, cfg.Config)
