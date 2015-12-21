@@ -2,8 +2,6 @@ package plan
 
 import (
 	"fmt"
-	"log"
-
 	"sort"
 
 	"sourcegraph.com/sourcegraph/makex"
@@ -11,11 +9,7 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/config"
 )
 
-type Options struct {
-	Verbose bool
-}
-
-type RuleMaker func(c *config.Tree, dataDir string, existing []makex.Rule, opt Options) ([]makex.Rule, error)
+type RuleMaker func(c *config.Tree, dataDir string, existing []makex.Rule) ([]makex.Rule, error)
 
 var (
 	RuleMakers        = make(map[string]RuleMaker)
@@ -39,18 +33,15 @@ func RegisterRuleMaker(name string, r RuleMaker) {
 }
 
 // CreateMakefile creates the makefiles for the source units in c.
-func CreateMakefile(buildDataDir string, buildStore buildstore.RepoBuildStore, vcsType string, c *config.Tree, opt Options) (*makex.Makefile, error) {
+func CreateMakefile(buildDataDir string, buildStore buildstore.RepoBuildStore, vcsType string, c *config.Tree) (*makex.Makefile, error) {
 	var allRules []makex.Rule
 	for i, r := range orderedRuleMakers {
 		name := ruleMakerNames[i]
-		rules, err := r(c, buildDataDir, allRules, opt)
+		rules, err := r(c, buildDataDir, allRules)
 		if err != nil {
 			return nil, fmt.Errorf("rule maker %s: %s", name, err)
 		}
 		sort.Sort(ruleSort{rules})
-		if opt.Verbose {
-			log.Printf("%v: Created %d rule(s)", name, len(rules))
-		}
 		allRules = append(allRules, rules...)
 	}
 
