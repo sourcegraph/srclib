@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -556,16 +555,6 @@ func (c *StoreImportCmd) sample(s interface{}) error {
 
 // countingWriter wraps an io.Writer, counting the number of bytes
 // written.
-type countingWriter struct {
-	io.Writer
-	n uint64
-}
-
-func (cr *countingWriter) Write(p []byte) (n int, err error) {
-	n, err = cr.Writer.Write(p)
-	cr.n += uint64(n)
-	return
-}
 
 type storeIndexCriteria struct {
 	Repo     string `long:"repo" description:"only indexes for this repo"`
