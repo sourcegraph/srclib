@@ -16,7 +16,6 @@ import (
 
 	"golang.org/x/tools/godoc/vfs"
 
-	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
@@ -58,23 +57,16 @@ func cmdOutput(c ...string) string {
 	return strings.TrimSpace(string(out))
 }
 
-func execCmd(prog string, arg ...string) error {
+func execCmdInDir(cwd, prog string, arg ...string) error {
 	cmd := exec.Command(prog, arg...)
+	cmd.Dir = cwd
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stderr
-	log.Println("Running ", cmd.Args)
+	log.Println("Running", cmd.Args, "in", cwd)
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("command %q failed: %s", cmd.Args, err)
 	}
 	return nil
-}
-
-func execSrcCmd(arg ...string) error {
-	if len(arg) == 0 {
-		log.Fatal("attempted to execute 'srclib' command with no arguments")
-	}
-	c := append(strings.Split(srclib.CommandName, " "), arg...)
-	return execCmd(c[0], c[1:]...)
 }
 
 func SourceUnitMatchesArgs(specified []string, u *unit.SourceUnit) bool {
