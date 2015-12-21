@@ -49,15 +49,6 @@ func init() {
 		log.Fatal(err)
 	}
 
-	_, err = c.AddCommand("get",
-		"download a toolchain",
-		"Download a toolchain's repository to the SRCLIBPATH.",
-		&toolchainGetCmd,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	_, err = c.AddCommand("bundle",
 		"bundle a toolchain",
 		"The bundle subcommand builds and archives toolchain bundles (.tar.gz files, one per toolchain variant). Bundles contain prebuilt toolchains and allow people to use srclib toolchains without needing to compile them on their own system.",
@@ -71,15 +62,6 @@ func init() {
 		"unbundle a toolchain",
 		"The unbundle subcommand unarchives a toolchain bundle (previously created with the 'bundle' subcommand). It allows people to download and use prebuilt toolchains without needing to compile them on their system.",
 		&toolchainUnbundleCmd,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = c.AddCommand("add",
-		"add a local toolchain",
-		"Add a local directory as a toolchain in SRCLIBPATH.",
-		&toolchainAddCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -193,28 +175,6 @@ func (c *ToolchainListToolsCmd) Execute(args []string) error {
 	return nil
 }
 
-type ToolchainGetCmd struct {
-	Update bool `short:"u" long:"update" description:"use the network to update the toolchain"`
-	Args   struct {
-		Toolchains []ToolchainPath `name:"TOOLCHAINS" description:"toolchain paths of toolchains to get"`
-	} `positional-args:"yes" required:"yes"`
-}
-
-var toolchainGetCmd ToolchainGetCmd
-
-func (c *ToolchainGetCmd) Execute(args []string) error {
-	for _, tc := range c.Args.Toolchains {
-		if GlobalOpt.Verbose {
-			colorable.Println(tc)
-		}
-		_, err := toolchain.CloneOrUpdate(string(tc), c.Update)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 type ToolchainBundleCmd struct {
 	Variant string `long:"variant" description:"only produce a bundle for the given variant (default is all variants)"`
 	DryRun  bool   `short:"n" long:"dry-run" description:"don't do anything, but print what would be done"`
@@ -283,20 +243,6 @@ func (c *ToolchainUnbundleCmd) Execute(args []string) error {
 	}
 	defer f.Close()
 	return toolchain.Unbundle(c.Args.Toolchain, c.Args.BundleFile, f)
-}
-
-type ToolchainAddCmd struct {
-	Dir   string `long:"dir" default:"." description:"directory containing toolchain to add" value-name:"DIR"`
-	Force bool   `short:"f" long:"force" description:"(dangerous) force add, overwrite existing toolchain"`
-	Args  struct {
-		ToolchainPath string `name:"TOOLCHAIN" default:"." description:"toolchain path to use for toolchain directory"`
-	} `positional-args:"yes" required:"yes"`
-}
-
-var toolchainAddCmd ToolchainAddCmd
-
-func (c *ToolchainAddCmd) Execute(args []string) error {
-	return toolchain.Add(c.Dir, c.Args.ToolchainPath, &toolchain.AddOpt{Force: c.Force})
 }
 
 type toolchainInstaller struct {
