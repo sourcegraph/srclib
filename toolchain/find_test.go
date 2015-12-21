@@ -65,60 +65,17 @@ func TestList_program(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	got := toolchainPathsWithProgramOrDockerfile(toolchains)
+	got := toolchainPathsWithProgram(toolchains)
 	want := []string{path.Join("a", "a")}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got toolchains %v, want %v", got, want)
 	}
 }
 
-func TestList_docker(t *testing.T) {
-	tmpdir, err := ioutil.TempDir("", "srclib-toolchain-test")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(tmpdir)
-
-	defer func(orig string) {
-		srclib.Path = orig
-	}(srclib.Path)
-	srclib.Path = tmpdir
-
-	files := map[string]struct{}{
-		// ok
-		filepath.Join("a", "a", "Dockerfile"): struct{}{}, filepath.Join("a", "a", "Srclibtoolchain"): struct{}{},
-
-		// no Srclibtoolchain
-		filepath.Join("b", "b", "Dockerfile"): struct{}{},
-
-		// ok (no Dockerfile)
-		filepath.Join("c", "c", "Srclibtoolchain"): struct{}{},
-	}
-	for f := range files {
-		if err := os.MkdirAll(filepath.Join(tmpdir, filepath.Dir(f)), 0700); err != nil {
-			t.Fatal(err)
-		}
-		if err := ioutil.WriteFile(filepath.Join(tmpdir, f), nil, 0600); err != nil {
-			t.Fatal(err)
-		}
-	}
-
-	toolchains, err := List()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	got := toolchainPathsWithProgramOrDockerfile(toolchains)
-	want := []string{path.Join("a", "a")}
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got toolchains %v, want %v", got, want)
-	}
-}
-
-func toolchainPathsWithProgramOrDockerfile(toolchains []*Info) []string {
+func toolchainPathsWithProgram(toolchains []*Info) []string {
 	paths := make([]string, 0, len(toolchains))
 	for _, toolchain := range toolchains {
-		if toolchain.Program != "" || toolchain.Dockerfile != "" {
+		if toolchain.Program != "" {
 			paths = append(paths, toolchain.Path)
 		}
 	}
