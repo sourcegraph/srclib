@@ -29,8 +29,6 @@ func init() {
 type DoAllCmd struct {
 	config.Options
 
-	ToolchainExecOpt `group:"execution"`
-
 	Dir Directory `short:"C" long:"directory" description:"change to DIR before doing anything" value-name:"DIR"`
 }
 
@@ -44,19 +42,13 @@ func (c *DoAllCmd) Execute(args []string) error {
 	}
 
 	// config
-	configCmd := &ConfigCmd{
-		Options:          c.Options,
-		ToolchainExecOpt: c.ToolchainExecOpt,
-	}
+	configCmd := &ConfigCmd{Options: c.Options}
 	if err := configCmd.Execute(nil); err != nil {
 		return err
 	}
 
 	// make
-	makeCmd := &MakeCmd{
-		Options:          c.Options,
-		ToolchainExecOpt: c.ToolchainExecOpt,
-	}
+	makeCmd := &MakeCmd{Options: c.Options}
 	if err := makeCmd.Execute(nil); err != nil {
 		return err
 	}

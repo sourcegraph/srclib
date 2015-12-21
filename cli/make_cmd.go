@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"strings"
 
 	"github.com/alexsaveliev/go-colorable-wrapper"
 	"sourcegraph.com/sourcegraph/go-flags"
@@ -16,7 +15,6 @@ import (
 	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
-	"sourcegraph.com/sourcegraph/srclib/flagutil"
 	"sourcegraph.com/sourcegraph/srclib/plan"
 )
 
@@ -38,8 +36,6 @@ func init() {
 
 type MakeCmd struct {
 	config.Options
-
-	ToolchainExecOpt `group:"execution"`
 
 	Quiet   bool `short:"q" long:"quiet" description:"silence all output"`
 	Verbose bool `short:"v" long:"verbose" description:"show more verbose output"`
@@ -70,7 +66,7 @@ func (c *MakeCmd) Execute(args []string) error {
 		}
 	}
 
-	mf, err := CreateMakefile(c.ToolchainExecOpt, c.Verbose)
+	mf, err := CreateMakefile(c.Verbose)
 	if err != nil {
 		return err
 	}
@@ -112,7 +108,7 @@ func (c *MakeCmd) Execute(args []string) error {
 // CreateMakefile creates a Makefile to build a tree. The cwd should
 // be the root of the tree you want to make (due to some probably
 // unnecessary assumptions that CreateMaker makes).
-func CreateMakefile(execOpt ToolchainExecOpt, verbose bool) (*makex.Makefile, error) {
+func CreateMakefile(verbose bool) (*makex.Makefile, error) {
 	localRepo, err := OpenRepo(".")
 	if err != nil {
 		return nil, err
@@ -130,17 +126,9 @@ func CreateMakefile(execOpt ToolchainExecOpt, verbose bool) (*makex.Makefile, er
 		log.Printf("No source unit files found. Did you mean to run `%s config`? (This is not an error; it just means that srclib didn't find anything to build or analyze here.)", srclib.CommandName)
 	}
 
-	toolchainExecOptArgs, err := flagutil.MarshalArgs(&execOpt)
-	if err != nil {
-		return nil, err
-	}
-
 	// TODO(sqs): buildDataDir is hardcoded.
 	buildDataDir := filepath.Join(buildstore.BuildDataDirName, localRepo.CommitID)
-	mf, err := plan.CreateMakefile(buildDataDir, buildStore, localRepo.VCSType, treeConfig, plan.Options{
-		ToolchainExecOpt: strings.Join(toolchainExecOptArgs, " "),
-		Verbose:          verbose,
-	})
+	mf, err := plan.CreateMakefile(buildDataDir, buildStore, localRepo.VCSType, treeConfig, plan.Options{Verbose: verbose})
 	if err != nil {
 		return nil, err
 	}
