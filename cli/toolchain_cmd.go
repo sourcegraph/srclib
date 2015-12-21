@@ -11,7 +11,6 @@ import (
 	"path/filepath"
 
 	"strings"
-	"sync"
 
 	"github.com/alexsaveliev/go-colorable-wrapper"
 
@@ -45,15 +44,6 @@ func init() {
 		"list tools in toolchains",
 		"List available tools in all toolchains.",
 		&toolchainListToolsCmd,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = c.AddCommand("build",
-		"build a toolchain",
-		"Build a toolchain's Docker image.",
-		&toolchainBuildCmd,
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -122,25 +112,6 @@ func (t ToolchainPath) Complete(match string) []flags.Completion {
 	return comps
 }
 
-type ToolchainExecOpt struct {
-	ExeMethods string `short:"m" long:"methods" default:"program,docker" description:"toolchain execution methods" value-name:"METHODS"`
-}
-
-func (o *ToolchainExecOpt) ToolchainMode() toolchain.Mode {
-	// TODO(sqs): make this a go-flags type
-	methods := strings.Split(o.ExeMethods, ",")
-	var mode toolchain.Mode
-	for _, method := range methods {
-		if method == "program" {
-			mode |= toolchain.AsProgram
-		}
-		if method == "docker" {
-			mode |= toolchain.AsDockerContainer
-		}
-	}
-	return mode
-}
-
 type ToolchainCmd struct{}
 
 var toolchainCmd ToolchainCmd
@@ -157,18 +128,8 @@ func (c *ToolchainListCmd) Execute(args []string) error {
 	if err != nil {
 		return err
 	}
-
-	fmtStr := "%-40s  %s\n"
-	colorable.Printf(fmtStr, "PATH", "TYPE")
 	for _, t := range toolchains {
-		var exes []string
-		if t.Program != "" {
-			exes = append(exes, "program")
-		}
-		if t.Dockerfile != "" {
-			exes = append(exes, "docker")
-		}
-		colorable.Printf(fmtStr, t.Path, strings.Join(exes, ", "))
+		fmt.Println(t.Path)
 	}
 	return nil
 }
@@ -229,33 +190,6 @@ func (c *ToolchainListToolsCmd) Execute(args []string) error {
 			colorable.Printf(fmtStr, tc.Path, t.Subcmd, t.Op, strings.Join(t.SourceUnitTypes, " "))
 		}
 	}
-	return nil
-}
-
-type ToolchainBuildCmd struct {
-	Args struct {
-		Toolchains []ToolchainPath `name:"TOOLCHAINS" description:"toolchain paths of toolchains to build"`
-	} `positional-args:"yes" required:"yes"`
-}
-
-var toolchainBuildCmd ToolchainBuildCmd
-
-func (c *ToolchainBuildCmd) Execute(args []string) error {
-	var wg sync.WaitGroup
-	for _, tc := range c.Args.Toolchains {
-		tc, err := toolchain.Open(string(tc), toolchain.AsDockerContainer)
-		if err != nil {
-			log.Fatal(err)
-		}
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			if err := tc.Build(); err != nil {
-				log.Fatal(err)
-			}
-		}()
-	}
-	wg.Wait()
 	return nil
 }
 

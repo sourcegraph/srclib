@@ -61,10 +61,10 @@ func ListTools(op string) ([]*srclib.ToolRef, error) {
 	return tools, nil
 }
 
-// OpenTool opens a tool in toolchain (which is a toolchain path) named subcmd.
-// The mode parameter controls how the toolchain is opened.
-func OpenTool(toolchain, subcmd string, mode Mode) (Tool, error) {
-	tc, err := Open(toolchain, mode)
+// OpenTool opens a tool in toolchain (which is a toolchain path)
+// named subcmd.
+func OpenTool(toolchain, subcmd string) (Tool, error) {
+	tc, err := Open(toolchain)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open tool (%s %s): %s", toolchain, subcmd, err)
 	}

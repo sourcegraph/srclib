@@ -38,7 +38,7 @@ func (c *FmtCmd) Get() (string, error) {
 		return "", err
 	}
 	// Only call as a program for now.
-	tool, err := toolchain.OpenTool(t.Toolchain, t.Subcmd, toolchain.AsProgram)
+	tool, err := toolchain.OpenTool(t.Toolchain, t.Subcmd)
 	if err != nil {
 		return "", err
 	}

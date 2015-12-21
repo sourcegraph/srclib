@@ -3,4 +3,4 @@
 test:
 	go build -o src ../cmd/srclib/*.go
 	docker build -t srclib-integration-test .
-	docker run srclib-integration-test src toolchain list
+	docker run srclib-integration-test srclib toolchain list

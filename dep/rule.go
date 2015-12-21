@@ -60,7 +60,7 @@ func (r *ResolveDepsRule) Prereqs() []string {
 
 func (r *ResolveDepsRule) Recipes() []string {
 	return []string{
-		fmt.Sprintf("%s tool %s %q %q < $^ 1> $@", util.SafeCommandName(srclib.CommandName), r.opt.ToolchainExecOpt, r.Tool.Toolchain, r.Tool.Subcmd),
+		fmt.Sprintf("%s tool %q %q < $^ 1> $@", util.SafeCommandName(srclib.CommandName), r.Tool.Toolchain, r.Tool.Subcmd),
 	}
 }
 

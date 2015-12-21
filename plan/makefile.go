@@ -18,8 +18,6 @@ import (
 )
 
 type Options struct {
-	ToolchainExecOpt string
-
 	// When NoCache is true, all files are rebuilt instead of only
 	// the ones associated with changed source units.
 	NoCache bool
