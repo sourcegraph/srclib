@@ -15,15 +15,7 @@ First,
 Then run:
 
 ```bash
-# download and fetch dependencies
-go get -v sourcegraph.com/sourcegraph/srclib-go
-cd $GOPATH/sourcegraph.com/sourcegraph/srclib-go
-
-# build the srclib-go program in .bin/srclib-go (this is currently required by srclib to discover the program)
-make
-
-# link this toolchain in your SRCLIBPATH (default ~/.srclib) to enable it
-srclib toolchain add sourcegraph.com/sourcegraph/srclib-go
+srclib toolchain install go
 ```
 
 To verify that installation succeeded, run:

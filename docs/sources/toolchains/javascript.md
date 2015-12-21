@@ -16,9 +16,7 @@ First,
 Then run:
 
 ```bash
-git clone https://github.com/sourcegraph/srclib-javascript.git
-cd srclib-javascript
-srclib toolchain add sourcegraph.com/sourcegraph/srclib-javascript
+srclib toolchain install javascript
 ```
 
 To verify that installation succeeded, run:
