@@ -233,7 +233,7 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 	if err != nil {
 		return fmt.Errorf("error calling config.ReadCached: %s", err)
 	}
-	mf, err := plan.CreateMakefile(".", nil, "", treeConfig, plan.Options{})
+	mf, err := plan.CreateMakefile(".", nil, "", treeConfig)
 	if err != nil {
 		return fmt.Errorf("error calling plan.Makefile: %s", err)
 	}

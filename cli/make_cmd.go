@@ -32,9 +32,8 @@ func init() {
 type MakeCmd struct {
 	config.Options
 
-	Quiet   bool `short:"q" long:"quiet" description:"silence all output"`
-	Verbose bool `short:"v" long:"verbose" description:"show more verbose output"`
-	DryRun  bool `short:"n" long:"dry-run" description:"print what would be done and exit"`
+	Quiet  bool `short:"q" long:"quiet" description:"silence all output"`
+	DryRun bool `short:"n" long:"dry-run" description:"print what would be done and exit"`
 
 	Dir Directory `short:"C" long:"directory" description:"change to DIR before doing anything" value-name:"DIR"`
 
@@ -52,7 +51,7 @@ func (c *MakeCmd) Execute(args []string) error {
 		}
 	}
 
-	mf, err := CreateMakefile(c.Verbose)
+	mf, err := CreateMakefile()
 	if err != nil {
 		return err
 	}
@@ -66,7 +65,7 @@ func (c *MakeCmd) Execute(args []string) error {
 
 	mkConf := &makex.Default
 	mk := mkConf.NewMaker(mf, goals...)
-	mk.Verbose = c.Verbose
+	mk.Verbose = GlobalOpt.Verbose
 
 	if c.Quiet {
 		mk.RuleOutput = func(r makex.Rule) (out io.WriteCloser, err io.WriteCloser, logger *log.Logger) {
@@ -93,7 +92,7 @@ func (c *MakeCmd) Execute(args []string) error {
 // CreateMakefile creates a Makefile to build a tree. The cwd should
 // be the root of the tree you want to make (due to some probably
 // unnecessary assumptions that CreateMaker makes).
-func CreateMakefile(verbose bool) (*makex.Makefile, error) {
+func CreateMakefile() (*makex.Makefile, error) {
 	localRepo, err := OpenRepo(".")
 	if err != nil {
 		return nil, err
@@ -113,7 +112,7 @@ func CreateMakefile(verbose bool) (*makex.Makefile, error) {
 
 	// TODO(sqs): buildDataDir is hardcoded.
 	buildDataDir := filepath.Join(buildstore.BuildDataDirName, localRepo.CommitID)
-	mf, err := plan.CreateMakefile(buildDataDir, buildStore, localRepo.VCSType, treeConfig, plan.Options{Verbose: verbose})
+	mf, err := plan.CreateMakefile(buildDataDir, buildStore, localRepo.VCSType, treeConfig)
 	if err != nil {
 		return nil, err
 	}
