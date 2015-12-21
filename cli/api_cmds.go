@@ -202,7 +202,6 @@ func ensureBuild(buildStore buildstore.RepoBuildStore, repo *Repo) error {
 		Repo:   repo.URI(),
 		Subdir: ".",
 	}
-	toolchainExecOpt := ToolchainExecOpt{ExeMethods: "program"}
 
 	// Config repository if not yet built.
 	exists, err := buildstore.BuildDataExistsForCommit(buildStore, repo.CommitID)
@@ -211,9 +210,8 @@ func ensureBuild(buildStore buildstore.RepoBuildStore, repo *Repo) error {
 	}
 	if !exists {
 		configCmd := &ConfigCmd{
-			Options:          configOpt,
-			ToolchainExecOpt: toolchainExecOpt,
-			Quiet:            true,
+			Options: configOpt,
+			Quiet:   true,
 		}
 		if err := configCmd.Execute(nil); err != nil {
 			return err
@@ -223,11 +221,7 @@ func ensureBuild(buildStore buildstore.RepoBuildStore, repo *Repo) error {
 	// Always re-make.
 	//
 	// TODO(sqs): optimize this
-	makeCmd := &MakeCmd{
-		Options:          configOpt,
-		ToolchainExecOpt: toolchainExecOpt,
-		Quiet:            true,
-	}
+	makeCmd := &MakeCmd{Options: configOpt, Quiet: true}
 	if err := makeCmd.Execute(nil); err != nil {
 		return err
 	}
