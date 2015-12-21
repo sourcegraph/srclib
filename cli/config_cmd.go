@@ -4,10 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"sort"
 
@@ -15,7 +13,6 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/plan"
-	"sourcegraph.com/sourcegraph/srclib/toolchain"
 
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -74,8 +71,6 @@ func getInitialConfig(opt config.Options, dir string) (*config.Repository, error
 type ConfigCmd struct {
 	config.Options
 
-	ToolchainExecOpt `group:"execution"`
-
 	Output struct {
 		Output string `short:"o" long:"output" description:"output format" default:"text" value-name:"text|json"`
 	} `group:"output"`
@@ -104,13 +99,7 @@ func (c *ConfigCmd) Execute(args []string) error {
 		return err
 	}
 
-	if len(cfg.PreConfigCommands) > 0 {
-		if err := runPreConfigCommands(c.Args.Dir.String(), cfg.PreConfigCommands, c.ToolchainExecOpt, c.Quiet); err != nil {
-			return fmt.Errorf("PreConfigCommands: %s", err)
-		}
-	}
-
-	if err := scanUnitsIntoConfig(cfg, c.Options, c.ToolchainExecOpt, c.Quiet); err != nil {
+	if err := scanUnitsIntoConfig(cfg, c.Options, c.Quiet); err != nil {
 		return fmt.Errorf("failed to scan for source units: %s", err)
 	}
 
@@ -185,84 +174,4 @@ func sortedMap(m map[string]interface{}) [][2]interface{} {
 		sorted[i] = [2]interface{}{k, m[k]}
 	}
 	return sorted
-}
-
-func runPreConfigCommands(dir string, cmds []string, execOpt ToolchainExecOpt, quiet bool) error {
-	if mode := execOpt.ToolchainMode(); mode&toolchain.AsProgram > 0 {
-		for _, cmdStr := range cmds {
-			cmd := exec.Command("sh", "-c", cmdStr)
-			cmd.Dir = dir
-			if !quiet {
-				cmd.Stdout, cmd.Stderr = os.Stderr, os.Stderr
-			}
-			if err := cmd.Run(); err != nil {
-				return fmt.Errorf("command %q: %s", cmdStr, err)
-			}
-		}
-	} else if mode&toolchain.AsDockerContainer > 0 {
-		// Build image
-		dockerfile := []byte(`
-FROM ubuntu:14.04
-RUN apt-get update -qq && echo 2015-03-02
-RUN apt-get install -qq curl git mercurial build-essential
-# install these for srclib-java's mvn-install-nodeps-error-tolerant.bash script:
-RUN apt-get install -qq maven ecj perl
-RUN useradd -ms /bin/bash srclib
-RUN mkdir /src
-RUN chown srclib /src
-USER srclib
-WORKDIR /src
-`)
-		tmpdir, err := ioutil.TempDir("", "src-docker-preconfig")
-		if err != nil {
-			return err
-		}
-		defer os.RemoveAll(tmpdir)
-
-		if err := ioutil.WriteFile(filepath.Join(tmpdir, "Dockerfile"), dockerfile, 0600); err != nil {
-			return err
-		}
-
-		// TODO(sqs): use a unique container ID
-
-		const containerName = "src-preconfigcommands"
-		buildCmd := exec.Command("docker", "build", "-t", containerName, ".")
-		buildCmd.Dir = tmpdir
-		if !quiet {
-			buildCmd.Stdout, buildCmd.Stderr = os.Stderr, os.Stderr
-		}
-		if err := buildCmd.Run(); err != nil {
-			return fmt.Errorf("building PreConfigCommands Docker container: %s", err)
-		}
-
-		dir, err := filepath.Abs(dir)
-		if err != nil {
-			return err
-		}
-
-		// HACK: make the files writable by the docker user
-		//
-		// It is suspected that this is needed due to some older docker versions. We
-		// should investigate why it is needed for building e.g. the github.com/golang/go
-		// repository and remove this hack when possible.
-		if err := exec.Command("chmod", "-R", "777", dir).Run(); err != nil {
-			return fmt.Errorf("chmod -R 777 dir failed: %s", err)
-		}
-
-		for _, cmdStr := range cmds {
-			cmd := exec.Command("docker", "run", "-v", dir+":/src", "--rm", "--entrypoint=/bin/bash", containerName)
-			cmd.Args = append(cmd.Args, "-c", cmdStr)
-			if !quiet {
-				cmd.Stdout, cmd.Stderr = os.Stderr, os.Stderr
-			}
-			log.Printf("Running PreConfigCommands Docker container: %v", cmd.Args)
-			if err := cmd.Run(); err != nil {
-				return fmt.Errorf("command %q: %s", cmdStr, err)
-			}
-		}
-	} else {
-		log.Fatalf("Can't run PreConfigCommands: unknown execution mode %q.", mode)
-	}
-
-	return nil
 }

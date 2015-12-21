@@ -12,8 +12,6 @@ import (
 )
 
 type Options struct {
-	ToolchainExecOpt string
-
 	Verbose bool
 }
 
