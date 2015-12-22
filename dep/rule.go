@@ -34,7 +34,9 @@ func makeDepRules(c *config.Tree, dataDir string, existing []makex.Rule) ([]make
 			toolRef = choice
 		}
 
-		rules = append(rules, &ResolveDepsRule{dataDir, u, toolRef})
+		if toolRef != nil {
+			rules = append(rules, &ResolveDepsRule{dataDir, u, toolRef})
+		}
 	}
 	return rules, nil
 }

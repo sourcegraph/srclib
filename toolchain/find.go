@@ -15,11 +15,6 @@ import (
 // Lookup finds a toolchain by path in the SRCLIBPATH. For each DIR in
 // SRCLIBPATH, it checks for the existence of DIR/PATH/Srclibtoolchain.
 func Lookup(path string) (*Info, error) {
-
-	if NoToolchains {
-		return nil, nil
-	}
-
 	path = filepath.Clean(path)
 
 	dir, err := Dir(path)
@@ -59,10 +54,6 @@ func lookupToolchain(toolchainPath string) (string, error) {
 // dir (with a DIR/Srclibtoolchain file), then none of DIR's
 // subdirectories are searched for toolchains.
 func List() ([]*Info, error) {
-	if NoToolchains {
-		return nil, nil
-	}
-
 	var found []*Info
 	seen := map[string]string{}
 
