@@ -36,7 +36,9 @@ func makeGraphRules(c *config.Tree, dataDir string, existing []makex.Rule) ([]ma
 			toolRef = choice
 		}
 
-		rules = append(rules, &GraphUnitRule{dataDir, u, toolRef})
+		if toolRef != nil {
+			rules = append(rules, &GraphUnitRule{dataDir, u, toolRef})
+		}
 	}
 	return rules, nil
 }
