@@ -1,16 +1,13 @@
 language: go
 go: 1.5
+sudo: false
 
 before_install:
   - mkdir -p $HOME/gopath/src/sourcegraph.com/sourcegraph
   - mv $TRAVIS_BUILD_DIR $HOME/gopath/src/sourcegraph.com/sourcegraph/srclib
   - export TRAVIS_BUILD_DIR=$HOME/gopath/src/sourcegraph.com/sourcegraph/srclib
-  # for rst2html (package doc)
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq python-docutils
   - export PATH=$PATH:$HOME/gopath/bin
   - export GOBIN=$HOME/gopath/bin
-  - sudo pip install virtualenv
   - go get github.com/tools/godep
 
 install:
