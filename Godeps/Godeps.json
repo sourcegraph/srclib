@@ -74,7 +74,7 @@
 		},
 		{
 			"ImportPath": "github.com/sqs/go-selfupdate/selfupdate",
-			"Rev": "385c6ca8b9c42d78e7e0aacfb690cf28107a8306"
+			"Rev": "d36f0a97c909dccd193274709266ff9b68a003db"
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",
