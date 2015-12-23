@@ -73,15 +73,6 @@
 			"Rev": "f57ad5e24ab7813942c045f86eda1066eb969e98"
 		},
 		{
-			"ImportPath": "github.com/russross/blackfriday",
-			"Comment": "v1.3",
-			"Rev": "8cec3a854e68dba10faabbe31c089abf4a3e57a6"
-		},
-		{
-			"ImportPath": "github.com/shurcooL/sanitized_anchor_name",
-			"Rev": "244f5ac324cb97e1987ef901a0081a77bfd8e845"
-		},
-		{
 			"ImportPath": "github.com/smartystreets/mafsa",
 			"Rev": "ab6b5abc58c9d82560b127e23bfd3e39a25e8f05"
 		},
