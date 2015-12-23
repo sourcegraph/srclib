@@ -263,7 +263,6 @@ func testRepoStore_Defs_ByCommitIDs_ByFile(t *testing.T, rs RepoStoreImporter) {
 	}
 
 	c_unitFilesIndex_getByPath.set(0)
-	c_defFilesIndex_getByPath.set(0)
 	defs, err := rs.Defs(ByCommitIDs("c2"), ByFiles("f1"))
 	if err != nil {
 		t.Fatalf("%s: Defs: %s", rs, err)
@@ -274,9 +273,6 @@ func testRepoStore_Defs_ByCommitIDs_ByFile(t *testing.T, rs RepoStoreImporter) {
 	if isIndexedStore(rs) {
 		if want := 1; c_unitFilesIndex_getByPath.get() != want {
 			t.Errorf("%s: Defs: got %d unitFilesIndex hits, want %d", rs, c_unitFilesIndex_getByPath.get(), want)
-		}
-		if want := 1; c_defFilesIndex_getByPath.get() != want {
-			t.Errorf("%s: Defs: got %d defFilesIndex hits, want %d", rs, c_defFilesIndex_getByPath.get(), want)
 		}
 	}
 }

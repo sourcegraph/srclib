@@ -1,7 +1,6 @@
 package store
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 
@@ -10,15 +9,6 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
-
-type labeledMultiRepoStoreImporter struct {
-	MultiRepoStoreImporter
-	label string
-}
-
-func (s *labeledMultiRepoStoreImporter) String() string {
-	return fmt.Sprintf("%s: %s", s.MultiRepoStoreImporter, s.label)
-}
 
 func testMultiRepoStore(t *testing.T, newFn func() MultiRepoStoreImporter) {
 	testMultiRepoStore_uninitialized(t, newFn())
