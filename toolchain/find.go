@@ -69,7 +69,10 @@ func List() ([]*Info, error) {
 		}
 		w := fs.Walk(dir)
 		for w.Step() {
-			if w.Err() != nil {
+			if err := w.Err(); err != nil {
+				if w.Path() == dir && os.IsNotExist(err) {
+					return nil, nil
+				}
 				return nil, w.Err()
 			}
 			fi := w.Stat()
