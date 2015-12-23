@@ -18,10 +18,6 @@
 			"Rev": "32a2486bdc0de89379a23673af82bd61f5c7c5cd"
 		},
 		{
-			"ImportPath": "github.com/bradfitz/http2",
-			"Rev": "f8202bc903bda493ebba4aa54922d78430c2c42f"
-		},
-		{
 			"ImportPath": "github.com/fsouza/go-dockerclient",
 			"Rev": "4ebe9fc43840fefb355b61300580e34130d99f6e"
 		},
@@ -65,10 +61,6 @@
 			"Rev": "7fcbc72f853b92b5720db4a6b8482be612daef24"
 		},
 		{
-			"ImportPath": "github.com/peterh/liner",
-			"Rev": "1bb0d1c1a25ed393d8feb09bab039b2b1b1fbced"
-		},
-		{
 			"ImportPath": "github.com/rogpeppe/rog-go/parallel",
 			"Rev": "f57ad5e24ab7813942c045f86eda1066eb969e98"
 		},
@@ -86,39 +78,35 @@
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",
-			"Rev": "b846920a172af75fe52c1400ae6094307be83b8a"
+			"Rev": "6c89489cafabcbc76df9dbf84ebf07204673fecf"
+		},
+		{
+			"ImportPath": "golang.org/x/net/http2",
+			"Rev": "6c89489cafabcbc76df9dbf84ebf07204673fecf"
 		},
 		{
 			"ImportPath": "golang.org/x/net/internal/timeseries",
-			"Rev": "b846920a172af75fe52c1400ae6094307be83b8a"
+			"Rev": "6c89489cafabcbc76df9dbf84ebf07204673fecf"
 		},
 		{
 			"ImportPath": "golang.org/x/net/trace",
-			"Rev": "b846920a172af75fe52c1400ae6094307be83b8a"
+			"Rev": "6c89489cafabcbc76df9dbf84ebf07204673fecf"
 		},
 		{
-			"ImportPath": "golang.org/x/oauth2",
-			"Rev": "2fbf3d7329d847b125188ad64b68cfb1f548938a"
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "b4e289961544fc90f340c908c3460ceae6a2202a"
 		},
 		{
 			"ImportPath": "golang.org/x/tools/godoc/vfs",
 			"Rev": "b7f0150d16f143e2d871156fa142dd6fa372ffdf"
 		},
 		{
-			"ImportPath": "google.golang.org/cloud/compute/metadata",
-			"Rev": "08d53874e89b5a4786b0d1fbe7957443d82b2299"
-		},
-		{
-			"ImportPath": "google.golang.org/cloud/internal",
-			"Rev": "08d53874e89b5a4786b0d1fbe7957443d82b2299"
-		},
-		{
 			"ImportPath": "google.golang.org/grpc",
 			"Rev": "f7d1653e300d6ad9f019bce7a5f5ab3b4821f637"
 		},
 		{
-			"ImportPath": "github.com/inconshreveable/go-update",
-			"Rev": "68f5725818189545231c1fd8694793d45f2fc529"
+			"ImportPath": "gopkg.in/inconshreveable/go-update.v0",
+			"Rev": "d8b0b1d421aa1cbf392c05869f8abbc669bb7066"
 		},
 		{
 			"ImportPath": "sourcegraph.com/sourcegraph/go-flags",
