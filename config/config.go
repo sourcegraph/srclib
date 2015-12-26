@@ -15,9 +15,6 @@ var Filename = "Srcfile"
 
 // Repository represents the config for an entire repository.
 type Repository struct {
-	// URI is the repository's clone URI.
-	URI string `json:",omitempty"`
-
 	// Tree is the configuration for the top-level directory tree in the
 	// repository.
 	Tree
@@ -57,11 +54,9 @@ type Tree struct {
 // an overridden configuration is specified for the repository (hard-coded in
 // the Go code), then it is used instead of the Srcfile or the default
 // configuration.
-func ReadRepository(dir string, repoURI string) (*Repository, error) {
+func ReadRepository(dir string) (*Repository, error) {
 	var c *Repository
-	if oc, overridden := Overrides[repoURI]; overridden {
-		c = oc
-	} else if f, err := os.Open(filepath.Join(dir, Filename)); err == nil {
+	if f, err := os.Open(filepath.Join(dir, Filename)); err == nil {
 		defer f.Close()
 		err = json.NewDecoder(f).Decode(&c)
 		if err != nil {
@@ -74,19 +69,12 @@ func ReadRepository(dir string, repoURI string) (*Repository, error) {
 		return nil, err
 	}
 
-	return c.finish(repoURI)
+	return c.finish()
 }
 
-func (c *Repository) finish(repoURI string) (*Repository, error) {
-	err := c.validate()
-	if err != nil {
+func (c *Repository) finish() (*Repository, error) {
+	if err := c.validate(); err != nil {
 		return nil, err
 	}
-	c.URI = repoURI
 	return c, nil
-}
-
-type Options struct {
-	Repo   string `long:"repo" description:"repository URI" value-name:"URI"`
-	Subdir string `long:"subdir" description:"subdirectory in repository" value-name:"DIR"`
 }

@@ -5,14 +5,12 @@ import (
 	"os"
 
 	"sourcegraph.com/sourcegraph/go-flags"
-
-	"sourcegraph.com/sourcegraph/srclib/config"
 )
 
 func init() {
 	cliInit = append(cliInit, func(cli *flags.Command) {
 		// TODO(sqs): "do-all" is a stupid name
-		c, err := cli.AddCommand("do-all",
+		_, err := cli.AddCommand("do-all",
 			"fully process (config, plan, execute, and import)",
 			`Fully processes a tree: configures it, plans the execution, executes all analysis steps, and imports the data.`,
 			&doAllCmd,
@@ -20,15 +18,10 @@ func init() {
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		SetDefaultRepoOpt(c)
-		setDefaultRepoSubdirOpt(c)
 	})
 }
 
 type DoAllCmd struct {
-	config.Options
-
 	Dir Directory `short:"C" long:"directory" description:"change to DIR before doing anything" value-name:"DIR"`
 }
 
@@ -42,13 +35,13 @@ func (c *DoAllCmd) Execute(args []string) error {
 	}
 
 	// config
-	configCmd := &ConfigCmd{Options: c.Options}
+	configCmd := &ConfigCmd{}
 	if err := configCmd.Execute(nil); err != nil {
 		return err
 	}
 
 	// make
-	makeCmd := &MakeCmd{Options: c.Options}
+	makeCmd := &MakeCmd{}
 	if err := makeCmd.Execute(nil); err != nil {
 		return err
 	}

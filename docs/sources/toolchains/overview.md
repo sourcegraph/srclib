@@ -104,15 +104,6 @@ directory tree and produce a JSON array of source units (in Go,
 
 **Stdin:** JSON object representation of repository config (typically `{}`)
 
-**Options:**
-
-* `--repo URI`: the URI of the repository that contains the directory tree being
-  scanned
-* `--subdir DIR`: the path of the current directory (in which the scanner is
-  run), relative to the root directory of the repository being scanned (this is
-  typically the root, `"."`, as it is most useful to scan the entire
-  repository)
-
 **Stdout:** `[]*unit.SourceUnit`. For a more detailed description, [read the scanner output spec](scanner-output.md).
 
 See the `scan.Scan` function for an implementation of the calling side of this
