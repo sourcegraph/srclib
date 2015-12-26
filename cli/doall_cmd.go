@@ -3,13 +3,11 @@ package cli
 import (
 	"log"
 	"os"
-
-	"sourcegraph.com/sourcegraph/srclib/config"
 )
 
 func init() {
 	// TODO(sqs): "do-all" is a stupid name
-	c, err := CLI.AddCommand("do-all",
+	_, err := CLI.AddCommand("do-all",
 		"fully process (config, plan, execute, and import)",
 		`Fully processes a tree: configures it, plans the execution, executes all analysis steps, and imports the data.`,
 		&doAllCmd,
@@ -17,14 +15,9 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	SetDefaultRepoOpt(c)
-	setDefaultRepoSubdirOpt(c)
 }
 
 type DoAllCmd struct {
-	config.Options
-
 	Dir Directory `short:"C" long:"directory" description:"change to DIR before doing anything" value-name:"DIR"`
 }
 
@@ -38,13 +31,13 @@ func (c *DoAllCmd) Execute(args []string) error {
 	}
 
 	// config
-	configCmd := &ConfigCmd{Options: c.Options}
+	configCmd := &ConfigCmd{}
 	if err := configCmd.Execute(nil); err != nil {
 		return err
 	}
 
 	// make
-	makeCmd := &MakeCmd{Options: c.Options}
+	makeCmd := &MakeCmd{}
 	if err := makeCmd.Execute(nil); err != nil {
 		return err
 	}

@@ -29,8 +29,6 @@ The steps are:
 2. Read configuration from the current directory's Srcfile (if present).
 
 3. Scan for source units in the directory tree rooted at the current directory (or the root of the repository containing the current directory), using the scanners specified in either the user srclib config or the Srcfile (or otherwise the defaults).
-
-The default values for --repo and --subdir are determined by detecting the current repository and reading its Srcfile config (if any).
 `,
 		&configCmd,
 	)
@@ -38,21 +36,18 @@ The default values for --repo and --subdir are determined by detecting the curre
 		log.Fatal(err)
 	}
 	c.Aliases = []string{"c"}
-
-	SetDefaultRepoOpt(c)
-	setDefaultRepoSubdirOpt(c)
 }
 
 // getInitialConfig gets the initial config (i.e., the config that comes solely
 // from the Srcfile, if any, and the external user config, before running the
 // scanners).
-func getInitialConfig(opt config.Options, dir string) (*config.Repository, error) {
+func getInitialConfig(dir string) (*config.Repository, error) {
 	r, err := OpenRepo(dir)
 	if err != nil {
 		return nil, err
 	}
 
-	cfg, err := config.ReadRepository(r.RootDir, opt.Repo)
+	cfg, err := config.ReadRepository(r.RootDir)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read repository at %s: %s", r.RootDir, err)
 	}
@@ -69,8 +64,6 @@ func getInitialConfig(opt config.Options, dir string) (*config.Repository, error
 }
 
 type ConfigCmd struct {
-	config.Options
-
 	Output struct {
 		Output string `short:"o" long:"output" description:"output format" default:"text" value-name:"text|json"`
 	} `group:"output"`
@@ -94,12 +87,12 @@ func (c *ConfigCmd) Execute(args []string) error {
 		c.w = nopWriteCloser{}
 	}
 
-	cfg, err := getInitialConfig(c.Options, c.Args.Dir.String())
+	cfg, err := getInitialConfig(c.Args.Dir.String())
 	if err != nil {
 		return err
 	}
 
-	if err := scanUnitsIntoConfig(cfg, c.Options, c.Quiet); err != nil {
+	if err := scanUnitsIntoConfig(cfg, c.Quiet); err != nil {
 		return fmt.Errorf("failed to scan for source units: %s", err)
 	}
 

@@ -12,13 +12,11 @@ import (
 	"sync"
 
 	"github.com/rogpeppe/rog-go/parallel"
-	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/flagutil"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
 type Options struct {
-	config.Options
 	// Quiet silences all output.
 	Quiet bool
 }
@@ -111,11 +109,6 @@ func Scan(scanner []string, opt Options, treeConfig map[string]interface{}) ([]*
 	}
 	if err := cmd.Wait(); err != nil {
 		return nil, err
-	}
-
-	// Fill in repo.
-	for _, u := range units {
-		u.Repo = opt.Repo
 	}
 
 	return units, nil

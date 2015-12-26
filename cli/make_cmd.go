@@ -16,7 +16,7 @@ import (
 )
 
 func init() {
-	c, err := CLI.AddCommand("make",
+	_, err := CLI.AddCommand("make",
 		"plans and executes plan",
 		`Generates a plan (in Makefile form, in memory) for analyzing the tree and executes the plan. `,
 		&makeCmd,
@@ -24,14 +24,9 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	SetDefaultRepoOpt(c)
-	setDefaultRepoSubdirOpt(c)
 }
 
 type MakeCmd struct {
-	config.Options
-
 	Quiet  bool `short:"q" long:"quiet" description:"silence all output"`
 	DryRun bool `short:"n" long:"dry-run" description:"print what would be done and exit"`
 

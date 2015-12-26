@@ -15,7 +15,7 @@ import (
 )
 
 func init() {
-	c, err := CLI.AddCommand("units",
+	_, err := CLI.AddCommand("units",
 		"lists source units",
 		`Lists source units in the repository or directory tree rooted at DIR (or the current directory if DIR is not specified).`,
 		&unitsCmd,
@@ -23,15 +23,12 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	SetDefaultRepoOpt(c)
-	setDefaultRepoSubdirOpt(c)
 }
 
 // scanUnitsIntoConfig uses cfg to scan for source units. It modifies
 // cfg.SourceUnits, merging the scanned source units with those already present
 // in cfg.
-func scanUnitsIntoConfig(cfg *config.Repository, configOpt config.Options, quiet bool) error {
+func scanUnitsIntoConfig(cfg *config.Repository, quiet bool) error {
 	scanners := make([][]string, len(cfg.Scanners))
 	for i, scannerRef := range cfg.Scanners {
 		cmdName, err := toolchain.Command(scannerRef.Toolchain)
@@ -41,7 +38,7 @@ func scanUnitsIntoConfig(cfg *config.Repository, configOpt config.Options, quiet
 		scanners[i] = []string{cmdName, scannerRef.Subcmd}
 	}
 
-	units, err := scan.ScanMulti(scanners, scan.Options{Options: configOpt, Quiet: quiet}, cfg.Config)
+	units, err := scan.ScanMulti(scanners, scan.Options{Quiet: quiet}, cfg.Config)
 	if err != nil {
 		return err
 	}
@@ -110,8 +107,6 @@ func scanUnitsIntoConfig(cfg *config.Repository, configOpt config.Options, quiet
 }
 
 type UnitsCmd struct {
-	config.Options
-
 	Output struct {
 		Output string `short:"o" long:"output" description:"output format" default:"text" value-name:"text|json"`
 	} `group:"output"`
@@ -124,12 +119,12 @@ type UnitsCmd struct {
 var unitsCmd UnitsCmd
 
 func (c *UnitsCmd) Execute(args []string) error {
-	cfg, err := getInitialConfig(c.Options, c.Args.Dir.String())
+	cfg, err := getInitialConfig(c.Args.Dir.String())
 	if err != nil {
 		return err
 	}
 
-	if err := scanUnitsIntoConfig(cfg, c.Options, false); err != nil {
+	if err := scanUnitsIntoConfig(cfg, false); err != nil {
 		return err
 	}
 
