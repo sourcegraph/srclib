@@ -1,0 +1,111 @@
+syntax = "proto3";
+package graph2;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "sourcegraph.com/sqs/pbtypes/timestamp.proto";
+
+option (gogoproto.goproto_getters_all) = false;
+
+// GitHubRepo holds additional metadata about GitHub repos.
+message GitHubRepo {
+	int32 stars = 1;
+}
+
+// RepoPermissions describes the possible permissions that a user (or an anonymous
+// user) can be granted to a repository.
+message RepoPermissions {
+	bool read = 1;
+	bool write = 2;
+	bool admin = 3;
+}
+
+message TreeKey {
+  // Type is the type of source tree
+  // (git, hg, build-system specific like pip or npm, ftp)
+  string type = 1;
+
+  // A URL of one of the following forms:
+  //   src://{hostname}/{path} (absolute)
+  //   src:///{path} (relative)
+  string uri = 2;
+}
+
+message Tree {
+  TreeKey key = 1;
+
+  repeated string fetch_urls = 2;
+
+  // Origin is populated for repos fetched via federation or
+  // discovery. It is the hostname of the host that owns the repo.
+  string origin = 3;
+
+  // Name is the base name (the final path component) of the source tree,
+  // typically the name of the directory that the repository would be cloned
+  // into. (For example, for git://example.com/foo.git, the name is "foo".)
+  string name = 4;
+
+  // Description is a brief description of the repository.
+  string description = 5;
+
+  // HomepageURL is the URL to the repository's homepage, if any.
+  string homepage_url = 6 [(gogoproto.customname) = "HomepageURL"];
+
+  // HTMLURL is the URL to the repository's main page on the
+  // Sourcegraph server.
+  string html_url = 7 [(gogoproto.customname) = "HTMLURL"];
+
+  // DefaultBranch is the default VCS branch used (typically "master" for git
+  // repositories and "default" for hg repositories).
+  string default_branch = 8;
+
+  // Language is the primary programming language used in this source tree.
+  string language = 9;
+
+  // Blocked is whether this repo has been blocked by an admin (and
+  // will not be returned via the external API).
+  bool blocked = 10;
+
+  // Deprecated source trees are labeled as such and hidden from global search
+  // results.
+  bool deprecated = 11;
+
+  // Fork is whether this source tree is a VCS repository fork.
+  bool fork = 12;
+
+  // Mirror indicates whether this source tree's canonical location is on
+  // another server. Mirror source trees track their upstream.
+  bool mirror = 13;
+
+  // Private is whether this source tree is private.
+  bool private = 14;
+
+  // CreatedAt is when this source tree was created. If it represents an
+  // externally hosted (e.g., GitHub) source tree, the creation date is when it
+  // was created at that origin.
+  pbtypes.Timestamp created_at = 15;
+
+  // UpdatedAt is when this source tree's metadata was last updated (on its origin if
+  // it's an externally hosted source tree).
+  pbtypes.Timestamp updated_at = 16;
+
+  // PushedAt is when this source tree's source code was last updated (e.g., via
+  // VCS-push).
+  pbtypes.Timestamp pushed_at = 17;
+
+  // Permissions describes the permissions that the current user (or anonymous users,
+  // if there is no current user) is granted to this repository.
+  RepoPermissions permissions = 18;
+
+  GitHubRepo github = 19 [(gogoproto.customname) = "GitHub"];
+}
+
+message TreeRev {
+  Tree tree = 1;
+
+  // Rev is the version of the source tree
+  string rev = 2;
+
+  // Type of revision (e.g., commit ID, branch name, or tag for VCS
+  // repositories; version string for build system packages)
+  string rev_type = 3;
+}

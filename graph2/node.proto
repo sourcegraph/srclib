@@ -1,0 +1,12 @@
+syntax = "proto3";
+package graph2;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+message NodeKey {
+  // TODO
+}
+
+message Node {
+  // TODO
+}
