@@ -131,6 +131,12 @@ func InitStoreCmds(c *flags.Command) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	_, err = c.AddCommand("migrate",
+		"migrate data",
+		"migrate srclib data to 2.0 schema",
+		&migrateCmd,
+	)
 }
 
 // OpenStore is called by all of the store subcommands to open the
@@ -167,6 +173,28 @@ func (c *StoreCmd) store() (interface{}, error) {
 	default:
 		return nil, fmt.Errorf("unrecognized store --type value: %q (valid values are RepoStore, MultiRepoStore)", c.Type)
 	}
+}
+
+type MigrateCmd struct {
+	ImportOpt
+}
+
+var migrateCmd MigrateCmd
+
+func (c *MigrateCmd) Execute(args []string) error {
+	s, err := OpenStore()
+	if err != nil {
+		return err
+	}
+
+	bdfs, err := GetBuildDataFS(c.CommitID)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("%T, %T", s, bdfs)
+
+	return nil
 }
 
 type StoreImportCmd struct {
