@@ -1,0 +1,275 @@
+syntax = "proto3";
+package graph2;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "sourcegraph.com/sqs/pbtypes/timestamp.proto";
+
+option (gogoproto.goproto_getters_all) = false;
+
+// GitHubRepo holds additional metadata about GitHub repos.
+message GitHubRepo {
+	int32 stars = 1;
+}
+
+// RepoPermissions describes the possible permissions that a user (or an anonymous
+// user) can be granted to a repository.
+message RepoPermissions {
+	bool read = 1;
+	bool write = 2;
+	bool admin = 3;
+}
+
+message TreeKey {
+  // Genus is the type of source tree
+  // (git, hg, build-system specific like pip or npm, ftp)
+  string genus = 1;
+
+  // A URL of one of the following forms:
+  //   src://{hostname}/{path} (absolute)
+  //   src:///{path} (relative)
+  string uri = 2 [(gogoproto.customname) = "URI"];
+}
+
+message Tree {
+  TreeKey key = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true, (gogoproto.jsontag) = ""];
+
+  repeated string fetch_urls = 2;
+
+  // Origin is populated for repos fetched via federation or
+  // discovery. It is the hostname of the host that owns the repo.
+  string origin = 3;
+
+  // Name is the base name (the final path component) of the source tree,
+  // typically the name of the directory that the repository would be cloned
+  // into. (For example, for git://example.com/foo.git, the name is "foo".)
+  string name = 4;
+
+  // Description is a brief description of the repository.
+  string description = 5;
+
+  // HomepageURL is the URL to the repository's homepage, if any.
+  string homepage_url = 6 [(gogoproto.customname) = "HomepageURL"];
+
+  // HTMLURL is the URL to the repository's main page on the
+  // Sourcegraph server.
+  string html_url = 7 [(gogoproto.customname) = "HTMLURL"];
+
+  // DefaultBranch is the default VCS branch used (typically "master" for git
+  // repositories and "default" for hg repositories).
+  string default_branch = 8;
+
+  // Language is the primary programming language used in this source tree.
+  string language = 9;
+
+  // Blocked is whether this repo has been blocked by an admin (and
+  // will not be returned via the external API).
+  bool blocked = 10;
+
+  // Deprecated source trees are labeled as such and hidden from global search
+  // results.
+  bool deprecated = 11;
+
+  // Fork is whether this source tree is a VCS repository fork.
+  bool fork = 12;
+
+  // Mirror indicates whether this source tree's canonical location is on
+  // another server. Mirror source trees track their upstream.
+  bool mirror = 13;
+
+  // Private is whether this source tree is private.
+  bool private = 14;
+
+  // CreatedAt is when this source tree was created. If it represents an
+  // externally hosted (e.g., GitHub) source tree, the creation date is when it
+  // was created at that origin.
+  pbtypes.Timestamp created_at = 15;
+
+  // UpdatedAt is when this source tree's metadata was last updated (on its origin if
+  // it's an externally hosted source tree).
+  pbtypes.Timestamp updated_at = 16;
+
+  // PushedAt is when this source tree's source code was last updated (e.g., via
+  // VCS-push).
+  pbtypes.Timestamp pushed_at = 17;
+
+  // Permissions describes the permissions that the current user (or anonymous users,
+  // if there is no current user) is granted to this repository.
+  RepoPermissions permissions = 18;
+
+  GitHubRepo github = 19 [(gogoproto.customname) = "GitHub"];
+}
+
+message TreeRev {
+  Tree tree = 1;
+
+  // Rev is the version of the source tree
+  string rev = 2;
+
+  // Type of revision (e.g., commit ID, branch name, or tag for VCS
+  // repositories; version string for build system packages)
+  string rev_type = 3;
+}
+
+message RawDep {
+  string name = 1;
+  string version = 2;
+}
+
+message UnitKey {
+  TreeKey key = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true, (gogoproto.jsontag) = ""];
+
+  // Version is the build-system-level version string. It can also be a commit
+  // ID, but no client code should depend on implied VCS semantics (e.g., never
+  // run `git clone buildUnit.Version`).
+  string Version = 2;
+
+  string UnitName = 3;
+  string UnitType = 4;
+}
+
+message UnitInfo {
+  // NameInRepository is the name to use when displaying the source unit in
+  // the context of the repository in which it is defined. This name
+  // typically needs less qualification than GlobalName.
+  //
+  // For example, a Go package's GlobalName is its repository URI basename
+  // plus its directory path within the repository (e.g.,
+  // "github.com/user/repo/x/y"'s NameInRepository is "repo/x/y"). Because npm
+  // and pip packages are named globally, their name is probably appropriate
+  // to use as both the unit's NameInRepository and GlobalName.
+  string NameInRepository = 1;
+
+  // GlobalName is the name to use when displaying the source unit *OUTSIDE OF*
+  // the context of the repository in which it is defined.
+  //
+  // For example, a Go package's GlobalName is its full import path. Because
+  // npm and pip packages are named globally, their name is probably
+  // appropriate to use as both the unit's NameInRepository and GlobalName.
+  string GlobalName = 2;
+
+  // Description is a short (~1-sentence) description of the source unit.
+  string Description = 3;
+
+  // TypeName is the human-readable name of the type of source unit; e.g., "Go
+  // package".
+  string TypeName = 4;
+}
+
+message Unit {
+  UnitKey key = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true, (gogoproto.jsontag) = ""];
+
+  // Globs is a list of patterns that match files that make up this source
+  // unit. It is used to detect when the source unit definition is out of date
+  // (e.g., when a file matches the glob but is not in the Files list).
+  //
+  // TODO(sqs): implement this in the Makefiles
+  repeated string globs = 2;
+
+  // Files is all of the files that make up this source unit. Filepaths should
+  // be relative to the repository root.
+  repeated string files = 3;
+
+  // Dir is the root directory of this build unit. It is optional and maybe
+  // empty.
+  string dir = 4;
+
+  // Dependencies is a list of dependencies that this source unit has. The
+  // schema for these dependencies is internal to the scanner that produced
+  // this source unit. The dependency resolver is expected to know how to
+  // interpret this schema.
+  //
+  // The dependency information stored in this field should be able to be very
+  // quickly determined by the scanner. The scanner should not perform any
+  // dependency resolution on these entries. This is because the scanner is
+  // run frequently and should execute very quickly, and dependency resolution
+  // is often slow (requiring network access, etc.).
+  repeated RawDep raw_deps = 5;
+
+  repeated Unit deps = 6;
+
+  // DerivedFrom is the Unit from which this Unit is derived. The build unit
+  // composed of the pip package "django", for instance, is derived from the
+  // corresponding source unit in the repository github.com/django/django.
+  Unit derived_from = 7;
+
+  // Info is an optional field that contains additional information used to
+  // display the source unit
+  UnitInfo info = 8;
+
+  // Data is additional data dumped by the scanner about this source unit. It
+  // typically holds information that the scanner wants to make available to
+  // other components in the toolchain (grapher, dep resolver, etc.).
+  bytes data = 9;
+
+  /*
+  // Config is an arbitrary key-value property map. The Config map from the
+  // tree config is copied verbatim to each source unit. It can be used to
+  // pass options from the Srcfile to tools.
+  Config map[string]interface{} `json:",omitempty"`
+
+  // Ops enumerates the operations that should be performed on this source
+  // unit. Each key is the name of an operation, and the value is the tool to
+  // use to perform that operation. If the value is nil, the tool is chosen
+  // automatically according to the user's configuration.
+  Ops map[string]*srclib.ToolRef `json:",omitempty"`
+
+  // TODO(sqs): add a way to specify the toolchains and tools to use for
+  // various tasks on this source unit
+  */
+}
+
+message NodeKey {
+  // Unit is the build unit that defines this definition.
+  UnitKey unit = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true, (gogoproto.jsontag) = ""];
+
+  // Path is a unique identifier for the def, relative to the build unit.
+  // It should remain stable across commits as long as the def is the
+  // "same" def. Its Elasticsearch mapping is defined separately (because
+  // it is a multi_field, which the struct tag can't currently represent).
+  //
+  // Path encodes no structural semantics. Its only meaning is to be a stable
+  // unique identifier within a given source unit. In many languages, it is
+  // convenient to use the namespace hierarchy (with some modifications) as
+  // the Path, but this may not always be the case. I.e., don't rely on Path
+  // to find parents or children or any other structural propreties of the
+  // def hierarchy). See Def.TreePath instead.
+  string path = 2 [(gogoproto.jsontag) = "Path"];
+}
+
+message DefNode {
+  NodeKey key = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true, (gogoproto.jsontag) = ""];
+
+  string name = 2;
+  string kind = 3;
+  string file = 4;
+  uint32 start = 5;
+  uint32 end = 6;
+  bool exported = 7;
+  bool local = 8;
+  bool test = 9;
+  bytes data = 10;
+}
+
+message DocNode {
+  // Format is the the MIME-type that the documentation is stored in. Valid
+  // formats include 'text/html', 'text/plain', 'text/x-markdown', text/x-rst'.
+  string format = 1;
+
+  // Data is the actual documentation text.
+  string data = 2;
+}
+
+message RefNode {
+  NodeKey def = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true, (gogoproto.jsontag) = ""];
+  string file = 2;
+  uint32 start = 3;
+  uint32 end = 4;
+}
+
+// Edge describes the relationship between two nodes in the source graph.
+// These can extend across build units.
+message Edge {
+  NodeKey src = 1;
+  NodeKey dst = 2;
+  string kind = 3;
+}
