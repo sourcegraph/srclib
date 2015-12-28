@@ -13,6 +13,8 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/plan"
+	"sourcegraph.com/sourcegraph/srclib/scan"
+	"sourcegraph.com/sourcegraph/srclib/toolchain"
 
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
@@ -36,6 +38,25 @@ The steps are:
 		log.Fatal(err)
 	}
 	c.Aliases = []string{"c"}
+
+	c2, err := CLI.AddCommand("config2",
+		"reads & scans for project configuration",
+		`Produces a configuration file suitable for building the repository or directory tree rooted at DIR (or the current directory if not specified).
+
+The steps are:
+
+1. Read user srclib config (SRCLIBPATH/.srclibconfig), if present.
+
+2. Read configuration from the current directory's Srcfile (if present).
+
+3. Scan for source units in the directory tree rooted at the current directory (or the root of the repository containing the current directory), using the scanners specified in either the user srclib config or the Srcfile (or otherwise the defaults).
+`,
+		&configCmd2,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	c2.Aliases = []string{"c2"}
 }
 
 // getInitialConfig gets the initial config (i.e., the config that comes solely
@@ -61,6 +82,71 @@ func getInitialConfig(dir string) (*config.Repository, error) {
 	}
 
 	return cfg, nil
+}
+
+type ConfigCmd2 struct {
+	Args struct {
+		Dir Directory `name:"DIR" default:"." description:"root directory of tree to configure"`
+	} `positional-args:"yes"`
+
+	Quiet bool `short:"q" long:"quiet" description:"silence all output"`
+}
+
+var configCmd2 ConfigCmd2
+
+func (c *ConfigCmd2) Execute(args []string) error {
+	// TODO: use Srcfile 2.0, scan units into that config
+	cfg, err := getInitialConfig(c.Args.Dir.String())
+	if err != nil {
+		return err
+	}
+
+	scanners := make([][]string, len(cfg.Scanners))
+	for i, scannerRef := range cfg.Scanners {
+		cmdName, err := toolchain.Command(scannerRef.Toolchain)
+		if err != nil {
+			return err
+		}
+		scanners[i] = []string{cmdName, scannerRef.Subcmd}
+	}
+	units, err := scan.ScanMulti2(scanners, scan.Options{Quiet: c.Quiet}, nil)
+
+	localRepo, err := OpenRepo(c.Args.Dir.String())
+	if err != nil {
+		return fmt.Errorf("failed to open repo: %s", err)
+	}
+	buildStore, err := buildstore.LocalRepo(localRepo.RootDir)
+	if err != nil {
+		return err
+	}
+	commitFS := buildStore.Commit(localRepo.CommitID)
+
+	// Write source units to build cache.
+	if err := rwvfs.MkdirAll(commitFS, "."); err != nil {
+		return err
+	}
+	for _, u := range units {
+		unitFile := plan.SourceUnitDataFilename2(unit.SourceUnit{}, u)
+		if err := rwvfs.MkdirAll(commitFS, filepath.Dir(unitFile)); err != nil {
+			return err
+		}
+		f, err := commitFS.Create(unitFile)
+		if err != nil {
+			return err
+		}
+		defer func(f io.WriteCloser) {
+			if err := f.Close(); err != nil {
+				log.Fatal(err)
+			}
+		}(f)
+		if err := json.NewEncoder(f).Encode(u); err != nil {
+			return err
+		}
+	}
+
+	// TODO: print out all the other stuff
+
+	return nil
 }
 
 type ConfigCmd struct {
