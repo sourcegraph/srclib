@@ -287,6 +287,7 @@ var stdToolchains = toolchainMap{
 	"ruby":       toolchainInstaller{"Ruby (sourcegraph.com/sourcegraph/srclib-ruby)", installRubyToolchain},
 	"javascript": toolchainInstaller{"JavaScript (sourcegraph.com/sourcegraph/srclib-javascript)", installJavaScriptToolchain},
 	"java":       toolchainInstaller{"Java (sourcegraph.com/sourcegraph/srclib-java)", installJavaToolchain},
+	"basic":      toolchainInstaller{"PHP, Objective-C (sourcegraph.com/sourcegraph/srclib-basic)", installBasicToolchain},
 }
 
 func (m toolchainMap) listKeys() string {
@@ -496,6 +497,40 @@ Refusing to install Java toolchain because %s is not installed or is not on the 
 
 	return nil
 }
+
+func installBasicToolchain() error {
+	const toolchain = "sourcegraph.com/sourcegraph/srclib-basic"
+
+	reqCmds := []string{"java"}
+	for _, cmd := range reqCmds {
+		if _, err := exec.LookPath(cmd); isExecErrNotFound(err) {
+			return fmt.Errorf(`
+Refusing to install Basic toolchain because %s is not installed or is not on the system path.
+
+-> Please install %s and run this command again`, cmd, cmd)
+		} else if err != nil {
+			return err
+		}
+	}
+
+	srclibpathDir := filepath.Join(filepath.SplitList(srclib.Path)[0], toolchain) // toolchain dir under SRCLIBPATH
+	if err := os.MkdirAll(filepath.Dir(srclibpathDir), 0700); err != nil {
+		return err
+	}
+
+	log.Println("Downloading Basic toolchain in", srclibpathDir)
+	if err := cloneToolchain(srclibpathDir, toolchain); err != nil {
+		return err
+	}
+
+	log.Println("Building Basic toolchain program")
+	if err := execCmdInDir(srclibpathDir, "make"); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 
 func cloneToolchain(dest, toolchain string) error {
 	if fi, err := os.Stat(dest); os.IsNotExist(err) {
