@@ -21,60 +21,62 @@ import (
 )
 
 func init() {
-	c, err := CLI.AddCommand("toolchain",
-		"manage toolchains",
-		"Manage srclib toolchains.",
-		&toolchainCmd,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
-	c.Aliases = []string{"tc"}
+	cliInit = append(cliInit, func(cli *flags.Command) {
+		c, err := cli.AddCommand("toolchain",
+			"manage toolchains",
+			"Manage srclib toolchains.",
+			&toolchainCmd,
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+		c.Aliases = []string{"tc"}
 
-	_, err = c.AddCommand("list",
-		"list available toolchains",
-		"List available toolchains.",
-		&toolchainListCmd,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
+		_, err = c.AddCommand("list",
+			"list available toolchains",
+			"List available toolchains.",
+			&toolchainListCmd,
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	_, err = c.AddCommand("list-tools",
-		"list tools in toolchains",
-		"List available tools in all toolchains.",
-		&toolchainListToolsCmd,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
+		_, err = c.AddCommand("list-tools",
+			"list tools in toolchains",
+			"List available tools in all toolchains.",
+			&toolchainListToolsCmd,
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	_, err = c.AddCommand("bundle",
-		"bundle a toolchain",
-		"The bundle subcommand builds and archives toolchain bundles (.tar.gz files, one per toolchain variant). Bundles contain prebuilt toolchains and allow people to use srclib toolchains without needing to compile them on their own system.",
-		&toolchainBundleCmd,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
+		_, err = c.AddCommand("bundle",
+			"bundle a toolchain",
+			"The bundle subcommand builds and archives toolchain bundles (.tar.gz files, one per toolchain variant). Bundles contain prebuilt toolchains and allow people to use srclib toolchains without needing to compile them on their own system.",
+			&toolchainBundleCmd,
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	_, err = c.AddCommand("unbundle",
-		"unbundle a toolchain",
-		"The unbundle subcommand unarchives a toolchain bundle (previously created with the 'bundle' subcommand). It allows people to download and use prebuilt toolchains without needing to compile them on their system.",
-		&toolchainUnbundleCmd,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
+		_, err = c.AddCommand("unbundle",
+			"unbundle a toolchain",
+			"The unbundle subcommand unarchives a toolchain bundle (previously created with the 'bundle' subcommand). It allows people to download and use prebuilt toolchains without needing to compile them on their system.",
+			&toolchainUnbundleCmd,
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	_, err = c.AddCommand("install",
-		"install toolchains",
-		"Download and install toolchains",
-		&toolchainInstallCmd,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
+		_, err = c.AddCommand("install",
+			"install toolchains",
+			"Download and install toolchains",
+			&toolchainInstallCmd,
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+	})
 }
 
 type ToolchainPath string
@@ -530,7 +532,6 @@ Refusing to install Basic toolchain because %s is not installed or is not on the
 
 	return nil
 }
-
 
 func cloneToolchain(dest, toolchain string) error {
 	if fi, err := os.Stat(dest); os.IsNotExist(err) {
