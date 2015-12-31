@@ -7,6 +7,7 @@ Package graph2 is a generated protocol buffer package.
 
 It is generated from these files:
 	graph.proto
+	output.proto
 
 It has these top-level messages:
 	GitHubRepo
@@ -23,6 +24,7 @@ It has these top-level messages:
 	DocNode
 	RefNode
 	Edge
+	Output
 */
 package graph2
 

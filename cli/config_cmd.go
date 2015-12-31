@@ -12,6 +12,7 @@ import (
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
+	"sourcegraph.com/sourcegraph/srclib/graph2"
 	"sourcegraph.com/sourcegraph/srclib/plan"
 	"sourcegraph.com/sourcegraph/srclib/scan"
 	"sourcegraph.com/sourcegraph/srclib/toolchain"
@@ -126,7 +127,7 @@ func (c *ConfigCmd2) Execute(args []string) error {
 		return err
 	}
 	for _, u := range units {
-		unitFile := plan.SourceUnitDataFilename2(unit.SourceUnit{}, u)
+		unitFile := plan.SourceUnitDataFilename2(graph2.Unit{}, u)
 		if err := rwvfs.MkdirAll(commitFS, filepath.Dir(unitFile)); err != nil {
 			return err
 		}
