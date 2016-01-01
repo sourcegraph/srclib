@@ -67,10 +67,6 @@ func (c *MakeCmd2) Execute(args []string) error {
 	_, err = os.Stdout.Write(mfData)
 	return err
 
-	/////////////////////
-	return nil //////////////// testcode
-	/////////////////////
-
 	goals := c.Args.Goals
 	if len(goals) == 0 {
 		if defaultRule := mf.DefaultRule(); defaultRule != nil {
