@@ -2,9 +2,21 @@ syntax = "proto3";
 package graph2;
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "sourcegraph.com/sourcegraph/srclib/ann/ann.proto";
+import "graph.proto";
 
 option (gogoproto.goproto_getters_all) = false;
 
 message Output {
-  // TODO
+  repeated Node def_nodes = 1;
+
+  repeated Node ref_nodes = 2;
+  repeated Edge ref_edges = 3;
+
+  repeated Node doc_nodes = 4;
+  repeated Edge doc_edges = 5;
+
+  repeated Edge other_edges = 6;
+
+  repeated ann.Ann anns = 7 [(gogoproto.jsontag) = "Anns,omitempty"];
 }

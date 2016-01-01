@@ -20,9 +20,9 @@ It has these top-level messages:
 	UnitInfo
 	Unit
 	NodeKey
-	DefNode
-	DocNode
-	RefNode
+	Node
+	DefData
+	DocData
 	Edge
 	Output
 */
@@ -259,24 +259,36 @@ func (m *NodeKey) Reset()         { *m = NodeKey{} }
 func (m *NodeKey) String() string { return proto.CompactTextString(m) }
 func (*NodeKey) ProtoMessage()    {}
 
-type DefNode struct {
-	NodeKey  `protobuf:"bytes,1,opt,name=key,embedded=key" json:""`
-	Name     string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Kind     string `protobuf:"bytes,3,opt,name=kind,proto3" json:"kind,omitempty"`
-	File     string `protobuf:"bytes,4,opt,name=file,proto3" json:"file,omitempty"`
-	Start    uint32 `protobuf:"varint,5,opt,name=start,proto3" json:"start,omitempty"`
-	End      uint32 `protobuf:"varint,6,opt,name=end,proto3" json:"end,omitempty"`
-	Exported bool   `protobuf:"varint,7,opt,name=exported,proto3" json:"exported,omitempty"`
-	Local    bool   `protobuf:"varint,8,opt,name=local,proto3" json:"local,omitempty"`
-	Test     bool   `protobuf:"varint,9,opt,name=test,proto3" json:"test,omitempty"`
-	Data     []byte `protobuf:"bytes,10,opt,name=data,proto3" json:"data,omitempty"`
+type Node struct {
+	NodeKey `protobuf:"bytes,1,opt,name=key,embedded=key" json:""`
+	Kind    string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
+	File    string `protobuf:"bytes,3,opt,name=file,proto3" json:"file,omitempty"`
+	Start   uint32 `protobuf:"varint,4,opt,name=start,proto3" json:"start,omitempty"`
+	End     uint32 `protobuf:"varint,5,opt,name=end,proto3" json:"end,omitempty"`
+	// Def is definition metadata associated with the Node if it has kind "def".
+	Def *DefData `protobuf:"bytes,6,opt,name=def" json:"def,omitempty"`
+	// Doc is documentation metadata associated with the Node if it has kind "doc".
+	Doc *DocData `protobuf:"bytes,7,opt,name=doc" json:"doc,omitempty"`
 }
 
-func (m *DefNode) Reset()         { *m = DefNode{} }
-func (m *DefNode) String() string { return proto.CompactTextString(m) }
-func (*DefNode) ProtoMessage()    {}
+func (m *Node) Reset()         { *m = Node{} }
+func (m *Node) String() string { return proto.CompactTextString(m) }
+func (*Node) ProtoMessage()    {}
 
-type DocNode struct {
+type DefData struct {
+	Name     string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Kind     string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
+	Exported bool   `protobuf:"varint,3,opt,name=exported,proto3" json:"exported,omitempty"`
+	Local    bool   `protobuf:"varint,4,opt,name=local,proto3" json:"local,omitempty"`
+	Test     bool   `protobuf:"varint,5,opt,name=test,proto3" json:"test,omitempty"`
+	Data     []byte `protobuf:"bytes,6,opt,name=data,proto3" json:"data,omitempty"`
+}
+
+func (m *DefData) Reset()         { *m = DefData{} }
+func (m *DefData) String() string { return proto.CompactTextString(m) }
+func (*DefData) ProtoMessage()    {}
+
+type DocData struct {
 	// Format is the the MIME-type that the documentation is stored in. Valid
 	// formats include 'text/html', 'text/plain', 'text/x-markdown', text/x-rst'.
 	Format string `protobuf:"bytes,1,opt,name=format,proto3" json:"format,omitempty"`
@@ -284,27 +296,16 @@ type DocNode struct {
 	Data string `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
 }
 
-func (m *DocNode) Reset()         { *m = DocNode{} }
-func (m *DocNode) String() string { return proto.CompactTextString(m) }
-func (*DocNode) ProtoMessage()    {}
-
-type RefNode struct {
-	NodeKey `protobuf:"bytes,1,opt,name=def,embedded=def" json:""`
-	File    string `protobuf:"bytes,2,opt,name=file,proto3" json:"file,omitempty"`
-	Start   uint32 `protobuf:"varint,3,opt,name=start,proto3" json:"start,omitempty"`
-	End     uint32 `protobuf:"varint,4,opt,name=end,proto3" json:"end,omitempty"`
-}
-
-func (m *RefNode) Reset()         { *m = RefNode{} }
-func (m *RefNode) String() string { return proto.CompactTextString(m) }
-func (*RefNode) ProtoMessage()    {}
+func (m *DocData) Reset()         { *m = DocData{} }
+func (m *DocData) String() string { return proto.CompactTextString(m) }
+func (*DocData) ProtoMessage()    {}
 
 // Edge describes the relationship between two nodes in the source graph.
 // These can extend across build units.
 type Edge struct {
-	Src  *NodeKey `protobuf:"bytes,1,opt,name=src" json:"src,omitempty"`
-	Dst  *NodeKey `protobuf:"bytes,2,opt,name=dst" json:"dst,omitempty"`
-	Kind string   `protobuf:"bytes,3,opt,name=kind,proto3" json:"kind,omitempty"`
+	Src  NodeKey `protobuf:"bytes,1,opt,name=src" json:""`
+	Dst  NodeKey `protobuf:"bytes,2,opt,name=dst" json:""`
+	Kind string  `protobuf:"bytes,3,opt,name=kind,proto3" json:"kind,omitempty"`
 }
 
 func (m *Edge) Reset()         { *m = Edge{} }

@@ -236,21 +236,31 @@ message NodeKey {
   string path = 2 [(gogoproto.jsontag) = "Path"];
 }
 
-message DefNode {
+message Node {
   NodeKey key = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true, (gogoproto.jsontag) = ""];
+  string kind = 2;
 
-  string name = 2;
-  string kind = 3;
-  string file = 4;
-  uint32 start = 5;
-  uint32 end = 6;
-  bool exported = 7;
-  bool local = 8;
-  bool test = 9;
-  bytes data = 10;
+  string file = 3;
+  uint32 start = 4;
+  uint32 end = 5;
+
+  // Def is definition metadata associated with the Node if it has kind "def".
+  DefData def = 6;
+
+  // Doc is documentation metadata associated with the Node if it has kind "doc".
+  DocData doc = 7;
 }
 
-message DocNode {
+message DefData {
+  string name = 1;
+  string kind = 2;
+  bool exported = 3;
+  bool local = 4;
+  bool test = 5;
+  bytes data = 6;
+}
+
+message DocData {
   // Format is the the MIME-type that the documentation is stored in. Valid
   // formats include 'text/html', 'text/plain', 'text/x-markdown', text/x-rst'.
   string format = 1;
@@ -259,17 +269,10 @@ message DocNode {
   string data = 2;
 }
 
-message RefNode {
-  NodeKey def = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true, (gogoproto.jsontag) = ""];
-  string file = 2;
-  uint32 start = 3;
-  uint32 end = 4;
-}
-
 // Edge describes the relationship between two nodes in the source graph.
 // These can extend across build units.
 message Edge {
-  NodeKey src = 1;
-  NodeKey dst = 2;
+  NodeKey src = 1 [(gogoproto.nullable) = false, (gogoproto.jsontag) = ""];
+  NodeKey dst = 2 [(gogoproto.nullable) = false, (gogoproto.jsontag) = ""];
   string kind = 3;
 }

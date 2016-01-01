@@ -9,6 +9,7 @@ import fmt "fmt"
 import math "math"
 
 // discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto"
+import ann "sourcegraph.com/sourcegraph/srclib/ann"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -16,6 +17,13 @@ var _ = fmt.Errorf
 var _ = math.Inf
 
 type Output struct {
+	DefNodes   []*Node    `protobuf:"bytes,1,rep,name=def_nodes" json:"def_nodes,omitempty"`
+	RefNodes   []*Node    `protobuf:"bytes,2,rep,name=ref_nodes" json:"ref_nodes,omitempty"`
+	RefEdges   []*Edge    `protobuf:"bytes,3,rep,name=ref_edges" json:"ref_edges,omitempty"`
+	DocNodes   []*Node    `protobuf:"bytes,4,rep,name=doc_nodes" json:"doc_nodes,omitempty"`
+	DocEdges   []*Edge    `protobuf:"bytes,5,rep,name=doc_edges" json:"doc_edges,omitempty"`
+	OtherEdges []*Edge    `protobuf:"bytes,6,rep,name=other_edges" json:"other_edges,omitempty"`
+	Anns       []*ann.Ann `protobuf:"bytes,7,rep,name=anns" json:"Anns,omitempty"`
 }
 
 func (m *Output) Reset()         { *m = Output{} }
