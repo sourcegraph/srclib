@@ -60,13 +60,6 @@ func (c *MakeCmd2) Execute(args []string) error {
 		return err
 	}
 
-	mfData, err := makex.Marshal(mf)
-	if err != nil {
-		return err
-	}
-	_, err = os.Stdout.Write(mfData)
-	return err
-
 	goals := c.Args.Goals
 	if len(goals) == 0 {
 		if defaultRule := mf.DefaultRule(); defaultRule != nil {
@@ -88,6 +81,7 @@ func (c *MakeCmd2) Execute(args []string) error {
 	if c.DryRun {
 		return mk.DryRun(os.Stdout)
 	}
+
 	err = mk.Run()
 	switch {
 	case c.Quiet:
