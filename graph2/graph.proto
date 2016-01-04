@@ -110,6 +110,15 @@ message TreeRev {
   string rev_type = 3;
 }
 
+// RawDep represents a raw dependency as it is defined in the build
+// system. This should include all the information that the build
+// system needs to fetch the dependency but does not necessarily
+// universally uniquely identify the dependency. For instance, in
+// Python, the raw dependency might be urllib3=0.1.0, but depending on
+// what PyPI index is used, the dependency could resolve to the
+// version of urllib3 hosted on http://pypi.python.org or somewhere
+// else (private codebases often point pip at a private Python package
+// index).
 message RawDep {
   string name = 1;
   string version = 2;
@@ -173,33 +182,21 @@ message Unit {
   // empty.
   string dir = 4;
 
-  // Dependencies is a list of dependencies that this source unit has. The
-  // schema for these dependencies is internal to the scanner that produced
-  // this source unit. The dependency resolver is expected to know how to
-  // interpret this schema.
-  //
-  // The dependency information stored in this field should be able to be very
-  // quickly determined by the scanner. The scanner should not perform any
-  // dependency resolution on these entries. This is because the scanner is
-  // run frequently and should execute very quickly, and dependency resolution
-  // is often slow (requiring network access, etc.).
-  repeated RawDep raw_deps = 5;
-
-  repeated Unit deps = 6;
+  repeated Dep deps = 5;
 
   // DerivedFrom is the Unit from which this Unit is derived. The build unit
   // composed of the pip package "django", for instance, is derived from the
   // corresponding source unit in the repository github.com/django/django.
-  Unit derived_from = 7;
+  Unit derived_from = 6;
 
   // Info is an optional field that contains additional information used to
   // display the source unit
-  UnitInfo info = 8;
+  UnitInfo info = 7;
 
   // Data is additional data dumped by the scanner about this source unit. It
   // typically holds information that the scanner wants to make available to
   // other components in the toolchain (grapher, dep resolver, etc.).
-  bytes data = 9;
+  bytes data = 8;
 
   /*
   // Config is an arbitrary key-value property map. The Config map from the
@@ -216,6 +213,19 @@ message Unit {
   // TODO(sqs): add a way to specify the toolchains and tools to use for
   // various tasks on this source unit
   */
+}
+
+// Resolution encapsulates all the information that srclib can know about a dependency.
+// If Dep is nil, then the dependency is unresolved.
+message Dep {
+  // Raw is the raw dependency as described by the build system.
+  RawDep raw = 1 [(gogoproto.nullable) = false];
+
+  // Dep is the build unit to which the raw dependency resolves.
+  Unit dep = 2;
+
+  // Err, if not nil, is the error encountered when attempting to resolve the dependency.
+  string err = 3;
 }
 
 message NodeKey {

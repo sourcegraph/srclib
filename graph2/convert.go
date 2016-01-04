@@ -32,7 +32,7 @@ func NewUnit(u *unit.SourceUnit) (*Unit, error) {
 		Globs:   u.Globs,
 		Files:   u.Files,
 		Dir:     u.Dir,
-		RawDeps: newDeps,
+		Deps:    newDeps,
 		Info: &UnitInfo{
 			NameInRepository: u.Info.NameInRepository,
 			GlobalName:       u.Info.GlobalName,
@@ -43,7 +43,7 @@ func NewUnit(u *unit.SourceUnit) (*Unit, error) {
 	}, nil
 }
 
-func convertDeps(oldDeps []interface{}) (newDeps []*RawDep, err error) {
+func convertDeps(oldDeps []interface{}) (newDeps []*Dep, err error) {
 	for _, dep := range oldDeps {
 		// TODO
 		switch dep.(type) {

@@ -19,6 +19,7 @@ It has these top-level messages:
 	UnitKey
 	UnitInfo
 	Unit
+	Dep
 	NodeKey
 	Node
 	DefData
@@ -143,6 +144,15 @@ func (m *TreeRev) Reset()         { *m = TreeRev{} }
 func (m *TreeRev) String() string { return proto.CompactTextString(m) }
 func (*TreeRev) ProtoMessage()    {}
 
+// RawDep represents a raw dependency as it is defined in the build
+// system. This should include all the information that the build
+// system needs to fetch the dependency but does not necessarily
+// universally uniquely identify the dependency. For instance, in
+// Python, the raw dependency might be urllib3=0.1.0, but depending on
+// what PyPI index is used, the dependency could resolve to the
+// version of urllib3 hosted on http://pypi.python.org or somewhere
+// else (private codebases often point pip at a private Python package
+// index).
 type RawDep struct {
 	Name    string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Version string `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`
@@ -208,35 +218,39 @@ type Unit struct {
 	Files []string `protobuf:"bytes,3,rep,name=files" json:"files,omitempty"`
 	// Dir is the root directory of this build unit. It is optional and maybe
 	// empty.
-	Dir string `protobuf:"bytes,4,opt,name=dir,proto3" json:"dir,omitempty"`
-	// Dependencies is a list of dependencies that this source unit has. The
-	// schema for these dependencies is internal to the scanner that produced
-	// this source unit. The dependency resolver is expected to know how to
-	// interpret this schema.
-	//
-	// The dependency information stored in this field should be able to be very
-	// quickly determined by the scanner. The scanner should not perform any
-	// dependency resolution on these entries. This is because the scanner is
-	// run frequently and should execute very quickly, and dependency resolution
-	// is often slow (requiring network access, etc.).
-	RawDeps []*RawDep `protobuf:"bytes,5,rep,name=raw_deps" json:"raw_deps,omitempty"`
-	Deps    []*Unit   `protobuf:"bytes,6,rep,name=deps" json:"deps,omitempty"`
+	Dir  string `protobuf:"bytes,4,opt,name=dir,proto3" json:"dir,omitempty"`
+	Deps []*Dep `protobuf:"bytes,5,rep,name=deps" json:"deps,omitempty"`
 	// DerivedFrom is the Unit from which this Unit is derived. The build unit
 	// composed of the pip package "django", for instance, is derived from the
 	// corresponding source unit in the repository github.com/django/django.
-	DerivedFrom *Unit `protobuf:"bytes,7,opt,name=derived_from" json:"derived_from,omitempty"`
+	DerivedFrom *Unit `protobuf:"bytes,6,opt,name=derived_from" json:"derived_from,omitempty"`
 	// Info is an optional field that contains additional information used to
 	// display the source unit
-	Info *UnitInfo `protobuf:"bytes,8,opt,name=info" json:"info,omitempty"`
+	Info *UnitInfo `protobuf:"bytes,7,opt,name=info" json:"info,omitempty"`
 	// Data is additional data dumped by the scanner about this source unit. It
 	// typically holds information that the scanner wants to make available to
 	// other components in the toolchain (grapher, dep resolver, etc.).
-	Data []byte `protobuf:"bytes,9,opt,name=data,proto3" json:"data,omitempty"`
+	Data []byte `protobuf:"bytes,8,opt,name=data,proto3" json:"data,omitempty"`
 }
 
 func (m *Unit) Reset()         { *m = Unit{} }
 func (m *Unit) String() string { return proto.CompactTextString(m) }
 func (*Unit) ProtoMessage()    {}
+
+// Resolution encapsulates all the information that srclib can know about a dependency.
+// If Dep is nil, then the dependency is unresolved.
+type Dep struct {
+	// Raw is the raw dependency as described by the build system.
+	Raw RawDep `protobuf:"bytes,1,opt,name=raw" json:"raw"`
+	// Dep is the build unit to which the raw dependency resolves.
+	Dep *Unit `protobuf:"bytes,2,opt,name=dep" json:"dep,omitempty"`
+	// Err, if not nil, is the error encountered when attempting to resolve the dependency.
+	Err string `protobuf:"bytes,3,opt,name=err,proto3" json:"err,omitempty"`
+}
+
+func (m *Dep) Reset()         { *m = Dep{} }
+func (m *Dep) String() string { return proto.CompactTextString(m) }
+func (*Dep) ProtoMessage()    {}
 
 type NodeKey struct {
 	// Unit is the build unit that defines this definition.

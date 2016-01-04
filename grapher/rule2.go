@@ -71,9 +71,9 @@ func (r *GraphUnitRule2) Recipes() []string {
 	}
 	safeCommand := util.SafeCommandName(srclib.CommandName)
 	return []string{
-		// fmt.Sprintf(`%s tool -v %q %q < $< | %s internal normalize-graph-data --unit-type %q --dir . 1> $@`, safeCommand, r.Tool.Toolchain, r.Tool.Subcmd+"2", safeCommand, r.Unit.UnitType),
+		// fmt.Sprintf(`%s tool %q %q < $< | %s internal normalize-graph-data --unit-type %q --dir . 1> $@`, safeCommand, r.Tool.Toolchain, r.Tool.Subcmd+"2", safeCommand, r.Unit.UnitType),
 
 		// TODO: add back in normalization
-		fmt.Sprintf(`%s tool -v %q %q < $< 1> $@`, safeCommand, r.Tool.Toolchain, r.Tool.Subcmd+"2"),
+		fmt.Sprintf(`%s tool %q %q < $< 1> $@`, safeCommand, r.Tool.Toolchain, r.Tool.Subcmd+"2"),
 	}
 }
