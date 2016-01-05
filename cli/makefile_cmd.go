@@ -18,12 +18,19 @@ func init() {
 	}
 }
 
-type MakefileCmd struct{}
+type MakefileCmd struct {
+	Schema string `long:"schema" description:"output schema version"`
+}
 
 var makefileCmd MakefileCmd
 
-func (c *MakefileCmd) Execute(args []string) error {
-	mf, err := CreateMakefile()
+func (c *MakefileCmd) Execute(args []string) (err error) {
+	var mf *makex.Makefile
+	if c.Schema == "2" {
+		mf, err = CreateMakefile2()
+	} else {
+		mf, err = CreateMakefile()
+	}
 	if err != nil {
 		return err
 	}
