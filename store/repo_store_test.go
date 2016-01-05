@@ -263,7 +263,7 @@ func testRepoStore_Defs_ByCommitIDs_ByFile(t *testing.T, rs RepoStoreImporter) {
 	}
 
 	c_unitFilesIndex_getByPath.set(0)
-	defs, err := rs.Defs(ByCommitIDs("c2"), ByFiles("f1"))
+	defs, err := rs.Defs(ByCommitIDs("c2"), ByFiles(false, "f1"))
 	if err != nil {
 		t.Fatalf("%s: Defs: %s", rs, err)
 	}
