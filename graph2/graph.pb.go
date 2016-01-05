@@ -243,7 +243,7 @@ type Dep struct {
 	// Raw is the raw dependency as described by the build system.
 	Raw RawDep `protobuf:"bytes,1,opt,name=raw" json:"raw"`
 	// Dep is the build unit to which the raw dependency resolves.
-	Dep *Unit `protobuf:"bytes,2,opt,name=dep" json:"dep,omitempty"`
+	Dep *UnitKey `protobuf:"bytes,2,opt,name=dep" json:"dep,omitempty"`
 	// Err, if not nil, is the error encountered when attempting to resolve the dependency.
 	Err string `protobuf:"bytes,3,opt,name=err,proto3" json:"err,omitempty"`
 }

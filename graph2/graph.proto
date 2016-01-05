@@ -222,7 +222,7 @@ message Dep {
   RawDep raw = 1 [(gogoproto.nullable) = false];
 
   // Dep is the build unit to which the raw dependency resolves.
-  Unit dep = 2;
+  UnitKey dep = 2;
 
   // Err, if not nil, is the error encountered when attempting to resolve the dependency.
   string err = 3;
