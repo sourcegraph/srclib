@@ -1,10 +1,12 @@
 package cli
 
 import (
+	"errors"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"github.com/alexsaveliev/go-colorable-wrapper"
@@ -43,6 +45,8 @@ type MakeCmd struct {
 	Verbose bool `short:"v" long:"verbose" description:"show more verbose output"`
 	DryRun  bool `short:"n" long:"dry-run" description:"print what would be done and exit"`
 
+	Parallel int `short:"j" long:"jobs" description:"allow N parallel jobs" value-name:"N" default-mask:"GOMAXPROCS"`
+
 	Dir Directory `short:"C" long:"directory" description:"change to DIR before doing anything" value-name:"DIR"`
 
 	Args struct {
@@ -53,6 +57,13 @@ type MakeCmd struct {
 var makeCmd MakeCmd
 
 func (c *MakeCmd) Execute(args []string) error {
+	if c.Parallel == 0 {
+		c.Parallel = runtime.GOMAXPROCS(0)
+	}
+	if c.Parallel <= 0 {
+		return errors.New("-j/--jobs (parallelism) must be > 0")
+	}
+
 	if c.Dir != "" {
 		if err := os.Chdir(c.Dir.String()); err != nil {
 			return err
@@ -72,6 +83,7 @@ func (c *MakeCmd) Execute(args []string) error {
 	}
 
 	mkConf := &makex.Default
+	mkConf.ParallelJobs = c.Parallel
 	mk := mkConf.NewMaker(mf, goals...)
 	mk.Verbose = c.Verbose
 
