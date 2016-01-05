@@ -215,7 +215,7 @@ func testTreeStore_Units_ByFile(t *testing.T, ts TreeStoreImporter) {
 	}
 
 	c_unitFilesIndex_getByPath.set(0)
-	units, err := ts.Units(ByFiles("f1"))
+	units, err := ts.Units(ByFiles(false, "f1"))
 	if err != nil {
 		t.Errorf("%s: Units(ByFiles f1): %s", ts, err)
 	}
@@ -231,7 +231,7 @@ func testTreeStore_Units_ByFile(t *testing.T, ts TreeStoreImporter) {
 	}
 
 	c_unitFilesIndex_getByPath.set(0)
-	units2, err := ts.Units(ByFiles("f2"))
+	units2, err := ts.Units(ByFiles(false, "f2"))
 	if err != nil {
 		t.Errorf("%s: Units(ByFiles f2): %s", ts, err)
 	}
@@ -584,7 +584,7 @@ func testTreeStore_Defs_ByFiles(t *testing.T, ts TreeStoreImporter) {
 	}
 
 	c_unitFilesIndex_getByPath.set(0)
-	defs, err := ts.Defs(ByFiles("f2"))
+	defs, err := ts.Defs(ByFiles(false, "f2"))
 	if err != nil {
 		t.Errorf("%s: Defs(ByFiles f2): %s", ts, err)
 	}
@@ -699,7 +699,7 @@ func testTreeStore_Refs_ByFiles(t *testing.T, ts TreeStoreImporter) {
 	for file, wantRefs := range refsByFile {
 		c_unitStores_Refs_last_numUnitsQueried.set(0)
 		c_refFileIndex_getByFile.set(0)
-		refs, err := ts.Refs(ByFiles(file))
+		refs, err := ts.Refs(ByFiles(false, file))
 		if err != nil {
 			t.Fatalf("%s: Refs(ByFiles %s): %s", ts, file, err)
 		}

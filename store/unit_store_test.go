@@ -333,7 +333,7 @@ func testUnitStore_Refs_ByFiles(t *testing.T, us UnitStoreImporter) {
 
 	for file, wantRefs := range refsByFile {
 		c_refFileIndex_getByFile.set(0)
-		refs, err := us.Refs(ByFiles(file))
+		refs, err := us.Refs(ByFiles(false, file))
 		if err != nil {
 			t.Fatalf("%s: Refs(ByFiles %s): %s", us, file, err)
 		}
