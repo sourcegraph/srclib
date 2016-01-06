@@ -25,7 +25,7 @@ func makeGraphRules2(c *config.Tree2, dataDir string, existing []makex.Rule) ([]
 	var rules []makex.Rule
 	for _, u := range c.Units {
 		var toolRef *srclib.ToolRef = nil
-		// toolRef := u.Ops[op]
+		toolRef := u.Ops[op]
 		if toolRef == nil {
 			choice, err := toolchain.ChooseTool(graphOp, u.UnitType)
 			if err != nil {
@@ -73,7 +73,7 @@ func (r *GraphUnitRule2) Recipes() []string {
 	return []string{
 		// fmt.Sprintf(`%s tool %q %q < $< | %s internal normalize-graph-data --unit-type %q --dir . 1> $@`, safeCommand, r.Tool.Toolchain, r.Tool.Subcmd+"2", safeCommand, r.Unit.UnitType),
 
-		// TODO: add back in normalization
+		// TODO(beyang): add back in normalization
 		fmt.Sprintf(`%s tool %q %q < $< 1> $@`, safeCommand, r.Tool.Toolchain, r.Tool.Subcmd+"2"),
 	}
 }

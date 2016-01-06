@@ -24,7 +24,7 @@ func makeDepRules2(c *config.Tree2, dataDir string, existing []makex.Rule) ([]ma
 	var rules []makex.Rule
 	for _, u := range c.Units {
 		var toolRef *srclib.ToolRef = nil
-		// toolRef := u.Ops[op]
+		toolRef := u.Ops[op]
 		if toolRef == nil {
 			choice, err := toolchain.ChooseTool(depresolveOp, u.UnitType)
 			if err != nil {

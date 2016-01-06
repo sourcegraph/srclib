@@ -35,6 +35,7 @@ import math "math"
 
 // discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto"
 import pbtypes "sourcegraph.com/sqs/pbtypes"
+import srclib "sourcegraph.com/sourcegraph/srclib"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -217,6 +218,11 @@ type Unit struct {
 	// typically holds information that the scanner wants to make available to
 	// other components in the toolchain (grapher, dep resolver, etc.).
 	Data []byte `protobuf:"bytes,8,opt,name=data,proto3" json:"data,omitempty"`
+	// Ops enumerates the operations that should be performed on this source
+	// unit. Each key is the name of an operation, and the value is the tool to
+	// use to perform that operation. If the value is nil, the tool is chosen
+	// automatically according to the user's configuration.
+	Ops map[string]*srclib.ToolRef `protobuf:"bytes,9,rep,name=Ops" json:"Ops,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value"`
 }
 
 func (m *Unit) Reset()         { *m = Unit{} }
