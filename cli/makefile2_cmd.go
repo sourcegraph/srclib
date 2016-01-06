@@ -14,7 +14,7 @@ func init() {
 		_, err := cli.AddCommand("makefile",
 			"prints the Makefile that the `make` subcommand executes",
 			"The makefile command prints the Makefile that the `make` subcommand will execute.",
-			&makefileCmd,
+			&makefileCmd2,
 		)
 		if err != nil {
 			log.Fatal(err)
@@ -22,12 +22,12 @@ func init() {
 	})
 }
 
-type MakefileCmd struct{}
+type MakefileCmd2 struct{}
 
-var makefileCmd MakefileCmd
+var makefileCmd2 MakefileCmd2
 
-func (c *MakefileCmd) Execute(args []string) (err error) {
-	mf, err := CreateMakefile()
+func (c *MakefileCmd2) Execute(args []string) (err error) {
+	mf, err := CreateMakefile2()
 	if err != nil {
 		return err
 	}

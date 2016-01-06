@@ -8,20 +8,20 @@ import (
 
 	"github.com/alexsaveliev/go-colorable-wrapper"
 	"sourcegraph.com/sourcegraph/go-flags"
-
-	"sourcegraph.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/plan"
+
+	"sourcegraph.com/sourcegraph/makex"
 )
 
 func init() {
 	cliInit = append(cliInit, func(cli *flags.Command) {
-		_, err := cli.AddCommand("make",
+		_, err := cli.AddCommand("make2",
 			"plans and executes plan",
 			`Generates a plan (in Makefile form, in memory) for analyzing the tree and executes the plan. `,
-			&makeCmd,
+			&makeCmd2,
 		)
 		if err != nil {
 			log.Fatal(err)
@@ -29,7 +29,7 @@ func init() {
 	})
 }
 
-type MakeCmd struct {
+type MakeCmd2 struct {
 	Quiet  bool `short:"q" long:"quiet" description:"silence all output"`
 	DryRun bool `short:"n" long:"dry-run" description:"print what would be done and exit"`
 
@@ -40,16 +40,16 @@ type MakeCmd struct {
 	} `positional-args:"yes"`
 }
 
-var makeCmd MakeCmd
+var makeCmd2 MakeCmd2
 
-func (c *MakeCmd) Execute(args []string) error {
+func (c *MakeCmd2) Execute(args []string) error {
 	if c.Dir != "" {
 		if err := os.Chdir(c.Dir.String()); err != nil {
 			return err
 		}
 	}
 
-	mf, err := CreateMakefile()
+	mf, err := CreateMakefile2()
 	if err != nil {
 		return err
 	}
@@ -75,6 +75,7 @@ func (c *MakeCmd) Execute(args []string) error {
 	if c.DryRun {
 		return mk.DryRun(os.Stdout)
 	}
+
 	err = mk.Run()
 	switch {
 	case c.Quiet:
@@ -90,7 +91,7 @@ func (c *MakeCmd) Execute(args []string) error {
 // CreateMakefile creates a Makefile to build a tree. The cwd should
 // be the root of the tree you want to make (due to some probably
 // unnecessary assumptions that CreateMaker makes).
-func CreateMakefile() (*makex.Makefile, error) {
+func CreateMakefile2() (*makex.Makefile, error) {
 	localRepo, err := OpenRepo(".")
 	if err != nil {
 		return nil, err
@@ -100,17 +101,17 @@ func CreateMakefile() (*makex.Makefile, error) {
 		return nil, err
 	}
 
-	treeConfig, err := config.ReadCached(buildStore.Commit(localRepo.CommitID))
+	config, err := config.ReadCached2(buildStore.Commit(localRepo.CommitID))
 	if err != nil {
 		return nil, err
 	}
-	if len(treeConfig.SourceUnits) == 0 {
+	if len(config.Units) == 0 {
 		log.Printf("No source unit files found. Did you mean to run `%s config`? (This is not an error; it just means that srclib didn't find anything to build or analyze here.)", srclib.CommandName)
 	}
 
 	// TODO(sqs): buildDataDir is hardcoded.
 	buildDataDir := filepath.Join(buildstore.BuildDataDirName, localRepo.CommitID)
-	mf, err := plan.CreateMakefile(buildDataDir, buildStore, localRepo.VCSType, treeConfig)
+	mf, err := plan.CreateMakefile2(buildDataDir, buildStore, localRepo.VCSType, config)
 	if err != nil {
 		return nil, err
 	}
