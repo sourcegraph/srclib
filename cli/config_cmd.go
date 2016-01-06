@@ -9,6 +9,8 @@ import (
 	"path/filepath"
 	"sort"
 
+	"sourcegraph.com/sourcegraph/go-flags"
+
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
@@ -21,9 +23,10 @@ import (
 )
 
 func init() {
-	c, err := CLI.AddCommand("config",
-		"reads & scans for project configuration",
-		`Produces a configuration file suitable for building the repository or directory tree rooted at DIR (or the current directory if not specified).
+	cliInit = append(cliInit, func(cli *flags.Command) {
+		c, err := cli.AddCommand("config",
+			"reads & scans for project configuration",
+			`Produces a configuration file suitable for building the repository or directory tree rooted at DIR (or the current directory if not specified).
 
 The steps are:
 
@@ -33,16 +36,16 @@ The steps are:
 
 3. Scan for source units in the directory tree rooted at the current directory (or the root of the repository containing the current directory), using the scanners specified in either the user srclib config or the Srcfile (or otherwise the defaults).
 `,
-		&configCmd,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
-	c.Aliases = []string{"c"}
+			&configCmd,
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+		c.Aliases = []string{"c"}
 
-	c2, err := CLI.AddCommand("config2",
-		"reads & scans for project configuration",
-		`Produces a configuration file suitable for building the repository or directory tree rooted at DIR (or the current directory if not specified).
+		c2, err := cli.AddCommand("config2",
+			"reads & scans for project configuration",
+			`Produces a configuration file suitable for building the repository or directory tree rooted at DIR (or the current directory if not specified).
 
 The steps are:
 
@@ -52,12 +55,13 @@ The steps are:
 
 3. Scan for source units in the directory tree rooted at the current directory (or the root of the repository containing the current directory), using the scanners specified in either the user srclib config or the Srcfile (or otherwise the defaults).
 `,
-		&configCmd2,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
-	c2.Aliases = []string{"c2"}
+			&configCmd2,
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+		c2.Aliases = []string{"c2"}
+	})
 }
 
 // getInitialConfig gets the initial config (i.e., the config that comes solely
