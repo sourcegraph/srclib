@@ -10,16 +10,8 @@ import (
 	"github.com/sqs/fileset"
 
 	"sourcegraph.com/sourcegraph/srclib/ann"
-	"sourcegraph.com/sourcegraph/srclib/config"
 	"sourcegraph.com/sourcegraph/srclib/graph"
-	"sourcegraph.com/sourcegraph/srclib/unit"
 )
-
-type Grapher interface {
-	Graph(dir string, unit *unit.SourceUnit, c *config.Repository) (*graph.Output, error)
-}
-
-// TODO(sqs): add grapher validation of output
 
 func ensureOffsetsAreByteOffsets(dir string, output *graph.Output) {
 	fset := fileset.NewFileSet()
