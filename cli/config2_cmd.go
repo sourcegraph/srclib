@@ -7,21 +7,19 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"sort"
 
 	"sourcegraph.com/sourcegraph/go-flags"
 
 	"sourcegraph.com/sourcegraph/rwvfs"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 	"sourcegraph.com/sourcegraph/srclib/config"
+	"sourcegraph.com/sourcegraph/srclib/graph2"
 	"sourcegraph.com/sourcegraph/srclib/plan"
-
-	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
 func init() {
 	cliInit = append(cliInit, func(cli *flags.Command) {
-		c, err := cli.AddCommand("config",
+		c, err := cli.AddCommand("config2",
 			"reads & scans for project configuration",
 			`Produces a configuration file suitable for building the repository or directory tree rooted at DIR (or the current directory if not specified).
 
@@ -33,27 +31,22 @@ The steps are:
 
 3. Scan for source units in the directory tree rooted at the current directory (or the root of the repository containing the current directory), using the scanners specified in either the user srclib config or the Srcfile (or otherwise the defaults).
 `,
-			&configCmd,
+			&configCmd2,
 		)
 		if err != nil {
 			log.Fatal(err)
 		}
-		c.Aliases = []string{"c"}
+		c.Aliases = []string{"c2"}
 	})
 }
 
 // getInitialConfig gets the initial config (i.e., the config that comes solely
 // from the Srcfile, if any, and the external user config, before running the
 // scanners).
-func getInitialConfig(dir string) (*config.Repository, error) {
-	r, err := OpenRepo(dir)
+func getInitialConfig2(dir string) (*config.Tree2, error) {
+	cfg, err := config.ReadTreeConfig(dir)
 	if err != nil {
-		return nil, err
-	}
-
-	cfg, err := config.ReadRepository(r.RootDir)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read repository at %s: %s", r.RootDir, err)
+		return nil, fmt.Errorf("failed to read repository at %s: %s", dir, err)
 	}
 
 	if cfg.Scanners == nil {
@@ -67,7 +60,7 @@ func getInitialConfig(dir string) (*config.Repository, error) {
 	return cfg, nil
 }
 
-type ConfigCmd struct {
+type ConfigCmd2 struct {
 	Output struct {
 		Output string `short:"o" long:"output" description:"output format" default:"text" value-name:"text|json"`
 	} `group:"output"`
@@ -81,9 +74,9 @@ type ConfigCmd struct {
 	w io.Writer // output stream to print to (defaults to os.Stdout)
 }
 
-var configCmd ConfigCmd
+var configCmd2 ConfigCmd2
 
-func (c *ConfigCmd) Execute(args []string) error {
+func (c *ConfigCmd2) Execute(args []string) error {
 	if c.w == nil {
 		c.w = os.Stdout
 	}
@@ -91,35 +84,40 @@ func (c *ConfigCmd) Execute(args []string) error {
 		c.w = nopWriteCloser{}
 	}
 
-	cfg, err := getInitialConfig(c.Args.Dir.String())
+	cfg, err := getInitialConfig2(c.Args.Dir.String())
 	if err != nil {
 		return err
 	}
 
-	if err := scanUnitsIntoConfig(cfg, c.Quiet); err != nil {
+	if err := scanUnitsIntoConfig2(cfg, c.Quiet); err != nil {
 		return fmt.Errorf("failed to scan for source units: %s", err)
 	}
 
-	localRepo, err := OpenRepo(c.Args.Dir.String())
+	treeCache, err := OpenTreeCache(c.Args.Dir.String(), "")
 	if err != nil {
-		return fmt.Errorf("failed to open repo: %s", err)
+		return fmt.Errorf("failed to open source tree: %s", err)
 	}
-	buildStore, err := buildstore.LocalRepo(localRepo.RootDir)
+	if treeCache.TreeType == "" {
+		return fmt.Errorf("Could not determine type of source tree. Generic source trees are not yet supported.")
+	} else if treeCache.TreeType != "git" && treeCache.TreeType != "hg" {
+		return fmt.Errorf("Source tree type %s not yet supported", treeCache.TreeType)
+	}
+	buildStore, err := buildstore.LocalRepo(treeCache.RootDir)
 	if err != nil {
 		return err
 	}
-	commitFS := buildStore.Commit(localRepo.CommitID)
+	versionFS := buildStore.Commit(treeCache.Version)
 
 	// Write source units to build cache.
-	if err := rwvfs.MkdirAll(commitFS, "."); err != nil {
+	if err := rwvfs.MkdirAll(versionFS, "."); err != nil {
 		return err
 	}
-	for _, u := range cfg.SourceUnits {
-		unitFile := plan.SourceUnitDataFilename(unit.SourceUnit{}, u)
-		if err := rwvfs.MkdirAll(commitFS, filepath.Dir(unitFile)); err != nil {
+	for _, u := range cfg.Units {
+		unitFile := plan.SourceUnitDataFilename2(graph2.Unit{}, u)
+		if err := rwvfs.MkdirAll(versionFS, filepath.Dir(unitFile)); err != nil {
 			return err
 		}
-		f, err := commitFS.Create(unitFile)
+		f, err := versionFS.Create(unitFile)
 		if err != nil {
 			return err
 		}
@@ -142,9 +140,9 @@ func (c *ConfigCmd) Execute(args []string) error {
 		}
 		fmt.Fprintln(c.w)
 
-		fmt.Fprintf(c.w, "SOURCE UNITS (%d)\n", len(cfg.SourceUnits))
-		for _, u := range cfg.SourceUnits {
-			fmt.Fprintf(c.w, " - %s: %s\n", u.Type, u.Name)
+		fmt.Fprintf(c.w, "SOURCE UNITS (%d)\n", len(cfg.Units))
+		for _, u := range cfg.Units {
+			fmt.Fprintf(c.w, " - %s: %s\n", u.UnitType, u.UnitName)
 		}
 		fmt.Fprintln(c.w)
 
@@ -155,20 +153,4 @@ func (c *ConfigCmd) Execute(args []string) error {
 	}
 
 	return nil
-}
-
-func sortedMap(m map[string]interface{}) [][2]interface{} {
-	keys := make([]string, len(m))
-	i := 0
-	for k := range m {
-		keys[i] = k
-		i++
-	}
-	sort.Strings(keys)
-
-	sorted := make([][2]interface{}, len(keys))
-	for i, k := range keys {
-		sorted[i] = [2]interface{}{k, m[k]}
-	}
-	return sorted
 }

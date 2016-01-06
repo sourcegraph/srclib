@@ -1,6 +1,10 @@
 package graph2
 
-import "sourcegraph.com/sourcegraph/srclib/buildstore"
+import (
+	"fmt"
+
+	"sourcegraph.com/sourcegraph/srclib/buildstore"
+)
 
 func init() {
 	buildstore.RegisterDataType("unit2", Unit{})
@@ -20,3 +24,6 @@ func NewNodeKey(genus, uri, version, uname, utyp, path string) NodeKey {
 		Path: path,
 	}
 }
+
+// ID returns the build unit's unique ID within the source tree.
+func (u *Unit) ID() string { return fmt.Sprintf("{%s %s}", u.UnitType, u.UnitName) }
