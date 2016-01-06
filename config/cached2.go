@@ -16,7 +16,7 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/graph2"
 )
 
-// ReadCached reads a Tree's configuration from all of its source unit
+// ReadCached2 reads a Tree's configuration from all of its build unit
 // definition files (which may either be in a local VFS rooted at a
 // .srclib-cache/<COMMITID> dir, or a remote VFS). It does not read
 // the Srcfile; the Srcfile's directives are already accounted for in

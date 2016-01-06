@@ -17,6 +17,9 @@ type TreeCache struct {
 	Version string
 }
 
+// OpenTreeCache returns a handle to the tree cache rooted at
+// directory dir. The tree type can optionally be passed as an
+// argument (the tree type can only be inferred in some cases).
 func OpenTreeCache(dir, treeType string) (*TreeCache, error) {
 	if repo, err := OpenRepo(dir); err == nil {
 		if treeType == "" {

@@ -17,8 +17,8 @@ It has these top-level messages:
 	TreeRev
 	RawDep
 	UnitKey
-	UnitInfo
 	Unit
+	UnitInfo
 	Dep
 	NodeKey
 	Node
@@ -63,12 +63,12 @@ func (m *RepoPermissions) String() string { return proto.CompactTextString(m) }
 func (*RepoPermissions) ProtoMessage()    {}
 
 type TreeKey struct {
-	// TreeType is the type of source tree
+	// TreeType is the type of source tree.
 	// (git, hg, build-system specific like pip or npm, ftp)
 	TreeType string `protobuf:"bytes,1,opt,name=tree_type,proto3" json:"tree_type,omitempty"`
-	// A URL of one of the following forms:
-	//   src://{hostname}/{path} (absolute)
-	//   src:///{path} (relative)
+	// URI uniquely identifies a source tree among the universe of
+	// source trees of the same type. It also typically encodes how the
+	// source tree should be fetched.
 	URI string `protobuf:"bytes,2,opt,name=uri,proto3" json:"uri,omitempty"`
 }
 
@@ -76,8 +76,14 @@ func (m *TreeKey) Reset()         { *m = TreeKey{} }
 func (m *TreeKey) String() string { return proto.CompactTextString(m) }
 func (*TreeKey) ProtoMessage()    {}
 
+// Tree is a source tree, the outermost container of code in the
+// srclib schema. Examples include VCS repositories and package
+// manager packages/modules. A source tree contains zero or more build
+// units.
 type Tree struct {
-	TreeKey   `protobuf:"bytes,1,opt,name=key,embedded=key" json:""`
+	TreeKey `protobuf:"bytes,1,opt,name=key,embedded=key" json:""`
+	// FetchURLs are alternative URLs (other than the primary URI) from
+	// which the source tree can be fetched.
 	FetchUrls []string `protobuf:"bytes,2,rep,name=fetch_urls" json:"fetch_urls,omitempty"`
 	// Origin is populated for repos fetched via federation or
 	// discovery. It is the hostname of the host that owns the repo.
@@ -162,49 +168,29 @@ func (m *RawDep) Reset()         { *m = RawDep{} }
 func (m *RawDep) String() string { return proto.CompactTextString(m) }
 func (*RawDep) ProtoMessage()    {}
 
+// UnitKey universally uniquely identifies a build unit.
 type UnitKey struct {
 	TreeKey `protobuf:"bytes,1,opt,name=key,embedded=key" json:""`
 	// Version is the build-system-level version string. It can also be a commit
 	// ID, but no client code should depend on implied VCS semantics (e.g., never
 	// run `git clone buildUnit.Version`).
-	Version  string `protobuf:"bytes,2,opt,name=Version,proto3" json:"Version,omitempty"`
-	UnitName string `protobuf:"bytes,3,opt,name=UnitName,proto3" json:"UnitName,omitempty"`
-	UnitType string `protobuf:"bytes,4,opt,name=UnitType,proto3" json:"UnitType,omitempty"`
+	Version string `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`
+	// UnitName is the name of the build unit and should uniquely
+	// identify the unit among other units of the same type within a
+	// given source tree.
+	UnitName string `protobuf:"bytes,3,opt,name=unit_name,proto3" json:"unit_name,omitempty"`
+	// UnitType is the type of build unit and identifies which build
+	// system should be used to manage and process this unit.
+	UnitType string `protobuf:"bytes,4,opt,name=unit_type,proto3" json:"unit_type,omitempty"`
 }
 
 func (m *UnitKey) Reset()         { *m = UnitKey{} }
 func (m *UnitKey) String() string { return proto.CompactTextString(m) }
 func (*UnitKey) ProtoMessage()    {}
 
-type UnitInfo struct {
-	// NameInRepository is the name to use when displaying the source unit in
-	// the context of the repository in which it is defined. This name
-	// typically needs less qualification than GlobalName.
-	//
-	// For example, a Go package's GlobalName is its repository URI basename
-	// plus its directory path within the repository (e.g.,
-	// "github.com/user/repo/x/y"'s NameInRepository is "repo/x/y"). Because npm
-	// and pip packages are named globally, their name is probably appropriate
-	// to use as both the unit's NameInRepository and GlobalName.
-	NameInRepository string `protobuf:"bytes,1,opt,name=NameInRepository,proto3" json:"NameInRepository,omitempty"`
-	// GlobalName is the name to use when displaying the source unit *OUTSIDE OF*
-	// the context of the repository in which it is defined.
-	//
-	// For example, a Go package's GlobalName is its full import path. Because
-	// npm and pip packages are named globally, their name is probably
-	// appropriate to use as both the unit's NameInRepository and GlobalName.
-	GlobalName string `protobuf:"bytes,2,opt,name=GlobalName,proto3" json:"GlobalName,omitempty"`
-	// Description is a short (~1-sentence) description of the source unit.
-	Description string `protobuf:"bytes,3,opt,name=Description,proto3" json:"Description,omitempty"`
-	// TypeName is the human-readable name of the type of source unit; e.g., "Go
-	// package".
-	TypeName string `protobuf:"bytes,4,opt,name=TypeName,proto3" json:"TypeName,omitempty"`
-}
-
-func (m *UnitInfo) Reset()         { *m = UnitInfo{} }
-func (m *UnitInfo) String() string { return proto.CompactTextString(m) }
-func (*UnitInfo) ProtoMessage()    {}
-
+// Unit defines a build unit, a unit of buildable source code upon
+// which other units can depend. These are typically defined by
+// configuration files used in build tools and package managers.
 type Unit struct {
 	UnitKey `protobuf:"bytes,1,opt,name=key,embedded=key" json:""`
 	// Globs is a list of patterns that match files that make up this source
@@ -237,6 +223,36 @@ func (m *Unit) Reset()         { *m = Unit{} }
 func (m *Unit) String() string { return proto.CompactTextString(m) }
 func (*Unit) ProtoMessage()    {}
 
+// UnitInfo encapsulates metadata about a build unit.
+type UnitInfo struct {
+	// NameInRepository is the name to use when displaying the source unit in
+	// the context of the repository in which it is defined. This name
+	// typically needs less qualification than GlobalName.
+	//
+	// For example, a Go package's GlobalName is its repository URI basename
+	// plus its directory path within the repository (e.g.,
+	// "github.com/user/repo/x/y"'s NameInRepository is "repo/x/y"). Because npm
+	// and pip packages are named globally, their name is probably appropriate
+	// to use as both the unit's NameInRepository and GlobalName.
+	NameInRepository string `protobuf:"bytes,1,opt,name=NameInRepository,proto3" json:"NameInRepository,omitempty"`
+	// GlobalName is the name to use when displaying the source unit *OUTSIDE OF*
+	// the context of the repository in which it is defined.
+	//
+	// For example, a Go package's GlobalName is its full import path. Because
+	// npm and pip packages are named globally, their name is probably
+	// appropriate to use as both the unit's NameInRepository and GlobalName.
+	GlobalName string `protobuf:"bytes,2,opt,name=GlobalName,proto3" json:"GlobalName,omitempty"`
+	// Description is a short (~1-sentence) description of the source unit.
+	Description string `protobuf:"bytes,3,opt,name=Description,proto3" json:"Description,omitempty"`
+	// TypeName is the human-readable name of the type of source unit; e.g., "Go
+	// package".
+	TypeName string `protobuf:"bytes,4,opt,name=TypeName,proto3" json:"TypeName,omitempty"`
+}
+
+func (m *UnitInfo) Reset()         { *m = UnitInfo{} }
+func (m *UnitInfo) String() string { return proto.CompactTextString(m) }
+func (*UnitInfo) ProtoMessage()    {}
+
 // Resolution encapsulates all the information that srclib can know about a dependency.
 // If Dep is nil, then the dependency is unresolved.
 type Dep struct {
@@ -252,6 +268,7 @@ func (m *Dep) Reset()         { *m = Dep{} }
 func (m *Dep) String() string { return proto.CompactTextString(m) }
 func (*Dep) ProtoMessage()    {}
 
+// NodeKey uniquely identifies a node in the code graph.
 type NodeKey struct {
 	// Unit is the build unit that defines this definition.
 	UnitKey `protobuf:"bytes,1,opt,name=unit,embedded=unit" json:""`
@@ -273,6 +290,7 @@ func (m *NodeKey) Reset()         { *m = NodeKey{} }
 func (m *NodeKey) String() string { return proto.CompactTextString(m) }
 func (*NodeKey) ProtoMessage()    {}
 
+// Node is a node in the code graph extracted from the source code.
 type Node struct {
 	NodeKey `protobuf:"bytes,1,opt,name=key,embedded=key" json:""`
 	Kind    string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
@@ -289,6 +307,9 @@ func (m *Node) Reset()         { *m = Node{} }
 func (m *Node) String() string { return proto.CompactTextString(m) }
 func (*Node) ProtoMessage()    {}
 
+// DefData is additional data associated with a Node that represents a
+// definition (e.g., a function, method, type, and package definition)
+// in the source code.
 type DefData struct {
 	Name     string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Kind     string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
@@ -302,6 +323,8 @@ func (m *DefData) Reset()         { *m = DefData{} }
 func (m *DefData) String() string { return proto.CompactTextString(m) }
 func (*DefData) ProtoMessage()    {}
 
+// DocData is additional data associated with a Node that represents a
+// comment, docstring, or other piece of documentation.
 type DocData struct {
 	// Format is the the MIME-type that the documentation is stored in. Valid
 	// formats include 'text/html', 'text/plain', 'text/x-markdown', text/x-rst'.

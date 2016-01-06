@@ -20,19 +20,25 @@ message RepoPermissions {
 }
 
 message TreeKey {
-  // TreeType is the type of source tree
+  // TreeType is the type of source tree.
   // (git, hg, build-system specific like pip or npm, ftp)
   string tree_type = 1;
 
-  // A URL of one of the following forms:
-  //   src://{hostname}/{path} (absolute)
-  //   src:///{path} (relative)
+  // URI uniquely identifies a source tree among the universe of
+  // source trees of the same type. It also typically encodes how the
+  // source tree should be fetched.
   string uri = 2 [(gogoproto.customname) = "URI"];
 }
 
+// Tree is a source tree, the outermost container of code in the
+// srclib schema. Examples include VCS repositories and package
+// manager packages/modules. A source tree contains zero or more build
+// units.
 message Tree {
   TreeKey key = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true, (gogoproto.jsontag) = ""];
 
+  // FetchURLs are alternative URLs (other than the primary URI) from
+  // which the source tree can be fetched.
   repeated string fetch_urls = 2;
 
   // Origin is populated for repos fetched via federation or
@@ -124,46 +130,28 @@ message RawDep {
   string version = 2;
 }
 
+// UnitKey universally uniquely identifies a build unit.
 message UnitKey {
   TreeKey key = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true, (gogoproto.jsontag) = ""];
 
   // Version is the build-system-level version string. It can also be a commit
   // ID, but no client code should depend on implied VCS semantics (e.g., never
   // run `git clone buildUnit.Version`).
-  string Version = 2;
+  string version = 2;
 
-  string UnitName = 3;
-  string UnitType = 4;
+  // UnitName is the name of the build unit and should uniquely
+  // identify the unit among other units of the same type within a
+  // given source tree.
+  string unit_name = 3;
+
+  // UnitType is the type of build unit and identifies which build
+  // system should be used to manage and process this unit.
+  string unit_type = 4;
 }
 
-message UnitInfo {
-  // NameInRepository is the name to use when displaying the source unit in
-  // the context of the repository in which it is defined. This name
-  // typically needs less qualification than GlobalName.
-  //
-  // For example, a Go package's GlobalName is its repository URI basename
-  // plus its directory path within the repository (e.g.,
-  // "github.com/user/repo/x/y"'s NameInRepository is "repo/x/y"). Because npm
-  // and pip packages are named globally, their name is probably appropriate
-  // to use as both the unit's NameInRepository and GlobalName.
-  string NameInRepository = 1;
-
-  // GlobalName is the name to use when displaying the source unit *OUTSIDE OF*
-  // the context of the repository in which it is defined.
-  //
-  // For example, a Go package's GlobalName is its full import path. Because
-  // npm and pip packages are named globally, their name is probably
-  // appropriate to use as both the unit's NameInRepository and GlobalName.
-  string GlobalName = 2;
-
-  // Description is a short (~1-sentence) description of the source unit.
-  string Description = 3;
-
-  // TypeName is the human-readable name of the type of source unit; e.g., "Go
-  // package".
-  string TypeName = 4;
-}
-
+// Unit defines a build unit, a unit of buildable source code upon
+// which other units can depend. These are typically defined by
+// configuration files used in build tools and package managers.
 message Unit {
   UnitKey key = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true, (gogoproto.jsontag) = ""];
 
@@ -215,6 +203,36 @@ message Unit {
   */
 }
 
+// UnitInfo encapsulates metadata about a build unit.
+message UnitInfo {
+  // NameInRepository is the name to use when displaying the source unit in
+  // the context of the repository in which it is defined. This name
+  // typically needs less qualification than GlobalName.
+  //
+  // For example, a Go package's GlobalName is its repository URI basename
+  // plus its directory path within the repository (e.g.,
+  // "github.com/user/repo/x/y"'s NameInRepository is "repo/x/y"). Because npm
+  // and pip packages are named globally, their name is probably appropriate
+  // to use as both the unit's NameInRepository and GlobalName.
+  string NameInRepository = 1;
+
+  // GlobalName is the name to use when displaying the source unit *OUTSIDE OF*
+  // the context of the repository in which it is defined.
+  //
+  // For example, a Go package's GlobalName is its full import path. Because
+  // npm and pip packages are named globally, their name is probably
+  // appropriate to use as both the unit's NameInRepository and GlobalName.
+  string GlobalName = 2;
+
+  // Description is a short (~1-sentence) description of the source unit.
+  string Description = 3;
+
+  // TypeName is the human-readable name of the type of source unit; e.g., "Go
+  // package".
+  string TypeName = 4;
+}
+
+
 // Resolution encapsulates all the information that srclib can know about a dependency.
 // If Dep is nil, then the dependency is unresolved.
 message Dep {
@@ -228,6 +246,7 @@ message Dep {
   string err = 3;
 }
 
+// NodeKey uniquely identifies a node in the code graph.
 message NodeKey {
   // Unit is the build unit that defines this definition.
   UnitKey unit = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true, (gogoproto.jsontag) = ""];
@@ -246,6 +265,7 @@ message NodeKey {
   string path = 2 [(gogoproto.jsontag) = "Path"];
 }
 
+// Node is a node in the code graph extracted from the source code.
 message Node {
   NodeKey key = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true, (gogoproto.jsontag) = ""];
   string kind = 2;
@@ -261,6 +281,9 @@ message Node {
   DocData doc = 7;
 }
 
+// DefData is additional data associated with a Node that represents a
+// definition (e.g., a function, method, type, and package definition)
+// in the source code.
 message DefData {
   string name = 1;
   string kind = 2;
@@ -270,6 +293,8 @@ message DefData {
   bytes data = 6;
 }
 
+// DocData is additional data associated with a Node that represents a
+// comment, docstring, or other piece of documentation.
 message DocData {
   // Format is the the MIME-type that the documentation is stored in. Valid
   // formats include 'text/html', 'text/plain', 'text/x-markdown', text/x-rst'.

@@ -7,16 +7,37 @@ import "graph.proto";
 
 option (gogoproto.goproto_getters_all) = false;
 
+// Output defines the output schema for the graph2 toolchain command.
+// A srclib language toolchain's graph2 command should emit output in
+// this format serialized as JSON.
 message Output {
+  // DefNodes is the list of definition nodes in the build unit's code graph.
   repeated Node def_nodes = 1;
 
+  // RefNodes is the list of reference nodes in the build unit's code graph.
   repeated Node ref_nodes = 2;
+
+  // RefEdges is the list of edges (from reference nodes to definition
+  // nodes) describing reference relationships in the source code
+  // graph.
   repeated Edge ref_edges = 3;
 
+  // DocNodes is the list of documentation nodes in the build unit's
+  // code graph.
   repeated Node doc_nodes = 4;
+
+  // DocEdges is the list of edges tying documentation nodes to
+  // definition nodes in the build unit's code graph.
   repeated Edge doc_edges = 5;
 
-  repeated Edge other_edges = 6;
+  // OtherNodes is the list of other nodes in the documentation's code
+  // graph. For example, AST-level nodes.
+  repeated Node other_nodes = 6;
 
-  repeated ann.Ann anns = 7 [(gogoproto.jsontag) = "Anns,omitempty"];
+  // OtherEdges is the list of other edges in the build unit's code
+  // graph. This can include type hierarchy, interface-implementation,
+  // type-receiver, and AST-level relationships.
+  repeated Edge other_edges = 7;
+
+  repeated ann.Ann anns = 8 [(gogoproto.jsontag) = "Anns,omitempty"];
 }

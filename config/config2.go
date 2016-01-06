@@ -40,11 +40,11 @@ type Tree2 struct {
 	Config map[string]interface{} `json:",omitempty"`
 }
 
-// ReadRepository2 parses and validates the configuration for a
-// repository. If no Srcfile exists, it returns the default
-// configuration for the repository. If an overridden configuration is
-// specified for the repository (hard-coded in the Go code), then it
-// is used instead of the Srcfile or the default configuration.
+// ReadTreeConfig parses and validates the configuration for a source
+// tree. If no Srcfile exists, it returns the default configuration
+// for the source tree. If an overridden configuration is specified
+// for the source tree (hard-coded in the Go code), then it is used
+// instead of the Srcfile or the default configuration.
 func ReadTreeConfig(dir string) (*Tree2, error) {
 	var c *Tree2
 	if f, err := os.Open(filepath.Join(dir, Filename)); err == nil {

@@ -20,7 +20,7 @@ type Repository struct {
 	Tree
 }
 
-// (!!DEPRECATED) Tree represents the config for a directory and its subdirectories.
+// Tree represents the config for a directory and its subdirectories.
 type Tree struct {
 	// SourceUnits is a list of source units in the repository, either specified
 	// manually in the Srcfile or discovered automatically by the scanner.

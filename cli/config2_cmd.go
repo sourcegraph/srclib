@@ -29,7 +29,7 @@ The steps are:
 
 2. Read configuration from the current directory's Srcfile (if present).
 
-3. Scan for source units in the directory tree rooted at the current directory (or the root of the repository containing the current directory), using the scanners specified in either the user srclib config or the Srcfile (or otherwise the defaults).
+3. Scan for build units in the directory tree rooted at the current directory (or the root of the repository containing the current directory), using the scanners specified in either the user srclib config or the Srcfile (or otherwise the defaults).
 `,
 			&configCmd2,
 		)
