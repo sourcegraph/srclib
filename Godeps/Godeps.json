@@ -1,5 +1,153 @@
 {
 	"ImportPath": "sourcegraph.com/sourcegraph/srclib",
 	"GoVersion": "go1.4.2",
-	"Deps": []
+	"Packages": [
+		"./cmd/src/"
+	],
+	"Deps": [
+		{
+			"ImportPath": "code.google.com/p/rog-go/parallel",
+			"Comment": "null-304",
+			"Rev": "439fdb0e5184de419d058166c6b3d0e283fd33d1"
+		},
+		{
+			"ImportPath": "github.com/alecthomas/binary",
+			"Rev": "21c37b530bec7c512af0208bfb15f34400301682"
+		},
+		{
+			"ImportPath": "github.com/alecthomas/unsafeslice",
+			"Rev": "a2ace32dbd4787714f87adb14a8aa369142efac5"
+		},
+		{
+			"ImportPath": "github.com/aybabtme/color",
+			"Rev": "28ad4cc941d69a60df8d0af1233fd5a2793c2801"
+		},
+		{
+			"ImportPath": "github.com/fsouza/go-dockerclient",
+			"Comment": "0.2.1-587-g69eb698",
+			"Rev": "69eb698fe078e24f52c14cc2f7ba6027ddebfd31"
+		},
+		{
+			"ImportPath": "github.com/gogo/protobuf/proto",
+			"Rev": "64f27bf06efee53589314a6e5a4af34cdd85adf6"
+		},
+		{
+			"ImportPath": "github.com/golang/protobuf/proto",
+			"Rev": "aece6fb931241ad332956db4f62798dfbea944b3"
+		},
+		{
+			"ImportPath": "github.com/google/go-querystring/query",
+			"Rev": "547ef5ac979778feb2f760cdb5f4eae1a2207b86"
+		},
+		{
+			"ImportPath": "github.com/gorilla/context",
+			"Rev": "215affda49addc4c8ef7e2534915df2c8c35c6cd"
+		},
+		{
+			"ImportPath": "github.com/inconshreveable/go-update",
+			"Rev": "d41317bfe4ce85a2052e9657cc0b68a93d05622d"
+		},
+		{
+			"ImportPath": "github.com/kardianos/osext",
+			"Rev": "6e7f843663477789fac7c02def0d0909e969b4e5"
+		},
+		{
+			"ImportPath": "github.com/kr/binarydist",
+			"Rev": "9955b0ab8708602d411341e55fffd7e0700f86bd"
+		},
+		{
+			"ImportPath": "github.com/kr/fs",
+			"Rev": "2788f0dbd16903de03cb8186e5c7d97b69ad387b"
+		},
+		{
+			"ImportPath": "github.com/petar/GoLLRB/llrb",
+			"Rev": "53be0d36a84c2a886ca057d34b6aa4468df9ccb4"
+		},
+		{
+			"ImportPath": "github.com/peterbourgon/diskv",
+			"Rev": "72aa5da9f7d1125b480b83c6dc5ad09a1f04508c"
+		},
+		{
+			"ImportPath": "github.com/peterh/liner",
+			"Rev": "1bb0d1c1a25ed393d8feb09bab039b2b1b1fbced"
+		},
+		{
+			"ImportPath": "github.com/smartystreets/mafsa",
+			"Rev": "ab6b5abc58c9d82560b127e23bfd3e39a25e8f05"
+		},
+		{
+			"ImportPath": "github.com/sourcegraph/go-github/github",
+			"Rev": "155bb734c593ff6b9164262c63eb67b8b3be66de"
+		},
+		{
+			"ImportPath": "github.com/sourcegraph/httpcache",
+			"Rev": "2d2cd33dd95aef16c9eac018396e3cf8e427ac41"
+		},
+		{
+			"ImportPath": "github.com/sourcegraph/mux",
+			"Rev": "dd22f369d469f65c3946889f5d8a1fb3933192e9"
+		},
+		{
+			"ImportPath": "github.com/sqs/fileset",
+			"Rev": "4317e899aa9438ba7603a6e322389571cb3ffdff"
+		},
+		{
+			"ImportPath": "golang.org/x/tools/godoc/vfs",
+			"Comment": "null-1259",
+			"Rev": "a7e14835e46bb13da10fa8b9c9c5e7f2f378f568"
+		},
+		{
+			"ImportPath": "sourcegraph.com/sourcegraph/go-diff/diff",
+			"Rev": "7eefa0faf57871a70d7a2c368a454593f07797bc"
+		},
+		{
+			"ImportPath": "sourcegraph.com/sourcegraph/go-flags",
+			"Comment": "v1-203-gf819544",
+			"Rev": "f819544216a8b66157184f0976948f92a8144fe7"
+		},
+		{
+			"ImportPath": "sourcegraph.com/sourcegraph/go-nnz/nnz",
+			"Rev": "62f271ba06026cf310d94721425eda2ec72f894c"
+		},
+		{
+			"ImportPath": "sourcegraph.com/sourcegraph/go-sourcegraph/auth",
+			"Rev": "e50888d3248bf6f142f19fcc1299247c72e70866"
+		},
+		{
+			"ImportPath": "sourcegraph.com/sourcegraph/go-sourcegraph/db_common",
+			"Rev": "e50888d3248bf6f142f19fcc1299247c72e70866"
+		},
+		{
+			"ImportPath": "sourcegraph.com/sourcegraph/go-sourcegraph/router",
+			"Rev": "e50888d3248bf6f142f19fcc1299247c72e70866"
+		},
+		{
+			"ImportPath": "sourcegraph.com/sourcegraph/go-sourcegraph/sourcegraph",
+			"Rev": "e50888d3248bf6f142f19fcc1299247c72e70866"
+		},
+		{
+			"ImportPath": "sourcegraph.com/sourcegraph/go-vcs/vcs",
+			"Rev": "b0846760ee6d4033150bf156ff0653da50770c60"
+		},
+		{
+			"ImportPath": "sourcegraph.com/sourcegraph/makex",
+			"Rev": "6c095447b8cc4c600494330f349ded5ab17b50f0"
+		},
+		{
+			"ImportPath": "sourcegraph.com/sourcegraph/rwvfs",
+			"Rev": "486352b6c67dee55205b70de6cecf7e9ef1e696d"
+		},
+		{
+			"ImportPath": "sourcegraph.com/sourcegraph/vcsstore/git",
+			"Rev": "7e5a4422afc8cd0fdee73d25f5bbad3e16c7f9a0"
+		},
+		{
+			"ImportPath": "sourcegraph.com/sourcegraph/vcsstore/vcsclient",
+			"Rev": "7e5a4422afc8cd0fdee73d25f5bbad3e16c7f9a0"
+		},
+		{
+			"ImportPath": "sourcegraph.com/sqs/pbtypes",
+			"Rev": "8c90263b5eced6c0768cddb59a3a934e593a8136"
+		}
+	]
 }
