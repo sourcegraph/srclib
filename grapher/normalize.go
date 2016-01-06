@@ -13,10 +13,7 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/graph"
 )
 
-func ensureOffsetsAreByteOffsets(dir string, output *graph.Output) {
-	fset := fileset.NewFileSet()
-	files := make(map[string]*fileset.File)
-
+func fixOffsets(dir, filename string, fset *fileset.FileSet, files map[string]*fileset.File, offsets ...*uint32) {
 	addOrGetFile := func(filename string) *fileset.File {
 		if f, ok := files[filename]; ok {
 			return f
@@ -32,40 +29,43 @@ func ensureOffsetsAreByteOffsets(dir string, output *graph.Output) {
 		return f
 	}
 
-	fix := func(filename string, offsets ...*uint32) {
-		defer func() {
-			if e := recover(); e != nil {
-				log.Printf("failed to convert unicode offset to byte offset in file %s (did grapher output a nonexistent byte offset?) continuing anyway...", filename)
-			}
-		}()
-		if filename == "" {
-			return
+	defer func() {
+		if e := recover(); e != nil {
+			log.Printf("failed to convert unicode offset to byte offset in file %s (did grapher output a nonexistent byte offset?) continuing anyway...", filename)
 		}
-		filename = filepath.Join(dir, filename)
-		if fi, err := os.Stat(filename); err != nil || !fi.Mode().IsRegular() {
-			return
-		}
-		f := addOrGetFile(filename)
-		for _, offset := range offsets {
-			if *offset == 0 {
-				continue
-			}
-			before, after := *offset, uint32(f.ByteOffsetOfRune(int(*offset)))
-			if before != after {
-				log.Printf("Changed pos %d to %d in %s", before, after, filename)
-			}
-			*offset = uint32(f.ByteOffsetOfRune(int(*offset)))
-		}
+	}()
+	if filename == "" {
+		return
 	}
+	filename = filepath.Join(dir, filename)
+	if fi, err := os.Stat(filename); err != nil || !fi.Mode().IsRegular() {
+		return
+	}
+	f := addOrGetFile(filename)
+	for _, offset := range offsets {
+		if *offset == 0 {
+			continue
+		}
+		before, after := *offset, uint32(f.ByteOffsetOfRune(int(*offset)))
+		if before != after {
+			log.Printf("Changed pos %d to %d in %s", before, after, filename)
+		}
+		*offset = uint32(f.ByteOffsetOfRune(int(*offset)))
+	}
+}
+
+func ensureOffsetsAreByteOffsets(dir string, output *graph.Output) {
+	fset := fileset.NewFileSet()
+	files := make(map[string]*fileset.File)
 
 	for _, s := range output.Defs {
-		fix(s.File, &s.DefStart, &s.DefEnd)
+		fixOffsets(dir, s.File, fset, files, &s.DefStart, &s.DefEnd)
 	}
 	for _, r := range output.Refs {
-		fix(r.File, &r.Start, &r.End)
+		fixOffsets(dir, r.File, fset, files, &r.Start, &r.End)
 	}
 	for _, d := range output.Docs {
-		fix(d.File, &d.Start, &d.End)
+		fixOffsets(dir, d.File, fset, files, &d.Start, &d.End)
 	}
 }
 

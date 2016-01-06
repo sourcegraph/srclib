@@ -11,9 +11,9 @@ import (
 
 func init() {
 	cliInit = append(cliInit, func(cli *flags.Command) {
-		_, err := cli.AddCommand("makefile",
-			"prints the Makefile that the `make` subcommand executes",
-			"The makefile command prints the Makefile that the `make` subcommand will execute.",
+		_, err := cli.AddCommand("makefile2",
+			"prints the Makefile that the `make2` subcommand executes",
+			"The makefile command prints the Makefile that the `make2` subcommand will execute.",
 			&makefileCmd2,
 		)
 		if err != nil {
