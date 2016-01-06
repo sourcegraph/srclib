@@ -6,6 +6,11 @@
 	],
 	"Deps": [
 		{
+			"ImportPath": "code.google.com/p/rog-go/parallel",
+			"Comment": "null-250",
+			"Rev": "'e7ca3a2567b8ad482fef7b1aa1a258aa00c82772'"
+		},
+		{
 			"ImportPath": "github.com/alecthomas/binary",
 			"Rev": "21c37b530bec7c512af0208bfb15f34400301682"
 		},
@@ -16,10 +21,6 @@
 		{
 			"ImportPath": "github.com/alexsaveliev/go-colorable-wrapper",
 			"Rev": "32a2486bdc0de89379a23673af82bd61f5c7c5cd"
-		},
-		{
-			"ImportPath": "github.com/fsouza/go-dockerclient",
-			"Rev": "4ebe9fc43840fefb355b61300580e34130d99f6e"
 		},
 		{
 			"ImportPath": "github.com/gogo/protobuf/proto",
@@ -57,10 +58,6 @@
 			"Rev": "40e4aedc8fabf8c23e040057540867186712faa5"
 		},
 		{
-			"ImportPath": "github.com/mattn/go-isatty",
-			"Rev": "7fcbc72f853b92b5720db4a6b8482be612daef24"
-		},
-		{
 			"ImportPath": "github.com/rogpeppe/rog-go/parallel",
 			"Rev": "f57ad5e24ab7813942c045f86eda1066eb969e98"
 		},
@@ -91,10 +88,6 @@
 		{
 			"ImportPath": "golang.org/x/net/trace",
 			"Rev": "6c89489cafabcbc76df9dbf84ebf07204673fecf"
-		},
-		{
-			"ImportPath": "golang.org/x/sys/unix",
-			"Rev": "b4e289961544fc90f340c908c3460ceae6a2202a"
 		},
 		{
 			"ImportPath": "golang.org/x/tools/godoc/vfs",
