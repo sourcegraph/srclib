@@ -11,7 +11,7 @@ import (
 
 func NewUnit(u *unit.SourceUnit) (*Unit, error) {
 	var key UnitKey
-	key.Genus = "git"
+	key.TreeType = "git"
 	key.URI = u.Repo
 	key.Version = u.CommitID
 	key.UnitName = u.Name

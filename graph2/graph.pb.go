@@ -63,9 +63,9 @@ func (m *RepoPermissions) String() string { return proto.CompactTextString(m) }
 func (*RepoPermissions) ProtoMessage()    {}
 
 type TreeKey struct {
-	// Genus is the type of source tree
+	// TreeType is the type of source tree
 	// (git, hg, build-system specific like pip or npm, ftp)
-	Genus string `protobuf:"bytes,1,opt,name=genus,proto3" json:"genus,omitempty"`
+	TreeType string `protobuf:"bytes,1,opt,name=tree_type,proto3" json:"tree_type,omitempty"`
 	// A URL of one of the following forms:
 	//   src://{hostname}/{path} (absolute)
 	//   src:///{path} (relative)

@@ -20,9 +20,9 @@ message RepoPermissions {
 }
 
 message TreeKey {
-  // Genus is the type of source tree
+  // TreeType is the type of source tree
   // (git, hg, build-system specific like pip or npm, ftp)
-  string genus = 1;
+  string tree_type = 1;
 
   // A URL of one of the following forms:
   //   src://{hostname}/{path} (absolute)
