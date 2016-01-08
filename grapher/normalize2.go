@@ -11,15 +11,8 @@ import (
 
 // NormalizeData2 sorts data and performs other postprocessing.
 func NormalizeData2(unitType, dir string, o *graph2.Output) error {
-	for _, refNode := range o.RefNodes {
-		uri, err := graph.TryMakeURI(refNode.URI)
-		if err != nil {
-			return err
-		}
-		refNode.URI = uri
-	}
 	for _, refEdge := range o.RefEdges {
-		{
+		if refEdge.Src.URI != "" {
 			uri, err := graph.TryMakeURI(refEdge.Src.URI)
 			if err != nil {
 				return err
@@ -27,7 +20,7 @@ func NormalizeData2(unitType, dir string, o *graph2.Output) error {
 			refEdge.Src.URI = uri
 		}
 
-		{
+		if refEdge.Dst.URI != "" {
 			uri, err := graph.TryMakeURI(refEdge.Dst.URI)
 			if err != nil {
 				return err
