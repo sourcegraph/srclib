@@ -58,6 +58,10 @@
 			"Rev": "40e4aedc8fabf8c23e040057540867186712faa5"
 		},
 		{
+			"ImportPath": "github.com/mattn/go-isatty",
+			"Rev": "7fcbc72f853b92b5720db4a6b8482be612daef24"
+		},
+		{
 			"ImportPath": "github.com/rogpeppe/rog-go/parallel",
 			"Rev": "f57ad5e24ab7813942c045f86eda1066eb969e98"
 		},
