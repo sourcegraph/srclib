@@ -79,10 +79,8 @@ If this command fails, please
 
 ```
 $ srclib toolchain list
-PATH                                      TYPE
-sourcegraph.com/sourcegraph/srclib-python  program, docker
-sourcegraph.com/sourcegraph/srclib-go     program, docker
-
+sourcegraph.com/sourcegraph/srclib-python
+sourcegraph.com/sourcegraph/srclib-go
 ```
 
 <br>

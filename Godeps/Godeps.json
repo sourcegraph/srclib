@@ -18,10 +18,6 @@
 			"Rev": "32a2486bdc0de89379a23673af82bd61f5c7c5cd"
 		},
 		{
-			"ImportPath": "github.com/fsouza/go-dockerclient",
-			"Rev": "4ebe9fc43840fefb355b61300580e34130d99f6e"
-		},
-		{
 			"ImportPath": "github.com/gogo/protobuf/proto",
 			"Comment": "v0.1-58-g2008751",
 			"Rev": "200875106f3bf0eb01eb297dae30b250a25ffc84"
@@ -91,10 +87,6 @@
 		{
 			"ImportPath": "golang.org/x/net/trace",
 			"Rev": "6c89489cafabcbc76df9dbf84ebf07204673fecf"
-		},
-		{
-			"ImportPath": "golang.org/x/sys/unix",
-			"Rev": "b4e289961544fc90f340c908c3460ceae6a2202a"
 		},
 		{
 			"ImportPath": "golang.org/x/tools/godoc/vfs",

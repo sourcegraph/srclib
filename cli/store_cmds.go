@@ -68,7 +68,6 @@ func InitStoreCmds(c *flags.Command) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	SetDefaultRepoOpt(importC)
 	SetDefaultCommitIDOpt(importC)
 
 	_, err = c.AddCommand("indexes",
@@ -134,6 +133,12 @@ func InitStoreCmds(c *flags.Command) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	_, err = c.AddCommand("migrate",
+		"migrate data",
+		"migrate srclib data to 2.0 schema",
+		&migrateCmd,
+	)
 }
 
 // OpenStore is called by all of the store subcommands to open the
@@ -170,6 +175,28 @@ func (c *StoreCmd) store() (interface{}, error) {
 	default:
 		return nil, fmt.Errorf("unrecognized store --type value: %q (valid values are RepoStore, MultiRepoStore)", c.Type)
 	}
+}
+
+type MigrateCmd struct {
+	ImportOpt
+}
+
+var migrateCmd MigrateCmd
+
+func (c *MigrateCmd) Execute(args []string) error {
+	s, err := OpenStore()
+	if err != nil {
+		return err
+	}
+
+	bdfs, err := GetBuildDataFS(c.CommitID)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("%T, %T", s, bdfs)
+
+	return nil
 }
 
 type StoreImportCmd struct {
@@ -235,7 +262,7 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 	if err != nil {
 		return fmt.Errorf("error calling config.ReadCached: %s", err)
 	}
-	mf, err := plan.CreateMakefile(".", nil, "", treeConfig, plan.Options{})
+	mf, err := plan.CreateMakefile(".", nil, "", treeConfig)
 	if err != nil {
 		return fmt.Errorf("error calling plan.Makefile: %s", err)
 	}

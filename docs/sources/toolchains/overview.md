@@ -61,39 +61,18 @@ available tools (provided by all available toolchains), run `srclib info tools`.
 
 # Running tools
 
-There are 2 modes of execution for srclib tools:
+Tools are normal programs on your system. They rely on locally
+installed compiler/interpreter and dependency versions.
 
-1.  As a normal **installed program** on your system: to produce analysis
-    that relies on locally installed compiler/interpreter and dependency
-    versions. (Used when you'll consume the analysis results locally, such as
-    during editing of local code.)
+An installed tool is an executable program located at "TOOLCHAIN/.bin/NAME",
+where TOOLCHAIN is the toolchain path and NAME is the last component in the
+toolchain path. For example, the installed tool for "github.com/foo/bar"
+would be at "SRCLIBPATH/github.com/foo/bar/.bin/bar".
 
-    An installed tool is an executable program located at "TOOLCHAIN/.bin/NAME",
-    where TOOLCHAIN is the toolchain path and NAME is the last component in the
-    toolchain path. For example, the installed tool for "github.com/foo/bar"
-    would be at "SRCLIBPATH/github.com/foo/bar/.bin/bar".
-
-2.  Inside a **Docker container**: to produce analysis independent of your local
-    configuration and versions. (Used when other people or services will reuse
-    the analysis results, such as on [Sourcegraph](https://sourcegraph.com).)
-
-    A Docker-containerized tool is a directory (under SRCLIBPATH) that contains a
-    Dockerfile. There is no installation necessary for these tools; the `srclib`
-    program knows how to build and run their Docker container.
-
-    When the Docker container runs, the project's source code is always
-    volume-mounted at `/src` (in the container).
-
-Tools may support either or both of these execution modes. Their behavior should
-be the same, if possible, regardless of the execution mode.
-
-<!---
-TODO(sqs): Clarify this. What does "should be the same" mean?
---->
-
-Toolchains are not typically invoked directly by users; the `srclib` program invokes
-them as part of higher-level commands. However, it is possible to invoke them
-directly. To run a tool, run:
+Tools and toolchains are not typically invoked directly by users; the
+`srclib` program invokes them as part of higher-level
+commands. However, it is possible to invoke them directly. To run a
+tool, run:
 
 ```
 srclib tool TOOLCHAIN TOOL [ARG...]
@@ -108,9 +87,8 @@ srclib tool github.com/alice/srclib-python scan ~/my-python-project
 
 # Toolchain & tool specifications
 
-Toolchains and their tools must conform to the protocol described below. The
-protocol is the same whether the tool is run directly or inside a Docker
-container. This includes four subcommands, listed below:
+Toolchains and their tools must conform to the protocol described
+below. This includes four subcommands, listed below:
 
 ## info
 This command should display a human-readable info describing
@@ -126,23 +104,10 @@ directory tree and produce a JSON array of source units (in Go,
 
 **Stdin:** JSON object representation of repository config (typically `{}`)
 
-**Options:**
-
-* `--repo URI`: the URI of the repository that contains the directory tree being
-  scanned
-* `--subdir DIR`: the path of the current directory (in which the scanner is
-  run), relative to the root directory of the repository being scanned (this is
-  typically the root, `"."`, as it is most useful to scan the entire
-  repository)
-
 **Stdout:** `[]*unit.SourceUnit`. For a more detailed description, [read the scanner output spec](scanner-output.md).
 
 See the `scan.Scan` function for an implementation of the calling side of this
 protocol.
-
-Scanners sometimes need the option values to produce the correct paths. (E.g.,
-the Go scanner requires these to generate the right import paths when running in
-Docker, since the system GOPATH is not available in the container.)
 
 
 

@@ -1,0 +1,14 @@
+syntax = "proto3";
+package srclib;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+// A ToolRef identifies a tool inside a specific toolchain. It can be
+// used to look up the tool.
+message ToolRef {
+  // Toolchain is the toolchain path of the toolchain that contains this tool.
+  string toolchain = 1;
+
+  // Subcmd is the name of the toolchain subcommand that runs this tool.
+  string subcmd = 2;
+}
