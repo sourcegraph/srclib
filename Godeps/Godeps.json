@@ -6,11 +6,6 @@
 	],
 	"Deps": [
 		{
-			"ImportPath": "code.google.com/p/rog-go/parallel",
-			"Comment": "null-250",
-			"Rev": "'e7ca3a2567b8ad482fef7b1aa1a258aa00c82772'"
-		},
-		{
 			"ImportPath": "github.com/alecthomas/binary",
 			"Rev": "21c37b530bec7c512af0208bfb15f34400301682"
 		},

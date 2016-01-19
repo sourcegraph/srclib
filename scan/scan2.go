@@ -11,7 +11,7 @@ import (
 	"runtime"
 	"sync"
 
-	"code.google.com/p/rog-go/parallel"
+	"github.com/rogpeppe/rog-go/parallel"
 	"sourcegraph.com/sourcegraph/srclib/flagutil"
 	"sourcegraph.com/sourcegraph/srclib/graph2"
 )
