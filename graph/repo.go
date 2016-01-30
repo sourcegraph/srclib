@@ -37,9 +37,7 @@ func TryMakeURI(cloneURL string) (string, error) {
 	}
 
 	// Removing leading "scm:" if any
-	if strings.HasPrefix(cloneURL, "scm:") {
-		cloneURL = cloneURL[4:]
-	}
+	cloneURL = strings.TrimPrefix(cloneURL, "scm:")
 
 	// Removing VCS part if any, git:http://.. => http://..
 	cloneURL = removeVCSPart(cloneURL)
@@ -74,7 +72,7 @@ func URIEqual(a, b string) bool {
 	return strings.EqualFold(a, b)
 }
 
-// Removes VCS part if any, git:http://.. => http://..
+// removeVCSPart removes VCS part from URL if any, git:http://.. => http://..
 func removeVCSPart(url string) string {
 	parts := strings.SplitN(url, ":", 3)
 	if len(parts) < 3 {
@@ -94,7 +92,7 @@ func removeVCSPart(url string) string {
 	return parts[1] + ":" + parts[2]
 }
 
-// Returns true if given rune is ASCII letter
+// isASCIILetter reports if given rune is an ASCII letter.
 func isASCIILetter(r rune) bool {
-	return r >= 'a' && r <= 'z' || r >= 'A' && r <= 'Z'
+	return 'a' <= r && r <= 'z' || 'A' <= r && r <= 'Z'
 }
