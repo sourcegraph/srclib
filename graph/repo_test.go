@@ -15,6 +15,8 @@ func TestTryMakeURI(t *testing.T) {
 		{"hg://sourcegraph.com/srclib", "sourcegraph.com/srclib", false},
 		{"svn://sourcegraph.com/srclib", "sourcegraph.com/srclib", false},
 		{"ssh://sourcegraph.com/srclib", "sourcegraph.com/srclib", false},
+		{"https://github.com/foo/bar", "github.com/foo/bar", false},
+		{"https://bitbucket.org/foo/bar", "bitbucket.org/foo/bar", false},
 
 		{"scm:git:git://github.com/path_to_repository", "github.com/path_to_repository", false},
 		{"scm:git:http://github.com/path_to_repository", "github.com/path_to_repository", false},

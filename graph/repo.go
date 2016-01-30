@@ -25,7 +25,8 @@ func MakeURI(cloneURL string) string {
 // "git://github.com/user/repo.git", to a normalized URI string, such
 // as "github.com/user/repo" lexically. TryMakeURI returns an error if
 // cloneURL is empty or malformed.
-// The following forms are supported
+//
+// The following forms are supported:
 // - transport://... (http://foo.bar)
 // - vcs:transport://... (hg:http://foo.bar)
 // - 'scm':vcs:transport://... (scm:git:git://foo.bar)
@@ -39,7 +40,7 @@ func TryMakeURI(cloneURL string) (string, error) {
 	// Removing leading "scm:" if any
 	cloneURL = strings.TrimPrefix(cloneURL, "scm:")
 
-	// Removing VCS part if any, git:http://.. => http://..
+	// Removing VCS part if any, e.g., git:http://.. => http://..
 	cloneURL = removeVCSPart(cloneURL)
 
 	// Handle "user@host:path" and "host:path" (assumed SSH).
@@ -76,7 +77,7 @@ func URIEqual(a, b string) bool {
 func removeVCSPart(url string) string {
 	parts := strings.SplitN(url, ":", 3)
 	if len(parts) < 3 {
-		// does not look as foo:bar:...
+		// does not look like foo:bar:...
 		return url
 	}
 	for _, r := range parts[0] {
