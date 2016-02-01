@@ -490,14 +490,14 @@ func installCSharpToolchain() error {
 		return err
 	}
 
-	log.Println("Downloading or updating C# toolchain in", srclibpathDir)
-	if err := execSrcCmd("toolchain", "get", "-u", toolchain); err != nil {
+	log.Println("Downloading C# toolchain in", srclibpathDir)
+	if err := cloneToolchain(srclibpathDir, toolchain); err != nil {
 		return err
 	}
 
         nugetdir := filepath.Join(srclibpathDir, "Srclib.Nuget");
 	log.Println("Downloading toolchain dependencies in", nugetdir)
-	if err := execCmd("dnu", "restore", nugetdir); err != nil {
+	if err := execCmdInDir("dnu", "restore", nugetdir); err != nil {
 		return err
 	}
 
