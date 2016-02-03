@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"golang.org/x/tools/go/loader"
@@ -84,7 +85,14 @@ func (c *CoverageCmd) Execute(args []string) error {
 	}
 
 	var importPath string
-	for _, p := range strings.Split(goPath, ":") {
+	var splitGoPath []string
+	if runtime.GOOS == "windows" {
+		splitGoPath = strings.Split(goPath, ";")
+	} else {
+		splitGoPath = strings.Split(goPath, ":")
+	}
+
+	for _, p := range splitGoPath {
 		if strings.Contains(lRepo.RootDir, p) {
 			importPath = strings.TrimPrefix(lRepo.RootDir, filepath.Join(p, "src")+"/")
 		}
