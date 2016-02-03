@@ -11,6 +11,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"golang.org/x/tools/go/loader"
+
 	"github.com/kr/fs"
 
 	"sourcegraph.com/sourcegraph/go-flags"
@@ -32,6 +34,8 @@ func init() {
 var cacheDir = ".srclib-cache"
 var gitDir = ".git"
 var unitFile = "GoPackage.unit.json"
+var depFile = "GoPackage.depresolve.json"
+var graphFile = "GoPackage.graph.json"
 
 type CoverageCmd struct {
 	w io.Writer
@@ -39,11 +43,31 @@ type CoverageCmd struct {
 
 type Coverage struct {
 	Repo     *Repo
-	Warnings []string
+	Warnings []BuildWarning
 }
+
+type BuildWarning struct {
+	Directory string
+	Warning   WarningType
+}
+
+type WarningType string
+
+const (
+	BuildSucceededSrclibFailed = "Build succeeded but Srclib outputs failed"
+	BuildFailedSrclibSucceeded = "Build failed but Srclib succeeded"
+)
 
 var coverageCmd CoverageCmd
 
+// Execute performs a sanity check on srclib builds for go repositories.
+// We iterate every directory and do a coverage check on every package.
+// The coverage heuristic is very rough currently, but makes the following assumptions:
+// - only golang coverage is checked
+// - if a directory can be imported (see build standard library package) and built
+//   (see loader standard library package), then there should be three files present
+//   in the corresponding directory under .srclib-cache: a unit file, a depresolve file,
+//   and a graph file.
 func (c *CoverageCmd) Execute(args []string) error {
 	if c.w == nil {
 		c.w = os.Stdout
@@ -62,7 +86,7 @@ func (c *CoverageCmd) Execute(args []string) error {
 	var importPath string
 	for _, p := range strings.Split(goPath, ":") {
 		if strings.Contains(lRepo.RootDir, p) {
-			importPath = strings.TrimPrefix(lRepo.RootDir, filepath.Join(p, "src"))
+			importPath = strings.TrimPrefix(lRepo.RootDir, filepath.Join(p, "src")+"/")
 		}
 	}
 
@@ -83,8 +107,8 @@ func (c *CoverageCmd) Execute(args []string) error {
 	walker := fs.Walk(lRepo.RootDir)
 
 	for walker.Step() {
+
 		if err := walker.Err(); err != nil {
-			// should we output the current coverage anyway? (aka just break)
 			return err
 		}
 
@@ -101,24 +125,43 @@ func (c *CoverageCmd) Execute(args []string) error {
 
 		relPath, err := filepath.Rel(lRepo.RootDir, pth)
 		if err != nil {
-			// this should work, so it 	qualifies as an error case
 			return err
 		}
 
-		_, pkgErr := build.ImportDir(pth, 0)
+		_, importErr := build.ImportDir(pth, 0)
+
+		var conf loader.Config
+		conf.Import(strings.Join([]string{importPath, relPath}, "/"))
+		_, pkgErr := conf.Load()
+
+		importAndBuildSucceeded := (importErr == nil) && (pkgErr == nil)
 
 		// TODO(poler) allow the user to specify an older commit (fine for now)
 		cachePath := filepath.Join(lRepo.RootDir, cacheDir, lRepo.CommitID, importPath, relPath)
 
-		_, unitErr := os.Stat(filepath.Join(cachePath, unitFile))
+		// If the srclib build config was at all customized, the assumptions that these files
+		// will exist is almost certainly not valid.
+		unitPath := filepath.Join(cachePath, unitFile)
+		depPath := filepath.Join(cachePath, depFile)
+		graphPath := filepath.Join(cachePath, graphFile)
 
-		if unitErr == nil && pkgErr != nil {
-			cov.Warnings = append(cov.Warnings, fmt.Sprintf("GoPackage.unit.json existed but importing the package at %s failed", pth))
-		} else if unitErr != nil && pkgErr == nil {
-			cov.Warnings = append(cov.Warnings, fmt.Sprintf("GoPackage.unit.json did not exist but importing the package at %s succeeded", pth))
+		_, unitErr := os.Stat(unitPath)
+		_, depErr := os.Stat(depPath)
+		_, graphErr := os.Stat(graphPath)
 
+		srclibOutputsExist := (unitErr == nil) && (depErr == nil) && (graphErr == nil)
+
+		if importAndBuildSucceeded && !srclibOutputsExist {
+			cov.Warnings = append(cov.Warnings, BuildWarning{
+				Directory: pth,
+				Warning:   BuildSucceededSrclibFailed,
+			})
+		} else if !importAndBuildSucceeded && srclibOutputsExist {
+			cov.Warnings = append(cov.Warnings, BuildWarning{
+				Directory: pth,
+				Warning:   BuildFailedSrclibSucceeded,
+			})
 		}
-
 	}
 
 	enc := json.NewEncoder(c.w)
@@ -127,4 +170,5 @@ func (c *CoverageCmd) Execute(args []string) error {
 	}
 
 	return nil
+
 }
