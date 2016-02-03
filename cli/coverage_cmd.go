@@ -139,7 +139,7 @@ func (c *CoverageCmd) Execute(args []string) error {
 		// TODO(poler) allow the user to specify an older commit (fine for now)
 		cachePath := filepath.Join(lRepo.RootDir, cacheDir, lRepo.CommitID, importPath, relPath)
 
-		// If the srclib build config was at all customized, the assumptions that these files
+		// If the srclib build config was at all customized, the assumption that these files
 		// will exist is almost certainly not valid.
 		unitPath := filepath.Join(cachePath, unitFile)
 		depPath := filepath.Join(cachePath, depFile)
