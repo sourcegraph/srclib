@@ -20,10 +20,10 @@ import (
 
 func init() {
 	cliInit = append(cliInit, func(cli *flags.Command) {
-		_, err := cli.AddCommand("coverage",
+		_, err := cli.AddCommand("validate",
 			"use a simple heuristic to check that srclib is outputting expected graph data",
-			`The coverage command acts as a sanity check to ensure that the srclib-go toolchain succeeds when it should and fails when it should not.`,
-			&coverageCmd,
+			`The validate command acts as a sanity check to ensure that the srclib-go toolchain succeeds when it should and fails when it should not.`,
+			&validateCmd,
 		)
 		if err != nil {
 			log.Fatal(err)
@@ -37,11 +37,11 @@ var unitFile = "GoPackage.unit.json"
 var depFile = "GoPackage.depresolve.json"
 var graphFile = "GoPackage.graph.json"
 
-type CoverageCmd struct {
+type ValidateCmd struct {
 	w io.Writer
 }
 
-type Coverage struct {
+type Validate struct {
 	Repo     *Repo
 	Warnings []BuildWarning
 }
@@ -58,17 +58,17 @@ const (
 	BuildFailedSrclibSucceeded = "Build failed but Srclib succeeded"
 )
 
-var coverageCmd CoverageCmd
+var validateCmd ValidateCmd
 
 // Execute performs a sanity check on srclib builds for go repositories.
-// We iterate every directory and do a coverage check on every package.
-// The coverage heuristic is very rough currently, but makes the following assumptions:
-// - only golang coverage is checked
+// We iterate every directory and do a validate check on every package.
+// The validate heuristic is very rough currently, but makes the following assumptions:
+// - only golang validate is checked
 // - if a directory can be imported (see build standard library package) and built
 //   (see loader standard library package), then there should be three files present
 //   in the corresponding directory under .srclib-cache: a unit file, a depresolve file,
 //   and a graph file.
-func (c *CoverageCmd) Execute(args []string) error {
+func (c *ValidateCmd) Execute(args []string) error {
 	if c.w == nil {
 		c.w = os.Stdout
 	}
@@ -98,7 +98,7 @@ func (c *CoverageCmd) Execute(args []string) error {
 
 	}
 
-	cov := &Coverage{
+	cov := &Validate{
 		Repo: lRepo,
 	}
 
