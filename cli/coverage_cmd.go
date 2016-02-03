@@ -9,7 +9,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 
 	"golang.org/x/tools/go/loader"
@@ -85,14 +84,10 @@ func (c *CoverageCmd) Execute(args []string) error {
 	}
 
 	var importPath string
-	var splitGoPath []string
-	if runtime.GOOS == "windows" {
-		splitGoPath = strings.Split(goPath, ";")
-	} else {
-		splitGoPath = strings.Split(goPath, ":")
-	}
+	splitGoPath := filepath.SplitList(goPath)
 
 	for _, p := range splitGoPath {
+		p = filepath.ToSlash(p)
 		if strings.Contains(lRepo.RootDir, p) {
 			importPath = strings.TrimPrefix(lRepo.RootDir, filepath.Join(p, "src")+"/")
 		}
@@ -158,6 +153,8 @@ func (c *CoverageCmd) Execute(args []string) error {
 		_, graphErr := os.Stat(graphPath)
 
 		srclibOutputsExist := (unitErr == nil) && (depErr == nil) && (graphErr == nil)
+
+		pth = filepath.ToSlash(pth)
 
 		if importAndBuildSucceeded && !srclibOutputsExist {
 			cov.Warnings = append(cov.Warnings, BuildWarning{
