@@ -476,8 +476,8 @@ func installCSharpToolchain() error {
 	const toolchain = "sourcegraph.com/sourcegraph/srclib-csharp"
 
 	requiredCmds := map[string]string{
-		"dnx":        "see http://docs.asp.net/en/latest/getting-started/installing-on-linux.html for details",
-		"dnu":        "see http://docs.asp.net/en/latest/getting-started/installing-on-linux.html for details",
+		"dnx": "see http://docs.asp.net/en/latest/getting-started/installing-on-linux.html for details",
+		"dnu": "see http://docs.asp.net/en/latest/getting-started/installing-on-linux.html for details",
 	}
 	for requiredCmd, instructions := range requiredCmds {
 		if _, err := exec.LookPath(requiredCmd); isExecErrNotFound(err) {
@@ -495,7 +495,7 @@ func installCSharpToolchain() error {
 		return err
 	}
 
-        nugetdir := filepath.Join(srclibpathDir, "Srclib.Nuget");
+	nugetdir := filepath.Join(srclibpathDir, "Srclib.Nuget")
 	log.Println("Downloading toolchain dependencies in", nugetdir)
 	if err := execCmdInDir("dnu", "restore", nugetdir); err != nil {
 		return err
