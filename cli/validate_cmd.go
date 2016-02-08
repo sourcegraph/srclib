@@ -120,7 +120,6 @@ walkLoop:
 
 		for _, part := range strings.Split(pth, string(os.PathSeparator)) {
 			if strings.HasPrefix(part, ".") {
-				fmt.Println("Skipping", pth)
 				continue walkLoop
 			}
 		}
