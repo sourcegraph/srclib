@@ -22,7 +22,7 @@ func init() {
 	cliInit = append(cliInit, func(cli *flags.Command) {
 		_, err := cli.AddCommand("validate",
 			"use a simple heuristic to check that srclib is outputting expected graph data",
-			`The validate command acts as a sanity check to ensure that the srclib-go toolchain succeeds when it should and fails when it should not.`,
+			`The validate command acts as a sanity check to ensure that a toolchain succeeds when it should and fails when it should not.`,
 			&validateCmd,
 		)
 		if err != nil {
@@ -104,6 +104,7 @@ func (c *ValidateCmd) Execute(args []string) error {
 
 	walker := fs.Walk(lRepo.RootDir)
 
+walkLoop:
 	for walker.Step() {
 
 		if err := walker.Err(); err != nil {
@@ -117,8 +118,11 @@ func (c *ValidateCmd) Execute(args []string) error {
 			continue
 		}
 
-		if strings.Contains(pth, cacheDir) || strings.Contains(pth, gitDir) {
-			continue
+		for _, part := range strings.Split(pth, string(os.PathSeparator)) {
+			if strings.HasPrefix(part, ".") {
+				fmt.Println("Skipping", pth)
+				continue walkLoop
+			}
 		}
 
 		relPath, err := filepath.Rel(lRepo.RootDir, pth)
