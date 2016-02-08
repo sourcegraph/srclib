@@ -42,16 +42,13 @@ type ValidateCmd struct {
 }
 
 type Validate struct {
-	Repo     *Repo
 	Warnings []BuildWarning
 }
 
 type BuildWarning struct {
 	Directory string
-	Warning   WarningType
+	Warning   string
 }
-
-type WarningType string
 
 const (
 	BuildSucceededSrclibFailed = "Build succeeded but Srclib outputs failed"
@@ -98,9 +95,7 @@ func (c *ValidateCmd) Execute(args []string) error {
 
 	}
 
-	cov := &Validate{
-		Repo: lRepo,
-	}
+	cov := &Validate{}
 
 	_, err := os.Stat(filepath.Join(lRepo.RootDir, cacheDir))
 	if os.IsNotExist(err) {
