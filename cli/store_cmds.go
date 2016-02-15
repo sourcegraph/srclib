@@ -269,8 +269,7 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 			case *grapher.GraphUnitRule:
 				var data graph.Output
 				if err := readJSONFileFS(buildDataFS, rule.Target(), &data); err != nil {
-					// checking if the error begins with "file not found" is necessary because the FS may not be the actual OS FS, in which case os.IsNotExist(err) == false
-					if os.IsNotExist(err) || strings.HasPrefix(err.Error(), "file not found:") {
+					if os.IsNotExist(err) {
 						log.Printf("Warning: no build data for unit %s %s.", rule.Unit.Type, rule.Unit.Name)
 						return nil
 					}
