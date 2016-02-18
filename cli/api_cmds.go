@@ -173,7 +173,7 @@ func prepareCommandContext(file string) (commandContext, error) {
 	if err != nil {
 		return commandContext{}, err
 	}
-	c.relativeFile = rel
+	c.relativeFile = filepath.ToSlash(rel)
 
 	if err := os.Chdir(repo.RootDir); err != nil {
 		return commandContext{}, err
