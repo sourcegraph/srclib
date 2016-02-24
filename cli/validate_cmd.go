@@ -113,7 +113,9 @@ walkLoop:
 		pth := walker.Path()
 
 		fi, err := os.Stat(pth)
-		if !fi.IsDir() {
+		if err != nil {
+			return err
+		} else if !fi.IsDir() {
 			continue
 		}
 
