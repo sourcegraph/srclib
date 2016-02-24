@@ -32,7 +32,6 @@ func init() {
 }
 
 var cacheDir = ".srclib-cache"
-var gitDir = ".git"
 var unitFile = "GoPackage.unit.json"
 var depFile = "GoPackage.depresolve.json"
 var graphFile = "GoPackage.graph.json"
