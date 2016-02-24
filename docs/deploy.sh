@@ -6,10 +6,10 @@ set -e
 mkdir -p site
 
 # Compile the css file
-sass theme/styles.scss:theme/styles.css
+sassc theme/styles.scss theme/styles.css
 
 # Build the other parts of the site
-python2 buildsite.py
+python buildsite.py
 
 # Sync site with S3 bucket
 aws s3 sync site/ s3://srclib.org/
