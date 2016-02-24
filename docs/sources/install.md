@@ -1,43 +1,7 @@
 # Getting started
 
-This page is to help you get started with srclib. In order to work with srclib we need the following components:
-* dependencies
-* installing `srclib`
-* getting language toolchains
-* editor plugin (optional)
 
-<br>
-
-
-## Dependencies
-
-Srclib depends on the following components:
-
-* Go programming language
-* Mercurial (depends on Python 2.7)
-
-
-### Go 1.4+
-
-First, you need to [install Go](http://golang.org/doc/install) (version 1.4 or newer).
-
-
-### Mercurial
-Mercurial is available for most platforms. Here's a few Linux examples..
-
-Ubuntu or Debian Linux:
-```
-sudo apt-get update && sudo apt-get -y install mercurial
-```
-
-Centos, Fedora or Red Hat Linux:
-```
-sudo yum update && sudo yum install mercurial
-```
-
-<br>
-
-## Srclib installation
+## Install a prebuilt binary
 
 To install the **srclib** program, download one of the prebuilt binaries or build
 it from source (see next section).
@@ -52,9 +16,11 @@ After downloading the file, unzip it and place the `srclib` program in your
 `$PATH`. Run `srclib --help` to verify that it's installed.
 
 
-### Building from source
+## Building from source
 
-Download and install `srclib`:
+First, install [install Go](http://golang.org/doc/install) (version 1.5 or newer).
+
+Then:
 
 ```
 go get -u -v sourcegraph.com/sourcegraph/srclib/cmd/srclib
@@ -73,7 +39,8 @@ srclib toolchain install go ruby javascript python
 ```
 
 If this command fails, please
-[file an issue](https://github.com/sourcegraph/srclib/issues).
+[file an issue](https://github.com/sourcegraph/srclib/issues) or skip
+one of the languages if you don't need it.
 
 `srclib toolchain list` helps to verify the currently installed language toolchains like the following example
 
@@ -85,9 +52,9 @@ sourcegraph.com/sourcegraph/srclib-go
 
 <br>
 
-##Testing Srclib
+##Testing srclib
 
-In order to test srclib we can use  it to analyze  the already fetched source code for the Go toolchain `srclib-go`.
+In order to test srclib we can use it to analyze the already fetched source code for the Go toolchain `srclib-go`.
 
 First, you need to initialize the git submodules in the root directory of srclib-go
 ```
@@ -95,27 +62,12 @@ cd src/sourcegraph.com/sourcegraph/srclib-go
 git submodule update --init
 ```
 
-now you can test the srclib-go toolchain with
+Now you can test the srclib-go toolchain with:
+
 ```
 srclib config && srclib make
 ```
 
 You should have a .srclib-cache directory inside srclib-go that has all of the build data for the repository.
-
-<br>
-
-## Next steps
-
-### Build on top of srclib
-
-If you want to build or improve srclib editor plugins, read
-[Building on srclib](api/overview.md).
-
-
-### Contribute to srclib
-
-If you want to help build the language analysis infrastructure, make
-sure you're familiar with the [API](api/overview.md). Then, read the
-[Creating a Toolchain](toolchains/overview.md) section.
 
 <br>
