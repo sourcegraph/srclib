@@ -7,7 +7,7 @@ mkdir -p site
 
 # Python server
 cd site
-python2 -m SimpleHTTPServer &
+python -m SimpleHTTPServer &
 cd ..
 
 # Kill python server on exit
@@ -16,10 +16,9 @@ trap "kill 0" EXIT
 
 while true; do
   echo "Building site..."
-  sass theme/styles.scss:theme/styles.css
+  sassc theme/styles.scss theme/styles.css
   #mkdocs build
-  python2 buildsite.py
+  python buildsite.py
 
-  echo "Waiting for changes..."
-  inotifywait -e modify -r .
+  sleep 1
 done

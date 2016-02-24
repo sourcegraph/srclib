@@ -8,15 +8,15 @@
     <div class="row">
       <div class="col-sm-7">
         <h1><img alt="srclib symbol" src="../images/srclib_symbol.svg" height=47 width=47 style="margin-left:-8px"/> <strong>srclib</strong> is a hackable, multi-language code analysis library for building better software tools.</h1>
-        <p>srclib makes developer tools like editor plugins and code search
+        <p>srclib makes developer tools like code search and static analyzers
         better. It supports things like <strong>jump to
         definition</strong>, <strong>find usages</strong>, <strong>type
         inference</strong>, and <strong>documentation generation</strong>.
-        <p>srclib consists of <strong><a href="/toolchains/overview">language analysis toolchains</a></strong> (currently for Go,
-        Python, JavaScript, and Ruby) with a <strong><a href="/api/data-model">common output format</a></strong>, and developer
+        <p>srclib consists of language analysis toolchains (currently for Go,
+        Python, JavaScript, and Ruby) with a common output format, and developer
         tools that consume this format.
 
-        <p>srclib originated inside <a target="_blank" href="https://sourcegraph.com">&#x2731; Sourcegraph</a>, where it powers intelligent code search over hundreds of thousands of projects.
+        <p>srclib originated inside <a target="_blank" href="https://sourcegraph.com">Sourcegraph</a>, where it powers intelligent code search over hundreds of thousands of projects.
 
         <p>
 
@@ -26,9 +26,6 @@
         <a class="button-link"
         href="#install"><button type="button" class="btn
         btn-default"><i class="fa fa-download"></i> Try it now</button></a>
-        <a class="button-link" href="/overview">
-          <button type="button" class="btn btn-default"><i class="fa fa-book"></i> Docs</button>
-        </a>
         <a class="button-link" target="_blank"
            href="https://sourcegraph.com/sourcegraph/srclib">
           <button type="button" class="btn btn-default">&#x2731; Sourcegraph</button>
@@ -47,7 +44,7 @@
   </div>
 </div>
 
-<div id="install" class="editor-plugins section">
+<div id="install" class="section">
   <div class="container">
 
     <div class="row">
@@ -62,13 +59,13 @@
 
         <ul>
           <li>Binaries: <a href="https://api.equinox.io/1/Applications/ap_BQxVz1iWMxmjQnbVGd85V58qz6/Updates/Asset/src.zip?os=linux&arch=amd64&channel=stable">Linux amd64</a>, <a href="https://api.equinox.io/1/Applications/ap_BQxVz1iWMxmjQnbVGd85V58qz6/Updates/Asset/src.zip?os=linux&arch=386&channel=stable">Linux i386</a>, <a href="https://api.equinox.io/1/Applications/ap_BQxVz1iWMxmjQnbVGd85V58qz6/Updates/Asset/src.zip?os=darwin&arch=amd64&channel=stable">Mac OS X</a> (unzip and place the <tt>srclib</tt> program in your <tt>$PATH</tt>)</li>
-          <li>Or <a href="/gettingstarted/#building-from-source">build from source</a>: <code>go get -u -v sourcegraph.com/sourcegraph/srclib/cmd/srclib</code></li>
+          <li>Or build from source (Go 1.5+): <code>go get -u -v sourcegraph.com/sourcegraph/srclib/cmd/srclib</code></li>
         </ul>
 
 
         <h2>2. Install toolchains</h2>
         <p>Toolchains add support for languages (JavaScript, Ruby, Go, etc.).</p>
-        <p><a href="/gettingstarted">Install the standard set of toolchains</a>: <code>srclib toolchain install go ruby javascript python</code></p>
+        <p>Install the standard set of toolchains: <code>srclib toolchain install go ruby javascript python</code></p>
         <p>To list installed toolchains, run <code>srclib toolchain list</code>.</p>
       </div>
     </div>
@@ -133,7 +130,11 @@
         data formats, it is difficult to reuse your plugin for other languages
         or editors. So if there are M languages and N editors, we need to build
         M &times; N different plugins. That number gets large quickly, and so we
-        suffer from poor developer tools.
+		suffer from poor developer tools.
+
+		<p>
+		Step 1 is to build the language analyzers. Next up, we will
+		build the editor plugins!
 
       </div>
     </div>
@@ -219,7 +220,7 @@
     <h2>Use srclib as:</h2>
     <ul>
       <li>
-        <a href="/api/overview">A command line tool</a> (e.g.,
+        A command line tool (e.g.,
         <code>
             $ srclib store import && srclib store defs --limit 10
         </code>
@@ -255,7 +256,7 @@
 
 
 
-    <h2>Build and contribute</h2>
+    <h2>Built on</h2>
 
     <p>
     srclib is 100% open source and built on other well-established open-source
@@ -263,10 +264,6 @@
     <a target="_blank" href="http://ternjs.net/">Tern</a>,
     <a target="_blank" href="http://yardoc.org/">YARD</a>, and
     <a target="_blank" href="http://jedi.jedidjah.ch/">Jedi</a>.
-
-    <p>
-    Check out the <a href="/gettingstarted">srclib docs</a> for more info.
-
 
     <h2>Join the community</h2>
     <p><a href="/community.html">Join the srclib Google Group or come meet us in person!</a>
