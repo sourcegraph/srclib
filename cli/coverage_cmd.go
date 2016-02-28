@@ -69,6 +69,15 @@ func (c *CoverageCmd) Execute(args []string) error {
 	return nil
 }
 
+var codeExts = []string{".go", ".java", ".py", ".rb", ".cpp", ".ts", ".cs"} // codeExt lists all file extensions that indicate a code file we want to cover
+var codeExts_ = make(map[string]struct{})
+
+func init() {
+	for _, ext := range codeExts {
+		codeExts_[ext] = struct{}{}
+	}
+}
+
 func coverage(repo *Repo) (*Coverage, error) {
 	lineSep := []byte{'\n'}
 	codeFileData := make(map[string]*codeFileDatum)
@@ -85,7 +94,7 @@ func coverage(repo *Repo) (*Coverage, error) {
 		if info.IsDir() {
 			return nil
 		}
-		if filepath.Ext(path) == ".go" {
+		if _, isCodeFile := codeExts_[filepath.Ext(path)]; isCodeFile {
 			b, err := ioutil.ReadFile(path)
 			if err != nil {
 				return err
