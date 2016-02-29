@@ -9,6 +9,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"strings"
+
 	"sourcegraph.com/sourcegraph/go-flags"
 
 	"sourcegraph.com/sourcegraph/srclib/config"
@@ -92,6 +94,9 @@ func coverage(repo *Repo) (*Coverage, error) {
 		}
 
 		if info.IsDir() {
+			if strings.HasPrefix(info.Name(), ".") {
+				return filepath.SkipDir // don't search hidden directories
+			}
 			return nil
 		}
 		if _, isCodeFile := codeExts_[filepath.Ext(path)]; isCodeFile {
