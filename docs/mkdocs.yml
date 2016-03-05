@@ -1,0 +1,21 @@
+site_name: srclib
+site_description: srclib is a hackable, polyglot code analysis library.
+
+docs_dir: sources
+
+repo_url: https://sourcegraph.com/sourcegraph/srclib/
+
+dev_addr: '0.0.0.0:8000'
+
+theme_dir: ./theme/
+
+google_analytics: ['UA-40540747-5', 'srclib.org']
+
+toolchains:
+- lang: Go
+  repo: srclib/srclib-go
+- lang: Java
+  repo: srclib/srclib-java
+
+pages:
+- ['install.md', 'Installation']
