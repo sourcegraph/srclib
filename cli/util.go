@@ -71,10 +71,10 @@ func readJSONFile(file string, v interface{}) error {
 func readJSONFileFS(fs vfs.FileSystem, file string, v interface{}) (err error) {
 	fi, err := fs.Stat(file)
 	if err != nil {
-		return errEmptyJSONFile
+		return err
 	}
 	if fi.Size() < 1 {
-		return nil
+		return errEmptyJSONFile
 	}
 	f, err := fs.Open(file)
 	if err != nil {
