@@ -1,0 +1,7 @@
+#compdef srclib
+
+_srclib() {
+  compadd "$@" $(GO_FLAGS_COMPLETION=1 $words[0] "$words[@]")
+}
+
+_srclib
