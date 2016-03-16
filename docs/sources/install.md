@@ -65,9 +65,18 @@ git submodule update --init
 Now you can test the srclib-go toolchain with:
 
 ```
-srclib config && srclib make
+$ srclib do-all
+$ srclib store import
 ```
 
-You should have a .srclib-cache directory inside srclib-go that has all of the build data for the repository.
+You should have a .srclib-cache directory inside srclib-go that has all of the
+build data for the repository. You should also have a .srclib-store directory
+corresponding to the analysis information.
+
+```
+srclib store defs
+```
+
+should show you the definitions.
 
 <br>
