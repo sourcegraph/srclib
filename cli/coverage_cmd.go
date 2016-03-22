@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math"
 	"os"
 	"path/filepath"
 
@@ -163,17 +164,17 @@ func coverage(repo *Repo) (*cvg.Coverage, error) {
 		}
 	}
 
-	var fileTokThresh float32 = 0.7
+	var fileTokThresh float64 = 0.7
 	numIndexedFiles := 0
 	numDefs, numRefs, numRefsValid := 0, 0, 0
-	loc := 0
+	loc := 0 // lines of code
 	var uncoveredFiles []string
 	for file, datum := range codeFileData {
 		loc += datum.LoC
 		numDefs += datum.NumDefs
 		numRefs += datum.NumRefs
 		numRefsValid += datum.NumRefsValid
-		if float32(datum.NumDefs+datum.NumRefsValid)/float32(datum.LoC) > fileTokThresh {
+		if float64(datum.NumDefs+datum.NumRefsValid)/float64(datum.LoC) > fileTokThresh {
 			numIndexedFiles++
 		} else {
 			uncoveredFiles = append(uncoveredFiles, file)
@@ -181,9 +182,17 @@ func coverage(repo *Repo) (*cvg.Coverage, error) {
 	}
 
 	return &cvg.Coverage{
-		FileScore:      float32(numIndexedFiles) / float32(len(codeFileData)),
-		RefScore:       float32(numRefsValid) / float32(numRefs),
-		TokDensity:     float32(numDefs+numRefs) / float32(loc),
+		FileScore:      divideSentinel(float64(numIndexedFiles), float64(len(codeFileData)), -1),
+		RefScore:       divideSentinel(float64(numRefsValid), float64(numRefs), -1),
+		TokDensity:     divideSentinel(float64(numDefs+numRefs), float64(loc), -1),
 		UncoveredFiles: uncoveredFiles,
 	}, nil
+}
+
+func divideSentinel(x, y, sentinel float64) float64 {
+	q := x / y
+	if math.IsNaN(q) {
+		return sentinel
+	}
+	return q
 }
