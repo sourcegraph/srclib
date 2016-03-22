@@ -65,7 +65,7 @@ func (c *CoverageCmd) Execute(args []string) error {
 	return nil
 }
 
-var codeExts = []string{".go", ".java", ".py", ".rb", ".cpp", ".ts", ".cs"} // codeExt lists all file extensions that indicate a code file we want to cover
+var codeExts = []string{".go", ".java", ".py", ".rb", ".cpp", ".ts", ".cs", ".js", ".php", ".m"} // codeExt lists all file extensions that indicate a code file we want to cover
 var codeExts_ = make(map[string]struct{})
 
 func init() {
