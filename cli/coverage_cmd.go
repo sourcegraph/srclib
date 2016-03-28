@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 
 	"strings"
+	"unicode"
 
 	"sourcegraph.com/sourcegraph/go-flags"
 
@@ -19,6 +20,7 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/graph"
 	"sourcegraph.com/sourcegraph/srclib/grapher"
 	"sourcegraph.com/sourcegraph/srclib/plan"
+	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
 func init() {
@@ -76,7 +78,6 @@ func init() {
 }
 
 func coverage(repo *Repo) (*cvg.Coverage, error) {
-	lineSep := []byte{'\n'}
 	codeFileData := make(map[string]*codeFileDatum)
 	log.Printf(repo.RootDir)
 	filepath.Walk(repo.RootDir, func(path string, info os.FileInfo, err error) error {
@@ -94,12 +95,15 @@ func coverage(repo *Repo) (*cvg.Coverage, error) {
 			}
 			return nil
 		}
+
+		path = filepath.ToSlash(path)
+
 		if _, isCodeFile := codeExts_[filepath.Ext(path)]; isCodeFile {
 			b, err := ioutil.ReadFile(path)
 			if err != nil {
 				return err
 			}
-			loc := bytes.Count(b, lineSep)
+			loc := numLines(b)
 			codeFileData[path] = &codeFileDatum{LoC: loc}
 		}
 		return nil
@@ -119,14 +123,18 @@ func coverage(repo *Repo) (*cvg.Coverage, error) {
 		return nil, fmt.Errorf("error calling plan.Makefile: %s", err)
 	}
 
+	defKeys := make(map[graph.DefKey]struct{})
+	data := make([]graph.Output, 0, len(mf.Rules))
+
 	for _, rule_ := range mf.Rules {
 		rule, ok := rule_.(*grapher.GraphUnitRule)
 		if !ok {
 			continue
 		}
 
-		var data graph.Output
-		if err := readJSONFileFS(bdfs, rule.Target(), &data); err != nil {
+		var item graph.Output
+
+		if err := readJSONFileFS(bdfs, rule.Target(), &item); err != nil {
 			if err == errEmptyJSONFile {
 				log.Printf("Warning: the JSON file is empty for unit %s %s.", rule.Unit.Type, rule.Unit.Name)
 				continue
@@ -137,13 +145,21 @@ func coverage(repo *Repo) (*cvg.Coverage, error) {
 			}
 			return nil, fmt.Errorf("error reading JSON file %s for unit %s %s: %s", rule.Target(), rule.Unit.Type, rule.Unit.Name, err)
 		}
+		data = append(data, item)
 
-		defKeys := make(map[graph.DefKey]struct{})
-		for _, def := range data.Defs {
-			defKeys[def.DefKey] = struct{}{}
+		for _, def := range item.Defs {
+			defKeys[adjustDefKey(def.DefKey, rule.Unit)] = struct{}{}
 		}
+
+		for _, ref := range item.Refs {
+			ref.SetFromDefKey(adjustDefKey(ref.DefKey(), rule.Unit))
+		}
+	}
+
+	for _, item := range data {
+
 		var validRefs []*graph.Ref
-		for _, ref := range data.Refs {
+		for _, ref := range item.Refs {
 			if datum, exists := codeFileData[ref.File]; exists {
 				datum.NumRefs++
 
@@ -157,7 +173,7 @@ func coverage(repo *Repo) (*cvg.Coverage, error) {
 			}
 		}
 
-		for _, def := range data.Defs {
+		for _, def := range item.Defs {
 			if datum, exists := codeFileData[def.File]; exists {
 				datum.NumDefs++
 			}
@@ -195,4 +211,64 @@ func divideSentinel(x, y, sentinel float64) float64 {
 		return sentinel
 	}
 	return q
+}
+
+// numLines counts number of lines that are
+// - not blank
+// - do not look like comment
+// in the given data
+func numLines(data []byte) int {
+
+	len := len(data)
+	if len == 0 {
+		return 0
+	}
+
+	count := 1
+	start := 0
+
+	comment := []byte{'/', '/'}
+
+	pos := bytes.IndexByte(data[start:], '\n')
+	for pos != -1 && start < len {
+		l := data[start : start+pos+1]
+		if isNotBlank(l) && !bytes.HasPrefix(l, comment) {
+			count++
+		}
+		start += pos + 1
+		pos = bytes.IndexByte(data[start:], '\n')
+	}
+
+	return count
+}
+
+// isNotBlank returns true if data contains at least one not-whitespace character
+func isNotBlank(data []byte) bool {
+	for _, r := range data {
+		if !unicode.IsSpace(rune(r)) {
+			return true
+		}
+	}
+	return false
+}
+
+// adjustDefKey normalizes DefKey to be used in map.get() operations
+// the following fields are used for comparison: UnitType, Unit, Path
+func adjustDefKey(key graph.DefKey, unit *unit.SourceUnit) graph.DefKey {
+
+	ret := graph.DefKey{
+		Repo:     "",
+		UnitType: key.UnitType,
+		Unit:     key.Unit,
+		Path:     key.Path,
+	}
+
+	if ret.UnitType == "" {
+		ret.UnitType = unit.Type
+	}
+	if ret.Unit == "" {
+		ret.Unit = unit.Name
+	}
+
+	return ret
 }
