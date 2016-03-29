@@ -1,5 +1,4 @@
 /release/
-
 /.tmp-selfupdate/
-
 *.test
+vendor/*/
