@@ -1,5 +1,5 @@
 language: go
-go: 1.5
+go: 1.6
 sudo: false
 
 before_install:
@@ -8,14 +8,10 @@ before_install:
   - export TRAVIS_BUILD_DIR=$HOME/gopath/src/sourcegraph.com/sourcegraph/srclib
   - export PATH=$PATH:$HOME/gopath/bin
   - export GOBIN=$HOME/gopath/bin
-  - go get github.com/tools/godep
 
 install:
-  - go get -d -v ./...
-  - godep restore ./...
-  - go build -v ./...
-  - go install ./cmd/srclib
+  - make
 
 script:
-  - go test -race -v ./...
+  - go test -race -v $(go list ./... | grep -v /vendor/)
   
