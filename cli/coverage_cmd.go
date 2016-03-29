@@ -213,10 +213,11 @@ func divideSentinel(x, y, sentinel float64) float64 {
 	return q
 }
 
-// numLines counts number of lines that are
-// - not blank
-// - do not look like comment
-// in the given data
+var commentPrefix = []byte("//")
+
+// numLines counts the number of lines that
+// - are not blank
+// - do not look like comments
 func numLines(data []byte) int {
 
 	len := len(data)
@@ -227,12 +228,10 @@ func numLines(data []byte) int {
 	count := 1
 	start := 0
 
-	comment := []byte{'/', '/'}
-
 	pos := bytes.IndexByte(data[start:], '\n')
 	for pos != -1 && start < len {
 		l := data[start : start+pos+1]
-		if isNotBlank(l) && !bytes.HasPrefix(l, comment) {
+		if isNotBlank(l) && !bytes.HasPrefix(l, commentPrefix) {
 			count++
 		}
 		start += pos + 1
