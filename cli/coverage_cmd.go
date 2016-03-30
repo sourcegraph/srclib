@@ -128,33 +128,43 @@ func coverage(repo *Repo) (*cvg.Coverage, error) {
 	defKeys := make(map[graph.DefKey]struct{})
 	data := make([]graph.Output, 0, len(mf.Rules))
 
-	for _, rule_ := range mf.Rules {
-		rule, ok := rule_.(*grapher.GraphUnitRule)
-		if !ok {
-			continue
-		}
-
+	parseGraphData := func(graphFile string, sourceUnit *unit.SourceUnit) error {
 		var item graph.Output
-
-		if err := readJSONFileFS(bdfs, rule.Target(), &item); err != nil {
+		if err := readJSONFileFS(bdfs, graphFile, &item); err != nil {
 			if err == errEmptyJSONFile {
-				log.Printf("Warning: the JSON file is empty for unit %s %s.", rule.Unit.Type, rule.Unit.Name)
-				continue
+				log.Printf("Warning: the JSON file is empty for unit %s %s.", sourceUnit.Type, sourceUnit.Name)
+				return nil
 			}
 			if os.IsNotExist(err) {
-				log.Printf("Warning: no build data for unit %s %s.", rule.Unit.Type, rule.Unit.Name)
-				continue
+				log.Printf("Warning: no build data for unit %s %s.", sourceUnit.Type, sourceUnit.Name)
+				return nil
 			}
-			return nil, fmt.Errorf("error reading JSON file %s for unit %s %s: %s", rule.Target(), rule.Unit.Type, rule.Unit.Name, err)
+			return fmt.Errorf("error reading JSON file %s for unit %s %s: %s", graphFile, sourceUnit.Type, sourceUnit.Name, err)
 		}
 		data = append(data, item)
 
 		for _, def := range item.Defs {
-			defKeys[adjustDefKey(def.DefKey, rule.Unit)] = struct{}{}
+			defKeys[adjustDefKey(def.DefKey, sourceUnit)] = struct{}{}
 		}
 
 		for _, ref := range item.Refs {
-			ref.SetFromDefKey(adjustDefKey(ref.DefKey(), rule.Unit))
+			ref.SetFromDefKey(adjustDefKey(ref.DefKey(), sourceUnit))
+		}
+		return nil
+	}
+
+	for _, rule_ := range mf.Rules {
+		switch rule := rule_.(type) {
+		case *grapher.GraphUnitRule:
+			if err := parseGraphData(rule.Target(), rule.Unit); err != nil {
+				return nil, err
+			}
+		case *grapher.GraphMultiUnitsRule:
+			for target, sourceUnit := range rule.Targets() {
+				if err := parseGraphData(target, sourceUnit); err != nil {
+					return nil, err
+				}
+			}
 		}
 	}
 
