@@ -255,14 +255,14 @@ type toolchainInstaller struct {
 type toolchainMap map[string]toolchainInstaller
 
 var stdToolchains = toolchainMap{
-	"go":         toolchainInstaller{"Go (github.com/sourcegraph/srclib-go)", installGoToolchain},
-	"python":     toolchainInstaller{"Python (github.com/sourcegraph/srclib-python)", installPythonToolchain},
-	"ruby":       toolchainInstaller{"Ruby (github.com/sourcegraph/srclib-ruby)", installRubyToolchain},
-	"javascript": toolchainInstaller{"JavaScript (github.com/sourcegraph/srclib-javascript)", installJavaScriptToolchain},
-	"typescript": toolchainInstaller{"TypeScript (github.com/sourcegraph/srclib-typescript)", installTypeScriptToolchain},
-	"java":       toolchainInstaller{"Java (github.com/sourcegraph/srclib-java)", installJavaToolchain},
-	"basic":      toolchainInstaller{"PHP, Objective-C (github.com/sourcegraph/srclib-basic)", installBasicToolchain},
-	"csharp":     toolchainInstaller{"C# (github.com/sourcegraph/srclib-csharp)", installCSharpToolchain},
+	"go":         toolchainInstaller{"Go (sourcegraph.com/sourcegraph/srclib-go)", installGoToolchain},
+	"python":     toolchainInstaller{"Python (sourcegraph.com/sourcegraph/srclib-python)", installPythonToolchain},
+	"ruby":       toolchainInstaller{"Ruby (sourcegraph.com/sourcegraph/srclib-ruby)", installRubyToolchain},
+	"javascript": toolchainInstaller{"JavaScript (sourcegraph.com/sourcegraph/srclib-javascript)", installJavaScriptToolchain},
+	"typescript": toolchainInstaller{"TypeScript (sourcegraph.com/sourcegraph/srclib-typescript)", installTypeScriptToolchain},
+	"java":       toolchainInstaller{"Java (sourcegraph.com/sourcegraph/srclib-java)", installJavaToolchain},
+	"basic":      toolchainInstaller{"PHP, Objective-C (sourcegraph.com/sourcegraph/srclib-basic)", installBasicToolchain},
+	"csharp":     toolchainInstaller{"C# (sourcegraph.com/sourcegraph/srclib-csharp)", installCSharpToolchain},
 }
 
 func (m toolchainMap) listKeys() string {
@@ -314,7 +314,7 @@ func installToolchains(langs []toolchainInstaller) error {
 }
 
 func installGoToolchain() error {
-	const toolchain = "github.com/sourcegraph/srclib-go"
+	const toolchain = "sourcegraph.com/sourcegraph/srclib-go"
 
 	// Identify if Go is installed already or not.
 	if _, err := exec.LookPath("go"); isExecErrNotFound(err) {
@@ -355,7 +355,7 @@ run this command again.`)
 }
 
 func installRubyToolchain() error {
-	const toolchain = "github.com/sourcegraph/srclib-ruby"
+	const toolchain = "sourcegraph.com/sourcegraph/srclib-ruby"
 
 	srclibpathDir := filepath.Join(filepath.SplitList(srclib.Path)[0], toolchain) // toolchain dir under SRCLIBPATH
 	if err := os.MkdirAll(filepath.Dir(srclibpathDir), 0700); err != nil {
@@ -387,7 +387,7 @@ func installRubyToolchain() error {
 }
 
 func installJavaScriptToolchain() error {
-	const toolchain = "github.com/sourcegraph/srclib-javascript"
+	const toolchain = "sourcegraph.com/sourcegraph/srclib-javascript"
 
 	srclibpathDir := filepath.Join(filepath.SplitList(srclib.Path)[0], toolchain) // toolchain dir under SRCLIBPATH
 
@@ -407,7 +407,7 @@ func installJavaScriptToolchain() error {
 }
 
 func installTypeScriptToolchain() error {
-	const toolchain = "github.com/sourcegraph/srclib-typescript"
+	const toolchain = "sourcegraph.com/sourcegraph/srclib-typescript"
 
 	srclibpathDir := filepath.Join(filepath.SplitList(srclib.Path)[0], toolchain) // toolchain dir under SRCLIBPATH
 
@@ -436,7 +436,7 @@ func installTypeScriptToolchain() error {
 }
 
 func installPythonToolchain() error {
-	const toolchain = "github.com/sourcegraph/srclib-python"
+	const toolchain = "sourcegraph.com/sourcegraph/srclib-python"
 
 	requiredCmds := map[string]string{
 		"go":         "visit https://golang.org/doc/install",
@@ -470,7 +470,7 @@ func installPythonToolchain() error {
 }
 
 func installJavaToolchain() error {
-	const toolchain = "github.com/sourcegraph/srclib-java"
+	const toolchain = "sourcegraph.com/sourcegraph/srclib-java"
 
 	reqCmds := []string{"java", "gradle"}
 	for _, cmd := range reqCmds {
@@ -503,7 +503,7 @@ Refusing to install Java toolchain because %s is not installed or is not on the 
 }
 
 func installCSharpToolchain() error {
-	const toolchain = "github.com/sourcegraph/srclib-csharp"
+	const toolchain = "sourcegraph.com/sourcegraph/srclib-csharp"
 
 	requiredCmds := map[string]string{
 		"dnx": "see http://docs.asp.net/en/latest/getting-started/installing-on-linux.html for details",
@@ -535,7 +535,7 @@ func installCSharpToolchain() error {
 }
 
 func installBasicToolchain() error {
-	const toolchain = "github.com/sourcegraph/srclib-basic"
+	const toolchain = "sourcegraph.com/sourcegraph/srclib-basic"
 
 	reqCmds := []string{"java"}
 	for _, cmd := range reqCmds {
