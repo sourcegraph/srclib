@@ -13,6 +13,8 @@ import (
 	"strings"
 	"unicode"
 
+	"text/scanner"
+
 	"sourcegraph.com/sourcegraph/go-flags"
 
 	"sourcegraph.com/sourcegraph/srclib/config"
@@ -213,12 +215,12 @@ func divideSentinel(x, y, sentinel float64) float64 {
 	return q
 }
 
-var commentPrefix = []byte("//")
-
 // numLines counts the number of lines that
 // - are not blank
 // - do not look like comments
 func numLines(data []byte) int {
+
+	data = stripComments(data)
 
 	len := len(data)
 	if len == 0 {
@@ -231,7 +233,7 @@ func numLines(data []byte) int {
 	pos := bytes.IndexByte(data[start:], '\n')
 	for pos != -1 && start < len {
 		l := data[start : start+pos+1]
-		if isNotBlank(l) && !bytes.HasPrefix(l, commentPrefix) {
+		if isNotBlank(l) {
 			count++
 		}
 		start += pos + 1
@@ -239,6 +241,32 @@ func numLines(data []byte) int {
 	}
 
 	return count
+}
+
+// stripComments strips single line (//) and multi line (/* */) comments from the data
+func stripComments(data []byte) []byte {
+
+	ret := make([]byte, 0, len(data))
+	s := &scanner.Scanner{}
+	s.Init(bytes.NewReader(data))
+	s.Error = func(_ *scanner.Scanner, _ string) {}
+	s.Mode = s.Mode ^ scanner.SkipComments
+
+	offset := 0
+
+	tok := s.Scan()
+	for tok != scanner.EOF {
+		pos := s.Pos()
+		if tok == scanner.Comment {
+			ret = append(ret, data[offset:pos.Offset-len(s.TokenText())]...)
+		} else {
+			ret = append(ret, data[offset:pos.Offset]...)
+		}
+		offset = pos.Offset
+		tok = s.Scan()
+	}
+
+	return append(ret, data[offset:]...)
 }
 
 // isNotBlank returns true if data contains at least one not-whitespace character

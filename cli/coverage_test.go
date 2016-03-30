@@ -1,8 +1,30 @@
 package cli
 
 import (
+	"io/ioutil"
 	"testing"
 )
+
+func TestStripComments(t *testing.T) {
+
+	source, _ := ioutil.ReadFile("testdata/strip-comments/commented-source.txt")
+	target, _ := ioutil.ReadFile("testdata/strip-comments/expected-source.txt")
+	expected := string(target)
+
+	actual := string(stripComments(source))
+	if actual != expected {
+		t.Errorf("got\n%v\n, want\n%v\n", actual, expected)
+	}
+
+	source = []byte("abc\n//def\nfgh")
+	expected = "abc\n\nfgh"
+
+	actual = string(stripComments(source))
+	if actual != expected {
+		t.Errorf("got\n%v\n, want\n%v\n", actual, expected)
+	}
+
+}
 
 func TestNumLines(t *testing.T) {
 	tests := []struct {
@@ -28,6 +50,10 @@ func TestNumLines(t *testing.T) {
 		{
 			"abc\n//def\nfgh",
 			2,
+		},
+		{
+			"",
+			0,
 		},
 	}
 
