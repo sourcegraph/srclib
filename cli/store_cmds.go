@@ -300,23 +300,24 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 	par := parallel.NewRun(10)
 	for _, rule_ := range mf.Rules {
 		rule := rule_
-		par.Do(func() error {
-			switch rule := rule.(type) {
-			case *grapher.GraphUnitRule:
-				if (opt.Unit != "" && rule.Unit.Name != opt.Unit) || (opt.UnitType != "" && rule.Unit.Type != opt.UnitType) {
-					return nil
-				}
-				return importGraphData(rule.Target(), rule.Unit)
-			case *grapher.GraphMultiUnitsRule:
-				for target, sourceUnit := range rule.Targets() {
-					if (opt.Unit != "" && sourceUnit.Name != opt.Unit) || (opt.UnitType != "" && sourceUnit.Type != opt.UnitType) {
-						continue
-					}
-					return importGraphData(target, sourceUnit)
-				}
+		switch rule := rule.(type) {
+		case *grapher.GraphUnitRule:
+			if (opt.Unit != "" && rule.Unit.Name != opt.Unit) || (opt.UnitType != "" && rule.Unit.Type != opt.UnitType) {
+				continue
 			}
-			return nil
-		})
+			par.Do(func() error {
+				return importGraphData(rule.Target(), rule.Unit)
+			})
+		case *grapher.GraphMultiUnitsRule:
+			for target, sourceUnit := range rule.Targets() {
+				if (opt.Unit != "" && sourceUnit.Name != opt.Unit) || (opt.UnitType != "" && sourceUnit.Type != opt.UnitType) {
+					continue
+				}
+				par.Do(func() error {
+					return importGraphData(target, sourceUnit)
+				})
+			}
+		}
 	}
 	if err := par.Wait(); err != nil {
 		return err
