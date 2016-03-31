@@ -122,7 +122,7 @@ func (r *GraphMultiUnitsRule) Target() string {
 }
 
 func (r *GraphMultiUnitsRule) Targets() map[string]*unit.SourceUnit {
-	var targets map[string]*unit.SourceUnit
+	targets := make(map[string]*unit.SourceUnit)
 	for _, u := range r.Units {
 		targets[filepath.ToSlash(filepath.Join(r.dataDir, plan.SourceUnitDataFilename(&graph.Output{}, u)))] = u
 	}
