@@ -104,8 +104,6 @@ func (r *GraphUnitRule) Recipes() []string {
 	}
 }
 
-func (r *GraphUnitRule) SourceUnit() *unit.SourceUnit { return r.Unit }
-
 type GraphMultiUnitsRule struct {
 	dataDir   string
 	Units     unit.SourceUnits
