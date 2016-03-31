@@ -300,35 +300,19 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 	par := parallel.NewRun(10)
 	for _, rule_ := range mf.Rules {
 		rule := rule_
-
-		if opt.Unit != "" || opt.UnitType != "" {
-			type ruleForSourceUnit interface {
-				SourceUnit() *unit.SourceUnit
-			}
-			if rule, ok := rule.(ruleForSourceUnit); ok {
-				u := rule.SourceUnit()
-				if (opt.Unit != "" && u.Name != opt.Unit) || (opt.UnitType != "" && u.Type != opt.UnitType) {
-					continue
-				}
-			} else {
-				// Skip all non-source-unit rules if --unit or
-				// --unit-type are specified.
-				continue
-			}
-		}
-
 		par.Do(func() error {
 			switch rule := rule.(type) {
 			case *grapher.GraphUnitRule:
+				if (opt.Unit != "" && rule.Unit.Name != opt.Unit) || (opt.UnitType != "" && rule.Unit.Type != opt.UnitType) {
+					return nil
+				}
 				return importGraphData(rule.Target(), rule.Unit)
 			case *grapher.GraphMultiUnitsRule:
 				for target, sourceUnit := range rule.Targets() {
 					if (opt.Unit != "" && sourceUnit.Name != opt.Unit) || (opt.UnitType != "" && sourceUnit.Type != opt.UnitType) {
 						continue
 					}
-					if err := importGraphData(target, sourceUnit); err != nil {
-						return err
-					}
+					return importGraphData(target, sourceUnit)
 				}
 			}
 			return nil
