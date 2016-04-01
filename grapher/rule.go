@@ -27,13 +27,14 @@ func init() {
 }
 
 func makeGraphRules(c *config.Tree, dataDir string, existing []makex.Rule) ([]makex.Rule, error) {
-	const op = graphOp
 	var rules []makex.Rule
 	for _, u := range c.SourceUnits {
-		toolRef, ok := u.Ops[op]
-		if !ok {
+		// HACK: ensure backward compatibility with old behavior where
+		// we assume we should `graph` if no `graph` op explicitly specified
+		if _, hasGraphAll := u.Ops[graphAllOp]; hasGraphAll {
 			continue
 		}
+		toolRef := u.Ops[graphOp]
 		if toolRef == nil {
 			choice, err := toolchain.ChooseTool(graphOp, u.Type)
 			if err != nil {
@@ -48,12 +49,10 @@ func makeGraphRules(c *config.Tree, dataDir string, existing []makex.Rule) ([]ma
 }
 
 func makeGraphAllRules(c *config.Tree, dataDir string, existing []makex.Rule) ([]makex.Rule, error) {
-	const op = graphAllOp
-
 	// Group all graph-all units by type.
 	groupedUnits := make(map[string]unit.SourceUnits)
 	for _, u := range c.SourceUnits {
-		if _, ok := u.Ops[op]; !ok {
+		if _, ok := u.Ops[graphAllOp]; !ok {
 			continue
 		}
 
