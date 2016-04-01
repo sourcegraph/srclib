@@ -93,7 +93,13 @@ func (c *NormalizeGraphDataCmd) Execute(args []string) error {
 		if _, err := os.Stdout.Write(data); err != nil {
 			return err
 		}
+		return nil
 	}
+
+	// If `graph` emits multiple source units, in this case, don't
+	// write to stdout (the rule will not direct it to a file), but
+	// instead write to multiple .graph.json files (one for each
+	// source unit). This is a HACK.
 
 	// graphPerUnit maps source unit names to the graph data of
 	// that unit.
