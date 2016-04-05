@@ -25,6 +25,8 @@ import (
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
+const fileTokThresh float64 = 0.7
+
 func init() {
 	cliInit = append(cliInit, func(cli *flags.Command) {
 		_, err := cli.AddCommand("coverage",
@@ -43,6 +45,7 @@ type codeFileDatum struct {
 	NumRefs      int
 	NumDefs      int
 	NumRefsValid int
+	Language     string
 }
 
 type CoverageCmd struct {
@@ -70,18 +73,32 @@ func (c *CoverageCmd) Execute(args []string) error {
 	return nil
 }
 
-var codeExts = []string{".go", ".java", ".py", ".rb", ".cpp", ".ts", ".cs", ".js", ".php", ".m"} // codeExt lists all file extensions that indicate a code file we want to cover
-var codeExts_ = make(map[string]struct{})
+var langToExts = map[string][]string{
+	"Go":          []string{".go"},
+	"Java":        []string{".java"},
+	"Python":      []string{".py"},
+	"Ruby":        []string{".rb"},
+	"C++":         []string{".cpp"},
+	"TypeScript":  []string{".ts"},
+	"C#":          []string{".cs"},
+	"JavaScript":  []string{".js"},
+	"PHP":         []string{".php"},
+	"Objective-C": []string{".m"},
+}
+var extToLang map[string]string
 
 func init() {
-	for _, ext := range codeExts {
-		codeExts_[ext] = struct{}{}
+	extToLang = make(map[string]string)
+	for lang, exts := range langToExts {
+		for _, ext := range exts {
+			extToLang[ext] = lang
+		}
 	}
 }
 
-func coverage(repo *Repo) (*cvg.Coverage, error) {
-	codeFileData := make(map[string]*codeFileDatum)
-	log.Printf(repo.RootDir)
+func coverage(repo *Repo) (map[string]*cvg.Coverage, error) {
+	// Gather file data
+	codeFileData := make(map[string]*codeFileDatum) // data for each file needed to compute coverage
 	filepath.Walk(repo.RootDir, func(path string, info os.FileInfo, err error) error {
 		if filepath.IsAbs(path) {
 			var err error
@@ -100,22 +117,23 @@ func coverage(repo *Repo) (*cvg.Coverage, error) {
 
 		path = filepath.ToSlash(path)
 
-		if _, isCodeFile := codeExts_[filepath.Ext(path)]; isCodeFile {
+		ext := filepath.Ext(path)
+		if lang, isCodeFile := extToLang[ext]; isCodeFile {
 			b, err := ioutil.ReadFile(path)
 			if err != nil {
 				return err
 			}
 			loc := numLines(b)
-			codeFileData[path] = &codeFileDatum{LoC: loc}
+			codeFileData[path] = &codeFileDatum{LoC: loc, Language: lang}
 		}
 		return nil
 	})
 
+	// Gather ref/def data for each file
 	bdfs, err := GetBuildDataFS(repo.CommitID)
 	if err != nil {
 		return nil, err
 	}
-
 	treeConfig, err := config.ReadCached(bdfs)
 	if err != nil {
 		return nil, fmt.Errorf("error calling config.ReadCached: %s", err)
@@ -169,7 +187,6 @@ func coverage(repo *Repo) (*cvg.Coverage, error) {
 	}
 
 	for _, item := range data {
-
 		var validRefs []*graph.Ref
 		for _, ref := range item.Refs {
 			if datum, exists := codeFileData[ref.File]; exists {
@@ -192,29 +209,44 @@ func coverage(repo *Repo) (*cvg.Coverage, error) {
 		}
 	}
 
-	var fileTokThresh float64 = 0.7
-	numIndexedFiles := 0
-	numDefs, numRefs, numRefsValid := 0, 0, 0
-	loc := 0 // lines of code
-	var uncoveredFiles []string
+	// Compute coverage from per-file data
+	type langStats struct {
+		numFiles        int
+		numIndexedFiles int
+		numDefs         int
+		numRefs         int
+		numRefsValid    int
+		uncoveredFiles  []string
+		loc             int
+	}
+	stats := make(map[string]*langStats)
 	for file, datum := range codeFileData {
-		loc += datum.LoC
-		numDefs += datum.NumDefs
-		numRefs += datum.NumRefs
-		numRefsValid += datum.NumRefsValid
+		if _, exist := stats[datum.Language]; !exist {
+			stats[datum.Language] = &langStats{}
+		}
+		s := stats[datum.Language]
+		s.numFiles++
+		s.loc += datum.LoC
+		s.numDefs += datum.NumDefs
+		s.numRefs += datum.NumRefs
+		s.numRefsValid += datum.NumRefsValid
 		if float64(datum.NumDefs+datum.NumRefsValid)/float64(datum.LoC) > fileTokThresh {
-			numIndexedFiles++
+			s.numIndexedFiles++
 		} else {
-			uncoveredFiles = append(uncoveredFiles, file)
+			s.uncoveredFiles = append(s.uncoveredFiles, file)
 		}
 	}
 
-	return &cvg.Coverage{
-		FileScore:      divideSentinel(float64(numIndexedFiles), float64(len(codeFileData)), -1),
-		RefScore:       divideSentinel(float64(numRefsValid), float64(numRefs), -1),
-		TokDensity:     divideSentinel(float64(numDefs+numRefs), float64(loc), -1),
-		UncoveredFiles: uncoveredFiles,
-	}, nil
+	cov := make(map[string]*cvg.Coverage)
+	for lang, s := range stats {
+		cov[lang] = &cvg.Coverage{
+			FileScore:      divideSentinel(float64(s.numIndexedFiles), float64(s.numFiles), -1),
+			RefScore:       divideSentinel(float64(s.numRefsValid), float64(s.numRefs), -1),
+			TokDensity:     divideSentinel(float64(s.numDefs+s.numRefs), float64(s.loc), -1),
+			UncoveredFiles: s.uncoveredFiles,
+		}
+	}
+	return cov, nil
 }
 
 func divideSentinel(x, y, sentinel float64) float64 {
