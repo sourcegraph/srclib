@@ -162,11 +162,11 @@ func coverage(repo *Repo) (map[string]*cvg.Coverage, error) {
 		data = append(data, item)
 
 		for _, def := range item.Defs {
-			defKeys[adjustDefKey(def.DefKey, sourceUnit)] = struct{}{}
+			defKeys[def.DefKey] = struct{}{}
 		}
 
 		for _, ref := range item.Refs {
-			ref.SetFromDefKey(adjustDefKey(ref.DefKey(), sourceUnit))
+			ref.SetFromDefKey(ref.DefKey())
 		}
 		return nil
 	}
@@ -319,25 +319,4 @@ func isNotBlank(data []byte) bool {
 		}
 	}
 	return false
-}
-
-// adjustDefKey normalizes DefKey to be used in map.get() operations
-// the following fields are used for comparison: UnitType, Unit, Path
-func adjustDefKey(key graph.DefKey, unit *unit.SourceUnit) graph.DefKey {
-
-	ret := graph.DefKey{
-		Repo:     "",
-		UnitType: key.UnitType,
-		Unit:     key.Unit,
-		Path:     key.Path,
-	}
-
-	if ret.UnitType == "" {
-		ret.UnitType = unit.Type
-	}
-	if ret.Unit == "" {
-		ret.Unit = unit.Name
-	}
-
-	return ret
 }
