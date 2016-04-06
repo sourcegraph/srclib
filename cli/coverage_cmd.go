@@ -224,6 +224,11 @@ func coverage(repo *Repo) (map[string]*cvg.Coverage, error) {
 		if _, exist := stats[datum.Language]; !exist {
 			stats[datum.Language] = &langStats{}
 		}
+		if filepath.Base(file) == "doc.go" {
+			// Skip over "doc.go"
+			continue
+		}
+
 		s := stats[datum.Language]
 		s.numFiles++
 		s.loc += datum.LoC
