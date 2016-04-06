@@ -78,12 +78,12 @@ var langToExts = map[string][]string{
 	"Java":        []string{".java"},
 	"Python":      []string{".py"},
 	"Ruby":        []string{".rb"},
-	"C++":         []string{".cpp"},
+	"C++":         []string{".cpp", ".cc", ".cxx", ".c++"},
 	"TypeScript":  []string{".ts"},
 	"C#":          []string{".cs"},
 	"JavaScript":  []string{".js"},
 	"PHP":         []string{".php"},
-	"Objective-C": []string{".m"},
+	"Objective-C": []string{".m", ".mm"},
 }
 var extToLang map[string]string
 
@@ -117,7 +117,7 @@ func coverage(repo *Repo) (map[string]*cvg.Coverage, error) {
 
 		path = filepath.ToSlash(path)
 
-		ext := filepath.Ext(path)
+		ext := strings.ToLower(filepath.Ext(path))
 		if lang, isCodeFile := extToLang[ext]; isCodeFile {
 			b, err := ioutil.ReadFile(path)
 			if err != nil {
@@ -224,8 +224,7 @@ func coverage(repo *Repo) (map[string]*cvg.Coverage, error) {
 		if _, exist := stats[datum.Language]; !exist {
 			stats[datum.Language] = &langStats{}
 		}
-		if filepath.Base(file) == "doc.go" {
-			// Skip over "doc.go"
+		if shouldIgnoreFile(file) {
 			continue
 		}
 
@@ -252,6 +251,13 @@ func coverage(repo *Repo) (map[string]*cvg.Coverage, error) {
 		}
 	}
 	return cov, nil
+}
+
+func shouldIgnoreFile(filename string) bool {
+	if filepath.Base(filename) == "doc.go" {
+		return true
+	}
+	return false
 }
 
 func divideSentinel(x, y, sentinel float64) float64 {
