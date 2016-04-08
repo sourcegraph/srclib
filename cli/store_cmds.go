@@ -309,7 +309,8 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 				return importGraphData(rule.Target(), rule.Unit)
 			})
 		case *grapher.GraphMultiUnitsRule:
-			for target, sourceUnit := range rule.Targets() {
+			for target_, sourceUnit_ := range rule.Targets() {
+				target, sourceUnit := target_, sourceUnit_
 				if (opt.Unit != "" && sourceUnit.Name != opt.Unit) || (opt.UnitType != "" && sourceUnit.Type != opt.UnitType) {
 					continue
 				}
