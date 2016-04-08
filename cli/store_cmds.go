@@ -246,7 +246,13 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 	// need to be protected by a mutex since its value is only modified in one
 	// direction (false to true), and it is only read in the sequential section
 	// after parallel.NewRun completes.
-	var hasIndexableData bool
+	//
+	// However, we still protect it with a mutex to avoid data race errors from the
+	// Go race detector.
+	var (
+		mu               sync.Mutex
+		hasIndexableData bool
+	)
 
 	importGraphData := func(graphFile string, sourceUnit *unit.SourceUnit) error {
 		var data graph.Output
@@ -292,7 +298,9 @@ func Import(buildDataFS vfs.FileSystem, stor interface{}, opt ImportOpt) error {
 			return fmt.Errorf("store (type %T) does not implement importing", stor)
 		}
 
+		mu.Lock()
 		hasIndexableData = true
+		mu.Unlock()
 
 		return nil
 	}
