@@ -620,6 +620,9 @@ func symlinkToGopath(toolchain string) (err error, gopathDir string) {
 				return err, ""
 			}
 		} else {
+			// os.Symlink makes "file symbolic link" on Windows making impossible to install Go toolchain
+			// because `cd foo && make` requires "foo" to be either a directory or so-called "directory symbolic link".
+			// That's why we had to use `mklink /D bar foo`
 			if err := execCmdInDir(srclibpathDir, "cmd", "/c", "mklink", "/D", gopathDir, srclibpathDir); err != nil {
 				return err, ""
 			}
