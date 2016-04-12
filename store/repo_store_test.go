@@ -41,6 +41,9 @@ func testRepoStore_Import_empty(t *testing.T, rs RepoStoreImporter) {
 			t.Fatalf("%s: Index: %s", rs, err)
 		}
 	}
+	if err := rs.CreateVersion("c"); err != nil {
+		t.Errorf("%s: CreateVersion(c): %s", rs, err)
+	}
 	testTreeStore_empty(t, rs)
 }
 
@@ -70,6 +73,9 @@ func testRepoStore_Import(t *testing.T, rs RepoStoreImporter) {
 			t.Fatalf("%s: Index: %s", rs, err)
 		}
 	}
+	if err := rs.CreateVersion("c"); err != nil {
+		t.Errorf("%s: CreateVersion(c): %s", rs, err)
+	}
 }
 
 func testRepoStore_Versions(t *testing.T, rs RepoStoreImporter) {
@@ -82,6 +88,9 @@ func testRepoStore_Versions(t *testing.T, rs RepoStoreImporter) {
 			if err := rs.Index(version); err != nil {
 				t.Fatalf("%s: Index: %s", rs, err)
 			}
+		}
+		if err := rs.CreateVersion(version); err != nil {
+			t.Errorf("%s: CreateVersion(%s): %s", rs, version, err)
 		}
 	}
 
@@ -118,6 +127,9 @@ func testRepoStore_Units(t *testing.T, rs RepoStoreImporter) {
 		if err := rs.Index("c"); err != nil {
 			t.Fatalf("%s: Index: %s", rs, err)
 		}
+	}
+	if err := rs.CreateVersion("c"); err != nil {
+		t.Errorf("%s: CreateVersion(c): %s", rs, err)
 	}
 
 	want := []*unit.SourceUnit{
@@ -170,6 +182,9 @@ func testRepoStore_Defs(t *testing.T, rs RepoStoreImporter) {
 			t.Fatalf("%s: Index: %s", rs, err)
 		}
 	}
+	if err := rs.CreateVersion("c"); err != nil {
+		t.Errorf("%s: CreateVersion(c): %s", rs, err)
+	}
 
 	want := []*graph.Def{
 		{
@@ -219,6 +234,9 @@ func testRepoStore_Defs_ByCommitIDs(t *testing.T, rs RepoStoreImporter) {
 				t.Fatalf("%s: Index: %s", rs, err)
 			}
 		}
+		if err := rs.CreateVersion(commitID); err != nil {
+			t.Errorf("%s: CreateVersion(%s): %s", rs, commitID, err)
+		}
 	}
 
 	want := []*graph.Def{
@@ -255,6 +273,9 @@ func testRepoStore_Defs_ByCommitIDs_ByFile(t *testing.T, rs RepoStoreImporter) {
 			if err := rs.Index(commitID); err != nil {
 				t.Fatalf("%s: Index: %s", rs, err)
 			}
+		}
+		if err := rs.CreateVersion(commitID); err != nil {
+			t.Errorf("%s: CreateVersion(%s): %s", rs, commitID, err)
 		}
 	}
 
@@ -302,6 +323,9 @@ func testRepoStore_Refs(t *testing.T, rs RepoStoreImporter) {
 		if err := rs.Index("c"); err != nil {
 			t.Fatalf("%s: Index: %s", rs, err)
 		}
+	}
+	if err := rs.CreateVersion("c"); err != nil {
+		t.Errorf("%s: CreateVersion(c): %s", rs, err)
 	}
 
 	want := []*graph.Ref{
