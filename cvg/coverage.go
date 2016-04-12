@@ -1,7 +1,5 @@
 package cvg
 
-import "encoding/json"
-
 type Coverage struct {
 	FileScore      float64  // % files successfully processed
 	RefScore       float64  // % internal refs that resolve to a def
