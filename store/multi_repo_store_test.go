@@ -43,6 +43,9 @@ func testMultiRepoStore_Import_empty(t *testing.T, mrs MultiRepoStoreImporter) {
 	if err := mrs.Import("r", "c", nil, graph.Output{}); err != nil {
 		t.Errorf("%s: Import(c, nil, empty): %s", mrs, err)
 	}
+	if err := mrs.CreateVersion("r", "c"); err != nil {
+		t.Errorf("%s: CreateVersion(c): %s", mrs, err)
+	}
 	testTreeStore_empty(t, mrs)
 }
 
@@ -67,6 +70,9 @@ func testMultiRepoStore_Import(t *testing.T, mrs MultiRepoStoreImporter) {
 	if err := mrs.Import("r", "c", unit, data); err != nil {
 		t.Errorf("%s: Import(c, %v, data): %s", mrs, unit, err)
 	}
+	if err := mrs.CreateVersion("r", "c"); err != nil {
+		t.Errorf("%s: CreateVersion(c): %s", mrs, err)
+	}
 }
 
 func testMultiRepoStore_Repos(t *testing.T, mrs MultiRepoStoreImporter) {
@@ -74,6 +80,9 @@ func testMultiRepoStore_Repos(t *testing.T, mrs MultiRepoStoreImporter) {
 		unit := &unit.SourceUnit{Type: "t1", Name: "u1"}
 		if err := mrs.Import(repo, "c", unit, graph.Output{}); err != nil {
 			t.Errorf("%s: Import(%s, c, %v, empty data): %s", mrs, repo, unit, err)
+		}
+		if err := mrs.CreateVersion(repo, "c"); err != nil {
+			t.Errorf("%s: CreateVersion(%s, c): %s", mrs, repo, err)
 		}
 	}
 
@@ -103,6 +112,9 @@ func testMultiRepoStore_Repos_ByRepos(t *testing.T, mrs MultiRepoStoreImporter) 
 		unit := &unit.SourceUnit{Type: "t1", Name: "u1"}
 		if err := mrs.Import(repo, "c", unit, graph.Output{}); err != nil {
 			t.Errorf("%s: Import(%s, c, %v, empty data): %s", mrs, repo, unit, err)
+		}
+		if err := mrs.CreateVersion(repo, "c"); err != nil {
+			t.Errorf("%s: CreateVersion(%s, c): %s", mrs, repo, err)
 		}
 	}
 
@@ -155,6 +167,9 @@ func TestFSMultiRepoStore_Repos_customPathFuncs(t *testing.T) {
 				t.Errorf("%s: Import(%s, c, %v, empty data): %s", label, repo, unit, err)
 				continue
 			}
+			if err := mrs.CreateVersion(repo, "c"); err != nil {
+				t.Errorf("%s: CreateVersion(%s, c): %s", mrs, repo, err)
+			}
 		}
 
 		repos, err := mrs.Repos()
@@ -184,6 +199,9 @@ func testMultiRepoStore_Versions(t *testing.T, mrs MultiRepoStoreImporter) {
 		unit := &unit.SourceUnit{Type: "t1", Name: "u1"}
 		if err := mrs.Import("r", version, unit, graph.Output{}); err != nil {
 			t.Errorf("%s: Import(%s, %v, empty data): %s", mrs, version, unit, err)
+		}
+		if err := mrs.CreateVersion("r", version); err != nil {
+			t.Errorf("%s: CreateVersion(%s): %s", mrs, version, err)
 		}
 	}
 
@@ -220,6 +238,9 @@ func testMultiRepoStore_Units(t *testing.T, mrs MultiRepoStoreImporter) {
 		if err := mrs.Index("r", "c"); err != nil {
 			t.Fatalf("%s: Index: %s", mrs, err)
 		}
+	}
+	if err := mrs.CreateVersion("r", "c"); err != nil {
+		t.Errorf("%s: CreateVersion(c): %s", mrs, err)
 	}
 
 	want := []*unit.SourceUnit{
@@ -258,6 +279,9 @@ func testMultiRepoStore_Def(t *testing.T, mrs MultiRepoStoreImporter) {
 	}
 	if err := mrs.Import("r", "c", unit, data); err != nil {
 		t.Errorf("%s: Import(c, %v, data): %s", mrs, unit, err)
+	}
+	if err := mrs.CreateVersion("r", "c"); err != nil {
+		t.Errorf("%s: CreateVersion(c): %s", mrs, err)
 	}
 
 	want := []*graph.Def{
@@ -299,6 +323,9 @@ func testMultiRepoStore_Defs(t *testing.T, mrs MultiRepoStoreImporter) {
 	}
 	if err := mrs.Import("r", "c", unit, data); err != nil {
 		t.Errorf("%s: Import(c, %v, data): %s", mrs, unit, err)
+	}
+	if err := mrs.CreateVersion("r", "c"); err != nil {
+		t.Errorf("%s: CreateVersion(c): %s", mrs, err)
 	}
 
 	want := []*graph.Def{
@@ -345,6 +372,15 @@ func testMultiRepoStore_Defs_filter(t *testing.T, mrs MultiRepoStoreImporter) {
 			t.Fatalf("%s: Index: %s", mrs, err)
 		}
 	}
+	if err := mrs.CreateVersion("r", "c"); err != nil {
+		t.Errorf("%s: CreateVersion: %s", mrs, err)
+	}
+	if err := mrs.CreateVersion("r", "c2"); err != nil {
+		t.Errorf("%s: CreateVersion: %s", mrs, err)
+	}
+	if err := mrs.CreateVersion("r2", "c2"); err != nil {
+		t.Errorf("%s: CreateVersion: %s", mrs, err)
+	}
 
 	want := []*graph.Def{
 		{
@@ -373,6 +409,9 @@ func testMultiRepoStore_Defs_ByRepos(t *testing.T, mrs MultiRepoStoreImporter) {
 			if err := mrs.Index(repo, "c"); err != nil {
 				t.Fatalf("%s: Index: %s", mrs, err)
 			}
+		}
+		if err := mrs.CreateVersion(repo, "c"); err != nil {
+			t.Errorf("%s: CreateVersion: %s", mrs, err)
 		}
 	}
 
@@ -408,6 +447,9 @@ func testMultiRepoStore_Defs_ByRepos_ByDefQuery(t *testing.T, mrs MultiRepoStore
 			if err := mrs.Index(repo, "c"); err != nil {
 				t.Fatalf("%s: Index: %s", mrs, err)
 			}
+		}
+		if err := mrs.CreateVersion(repo, "c"); err != nil {
+			t.Errorf("%s: CreateVersion: %s", mrs, err)
 		}
 	}
 
@@ -449,6 +491,9 @@ func testMultiRepoStore_Defs_ByRepoCommitIDs(t *testing.T, mrs MultiRepoStoreImp
 					t.Fatalf("%s: Index: %s", mrs, err)
 				}
 			}
+			if err := mrs.CreateVersion(repo, commitID); err != nil {
+				t.Errorf("%s: CreateVersion: %s", mrs, err)
+			}
 		}
 	}
 
@@ -486,6 +531,9 @@ func testMultiRepoStore_Defs_ByRepoCommitIDs_ByDefQuery(t *testing.T, mrs MultiR
 				if err := mrs.Index(repo, commitID); err != nil {
 					t.Fatalf("%s: Index: %s", mrs, err)
 				}
+			}
+			if err := mrs.CreateVersion(repo, commitID); err != nil {
+				t.Errorf("%s: CreateVersion: %s", mrs, err)
 			}
 		}
 	}
@@ -533,6 +581,9 @@ func testMultiRepoStore_Refs(t *testing.T, mrs MultiRepoStoreImporter) {
 	}
 	if err := mrs.Import("r", "c", unit, data); err != nil {
 		t.Errorf("%s: Import(c, %v, data): %s", mrs, unit, err)
+	}
+	if err := mrs.CreateVersion("r", "c"); err != nil {
+		t.Errorf("%s: CreateVersion(c): %s", mrs, err)
 	}
 
 	want := []*graph.Ref{
@@ -615,6 +666,15 @@ func testMultiRepoStore_Refs_filterByRepoCommitAndFile(t *testing.T, mrs MultiRe
 			t.Fatalf("%s: Index: %s", mrs, err)
 		}
 	}
+	if err := mrs.CreateVersion("r", "c"); err != nil {
+		t.Errorf("%s: CreateVersion: %s", mrs, err)
+	}
+	if err := mrs.CreateVersion("r", "c2"); err != nil {
+		t.Errorf("%s: CreateVersion: %s", mrs, err)
+	}
+	if err := mrs.CreateVersion("r2", "c"); err != nil {
+		t.Errorf("%s: CreateVersion: %s", mrs, err)
+	}
 
 	want := []*graph.Ref{
 		{
@@ -668,6 +728,9 @@ func testMultiRepoStore_Refs_filterByDef(t *testing.T, mrs MultiRepoStoreImporte
 		if err := mrs.Index("r", "c"); err != nil {
 			t.Fatalf("%s: Index: %s", mrs, err)
 		}
+	}
+	if err := mrs.CreateVersion("r", "c"); err != nil {
+		t.Errorf("%s: CreateVersion: %s", mrs, err)
 	}
 
 	want := []*graph.Ref{
