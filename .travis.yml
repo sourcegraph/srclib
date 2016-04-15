@@ -13,5 +13,7 @@ install:
   - make
 
 script:
+  # checking sourcegraph/srclib#281
+  - srclib toolchain install go
   - go test -race -v $(go list ./... | grep -v /vendor/)
   
