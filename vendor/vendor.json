@@ -295,10 +295,10 @@
 			"revisionTime": "2015-12-22T00:11:22-08:00"
 		},
 		{
-			"checksumSHA1": "Vlm8qSVEjGavwRiorny9xJsFJBk=",
+			"checksumSHA1": "i/xlef6YYvqTCApzwaitRbA7hqM=",
 			"path": "sourcegraph.com/sourcegraph/makex",
-			"revision": "9a03b093bc189b7f30af07076ff81a309d8c7621",
-			"revisionTime": "2015-12-12T22:14:40-08:00"
+			"revision": "ebd8626d42863f226f97c369cef6a989f410ac7b",
+			"revisionTime": "2016-04-25T10:05:24+03:00"
 		},
 		{
 			"checksumSHA1": "YGx0MAcypbYRZkpImuY6iY/zpR8=",

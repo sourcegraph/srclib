@@ -37,6 +37,8 @@ func TestCreateMakefile(t *testing.T) {
 	}
 
 	want := `
+.PHONY: all
+
 all: testdata/n/t.depresolve.json testdata/n/t.graph.json
 
 testdata/n/t.depresolve.json: testdata/n/t.unit.json
