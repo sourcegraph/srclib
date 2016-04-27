@@ -5,13 +5,13 @@ import (
 	"testing"
 )
 
-func TestStripComments(t *testing.T) {
+func TestStripCode(t *testing.T) {
 
-	source, _ := ioutil.ReadFile("testdata/strip-comments/commented-source.txt")
-	target, _ := ioutil.ReadFile("testdata/strip-comments/expected-source.txt")
+	source, _ := ioutil.ReadFile("testdata/strip-code/input-source.txt")
+	target, _ := ioutil.ReadFile("testdata/strip-code/expected-source.txt")
 	expected := string(target)
 
-	actual := string(stripComments(source))
+	actual := string(stripCode(source))
 	if actual != expected {
 		t.Errorf("got\n%v\n, want\n%v\n", actual, expected)
 	}
@@ -19,7 +19,7 @@ func TestStripComments(t *testing.T) {
 	source = []byte("abc\n//def\nfgh")
 	expected = "abc\n\nfgh"
 
-	actual = string(stripComments(source))
+	actual = string(stripCode(source))
 	if actual != expected {
 		t.Errorf("got\n%v\n, want\n%v\n", actual, expected)
 	}
