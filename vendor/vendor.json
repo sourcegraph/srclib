@@ -169,12 +169,6 @@
 			"revisionTime": "2016-02-08T20:00:02-08:00"
 		},
 		{
-			"checksumSHA1": "BApErLU+c14LQyFcFSYutJ0ftLg=",
-			"path": "github.com/sqs/go-selfupdate/selfupdate",
-			"revision": "d36f0a97c909dccd193274709266ff9b68a003db",
-			"revisionTime": "2015-09-07T16:31:30-07:00"
-		},
-		{
 			"checksumSHA1": "hCFfxlS9moqP+mz4y77I0tP2zzM=",
 			"path": "github.com/stretchrcom/testify/assert",
 			"revision": "6fe211e493929a8aac0469b93f28b1d0688a9a3a",
