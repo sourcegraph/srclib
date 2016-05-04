@@ -1,0 +1,19 @@
+
+package retrofit2http
+
+import javalangannotationDocumented
+import javalangannotationRetention
+import javalangannotationTarget
+import okhttp3HttpUrl
+
+import static javalangannotationElementTypeMETHOD
+import static javalangannotationRetentionPolicyRUNTIME
+
+
+Documented
+TargetMETHOD
+RetentionRUNTIME
+public interface DELETE 
+  
+  String value default 
+
