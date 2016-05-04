@@ -249,7 +249,7 @@ func coverage(repo *Repo) (map[string]*cvg.Coverage, error) {
 
 		s := stats[datum.Language]
 		if datum.Seen {
-		    s.numFiles++
+			s.numFiles++
 		}
 		s.loc += datum.LoC
 		s.numDefs += datum.NumDefs
@@ -325,7 +325,7 @@ func numLines(data []byte) int {
 		pos = bytes.IndexByte(data[start:], '\n')
 	}
 	if start < len && isNotBlank(data[start:]) {
-	    count++
+		count++
 	}
 
 	return count
@@ -345,6 +345,14 @@ func stripCode(data []byte) []byte {
 	tok := s.Scan()
 	for tok != scanner.EOF {
 		pos := s.Pos()
+		// there may be cases when Go scanner is inaccurate for some languages
+		// but it's ok because the purpose of this method is to strip eerything
+		// that doesn't look like ident so it probably won't be recognized by
+		// toolchain as a ref or def span. Of course there may be exceptions
+		// such as C++ operators, Groovy's GStrings, Python comments and so on,
+		// but we think that removing Go-style idents from source code gives
+		// pretty accurate resutls when counting number of lines that may contain
+		// ref/def spans
 		if tok != scanner.Ident {
 			ret = append(ret, data[offset:pos.Offset-len(s.TokenText())]...)
 		} else {
