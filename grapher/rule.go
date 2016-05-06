@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"sourcegraph.com/sourcegraph/makex"
 	"sourcegraph.com/sourcegraph/srclib"
@@ -151,6 +150,6 @@ func (r *GraphMultiUnitsRule) Recipes() []string {
 		unitFiles = append(unitFiles, filepath.ToSlash(filepath.Join(r.dataDir, plan.SourceUnitDataFilename(unit.SourceUnit{}, u))))
 	}
 	return []string{
-		fmt.Sprintf("%s internal emit-unit-data %s | %s tool %q %q | %s internal normalize-graph-data --unit-type %q --dir . --multi --data-dir %s", safeCommand, strings.Join(unitFiles, " "), safeCommand, r.Tool.Toolchain, r.Tool.Subcmd, safeCommand, r.UnitsType, filepath.ToSlash(r.dataDir)),
+		fmt.Sprintf(`find .srclib-cache -name "*%s.unit.json" | xargs %s internal emit-unit-data | %s tool %q %q | %s internal normalize-graph-data --unit-type %q --dir . --multi --data-dir %s`, r.UnitsType, safeCommand, safeCommand, r.Tool.Toolchain, r.Tool.Subcmd, safeCommand, r.UnitsType, filepath.ToSlash(r.dataDir)),
 	}
 }
