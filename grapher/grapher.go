@@ -1,6 +1,7 @@
 package grapher
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"os"
@@ -83,6 +84,23 @@ func sortedOutput(o *graph.Output) *graph.Output {
 
 // NormalizeData sorts data and performs other postprocessing.
 func NormalizeData(unitType, dir string, o *graph.Output) error {
+	wd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	f, err := os.Create(filepath.Join(wd, "graphoutput"))
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	enc := json.NewEncoder(f)
+	err = enc.Encode(o)
+	if err != nil {
+		return err
+	}
+
 	for _, ref := range o.Refs {
 		if ref.DefRepo != "" {
 			uri, err := graph.TryMakeURI(string(ref.DefRepo))
