@@ -149,7 +149,12 @@ func (r *GraphMultiUnitsRule) Recipes() []string {
 	for _, u := range r.Units {
 		unitFiles = append(unitFiles, filepath.ToSlash(filepath.Join(r.dataDir, plan.SourceUnitDataFilename(unit.SourceUnit{}, u))))
 	}
+
+	// The change to use the Unix 'find' command rather than the previous implementation which was a straightforward append of all source filenames into one
+	// very long command line was resulting in build failures for large repos. We were seeing spawn/fork errors specifically building the kubernetes
+	// repository.  k8s has so many dependencies that the cli argument string to srclib exceeded the alotted stack size for a newly spawned process.
+	// Find and xargs allows us to emulate having all the source units without having to significantly change how we handle process to process communication.   
 	return []string{
-		fmt.Sprintf("%s internal emit-unit-data %s | %s tool %q %q | %s internal normalize-graph-data --unit-type %q --dir . --multi --data-dir %s", safeCommand, strings.Join(unitFiles, " "), safeCommand, r.Tool.Toolchain, r.Tool.Subcmd, safeCommand, r.UnitsType, filepath.ToSlash(r.dataDir)),
+		fmt.Sprintf("find .srclib-cache -name \"*%s.unit.json\" | xargs %s internal emit-unit-data  | %s tool %q %q | %s internal normalize-graph-data --unit-type %q --dir . --multi --data-dir %s", r.UnitsType, safeCommand, safeCommand, r.Tool.Toolchain, r.Tool.Subcmd, safeCommand, r.UnitsType, r.dataDir),
 	}
 }
