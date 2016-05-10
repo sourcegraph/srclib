@@ -413,6 +413,11 @@ func installJavaScriptToolchain() error {
 		return err
 	}
 
+	log.Println("Building JavaScript toolchain program")
+	if err := execCmdInDir(srclibpathDir, "npm", "install"); err != nil {
+		return err
+	}
+
 	return nil
 }
 
