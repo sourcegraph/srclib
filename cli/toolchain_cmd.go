@@ -397,7 +397,7 @@ func installRubyToolchain() error {
 }
 
 func installJavaScriptToolchain() error {
-	const toolchain = "sourcegraph.com/sourcegraph/srclib-javascript"
+	const toolchain = "github.com/sourcegraph/srclib-javascript"
 
 	srclibpathDir := filepath.Join(filepath.SplitList(srclib.Path)[0], toolchain) // toolchain dir under SRCLIBPATH
 
