@@ -152,11 +152,11 @@ func (r *GraphMultiUnitsRule) Recipes() []string {
 	}
 
 	// Use `find` command + `xargs` because otherwise the arguments list can become too long.
-	var findCmd = "find"
+	var findCmd = "find -L"
 	if runtime.GOOS == "windows" {
 		findCmd = "/usr/bin/find"
 	}
 	return []string{
-		fmt.Sprintf(`%s .srclib-cache -name "*%s.unit.json" | xargs %s internal emit-unit-data  | %s tool %q %q | %s internal normalize-graph-data --unit-type %q --dir . --multi --data-dir %s`, findCmd, r.UnitsType, safeCommand, safeCommand, r.Tool.Toolchain, r.Tool.Subcmd, safeCommand, r.UnitsType, filepath.ToSlash(r.dataDir)),
+		fmt.Sprintf(`%s %s -name "*%s.unit.json" | xargs %s internal emit-unit-data  | %s tool %q %q | %s internal normalize-graph-data --unit-type %q --dir . --multi --data-dir %s`, findCmd, filepath.ToSlash(r.dataDir), r.UnitsType, safeCommand, safeCommand, r.Tool.Toolchain, r.Tool.Subcmd, safeCommand, r.UnitsType, filepath.ToSlash(r.dataDir)),
 	}
 }
