@@ -553,7 +553,7 @@ func installCSharpToolchain() error {
 
 	nugetdir := filepath.Join(srclibpathDir, "Srclib.Nuget")
 	log.Println("Downloading toolchain dependencies in", nugetdir)
-	if err := execCmdInDir("dnu", "restore", nugetdir); err != nil {
+	if err := execCmdInDir(nugetdir, "dnu", "restore"); err != nil {
 		return err
 	}
 
