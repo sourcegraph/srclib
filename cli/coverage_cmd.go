@@ -120,6 +120,12 @@ func coverage(repo *Repo) (map[string]*cvg.Coverage, error) {
 
 		ext := strings.ToLower(filepath.Ext(path))
 		if lang, isCodeFile := extToLang[ext]; isCodeFile {
+
+			// omitting special files (auto-generated, temporary, ...)
+			if shouldIgnoreFile(path, lang) {
+				return nil
+			}
+
 			b, err := ioutil.ReadFile(path)
 			if err != nil {
 				return err
@@ -198,7 +204,7 @@ func coverage(repo *Repo) (map[string]*cvg.Coverage, error) {
 			if datum, exists := codeFileData[ref.File]; exists {
 				datum.NumRefs++
 
-				if ref.DefRepo != "" {
+				if ref.DefUnitType == "URL" || ref.DefRepo != "" {
 					validRefs = append(validRefs, ref)
 					datum.NumRefsValid++
 				} else if _, defExists := defKeys[ref.DefKey()]; defExists {
@@ -243,28 +249,27 @@ func coverage(repo *Repo) (map[string]*cvg.Coverage, error) {
 		if _, exist := stats[datum.Language]; !exist {
 			stats[datum.Language] = &langStats{}
 		}
-		if shouldIgnoreFile(file) {
-			continue
-		}
 
 		s := stats[datum.Language]
-		if datum.Seen {
-			s.numFiles++
-		}
 		s.loc += datum.LoC
 		s.numDefs += datum.NumDefs
 		s.numRefs += datum.NumRefs
 		s.numRefsValid += datum.NumRefsValid
-		density := float64(datum.NumDefs+datum.NumRefsValid) / float64(datum.LoC)
-		if density > fileTokThresh {
-			s.numIndexedFiles++
-		} else if datum.Seen {
-			if GlobalOpt.Verbose {
-				log.Printf("Uncovered file %s - density: %f, defs: %d, refs: %d, lines of code: %d",
-					file, density, datum.NumDefs, datum.NumRefsValid, datum.LoC)
+		if datum.Seen {
+			// this file is listed in the source unit and found by the scanner
+			s.numFiles++
+			density := float64(datum.NumDefs+datum.NumRefsValid) / float64(datum.LoC)
+			if density > fileTokThresh {
+				s.numIndexedFiles++
+			} else {
+				if GlobalOpt.Verbose {
+					log.Printf("Uncovered file %s - density: %f, defs: %d, refs: %d, lines of code: %d",
+						file, density, datum.NumDefs, datum.NumRefsValid, datum.LoC)
+				}
+				s.uncoveredFiles = append(s.uncoveredFiles, file)
 			}
-			s.uncoveredFiles = append(s.uncoveredFiles, file)
 		} else {
+			// this file is not listed in the source unit but found by the scanner
 			if GlobalOpt.Verbose {
 				log.Printf("Undiscovered file %s", file)
 			}
@@ -285,9 +290,19 @@ func coverage(repo *Repo) (map[string]*cvg.Coverage, error) {
 	return cov, nil
 }
 
-func shouldIgnoreFile(filename string) bool {
-	if filepath.Base(filename) == "doc.go" {
-		return true
+// shouldIgnoreFile returns true if file denoted by the given path should be
+// ignored when scanning for files
+func shouldIgnoreFile(filename, language string) bool {
+	basename := filepath.Base(filename)
+	switch {
+	case language == "Go":
+		return basename == "doc.go"
+	case language == "Java":
+		// ignoring Andoid auto-generated stuff
+		return basename == "R.java" || basename == "BuildConfig.java"
+	case language == "JavaScript":
+		// ignoring everything in the node_modules directory
+		return strings.HasPrefix(filename, "node_modules/")
 	}
 	return false
 }

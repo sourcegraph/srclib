@@ -18,6 +18,9 @@ func TestTryMakeURI(t *testing.T) {
 		{"https://github.com/foo/bar", "github.com/foo/bar", false},
 		{"https://bitbucket.org/foo/bar", "bitbucket.org/foo/bar", false},
 
+		{"https://foobar.com", "foobar.com", false},
+		{"https://foobar.com/", "foobar.com", false},
+
 		{"scm:git:git://github.com/path_to_repository", "github.com/path_to_repository", false},
 		{"scm:git:http://github.com/path_to_repository", "github.com/path_to_repository", false},
 		{"scm:git:https://github.com/path_to_repository", "github.com/path_to_repository", false},
