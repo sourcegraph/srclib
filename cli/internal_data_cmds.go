@@ -80,11 +80,11 @@ func (c *NormalizeGraphDataCmd) Execute(args []string) error {
 		return err
 	}
 
-	if err := grapher.NormalizeData(c.UnitType, c.Dir, o); err != nil {
-		return err
-	}
-
 	if !c.Multi {
+		if err := grapher.NormalizeData(c.UnitType, c.Dir, o); err != nil {
+			return err
+		}
+
 		data, err := json.MarshalIndent(o, "", "  ")
 		if err != nil {
 			return err
@@ -146,6 +146,11 @@ func (c *NormalizeGraphDataCmd) Execute(args []string) error {
 
 	// Write the graph data to a separate file for each source unit.
 	for unitName, graphData := range graphPerUnit {
+		if err := grapher.NormalizeData(c.UnitType, c.Dir, graphData); err != nil {
+			log.Printf("skipping unit %s because failed to normalize data: %s", unitName, err)
+			continue
+		}
+
 		path := filepath.ToSlash(filepath.Join(c.DataDir, plan.SourceUnitDataFilename(&graph.Output{}, &unit.SourceUnit{Name: unitName, Type: c.UnitType})))
 		graphFile, err := os.Create(path)
 		if err != nil {
