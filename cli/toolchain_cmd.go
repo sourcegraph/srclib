@@ -335,13 +335,13 @@ run this command again.`)
 
 	// Go-based toolchains should be cloned into GOPATH/src/TOOLCHAIN
 	// otherwise govendor refuses to work if source code is located outside of GOPATH
-	gopathDir = filepath.Join(gopathDir, "src", toolchainFqn(toolchainName))
+	gopathDir = filepath.Join(gopathDir, "src", toolchainFQN(toolchainName))
 	if err := os.MkdirAll(filepath.Dir(gopathDir), 0700); err != nil {
 		return err
 	}
 
 	log.Println("Downloading Go toolchain")
-	if err := cloneToolchain(gopathDir, toolchainCloneUri(toolchainName)); err != nil {
+	if err := cloneToolchain(gopathDir, toolchainCloneURI(toolchainName)); err != nil {
 		return err
 	}
 
@@ -385,7 +385,7 @@ func installRubyToolchain() error {
 	}
 
 	log.Println("Downloading Ruby toolchain in", srclibpathDir)
-	if err := cloneToolchain(srclibpathDir, toolchainCloneUri(toolchainName)); err != nil {
+	if err := cloneToolchain(srclibpathDir, toolchainCloneURI(toolchainName)); err != nil {
 		return err
 	}
 
@@ -413,7 +413,7 @@ func installJavaScriptToolchain() error {
 	}
 
 	log.Println("Downloading JavaScript toolchain in", srclibpathDir)
-	if err := cloneToolchain(srclibpathDir, toolchainCloneUri(toolchainName)); err != nil {
+	if err := cloneToolchain(srclibpathDir, toolchainCloneURI(toolchainName)); err != nil {
 		return err
 	}
 
@@ -445,7 +445,7 @@ func installTypeScriptToolchain() error {
 	}
 
 	log.Println("Downloading TypeScript toolchain in", srclibpathDir)
-	if err := cloneToolchain(srclibpathDir, toolchainCloneUri(toolchainName)); err != nil {
+	if err := cloneToolchain(srclibpathDir, toolchainCloneURI(toolchainName)); err != nil {
 		return err
 	}
 
@@ -477,13 +477,13 @@ func installPythonToolchain() error {
 
 	// Go-based toolchains should be cloned into GOPATH/src/TOOLCHAIN
 	// otherwise govendor refuses to work if source code is located outside of GOPATH
-	gopathDir = filepath.Join(gopathDir, "src", toolchainFqn(toolchainName))
+	gopathDir = filepath.Join(gopathDir, "src", toolchainFQN(toolchainName))
 	if err := os.MkdirAll(filepath.Dir(gopathDir), 0700); err != nil {
 		return err
 	}
 
 	log.Println("Downloading Python toolchain")
-	if err := cloneToolchain(gopathDir, toolchainCloneUri(toolchainName)); err != nil {
+	if err := cloneToolchain(gopathDir, toolchainCloneURI(toolchainName)); err != nil {
 		return err
 	}
 
@@ -527,7 +527,7 @@ Refusing to install Java toolchain because %s is not installed or is not on the 
 	}
 
 	log.Println("Downloading Java toolchain in", srclibpathDir)
-	if err := cloneToolchain(srclibpathDir, toolchainCloneUri(toolchainName)); err != nil {
+	if err := cloneToolchain(srclibpathDir, toolchainCloneURI(toolchainName)); err != nil {
 		return err
 	}
 
@@ -558,7 +558,7 @@ func installCSharpToolchain() error {
 	}
 
 	log.Println("Downloading C# toolchain in", srclibpathDir)
-	if err := cloneToolchain(srclibpathDir, toolchainCloneUri(toolchainName)); err != nil {
+	if err := cloneToolchain(srclibpathDir, toolchainCloneURI(toolchainName)); err != nil {
 		return err
 	}
 
@@ -592,7 +592,7 @@ Refusing to install Basic toolchain because %s is not installed or is not on the
 	}
 
 	log.Println("Downloading Basic toolchain in", srclibpathDir)
-	if err := cloneToolchain(srclibpathDir, toolchainCloneUri(toolchainName)); err != nil {
+	if err := cloneToolchain(srclibpathDir, toolchainCloneURI(toolchainName)); err != nil {
 		return err
 	}
 
@@ -604,24 +604,24 @@ Refusing to install Basic toolchain because %s is not installed or is not on the
 	return nil
 }
 
-func cloneToolchain(dest, toolchain string) error {
-	if fi, err := os.Stat(dest); os.IsNotExist(err) {
+func cloneToolchain(destDir, cloneURI string) error {
+	if fi, err := os.Stat(destDir); os.IsNotExist(err) {
 		// Clone
-		if err := os.MkdirAll(filepath.Dir(dest), 0700); err != nil {
+		if err := os.MkdirAll(filepath.Dir(destDir), 0700); err != nil {
 			return err
 		}
 
-		cmd := exec.Command("git", "clone", toolchain)
-		cmd.Dir = filepath.Dir(dest)
+		cmd := exec.Command("git", "clone", cloneURI)
+		cmd.Dir = filepath.Dir(destDir)
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()
 	} else if err != nil {
 		return err
 	} else if !fi.Mode().IsDir() {
-		return fmt.Errorf("not a directory: %s", dest)
+		return fmt.Errorf("not a directory: %s", destDir)
 	}
-	log.Printf("Toolchain directory %q already exists, using existing version.", dest)
+	log.Printf("Toolchain directory %q already exists, using existing version.", destDir)
 	return nil
 }
 
@@ -671,18 +671,18 @@ func symlink(source, target string) error {
 }
 
 // prepareParentDir makes parent directory for a given toolchain under SRCLIBPATH and returns SRCLIBPATH/FULL-PATH-TO-TOOLCHAIN
-func prepareParentDir(toolchainName string) (toolchainDir string, err error) {
+func prepareParentDir(toolchainName string) (string, error) {
 	// toolchain dir under SRCLIBPATH
-	srclibpathDir := filepath.Join(filepath.SplitList(srclib.Path)[0], toolchainFqn(toolchainName))
+	srclibpathDir := filepath.Join(filepath.SplitList(srclib.Path)[0], toolchainFQN(toolchainName))
 	return srclibpathDir, os.MkdirAll(filepath.Dir(srclibpathDir), 0700)
 }
 
-// toolchainFqn returns fully qualified toolchain name
-func toolchainFqn(toolchainName string) string {
+// toolchainFQN returns fully qualified toolchain name
+func toolchainFQN(toolchainName string) string {
 	return "sourcegraph.com/sourcegraph/" + toolchainName
 }
 
-// toolchainFqn returns clone URI for a given toolchain
-func toolchainCloneUri(toolchainName string) string {
+// toolchainCloneURI returns clone URI for a given toolchain
+func toolchainCloneURI(toolchainName string) string {
 	return "https://github.com/sourcegraph/" + toolchainName
 }
