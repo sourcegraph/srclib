@@ -12,20 +12,34 @@ import (
 	_ "sourcegraph.com/sourcegraph/srclib/dep"
 	_ "sourcegraph.com/sourcegraph/srclib/grapher"
 	"sourcegraph.com/sourcegraph/srclib/plan"
+	"sourcegraph.com/sourcegraph/srclib/toolchain"
 	"sourcegraph.com/sourcegraph/srclib/unit"
 )
 
 func TestCreateMakefile(t *testing.T) {
+	oldChooseTool := toolchain.ChooseTool
+	defer func() { toolchain.ChooseTool = oldChooseTool }()
+
+	toolchain.ChooseTool = func(op, unitType string) (*srclib.ToolRef, error) {
+		return &srclib.ToolRef{
+			Toolchain: "tc",
+			Subcmd:    "t",
+		}, nil
+	}
 	buildDataDir := "testdata"
 	c := &config.Tree{
 		SourceUnits: []*unit.SourceUnit{
 			{
-				Name:  "n",
-				Type:  "t",
-				Files: []string{"f"},
-				Ops: map[string]*srclib.ToolRef{
-					"graph":      {Toolchain: "tc", Subcmd: "t"},
-					"depresolve": {Toolchain: "tc", Subcmd: "t"},
+				Key: unit.Key{
+					Name: "n",
+					Type: "t",
+				},
+				Info: unit.Info{
+					Files: []string{"f"},
+					Ops: map[string][]byte{
+						"graph":      nil,
+						"depresolve": nil,
+					},
 				},
 			},
 		},

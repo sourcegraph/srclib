@@ -57,7 +57,7 @@ func insertDefs(b *testing.B, rs RepoStoreImporter, numDefs int) {
 	for v := 0; v < *numVersions; v++ {
 		version := &Version{CommitID: fmt.Sprintf("commit%d", v)}
 		for u := 0; u < *numUnits; u++ {
-			unit := &unit.SourceUnit{Name: fmt.Sprintf("unit%d", u), Type: fmt.Sprintf("type%d", u)}
+			unit := &unit.SourceUnit{Key: unit.Key{Name: fmt.Sprintf("unit%d", u), Type: fmt.Sprintf("type%d", u)}}
 			data := graph.Output{Defs: make([]*graph.Def, numDefs)}
 			for d := 0; d < numDefs; d++ {
 				data.Defs[d] = &graph.Def{
@@ -78,7 +78,7 @@ func insertRefs(b *testing.B, rs RepoStoreImporter, numRefs int) {
 	for v := 0; v < *numVersions; v++ {
 		version := &Version{CommitID: fmt.Sprintf("commit%d", v)}
 		for u := 0; u < *numUnits; u++ {
-			unit := &unit.SourceUnit{Name: fmt.Sprintf("unit%d", u), Type: fmt.Sprintf("type%d", u)}
+			unit := &unit.SourceUnit{Key: unit.Key{Name: fmt.Sprintf("unit%d", u), Type: fmt.Sprintf("type%d", u)}}
 			data := graph.Output{Refs: make([]*graph.Ref, numRefs)}
 			for r := 0; r < numRefs; r++ {
 				data.Refs[r] = &graph.Ref{
@@ -121,7 +121,7 @@ func addSourceUnitFilesFromData(u *unit.SourceUnit, data *graph.Output) {
 
 func benchmarkImport(b *testing.B, rs RepoStoreImporter) {
 	data := makeGraphData(b, *numDefs)
-	u := &unit.SourceUnit{Type: "t", Name: "u"}
+	u := &unit.SourceUnit{Key: unit.Key{Type: "t", Name: "u"}}
 	addSourceUnitFilesFromData(u, &data)
 
 	runtime.GC()

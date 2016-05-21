@@ -2,7 +2,6 @@ package store
 
 import (
 	"fmt"
-	"reflect"
 	"testing"
 
 	"sort"
@@ -48,7 +47,7 @@ func testRepoStore_Import_empty(t *testing.T, rs RepoStoreImporter) {
 }
 
 func testRepoStore_Import(t *testing.T, rs RepoStoreImporter) {
-	unit := &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f"}}
+	unit := &unit.SourceUnit{Key: unit.Key{Type: "t", Name: "u"}, Info: unit.Info{Files: []string{"f"}}}
 	data := graph.Output{
 		Defs: []*graph.Def{
 			{
@@ -80,7 +79,7 @@ func testRepoStore_Import(t *testing.T, rs RepoStoreImporter) {
 
 func testRepoStore_Versions(t *testing.T, rs RepoStoreImporter) {
 	for _, version := range []string{"c1", "c2"} {
-		unit := &unit.SourceUnit{Type: "t1", Name: "u1"}
+		unit := &unit.SourceUnit{Key: unit.Key{Type: "t1", Name: "u1"}}
 		if err := rs.Import(version, unit, graph.Output{}); err != nil {
 			t.Errorf("%s: Import(%s, %v, empty data): %s", rs, version, unit, err)
 		}
@@ -100,7 +99,7 @@ func testRepoStore_Versions(t *testing.T, rs RepoStoreImporter) {
 	if err != nil {
 		t.Errorf("%s: Versions(): %s", rs, err)
 	}
-	if !reflect.DeepEqual(versions, want) {
+	if !deepEqual(versions, want) {
 		t.Errorf("%s: Versions(): got %v, want %v", rs, versions, want)
 	}
 
@@ -108,15 +107,15 @@ func testRepoStore_Versions(t *testing.T, rs RepoStoreImporter) {
 	if err != nil {
 		t.Errorf("%s: Versions(c2): %s", rs, err)
 	}
-	if want := []*Version{{CommitID: "c2"}}; !reflect.DeepEqual(versions, want) {
+	if want := []*Version{{CommitID: "c2"}}; !deepEqual(versions, want) {
 		t.Errorf("%s: Versions(c2): got %v, want %v", rs, versions, want)
 	}
 }
 
 func testRepoStore_Units(t *testing.T, rs RepoStoreImporter) {
 	units := []*unit.SourceUnit{
-		{Type: "t1", Name: "u1"},
-		{Type: "t2", Name: "u2"},
+		{Key: unit.Key{Type: "t1", Name: "u1"}},
+		{Key: unit.Key{Type: "t2", Name: "u2"}},
 	}
 	for _, unit := range units {
 		if err := rs.Import("c", unit, graph.Output{}); err != nil {
@@ -133,15 +132,15 @@ func testRepoStore_Units(t *testing.T, rs RepoStoreImporter) {
 	}
 
 	want := []*unit.SourceUnit{
-		{CommitID: "c", Type: "t1", Name: "u1"},
-		{CommitID: "c", Type: "t2", Name: "u2"},
+		{Key: unit.Key{CommitID: "c", Type: "t1", Name: "u1"}},
+		{Key: unit.Key{CommitID: "c", Type: "t2", Name: "u2"}},
 	}
 
 	units, err := rs.Units()
 	if err != nil {
 		t.Errorf("%s: Units(): %s", rs, err)
 	}
-	if !reflect.DeepEqual(units, want) {
+	if !deepEqual(units, want) {
 		t.Errorf("%s: Units(): got %v, want %v", rs, units, want)
 	}
 
@@ -149,7 +148,7 @@ func testRepoStore_Units(t *testing.T, rs RepoStoreImporter) {
 	if err != nil {
 		t.Errorf("%s: Units: %s", rs, err)
 	}
-	if want := []*unit.SourceUnit{{CommitID: "c", Type: "t2", Name: "u2"}}; !reflect.DeepEqual(units, want) {
+	if want := []*unit.SourceUnit{{Key: unit.Key{CommitID: "c", Type: "t2", Name: "u2"}}}; !deepEqual(units, want) {
 		t.Errorf("%s: Units: got %v, want %v", rs, units, want)
 	}
 
@@ -161,7 +160,7 @@ func testRepoStore_Units(t *testing.T, rs RepoStoreImporter) {
 }
 
 func testRepoStore_Defs(t *testing.T, rs RepoStoreImporter) {
-	u := &unit.SourceUnit{Type: "t", Name: "u"}
+	u := &unit.SourceUnit{Key: unit.Key{Type: "t", Name: "u"}}
 	data := graph.Output{
 		Defs: []*graph.Def{
 			{
@@ -201,7 +200,7 @@ func testRepoStore_Defs(t *testing.T, rs RepoStoreImporter) {
 	if err != nil {
 		t.Errorf("%s: Defs(): %s", rs, err)
 	}
-	if !reflect.DeepEqual(defs, want) {
+	if !deepEqual(defs, want) {
 		t.Errorf("%s: Defs(): got defs %v, want %v", rs, defs, want)
 	}
 
@@ -215,7 +214,7 @@ func testRepoStore_Defs(t *testing.T, rs RepoStoreImporter) {
 	if err != nil {
 		t.Errorf("%s: Defs: %s", rs, err)
 	}
-	if !reflect.DeepEqual(defs, want) {
+	if !deepEqual(defs, want) {
 		t.Errorf("%s: Defs: got defs %v, want %v", rs, defs, want)
 	}
 }
@@ -223,7 +222,7 @@ func testRepoStore_Defs(t *testing.T, rs RepoStoreImporter) {
 func testRepoStore_Defs_ByCommitIDs(t *testing.T, rs RepoStoreImporter) {
 	const numCommits = 3
 	for c := 1; c <= numCommits; c++ {
-		unit := &unit.SourceUnit{Type: "t", Name: "u"}
+		unit := &unit.SourceUnit{Key: unit.Key{Type: "t", Name: "u"}}
 		data := graph.Output{Defs: []*graph.Def{{DefKey: graph.DefKey{Path: "p"}}}}
 		commitID := fmt.Sprintf("c%d", c)
 		if err := rs.Import(commitID, unit, data); err != nil {
@@ -250,7 +249,7 @@ func testRepoStore_Defs_ByCommitIDs(t *testing.T, rs RepoStoreImporter) {
 	}
 	sort.Sort(graph.Defs(defs))
 	sort.Sort(graph.Defs(want))
-	if !reflect.DeepEqual(defs, want) {
+	if !deepEqual(defs, want) {
 		t.Errorf("%s: Defs: got defs %v, want %v", rs, defs, want)
 	}
 }
@@ -258,7 +257,7 @@ func testRepoStore_Defs_ByCommitIDs(t *testing.T, rs RepoStoreImporter) {
 func testRepoStore_Defs_ByCommitIDs_ByFile(t *testing.T, rs RepoStoreImporter) {
 	const numCommits = 2
 	for c := 1; c <= numCommits; c++ {
-		unit := &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f1", "f2"}}
+		unit := &unit.SourceUnit{Key: unit.Key{Type: "t", Name: "u"}, Info: unit.Info{Files: []string{"f1", "f2"}}}
 		data := graph.Output{
 			Defs: []*graph.Def{
 				{DefKey: graph.DefKey{Path: "p1"}, File: "f1"},
@@ -288,7 +287,7 @@ func testRepoStore_Defs_ByCommitIDs_ByFile(t *testing.T, rs RepoStoreImporter) {
 	if err != nil {
 		t.Fatalf("%s: Defs: %s", rs, err)
 	}
-	if !reflect.DeepEqual(defs, want) {
+	if !deepEqual(defs, want) {
 		t.Errorf("%s: Defs: got defs %v, want %v", rs, defs, want)
 	}
 	if isIndexedStore(rs) {
@@ -299,7 +298,7 @@ func testRepoStore_Defs_ByCommitIDs_ByFile(t *testing.T, rs RepoStoreImporter) {
 }
 
 func testRepoStore_Refs(t *testing.T, rs RepoStoreImporter) {
-	unit := &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f1", "f2"}}
+	unit := &unit.SourceUnit{Key: unit.Key{Type: "t", Name: "u"}, Info: unit.Info{Files: []string{"f1", "f2"}}}
 	data := graph.Output{
 		Refs: []*graph.Ref{
 			{
@@ -357,7 +356,7 @@ func testRepoStore_Refs(t *testing.T, rs RepoStoreImporter) {
 	if err != nil {
 		t.Errorf("%s: Refs(): %s", rs, err)
 	}
-	if !reflect.DeepEqual(refs, want) {
+	if !deepEqual(refs, want) {
 		t.Errorf("%s: Refs(): got refs %v, want %v", rs, refs, want)
 	}
 }

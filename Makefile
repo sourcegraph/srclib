@@ -24,7 +24,7 @@ install: srclib
 srclib: ${GOBIN}/${EXE}
 
 ${GOBIN}/${EXE}: $(shell /usr/bin/find . -type f -and -name '*.go')
-	GO15VENDOREXPERIMENT=1 go install ./cmd/srclib
+	go install ./cmd/srclib
 
 govendor:
 	go get github.com/kardianos/govendor
