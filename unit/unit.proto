@@ -64,7 +64,7 @@ message Info {
 	// dependency resolution on these entries. This is because the scanner is
 	// run frequently and should execute very quickly, and dependency resolution
 	// is often slow (requiring network access, etc.).
-	repeated SourceUnit Dependencies = 3;
+	repeated Key Dependencies = 3;
 
 	// Data is additional data dumped by the scanner about this source unit. It
 	// typically holds information that the scanner wants to make available to

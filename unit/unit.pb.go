@@ -89,7 +89,7 @@ type Info struct {
 	// dependency resolution on these entries. This is because the scanner is
 	// run frequently and should execute very quickly, and dependency resolution
 	// is often slow (requiring network access, etc.).
-	Dependencies []*SourceUnit `protobuf:"bytes,3,rep,name=Dependencies" json:"Dependencies,omitempty"`
+	Dependencies []*Key `protobuf:"bytes,3,rep,name=Dependencies" json:"Dependencies,omitempty"`
 	// Data is additional data dumped by the scanner about this source unit. It
 	// typically holds information that the scanner wants to make available to
 	// other components in the toolchain (grapher, dep resolver, etc.).
@@ -848,7 +848,7 @@ func (m *Info) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Dependencies = append(m.Dependencies, &SourceUnit{})
+			m.Dependencies = append(m.Dependencies, &Key{})
 			if err := m.Dependencies[len(m.Dependencies)-1].Unmarshal(data[iNdEx:postIndex]); err != nil {
 				return err
 			}

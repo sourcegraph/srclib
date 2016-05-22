@@ -1,11 +1,13 @@
 package unit
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"path/filepath"
 	"strings"
 
+	"sourcegraph.com/sourcegraph/srclib"
 	"sourcegraph.com/sourcegraph/srclib/buildstore"
 )
 
@@ -105,3 +107,105 @@ type SourceUnits []*SourceUnit
 func (v SourceUnits) Len() int           { return len(v) }
 func (v SourceUnits) Less(i, j int) bool { return v[i].String() < v[j].String() }
 func (v SourceUnits) Swap(i, j int)      { v[i], v[j] = v[j], v[i] }
+
+// sourceUnit is the struct for JSON serialization used to preserve
+// backcompat with the old SourceUnit JSON serialization format
+type sourceUnit struct {
+	Name         string
+	Type         string
+	Repo         string   `json:",omitempty"`
+	CommitID     string   `json:",omitempty"`
+	Globs        []string `json:",omitempty"`
+	Files        []string
+	Dir          string                     `json:",omitempty"`
+	Dependencies []json.RawMessage          `json:",omitempty"`
+	Info         *Info                      `json:",omitempty"`
+	Data         json.RawMessage            `json:",omitempty"`
+	Config       map[string]json.RawMessage `json:",omitempty"`
+	Ops          map[string]*srclib.ToolRef `json:",omitempty"`
+}
+
+var _ json.Marshaler = (*SourceUnit)(nil)
+var _ json.Unmarshaler = (*SourceUnit)(nil)
+
+func (u *SourceUnit) MarshalJSON() ([]byte, error) {
+	deps := make([]json.RawMessage, len(u.Dependencies))
+	for i := range u.Dependencies {
+		var err error
+		deps[i], err = json.Marshal(u.Dependencies[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	cfg := make(map[string]json.RawMessage)
+	for k, v := range u.Config {
+		var err error
+		cfg[k], err = json.Marshal(v)
+		if err != nil {
+			return nil, err
+		}
+	}
+	ops := make(map[string]*srclib.ToolRef)
+	for k := range u.Ops {
+		ops[k] = nil
+	}
+	return json.Marshal(sourceUnit{
+		Name:         u.Name,
+		Type:         u.Type,
+		Repo:         u.Repo,
+		CommitID:     u.CommitID,
+		Files:        u.Files,
+		Dir:          u.Dir,
+		Dependencies: deps,
+		Data:         u.Data,
+		Config:       cfg,
+		Ops:          ops,
+	})
+}
+
+func (u *SourceUnit) UnmarshalJSON(b []byte) error {
+	var su sourceUnit
+	if err := json.Unmarshal(b, &su); err != nil {
+		return err
+	}
+	deps := make([]*Key, len(su.Dependencies))
+	for i, depJSON := range su.Dependencies {
+		var dep Key
+		if err := json.Unmarshal(depJSON, &dep); err == nil {
+			deps[i] = &dep
+		} else if err != nil {
+			var s string
+			if err := json.Unmarshal(depJSON, &s); err != nil {
+				return err
+			}
+			deps[i] = &Key{
+				Repo: UnitRepoUnresolved,
+				Name: s,
+				Type: u.Type,
+			}
+		}
+	}
+	cfg := make(map[string]string)
+	for k, vJSON := range su.Config {
+		var v string
+		if err := json.Unmarshal(vJSON, &v); err != nil {
+			return err
+		}
+		cfg[k] = v
+	}
+	ops := make(map[string][]byte)
+	for k := range su.Ops {
+		ops[k] = nil
+	}
+	u.Name = su.Name
+	u.Type = su.Type
+	u.Repo = su.Repo
+	u.CommitID = su.CommitID
+	u.Files = su.Files
+	u.Dir = su.Dir
+	u.Dependencies = deps
+	u.Data = su.Data
+	u.Config = cfg
+	u.Ops = ops
+	return nil
+}
