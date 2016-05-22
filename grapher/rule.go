@@ -34,15 +34,10 @@ func makeGraphRules(c *config.Tree, dataDir string, existing []makex.Rule) ([]ma
 		if _, hasGraphAll := u.Ops[graphAllOp]; hasGraphAll {
 			continue
 		}
-		toolRef := u.Ops[graphOp]
-		if toolRef == nil {
-			choice, err := toolchain.ChooseTool(graphOp, u.Type)
-			if err != nil {
-				return nil, err
-			}
-			toolRef = choice
+		toolRef, err := toolchain.ChooseTool(graphOp, u.Type)
+		if err != nil {
+			return nil, err
 		}
-
 		rules = append(rules, &GraphUnitRule{dataDir, u, toolRef})
 	}
 	return rules, nil
@@ -115,7 +110,7 @@ func (r *GraphMultiUnitsRule) Target() string {
 	// the makefile rules (see plan/util.go). Both import command and coverage command
 	// call the Targets() method to get the *.graph.json filepaths for all units graphed
 	// by this rule.
-	return filepath.ToSlash(filepath.Join(r.dataDir, plan.SourceUnitDataFilename(&graph.Output{}, &unit.SourceUnit{Type: r.UnitsType})))
+	return filepath.ToSlash(filepath.Join(r.dataDir, plan.SourceUnitDataFilename(&graph.Output{}, &unit.SourceUnit{Key: unit.Key{Type: r.UnitsType}})))
 }
 
 func (r *GraphMultiUnitsRule) Targets() map[string]*unit.SourceUnit {

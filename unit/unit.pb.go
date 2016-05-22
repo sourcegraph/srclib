@@ -98,6 +98,11 @@ type Info struct {
 	// tree config is copied verbatim to each source unit. It can be used to
 	// pass options from the Srcfile to tools.
 	Config map[string]string `protobuf:"bytes,5,rep,name=Config" json:"Config,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// Ops is a deprecated field kept around for backcompat purposes. It
+	// can be removed once the "graph-all" option has been removed.
+	//
+	// DEPRECATED
+	Ops map[string][]byte `protobuf:"bytes,6,rep,name=Ops" json:"Ops,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (m *Info) Reset()         { *m = Info{} }
@@ -267,6 +272,28 @@ func (m *Info) MarshalTo(data []byte) (int, error) {
 			i += copy(data[i:], v)
 		}
 	}
+	if len(m.Ops) > 0 {
+		keysForOps := make([]string, 0, len(m.Ops))
+		for k, _ := range m.Ops {
+			keysForOps = append(keysForOps, k)
+		}
+		github_com_gogo_protobuf_sortkeys.Strings(keysForOps)
+		for _, k := range keysForOps {
+			data[i] = 0x32
+			i++
+			v := m.Ops[k]
+			mapSize := 1 + len(k) + sovUnit(uint64(len(k))) + 1 + len(v) + sovUnit(uint64(len(v)))
+			i = encodeVarintUnit(data, i, uint64(mapSize))
+			data[i] = 0xa
+			i++
+			i = encodeVarintUnit(data, i, uint64(len(k)))
+			i += copy(data[i:], k)
+			data[i] = 0x12
+			i++
+			i = encodeVarintUnit(data, i, uint64(len(v)))
+			i += copy(data[i:], v)
+		}
+	}
 	return i, nil
 }
 
@@ -394,6 +421,14 @@ func (m *Info) Size() (n int) {
 	}
 	if len(m.Config) > 0 {
 		for k, v := range m.Config {
+			_ = k
+			_ = v
+			mapEntrySize := 1 + len(k) + sovUnit(uint64(len(k))) + 1 + len(v) + sovUnit(uint64(len(v)))
+			n += mapEntrySize + 1 + sovUnit(uint64(mapEntrySize))
+		}
+	}
+	if len(m.Ops) > 0 {
+		for k, v := range m.Ops {
 			_ = k
 			_ = v
 			mapEntrySize := 1 + len(k) + sovUnit(uint64(len(k))) + 1 + len(v) + sovUnit(uint64(len(v)))
@@ -962,6 +997,118 @@ func (m *Info) Unmarshal(data []byte) error {
 				m.Config = make(map[string]string)
 			}
 			m.Config[mapkey] = mapvalue
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Ops", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowUnit
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthUnit
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			var keykey uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowUnit
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[iNdEx]
+				iNdEx++
+				keykey |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			var stringLenmapkey uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowUnit
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[iNdEx]
+				iNdEx++
+				stringLenmapkey |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLenmapkey := int(stringLenmapkey)
+			if intStringLenmapkey < 0 {
+				return ErrInvalidLengthUnit
+			}
+			postStringIndexmapkey := iNdEx + intStringLenmapkey
+			if postStringIndexmapkey > l {
+				return io.ErrUnexpectedEOF
+			}
+			mapkey := string(data[iNdEx:postStringIndexmapkey])
+			iNdEx = postStringIndexmapkey
+			var valuekey uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowUnit
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[iNdEx]
+				iNdEx++
+				valuekey |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			var mapbyteLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowUnit
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[iNdEx]
+				iNdEx++
+				mapbyteLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intMapbyteLen := int(mapbyteLen)
+			if intMapbyteLen < 0 {
+				return ErrInvalidLengthUnit
+			}
+			postbytesIndex := iNdEx + intMapbyteLen
+			if postbytesIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			mapvalue := make([]byte, mapbyteLen)
+			copy(mapvalue, data[iNdEx:postbytesIndex])
+			iNdEx = postbytesIndex
+			if m.Ops == nil {
+				m.Ops = make(map[string][]byte)
+			}
+			m.Ops[mapkey] = mapvalue
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

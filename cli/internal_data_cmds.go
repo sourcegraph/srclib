@@ -151,7 +151,7 @@ func (c *NormalizeGraphDataCmd) Execute(args []string) error {
 			continue
 		}
 
-		path := filepath.ToSlash(filepath.Join(c.DataDir, plan.SourceUnitDataFilename(&graph.Output{}, &unit.SourceUnit{Name: unitName, Type: c.UnitType})))
+		path := filepath.ToSlash(filepath.Join(c.DataDir, plan.SourceUnitDataFilename(&graph.Output{}, &unit.SourceUnit{Key: unit.Key{Name: unitName, Type: c.UnitType}})))
 		graphFile, err := os.Create(path)
 		if err != nil {
 			return err
