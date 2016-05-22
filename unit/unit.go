@@ -120,7 +120,7 @@ type sourceUnit struct {
 	Dir          string                     `json:",omitempty"`
 	Dependencies []json.RawMessage          `json:",omitempty"`
 	Info         *Info                      `json:",omitempty"`
-	Data         json.RawMessage            `json:",omitempty"`
+	Data         []byte                     `json:",omitempty"`
 	Config       map[string]json.RawMessage `json:",omitempty"`
 	Ops          map[string]*srclib.ToolRef `json:",omitempty"`
 }
