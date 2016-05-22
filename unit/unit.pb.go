@@ -97,6 +97,8 @@ type Info struct {
 	// Config is an arbitrary key-value property map. The Config map from the
 	// tree config is copied verbatim to each source unit. It can be used to
 	// pass options from the Srcfile to tools.
+	//
+	// DEPRECATED
 	Config map[string]string `protobuf:"bytes,5,rep,name=Config" json:"Config,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	// Ops is a deprecated field kept around for backcompat purposes. It
 	// can be removed once the "graph-all" option has been removed.
@@ -110,8 +112,8 @@ func (m *Info) String() string { return proto.CompactTextString(m) }
 func (*Info) ProtoMessage()    {}
 
 type Resolution struct {
-	Raw      *SourceUnit `protobuf:"bytes,1,opt,name=raw" json:"raw,omitempty"`
-	Resolved *SourceUnit `protobuf:"bytes,2,opt,name=resolved" json:"resolved,omitempty"`
+	Raw      Key `protobuf:"bytes,1,opt,name=raw" json:"raw"`
+	Resolved Key `protobuf:"bytes,2,opt,name=resolved" json:"resolved"`
 }
 
 func (m *Resolution) Reset()         { *m = Resolution{} }
@@ -312,26 +314,22 @@ func (m *Resolution) MarshalTo(data []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Raw != nil {
-		data[i] = 0xa
-		i++
-		i = encodeVarintUnit(data, i, uint64(m.Raw.Size()))
-		n3, err := m.Raw.MarshalTo(data[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n3
+	data[i] = 0xa
+	i++
+	i = encodeVarintUnit(data, i, uint64(m.Raw.Size()))
+	n3, err := m.Raw.MarshalTo(data[i:])
+	if err != nil {
+		return 0, err
 	}
-	if m.Resolved != nil {
-		data[i] = 0x12
-		i++
-		i = encodeVarintUnit(data, i, uint64(m.Resolved.Size()))
-		n4, err := m.Resolved.MarshalTo(data[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n4
+	i += n3
+	data[i] = 0x12
+	i++
+	i = encodeVarintUnit(data, i, uint64(m.Resolved.Size()))
+	n4, err := m.Resolved.MarshalTo(data[i:])
+	if err != nil {
+		return 0, err
 	}
+	i += n4
 	return i, nil
 }
 
@@ -441,14 +439,10 @@ func (m *Info) Size() (n int) {
 func (m *Resolution) Size() (n int) {
 	var l int
 	_ = l
-	if m.Raw != nil {
-		l = m.Raw.Size()
-		n += 1 + l + sovUnit(uint64(l))
-	}
-	if m.Resolved != nil {
-		l = m.Resolved.Size()
-		n += 1 + l + sovUnit(uint64(l))
-	}
+	l = m.Raw.Size()
+	n += 1 + l + sovUnit(uint64(l))
+	l = m.Resolved.Size()
+	n += 1 + l + sovUnit(uint64(l))
 	return n
 }
 
@@ -1186,9 +1180,6 @@ func (m *Resolution) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Raw == nil {
-				m.Raw = &SourceUnit{}
-			}
 			if err := m.Raw.Unmarshal(data[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -1218,9 +1209,6 @@ func (m *Resolution) Unmarshal(data []byte) error {
 			postIndex := iNdEx + msglen
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if m.Resolved == nil {
-				m.Resolved = &SourceUnit{}
 			}
 			if err := m.Resolved.Unmarshal(data[iNdEx:postIndex]); err != nil {
 				return err

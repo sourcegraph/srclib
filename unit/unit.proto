@@ -42,7 +42,7 @@ message Key {
 
 message SourceUnit {
 	Key key = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true];
-	Info info = 2 [(gogoproto.nullable) = false, (gogoproto.embed) = true];;
+	Info info = 2 [(gogoproto.nullable) = false, (gogoproto.embed) = true];
 }
 
 message Info {
@@ -86,6 +86,6 @@ message Info {
 }
 
 message Resolution {
-	SourceUnit raw = 1;
-	SourceUnit resolved = 2;
+	Key raw = 1 [(gogoproto.nullable) = false];
+	Key resolved = 2 [(gogoproto.nullable) = false];
 }
