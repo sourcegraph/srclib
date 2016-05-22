@@ -24,12 +24,13 @@ message Key {
 	// CommitID is the commit ID of the repository containing this
 	// source unit, if any. The scanner tool need not fill this in; it
 	// should be left blank, to be filled in by the `srclib` tool.
-	//
-	// CommitID can also be a semantic version if the unit is unresolved.
 	string CommitID = 2;
 
+	// Version is the unresolved source unit version (e.g., "v1.2.3").
+	string Version = 3;
+
 	// Type is the type of source unit this represents, such as "GoPackage".
-	string Type = 3;
+	string Type = 4;
 
 	// Name is an opaque identifier for this source unit that MUST be unique
 	// among all other source units of the same type in the same repository.
@@ -37,7 +38,7 @@ message Key {
 	// Two source units of different types in a repository may have the same name.
 	// To obtain an identifier for a source unit that is guaranteed to be unique
 	// repository-wide, use the ID method.
-	string Name = 4;
+	string Name = 5;
 }
 
 message SourceUnit {

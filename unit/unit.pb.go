@@ -45,18 +45,18 @@ type Key struct {
 	// CommitID is the commit ID of the repository containing this
 	// source unit, if any. The scanner tool need not fill this in; it
 	// should be left blank, to be filled in by the `srclib` tool.
-	//
-	// CommitID can also be a semantic version if the unit is unresolved.
 	CommitID string `protobuf:"bytes,2,opt,name=CommitID,proto3" json:"CommitID,omitempty"`
+	// Version is the unresolved source unit version (e.g., "v1.2.3").
+	Version string `protobuf:"bytes,3,opt,name=Version,proto3" json:"Version,omitempty"`
 	// Type is the type of source unit this represents, such as "GoPackage".
-	Type string `protobuf:"bytes,3,opt,name=Type,proto3" json:"Type,omitempty"`
+	Type string `protobuf:"bytes,4,opt,name=Type,proto3" json:"Type,omitempty"`
 	// Name is an opaque identifier for this source unit that MUST be unique
 	// among all other source units of the same type in the same repository.
 	//
 	// Two source units of different types in a repository may have the same name.
 	// To obtain an identifier for a source unit that is guaranteed to be unique
 	// repository-wide, use the ID method.
-	Name string `protobuf:"bytes,4,opt,name=Name,proto3" json:"Name,omitempty"`
+	Name string `protobuf:"bytes,5,opt,name=Name,proto3" json:"Name,omitempty"`
 }
 
 func (m *Key) Reset()         { *m = Key{} }
@@ -147,14 +147,20 @@ func (m *Key) MarshalTo(data []byte) (int, error) {
 		i = encodeVarintUnit(data, i, uint64(len(m.CommitID)))
 		i += copy(data[i:], m.CommitID)
 	}
-	if len(m.Type) > 0 {
+	if len(m.Version) > 0 {
 		data[i] = 0x1a
+		i++
+		i = encodeVarintUnit(data, i, uint64(len(m.Version)))
+		i += copy(data[i:], m.Version)
+	}
+	if len(m.Type) > 0 {
+		data[i] = 0x22
 		i++
 		i = encodeVarintUnit(data, i, uint64(len(m.Type)))
 		i += copy(data[i:], m.Type)
 	}
 	if len(m.Name) > 0 {
-		data[i] = 0x22
+		data[i] = 0x2a
 		i++
 		i = encodeVarintUnit(data, i, uint64(len(m.Name)))
 		i += copy(data[i:], m.Name)
@@ -371,6 +377,10 @@ func (m *Key) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovUnit(uint64(l))
 	}
+	l = len(m.Version)
+	if l > 0 {
+		n += 1 + l + sovUnit(uint64(l))
+	}
 	l = len(m.Type)
 	if l > 0 {
 		n += 1 + l + sovUnit(uint64(l))
@@ -548,6 +558,35 @@ func (m *Key) Unmarshal(data []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Version", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowUnit
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := data[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthUnit
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Version = string(data[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
 			}
 			var stringLen uint64
@@ -575,7 +614,7 @@ func (m *Key) Unmarshal(data []byte) error {
 			}
 			m.Type = string(data[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
