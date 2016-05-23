@@ -162,20 +162,20 @@ func TestScopeUnits(t *testing.T) {
 			want:    []unit.ID2{},
 		},
 		{
-			filters: []interface{}{ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"})},
+			filters: []interface{}{ByUnitKey(unit.Key{Repo: "r", CommitID: "c", Type: "t", Name: "u"})},
 			want:    []unit.ID2{{Type: "t", Name: "u"}},
 		},
 		{
 			filters: []interface{}{
-				ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"}),
-				ByUnitKey(unit.Key{Repo: "r2", CommitID: "c2", UnitType: "t", Unit: "u"}),
+				ByUnitKey(unit.Key{Repo: "r", CommitID: "c", Type: "t", Name: "u"}),
+				ByUnitKey(unit.Key{Repo: "r2", CommitID: "c2", Type: "t", Name: "u"}),
 			},
 			want: []unit.ID2{{Type: "t", Name: "u"}},
 		},
 		{
 			filters: []interface{}{
-				ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"}),
-				ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t2", Unit: "u2"}),
+				ByUnitKey(unit.Key{Repo: "r", CommitID: "c", Type: "t", Name: "u"}),
+				ByUnitKey(unit.Key{Repo: "r", CommitID: "c", Type: "t2", Name: "u2"}),
 			},
 			want: []unit.ID2{},
 		},

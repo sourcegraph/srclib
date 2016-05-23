@@ -2,7 +2,6 @@ package store
 
 import (
 	"fmt"
-	"reflect"
 	"testing"
 
 	"sort"
@@ -78,7 +77,7 @@ func testTreeStore_Import_empty(t *testing.T, ts TreeStoreImporter) {
 }
 
 func testTreeStore_Import(t *testing.T, ts TreeStoreImporter) {
-	unit := &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f"}}
+	unit := &unit.SourceUnit{Key: unit.Key{Type: "t", Name: "u"}, Info: unit.Info{Files: []string{"f"}}}
 	data := graph.Output{
 		Defs: []*graph.Def{
 			{
@@ -106,7 +105,7 @@ func testTreeStore_Import(t *testing.T, ts TreeStoreImporter) {
 }
 
 func testTreeStore_Unit(t *testing.T, ts TreeStoreImporter) {
-	if err := ts.Import(&unit.SourceUnit{Type: "t", Name: "u"}, graph.Output{}); err != nil {
+	if err := ts.Import(&unit.SourceUnit{Key: unit.Key{Type: "t", Name: "u"}}, graph.Output{}); err != nil {
 		t.Errorf("%s: Import(empty data): %s", ts, err)
 	}
 	if ts, ok := ts.(TreeIndexer); ok {
@@ -119,16 +118,18 @@ func testTreeStore_Unit(t *testing.T, ts TreeStoreImporter) {
 	if err != nil {
 		t.Errorf("%s: Units: %s", ts, err)
 	}
-	if want := []*unit.SourceUnit{{Type: "t", Name: "u"}}; !reflect.DeepEqual(units, want) {
+	if want := []*unit.SourceUnit{{Key: unit.Key{Type: "t", Name: "u"}}}; !deepEqual(units, want) {
+		t.Errorf("%#v, %#v", units[0], want[0])
+
 		t.Errorf("%s: Units: got %v, want %v", ts, units, want)
 	}
 }
 
 func testTreeStore_Units(t *testing.T, ts TreeStoreImporter) {
 	want := []*unit.SourceUnit{
-		{Type: "t1", Name: "u1"},
-		{Type: "t2", Name: "u2"},
-		{Type: "t3", Name: "u3"},
+		{Key: unit.Key{Type: "t1", Name: "u1"}},
+		{Key: unit.Key{Type: "t2", Name: "u2"}},
+		{Key: unit.Key{Type: "t3", Name: "u3"}},
 	}
 	for _, unit := range want {
 		if err := ts.Import(unit, graph.Output{}); err != nil {
@@ -150,7 +151,7 @@ func testTreeStore_Units(t *testing.T, ts TreeStoreImporter) {
 		}
 		sort.Sort(unit.SourceUnits(units))
 		sort.Sort(unit.SourceUnits(want))
-		if !reflect.DeepEqual(units, want) {
+		if !deepEqual(units, want) {
 			t.Errorf("%s: Units(): got %v, want %v", ts, units, want)
 		}
 		if isIndexedStore(ts) {
@@ -178,12 +179,12 @@ func testTreeStore_Units(t *testing.T, ts TreeStoreImporter) {
 			t.Errorf("%s: Units(3 and 1): %s", ts, err)
 		}
 		want := []*unit.SourceUnit{
-			{Type: "t1", Name: "u1"},
-			{Type: "t3", Name: "u3"},
+			{Key: unit.Key{Type: "t1", Name: "u1"}},
+			{Key: unit.Key{Type: "t3", Name: "u3"}},
 		}
 		sort.Sort(unit.SourceUnits(units))
 		sort.Sort(unit.SourceUnits(want))
-		if !reflect.DeepEqual(units, want) {
+		if !deepEqual(units, want) {
 			t.Errorf("%s: Units(3 and 1): got %v, want %v", ts, units, want)
 		}
 		if isIndexedStore(ts) {
@@ -199,9 +200,9 @@ func testTreeStore_Units(t *testing.T, ts TreeStoreImporter) {
 
 func testTreeStore_Units_ByFile(t *testing.T, ts TreeStoreImporter) {
 	want := []*unit.SourceUnit{
-		{Type: "t1", Name: "u1", Files: []string{"f1"}},
-		{Type: "t2", Name: "u2", Files: []string{"f1", "f2"}},
-		{Type: "t3", Name: "u3", Files: []string{"f1", "f3"}},
+		{Key: unit.Key{Type: "t1", Name: "u1"}, Info: unit.Info{Files: []string{"f1"}}},
+		{Key: unit.Key{Type: "t2", Name: "u2"}, Info: unit.Info{Files: []string{"f1", "f2"}}},
+		{Key: unit.Key{Type: "t3", Name: "u3"}, Info: unit.Info{Files: []string{"f1", "f3"}}},
 	}
 	for _, unit := range want {
 		if err := ts.Import(unit, graph.Output{}); err != nil {
@@ -221,7 +222,7 @@ func testTreeStore_Units_ByFile(t *testing.T, ts TreeStoreImporter) {
 	}
 	sort.Sort(unit.SourceUnits(units))
 	sort.Sort(unit.SourceUnits(want))
-	if !reflect.DeepEqual(units, want) {
+	if !deepEqual(units, want) {
 		t.Errorf("%s: Units(ByFiles f1): got %v, want %v", ts, units, want)
 	}
 	if isIndexedStore(ts) {
@@ -236,9 +237,9 @@ func testTreeStore_Units_ByFile(t *testing.T, ts TreeStoreImporter) {
 		t.Errorf("%s: Units(ByFiles f2): %s", ts, err)
 	}
 	want2 := []*unit.SourceUnit{
-		{Type: "t2", Name: "u2", Files: []string{"f1", "f2"}},
+		{Key: unit.Key{Type: "t2", Name: "u2"}, Info: unit.Info{Files: []string{"f1", "f2"}}},
 	}
-	if !reflect.DeepEqual(units2, want2) {
+	if !deepEqual(units2, want2) {
 		t.Errorf("%s: Units(ByFiles f2): got %v, want %v", ts, units2, want2)
 	}
 	if isIndexedStore(ts) {
@@ -249,7 +250,7 @@ func testTreeStore_Units_ByFile(t *testing.T, ts TreeStoreImporter) {
 }
 
 func testTreeStore_Def(t *testing.T, ts TreeStoreImporter) {
-	u := &unit.SourceUnit{Type: "t", Name: "u"}
+	u := &unit.SourceUnit{Key: unit.Key{Type: "t", Name: "u"}}
 	data := graph.Output{
 		Defs: []*graph.Def{
 			{
@@ -278,7 +279,7 @@ func testTreeStore_Def(t *testing.T, ts TreeStoreImporter) {
 	if err != nil {
 		t.Fatalf("%s: Defs: %s", ts, err)
 	}
-	if !reflect.DeepEqual(defs, want) {
+	if !deepEqual(defs, want) {
 		t.Errorf("%s: Defs: got defs %v, want %v", ts, defs, want)
 	}
 
@@ -286,7 +287,7 @@ func testTreeStore_Def(t *testing.T, ts TreeStoreImporter) {
 	if err != nil {
 		t.Errorf("%s: Defs: %s", ts, err)
 	}
-	if !reflect.DeepEqual(defs, want) {
+	if !deepEqual(defs, want) {
 		t.Errorf("%s: Defs: got defs %v, want %v", ts, defs, want)
 	}
 
@@ -300,7 +301,7 @@ func testTreeStore_Def(t *testing.T, ts TreeStoreImporter) {
 }
 
 func testTreeStore_Defs(t *testing.T, ts TreeStoreImporter) {
-	unit := &unit.SourceUnit{Type: "t", Name: "u"}
+	unit := &unit.SourceUnit{Key: unit.Key{Type: "t", Name: "u"}}
 	data := graph.Output{
 		Defs: []*graph.Def{
 			{
@@ -337,7 +338,7 @@ func testTreeStore_Defs(t *testing.T, ts TreeStoreImporter) {
 	if err != nil {
 		t.Errorf("%s: Defs(): %s", ts, err)
 	}
-	if !reflect.DeepEqual(defs, want) {
+	if !deepEqual(defs, want) {
 		t.Errorf("%s: Defs(): got defs %v, want %v", ts, defs, want)
 	}
 }
@@ -370,7 +371,7 @@ func testTreeStore_Defs_Query(t *testing.T, ts TreeStoreImporter) {
 		},
 	}
 	for unitName, defs := range defsByUnit {
-		u := &unit.SourceUnit{Type: "t", Name: unitName}
+		u := &unit.SourceUnit{Key: unit.Key{Type: "t", Name: unitName}}
 		data := graph.Output{Defs: defs}
 		if err := ts.Import(u, data); err != nil {
 			t.Errorf("%s: Import(%v, data): %s", ts, u, err)
@@ -440,7 +441,7 @@ func testTreeStore_Defs_Query(t *testing.T, ts TreeStoreImporter) {
 		if err != nil {
 			t.Errorf("%s: Defs(ByDefQuery %q): %s", ts, test.q, err)
 		}
-		if got, want := defPaths(defs), test.wantDefPaths; !reflect.DeepEqual(got, want) {
+		if got, want := defPaths(defs), test.wantDefPaths; !deepEqual(got, want) {
 			t.Errorf("%s: Defs(ByDefQuery %q): got defs %v, want %v", ts, test.q, got, want)
 		}
 		if isIndexedStore(ts) {
@@ -484,7 +485,7 @@ func testTreeStore_Defs_Query_ByUnit(t *testing.T, ts TreeStoreImporter) {
 		},
 	}
 	for unitName, defs := range defsByUnit {
-		u := &unit.SourceUnit{Type: "t", Name: unitName}
+		u := &unit.SourceUnit{Key: unit.Key{Type: "t", Name: unitName}}
 		data := graph.Output{Defs: defs}
 		if err := ts.Import(u, data); err != nil {
 			t.Errorf("%s: Import(%v, data): %s", ts, u, err)
@@ -503,7 +504,7 @@ func testTreeStore_Defs_Query_ByUnit(t *testing.T, ts TreeStoreImporter) {
 		t.Errorf("%s: Defs(ByDefQuery, ByUnit): %s", ts, err)
 	}
 	wantDefPaths := []string{"p1", "p2"}
-	if got, want := defPaths(defs), wantDefPaths; !reflect.DeepEqual(got, want) {
+	if got, want := defPaths(defs), wantDefPaths; !deepEqual(got, want) {
 		t.Errorf("%s: Defs(ByDefQuery, ByUnit): got defs %v, want %v", ts, got, want)
 	}
 	if isIndexedStore(ts) {
@@ -520,9 +521,9 @@ func testTreeStore_Defs_Query_ByUnit(t *testing.T, ts TreeStoreImporter) {
 
 func testTreeStore_Defs_ByUnits(t *testing.T, ts TreeStoreImporter) {
 	units := []*unit.SourceUnit{
-		{Type: "t1", Name: "u1"},
-		{Type: "t2", Name: "u2"},
-		{Type: "t3", Name: "u3"},
+		{Key: unit.Key{Type: "t1", Name: "u1"}},
+		{Key: unit.Key{Type: "t2", Name: "u2"}},
+		{Key: unit.Key{Type: "t3", Name: "u3"}},
 	}
 	for i, unit := range units {
 		data := graph.Output{
@@ -550,7 +551,7 @@ func testTreeStore_Defs_ByUnits(t *testing.T, ts TreeStoreImporter) {
 	}
 	sort.Sort(graph.Defs(defs))
 	sort.Sort(graph.Defs(want))
-	if !reflect.DeepEqual(defs, want) {
+	if !deepEqual(defs, want) {
 		t.Errorf("%s: Defs(ByUnits): got defs %v, want %v", ts, defs, want)
 	}
 	if isIndexedStore(ts) {
@@ -562,8 +563,8 @@ func testTreeStore_Defs_ByUnits(t *testing.T, ts TreeStoreImporter) {
 
 func testTreeStore_Defs_ByFiles(t *testing.T, ts TreeStoreImporter) {
 	units := []*unit.SourceUnit{
-		{Type: "t1", Name: "u1", Files: []string{"f1"}},
-		{Type: "t2", Name: "u2", Files: []string{"f2"}},
+		{Key: unit.Key{Type: "t1", Name: "u1"}, Info: unit.Info{Files: []string{"f1"}}},
+		{Key: unit.Key{Type: "t2", Name: "u2"}, Info: unit.Info{Files: []string{"f2"}}},
 	}
 	for i, unit := range units {
 		data := graph.Output{
@@ -588,7 +589,7 @@ func testTreeStore_Defs_ByFiles(t *testing.T, ts TreeStoreImporter) {
 	if err != nil {
 		t.Errorf("%s: Defs(ByFiles f2): %s", ts, err)
 	}
-	if !reflect.DeepEqual(defs, want) {
+	if !deepEqual(defs, want) {
 		t.Errorf("%s: Defs(ByFiles f2): got defs %v, want %v", ts, defs, want)
 	}
 	if isIndexedStore(ts) {
@@ -599,7 +600,7 @@ func testTreeStore_Defs_ByFiles(t *testing.T, ts TreeStoreImporter) {
 }
 
 func testTreeStore_Refs(t *testing.T, ts TreeStoreImporter) {
-	unit := &unit.SourceUnit{Type: "t", Name: "u", Files: []string{"f1", "f2"}}
+	unit := &unit.SourceUnit{Key: unit.Key{Type: "t", Name: "u"}, Info: unit.Info{Files: []string{"f1", "f2"}}}
 	data := graph.Output{
 		Refs: []*graph.Ref{
 			{
@@ -652,7 +653,7 @@ func testTreeStore_Refs(t *testing.T, ts TreeStoreImporter) {
 	if err != nil {
 		t.Errorf("%s: Refs(): %s", ts, err)
 	}
-	if !reflect.DeepEqual(refs, want) {
+	if !deepEqual(refs, want) {
 		t.Errorf("%s: Refs(): got refs %v, want %v", ts, refs, want)
 	}
 }
@@ -676,7 +677,7 @@ func testTreeStore_Refs_ByFiles(t *testing.T, ts TreeStoreImporter) {
 	}
 	refsByFile := map[string][]*graph.Ref{}
 	for unitName, refsByFile0 := range refsByUnitByFile {
-		u := &unit.SourceUnit{Type: "t", Name: unitName}
+		u := &unit.SourceUnit{Key: unit.Key{Type: "t", Name: unitName}}
 		var data graph.Output
 		for file, refs := range refsByFile0 {
 			u.Files = append(u.Files, file)
@@ -715,7 +716,7 @@ func testTreeStore_Refs_ByFiles(t *testing.T, ts TreeStoreImporter) {
 		cleanForImport(&graph.Output{Refs: refs}, "", "t", "u1")
 		cleanForImport(&graph.Output{Refs: refs}, "", "t", "u2")
 
-		if want := wantRefs; !reflect.DeepEqual(refs, want) {
+		if want := wantRefs; !deepEqual(refs, want) {
 			t.Errorf("%s: Refs(ByFiles %s): got refs %v, want %v", ts, file, refs, want)
 		}
 		if isIndexedStore(ts) {
@@ -746,7 +747,7 @@ func testTreeStore_Refs_ByDef(t *testing.T, ts TreeStoreImporter) {
 	}
 	refsByDefUnitByDefPath := map[string]map[string][]*graph.Ref{}
 	for unitName, refs := range refsByUnit {
-		u := &unit.SourceUnit{Type: "t", Name: unitName}
+		u := &unit.SourceUnit{Key: unit.Key{Type: "t", Name: unitName}}
 		data := graph.Output{Refs: refs}
 		for _, ref := range data.Refs {
 			defUnit := ref.DefUnit
@@ -791,7 +792,7 @@ func testTreeStore_Refs_ByDef(t *testing.T, ts TreeStoreImporter) {
 			cleanForImport(&graph.Output{Refs: refs}, "", "t", "u1")
 			cleanForImport(&graph.Output{Refs: refs}, "", "t", "u2")
 
-			if want := wantRefs; !reflect.DeepEqual(refs, want) {
+			if want := wantRefs; !deepEqual(refs, want) {
 				t.Errorf("%s: Refs(ByDef %s): got refs %v, want %v", ts, defLabel, refs, want)
 			}
 			if isIndexedStore(ts) {
