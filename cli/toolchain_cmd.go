@@ -605,24 +605,27 @@ Refusing to install Basic toolchain because %s is not installed or is not on the
 }
 
 func cloneToolchain(destDir, cloneURI string) error {
-	if fi, err := os.Stat(destDir); os.IsNotExist(err) {
-		// Clone
-		if err := os.MkdirAll(filepath.Dir(destDir), 0700); err != nil {
-			return err
-		}
 
-		cmd := exec.Command("git", "clone", cloneURI)
-		cmd.Dir = filepath.Dir(destDir)
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		return cmd.Run()
-	} else if err != nil {
+	switch fi, err := os.Stat(destDir); {
+	case err != nil && !os.IsNotExist(err):
 		return err
-	} else if !fi.Mode().IsDir() {
+	case err == nil && !fi.Mode().IsDir():
 		return fmt.Errorf("not a directory: %s", destDir)
+	case err == nil && fi.Mode().IsDir():
+		log.Printf("Toolchain directory %q already exists, using existing version.", destDir)
+		return nil
 	}
-	log.Printf("Toolchain directory %q already exists, using existing version.", destDir)
-	return nil
+
+	// Clone
+	if err := os.MkdirAll(filepath.Dir(destDir), 0700); err != nil {
+		return err
+	}
+
+	cmd := exec.Command("git", "clone", cloneURI)
+	cmd.Dir = filepath.Dir(destDir)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }
 
 func isExecErrNotFound(err error) bool {
