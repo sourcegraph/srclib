@@ -120,7 +120,7 @@ type sourceUnit struct {
 	Dir          string                      `json:",omitempty"`
 	Dependencies []json.RawMessage           `json:",omitempty"`
 	Info         *Info                       `json:",omitempty"`
-	Data         []byte                      `json:",omitempty"`
+	Data         *json.RawMessage            `json:",omitempty"`
 	Config       map[string]*json.RawMessage `json:",omitempty"`
 	Ops          map[string]*srclib.ToolRef  `json:",omitempty"`
 }
@@ -151,6 +151,11 @@ func (u *SourceUnit) MarshalJSON() ([]byte, error) {
 	for k := range u.Ops {
 		ops[k] = nil
 	}
+	var data *json.RawMessage
+	if u.Data != nil {
+		d := json.RawMessage(u.Data)
+		data = &d
+	}
 	return json.Marshal(sourceUnit{
 		Name:         u.Name,
 		Type:         u.Type,
@@ -159,7 +164,7 @@ func (u *SourceUnit) MarshalJSON() ([]byte, error) {
 		Files:        u.Files,
 		Dir:          u.Dir,
 		Dependencies: deps,
-		Data:         u.Data,
+		Data:         data,
 		Config:       cfg,
 		Ops:          ops,
 	})
@@ -206,7 +211,9 @@ func (u *SourceUnit) UnmarshalJSON(b []byte) error {
 	u.Files = su.Files
 	u.Dir = su.Dir
 	u.Dependencies = deps
-	u.Data = su.Data
+	if su.Data != nil {
+		u.Data = *su.Data
+	}
 	u.Config = cfg
 	u.Ops = ops
 	return nil
