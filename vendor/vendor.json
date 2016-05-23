@@ -73,6 +73,12 @@
 			"revisionTime": "2015-10-07T17:10:53+02:00"
 		},
 		{
+			"checksumSHA1": "e6cMbpJj41MpihS5eP4SIliRBK4=",
+			"path": "github.com/gogo/protobuf/sortkeys",
+			"revision": "200875106f3bf0eb01eb297dae30b250a25ffc84",
+			"revisionTime": "2015-10-07T15:10:53Z"
+		},
+		{
 			"checksumSHA1": "LPHUb2OqD7Eb1goiXH2njjmlZ7s=",
 			"path": "github.com/gogo/protobuf/test",
 			"revision": "200875106f3bf0eb01eb297dae30b250a25ffc84",
