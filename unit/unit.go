@@ -117,12 +117,12 @@ type sourceUnit struct {
 	CommitID     string   `json:",omitempty"`
 	Globs        []string `json:",omitempty"`
 	Files        []string
-	Dir          string                     `json:",omitempty"`
-	Dependencies []json.RawMessage          `json:",omitempty"`
-	Info         *Info                      `json:",omitempty"`
-	Data         []byte                     `json:",omitempty"`
-	Config       map[string]json.RawMessage `json:",omitempty"`
-	Ops          map[string]*srclib.ToolRef `json:",omitempty"`
+	Dir          string                      `json:",omitempty"`
+	Dependencies []json.RawMessage           `json:",omitempty"`
+	Info         *Info                       `json:",omitempty"`
+	Data         []byte                      `json:",omitempty"`
+	Config       map[string]*json.RawMessage `json:",omitempty"`
+	Ops          map[string]*srclib.ToolRef  `json:",omitempty"`
 }
 
 var _ json.Marshaler = (*SourceUnit)(nil)
@@ -137,14 +137,16 @@ func (u *SourceUnit) MarshalJSON() ([]byte, error) {
 			return nil, err
 		}
 	}
-	cfg := make(map[string]json.RawMessage)
+	cfg := make(map[string]*json.RawMessage)
 	for k, v := range u.Config {
-		var err error
-		cfg[k], err = json.Marshal(v)
-		if err != nil {
+		if b, err := json.Marshal(v); err == nil {
+			b_ := json.RawMessage(b)
+			cfg[k] = &b_
+		} else {
 			return nil, err
 		}
 	}
+
 	ops := make(map[string]*srclib.ToolRef)
 	for k := range u.Ops {
 		ops[k] = nil
@@ -188,7 +190,7 @@ func (u *SourceUnit) UnmarshalJSON(b []byte) error {
 	cfg := make(map[string]string)
 	for k, vJSON := range su.Config {
 		var v string
-		if err := json.Unmarshal(vJSON, &v); err != nil {
+		if err := json.Unmarshal(*vJSON, &v); err != nil {
 			return err
 		}
 		cfg[k] = v

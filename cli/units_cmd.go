@@ -46,24 +46,24 @@ func scanUnitsIntoConfig(cfg *config.Repository, quiet bool) error {
 		return err
 	}
 
-	/*
-		// Merge the repo/tree config with each source unit's config.
-		if cfg.Config == nil {
-			cfg.Config = map[string]interface{}{}
-		}
-		for _, u := range units {
-			for k, v := range cfg.Config {
-				if uv, present := u.Config[k]; present {
-					log.Printf("Both the scanned source unit %q and the Srcfile specify a Config key %q. Using the value from the scanned source unit (%+v).", u.ID(), k, uv)
-				} else {
-					if u.Config == nil {
-						u.Config = map[string]string{}
-					}
-					u.Config[k] = v
+	// Merge the repo/tree config with each source unit's config.
+	if cfg.Config == nil {
+		cfg.Config = map[string]interface{}{}
+	}
+	for _, u := range units {
+		for k, v := range cfg.Config {
+			if uv, present := u.Config[k]; present {
+				log.Printf("Both the scanned source unit %q and the Srcfile specify a Config key %q. Using the value from the scanned source unit (%+v).", u.ID(), k, uv)
+			} else {
+				if u.Config == nil {
+					u.Config = make(map[string]string)
+				}
+				if vstr, isStr := v.(string); isStr {
+					u.Config[k] = vstr
 				}
 			}
 		}
-	*/
+	}
 
 	// collect manually specified source units by ID
 	manualUnits := make(map[unit.ID]*unit.SourceUnit, len(cfg.SourceUnits))
