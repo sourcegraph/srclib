@@ -87,7 +87,7 @@ func TestRepoStores_filterByRepos(t *testing.T) {
 		t.Errorf("got refs %v, want none", refs)
 	}
 
-	if units, err := rss.Units(ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"})); err != nil {
+	if units, err := rss.Units(ByUnitKey(unit.Key{Repo: "r", CommitID: "c", Type: "t", Name: "u"})); err != nil {
 		t.Fatal(err)
 	} else if len(units) != 0 {
 		t.Errorf("got units %v, want none", units)
@@ -158,20 +158,20 @@ func TestScopeRepos(t *testing.T) {
 			want:    []string{},
 		},
 		{
-			filters: []interface{}{ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"})},
+			filters: []interface{}{ByUnitKey(unit.Key{Repo: "r", CommitID: "c", Type: "t", Name: "u"})},
 			want:    []string{"r"},
 		},
 		{
 			filters: []interface{}{
-				ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"}),
-				ByUnitKey(unit.Key{Repo: "r", CommitID: "c2", UnitType: "t2", Unit: "u2"}),
+				ByUnitKey(unit.Key{Repo: "r", CommitID: "c", Type: "t", Name: "u"}),
+				ByUnitKey(unit.Key{Repo: "r", CommitID: "c2", Type: "t2", Name: "u2"}),
 			},
 			want: []string{"r"},
 		},
 		{
 			filters: []interface{}{
-				ByUnitKey(unit.Key{Repo: "r", CommitID: "c", UnitType: "t", Unit: "u"}),
-				ByUnitKey(unit.Key{Repo: "r2", CommitID: "c", UnitType: "t", Unit: "u"}),
+				ByUnitKey(unit.Key{Repo: "r", CommitID: "c", Type: "t", Name: "u"}),
+				ByUnitKey(unit.Key{Repo: "r2", CommitID: "c", Type: "t", Name: "u"}),
 			},
 			want: []string{},
 		},
