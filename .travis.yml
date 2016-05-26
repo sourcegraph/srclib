@@ -19,9 +19,11 @@ before_install:
 # Java and Basic
   - sudo add-apt-repository -y ppa:openjdk-r/ppa
   - sudo add-apt-repository -y ppa:cwchien/gradle 
+# Python
+  - sudo add-apt-repository -y ppa:fkrull/deadsnakes
   - sudo apt-get update
-# Java, Basic, JavaScript, and TypeScript
-  - sudo apt-get install -y openjdk-8-jdk gradle-2.13 nodejs
+# Java, Basic, JavaScript, TypeScript, and Python
+  - sudo apt-get install -y openjdk-8-jdk gradle-2.13 nodejs python3.5
   - export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
 # TypeScript
   - npm install -g typescript
@@ -32,4 +34,4 @@ install:
 script:
   - make test
 # TODO: add csharp
-  - srclib toolchain install go java javascript typescript basic python ruby
+  - srclib toolchain install go java javascript typescript basic python ruby css
