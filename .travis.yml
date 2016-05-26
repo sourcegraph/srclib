@@ -30,7 +30,6 @@ install:
   - make
 
 script:
-  - go test -race -v $(go list ./... | grep -v /vendor/)
+  - make test
 # TODO: add csharp
   - srclib toolchain install go java javascript typescript basic python ruby
-  

@@ -15,7 +15,7 @@ endif
 
 MAKEFLAGS+=--no-print-directory
 
-.PHONY: default install srclib release upload-release check-release
+.PHONY: default install srclib release upload-release check-release test
 
 default: govendor install
 
@@ -24,7 +24,7 @@ install: srclib
 srclib: ${GOBIN}/${EXE}
 
 ${GOBIN}/${EXE}: $(shell /usr/bin/find . -type f -and -name '*.go')
-	GO15VENDOREXPERIMENT=1 go install ./cmd/srclib
+	go install ./cmd/srclib
 
 govendor:
 	go get github.com/kardianos/govendor
@@ -48,3 +48,6 @@ check-release:
 	/tmp/srclib-$(V) version
 	echo; echo
 	@echo Released srclib $(V)
+
+test:
+	go test -race -v $(go list ./... | grep -v /vendor/)
