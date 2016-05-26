@@ -1,6 +1,6 @@
 language: go
 go: 1.6
-sudo: false
+sudo: required
 
 before_install:
   - mkdir -p $HOME/gopath/src/sourcegraph.com/sourcegraph
@@ -8,11 +8,28 @@ before_install:
   - export TRAVIS_BUILD_DIR=$HOME/gopath/src/sourcegraph.com/sourcegraph/srclib
   - export PATH=$PATH:$HOME/gopath/bin
   - export GOBIN=$HOME/gopath/bin
+# Ruby
+  - curl -L https://get.rvm.io | bash -s stable --ruby
+  - rvm reload
+  - rvm install 2.2.2
+  - rvm use 2.2.2
+  - gem update bundler
+# JavaScript and TypeScript
+  - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+# Java and Basic
+  - sudo add-apt-repository -y ppa:openjdk-r/ppa
+  - sudo add-apt-repository -y ppa:cwchien/gradle 
+  - sudo apt-get update
+# Java, Basic, JavaScript, and TypeScript
+  - sudo apt-get install -y openjdk-8-jdk gradle-2.13 nodejs
+  - export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
+# TypeScript
+  - npm install -g typescript
 
 install:
   - make
 
 script:
-  # checking sourcegraph/srclib#281
-  - srclib toolchain install go
   - make test
+# TODO: add csharp
+  - srclib toolchain install go java javascript typescript basic python ruby
