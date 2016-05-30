@@ -31,7 +31,7 @@ func main() {
 
 	if err := cli.Main(); err != nil {
 		if _, ok := err.(*flags.Error); !ok {
-			fmt.Fprintf(os.Stderr, "FAILED: %s\n", strings.Join(os.Args, " "))
+			fmt.Fprintf(os.Stderr, "FAILED: %s (%s)\n", strings.Join(os.Args, " "), err)
 		}
 		os.Exit(1)
 	}
