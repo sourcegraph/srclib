@@ -9,8 +9,9 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
+	"regexp"
 	"runtime"
-
+	"strconv"
 	"strings"
 
 	"github.com/alexsaveliev/go-colorable-wrapper"
@@ -462,29 +463,27 @@ func installPythonToolchain() error {
 	const toolchainName = "srclib-python"
 
 	requiredCmds := map[string]string{
-		"go":         "visit https://golang.org/doc/install",
-		"python3.5":  "visit https://www.python.org/downloads/",
 		"pip":        "visit http://pip.readthedocs.org/en/latest/installing.html",
 		"virtualenv": "run `[sudo] pip install virtualenv`",
 	}
+
+	// On Windows it's "python", otherwise it's "python3.5"
+	var pythonExe string
+	if runtime.GOOS == "windows" {
+		pythonExe = "python"
+	} else {
+		pythonExe = "python3.5"
+	}
+	requiredCmds[pythonExe] = "visit https://www.python.org/downloads/"
+
 	for requiredCmd, instructions := range requiredCmds {
 		if _, err := exec.LookPath(requiredCmd); isExecErrNotFound(err) {
 			return fmt.Errorf("no `%s` found in PATH; to install, %s", requiredCmd, instructions)
 		}
+
 	}
 
-	// retrieve or create GOPATH
-	gopathDir := getGoPath()
-
-	// Go-based toolchains should be cloned into GOPATH/src/TOOLCHAIN
-	// otherwise govendor refuses to work if source code is located outside of GOPATH
-	gopathDir = filepath.Join(gopathDir, "src", toolchainFQN(toolchainName))
-	if err := os.MkdirAll(filepath.Dir(gopathDir), 0700); err != nil {
-		return err
-	}
-
-	log.Println("Downloading Python toolchain")
-	if err := cloneToolchain(gopathDir, toolchainCloneURI(toolchainName)); err != nil {
+	if err := checkPythonVersion(); err != nil {
 		return err
 	}
 
@@ -493,14 +492,13 @@ func installPythonToolchain() error {
 		return err
 	}
 
-	// Adding symlink SRCLIBPATH/TOOLCHAIN that points to GOPATH/src/TOOLCHAIN
-	err = symlink(gopathDir, srclibpathDir)
-	if err != nil {
+	log.Println("Downloading Python toolchain in", srclibpathDir)
+	if err := cloneToolchain(srclibpathDir, toolchainCloneURI(toolchainName)); err != nil {
 		return err
 	}
 
 	log.Println("Building Python toolchain program")
-	if err := execCmdInDir(gopathDir, "make"); err != nil {
+	if err := execCmdInDir(srclibpathDir, "make", ".env", "install"); err != nil {
 		return err
 	}
 
@@ -739,4 +737,46 @@ func toolchainFQN(toolchainName string) string {
 // toolchainCloneURI returns clone URI for a given toolchain
 func toolchainCloneURI(toolchainName string) string {
 	return "https://github.com/sourcegraph/" + toolchainName
+}
+
+// checkPythonVersion ensures we have Python 3.5 installed.
+// On Windows, Python 3.5 does not have python3.5.exe,
+// so will run `python --version` to check it
+func checkPythonVersion() error {
+
+	if runtime.GOOS != "windows" {
+		return nil
+	}
+
+	cmd := exec.Command("python", "--version")
+	out, err := cmd.Output()
+
+	if err != nil {
+		return fmt.Errorf("unable to detect Python version")
+	}
+
+	version := regexp.MustCompile("^Python (\\d+)\\.(\\d+)").FindStringSubmatch(string(out))
+	if version == nil {
+		return fmt.Errorf("unable to detect Python version from version string '%s'", string(out))
+	}
+
+	major, err := strconv.Atoi(version[1])
+	if err != nil {
+		return fmt.Errorf("unable to detect major Python version from version string '%s'", version[1])
+	}
+	if major < 3 {
+		return fmt.Errorf("expected Python 3.5+, found '%s'", string(out))
+	}
+	if major > 3 {
+		return nil
+	}
+
+	minor, err := strconv.Atoi(version[2])
+	if err != nil {
+		return fmt.Errorf("unable to detect minor Python version from version string '%s'", version[2])
+	}
+	if minor < 5 {
+		return fmt.Errorf("expected Python 3.5+, found '%s'", string(out))
+	}
+	return nil
 }
