@@ -147,16 +147,16 @@
 			"revisionTime": "2015-12-11T09:06:21+09:00"
 		},
 		{
+			"checksumSHA1": "K4L6qMn6mHxuWwEYhVBaCoDcSH0=",
+			"path": "github.com/neelance/parallel",
+			"revision": "4de9ce63d14c18517a79efe69e10e99d32c850c3",
+			"revisionTime": "2016-07-08T11:44:40Z"
+		},
+		{
 			"checksumSHA1": "RZOdTSZN/PgcTqko5LzIAzw+UT4=",
 			"path": "github.com/pmezard/go-difflib/difflib",
 			"revision": "792786c7400a136282c1664665ae0a8db921c6c2",
 			"revisionTime": "2016-01-10T11:55:54+01:00"
-		},
-		{
-			"checksumSHA1": "3P9Wd2vQZXWhbIXfTYSqiJhImDk=",
-			"path": "github.com/rogpeppe/rog-go/parallel",
-			"revision": "f57ad5e24ab7813942c045f86eda1066eb969e98",
-			"revisionTime": "2015-01-10T16:24:53Z"
 		},
 		{
 			"checksumSHA1": "pkb5BzI0OyFgccIpD8in3HwUM8E=",
@@ -291,10 +291,10 @@
 			"revisionTime": "2015-12-22T00:11:22-08:00"
 		},
 		{
-			"checksumSHA1": "i/xlef6YYvqTCApzwaitRbA7hqM=",
+			"checksumSHA1": "ZBEDlTLH19UFD92TWiUaVUv89ug=",
 			"path": "sourcegraph.com/sourcegraph/makex",
-			"revision": "ebd8626d42863f226f97c369cef6a989f410ac7b",
-			"revisionTime": "2016-04-25T10:05:24+03:00"
+			"revision": "3f62e8d29c0ff8c517a78ced8318b03110c3f532",
+			"revisionTime": "2016-07-08T12:54:03Z"
 		},
 		{
 			"checksumSHA1": "YGx0MAcypbYRZkpImuY6iY/zpR8=",
