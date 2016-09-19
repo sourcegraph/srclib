@@ -109,7 +109,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ---------------------------------------------------------------------------
 
-Contains code from gogoprotobuf (license follows).
+Contains code from gogo/protobuf (license follows).
 
 Extensions for Protocol Buffers to create more go like structures.
 
