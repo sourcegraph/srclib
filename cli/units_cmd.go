@@ -32,16 +32,8 @@ func init() {
 // cfg.SourceUnits, merging the scanned source units with those already present
 // in cfg.
 func scanUnitsIntoConfig(cfg *config.Repository, quiet bool) error {
-	scanners := make([][]string, len(cfg.Scanners))
-	for i, scannerRef := range cfg.Scanners {
-		cmdName, err := toolchain.Command(scannerRef.Toolchain)
-		if err != nil {
-			return err
-		}
-		scanners[i] = []string{cmdName, scannerRef.Subcmd}
-	}
 
-	units, err := scan.ScanMulti(scanners, scan.Options{Quiet: quiet}, cfg.Config)
+	units, err := runScanners(cfg, quiet)
 	if err != nil {
 		return err
 	}
@@ -109,6 +101,26 @@ func scanUnitsIntoConfig(cfg *config.Repository, quiet bool) error {
 	}
 
 	return nil
+}
+
+// runScanners returns no units if configuration set SkipScan, otherwise runs
+// all the scanners to retrieve source units
+func runScanners(cfg *config.Repository, quiet bool) ([]*unit.SourceUnit, error) {
+
+	if cfg.SkipScan {
+		return []*unit.SourceUnit{}, nil
+	}
+
+	scanners := make([][]string, len(cfg.Scanners))
+	for i, scannerRef := range cfg.Scanners {
+		cmdName, err := toolchain.Command(scannerRef.Toolchain)
+		if err != nil {
+			return nil, err
+		}
+		scanners[i] = []string{cmdName, scannerRef.Subcmd}
+	}
+
+	return scan.ScanMulti(scanners, scan.Options{Quiet: quiet}, cfg.Config)
 }
 
 type UnitsCmd struct {

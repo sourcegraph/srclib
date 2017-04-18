@@ -47,6 +47,10 @@ type Tree struct {
 	// Config is an arbitrary key-value property map. Properties are copied
 	// verbatim to each source unit that is scanned in this tree.
 	Config map[string]interface{} `json:",omitempty"`
+
+	// SkipScan indicates if we should skip scan phase assuming that everything
+	// is pre-configured
+	SkipScan bool `json:",omitempty"`
 }
 
 // ReadRepository parses and validates the configuration for a repository. If no
